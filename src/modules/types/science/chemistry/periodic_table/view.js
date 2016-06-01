@@ -291,12 +291,20 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 that.innerLegend.find('#backgroundVal').html(`${event.target.value} ${this.background.unit}`);
             });
 
+            var showDefaultLegend = _.debounce(() => {
+                $('.element-zoom').delay(50000).empty().unbind();
+                that.defaultLegend.removeClass('hidden');
+                elementZoom.addClass('hidden');
+                elementDatas.addClass('hidden');
+            }, 150);
+
             $elements.mouseenter(function () {
                 var $el = $(this);
                 var Z = that.getZ($el);
                 that._doHighlight(Z, true);
                 that.module.controller.elementHovered(Z);
                 if (isFixed) return;
+                showDefaultLegend.cancel();
                 renderElement($el);
             });
 
@@ -305,10 +313,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 var Z = that.getZ($el);
                 that._doHighlight(Z, false);
                 if (isFixed) return;
-                $('.element-zoom').delay(50000).empty().unbind();
-                that.defaultLegend.removeClass('hidden');
-                elementZoom.addClass('hidden');
-                elementDatas.addClass('hidden');
+                showDefaultLegend();
             });
 
             $elements.click(function (event) {
