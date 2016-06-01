@@ -1,11 +1,12 @@
 'use strict';
 
 define([
+    'jquery',
     'modules/default/defaultview',
-    'components/jsNMR/src/nmr',
+    'jsnmr',
     'jcampconverter',
     'src/util/util'
-], function (Default, NMR, JcampConverter, Util) {
+], function ($, Default, NMR, JcampConverter, Util) {
 
     function View() {
     }

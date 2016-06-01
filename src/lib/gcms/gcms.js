@@ -1078,7 +1078,7 @@
 
     if( typeof define === "function" && define.amd ) {
 
-        define( [ 'jquery', 'graph' ], function( $, Graph ) {
+        define( [ 'jquery', 'jsgraph' ], function( $, Graph ) {
 
             return factory( $, Graph );
         });

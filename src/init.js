@@ -41,6 +41,7 @@ require.config({
         'json-chart': 'components/json-chart/dist/json-chart.min',
         'notifyjs': 'components/notifyjs/dist/notify-combined.min',
         jsgraph: 'components/jsgraph/dist/jsgraph',
+        jsnmr: 'components/jsnmr/dist/jsnmr',
         jsoneditor: 'components/jsoneditor/dist/jsoneditor-minimalist.min',
         jszip: 'components/jszip/dist/jszip.min',
         loglevel: 'components/loglevel/dist/loglevel.min',
@@ -59,7 +60,6 @@ require.config({
         'smart-array-filter': 'components/smart-array-filter/dist/smart-array-filter.min',
         sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
         sprintf: 'components/sprintf/dist/sprintf.min',
-        'src/shape.1dnmr': 'components/jsNMR/src/shape.1dnmr',
         superagent: 'lib/superagent-promise/index',
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
@@ -147,20 +147,6 @@ require.config({
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'
         ],
         BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
-    },
-
-    map: {
-        'components/jsNMR/src/nmr': {
-            'graph': 'jsgraph',
-            'assignation': 'components/jsNMR/src/assignation',
-            'lib/components/VisuMol/src/molecule': 'components/jsNMR/lib/components/VisuMol/src/molecule'
-        },
-        'src/shape.1dnmr': {
-            'graph': 'jsgraph'
-        }, //'components/jsNMR/src/shape.1dnmr'
-        'lib/gcms/gcms': {
-            'graph': 'jsgraph'
-        }
     }
 });
 
