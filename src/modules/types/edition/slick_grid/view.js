@@ -1344,21 +1344,24 @@ define([
                 return;
             }
             var that = this;
-            var idx = _.findIndex(this._highlights, function (val) {
-                return val !== undefined && val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
-            });
-            this.lastViewport = this.grid.getViewport();
-            if (idx > -1 && this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
-                var item = that.slick.data.getItemByIdx(idx);
-                var gridRow = that.slick.data.getRowById(item[that.idPropertyName]);
-                if (gridRow === undefined) {
-                    return;
+
+            if (this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
+                var idx = _.findIndex(this._highlights, function (val) {
+                    return val !== undefined && val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
+                });
+                if (idx > -1) {
+                    this.lastViewport = this.grid.getViewport();
+                    var item = that.slick.data.getItemByIdx(idx);
+                    var gridRow = that.slick.data.getRowById(item[that.idPropertyName]);
+                    if (gridRow === undefined) {
+                        return;
+                    }
+                    if (gridRow < this.lastViewport.top || gridRow >= this.lastViewport.bottom) {
+                        // navigate
+                        this.grid.scrollRowToTop(gridRow);
+                    }
+                    //this.grid.setActiveCell(gridRow, 0);
                 }
-                if (gridRow < this.lastViewport.top || gridRow >= this.lastViewport.bottom) {
-                    // navigate
-                    this.grid.scrollRowToTop(gridRow);
-                }
-                //this.grid.setActiveCell(gridRow, 0);
             }
         },
 
