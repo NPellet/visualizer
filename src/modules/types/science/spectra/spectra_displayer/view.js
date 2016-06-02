@@ -226,6 +226,7 @@ define([
                 this.yAxis = graph.getYAxis(0);
 
                 graph.on('shapeMouseOver', shape => {
+                    this.module.controller.createDataFromEvent('onMouseOverShape', 'shapeProperties', shape.getProperties());
                     this.module.controller.createDataFromEvent('onMouseOverShape', 'shapeInfos', shape.getData());
                     API.highlight(shape.getData(), 1);
                 });
@@ -239,10 +240,12 @@ define([
                 });
 
                 graph.on('shapeSelected', shape => {
+                    this.module.controller.createDataFromEvent('onShapeClick', 'shapeProperties', shape.getProperties());
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
                     this.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.getData());
                 });
                 graph.on('shapeUnselected', shape => {
+                    this.module.controller.createDataFromEvent('onShapeClick', 'shapeProperties', shape.getProperties());
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
                     this.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.getData());
                 });

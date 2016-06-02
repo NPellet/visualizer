@@ -34,6 +34,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             label: 'Shape data',
             type: 'object'
         },
+        shapeProperties: {
+            label: 'Shape properties',
+            type: 'object'
+        },
         fromToX: {
             label: 'From - To X',
             type: ['fromTo', 'object']
@@ -126,7 +130,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         onMouseOverShape: {
             label: 'Mouse over a shape',
-            refVariable: ['shapeInfos']
+            refVariable: ['shapeInfos', 'shapeProperties']
         },
         onShapeSelect: {
             label: 'Shape is selected',
@@ -138,7 +142,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         onShapeClick: {
             label: 'Shape is clicked',
-            refVariable: ['shapeInfos']
+            refVariable: ['shapeInfos', 'shapeProperties']
         },
         onSelectScatter: {
             label: 'Selection on a scatter plot',
