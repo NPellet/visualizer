@@ -16,6 +16,8 @@ define([
         cx: 0,
         cy: 0,
         r: 3,
+        height: '5px',
+        width: '5px',
         stroke: 'transparent',
         fill: 'black'
     };
