@@ -1,3 +1,34 @@
+<a name="2.56.0"></a>
+# 2.56.0 (2016-06-02)
+
+
+### Bug Fixes
+
+* **core:** fix bug in lru ([7771494](https://github.com/NPellet/visualizer/commit/7771494))
+* **core:** fix several bugs in lru ([2e68e41](https://github.com/NPellet/visualizer/commit/2e68e41))
+* **couchdbAttachment:** fix upload of large Blob ([666ea5a](https://github.com/NPellet/visualizer/commit/666ea5a))
+* **onde:** resurrect inputSchema ([e3b5949](https://github.com/NPellet/visualizer/commit/e3b5949))
+* **periodic_table:** remove flickering when going through elements ([1f698e1](https://github.com/NPellet/visualizer/commit/1f698e1))
+* **renderer:** twig renderer, make sur not a DataOBject ([e558684](https://github.com/NPellet/visualizer/commit/e558684))
+* **scatter3d:** fix merge series warning ([e6f5f36](https://github.com/NPellet/visualizer/commit/e6f5f36))
+* **single_value:** use unescaped value in edit mode ([b0fcb8f](https://github.com/NPellet/visualizer/commit/b0fcb8f))
+* **spectra_displayer:** do not autofit series on resize ([1afe72a](https://github.com/NPellet/visualizer/commit/1afe72a))
+* **spectra_displayer:** fix annotation bug ([e141e95](https://github.com/NPellet/visualizer/commit/e141e95))
+* **spectra_displayer:** fix axis boundary setting on zoom ([300266b](https://github.com/NPellet/visualizer/commit/300266b))
+
+### Features
+
+* **couchdbAttachments:** allow get to return a blob ([808d994](https://github.com/NPellet/visualizer/commit/808d994))
+* **periodic_table:** output elements ([819c141](https://github.com/NPellet/visualizer/commit/819c141))
+* **scatter3d:** zoom to fit when double click ([e975e21](https://github.com/NPellet/visualizer/commit/e975e21)), closes [#889](https://github.com/NPellet/visualizer/issues/889)
+* **slick_grid:** add option ignore highlights from self ([5a5ce25](https://github.com/NPellet/visualizer/commit/5a5ce25))
+* **spectra_displayer:** add shape properties output for mouse over and click on shape ([8529dfe](https://github.com/NPellet/visualizer/commit/8529dfe))
+* **spectra_displayer:** add support for mouse tracking output on click ([38f4e3c](https://github.com/NPellet/visualizer/commit/38f4e3c))
+* **spectra_displayer:** add support for multicolor line series ([6439d71](https://github.com/NPellet/visualizer/commit/6439d71))
+* **spectra_displayer:** support defaultStyle and style for scatter series ([e859944](https://github.com/NPellet/visualizer/commit/e859944))
+
+
+
 <a name="2.55.0"></a>
 # 2.55.0 (2016-05-24)
 
