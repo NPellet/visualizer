@@ -307,7 +307,6 @@ define([
                 return;
             }
             this.graph.resize(this.width, this.height);
-            this.redraw(true);
         },
 
         shouldAutoscale(varName) {
