@@ -11,6 +11,15 @@ define([
     'src/util/debug'
 ], function ($, Default, Graph, JSONChart, DataTraversing, API, Color, Debug) {
 
+    const defaultScatterStyle = {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: 'black'
+    };
+
     function View() {
     }
 
@@ -600,6 +609,7 @@ define([
 
                     serie.autoAxis();
                     if (String(aData.type) === 'scatter') {
+                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), aData.style);
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
                             plugin.setSerie(serie);

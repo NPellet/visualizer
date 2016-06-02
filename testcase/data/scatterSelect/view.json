@@ -1,5 +1,5 @@
 {
-  "version": "2.25.1-0",
+  "version": "2.55.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -29,7 +29,7 @@
                 ]
               ],
               "script": [
-                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nset('chart', {type:'chart', value: chart});"
+                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            style: [null,{fill: 'green'},null,{fill: 'blue'}],\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nset('chart', {type:'chart', value: chart});"
               ]
             }
           ],
@@ -72,7 +72,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 1,
       "vars_in": [
         {}
       ],
@@ -90,121 +90,183 @@
           "name": "chart"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/science/spectra/spectra_displayer/",
       "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
+        "sections": {
+          "graph": [
             {
-              "graphurl": [
-                ""
-              ],
-              "flip": [
-                []
-              ],
-              "displayAxis": [
-                [
-                  "y",
-                  "x"
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      [
+                        "yes"
+                      ]
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
                 ]
-              ],
-              "grids": [
-                []
-              ],
-              "xLabel": [
-                ""
-              ],
-              "yTopSpacing": [
-                "0"
-              ],
-              "yBottomSpacing": [
-                "0"
-              ],
-              "xLeftSpacing": [
-                "0"
-              ],
-              "xRightSpacing": [
-                "0"
-              ],
-              "yLabel": [
-                ""
-              ],
-              "minX": [
-                ""
-              ],
-              "maxX": [
-                ""
-              ],
-              "minY": [
-                ""
-              ],
-              "maxY": [
-                ""
-              ],
-              "zoom": [
-                "none"
-              ],
-              "shiftxtozero": [
-                []
-              ],
-              "xaxismodification": [
-                []
-              ],
-              "wheelAction": [
-                "none"
-              ],
-              "wheelbaseline": [
-                0
-              ],
-              "fullOut": [
-                "both"
-              ],
-              "FitYToAxisOnFromTo": [
-                []
-              ],
-              "legend": [
-                null
-              ],
-              "mouseTracking": [
-                []
-              ],
-              "selectScatter": [
-                [
-                  "yes"
-                ]
-              ]
+              }
             }
           ],
-          "plotinfos": [
-            [
-              {
-                "variable": "chart",
-                "plotcolor": [
-                  1,
-                  1,
-                  255,
-                  1
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.01"
+                    ],
+                    "afterSpacing": [
+                      "0.01"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      []
+                    ]
+                  }
                 ],
-                "strokewidth": "0",
-                "strokestyle": "1",
-                "plotcontinuous": "continuous",
-                "peakpicking": [],
-                "markers": [
-                  "markers"
-                ],
-                "markerShape": "1",
-                "markerSize": 5,
-                "normalize": "none",
-                "optimizeSlots": [],
-                "degrade": 0,
-                "monotoneous": []
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.01"
+                    ],
+                    "afterSpacing": [
+                      "0.01"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
               }
-            ]
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "chart",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "0",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [
+                        "markers"
+                      ],
+                      "markerShape": "1",
+                      "markerSize": 5,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "degrade": 0,
+                      "monotoneous": []
+                    }
+                  ]
+                ]
+              }
+            }
           ]
-        }
+        },
+        "groups": {}
       },
       "layers": {
         "Default layer": {
@@ -230,7 +292,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 2,
       "vars_in": [
         {
           "rel": "chart",
@@ -253,7 +315,28 @@
           "jpath": [],
           "name": "data"
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -343,7 +426,7 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 3,
       "vars_in": [
         {
           "rel": "list",
@@ -363,7 +446,28 @@
         {
           "jpath": []
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     }
   ],
   "variables": [
