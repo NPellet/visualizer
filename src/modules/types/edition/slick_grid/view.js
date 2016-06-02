@@ -1347,7 +1347,7 @@ define([
 
             if (this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')) {
                 var idx = _.findIndex(this._highlights, function (val) {
-                    return val !== undefined && val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1);
+                    return val !== undefined && (val === that._highlighted[0] || (val.indexOf && val.indexOf(that._highlighted[0]) > -1));
                 });
                 if (idx > -1) {
                     this.lastViewport = this.grid.getViewport();
