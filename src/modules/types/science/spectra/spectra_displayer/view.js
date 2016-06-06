@@ -22,6 +22,12 @@ define([
         fill: 'black'
     };
 
+    const fullOutMap = {
+        x: 'xAxis',
+        y: 'yAxis',
+        xy: 'both'
+    };
+
     function View() {
     }
 
@@ -333,25 +339,34 @@ define([
         },
 
         redraw(forceReacalculateAxis, varName) {
-            var fullOut = this.module.getConfiguration('fullOut');
-            if (varName && fullOut === 'once') {
-                if (!this.shouldAutoscale(varName)) {
-                    fullOut = 'none';
-                } else {
-                    fullOut = 'both';
+            var fullOut;
+            if (forceReacalculateAxis) {
+                fullOut = 'both';
+            } else {
+                fullOut = this.module.getConfiguration('fullOut');
+                if (varName && fullOut === 'once') {
+                    if (!this.shouldAutoscale(varName)) {
+                        fullOut = 'none';
+                    } else {
+                        fullOut = 'both';
+                    }
                 }
             }
 
-            if (forceReacalculateAxis) {
-                this.graph.autoscaleAxes();
-            } else if (fullOut == 'none') {
-                // nothing to do
-            } else if (fullOut == 'xAxis') {
-                this.xAxis.setMinMaxToFitSeries();
-            } else if (fullOut == 'yAxis') {
-                this.yAxis.setMinMaxToFitSeries();
-            } else {
-                this.graph.autoscaleAxes();
+            this.fullOut(fullOut);
+        },
+
+        fullOut(type) {
+            switch (type) {
+                case 'both':
+                    this.graph.autoscaleAxes();
+                    break;
+                case 'xAxis':
+                    this.xAxis.setMinMaxToFitSeries();
+                    break;
+                case 'yAxis':
+                    this.yAxis.setMinMaxToFitSeries();
+                    break;
             }
 
             this.graph.draw();
@@ -918,8 +933,11 @@ define([
                 if (s) {
                     s.unselect();
                 }
-            }
+            },
 
+            fullOut(value) {
+                this.fullOut(fullOutMap[String(value)]);
+            }
         },
 
         normalize(array, varname) {

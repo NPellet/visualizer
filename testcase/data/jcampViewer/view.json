@@ -1,260 +1,724 @@
 {
-  "version": "2.9.10",
-  "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
-  },
-  "modules": [
-	{
-	  "url": "modules/types/display/jqgrid/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				null
-			  ]
+	"version": "2.56.1-0",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
 			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.name",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 1,
-			"top": 1
-		  },
-		  "size": {
-			"width": 29,
-			"height": 26
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "JCAMPs",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 1,
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "spectra"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "JCAMPs",
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"jcamp"
-		  ],
-		  "name": "jcamp"
-		}
-	  ]
+		},
+		"xWidth": 10,
+		"yHeight": 10
 	},
-	{
-	  "url": "modules/types/science/spectra/spectra_displayer/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "graphurl": [
-				""
-			  ],
-			  "flip": [
-				[
-				  "flipX"
+	"modules": [
+		{
+			"url": "modules/types/display/jqgrid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 1,
+						"top": 1
+					},
+					"size": {
+						"width": 29,
+						"height": 26
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "JCAMPs",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "spectra"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "JCAMPs",
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": [
+						"jcamp"
+					],
+					"name": "jcamp"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
 				]
-			  ],
-			  "displayAxis": [
-				[
-				  "x"
-				]
-			  ],
-			  "grids": [
-				[]
-			  ],
-			  "xLabel": [
-				""
-			  ],
-			  "yTopSpacing": [
-				0
-			  ],
-			  "yBottomSpacing": [
-				0
-			  ],
-			  "xLeftSpacing": [
-				0
-			  ],
-			  "xRightSpacing": [
-				0
-			  ],
-			  "yLabel": [
-				""
-			  ],
-			  "minX": [
-				""
-			  ],
-			  "maxX": [
-				""
-			  ],
-			  "minY": [
-				""
-			  ],
-			  "maxY": [
-				""
-			  ],
-			  "zoom": [
-				"x"
-			  ],
-			  "shiftxtozero": [
-				[]
-			  ],
-			  "xaxismodification": [
-				[]
-			  ],
-			  "wheelAction": [
-				"zoomY"
-			  ],
-			  "wheelbaseline": [
-				0
-			  ],
-			  "fullOut": [
-				"both"
-			  ],
-			  "FitYToAxisOnFromTo": [
-				[]
-			  ],
-			  "legend": [
-				"topleft"
-			  ]
 			}
-		  ],
-		  "plotinfos": [
-			[
-			  {
-				"variable": "jcamp",
-				"plotcolor": [
-				  1,
-				  1,
-				  255,
-				  1
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"configuration": {
+				"sections": {
+					"graph": [
+						{
+							"sections": {},
+							"groups": {
+								"graph": [
+									{
+										"url": [
+											""
+										],
+										"zoom": [
+											"x"
+										],
+										"wheelAction": [
+											"zoomY"
+										],
+										"wheelbaseline": [
+											0
+										],
+										"fullOut": [
+											"both"
+										],
+										"legend": [
+											"left"
+										],
+										"legendOptions": [
+											[
+												"isSerieHideable",
+												"isSerieSelectable"
+											]
+										],
+										"mouseTracking": [
+											[]
+										],
+										"selectScatter": [
+											[]
+										],
+										"independantYZoom": [
+											[]
+										]
+									}
+								]
+							}
+						}
+					],
+					"axis": [
+						{
+							"sections": {},
+							"groups": {
+								"xAxis": [
+									{
+										"checkboxes": [
+											[
+												"display",
+												"flip"
+											]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											0
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"axismodification": [
+											[]
+										]
+									}
+								],
+								"yAxis": [
+									{
+										"checkboxes": [
+											[]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											0
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"fitToAxisOnFromTo": [
+											[]
+										]
+									}
+								]
+							}
+						}
+					],
+					"variables": [
+						{
+							"sections": {},
+							"groups": {
+								"variables": [
+									[
+										{
+											"variable": "jcamp",
+											"axis": "0",
+											"adaptTo": "none",
+											"plotcolor": [
+												1,
+												1,
+												255,
+												1
+											],
+											"strokewidth": "1",
+											"strokestyle": "1",
+											"plotcontinuous": "continuous",
+											"peakpicking": [],
+											"markers": [],
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
+											"optimizeSlots": [],
+											"degrade": 0,
+											"monotoneous": []
+										}
+									]
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 31,
+						"top": 1
+					},
+					"size": {
+						"width": 88,
+						"height": 53
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Untitled",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "fullOut",
+					"name": "out"
+				}
+			],
+			"title": "Untitled",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
 				],
-				"strokewidth": "1",
-				"plotcontinuous": [
-				  "continuous"
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"url": "modules/types/client_interaction/button_action/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"toggle": [
+								"click"
+							],
+							"label": [
+								"Full out x"
+							],
+							"onLabel": [
+								"Toggle action off"
+							],
+							"offLabel": [
+								"Toggle action on"
+							],
+							"onColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"offColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"startState": [
+								"off"
+							],
+							"text": [
+								"x"
+							],
+							"askConfirm": [
+								[]
+							],
+							"confirmText": [
+								"Are you sure?"
+							],
+							"okLabel": [
+								"Ok"
+							],
+							"cancelLabel": [
+								"Cancel"
+							],
+							"content": [
+								""
+							],
+							"contentType": [
+								"content"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 31,
+						"top": 55
+					},
+					"size": {
+						"width": 12,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 3,
+			"vars_in": [],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"event": "onClick",
+					"rel": "actionText",
+					"jpath": [],
+					"name": "out"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
 				],
-				"peakpicking": [],
-				"markers": [],
-				"normalize": "none",
-				"optimizeSlots": [],
-				"degrade": 0,
-				"monotoneous": []
-			  }
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"url": "modules/types/client_interaction/button_action/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"toggle": [
+								"click"
+							],
+							"label": [
+								"Full out y"
+							],
+							"onLabel": [
+								"Toggle action off"
+							],
+							"offLabel": [
+								"Toggle action on"
+							],
+							"onColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"offColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"startState": [
+								"off"
+							],
+							"text": [
+								"y"
+							],
+							"askConfirm": [
+								[]
+							],
+							"confirmText": [
+								"Are you sure?"
+							],
+							"okLabel": [
+								"Ok"
+							],
+							"cancelLabel": [
+								"Cancel"
+							],
+							"content": [
+								""
+							],
+							"contentType": [
+								"content"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 44,
+						"top": 55
+					},
+					"size": {
+						"width": 12,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 4,
+			"vars_in": [],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"event": "onClick",
+					"rel": "actionText",
+					"jpath": [],
+					"name": "out"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"url": "modules/types/client_interaction/button_action/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"toggle": [
+								"click"
+							],
+							"label": [
+								"Full out xy"
+							],
+							"onLabel": [
+								"Toggle action off"
+							],
+							"offLabel": [
+								"Toggle action on"
+							],
+							"onColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"offColor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"startState": [
+								"off"
+							],
+							"text": [
+								"xy"
+							],
+							"askConfirm": [
+								[]
+							],
+							"confirmText": [
+								"Are you sure?"
+							],
+							"okLabel": [
+								"Ok"
+							],
+							"cancelLabel": [
+								"Cancel"
+							],
+							"content": [
+								""
+							],
+							"contentType": [
+								"content"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 57,
+						"top": 55
+					},
+					"size": {
+						"width": 12,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 5,
+			"vars_in": [],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"event": "onClick",
+					"rel": "actionText",
+					"jpath": [],
+					"name": "out"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		}
+	],
+	"variables": [
+		{
+			"varname": "spectra",
+			"jpath": [
+				"spectra"
 			]
-		  ]
 		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 31,
-			"top": 1
-		  },
-		  "size": {
-			"width": 88,
-			"height": 53
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Untitled",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 2,
-	  "vars_in": [
-		{
-		  "rel": "jcamp",
-		  "name": "jcamp"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "Untitled",
-	  "vars_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
-	}
-  ],
-  "variables": [
-	{
-	  "varname": "spectra",
-	  "jpath": [
-		"spectra"
-	  ]
-	}
-  ],
-  "pouchvariables": [],
-  "configuration": {
-	"title": "JCAMP viewer"
-  }
+	],
+	"pouchvariables": [],
+	"configuration": {
+		"title": "JCAMP viewer"
+	},
+	"aliases": []
 }

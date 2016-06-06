@@ -159,7 +159,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         removeSerie: 'Remove a serie',
         removeSerieByName: 'Remove a serie (name as input)',
         selectSerie: 'Select a serie',
-        unselectSerie: 'Unselect a serie'
+        unselectSerie: 'Unselect a serie',
+        fullOut: 'Full zoom out (x, y or xy)'
     };
 
     var axisFields = {
