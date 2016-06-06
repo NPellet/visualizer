@@ -403,7 +403,9 @@ define([
         }
 
         getViews() {
-            return this.getRequestDB('/entry/_all', {right: 'write'}).then(returnBody);
+            return this.getRequestDB('/entry/_all', {right: 'write'})
+                .then(returnBody)
+                .then(body => body.filter(view => view.$deleted !== true));
         }
 
         refresh() {

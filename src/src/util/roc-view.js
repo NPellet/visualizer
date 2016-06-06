@@ -160,8 +160,15 @@ define(['./util'], function (Util) {
         }
 
         remove() {
-            return this.manager.deleteRequestDB(`/entry/${this.id}`)
-                .then(retTrue, retFalse);
+            const del = this.view.$deleted;
+            this.view.$deleted = true;
+            return this.save()
+                .then(retTrue, () => {
+                    if (typeof del === 'boolean') {
+                        this.view.$deleted = del;
+                    }
+                    return false;
+                });
         }
 
         getName(flavor) {
