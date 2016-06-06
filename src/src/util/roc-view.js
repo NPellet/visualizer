@@ -8,6 +8,7 @@ define(['./util'], function (Util) {
         constructor(view, manager) {
             this.view = view;
             this.manager = manager;
+            this._revision = null;
         }
 
         get content() {
@@ -87,11 +88,13 @@ define(['./util'], function (Util) {
         }
 
         getViewUrl() {
-            return this.hasView() ? `${this.manager.rocDbUrl}/entry/${this.id}/view.json` : null;
+            var query = this._revision ? `?rev=${this._revision}` : '';
+            return this.hasView() ? `${this.manager.rocDbUrl}/entry/${this.id}/view.json${query}` : null;
         }
 
         getDataUrl() {
-            return this.hasData() ? `${this.manager.rocDbUrl}/entry/${this.id}/data.json` : null;
+            var query = this._revision ? `?rev=${this._revision}` : '';
+            return this.hasData() ? `${this.manager.rocDbUrl}/entry/${this.id}/data.json${query}` : null;
         }
 
         getViewSwitcher() {
@@ -216,6 +219,16 @@ define(['./util'], function (Util) {
             } else {
                 return this.removeGroup(ANON_READ);
             }
+        }
+
+        getRevisions(force) {
+            if (this._revs && !force) return this._revs;
+            return this._revs = this.manager.getRequestDB(`/entry/${this.id}`, {revs_info: true})
+                .then(doc => doc.body._revs_info.filter(rev => rev.status === 'available').map(rev => rev.rev));
+        }
+
+        setRevision(rev) {
+            this._revision = rev;
         }
     }
 

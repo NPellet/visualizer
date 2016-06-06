@@ -65,6 +65,7 @@ define([
 
             this._flavor = null;
             this.activeNode = null;
+            this.activeView = null;
             this.loadedNode = null;
 
             this.verifyRoc();
@@ -74,7 +75,7 @@ define([
                 event => {
                     if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which === 83) {
                         event.preventDefault();
-                        this.saveLoadedView();
+                        this.saveCurrentView();
                     }
                 }
             );
@@ -324,8 +325,6 @@ define([
             rightAccordion.append('<h3>Revisions</h3>');
             this.$revBox = $('<div>').appendTo(rightAccordion);
 
-            this.$revBox.html('coming soon...');
-
             rightAccordion.append('<h3>Attachments</h3>');
             this.$attachmentsBox = $('<div>').appendTo(rightAccordion);
 
@@ -371,7 +370,7 @@ define([
             });
 
             var closeButton = this.$closeButton = $('<button>Close view</button>').button({disabled: true}).click(() => this.closeLoadedView());
-            var saveButton = this.$saveButton = $('<button>Save</button>').button({disabled: true}).click(() => this.saveLoadedView());
+            var saveButton = this.$saveButton = $('<button>Save</button>').button({disabled: true}).click(() => this.saveCurrentView());
             var saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({disabled: true}).click(() => this.saveAs());
             var saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
 
@@ -415,6 +414,7 @@ define([
                 this.tree = null;
             }
             this.activeNode = null;
+            this.setActiveView(null);
             this.setLoadedNode(null);
 
             // Create new tree
@@ -465,7 +465,7 @@ define([
                     if (event.type === 'mouseenter' && !node.folder) {
                         this.populateInfo(node);
                     } else {
-                        this.populateInfo(this.loadedNode);
+                        this.populateInfo(this.activeView);
                     }
                 });
 
@@ -555,23 +555,27 @@ define([
                     }
                 });
 
-                var viewUrl = Versioning.lastLoaded.view.url;
-                var reg = /\/([^\/]+)\/view\.json$/;
-                var m = reg.exec(viewUrl);
-                if (m) {
-                    var loadedDocId = m[1];
-                    this.tree.visit(node => {
-                        if (node.data.view && node.data.view.id === loadedDocId &&
-                            node.data.flavor === this.flavor) {
-                            node.getParent().setExpanded(true);
-                            node.setActive(true);
-                            this.setLoadedNode(node);
-                            this.populateInfo(node);
-                            return false;
-                        }
-                    });
-                }
+                this.selectLoadedNode();
             });
+        }
+
+        selectLoadedNode() {
+            var viewUrl = Versioning.lastLoaded.view.url;
+            var reg = /\/([^\/]+)\/view\.json/;
+            var m = reg.exec(viewUrl);
+            if (m) {
+                var loadedDocId = m[1];
+                this.tree.visit(node => {
+                    if (node.data.view && node.data.view.id === loadedDocId &&
+                        node.data.flavor === this.flavor) {
+                        node.getParent().setExpanded(true);
+                        node.setActive(true);
+                        this.setLoadedNode(node);
+                        this.setActiveView(node);
+                        return false;
+                    }
+                });
+            }
         }
 
         newFlavor() {
@@ -648,6 +652,7 @@ define([
                                     doNotLoad: true
                                 });
                                 this.setLoadedNode(null);
+                                this.setActiveView(null);
                             }
                         } else {
                             UI.showNotification('Error while deleting view', 'error');
@@ -675,7 +680,7 @@ define([
                         if (ok) {
                             UI.showNotification('View was renamed', 'success');
                             node.setTitle(name);
-                            this.renderLoadedNode();
+                            this.renderActiveView();
                         } else {
                             UI.showNotification('Error while renaming view', 'error');
                         }
@@ -728,7 +733,7 @@ define([
                     } else {
                         throw new Error('unexpected result: ' + result);
                     }
-                    this.renderLoadedNode();
+                    this.renderActiveView();
                 });
         }
 
@@ -749,6 +754,7 @@ define([
                 this.renderFlavor();
                 if (this.loadedNode && !this.loadedNode.data.view.hasFlavor(flavorName)) {
                     this.setLoadedNode(null);
+                    this.setActiveView(null);
                 }
             }
         }
@@ -781,9 +787,11 @@ define([
         onActivate(event, data) {
             this.activeNode = data.node;
             if (data.node.folder) {
+                this.setActiveView(this.loadedNode);
                 this.$saveAsButton.button('enable');
                 this.$saveAsText.show();
             } else {
+                this.setActiveView(data.node);
                 this.$saveAsButton.button('disable');
                 this.$saveAsText.hide();
             }
@@ -793,25 +801,62 @@ define([
             if (!node) {
                 this.$title.html('&nbsp;');
                 this.$infoBox.empty();
+                this.$revBox.empty();
                 this.$permissionsContainer.hide();
                 return;
             }
             const view = node.data.view;
             this.$title.text(view.title);
-            this.$infoBox.html(
+            this.$infoBox.html($('<p>').append(
                 `Name: <b>${_.escape(node.title)}</b><br>
                 Folder: ${view.getPath(node.data.flavor)}<br>
                 Visualizer version: ${view.version}<br><br>
                 Size: ${Util.formatSize(view.size)}<br>
                 Id: ${view.id}<br>
-                Revision: ${view.revid}<br><br>
+                Last revision: ${view.revid}<br><br>
                 Created on: ${view.creationDate.toLocaleString()}<br>
                 Last modified: ${view.modificationDate.toLocaleString()}<br>
                 Owner: ${view.owner}`
-            );
+            ));
+            if (this.loadedNode && this.loadedNode !== this.activeNode) {
+                this.$infoBox.append('<br>');
+                this.$infoBox.append($('<p>').append($('<a>', {
+                    click: this.selectLoadedNode.bind(this),
+                    css: fakeLink,
+                    text: 'Select current view'
+                })));
+            }
+            this.reloadRevisions(node);
             this.$permissionsContainer.show();
             this.$publicCheckbox.prop('checked', view.public);
             this.$ownersList.html('Owners: ' + view.owners.join(', '));
+        }
+
+        reloadRevisions(node, force) {
+            const view = node.data.view;
+            this.$revBox.html('loading...');
+            view.getRevisions(force).then(revs => {
+                this.$revBox.empty();
+                revs.forEach(rev => {
+                    this.$revBox.append($('<p>').html($('<a>', {
+                        click: this.loadRevision.bind(this, node, rev),
+                        css: fakeLink,
+                        text: rev
+                    })));
+                });
+                this.$revBox.append('<br>');
+                this.$revBox.append($('<p>').html($('<a>', {
+                    click: this.reloadRevisions.bind(this, node, true),
+                    css: fakeLink,
+                    text: 'refresh'
+                })));
+            });
+        }
+
+        loadRevision(node, rev) {
+            const view = node.data.view;
+            view.setRevision(rev);
+            this.loadNode(node);
         }
 
         saveAs() {
@@ -898,24 +943,24 @@ define([
             this.setLoadedNode(null);
         }
 
-        saveLoadedView() {
-            if (this.loadedNode) {
+        saveCurrentView() {
+            if (this.activeView) {
                 const dialog = UI.dialog(compiled({
-                    view: this.loadedNode.data.view,
-                    flavor: this.loadedNode.data.flavor,
-                    flavors: this.loadedNode.data.view.flavors[this.loadedNode.data.flavor]
+                    view: this.activeView.data.view,
+                    flavor: this.activeView.data.flavor,
+                    flavors: this.activeView.data.view.flavors[this.activeView.data.flavor]
                 }), {
                     width: '400px',
                     buttons: {
                         'Save': () => {
                             dialog.dialog('close');
                             this.showHide(true);
-                            this.loadedNode.data.view.saveView(getCurrentView())
+                            this.activeView.data.view.saveView(getCurrentView())
                                 .then(ok => {
                                     this.showHide(false);
                                     if (ok) {
                                         UI.showNotification('View saved', 'success');
-                                        this.renderLoadedNode();
+                                        this.renderActiveView();
                                     } else {
                                         UI.showNotification('View could not be saved', 'error');
                                     }
@@ -940,6 +985,11 @@ define([
                 this.doSearch('');
             }
             node.setActive(true);
+            node.data.view.setRevision(null);
+            this.loadNode(node);
+        }
+
+        loadNode(node) {
             this.setLoadedNode(node);
             var view = node.data.view;
             Versioning.switchView(view.getViewSwitcher(), true, {
@@ -1007,23 +1057,31 @@ define([
             node.setActive(true);
             this.renderFlavor();
             this.setLoadedNode(node);
+            this.setActiveView(node);
             return node;
         }
 
         setLoadedNode(node) {
             this.loadedNode = node;
             if (node) {
-                this.$saveButton.button('enable');
                 this.$closeButton.button('enable');
             } else {
-                this.$saveButton.button('disable');
                 this.$closeButton.button('disable');
             }
-            this.renderLoadedNode();
         }
 
-        renderLoadedNode() {
-            this.populateInfo(this.loadedNode);
+        setActiveView(node) {
+            this.activeView = node;
+            if (node) {
+                this.$saveButton.button('enable');
+            } else {
+                this.$saveButton.button('disable');
+            }
+            this.renderActiveView();
+        }
+
+        renderActiveView() {
+            this.populateInfo(this.activeView);
         }
 
         showHide(show) {
@@ -1042,8 +1100,8 @@ define([
         }
 
         uploadFiles() {
-            if (!this.loadedNode) return;
-            var docUrl = `${this.rocDbUrl}/entry/${this.loadedNode.data.view.id}`;
+            if (!this.activeView) return;
+            var docUrl = `${this.rocDbUrl}/entry/${this.activeView.data.view.id}`;
             var couchA = new CouchdbAttachments(docUrl);
             return couchA.fetchList().then(attachments => {
                 return uploadUi.uploadDialog(attachments, {
@@ -1128,15 +1186,15 @@ define([
 
         reloadCurrent() {
             if (!this.loadedNode) return;
-            return this.loadedNode.data.view.reload().then(() => this.renderLoadedNode());
+            return this.loadedNode.data.view.reload().then(() => this.renderActiveView());
         }
 
         togglePublic() {
-            if (!this.loadedNode) return;
+            if (!this.activeView) return;
             this.showHide(true);
-            return this.loadedNode.data.view.togglePublic().then(ok => {
+            return this.activeView.data.view.togglePublic().then(ok => {
                 this.showHide(false);
-                this.renderLoadedNode();
+                this.renderActiveView();
                 if (!ok) {
                     UI.showNotification('Could not change permissions', 'error');
                 }
@@ -1144,7 +1202,7 @@ define([
         }
 
         addOwner() {
-            if (!this.loadedNode) return;
+            if (!this.activeView) return;
             var div = $('<div>User email address: </div>');
             var input = $('<input type="text" />').appendTo(div).on('keypress', evt => {
                 if (evt.keyCode === 13) Add();
@@ -1155,11 +1213,11 @@ define([
                     return UI.showNotification('Invalid email', 'error');
                 }
                 this.showHide(true);
-                this.loadedNode.data.view.addGroup(value).then(ok => {
+                this.activeView.data.view.addGroup(value).then(ok => {
                     if (!ok) {
                         UI.showNotification('Could not add owner', 'error');
                     }
-                    this.renderLoadedNode();
+                    this.renderActiveView();
                     this.showHide(false);
                 });
                 dialog.dialog('destroy');
