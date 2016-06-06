@@ -75,7 +75,7 @@ define([
                 event => {
                     if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which === 83) {
                         event.preventDefault();
-                        this.saveCurrentView();
+                        this.saveCurrentView('loaded');
                     }
                 }
             );
@@ -370,7 +370,7 @@ define([
             });
 
             var closeButton = this.$closeButton = $('<button>Close view</button>').button({disabled: true}).click(() => this.closeLoadedView());
-            var saveButton = this.$saveButton = $('<button>Save</button>').button({disabled: true}).click(() => this.saveCurrentView());
+            var saveButton = this.$saveButton = $('<button>Save</button>').button({disabled: true}).click(() => this.saveCurrentView('active'));
             var saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({disabled: true}).click(() => this.saveAs());
             var saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
 
@@ -945,19 +945,25 @@ define([
             this.setLoadedNode(null);
         }
 
-        saveCurrentView() {
-            if (this.activeView) {
+        saveCurrentView(activeOrLoaded) {
+            var theView;
+            if (activeOrLoaded === 'active') {
+                theView = this.activeView;
+            } else {
+                theView = this.loadedView;
+            }
+            if (theView) {
                 const dialog = UI.dialog(compiled({
-                    view: this.activeView.data.view,
-                    flavor: this.activeView.data.flavor,
-                    flavors: this.activeView.data.view.flavors[this.activeView.data.flavor]
+                    view: theView.data.view,
+                    flavor: theView.data.flavor,
+                    flavors: theView.data.view.flavors[theView.data.flavor]
                 }), {
                     width: '400px',
                     buttons: {
                         'Save': () => {
                             dialog.dialog('close');
                             this.showHide(true);
-                            this.activeView.data.view.saveView(getCurrentView())
+                            theView.data.view.saveView(getCurrentView())
                                 .then(ok => {
                                     this.showHide(false);
                                     if (ok) {
