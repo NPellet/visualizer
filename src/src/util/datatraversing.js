@@ -292,7 +292,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         },
 
 
-        getStructureFromElement: function (element, options, recursion) {
+        getStructureFromElement(element, options, recursion) {
 
             options = options || {};
             recursion = recursion || 0;
@@ -331,7 +331,9 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
                 structure.type = 'object';
                 structure.elements = {};
 
+                var counter = 0;
                 for (var i in element) {
+                    if (counter++ >= 100) break;
                     if (i[0] !== '_')
                         structure.elements[i] = this.getStructureFromElement(element.get(i, false), options, recursion + 1);
                 }
