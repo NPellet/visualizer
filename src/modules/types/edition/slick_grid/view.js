@@ -135,9 +135,7 @@ define([
                 } else {
                     ctx.showColumn(this.value);
                 }
-                ctx.$container.html('');
                 return doGrid(ctx);
-
             });
             ctx.$rowToolbar.append(ctx.$showHideSelection);
 
@@ -651,6 +649,8 @@ define([
                 this.module.getDomContent().html(this.$rowHelp);
                 this.module.getDomContent().append(this.$container);
                 this._setDeleteRowListener();
+            } else {
+                this.$container.html('');
             }
 
             if (this.module.getConfigurationCheckbox('saveInView', 'yes')) {
@@ -1133,6 +1133,7 @@ define([
 
         blank: {
             list: function (varname) {
+                console.log('blank')
                 this.$container.html('');
             },
             script: function (varname) {

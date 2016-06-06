@@ -337,9 +337,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
     Controller.prototype.onBeforeSave = function (formValue) {
         var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
+        var saveInView = formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
         var vars_in = formValue.vars_in[0].groups.group[0];
         var varin = vars_in[0];
-        if (varname) {
+        if (varname && saveInView) {
             if (varin && varin.name) {
                 varin.name = varname;
             } else {
@@ -348,6 +349,10 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                     name: varname
                 });
             }
+        } else if (!saveInView) {
+            formValue.vars_in[0].groups.group[0] = vars_in.filter(function (v) {
+                return v.name !== varname;
+            });
         }
     };
 
