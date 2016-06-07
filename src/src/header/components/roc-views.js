@@ -950,7 +950,7 @@ define([
             if (activeOrLoaded === 'active') {
                 theView = this.activeView;
             } else {
-                theView = this.loadedView;
+                theView = this.loadedNode;
             }
             if (theView) {
                 const dialog = UI.dialog(compiled({
