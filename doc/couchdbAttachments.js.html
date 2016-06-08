@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
 	<title>Visualizer Source: couchdbAttachments.js</title>
 
 	<!--[if lt IE 9]>
@@ -15,74 +16,70 @@
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top navbar-inverse">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Visualizer</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="api.html">src/util/api</a>
-						</li>
-						
-						<li>
-							<a href="color.html">src/util/color</a>
-						</li>
-						
-						<li>
-							<a href="couchdbAttachments.html">src/util/couchdbAttachments</a>
-						</li>
-						
-						<li>
-							<a href="ui.html">src/util/ui</a>
-						</li>
-						
-						<li>
-							<a href="util.html">src/util/util</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Visualizer</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-src_util_api.html">src/util/api</a></li><li><a href="module-src_util_color.html">src/util/color</a></li><li><a href="module-src_util_couchdbAttachments.html">src/util/couchdbAttachments</a></li><li><a href="module-src_util_ui.html">src/util/ui</a></li><li><a href="module-src_util_util.html">src/util/util</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
 	</div>
 
-	<div class="row-fluid">
+</div>
+</div>
 
-		
-			<div class="span12">
-				
-				<div id="main">
-					
 
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
 
 		<h1 class="page-title">Source: couchdbAttachments.js</h1>
     
 <section>
-	<article>
-		<pre
-			class="sunlight-highlight-javascript linenums">'use strict';
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">'use strict';
 
 // Mini-library to manage couchdb attachments
 // - Get and upload attachments just by their name
 // - Cache already downloaded attachments
-define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioning, superagent, LRU) {
+define([
+    'src/util/versioning',
+    'superagent',
+    'src/util/util'
+], function (Versioning, superagent, util) {
 
-    // A namespace for preventing overwriting
-    var storeName = '__couchdb-attachments';
-    var limitMemory = 200;
-    var limitStore = 500;
-    if (!LRU.exists(storeName)) {
-        LRU.create(storeName, limitMemory, limitStore);
-    }
+    var base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
     function dataURLtoBase64(data) {
         var pos;
@@ -94,7 +91,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
             }
         }
         var t = data.slice(pos, pos + 7);
-        if (pos && t === 'base64,') {
+        if (pos &amp;&amp; t === 'base64,') {
             pos = pos + 7;
             return data.slice(pos);
         } else {
@@ -102,136 +99,119 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         }
     }
 
-
-    /**
-     * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
-     * @constructor
-     * @exports src/util/couchdbAttachments
-     */
-    var CouchdbAttachments = function () {
-        // get the document url from the view url
-        this._hasFetched = false;
-        if (arguments.length === 0) {
-            var viewUrl = Versioning.lastLoaded.view.url;
-            if (!viewUrl) {
-                throw new Error('couchdb attachments initialization failed: No view url');
-            }
-            this.docUrl = viewUrl.replace(/\/[^\/]+$/, '');
-            this.url = '';
-        } else {
-            this.docUrl = arguments[0];
-        }
-    };
-
-    /**
-     @return {object} attachments - An array with the attachments metadata
-     @return {number} attachments[].name - The name of the resource
-     @return {string} attachments[].content_type - Resource's mime-type
-     @return {string} attachments[].digest - base64 md5 digest of the resource
-     @return {number} attachments[].length - Length in bytes of the resource
-     @return {number} attachments[].url - The url of the resource
-     */
-    CouchdbAttachments.prototype.list = function (asError) {
-        var that = this;
-        return Promise.resolve().then(function () {
-            var hasAtt = that.lastDoc && that.lastDoc._attachments;
-            if (!hasAtt && asError) {
-                throw new Error('Unexpected error: List of attachments not available');
-            } else if (!hasAtt) {
-                return that.refresh().then(function () {
-                    return that.list(true);
-                });
-            }
-            return attachmentsAsArray(that, that.lastDoc._attachments);
-        });
-    };
-
-    // This is an alternative strategy for storing multiple attachments in one revision
-    // The problem with this is that it doesn't allow to change the contentType
-    // (because Blobs are immutable) if the browser did not set it correctly or if
-    // the user wants to manually change it will not work properly
-    CouchdbAttachments.prototype.uploads1 = function (files) {
-        var that = this;
-        if (!Array.isArray(files)) {
-            throw new Error('uploads expects an array as parameter');
-        }
-
-        return Promise.resolve().then(function () {
-            return new Promise(function (resolve, reject) {
-                var req = superagent.post(that.docUrl);
-
-                for (var i = 0; i &lt; files.length; i++) {
-                    var file = files[i];
-                    req.attach('_attachments', file, file.name);
+    class CouchdbAttachments {
+        /**
+         * @param url Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
+         * @constructor
+         * @exports src/util/couchdbAttachments
+         */
+        constructor() {
+            // get the document url from the view url
+            if (arguments.length === 0) {
+                var viewUrl = Versioning.lastLoaded.view.url;
+                if (!viewUrl) {
+                    throw new Error('couchdb attachments initialization failed: No view url');
                 }
-                req.field('_rev', that.lastDoc._rev);
-                req.end(function (err, res) {
-                    if (err) return reject(err);
-                    if (res.status !== 201) reject(new Error('Error uploading attachments, couchdb returned status code ' + res.status));
-                    return resolve();
-                });
-            });
-        }).then(function () {
-            return that.refresh();
-        });
-    };
+                this.docUrl = viewUrl.replace(/\/[^\/]+$/, '');
+            } else {
+                this.docUrl = arguments[0];
+            }
+        }
 
-    /**
-     * Upload several attachments in one revision
-     * @param {object[]} options
-     * @param {string} options[].name - The name of the attachment
-     * @param {string} options[].contentType - The contentType of the uploaded data
-     * @param {string} options[].data - The attachment data to upload
-     * @param {Blob|string} options[].file - The attachment data to upload. If string, must be a valid base64 encoded dataURL
-     * @example
-     * // With dataurl
-     * cdb.inlineUploads([{
+        /**
+         @return {object} attachments - An array with the attachments metadata
+         @return {number} attachments[].name - The name of the resource
+         @return {string} attachments[].content_type - Resource's mime-type
+         @return {string} attachments[].digest - base64 md5 digest of the resource
+         @return {number} attachments[].length - Length in bytes of the resource
+         @return {number} attachments[].url - The url of the resource
+         */
+        list(secondRound) {
+            return Promise.resolve().then(() => {
+                var hasAtt = this.lastDoc &amp;&amp; this.lastDoc._attachments;
+                if (!this.lastDoc &amp;&amp; secondRound) {
+                    throw new Error('Unreachable');
+                }
+                if (!hasAtt &amp;&amp; !secondRound) {
+                    return this.refresh().then(() => {
+                        return this.list(true);
+                    });
+                } else if (!hasAtt) {
+                    this.lastDoc._attachments = {};
+                }
+                return this.attachmentsAsArray(this, this.lastDoc._attachments);
+            });
+        }
+
+        /**
+         * Upload several attachments in one revision
+         * @param {object[]} options
+         * @param {string} options[].name - The name of the attachment
+         * @param {string} options[].contentType - The contentType of the uploaded data
+         * @param {string} options[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
+         * @param {string} options[].content - The attachment data to upload. Alias of data.
+         * @param {Blob|string} options[].file - The attachment data to upload. Alias of data.
+         * @example
+         * // With dataurl
+         * cdb.inlineUploads([{
      *   name: 'example.png',
      *   file: 'data:image/png;base64,ORK5CYII='
      * }]);
-     * // With Blob
-     * cdb.inlineUploads([{
+         * // With Blob
+         * cdb.inlineUploads([{
      *   name: 'example.txt',
      *   file: new Blob(['example'], {content_type: 'text/plain'});
      * }]);
-     * // With data
-     * cdb.inlineUploads([{
+         * // With data
+         * cdb.inlineUploads([{
      *   name: 'example.txt',
      *   contentType: 'text/plain',
      *   data: 'example'
      * }]);
-     * @returns {Promise.&lt;object>} The new list of attachments
-     */
-    CouchdbAttachments.prototype.inlineUploads = function (options) {
-        var that = this;
-        var prom = this.list();
-        if (!options) return prom.then(function () {
-            return attachmentsAsArray(this, this.lastAttachmentsResult);
-        });
-        return prom.then(function () {
-            if (!(Array.isArray(options))) {
-                throw new TypeError('options must be an array');
-            }
+         * @returns {Promise.&lt;object>} The new list of attachments
+         */
+        inlineUploads(options) {
+            var prom = this.list();
+            if (!options) return prom.then(() => {
+                return attachmentsAsArray(this, this.lastAttachmentsResult);
+            });
+            return prom.then(() => {
+                if (!(Array.isArray(options))) {
+                    throw new TypeError('options must be an array');
+                }
 
-            var prom = [];
-            for (var i = 0; i &lt; options.length; i++) {
-                (function (i) {
-                    var item = options[i];
-                    if (item.data) {
-                        that.lastDoc._attachments[item.name] = {
-                            content_type: item.contentType,
-                            data: btoa(unescape(encodeURIComponent(item.data)))
-                        };
-                    } else if (item.file && typeof item.file === 'string') {
-                        var match = /data:([a-z]+\/[a-z]+);base64,(.+)/.exec(item.file);
-                        if (!match) throw new Error('File is string but not valid base64 encoded dataURL');
-                        that.lastDoc._attachments[item.name] = {
-                            content_type: match[1],
-                            data: match[2]
-                        };
-                    } else if (item.file && item.file instanceof Blob) {
-                        var p = new Promise(function (resolve, reject) {
-                            var reader = new FileReader();
+                var prom = [];
+                for (let i = 0; i &lt; options.length; i++) {
+                    let name = getName(options[i]);
+                    let item = options[i];
+                    let data = item.data || item.file || item.content;
+                    if (typeof data === 'string') {
+                        if (item.encoding === 'base64') {
+                            this.lastDoc._attachments[name] = {
+                                content_type: item.contentType,
+                                data: data
+                            };
+                        } else {
+                            let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                            if (!dataUrl) {
+                                this.lastDoc._attachments[name] = {
+                                    content_type: item.contentType,
+                                    data: btoa(unescape(encodeURIComponent(data)))
+                                };
+                            } else {
+                                this.lastDoc._attachments[name] = {
+                                    content_type: item.contentType || dataUrl[1],
+                                    data: data.slice(dataUrl[0].length)
+                                };
+                            }
+                        }
+
+                    } else if (data instanceof Blob) {
+                        if (!item.contentType &amp;&amp; data.type) {
+                            item.contentType = data.type;
+                        }
+                        let p = new Promise((resolve, reject) => {
+                            let reader = new FileReader();
                             reader.onload = function (e) {
                                 return resolve({
                                     item: item,
@@ -241,191 +221,223 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
                             reader.onerror = function () {
                                 return reject('Error while reading file');
                             };
-                            reader.readAsDataURL(item.file);
+                            reader.readAsDataURL(data);
                         });
                         prom.push(p);
-
                     } else {
                         return Promise.reject(new Error('Item must have a valid data or file property'));
                     }
-                })(i);
-            }
-            return Promise.all(prom);
-        }).then(function (toChange) {
-            return new Promise(function (resolve, reject) {
-                for (var i = 0; i &lt; toChange.length; i++) {
-                    var c = toChange[i];
-                    that.lastDoc._attachments[c.item.name] = {
+                }
+                return Promise.all(prom);
+            }).then(toChange => {
+                for (let i = 0; i &lt; toChange.length; i++) {
+                    const c = toChange[i];
+                    this.lastDoc._attachments[getName(c.item)] = {
                         content_type: c.item.contentType,
                         data: c.base64data
                     };
                 }
-                superagent
-                    .put(that.docUrl)
+                return superagent
+                    .put(this.docUrl)
+                    .withCredentials()
                     .set('Content-Type', 'application/json')
                     .set('Accept', 'application/json')
-                    .send(that.lastDoc)
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 201) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
-                        return resolve();
-                    });
-            });
-        }).then(function () {
-            return that.refresh();
-        });
-    };
+                    .send(this.lastDoc)
+                    .end();
+            }).then(() => this.refresh());
+        }
 
-    /**
-     *
-     * @param {object} options
-     * @param {string} options.name - Name of the attachment to upload
-     * @param {string} options.contentType - Content-Type of the attachment to upload
-     * @param {string} options.data -  The attachment's content to upload
-     * @param {Blob} options.file - The attachments's content to upload
-     * @returns {Promise.&lt;Object>} The new list of attachments
-     */
-    CouchdbAttachments.prototype.upload = function (options) {
-        var that = this;
-        return this.list().then(function () {
-            if (!options) {
-                throw new Error('Invalid arguments');
-            }
-            return new Promise(function (resolve, reject) {
-                var exists = that.lastDoc._attachments[options.name];
-                var contentType = options.contentType || (exists ? exists.content_type : undefined);
-                if (!contentType) {
-                    return reject(new Error('Content-Type unresolved. Cannot upload document without content-type'));
+
+        /**
+         *
+         * @param {object} options
+         * @param {string} options.name - Name of the attachment to upload
+         * @param {string} options.filename - Alias for name
+         * @param {string} options.contentType - Content-Type of the attachment to upload
+         * @param {string|Blob} options.data -  The attachment's content to upload
+         * @param {string|Blob} options.file - The attachments's content to upload
+         * @param {string|Blob} options.content - The attachments's content to upload
+         * @returns {Promise.&lt;Object>} The new list of attachments
+         */
+        upload(options) {
+            let data = options.data || options.file || options.content;
+            return this.list().then(() => {
+                if (!options) {
+                    throw new Error('Invalid arguments');
                 }
-                superagent
-                    .put(that.docUrl + '/' + options.name)
-                    .query({rev: that.lastDoc._rev})
+                let contentType = options.contentType;
+                if (!contentType &amp;&amp; data instanceof Blob) {
+                    contentType = data.type;
+                } else if (typeof data === 'string') {
+                    if (options.encoding === 'base64') {
+                        data = options.data;
+                    } else {
+                        let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
+                        if (dataUrl) {
+                            data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
+                            contentType = dataUrl[1];
+                        } else {
+                            data = new Blob([data], {content_type: options.contentType});
+                        }
+                    }
+                } else if (!(data instanceof Blob)) {
+                    throw new Error('Data must be Blob or base64 dataUrl');
+                }
+
+                if (!contentType) {
+                    throw new Error('Content-Type unresolved. Cannot upload document without content-type');
+                }
+                return superagent
+                    .put(this.docUrl + '/' + getName(options))
+                    .withCredentials()
+                    .query({rev: this.lastDoc._rev})
                     .set('Content-Type', contentType)
                     .set('Accept', 'application/json')
-                    .send(options.data || options.file)
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 201) return reject(new Error('Error uploading attachment, couchdb returned status code ' + res.status));
-                        that.lastDoc._rev = res.body.rev;
-                        return resolve();
+                    .send(data)
+                    .then(res => {
+                        if (res &amp;&amp; res.body &amp;&amp; res.body.rev) {
+                            this.lastDoc._rev = res.body.rev;
+                        }
                     });
-            });
-        }).then(function () {
-            // We need to update the document after the upload
-            var prom = that.refresh();
-            if (options.data) { // Don't store in lru if it's a file
-                prom.then(function () {
-                    LRU.store(storeName, that.lastDoc._attachments[options.name].digest, options.data);
-                });
-            }
-            return prom;
-        });
-    };
-
-    /**
-     * Get the content of an attachment
-     * @param name The name of the attachment to get
-     * @return {Promise} The parsed content of the attachment
-     */
-    CouchdbAttachments.prototype.get = function (name) {
-        var that = this;
-        return this.list().then(function () {
-            var exists = that.lastDoc._attachments[name];
-            if (!exists) throw new Error('The attachment ' + name + ' does not exist');
-            return Promise.resolve(LRU.get(storeName, exists.digest)).then(function (data) {
-                if (data) return data.data;
-                else return {};
-            }, function () {
-                return new Promise(function (resolve, reject) {
-                    var req = superagent.get(that.docUrl + '/' + name);
-                    if (exists) req.set('Accept', that.lastDoc._attachments[name].content_type);
-                    req.query({rev: that.lastDoc._rev})
-                        .end(function (err, res) {
-                            if (err) return reject(err);
-                            if (res.status !== 200) return reject(new Error('Error getting attachment, couchdb returned status code ' + res.status));
-                            LRU.store(storeName, exists.digest, res.body || res.text);
-                            return resolve(res.body || res.text);
-                        });
-                });
-            });
-        });
-    };
-
-    /**
-     * Remove an attachment
-     * @param name The name of the attachment to remove.
-     * @returns {Promise.&lt;Object>} The new list of attachments
-     */
-    CouchdbAttachments.prototype.remove = function (name) { // TODO: lru has no remove yet
-        var that = this;
-        if (Array.isArray(name)) {
-            return inlineRemove(this, name);
+            }).then(() => this.refresh());
         }
-        return this.list().then(function () {
-            if (!that.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
-            return new Promise(function (resolve, reject) {
-                superagent
-                    .del(that.docUrl + '/' + name)
-                    .query({rev: that.lastDoc._rev})
-                    .set('Accept', 'application/json')
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 200) return reject(new Error('Error deleting attachment, couchdb returned status code ' + res.status));
-                        that.lastDoc._rev = res.body.rev;
-                        delete that.lastDoc._attachments[name];
-                        return resolve(attachmentsAsArray(that, that.lastDoc._attachments));
+
+        /**
+         * Get the content of an attachment
+         * @param name The name of the attachment to get
+         * @return {Promise} The parsed content of the attachment
+         */
+        get(name, options) {
+            options = options || {};
+            return this.list().then(() => {
+                const _att = this.lastDoc._attachments[name];
+                if (!_att) throw new Error('The attachment ' + name + ' does not exist');
+                const req = superagent.get(this.docUrl + '/' + name).withCredentials();
+                if (options.responseType) {
+                    req.responseType(options.responseType);
+                }
+                if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
+                return req.query({rev: this.lastDoc._rev})
+                    .then(res => {
+                        if (options.raw) return res.text;
+                        else if (options.responseType === 'blob') return res.xhr.response;
+                        return res.body;
                     });
             });
-        });
-    };
+        }
+
+        /**
+         * Remove an attachment
+         * @param name The name of the attachment to remove.
+         * @returns {Promise.&lt;Object>} The new list of attachments
+         */
+        remove(name) {
+            if (Array.isArray(name)) {
+                return inlineRemove(this, name);
+            }
+            return this.list().then(() => {
+                if (!this.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
+                return superagent
+                    .del(this.docUrl + '/' + name)
+                    .withCredentials()
+                    .query({rev: this.lastDoc._rev})
+                    .set('Accept', 'application/json')
+                    .then(res => {
+                        if (res &amp;&amp; res.body &amp;&amp; res.body.rev) {
+                            this.lastDoc._rev = res.body.rev;
+                            delete this.lastDoc._attachments[name];
+                            return attachmentsAsArray(this, this.lastDoc._attachments);
+                        } else {
+                            throw new Error('Unexpected error when removing attachments');
+                        }
+                    });
+            });
+        }
+
+        /**
+         * Refreshes the list of attachment from couchdb.
+         * @returns {Promise.&lt;Object>} attachments - The new list of attachments
+         */
+        // Get documents with latest attachements' rev ids
+        refresh() {
+            return superagent
+                .get(this.docUrl)
+                .withCredentials()
+                .set('Accept', 'application/json')
+                .then(res => {
+                    this.lastDoc = res.body;
+                    return attachmentsAsArray(this, res.body._attachments);
+                });
+        }
+
+        /**
+         * An alias for refresh
+         * Refreshes the list of attachment from couchdb.
+         * @returns {Promise.&lt;Object>} attachments - The new list of attachments
+         */
+        fetchList() {
+            return this.refresh();
+        }
+
+        attachmentsAsArray() {
+            var r = [];
+            var i = 0;
+            for (var key in this.lastDoc._attachments) {
+                r.push(this.lastDoc._attachments[key]);
+                r[i].name = key;
+                r[i].url = encodeURI(this.docUrl + '/' + key);
+                i++;
+            }
+            this.lastAttachmentsResult = r;
+            return r;
+        }
+
+        // This is an alternative strategy for storing multiple attachments in one revision
+        // The problem with this is that it doesn't allow to change the contentType
+        // (because Blobs are immutable) if the browser did not set it correctly or if
+        // the user wants to manually change it will not work properly
+        uploads1(files) {
+            if (!Array.isArray(files)) {
+                throw new Error('uploads expects an array as parameter');
+            }
+
+            var req = superagent.post(this.docUrl).withCredentials();
+
+            for (var i = 0; i &lt; files.length; i++) {
+                var file = files[i];
+                req.attach('_attachments', file, getName(file));
+            }
+            req.field('_rev', this.lastDoc._rev);
+            return req.end().then(res => {
+                if (res.status !== 201) throw new Error('Error uploading attachments, couchdb returned status code ' + res.status);
+                return this.refresh();
+            });
+        }
+    }
 
 
     // Private function
     function inlineRemove(ctx, names) {
-        return ctx.list().then(function () {
+        return ctx.list().then(() => {
             if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
             if (names.length === 0) return ctx.list();
-            return new Promise(function (resolve, reject) {
-                for (var i = 0; i &lt; names.length; i++) {
-                    delete ctx.lastDoc._attachments[names[i]];
-                }
-                superagent
-                    .put(ctx.docUrl)
-                    .set('Content-Type', 'application/json')
-                    .set('Accept', 'application/json')
-                    .send(ctx.lastDoc)
-                    .end(function (err, res) {
-                        if (err) return reject(err);
-                        if (res.status !== 201) return reject(new Error('Error uploading inline attachments, couchdb returned status code ' + res.status));
-                        return resolve();
-                    });
-            });
-        }).then(function () {
-            return ctx.refresh();
-        });
-    }
-
-    /**
-     * An alias for fetchList
-     * Fetches the list of attachment from couchdb.
-     * @returns {Promise.&lt;Object>} attachments - The new list of attachments
-     */
-        // Get documents with latest attachements' rev ids
-    CouchdbAttachments.prototype.refresh = function () {
-        var that = this;
-        return new Promise(function (resolve, reject) {
-            superagent
-                .get(that.docUrl)
+            for (var i = 0; i &lt; names.length; i++) {
+                delete ctx.lastDoc._attachments[names[i]];
+            }
+            return superagent
+                .put(ctx.docUrl)
+                .withCredentials()
+                .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json')
-                .end(function (err, res) {
-                    if (err) return reject(err);
-                    if (res.status !== 200) return reject(new Error('Error getting document, couchdb returned status code ' + res.status));
-                    that.lastDoc = res.body;
-                    that._hasFetched = true;
-                    return resolve(attachmentsAsArray(that, res.body._attachments));
+                .send(ctx.lastDoc)
+                .then(res => {
+                    if (res &amp;&amp; res.body &amp;&amp; res.body.rev) {
+                        ctx.lastDoc._rev = res.body.rev;
+                        return attachmentsAsArray(ctx, ctx.lastDoc._attachments);
+                    }
                 });
-        });
-    };
+        }).then(() => ctx.refresh());
+    }
 
     function attachmentsAsArray(ctx, att) {
         var r = [];
@@ -433,6 +445,7 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         for (var key in att) {
             r.push(att[key]);
             r[i].name = key;
+            r[i].filename = key;
             r[i].url = encodeURI(ctx.docUrl + '/' + key);
             i++;
         }
@@ -440,103 +453,137 @@ define(['src/util/versioning', 'superagent', 'src/util/lru'], function (Versioni
         return r;
     }
 
-    CouchdbAttachments.prototype.fetchList = CouchdbAttachments.prototype.refresh;
+    function getName(options) {
+        return options.name || options.filename;
+    }
+
     return CouchdbAttachments;
 });
 </pre>
-	</article>
+    </article>
 </section>
 
 
 
 
 
-				</div>
-
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Wed Sep 23rd 2015 using the <a
-			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
-		</span>
-				</footer>
-			</div>
-
-			
-			<br clear="both">
 		</div>
-
 	</div>
-	<!--<script src="scripts/sunlight.js"></script>-->
-	<script src="scripts/docstrap.lib.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
 
-	<script>
-		$( function () {
-			$( "[id*='$']" ).each( function () {
-				var $this = $( this );
+	<div class="clearfix"></div>
 
-				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-			} );
-
-			$( "#toc" ).toc( {
-				anchorName  : function ( i, heading, prefix ) {
-					return $( heading ).attr( "id" ) || ( prefix + i );
-				},
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : "100px"
-			} );
-
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-			$( '.dropdown-toggle' ).dropdown();
-//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
-			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
-				var $this = $( this );
-
-				var example = $this.find( "code" );
-				exampleText = example.html();
-				var lang = /{@lang (.*?)}/.exec( exampleText );
-				if ( lang && lang[1] ) {
-					exampleText = exampleText.replace( lang[0], "" );
-					example.html( exampleText );
-					lang = lang[1];
-				} else {
-					lang = "javascript";
-				}
-
-				if ( lang ) {
-
-					$this
-						.addClass( "sunlight-highlight-" + lang )
-						.addClass( "linenums" )
-						.html( example.html() );
-
-				}
-			} );
-
-			Sunlight.highlightAll( {
-				lineNumbers : true,
-				showMenu : true,
-				enableDoclinks : true
-			} );
-		} );
-	 </script>
-
-
-
-	<!--Navigation and Symbol Display-->
 	
 
+</div>
+</div>
 
-	<!--Google Analytics-->
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
+		on Wed Jun 8th 2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
 
 </body>
 </html>
