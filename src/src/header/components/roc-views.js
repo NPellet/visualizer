@@ -813,7 +813,6 @@ define([
                 return;
             }
             const view = node.data.view;
-            console.log(view)
             this.$title.text(view.title);
             this.$infoBox.html($('<p>').append(
                 `Name: <b>${_.escape(node.title)}</b><br>
