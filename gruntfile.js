@@ -368,7 +368,7 @@ module.exports = function (grunt) {
                 src: ['src/src/util/*'],
                 options: {
                     destination: 'doc',
-                    template: 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
+                    template: 'node_modules/ink-docstrap/template',
                     configure: 'doc.conf.json'
                 }
             }
