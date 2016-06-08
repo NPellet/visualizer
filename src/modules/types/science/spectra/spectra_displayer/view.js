@@ -156,7 +156,8 @@ define([
                         };
                     }
 
-                    if (cfgCheckbox('selectScatter', 'yes')) {
+                    const selectScatterPlugin = cfgCheckbox('selectScatter', 'yes');
+                    if (selectScatterPlugin) {
                         options.plugins.selectScatter = {};
                         options.pluginAction.selectScatter = {
                             shift: false,
@@ -174,6 +175,19 @@ define([
                                 this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
                                 this.module.controller.createDataFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
                             }
+                        });
+                    }
+
+                    if (selectScatterPlugin) {
+                        var plugin = graph.getPlugin('selectScatter');
+                        plugin.on('selectionEnd', selectedIndices => {
+                            const serie = plugin.serie;
+                            var result = [];
+                            var info = serie.infos;
+                            if (info) {
+                                result = selectedIndices.map(index => info[index]);
+                            }
+                            this.module.controller.onScatterSelection(result);
                         });
                     }
 
@@ -632,14 +646,6 @@ define([
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
                             plugin.setSerie(serie);
-                            plugin.on('selectionEnd', selectedIndices => {
-                                var result = [];
-                                var info = serie.infos;
-                                if (info) {
-                                    result = info.filter((value, index) => selectedIndices.indexOf(index) >= 0);
-                                }
-                                this.module.controller.onScatterSelection(result);
-                            });
                         }
                     } else {
                         var color = defaultStyle.lineColor || (data.length > 1 ? Color.getNextColorRGB(i, data.length) : null);
