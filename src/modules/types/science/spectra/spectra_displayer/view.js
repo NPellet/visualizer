@@ -28,6 +28,8 @@ define([
         xy: 'both'
     };
 
+    const svgDoctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+
     function View() {
     }
 
@@ -937,7 +939,25 @@ define([
 
             fullOut(value) {
                 this.fullOut(fullOutMap[String(value)]);
+            },
+
+            exportSVG() {
+                this.doSVGExport();
             }
+        },
+
+        doSVGExport() {
+            var svgStr = this.getSVGString();
+            if (svgStr) {
+                this.module.controller.exportSVG(svgStr);
+            }
+        },
+
+        getSVGString() {
+            var svg = this.dom.find('svg');
+            if (svg.length !== 1) return;
+            var serializer = new XMLSerializer();
+            return svgDoctype + serializer.serializeToString(svg[0]);
         },
 
         normalize(array, varname) {

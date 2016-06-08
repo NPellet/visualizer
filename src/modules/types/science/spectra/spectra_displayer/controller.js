@@ -54,6 +54,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             label: 'Tracking data',
             type: 'object'
         },
+        svgString: {
+            label: 'SVG string',
+            type: 'string'
+        },
         // input
         chart: {
             type: ['chart', 'object'],
@@ -147,6 +151,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         onSelectScatter: {
             label: 'Selection on a scatter plot',
             refVariable: ['selectedData']
+        },
+        onExportSVG: {
+            label: 'SVG is exported',
+            refAction: ['svgString']
         }
     };
 
@@ -160,7 +168,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         removeSerieByName: 'Remove a serie (name as input)',
         selectSerie: 'Select a serie',
         unselectSerie: 'Unselect a serie',
-        fullOut: 'Full zoom out (x, y or xy)'
+        fullOut: 'Full zoom out (x, y or xy)',
+        exportSVG: 'Export current state as SVG'
     };
 
     var axisFields = {
@@ -657,7 +666,11 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     };
 
     Controller.prototype.print = function () {
-        return this.module.view.graph._dom.innerHTML;
+        return this.module.view.getSVGString();
+    };
+    
+    Controller.prototype.exportSVG = function (svgStr) {
+        this.sendActionFromEvent('onExportSVG', 'svgString', svgStr);
     };
 
     return Controller;

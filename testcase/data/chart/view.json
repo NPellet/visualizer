@@ -3,71 +3,109 @@
 		{
 			"configuration": {
 				"sections": {
-					"axis": [
+					"graph": [
 						{
+							"sections": {},
 							"groups": {
-								"xAxis": [
+								"graph": [
 									{
-										"afterSpacing": [
-											null
-										],
-										"beforeSpacing": [
-											null
-										],
-										"checkboxes": [
-											[
-												"display"
-											]
-										],
-										"label": [
-											null
-										],
-										"max": [
-											null
-										],
-										"min": [
-											null
-										]
-									}
-								],
-								"yAxis": [
-									{
-										"afterSpacing": [
-											null
-										],
-										"beforeSpacing": [
-											null
-										],
-										"checkboxes": [
-											[]
-										],
-										"label": [
+										"url": [
 											""
 										],
-										"max": [
+										"zoom": [
+											"x"
+										],
+										"wheelAction": [
+											"none"
+										],
+										"wheelbaseline": [
+											0
+										],
+										"fullOut": [
+											"both"
+										],
+										"legend": [
 											null
 										],
-										"min": [
-											null
+										"legendOptions": [
+											[
+												"isSerieHideable",
+												"isSerieSelectable"
+											]
+										],
+										"mouseTracking": [
+											[]
+										],
+										"selectScatter": [
+											[]
+										],
+										"independantYZoom": [
+											[]
 										]
 									}
 								]
 							}
 						}
 					],
-					"graph": [
+					"axis": [
 						{
+							"sections": {},
 							"groups": {
-								"graph": [
+								"xAxis": [
 									{
-										"url": [
-											null
+										"checkboxes": [
+											[
+												"display"
+											]
 										],
-										"wheelAction": [
-											null
+										"label": [
+											""
 										],
-										"zoom": [
-											"x"
+										"beforeSpacing": [
+											"0"
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"axismodification": [
+											"none"
+										]
+									}
+								],
+								"yAxis": [
+									{
+										"checkboxes": [
+											[]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											"0"
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"fitToAxisOnFromTo": [
+											[]
 										]
 									}
 								]
@@ -76,11 +114,14 @@
 					],
 					"variables": [
 						{
+							"sections": {},
 							"groups": {
 								"variables": [
 									[
 										{
 											"variable": "simpleArray",
+											"axis": "0",
+											"adaptTo": "none",
 											"plotcolor": [
 												25,
 												240,
@@ -88,20 +129,25 @@
 												0.55
 											],
 											"strokewidth": "10",
+											"strokestyle": "1",
 											"plotcontinuous": "discrete",
 											"peakpicking": [],
 											"markers": [
 												"markers"
 											],
-											"normalize": null,
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
 											"optimizeSlots": [
 												"slots"
 											],
-											"markerShape": "1",
-											"markerSize": 2
+											"degrade": 0,
+											"monotoneous": []
 										},
 										{
 											"variable": "simpleArray2",
+											"axis": "0",
+											"adaptTo": "none",
 											"plotcolor": [
 												0,
 												0,
@@ -109,18 +155,23 @@
 												1
 											],
 											"strokewidth": "3",
+											"strokestyle": "1",
 											"plotcontinuous": "continuous",
 											"peakpicking": [],
 											"markers": [],
-											"normalize": null,
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
 											"optimizeSlots": [
 												"slots"
 											],
-											"markerShape": "1",
-											"markerSize": 2
+											"degrade": 0,
+											"monotoneous": []
 										},
 										{
 											"variable": "simpleArray3",
+											"axis": "0",
+											"adaptTo": "none",
 											"plotcolor": [
 												247,
 												6,
@@ -128,26 +179,30 @@
 												0.42
 											],
 											"strokewidth": "10",
+											"strokestyle": "1",
 											"plotcontinuous": "discrete",
 											"peakpicking": [],
 											"markers": [
 												"markers"
 											],
-											"normalize": null,
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
 											"optimizeSlots": [
 												"slots"
 											],
-											"markerShape": "1",
-											"markerSize": 2
+											"degrade": 0,
+											"monotoneous": []
 										}
 									]
 								]
 							}
 						}
 					]
-				}
+				},
+				"groups": {}
 			},
-			"id": 8,
+			"id": 1,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -164,24 +219,21 @@
 			],
 			"actions_in": [
 				{
-					"rel": null,
-					"name": null
+					"rel": "exportSVG",
+					"name": "svg"
 				}
 			],
 			"vars_out": [
 				{
-					"event": null,
-					"rel": null,
-					"jpath": null,
-					"name": null
+					"jpath": []
 				}
 			],
 			"actions_out": [
 				{
-					"event": null,
-					"rel": null,
-					"jpath": null,
-					"name": null
+					"event": "onExportSVG",
+					"rel": "svgString",
+					"jpath": [],
+					"name": "svgstr"
 				}
 			],
 			"url": "modules/types/science/spectra/spectra_displayer/",
@@ -193,8 +245,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 82,
-						"height": 35
+						"width": 82.01818180000001,
+						"height": 35.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -274,7 +326,7 @@
 					]
 				}
 			},
-			"id": 9,
+			"id": 2,
 			"vars_in": [
 				{
 					"rel": "list",
@@ -313,8 +365,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 42,
-						"height": 53
+						"width": 42.0181818,
+						"height": 53.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -377,6 +429,12 @@
 										],
 										"min": [
 											null
+										],
+										"nbTicksPrimary": [
+											null
+										],
+										"axismodification": [
+											null
 										]
 									}
 								],
@@ -399,6 +457,12 @@
 										],
 										"min": [
 											null
+										],
+										"nbTicksPrimary": [
+											null
+										],
+										"fitToAxisOnFromTo": [
+											null
 										]
 									}
 								]
@@ -417,6 +481,27 @@
 											null
 										],
 										"zoom": [
+											null
+										],
+										"wheelbaseline": [
+											null
+										],
+										"fullOut": [
+											null
+										],
+										"legend": [
+											null
+										],
+										"legendOptions": [
+											null
+										],
+										"mouseTracking": [
+											null
+										],
+										"selectScatter": [
+											null
+										],
+										"independantYZoom": [
 											null
 										]
 									}
@@ -478,7 +563,7 @@
 					]
 				}
 			},
-			"id": 10,
+			"id": 3,
 			"vars_in": [
 				{
 					"rel": "chart",
@@ -520,8 +605,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 82,
-						"height": 35
+						"width": 82.01818180000001,
+						"height": 35.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -715,7 +800,7 @@
 				},
 				"groups": {}
 			},
-			"id": 11,
+			"id": 4,
 			"vars_in": [
 				{
 					"rel": "chart",
@@ -749,8 +834,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 59,
-						"height": 40
+						"width": 59.0181818,
+						"height": 40.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -888,7 +973,7 @@
 					]
 				}
 			},
-			"id": 12,
+			"id": 5,
 			"vars_in": [
 				{
 					"rel": "xyArray",
@@ -926,8 +1011,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 59,
-						"height": 30
+						"width": 59.0181818,
+						"height": 30.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -1068,7 +1153,7 @@
 					]
 				}
 			},
-			"id": 13,
+			"id": 6,
 			"vars_in": [
 				{
 					"rel": "xArray",
@@ -1106,8 +1191,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 42,
-						"height": 17
+						"width": 42.0181818,
+						"height": 17.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -1181,7 +1266,7 @@
 					]
 				}
 			},
-			"id": 14,
+			"id": 7,
 			"vars_in": [
 				{
 					"rel": "value",
@@ -1219,8 +1304,8 @@
 						"right": 0
 					},
 					"size": {
-						"width": 16,
-						"height": 12
+						"width": 16.0181818,
+						"height": 12.0181818
 					},
 					"display": true,
 					"title": "Untitled module",
@@ -1236,6 +1321,201 @@
 				}
 			},
 			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"script": [
+								"this.sendAction('svg')"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 31.99857873916626,
+						"top": 73.99999885559082
+					},
+					"size": {
+						"width": 29.0181818,
+						"height": 12.0181818
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"script": [
+								"console.log(this.action)"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 64.99999780654908,
+						"top": 74.99999885559082
+					},
+					"size": {
+						"width": 29.0181818,
+						"height": 12.0181818
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 9,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{
+					"rel": "execute",
+					"name": "svgstr"
+				}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [],
 			"toolbar": {
 				"custom": [
 					[
@@ -1306,7 +1586,7 @@
 	"configuration": {
 		"title": "Chart demonstration"
 	},
-	"version": "2.54.2-0",
+	"version": "2.56.1-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
