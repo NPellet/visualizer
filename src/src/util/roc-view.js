@@ -62,6 +62,10 @@ define(['./util'], function (Util) {
             return this.content.title || '';
         }
 
+        get keywords() {
+            return this.content.keywords || [];
+        }
+
         get version() {
             return this.content.version || '0.0.0';
         }
@@ -144,6 +148,7 @@ define(['./util'], function (Util) {
             }
             this.content.title = view.title;
             this.content.version = view.version;
+            this.content.keywords = view.keywords;
             if (!this.view._attachments) {
                 this.view._attachments = {};
             }

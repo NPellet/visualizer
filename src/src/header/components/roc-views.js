@@ -319,6 +319,7 @@ define([
                 }
             });
 
+
             rightAccordion.append('<h3>View information</h3>');
             this.$infoBox = $('<div>').appendTo(rightAccordion);
 
@@ -334,6 +335,9 @@ define([
 
             rightAccordion.append('<h3>Permissions</h3>');
             this.$permissionsBox = $('<div>').appendTo(rightAccordion);
+
+            rightAccordion.append('<h3>Metadata</h3>');
+            this.$metaBox = $('<div>').appendTo(rightAccordion);
 
             var publicCheckbox = this.$publicCheckbox = $('<input type="checkbox" />').click(e => {
                 e.preventDefault();
@@ -805,9 +809,11 @@ define([
                 this.$infoBox.empty();
                 this.$revBox.empty();
                 this.$permissionsContainer.hide();
+                this.$metaBox.empty();
                 return;
             }
             const view = node.data.view;
+            console.log(view)
             this.$title.text(view.title);
             this.$infoBox.html($('<p>').append(
                 `Name: <b>${_.escape(node.title)}</b><br>
@@ -819,6 +825,10 @@ define([
                 Created on: ${view.creationDate.toLocaleString()}<br>
                 Last modified: ${view.modificationDate.toLocaleString()}<br>
                 Owner: ${view.owner}`
+            ));
+
+            this.$metaBox.html($('<p>').append(
+                `Keywords: <input type="text" value="${view.keywords ? view.keywords.join(', ') : '' }"/>`
             ));
             if (this.loadedNode && this.loadedNode !== this.activeNode) {
                 this.$infoBox.append('<br>');
@@ -902,7 +912,7 @@ define([
 
             const name = value[value.length - 1];
 
-            const view = getCurrentView();
+            const view = this.getCurrentView();
             const flavor = this.flavor;
             const doc = {
                 $kind: 'view',
@@ -963,7 +973,7 @@ define([
                         'Save': () => {
                             dialog.dialog('close');
                             this.showHide(true);
-                            theView.data.view.saveView(getCurrentView())
+                            theView.data.view.saveView(this.getCurrentView())
                                 .then(ok => {
                                     this.showHide(false);
                                     if (ok) {
@@ -1232,6 +1242,29 @@ define([
             };
             var dialog = UI.dialog(div, {buttons: {Add}});
         }
+
+        getKeywords() {
+            var $input = this.$metaBox.find('input');
+            if ($input[0]) {
+                return $input[0].value.split(',').map(val => val.trim()).filter(val => val);
+            }
+        }
+
+        getCurrentView() {
+            const view = Versioning.getView();
+            const json = Versioning.getViewJSON();
+            const title = (view.configuration ? view.configuration.title : '') || '';
+            const keywords = this.getKeywords();
+            return {
+                version: view.version,
+                title,
+                keywords,
+                attachment: {
+                    content_type: 'application/json',
+                    data: btoa(unescape(encodeURIComponent(json)))
+                }
+            };
+        }
     }
 
     return RocViewManager;
@@ -1272,19 +1305,5 @@ define([
         name = name.trim();
         if (/^[a-zA-Z0-9$_-]+$/.test(name)) return name;
         return false;
-    }
-
-    function getCurrentView() {
-        const view = Versioning.getView();
-        const json = Versioning.getViewJSON();
-        const title = (view.configuration ? view.configuration.title : '') || '';
-        return {
-            version: view.version,
-            title,
-            attachment: {
-                content_type: 'application/json',
-                data: btoa(unescape(encodeURIComponent(json)))
-            }
-        };
     }
 });
