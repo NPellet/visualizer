@@ -1,16 +1,16 @@
 'use strict';
 
 define([
-    'src/util/api',
-    'src/util/ui',
-    'src/util/util',
-    'superagent',
-    'uri/URI',
-    'lodash',
-    'src/util/couchdbAttachments',
-    'src/util/mimeTypes',
-    'src/util/IDBKeyValue'
-],
+        'src/util/api',
+        'src/util/ui',
+        'src/util/util',
+        'superagent',
+        'uri/URI',
+        'lodash',
+        'src/util/couchdbAttachments',
+        'src/util/mimeTypes',
+        'src/util/IDBKeyValue'
+    ],
     function (API, ui, Util, superagent, URI, _, CDB, mimeTypes, IDB) {
 
         const defaultOptions = {
@@ -30,7 +30,7 @@ define([
             }
         };
 
-        const getTypes = ['get', 'getAttachment', 'getView'];
+        const getTypes = ['get', 'getAttachment', 'getView', 'getQuery'];
 
         const messagesByType = {
             get: {
@@ -68,6 +68,10 @@ define([
             getView: {
                 401: 'Unauthorized to get view',
                 404: 'View does not exist'
+            },
+            getQuery: {
+                401: 'Unauthorized to get query',
+                404: 'Query does not exist'
             }
         };
 
@@ -110,12 +114,7 @@ define([
                 return this.__ready.then(() => {
                     options = createOptions(options, 'getView');
                     let requestUrl = new URI(`${this.databaseUrl}_view/${viewName}`);
-
-                    for (let i = 0; i < viewSearch.length; i++) {
-                        if (options[viewSearch[i]]) {
-                            requestUrl.addSearch(viewSearch[i], JSON.stringify(options[viewSearch[i]]));
-                        }
-                    }
+                    addSearch(requestUrl, options);
 
                     requestUrl = requestUrl.normalize().href();
 
@@ -127,15 +126,17 @@ define([
                                     res.body = res.body.filter(options.filter);
                                 }
                                 if (options.varName) {
-                                    this.variables[options.varName] = {
-                                        type: 'view',
-                                        requestUrl,
-                                        data: res.body
-                                    };
                                     for (var i = 0; i < res.body.length; i++) {
                                         this._typeUrl(res.body[i].$content, res.body[i]);
                                     }
                                     return API.createData(options.varName, res.body).then(data => {
+                                        this.variables[options.varName] = {
+                                            type: 'view',
+                                            options,
+                                            viewName,
+                                            requestUrl,
+                                            data: data
+                                        };
                                         for (var i = 0; i < data.length; i++) {
                                             data.traceSync([i]);
                                         }
@@ -150,17 +151,54 @@ define([
                 });
             }
 
+            query(viewName, options) {
+                return this.__ready.then(() => {
+                    options = createOptions(options, 'getQuery');
+                    let requestUrl = new URI(`${this.databaseUrl}_query/${viewName}`);
+                    addSearch(requestUrl, options);
+                    requestUrl = requestUrl.normalize().href();
+
+                    return superagent.get(requestUrl)
+                        .withCredentials()
+                        .then(res => {
+                            if (res && res.body && res.status == 200) {
+                                if (options.filter) {
+                                    res.body = res.body.filter(options.filter);
+                                }
+                                if (options.varName) {
+                                    for (var i = 0; i < res.body.length; i++) {
+                                        this._typeUrl(res.body[i]);
+                                    }
+                                    return API.createData(options.varName, res.body).then(data => {
+                                        this.variables[options.varName] = {
+                                            type: 'query',
+                                            options,
+                                            requestUrl,
+                                            viewName,
+                                            data: data
+                                        };
+                                        return data;
+                                    })
+                                }
+                            }
+                            return res.body;
+                        })
+                        .then(handleSuccess(this, options))
+                        .catch(handleError(this, options));
+                });
+            }
+
             document(uuid, options) {
                 return this.get(uuid).then(doc => {
                     if (!doc) return;
                     if (options.varName) {
-                        this.variables[options.varName] = {
-                            type: 'document',
-                            data: doc
-                        };
                         this._typeUrl(doc.$content, doc);
                         var idb = new IDB('roc-documents');
                         return API.createData(options.varName, doc).then(data => {
+                            this.variables[options.varName] = {
+                                type: 'document',
+                                data: data
+                            };
                             data.onChange(() => {
                                 idb.set(data._id, data.resurrect());
                             });
@@ -243,6 +281,8 @@ define([
                                         v.data.push(entry);
                                         v.data.traceSync([idx]);
                                         v.data.triggerChange();
+                                    } else if (v.type === 'query') {
+                                        this.query(v.viewName, v.options);
                                     }
                                 }
                                 return entry;
@@ -347,22 +387,22 @@ define([
                     }
 
                     return prom.then(filename => {
-                        if (filename) attachment.filename = filename;
-                        if (!attachment.filename) {
-                            return;
-                        }
+                            if (filename) attachment.filename = filename;
+                            if (!attachment.filename) {
+                                return;
+                            }
 
-                        attachment.filename = this.processor.getFilename(type, attachment.filename);
+                            attachment.filename = this.processor.getFilename(type, attachment.filename);
 
                             // If we had to ask for a filename, resolve content type
-                        var fallback;
-                        if (filename) {
-                            fallback = attachment.contentType;
-                            attachment.contentType = undefined;
-                        }
-                        setContentType(attachment, fallback);
+                            var fallback;
+                            if (filename) {
+                                fallback = attachment.contentType;
+                                attachment.contentType = undefined;
+                            }
+                            setContentType(attachment, fallback);
 
-                        return this.get(entry, {fromCache: true})
+                            return this.get(entry, {fromCache: true})
                                 .then(entry => {
                                     return this.addAttachment(entry, attachment, createOptions(options, 'addAttachment'))
                                         .then(entry => {
@@ -373,9 +413,9 @@ define([
                                             this._typeUrl(entry.$content, entry);
                                             entry.triggerChange();
                                             return entry;
-                                        });
-                                });
-                    })
+                                        })
+                                })
+                        })
                         .then(handleSuccess(this, attachOptions))
                         .catch(handleError(this, attachOptions));
                 });
@@ -449,7 +489,7 @@ define([
                                         entry.$modificationDate = data.$modificationDate;
                                         entry.triggerChange();
                                         return entry;
-                                    });
+                                    })
                             })
                             .then(handleSuccess(this, options))
                             .catch(handleError(this, options));
@@ -544,8 +584,12 @@ define([
                 if (!this.variables[key]) return -1;
                 if (this.variables[key].type === 'document') {
                     return -1;
+                } else if (this.variables[key].type === 'view') {
+                    return this.variables[key].data.findIndex(entry => String(entry._id) === String(uuid));
+                } else if (this.variables[key].type === 'query') {
+                    return this.variables[key].data.findIndex(entry => String(entry.id) === String(uuid));
                 }
-                return this.variables[key].data.findIndex(entry => String(entry._id) === String(uuid));
+                return -1;
             }
 
             _updateByUuid(uuid, data) {
@@ -566,6 +610,12 @@ define([
                             this._typeUrl(data.$content, data);
                             let doc = this.variables[key].data;
                             this._updateDocument(doc, data);
+                        }
+                    } else if (this.variables[key].type === 'query' && this.queryAutoRefresh) {
+                        const idx = this._findIndexByUuid(uuid, key);
+                        if (idx !== -1) {
+                            // Redo the same query
+                            this.query(this.variables[key].viewName, this.variables[key].options);
                         }
                     }
                 }
@@ -616,7 +666,8 @@ define([
                 this._traverseFilename(v, function (v) {
                     if (typeof filename === 'undefined') {
                         r.push(v);
-                    } else if (filename.indexOf(String(v.filename)) !== -1) {
+                    }
+                    else if (filename.indexOf(String(v.filename)) !== -1) {
                         r.push(v);
                     }
                 });
@@ -656,7 +707,7 @@ define([
                         type: vtype
                     };
                     v.data[prop] = `${this.entryUrl}/${entry._id}/${v.filename}`;
-                });
+                })
             }
         }
 
@@ -737,7 +788,15 @@ define([
             }
 
             // Ideally jcamp extensions should be handled by mime-types
-            attachment.contentType = mimeTypes.lookup(filename) || fallback;
+            attachment.contentType = mimeTypes.lookup(filename, fallback) || fallback;
+        }
+
+        function addSearch(requestUrl, options) {
+            for (let i = 0; i < viewSearch.length; i++) {
+                if (options[viewSearch[i]]) {
+                    requestUrl.addSearch(viewSearch[i], JSON.stringify(options[viewSearch[i]]));
+                }
+            }
         }
 
         const typeValue = ['gif', 'tiff', 'jpeg', 'jpg', 'png'];
