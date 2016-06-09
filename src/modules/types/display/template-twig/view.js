@@ -19,6 +19,15 @@ define([
                 'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'initial' : 'none'
             });
 
+            var submit = this.submit.bind(this);
+
+            this.dom.on('input', 'input,textarea', submit);
+            this.dom.on('submit', 'form', function (e) {
+                submit('submit');
+                e.preventDefault();
+            });
+            this.dom.on('change', 'input', submit);
+
             this._values = new DataObject();
             this.template = Twig.twig({
                 data: this.module.getConfiguration('template')
@@ -38,6 +47,35 @@ define([
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
             this.render();
+        },
+        submit: function (type) {
+            var inputs = this.dom.find('input,textarea');
+            var out = inputs.map(function () {
+                const {name, value, type} = this;
+                return {name, value, type, dom: this};
+            }).toArray().filter(o => {
+                if (!o.name) return false;
+                if (o.type === 'radio' && !o.dom.checked) return false;
+                return true;
+            });
+
+            out.forEach(o => {
+                switch (o.type) {
+                    case 'number':
+                    case 'range':
+                        o.value = +o.value;
+                        break;
+                    case 'checkbox':
+                        o.value = o.dom.checked;
+                        break;
+                }
+            });
+
+            if (type === 'submit') {
+                this.module.controller.onFormSubmitted(out);
+            } else {
+                this.module.controller.onFormChanged(out);
+            }
         },
         update: {
             value: function (value, name) {
