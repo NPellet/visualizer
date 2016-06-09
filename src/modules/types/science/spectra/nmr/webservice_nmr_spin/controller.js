@@ -32,6 +32,7 @@ define([
 
         var name, res, i, j;
         for (i = 0; i < data.length; i++) {
+            if (isNaN(data[i].value)) throw new Error('not a number');
             name = data[i].name;
             if (res = regDelta.exec(name)) {
                 chemicalShifts[res[1]] = +data[i].value;
