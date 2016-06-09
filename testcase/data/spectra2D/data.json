@@ -100,15 +100,18 @@
     "_options": {
       "nbContourLevels": 10,
       "noiseMultiplier": 2
-    }
+    },
+    "timeout": 3600
   },
   "hsqc": {
     "type": "jcamp",
-    "url": "../testcase/data/spectra2D/hsqc.jdx"
+    "url": "../testcase/data/spectra2D/hsqc.jdx",
+    "timeout": 3600
   },
   "hmbc": {
     "type": "jcamp",
-    "url": "../testcase/data/spectra2D/hmbc.jdx"
+    "url": "../testcase/data/spectra2D/hmbc.jdx",
+    "timeout": 3600
   },
   "_saved": 1370241743563,
   "cosyLabels": [
@@ -170,7 +173,8 @@
   "_viewFilename": "Demo/peakpicking/.views/Master/1370196452998.json",
   "h1": {
     "type": "jcamp",
-    "url": "../testcase/data/spectra2D/1h.jdx"
+    "url": "../testcase/data/spectra2D/1h.jdx",
+    "timeout": 3600
   }
 }
 
