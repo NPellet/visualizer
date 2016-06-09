@@ -75,7 +75,7 @@ define([
                             left: false
                         },
                         plugins: {},
-                        pluginAction: {}
+                        mouseActions: []
                     };
 
                     var zoom = cfg('zoom');
@@ -93,35 +93,31 @@ define([
                         }
                         options.plugins['zoom'] = zoomOptions;
                         options.plugins['drag'] = {};
-                        options.pluginAction['zoom'] = {
+                        options.mouseActions.push({
+                            plugin: 'zoom',
                             shift: false,
                             ctrl: false
-                        };
-                        options.pluginAction['drag'] = {
+                        });
+                        options.mouseActions.push({
+                            plugin: 'drag',
                             shift: true,
                             ctrl: false
-                        };
-
-                        /*
-                         // UPDATE NORMAN FOR DEV
-
-                         options.plugins['shape'] = { type: 'rangex', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
-
-                         options.pluginAction[ 'zoom'] = {};
-                         options.pluginAction[ 'drag'] = {};
-                         options.pluginAction[ 'shape'] = { shift: true, ctrl: false };
-
-                         // END UPDATE NORMAN FOR DEV
-
-                         */
-
-                        options.dblclick = {
-                            type: 'plugin',
+                        });
+                        options.mouseActions.push({
                             plugin: 'zoom',
+                            type: 'dblclick',
                             options: {
                                 mode: 'total'
                             }
-                        };
+                        });
+                        options.mouseActions.push({
+                            plugin: 'zoom',
+                            type: 'dblclick',
+                            shift: true,
+                            options: {
+                                mode: 'gradualXY'
+                            }
+                        });
                     }
 
                     var wheel = cfg('wheelAction');
@@ -136,11 +132,11 @@ define([
                             wheelOptions.direction = 'y';
                         }
 
-                        options.wheel = {
-                            type: 'plugin',
+                        options.mouseActions.push({
                             plugin: 'zoom',
+                            type: 'mousewheel',
                             options: wheelOptions
-                        };
+                        });
 
                         if (!options.plugins.zoom) {
                             options.plugins.zoom = {};
@@ -159,11 +155,10 @@ define([
                     const selectScatterPlugin = cfgCheckbox('selectScatter', 'yes');
                     if (selectScatterPlugin) {
                         options.plugins.selectScatter = {};
-                        options.pluginAction.selectScatter = {
-                            shift: false,
-                            ctrl: false,
+                        options.mouseActions.push({
+                            plugin: 'selectScatter',
                             alt: true
-                        };
+                        });
                     }
 
                     var graph = new Graph(this.dom.get(0), options);
