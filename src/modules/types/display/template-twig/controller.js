@@ -29,7 +29,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
             type: 'string'
         },
         form: {
-            label: 'Output form'
+            label: 'form object'
         }
     };
 
@@ -51,7 +51,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['value', 'tpl'];
+    Controller.prototype.variablesIn = ['value', 'tpl', 'form'];
 
     Controller.prototype.configurationStructure = function () {
         return {

@@ -12,7 +12,7 @@ define([
 
     $.extend(true, View.prototype, Default, {
         init: function () {
-
+            this.getForm();
             this.dom = $('<div>').css({
                 height: '100%',
                 width: '100%',
@@ -41,22 +41,77 @@ define([
                 this.template = Twig.twig({
                     data: ''
                 });
+            },
+            form: function () {
+
             }
         },
         inDom: function () {
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
-            this.render();
+            this.render(() => {
+                this.resetForm();
+            });
         },
-        submit: function (type) {
+
+        rerender() {
+            this.getForm();
+            this.render(() => {
+                this.resetForm();
+            });
+        },
+
+        setElement(el, value) {
+            switch (el.type) {
+                case 'checkbox':
+                    $(el).attr('checked', value);
+                    break;
+                case 'radio':
+                    var name = el.name;
+                    this.dom.find(`input[name="${name}"]`).each(function () {
+                        this.checked = false;
+                    });
+                    this.dom.find(`input[value="${value}"]`).each(function () {
+                        this.checked = true;
+                    });
+                    break;
+                default:
+                    $(el).attr('value', value);
+                    break;
+            }
+        },
+
+        resetForm() {
+            var form = this.currentForm;
+            if (!form || !this.dom) return;
+            for (let i = 0; i < form.length; i++) {
+                var $el = this.dom.find(`input[name="${form[i].name}"]`);
+                var el = $el[0];
+                if (!el) continue;
+                this.setElement(el, form[i].value);
+            }
+        },
+
+        setForm(data) {
+            if (!data) data = this.currentForm;
+            if (!data) return;
+
+
+        },
+
+        setStyle(style) {
+
+        },
+
+        getForm() {
+            if (!this.dom) return;
             var inputs = this.dom.find('input,textarea');
             var out = inputs.map(function () {
                 const {name, value, type} = this;
                 return {name, value, type, dom: this};
             }).toArray().filter(o => {
                 if (!o.name) return false;
-                if (o.type === 'radio' && !o.dom.checked) return false;
-                return true;
+                return (o.type !== 'radio' || o.dom.checked);
             });
 
             out.forEach(o => {
@@ -70,6 +125,13 @@ define([
                         break;
                 }
             });
+
+            this.currentForm = out;
+            return out;
+        },
+
+        submit: function (type) {
+            var out = this.getForm();
 
             if (type === 'submit') {
                 this.module.controller.onFormSubmitted(out);
@@ -85,7 +147,7 @@ define([
                  and the values need to be native)
                  */
                 this._values[name] = value.resurrect();
-                this.render();
+                this.rerender();
             },
             tpl: function (value) {
                 var tpl = value.get().toString();
@@ -93,21 +155,63 @@ define([
                     this.template = Twig.twig({
                         data: tpl
                     });
-                    this.render();
+                    this.rerender();
                 } catch (e) {
                     Debug.info('Problem with template: ' + e);
                 }
+            },
+
+            form: function (value) {
+                this.formObject = value;
+                this.fillForm();
             }
         },
-        render: function () {
+
+        fillForm: function () {
+            // Search for leaf properties
+            var form = this.getForm();
+            for (let i = 0; i < form.length; i++) {
+                var fillWith = this.formObject.getChildSync(form[i].name.split('.'));
+                fillWith = fillWith || null;
+                this.setElement(form[i].dom, fillWith);
+            }
+            this.submit();
+        },
+
+        render: function (cb) {
             var that = this;
             var render = this.template.renderAsync(this._values);
             this.dom.html(render.html);
-            render.render().then(function () {
+            return render.render().then(function () {
+                if (cb) cb();
+                that.setStyle();
                 that.module.controller.onRendered(that.dom.html());
             });
         }
     });
+
+    function getLeafProperties(obj, jpath) {
+        jpath = jpath || [];
+        var type = DataObject.getType(obj);
+        if (type === 'array') {
+
+        } else if (type === 'object') {
+
+        } else { // leaf
+
+        }
+        for (var key in obj) {
+            var el = obj[key];
+            if (el instanceof Array) {
+                for (let i = 0; i < el.length; i++) {
+                    getLeafProperties(obj, jpath);
+                }
+            }
+            else if (el instanceof Object) {
+
+            }
+        }
+    }
 
     return View;
 
