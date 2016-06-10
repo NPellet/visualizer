@@ -217,29 +217,6 @@ define([
         }
     });
 
-    function getLeafProperties(obj, jpath) {
-        jpath = jpath || [];
-        var type = DataObject.getType(obj);
-        if (type === 'array') {
-
-        } else if (type === 'object') {
-
-        } else { // leaf
-
-        }
-        for (var key in obj) {
-            var el = obj[key];
-            if (el instanceof Array) {
-                for (let i = 0; i < el.length; i++) {
-                    getLeafProperties(obj, jpath);
-                }
-            }
-            else if (el instanceof Object) {
-
-            }
-        }
-    }
-
     return View;
 
 });

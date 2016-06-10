@@ -1133,7 +1133,7 @@ define([
 
         blank: {
             list: function (varname) {
-                console.log('blank')
+                console.log('blank');
                 this.$container.html('');
             },
             script: function (varname) {
