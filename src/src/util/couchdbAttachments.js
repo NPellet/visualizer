@@ -251,7 +251,7 @@ define([
                     .then(res => {
                         if (options.raw) return res.text;
                         else if (options.responseType === 'blob') return res.xhr.response;
-                        return res.body;
+                        return res.body || res.text;
                     });
             });
         }
