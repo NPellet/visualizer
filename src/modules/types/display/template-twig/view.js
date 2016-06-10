@@ -26,7 +26,7 @@ define([
                 submit('submit');
                 e.preventDefault();
             });
-            this.dom.on('change', 'input', submit);
+            this.dom.on('change', 'input,select', submit);
 
             this._values = new DataObject();
             this.template = Twig.twig({
@@ -111,7 +111,7 @@ define([
 
             for (let i = 0; i < style.length; i++) {
                 if (style[i].input) {
-                    var selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"]`;
+                    var selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"],select[name="${style[i].input}"]`;
                 } else {
                     selector = style[i].selector;
                 }
@@ -127,7 +127,7 @@ define([
 
         getForm() {
             if (!this.dom) return;
-            var inputs = this.dom.find('input,textarea');
+            var inputs = this.dom.find('input,textarea,select');
             var out = inputs.map(function () {
                 const {name, value, type} = this;
                 return {name, value, type, dom: this};
