@@ -4,8 +4,9 @@ define([
     'jquery',
     'modules/default/defaultview',
     'lib/twigjs/twig',
-    'src/util/debug'
-], function ($, Default, Twig, Debug) {
+    'src/util/debug',
+    'lodash'
+], function ($, Default, Twig, Debug, _) {
 
     function View() {
     }
@@ -19,7 +20,13 @@ define([
                 'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'initial' : 'none'
             });
 
-            var submit = this.submit.bind(this);
+            var debouncing = this.module.getConfiguration('debouncing');
+            if (debouncing) {
+                var submit = _.debounce(this.submit, debouncing).bind(this);
+            } else {
+                submit = this.submit.bind(this);
+            }
+
 
             this.dom.on('input', 'input,textarea', submit);
             this.dom.on('submit', 'form', function (e) {

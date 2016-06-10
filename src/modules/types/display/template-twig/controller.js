@@ -83,6 +83,11 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                             options: {
                                 yes: 'Yes'
                             }
+                        },
+                        debouncing: {
+                            type: 'float',
+                            title: 'Debouncing',
+                            default: 0
                         }
                     }
                 }
@@ -93,7 +98,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     Controller.prototype.configAliases = {
         template: ['groups', 'group', 0, 'template', 0],
         selectable: ['groups', 'group', 0, 'selectable', 0],
-        modifyInForm: ['groups', 'group', 0, 'modifyInForm', 0]
+        modifyInForm: ['groups', 'group', 0, 'modifyInForm', 0],
+        debouncing: ['groups', 'group', 0, 'debouncing', 0]
     };
 
     Controller.prototype.onRendered = function (renderedHtml) {
