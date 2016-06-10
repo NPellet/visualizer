@@ -102,8 +102,27 @@ define([
 
         },
 
-        setStyle(style) {
+        setStyle() {
+            var style = this.styleObject;
+            if (!style) return;
+            if (!(style instanceof Array)) {
+                style = [style];
+            }
 
+            for (let i = 0; i < style.length; i++) {
+                if (style[i].input) {
+                    var selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"]`;
+                } else {
+                    selector = style[i].selector;
+                }
+                var $el = this.dom.find(selector);
+                if (style[i].attributes) {
+                    $el.attr(style[i].attributes);
+                }
+                if (style[i].style) {
+                    $el.css(style[i].style);
+                }
+            }
         },
 
         getForm() {
@@ -167,6 +186,11 @@ define([
             form: function (value) {
                 this.formObject = value;
                 this.fillForm();
+            },
+
+            style: function (value) {
+                this.styleObject = value.resurrect();
+                this.rerender();
             }
         },
 

@@ -30,6 +30,9 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         },
         form: {
             label: 'form object'
+        },
+        style: {
+            label: 'Style object'
         }
     };
 
@@ -51,7 +54,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['value', 'tpl', 'form'];
+    Controller.prototype.variablesIn = ['value', 'tpl', 'form', 'style'];
 
     Controller.prototype.configurationStructure = function () {
         return {
