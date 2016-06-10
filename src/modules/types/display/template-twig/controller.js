@@ -73,6 +73,13 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                             title: 'Template',
                             mode: 'html',
                             'default': ''
+                        },
+                        modifyInForm: {
+                            type: 'checkbox',
+                            title: 'Modify form in',
+                            options: {
+                                yes: 'Yes'
+                            }
                         }
                     }
                 }
@@ -82,7 +89,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
     Controller.prototype.configAliases = {
         template: ['groups', 'group', 0, 'template', 0],
-        selectable: ['groups', 'group', 0, 'selectable', 0]
+        selectable: ['groups', 'group', 0, 'selectable', 0],
+        modifyInForm: ['groups', 'group', 0, 'modifyInForm', 0]
     };
 
     Controller.prototype.onRendered = function (renderedHtml) {
@@ -99,12 +107,17 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         this._doForm('onFormSubmitted', out);
     };
 
+
     Controller.prototype._doForm = function (event, out) {
         var obj = new DataObject();
 
         for (let i = 0; i < out.length; i++) {
             obj.setChildSync(out[i].name.split('.'), out[i].value);
-            this.createDataFromEvent(event, 'form', obj);
+        }
+        this.createDataFromEvent(event, 'form', obj);
+
+        if (this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
+            this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(obj)), this.module.getId());
         }
     };
 

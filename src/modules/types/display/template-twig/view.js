@@ -64,8 +64,10 @@ define([
         setElement(el, value) {
             switch (el.type) {
                 case 'checkbox':
-                    $(el).attr('checked', value);
+                    // $(el).attr('checked', value);
+                    el.checked = value;
                     break;
+
                 case 'radio':
                     var name = el.name;
                     this.dom.find(`input[name="${name}"]`).each(function () {
@@ -76,7 +78,8 @@ define([
                     });
                     break;
                 default:
-                    $(el).attr('value', value);
+                    // $(el).attr('value', value);
+                    el.value = value;
                     break;
             }
         },
