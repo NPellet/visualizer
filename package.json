@@ -11,7 +11,7 @@
     "build": "grunt build --clean-images",
     "eslint": "eslint src",
     "eslint-fix": "eslint src --fix",
-    "install-components": "bower install --quiet --config.interactive=false --allow-root",
+    "install-components": "bower install --quiet --config.interactive=false",
     "install-browserified": "grunt browserify",
     "postinstall": "npm run install-components && npm run install-browserified",
     "prerelease": "grunt bump:prerelease",
