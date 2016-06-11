@@ -60,7 +60,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         // input
         chart: {
-            type: ['chart', 'object'],
+            type: ['chart', 'object', 'array'],
             label: 'Chart object'
         },
         xArray: {
