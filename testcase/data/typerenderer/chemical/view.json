@@ -1,5 +1,5 @@
 {
-  "version": "2.55.0",
+  "version": "2.56.1-0",
   "modules": [
     {
       "url": "modules/types/display/single_value/",
@@ -57,8 +57,8 @@
             "top": 15
           },
           "size": {
-            "width": 22,
-            "height": 16
+            "width": 22.04,
+            "height": 16.04
           },
           "zIndex": 0,
           "display": true,
@@ -230,7 +230,7 @@
                 "new"
               ],
               "storedObject": [
-                "{\"type\":\"mf\",\"value\":\"C10H12O3\"}"
+                "{\"type\":\"mf\",\"value\":\"[13C]C++H10O3NO2CO3--\"}"
               ]
             }
           ]
@@ -260,8 +260,8 @@
             "right": 0
           },
           "size": {
-            "width": 48,
-            "height": 14
+            "width": 48.04,
+            "height": 14.040000000000001
           },
           "display": true,
           "title": "A molecular formula",
@@ -354,8 +354,8 @@
             "right": 0
           },
           "size": {
-            "width": 48,
-            "height": 16
+            "width": 48.04,
+            "height": 16.04
           },
           "display": true,
           "title": "A SMILES",
@@ -448,8 +448,8 @@
             "right": 0
           },
           "size": {
-            "width": 48,
-            "height": 19
+            "width": 48.04,
+            "height": 19.04
           },
           "display": true,
           "title": "A molfile with 2D coordinates",
@@ -542,8 +542,8 @@
             "right": 0
           },
           "size": {
-            "width": 48,
-            "height": 19
+            "width": 48.04,
+            "height": 19.04
           },
           "display": true,
           "title": "A molfile with 3D coordinates",
@@ -588,6 +588,15 @@
         "groups": {
           "group": [
             {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
               "defaultvalue": [
                 null
               ],
@@ -603,13 +612,19 @@
                 ]
               ],
               "fontsize": [
-                null
+                "14pt"
               ],
               "align": [
-                null
+                "center"
               ],
               "valign": [
-                null
+                "middle"
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
               ],
               "sprintf": [
                 null
@@ -619,12 +634,6 @@
               ],
               "preformatted": [
                 []
-              ],
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
               ]
             }
           ]
@@ -637,8 +646,8 @@
             "top": 0
           },
           "size": {
-            "width": 22,
-            "height": 14
+            "width": 22.04,
+            "height": 14.040000000000001
           },
           "zIndex": 0,
           "display": true,
@@ -745,8 +754,8 @@
             "top": 32
           },
           "size": {
-            "width": 22,
-            "height": 19
+            "width": 22.04,
+            "height": 19.04
           },
           "zIndex": 0,
           "display": true,
@@ -853,8 +862,8 @@
             "top": 52
           },
           "size": {
-            "width": 22,
-            "height": 19
+            "width": 22.04,
+            "height": 19.04
           },
           "zIndex": 0,
           "display": true,
@@ -960,8 +969,8 @@
             "right": 0
           },
           "size": {
-            "width": 48,
-            "height": 19
+            "width": 48.04,
+            "height": 19.04
           },
           "display": true,
           "title": "A PDB coming from a URL",
@@ -1055,8 +1064,8 @@
             "top": 72
           },
           "size": {
-            "width": 22,
-            "height": 19
+            "width": 22.04,
+            "height": 19.04
           },
           "zIndex": 0,
           "display": true,
@@ -1131,8 +1140,8 @@
             "top": 40
           },
           "size": {
-            "width": 62,
-            "height": 42
+            "width": 62.04,
+            "height": 42.04
           },
           "zIndex": 0,
           "display": true,
@@ -1256,8 +1265,8 @@
             "top": 0
           },
           "size": {
-            "width": 62,
-            "height": 39
+            "width": 62.04,
+            "height": 39.04
           },
           "zIndex": 0,
           "display": true,

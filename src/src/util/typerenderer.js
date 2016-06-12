@@ -293,6 +293,17 @@ define([
     functions.mf = {};
     functions.mf.toscreen = function ($element, value) {
         if (value) {
+            // need to deal with charge in parenthesis
+
+
+            value = value.replace(/\(([0-9+-]+)\)/g, function (match) {
+                var number=match.replace(/[^0-9]/g,'')*1;
+                var charge=match.replace(/[\(\)0-9]/g,'');
+                return charge.repeat(number);
+            });
+
+
+            // need to deal with isotopes
             value = value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>');
 
             // replace number following parenthesis or letter
@@ -317,7 +328,8 @@ define([
             });
 
             // overlap sub and sup
-            value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g, '<span style="position: relative;"><span style="position: absolute; left:0; font-size: smaller"><sup style="position: relative; vertical-align: baseline; top: -0.4em;">$2</sup></span><span style="position: absolute; left:0; font-size: smaller"><sub style="position: relative; vertical-align: baseline; top: 0.6em;">$1</sub></span></span>&nbsp;');
+            value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g,
+                '<span style="position: relative; font-size: 80%; vertical-align: baseline;"><sup style="position: absolute; top: -0.6em;">$2</sup><sub style="position: absolute; left: 0; top: 0.5em;">$1</sub></span></span>&nbsp;');
 
             $element.html(value);
         } else {
