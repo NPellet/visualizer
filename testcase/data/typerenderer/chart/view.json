@@ -1,5 +1,5 @@
 {
-  "version": "2.39.1-0",
+  "version": "2.56.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -65,7 +65,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 1,
       "vars_in": [
         {}
       ],
@@ -81,7 +81,28 @@
         }
       ],
       "title": "",
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/display/single_value/",
@@ -133,6 +154,9 @@
               ],
               "preformatted": [
                 []
+              ],
+              "forceType": [
+                null
               ]
             }
           ]
@@ -145,8 +169,8 @@
             "top": 0
           },
           "size": {
-            "width": 94,
-            "height": 80
+            "width": 38,
+            "height": 58
           },
           "zIndex": 0,
           "display": true,
@@ -162,7 +186,7 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 2,
       "vars_in": [
         {
           "rel": "value",
@@ -174,7 +198,28 @@
       ],
       "title": "",
       "vars_out": [],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -274,7 +319,7 @@
           },
           "size": {
             "width": 78,
-            "height": 107
+            "height": 58
           },
           "zIndex": 0,
           "display": true,
@@ -290,7 +335,7 @@
           "name": "Default layer"
         }
       },
-      "id": 6,
+      "id": 3,
       "vars_in": [
         {
           "rel": "list",
@@ -315,8 +360,119 @@
         {
           "jpath": []
         }
-      ]
-    }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/display/template-twig/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "selectable": [
+                []
+              ],
+              "template": [
+                "<div width=500, height:500>{{rendertype(val,'chart')}}</div>"
+              ],
+              "modifyInForm": [
+                []
+              ],
+              "debouncing": [
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 52,
+            "top": 59
+          },
+          "size": {
+            "width": 78,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "val"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }variables
+    }varname
   ],
   "variables": [
     {
