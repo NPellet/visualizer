@@ -179,7 +179,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash',
         var saveInView = formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
         var vars_in = formValue.vars_in[0].groups.group[0];
         var output = formValue.module_specific_config[0].groups.group[0].output[0];
-        if (saveInView && output !== 'modify') {
+        if (saveInView && output !== 'modified') {
             Debug.warn('onde: if save in view is activated you probably want to modify var in');
         }
         var varin = vars_in.filter(function (v) {
