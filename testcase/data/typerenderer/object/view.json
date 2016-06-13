@@ -1,5 +1,5 @@
 {
-  "version": "2.37.1-0",
+  "version": "2.56.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -35,7 +35,13 @@
                 "new"
               ],
               "storedObject": [
-                "[{\"a\":1,\"b\":{\"type\":\"object\",\"value\":{\"test\":1234},\"_options\":{\"twig\":\"line <br><b>{{test}}</b><br> efg\"}}},{\"a\":2,\"b\":{}}]"
+                "[{\"a\":1,\"b\":{\"type\":\"object\",\"value\":{\"test\":1234},\"_options\":{\"twig\":\"line <br><b>{{test}}</b><br> efg\"}}},{\"a\":2,\"b\":{}},{\"a\":3,\"b\":{\"type\":\"latex\",\"value\":\"c = \\\\pm\\\\sqrt{a^2 + b^2}\"}}]"
+              ],
+              "searchBox": [
+                null
+              ],
+              "sendButton": [
+                null
               ]
             }
           ]
@@ -44,12 +50,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 66,
-            "top": 26
+            "left": 0,
+            "top": 0
           },
           "size": {
-            "width": 45,
-            "height": 35
+            "width": 44.9666666,
+            "height": 34.9666666
           },
           "zIndex": 0,
           "display": true,
@@ -81,7 +87,28 @@
         }
       ],
       "title": "",
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -153,12 +180,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 114,
-            "top": 26
+            "left": 47,
+            "top": 0
           },
           "size": {
-            "width": 73,
-            "height": 35
+            "width": 72.9666666,
+            "height": 34.9666666
           },
           "zIndex": 0,
           "display": true,
@@ -194,13 +221,274 @@
         {
           "jpath": []
         }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                [
+                  "yes"
+                ]
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                "18pt"
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                "latex"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 36
+          },
+          "size": {
+            "width": 44.9666666,
+            "height": 11.9666666
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "oneValue"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [],
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "variables": [
+    {
+      "jpath": [
+        ""
       ]
     }
   ],
-  "variables": [],
-  "aliases": [],
-  "pouchvariables": [],
+  "aliases": [
+    {}
+  ],
+  "pouchvariables": [
+    {}
+  ],
   "configuration": {
     "title": "No title"
-  }
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "couch_replication": [
+    {
+      "sections": {},
+      "groups": {
+        "couch": [
+          [
+            {
+              "direction": "both",
+              "continuous": []
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              "API.createData('oneValue','f(x) = \\\\int_{-\\\\infty}^\\\\infty\\\\hat f(\\\\xi)\\\\,e^{2 \\\\pi i \\\\xi x}\\\\,d\\\\xi');\n"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
 }
