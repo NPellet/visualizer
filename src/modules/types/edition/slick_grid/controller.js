@@ -43,7 +43,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 autoFocus: 'Auto Focus',
                                 rowNumbering: 'Show row number when scrolling',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
-                                filterColumns: 'Provides search input for each column',
+                                filterColumns: 'Enable search header',
                                 backToTop: 'Don\'t remember scroll position on new variable',
                                 forgetLastActive: 'Don\'t scroll back to last active row on new variable',
                                 highlightScroll: 'Scroll to highlighted line',
@@ -56,9 +56,9 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             type: 'checkbox',
                             title: 'Auto Columns',
                             options: {
-                                remove: 'Column for one-click removal of a line',
-                                select: 'Column for easy selection of lines',
-                                reorder: 'Column for reordering lines by drag and drop'
+                                remove: 'Remove line',
+                                select: 'Select line',
+                                reorder: 'Reorder'
                             },
                             default: []
                         },
