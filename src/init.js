@@ -15,6 +15,7 @@
 require.config({
     waitSeconds: 0,
     paths: {
+        katex: 'lib/katex/katex.min',
         mathjs: 'components/mathjs/dist/math.min',
         jsbarcode: 'components/jsbarcode/JsBarcode',
         numeral: 'components/numeral/min/numeral.min',
@@ -70,6 +71,9 @@ require.config({
         BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
     },
     shim: {
+        katex: {
+            exports: 'katex'
+        },
         //mathjax: {
         //	exports: 'MathJax',
         //	init: function () {

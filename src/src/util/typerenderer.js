@@ -15,6 +15,24 @@ define([
     var functions = {};
     var countryData;
 
+    functions.latex = {};
+    functions.latex.init = function () {
+        var prom = [];
+        prom.push(Util.loadCss('lib/katex/katex.min.css'));
+        prom.push(new Promise(function (resolve) {
+            require(['katex'], function (katex) {
+                functions.latex.katex = katex;
+                resolve();
+            });
+        }));
+        return Promise.all(prom);
+    };
+
+    functions.latex.toscreen = function ($element, val, rootVal, options) {
+        $element.empty();
+        functions.latex.katex.render(String(val), $element[0], options);
+    };
+
     functions.country = {};
     functions.country.init = function () {
         var prom = [];
@@ -297,8 +315,8 @@ define([
 
 
             value = value.replace(/\(([0-9+-]+)\)/g, function (match) {
-                var number=match.replace(/[^0-9]/g,'')*1;
-                var charge=match.replace(/[\(\)0-9]/g,'');
+                var number = match.replace(/[^0-9]/g, '') * 1;
+                var charge = match.replace(/[\(\)0-9]/g, '');
                 return charge.repeat(number);
             });
 
