@@ -15,7 +15,7 @@
 require.config({
     waitSeconds: 0,
     paths: {
-        katex: 'lib/katex/katex.min',
+        katex: 'components/katex/dist/katex.min',
         mathjs: 'components/mathjs/dist/math.min',
         jsbarcode: 'components/jsbarcode/JsBarcode',
         numeral: 'components/numeral/min/numeral.min',

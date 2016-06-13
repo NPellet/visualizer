@@ -18,7 +18,7 @@ define([
     functions.latex = {};
     functions.latex.init = function () {
         var prom = [];
-        prom.push(Util.loadCss('lib/katex/katex.min.css'));
+        prom.push(Util.loadCss('components/katex/dist/katex.min.css'));
         prom.push(new Promise(function (resolve) {
             require(['katex'], function (katex) {
                 functions.latex.katex = katex;
