@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash'], function (Default, Schema, _) {
+define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash', 'src/util/debug'], function (Default, Schema, _, Debug) {
 
     function Controller() {
     }
@@ -126,6 +126,35 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash']
                             title: 'Execute on change'
                         }
                     }
+                },
+                data: {
+                    options: {
+                        type: 'list',
+                        title: 'Data'
+                    },
+                    fields: {
+                        saveInView: {
+                            type: 'checkbox',
+                            title: 'Save in view',
+                            options: {
+                                yes: 'yes'
+                            },
+                            displaySource: {yes: 'saveInView'},
+                            default: []
+                        },
+                        varname: {
+                            type: 'text',
+                            title: 'Variable name',
+                            default: '',
+                            displayTarget: ['saveInView']
+                        },
+                        data: {
+                            type: 'jscode',
+                            title: 'Data',
+                            default: '{}',
+                            displayTarget: ['saveInView']
+                        }
+                    }
                 }
             }
         };
@@ -139,7 +168,37 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash']
         button_text: ['groups', 'group', 0, 'button_text', 0],
         hasButton: ['groups', 'group', 0, 'hasButton', 0],
         debouncing: ['groups', 'group', 0, 'debouncing', 0],
-        onchangeFilter: ['groups', 'group', 0, 'onchangeFilter', 0]
+        onchangeFilter: ['groups', 'group', 0, 'onchangeFilter', 0],
+        saveInView: ['groups', 'data', 0, 'saveInView', 0],
+        data: ['groups', 'data', 0, 'data', 0],
+        varname: ['groups', 'data', 0, 'varname', 0]
+    };
+
+    Controller.prototype.onBeforeSave = function (formValue) {
+        var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
+        var saveInView = formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
+        var vars_in = formValue.vars_in[0].groups.group[0];
+        var output = formValue.module_specific_config[0].groups.group[0].output[0];
+        if (saveInView && output !== 'modify') {
+            Debug.warn('onde: if save in view is activated you probably want to modify var in');
+        }
+        var varin = vars_in.filter(function (v) {
+            return v.rel === 'inputValue';
+        })[0];
+        if (varname && saveInView) {
+            if (varin && varin.name) {
+                varin.name = varname;
+            } else {
+                vars_in.push({
+                    rel: 'inputValue',
+                    name: varname
+                });
+            }
+        } else if (!saveInView) {
+            formValue.vars_in[0].groups.group[0] = vars_in.filter(function (v) {
+                return v.name !== varname;
+            });
+        }
     };
 
     Controller.prototype.getSchema = function () {

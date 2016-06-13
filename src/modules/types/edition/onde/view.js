@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/onde/src/onde', 'forms/button', 'lodash', 'src/util/debug'], function (Default, Util, $, onde, Button, _, Debug) {
+define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/onde/src/onde', 'forms/button', 'lodash', 'src/util/debug', 'src/util/api'], function (Default, Util, $, onde, Button, _, Debug, API) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -105,9 +105,23 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             }
         },
         inDom: function () {
+            var that = this;
             this.module.getDomContent().html(this.dom);
             this.initForm();
-            this.resolveReady();
+            if (this.module.getConfigurationCheckbox('saveInView', 'yes')) {
+                var varname = this.module.getConfiguration('varname');
+            }
+
+            if (varname) {
+                API.createData(varname, JSON.parse(this.module.getConfiguration('data'))).then(data => {
+                    data.onChange(() => {
+                        this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(data);
+                    });
+                    that.resolveReady();
+                });
+            } else {
+                that.resolveReady();
+            }
         },
         initForm: function () {
             var that = this;
