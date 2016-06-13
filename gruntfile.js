@@ -190,7 +190,8 @@ module.exports = function (grunt) {
                             './flag-icon-css/flags/**',
                             './jquery-qrcode/jquery.qrcode.min.js',
                             './mathjs/dist/math.min.js',
-                            './nmr-simulation/**'
+                            './nmr-simulation/**',
+                            './katex/dist/**'
                         ],
                         dest: './build/components/'
                     },
