@@ -135,11 +135,9 @@ define([
                 ]);
             }
 
-
             if (module.inDom) {
                 module.inDom();
             }
-
 
             if (!Versioning.isViewLocked()) {
                 // Insert jQuery UI resizable and draggable
@@ -216,6 +214,15 @@ define([
             moduleResize(module);
 
             module.toggleLayer(getActiveLayer());
+
+            var position = module.getPosition(activeLayer);
+            var size = module.getSize(activeLayer);
+            for (var layer in definition.layers) {
+                module.getPosition(layer).set('left', position.left);
+                module.getPosition(layer).set('top', position.top);
+                module.getSize(layer).set('width', size.width);
+                module.getSize(layer).set('height', size.height);
+            }
 
         }, function (err) {
             Debug.error('Error during module dom initialization', err);
