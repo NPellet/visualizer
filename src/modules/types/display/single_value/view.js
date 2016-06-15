@@ -37,7 +37,7 @@ define([
                 });
             }
 
-            this.values = {};
+            this.values = [];
             this.module.getDomContent().html(this.dom);
             this.fillWithVal({
                 type: 'html',
@@ -74,7 +74,22 @@ define([
                 if (varValue instanceof DataNumber || varValue.type === 'number') {
                     this._lastValueNumber = true;
                 }
-                this.values[varName] = varValue;
+                var val = this.values.find(value => value.name === varName);
+                if (!val) {
+                    this.values.push({
+                        name: varName,
+                        value: varValue
+                    });
+                    this.values.sort((a, b) => {
+                        var aIdx = this.module.definition.vars_in.findIndex(varin => varin.name === a.name);
+                        var bIdx = this.module.definition.vars_in.findIndex(varin => varin.name === b.name);
+                        if (aIdx < bIdx) return -1;
+                        else return 1;
+                    });
+                } else {
+                    val.value = varValue;
+                }
+
                 this._lastValue = varValue;
                 this.renderAll();
             }
@@ -98,21 +113,21 @@ define([
             }
 
             if (sprintfVal) {
-                if (Object.keys(rendererOptions).length > 0) {
+                if (!forceType) {
                     var prom = [];
-                    for (var i in that.values) {
-                        prom.push(this.renderVal(that.values[i], rendererOptions));
+                    for (var value of that.values) {
+                        prom.push(this.renderVal(value.value));
                     }
                     Promise.all(prom).then(function (rendered) {
                         var args = [sprintfVal].concat(rendered);
-                        that.fillWithVal(sprintf.sprintf.apply(null, args));
+                        that.fillWithVal(sprintf.sprintf.apply(null, args), {
+                            forceType: 'html'
+                        });
                     });
                 } else {
                     try {
                         var args = [sprintfVal];
-                        for (var i in that.values) {
-                            args.push(that.values[i]);
-                        }
+                        args = args.concat(that.values.map(v => DataObject.resurrect(v.value.get())));
                         val = sprintf.sprintf.apply(this, args);
                         that.fillWithVal(val, rendererOptions);
                     } catch (e) {
