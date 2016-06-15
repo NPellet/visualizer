@@ -210,7 +210,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
             that.defaultLegend = $('<div class="default-legend"></div>');
             var elementZoom = $('<div class="element-zoom hidden"></div>');
-            var elementDatas = $('<div class="element-datas hidden"><ul><li>data1</li><li>data2</li></ul></div>');
+            var elementDatas = $('<div class="element-datas hidden"></div>');
             legend.append(that.defaultLegend).append(elementZoom).append(elementDatas);
 
             //default Legend. Better in a twig.
