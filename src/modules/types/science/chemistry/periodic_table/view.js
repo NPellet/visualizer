@@ -346,6 +346,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             });
 
             that.module.getDomContent().on('click', function () {
+                isFixed = false;
+                showDefaultLegend();
                 $elements.removeClass('el-selected');
                 that.module.controller.elementsSelected(that.elements.map(el => el.Z));
             });
