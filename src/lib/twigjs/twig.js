@@ -7,12 +7,9 @@ define([
 ], function (Twig, Renderer, Util) {
 
     // Add support for deferred rendering
-
     Twig.extend(function (Twig) {
         Twig.Template.prototype.renderAsync = function () {
-
             var waiting = this.waiting = [];
-
             return {
                 render: function () {
                     var prom = [];
@@ -28,12 +25,8 @@ define([
     });
 
     // Add typerenderer support
-
-    Twig.extendFunction('rendertype', function (value, options, forceType) {
-
-        if (!value) {
-            return;
-        }
+    function rendertype(type, value, options, forceType) {
+        if (!value) return;
 
         if (typeof options === 'string') {
             forceType = options;
@@ -48,18 +41,26 @@ define([
         }
 
         var id = Util.getNextUniqueId();
-
         this.waiting.push([id, value, options]);
 
-        return '<span id="' +
-            id + '"></span>';
+        if (type === 'inline') {
+            return `<span id="${id}"></span>`;
+        } else {
+            return `<div style="width: 100%; height: 100%" id="${id}"></div>`;
+        }
+    }
 
+    Twig.extendFunction('rendertype', function (value, options, forceType) {
+        return rendertype.call(this, 'inline', value, options, forceType);
+    });
+
+    Twig.extendFunction('rendertypeBlock', function (value, options, forceType) {
+        return rendertype.call(this, 'block', value, options, forceType);
     });
 
     Twig.extendFunction('toJSON', function (value, spaces) {
         spaces = spaces || 2;
-        return '<pre><code>' + JSON.stringify(value, null, spaces) +
-            '</code></pre>';
+        return `<pre><code>${JSON.stringify(value, null, spaces)}</code></pre>`;
     });
 
     Twig.extendFunction('log', function () {
