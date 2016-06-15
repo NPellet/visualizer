@@ -169,7 +169,7 @@
             "top": 0
           },
           "size": {
-            "width": 38,
+            "width": 77,
             "height": 58
           },
           "zIndex": 0,
@@ -394,7 +394,7 @@
                 []
               ],
               "template": [
-                "<div width=500, height:500>{{rendertype(val,'chart')}}</div>"
+                "<div style=\"width:500px;height:500px\">{{rendertype(val,'chart')}}</div>"
               ],
               "modifyInForm": [
                 []
@@ -471,8 +471,8 @@
             ]
           }
         ]
-      }variables
-    }varname
+      }
+    }
   ],
   "variables": [
     {
