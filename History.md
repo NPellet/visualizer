@@ -1,3 +1,32 @@
+<a name="2.57.0"></a>
+# 2.57.0 (2016-06-16)
+
+
+### Bug Fixes
+
+* **core:** make couchdb attachments return raw response if superagent does not know how to  ([a0ee5ec](https://github.com/NPellet/visualizer/commit/a0ee5ec))
+* **nmr-simulator:** check that fields are all numbers ([ebb0bc2](https://github.com/NPellet/visualizer/commit/ebb0bc2))
+* **slickgrid:** remove variable in when save in view in unselected ([7d59d26](https://github.com/NPellet/visualizer/commit/7d59d26)), closes [#898](https://github.com/NPellet/visualizer/issues/898)
+* **spectra_displayer:** fix bug and memory leak with scatter selection ([7007f1d](https://github.com/NPellet/visualizer/commit/7007f1d))
+* **spectra_displayer:** horizontal legend display with flipped axis ([deca15c](https://github.com/NPellet/visualizer/commit/deca15c))
+
+### Features
+
+* **onde:** save in view option ([d0fcc92](https://github.com/NPellet/visualizer/commit/d0fcc92))
+* **roc-views:** implement revision loading ([1a49771](https://github.com/NPellet/visualizer/commit/1a49771))
+* **spectra_displayer:** add support for exporting SVG string ([8e24c88](https://github.com/NPellet/visualizer/commit/8e24c88))
+* **spectra_displayer:** add support for full zoom out action ([6d63e07](https://github.com/NPellet/visualizer/commit/6d63e07))
+* **twig:** add debouncing option for form variables ([6faf709](https://github.com/NPellet/visualizer/commit/6faf709))
+* **twig:** add rendertypeBlock function ([fdb31b3](https://github.com/NPellet/visualizer/commit/fdb31b3))
+* **twig:** add style input variable ([31e8a2c](https://github.com/NPellet/visualizer/commit/31e8a2c))
+* **twig:** add var out for forms ([0a4e449](https://github.com/NPellet/visualizer/commit/0a4e449))
+* **twig:** allow form values as variable in ([bf25023](https://github.com/NPellet/visualizer/commit/bf25023))
+* **twig:** modify form in ([db0d440](https://github.com/NPellet/visualizer/commit/db0d440))
+* **typerenderer:** add katex library and implement latex typerenderer ([1baf616](https://github.com/NPellet/visualizer/commit/1baf616)), closes [#412](https://github.com/NPellet/visualizer/issues/412)
+* **viewManager:** add metadata management section ([a8b35e0](https://github.com/NPellet/visualizer/commit/a8b35e0))
+
+
+
 <a name="2.56.0"></a>
 # 2.56.0 (2016-06-02)
 
