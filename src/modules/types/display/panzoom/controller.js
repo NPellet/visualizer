@@ -115,7 +115,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             title: 'Rendering',
                             options: [
                                 {key: 'default', title: 'Normal'},
-                                {key: 'crisp-edges', title: 'Crisp edges'}
+                                {key: 'crisp-edges', title: 'Crisp edges / Pixelated'}
                             ],
                             default: 'default'
                         },
