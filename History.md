@@ -1,3 +1,20 @@
+<a name="2.57.1"></a>
+## [2.57.1](https://github.com/NPellet/visualizer/compare/v2.57.0...v2.57.1) (2016-06-16)
+
+
+### Bug Fixes
+
+* **core:** fix build problem ([d04cefd](https://github.com/NPellet/visualizer/commit/d04cefd))
+* **twig:** always get form values before blank ([6bde5bc](https://github.com/NPellet/visualizer/commit/6bde5bc))
+* **twig:** don't render when another rendering is not finished ([31cb83a](https://github.com/NPellet/visualizer/commit/31cb83a))
+
+
+### Features
+
+* **slickgrid:** add select editor ([6256123](https://github.com/NPellet/visualizer/commit/6256123))
+
+
+
 <a name="2.57.0"></a>
 # 2.57.0 (2016-06-16)
 
