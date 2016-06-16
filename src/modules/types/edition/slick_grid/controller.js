@@ -152,7 +152,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 {key: 'boolean', title: 'Boolean'},
                                 {key: 'color', title: 'Color'},
                                 {key: 'date', title: 'Date'},
-                                {key: 'longtext', title: 'Long Text'}
+                                {key: 'longtext', title: 'Long Text'},
+                                {key: 'select', title: 'Select'}
                             ]
                         },
                         forceType: {
@@ -184,6 +185,11 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         rendererOptions: {
                             type: 'text',
                             title: 'Renderer Options',
+                            default: ''
+                        },
+                        editorOptions: {
+                            type: 'text',
+                            title: 'Editor options',
                             default: ''
                         },
                         width: {

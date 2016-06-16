@@ -32,7 +32,8 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
                     Text: TextValueEditor,
                     Date: DateEditor,
                     LongText: LongTextEditor,
-                    SimpleLongText: SimpleLongTextEditor
+                    SimpleLongText: SimpleLongTextEditor,
+                    Select: SelectEditor
                 }
             }
         });
@@ -267,8 +268,7 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
             };
 
             this.destroy = function () {
-                var d = this.$input.data()
-                if(d['spectrum.id'] === undefined) debugger;
+                var d = this.$input.data();
                 this.$input.spectrum('destroy');
                 this.$div.remove();
                 //this.$input.remove();
@@ -351,7 +351,6 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
             this.init();
         }
-
 
 
         function NumberValueEditor(args) {
@@ -515,11 +514,11 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
 
     function booleanLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
-        if(this.defaultValue) {
+        if (this.defaultValue) {
             var val = this.defaultValue.get();
         }
         if (val) {
-            if((val instanceof DataBoolean) && !val.get()) {
+            if ((val instanceof DataBoolean) && !val.get()) {
                 this.$input.removeAttr('checked');
             } else {
                 this.$input.attr('checked', 'checked');
@@ -664,6 +663,65 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         this.init();
     }
 
+
+    // ========== SELECT ===================
+    function selectInit() {
+        var that = this;
+        var options = this.args.column.colDef.editorOptions;
+        options = options || '';
+        options = options.split(';').map(opt => opt.split(':'))
+        var htmlOptions = '';
+
+        for(var i=0; i<options.length; i++) {
+            if(options[i].length >= 1) {
+                htmlOptions += `<option value="${options[i][0]}">${options[i][1] || options[i][0]}</option>`
+            }
+        }
+        var $wrapper = $(this.args.container);
+        this.initOptions = this.initOptions || {};
+        function onClick(e) {
+            if (e.target !== that.$input[0]) {
+                that.args.cancelChanges();
+            }
+        }
+
+        $wrapper.off('click', onClick);
+        $wrapper.on('click', onClick);
+
+
+        this.$input = $(`<select>${htmlOptions}</select>`);
+
+
+        this.$input
+            .appendTo($wrapper)
+            .on('change', function () {
+                that.args.commitChanges('next');
+            })
+            .on('blur', function () {
+                that.args.cancelChanges();
+            });
+        this.$input.click();
+    }
+
+
+    function SelectEditor(args, options) {
+        this.args = args;
+        this.initOptions = options;
+        this.init = selectInit;
+        this.destroy = defaultDestroy;
+        this.focus = defaultFocus;
+        this.getValue = defaultGetValue;
+        this.setValue = defaultSetValue;
+        this.loadValue = defaultLoadValue;
+        this.serializeValue = defaultSerializeValue;
+        this.isValueChanged = defaultIsValueChanged;
+        this.validate = defaultValidate;
+        this.applyValue = function (item, state) {
+            defaultApplyValue.call(this, item, state, this.args.column.dataType);
+        };
+
+        this.init();
+    }
 
 });
 

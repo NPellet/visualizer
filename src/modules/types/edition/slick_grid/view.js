@@ -51,6 +51,7 @@ define([
     typeEditors.color = Slick.CustomEditors.ColorValue;
     typeEditors.date = Slick.CustomEditors.Date;
     typeEditors.longtext = Slick.CustomEditors.LongText;
+    typeEditors.select = Slick.CustomEditors.Select;
 
     function doGrid(ctx) {
         ctx.$container.html('');
