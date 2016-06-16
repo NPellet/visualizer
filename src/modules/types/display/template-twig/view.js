@@ -36,28 +36,16 @@ define([
             this.dom.on('change', 'input,select', submit);
 
             this._values = new DataObject();
-            this.template = Twig.twig({
-                data: this.module.getConfiguration('template')
-            });
-        },
-        blank: {
-            value: function () {
-                this.getForm();
-                this.dom.empty();
-            },
-            tpl: function () {
-                this.getForm();
-                this.template = Twig.twig({
-                    data: ''
-                });
-            },
-            form: function () {
 
-            },
-
-            style: function () {
-                this.getForm();
+            if (!this.renderPromise) {
+                this.renderPromise = Promise.resolve();
             }
+
+            this.renderPromise.then(() => {
+                this.template = Twig.twig({
+                    data: this.module.getConfiguration('template')
+                });
+            });
         },
         inDom: function () {
             this.module.getDomContent().html(this.dom);
@@ -173,6 +161,28 @@ define([
                 this.module.controller.onFormChanged(out);
             }
         },
+        blank: {
+            value: function () {
+                this.renderPromise = this.renderPromise.then(() => {
+                    this.getForm();
+                    this.dom.empty();
+                });
+            },
+            tpl: function () {
+                this.renderPromise = this.renderPromise.then(() => {
+                    this.getForm();
+                    this.template = Twig.twig({
+                        data: ''
+                    });
+                });
+
+            },
+            form: function () {
+            },
+
+            style: function () {
+            }
+        },
         update: {
             value: function (value, name) {
                 /*
@@ -185,14 +195,14 @@ define([
             },
             tpl: function (value) {
                 var tpl = value.get().toString();
-                try {
+                this.renderPromise.then(() => {
                     this.template = Twig.twig({
                         data: tpl
                     });
                     this.rerender();
-                } catch (e) {
+                }).catch(e => {
                     Debug.info('Problem with template: ' + e);
-                }
+                });
             },
 
             form: function (value) {
@@ -219,13 +229,18 @@ define([
 
         render: function (cb) {
             var that = this;
-            var render = this.template.renderAsync(this._values);
-            this.dom.html(render.html);
-            return render.render().then(function () {
-                if (cb) cb();
-                that.setStyle();
-                that.module.controller.onRendered(that.dom.html());
+            this.renderPromise = this.renderPromise.then(() => {
+                var render = this.template.renderAsync(this._values);
+                this.dom.html(render.html);
+                return render.render().then(function () {
+                    if (cb) cb();
+                    that.setStyle();
+                    that.module.controller.onRendered(that.dom.html());
+                }).catch(e => {
+                    Debug.warn('Error rendering twig template', e);
+                });
             });
+            return this.renderPromise;
         }
     });
 
