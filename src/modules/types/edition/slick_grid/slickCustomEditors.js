@@ -669,12 +669,12 @@ define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jq
         var that = this;
         var options = this.args.column.colDef.editorOptions;
         options = options || '';
-        options = options.split(';').map(opt => opt.split(':'))
+        options = options.split(';').map(opt => opt.split(':'));
         var htmlOptions = '';
 
-        for(var i=0; i<options.length; i++) {
-            if(options[i].length >= 1) {
-                htmlOptions += `<option value="${options[i][0]}">${options[i][1] || options[i][0]}</option>`
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].length >= 1) {
+                htmlOptions += `<option value="${options[i][0]}">${options[i][1] || options[i][0]}</option>`;
             }
         }
         var $wrapper = $(this.args.container);
