@@ -42,15 +42,21 @@ define([
         },
         blank: {
             value: function () {
+                this.getForm();
                 this.dom.empty();
             },
             tpl: function () {
+                this.getForm();
                 this.template = Twig.twig({
                     data: ''
                 });
             },
             form: function () {
 
+            },
+
+            style: function () {
+                this.getForm();
             }
         },
         inDom: function () {
@@ -62,7 +68,6 @@ define([
         },
 
         rerender() {
-            this.getForm();
             this.render(() => {
                 this.resetForm();
             });
