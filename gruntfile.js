@@ -78,7 +78,8 @@ module.exports = function (grunt) {
                             '!modules/**/lib/**/*.js',
                             'src/**/*.js',
                             '!lib/**/*',
-                            'lib/chemistry/*.js'
+                            'lib/chemistry/*.js',
+                            'lib/twigjs/*.js'
                         ], // Actual pattern(s) to match.
                         dest: './build/',   // Destination path prefix.
                         //overwrite: true,
