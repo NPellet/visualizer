@@ -470,13 +470,13 @@ define([
 
                         var color = forceColor ? forceColor : plotinfos[i].plotcolor;
 
-                        serie.setLineColor(Color.getColor(color));
+                        serie.setLineColor(Color.getColor(color), false, true);
 
                         var lineWidth = parseFloat(plotinfos[i].strokewidth);
                         if (isNaN(lineWidth)) lineWidth = 1;
 
                         serie.setLineWidth(lineWidth);
-                        serie.setLineStyle(parseInt(plotinfos[i].strokestyle) || 1);
+                        serie.setLineStyle(parseInt(plotinfos[i].strokestyle) || 1, false, true);
 
                         if (plotinfos[i].markers[0] && serie.showMarkers) {
                             serie.showMarkers();
@@ -814,10 +814,8 @@ define([
 
                         //	serie.setLabel( data[ i ].label.toString( ) );
                         serie.setLineWidth(data[i].lineWidth || opts.strokeWidth || 1);
-                        serie.setLineColor(data[i].lineColor || 'rgb(' + colors[i].join() + ')');
+                        serie.setLineColor(data[i].lineColor || 'rgb(' + colors[i].join() + ')', false, true);
                         serie.setLineWidth(3, 'selected');
-
-                        //                    serie.setLineColor(data[ i ].lineColor || Color.getColor(Color.getNextColorRGB(i, l)));
                         serie.extendStyles();
                     }
 
@@ -869,7 +867,7 @@ define([
             this.setSerieParameters(serie, name);
 
             if (data.lineColor) {
-                serie.setLineColor(data.lineColor);
+                serie.setLineColor(data.lineColor, false, true);
             }
 
             if (data.lineWidth) {
