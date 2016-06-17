@@ -1,5 +1,5 @@
 {
-  "version": "2.27.2-0",
+  "version": "2.57.1",
   "grid": {
     "layers": {
       "Default layer": {
@@ -136,7 +136,28 @@
           "jpath": []
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_executor/",
@@ -164,7 +185,7 @@
           "libs": [
             [
               {
-                "lib": "http://www.lactame.com/lib/json-chart/1.0.0/json-chart.js",
+                "lib": "https://www.lactame.com/lib/json-chart/1.0.0/json-chart.js",
                 "alias": "jsonChart"
               }
             ]
@@ -224,7 +245,28 @@
           "name": "chart1"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_executor/",
@@ -309,7 +351,28 @@
           "name": "chart2"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/chart/advanced/hex/",
@@ -374,7 +437,28 @@
           "jpath": []
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     }
   ],
   "variables": [
