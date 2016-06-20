@@ -356,7 +356,7 @@ define([
                 this.setTitle(layer.title);
                 this.setDisplayWrapper(layer.wrapper);
 
-                this.setBackgroundColor(layer.bgColor || [255, 255, 255, 0]);
+                this.setBackgroundColor(layer.bgColor || [255, 255, 255, 1]);
 
                 this.activeLayerName = newLayerShown;
 
