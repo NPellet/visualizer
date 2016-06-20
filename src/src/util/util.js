@@ -544,6 +544,17 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'co
         }
     };
 
+    exports.hashCode = function (str) {
+        var hash = 0, i, chr, len = str.length;
+        if (len === 0) return hash;
+        for (i = 0; i < len; i++) {
+            chr = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0;
+        }
+        return hash;
+    };
+
     return exports;
 
 });
