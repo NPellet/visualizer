@@ -19,7 +19,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.references = {
         picture: {
             type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'svg', 'string'],
-            label: 'A picture'
+            label: 'A picture (image url or typed svg)'
+        },
+        svg: {
+            label: 'An svg'
+        },
+        image: {
+            type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'string'],
+            label: 'An image url'
         },
         pixel: {
             label: 'A pixel'
@@ -42,7 +49,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['picture'];
+    Controller.prototype.variablesIn = ['picture', 'image', 'svg'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         hide: 'Hide an image',

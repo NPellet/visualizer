@@ -41,6 +41,10 @@ define([
                 this.clearImage(varname);
             },
 
+            image: function (varname) {
+                this.clearImage(varname);
+            },
+
             svg: function (varname) {
                 this.clearImage(varname);
             }
@@ -57,6 +61,10 @@ define([
 
             svg: function (value, varname) {
                 this.doSvg(varname, value, {}, true);
+            },
+
+            image: function (value, varname) {
+                this.doImage(varname, value, {}, true);
             }
         },
 
@@ -111,10 +119,6 @@ define([
             }
         },
 
-        addSvg: function (varname, variable, options) {
-
-        },
-
         addImage: function (varname, variable, options) {
             var that = this;
 
@@ -141,6 +145,7 @@ define([
 
                 // $img can be <img>, <canvas> or <svg>
                 var $img, $previousImg;
+                var isSvg = options ? options.isSvg || variable.type === 'svg' : false;
                 if ($parent.length === 0 && varname === '__highlight__') {
                     // New highlight
                     $parent = that.newCanvasDom(varname);
@@ -153,13 +158,13 @@ define([
                     $img = $(that.highlightImage.canvas);
                     $parent.find('.panzoom').append($img);
                     imgType = 'canvas';
-                } else if ($parent.length === 0 && variable.type === 'svg') {
+                } else if ($parent.length === 0 && isSvg) {
                     // New svg element
                     $parent = that.newSvgDom(varname);
                     $img = $(String(variable.get()));
                     $parent.find('.panzoom').append($img);
                     imgType = 'svg';
-                } else if (variable.type === 'svg') {
+                } else if (isSvg) {
                     $previousImg = $parent.find('svg');
                     $img = $(String(variable.get()));
                     $parent.find('.panzoom').append($img);
@@ -196,7 +201,7 @@ define([
 
                 if (varname === '__highlight__') {
                     onLoaded.call(that.highlightImage.canvas);
-                } else if (variable.type === 'svg') {
+                } else if (isSvg) {
                     onLoaded.call($img);
                 } else {
                     $img
