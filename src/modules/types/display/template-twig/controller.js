@@ -105,6 +105,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     Controller.prototype.onRendered = function (renderedHtml) {
         setTimeout(() => { // Figure out why I have to set timeout
             this.createDataFromEvent('onRendered', 'renderedHtml', renderedHtml);
+            this.sendActionFromEvent('onRendered', 'renderedHtml', renderedHtml);
         }, 0);
     };
 
@@ -124,6 +125,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
             obj.setChildSync(out[i].name.split('.'), out[i].value);
         }
         this.createDataFromEvent(event, 'form', obj);
+        this.sendActionFromEvent(event, 'form', obj);
 
         if (this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
             this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(obj)), this.module.getId());
