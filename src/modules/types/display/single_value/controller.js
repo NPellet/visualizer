@@ -61,6 +61,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                             },
                             default: []
                         },
+                        debounce: {
+                            type: 'float',
+                            default: 0,
+                            title: 'Debouncing (ms)'
+                        },
                         defaultvalue: {
                             type: 'wysiwyg',
                             title: 'Default value'
@@ -157,6 +162,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
         sprintf: ['groups', 'group', 0, 'sprintf', 0],
         rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0],
         forceType: ['groups', 'group', 0, 'forceType', 0],
+        debounce: ['groups', 'group', 0, 'debounce', 0],
         sprintfOrder: ['groups', 'group', 0, 'sprintfOrder'],
         preformatted: ['groups', 'group', 0, 'preformatted', 0],
         append: ['groups', 'group', 0, 'append', 0],

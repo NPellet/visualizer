@@ -6,13 +6,14 @@ define([
     'src/util/api',
     'src/util/typerenderer',
     'src/util/color',
-    'sprintf'
+    'sprintf',
+    'lodash'
 ], function (Default,
              Util,
              API,
              Renderer,
              Color,
-             sprintf) {
+             sprintf, _) {
 
     function View() {
     }
@@ -200,16 +201,9 @@ define([
                 });
                 this.dom.html(div);
                 if (this.module.getConfigurationCheckbox('editable', 'yes') && isEditable(this._lastValue)) {
-                    div.attr('contenteditable', true);
-                    div.on('input', function (e) {
-                        var replaceValue = e.target.innerText;
-                        if (that._lastValueNumber) {
-                            replaceValue = +replaceValue;
-                        }
 
-                        that._lastValue.setValue(replaceValue, true);
-                        that.module.model.dataTriggerChange(that._lastValue);
-                    });
+                    div.attr('contenteditable', true);
+                    div.on('input', that.module.getConfiguration('debounce') > 0 ? _.debounce(triggerChange, that.module.getConfiguration('debounce')).bind(that) : triggerChange.bind(that));
                     div.on('keyup', function (e) {
                         if (e.keyCode === 27) { // Esc character
                             div.blur();
@@ -257,6 +251,16 @@ define([
     function isNumber(value) {
         if (!value) return false;
         return (value instanceof DataNumber) || value.type === 'number';
+    }
+
+    function triggerChange(e) {
+        var replaceValue = e.target.innerText;
+        if (this._lastValueNumber) {
+            replaceValue = +replaceValue;
+        }
+
+        this._lastValue.setValue(replaceValue, true);
+        this.module.model.dataTriggerChange(this._lastValue);
     }
 
     return View;
