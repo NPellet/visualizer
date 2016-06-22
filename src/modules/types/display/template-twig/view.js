@@ -105,7 +105,7 @@ define([
                     this.getForm();
                     this.dom.empty();
                 }).catch(e => {
-                    Debug.warn('Error')
+                    Debug.warn('Error');
                 });
             },
             tpl: function () {

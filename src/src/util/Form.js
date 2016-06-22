@@ -62,7 +62,7 @@ define(['jquery', 'src/main/datas'], function ($) {
         }
 
         setData(data) {
-            if(!data) return;
+            if (!data) return;
             data = DataObject.check(data, true);
             var form = this.get();
             for (let i = 0; i < form.length; i++) {
