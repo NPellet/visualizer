@@ -200,6 +200,8 @@ define([
                     'user-select': selectable ? 'text' : 'none'
                 });
                 this.dom.html(div);
+
+                var isEditing;
                 if (this.module.getConfigurationCheckbox('editable', 'yes') && isEditable(this._lastValue)) {
 
                     div.attr('contenteditable', true);
@@ -210,17 +212,14 @@ define([
                         }
                     });
                     div.on('click', function () {
-                        if (rendererOptions.forceType) {
-                            var tmpOptions = Object.assign({}, rendererOptions);
-                            delete tmpOptions.forceType;
-                            Renderer.render(div, val, tmpOptions).then(function () {
-                                that._scrollDown();
-                                div.focus();
-                            });
-                        }
+                        if (isEditing) return;
+                        isEditing = true;
+                        div.html(String(val));
+                        div.focus();
                     });
 
                     div.on('blur', function () {
+                        isEditing = false;
                         Renderer.render(div, val, rendererOptions).then(function () {
                             that._scrollDown();
                         });
