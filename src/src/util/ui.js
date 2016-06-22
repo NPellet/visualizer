@@ -15,8 +15,9 @@ define([
     'slickgrid',
     'forms/button',
     'src/util/couchshare',
+    'src/util/Form',
     'jquery-ui/dialog'
-], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer) {
+], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer, Form) {
 
     var exports = {};
 
@@ -77,6 +78,43 @@ define([
                 }
             };
             options.buttons[opts.buttonLabel] = done;
+            var dialog = exports.dialog(div, options);
+        });
+    };
+
+    exports.form = function (div, inputObject, opts) {
+        opts = opts || {};
+
+        return new Promise(function (resolve) {
+            const done = () => {
+                var obj = form.getData(true);
+                form.unbind();
+                resolve(obj);
+                dialog.dialog('destroy');
+            };
+
+            if (!div.jquery) {
+                div = $(div);
+            }
+
+            var form = new Form(div);
+            if (inputObject) form.setData(inputObject);
+
+            form.onSubmit(done);
+
+
+            var options = {
+                close: function () {
+                    form.unbind();
+                    resolve();
+                    dialog.dialog('destroy');
+                }
+            };
+            if (opts.buttonLabel) {
+                options.buttons = {
+                    [opts.buttonLabel]: done
+                };
+            }
             var dialog = exports.dialog(div, options);
         });
     };

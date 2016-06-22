@@ -5,15 +5,15 @@ define([
     'modules/default/defaultview',
     'lib/twigjs/twig',
     'src/util/debug',
-    'lodash'
-], function ($, Default, Twig, Debug, _) {
+    'lodash',
+    'src/util/Form'
+], function ($, Default, Twig, Debug, _, Form) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
         init: function () {
-            this.getForm();
             this.dom = $('<div>').css({
                 height: '100%',
                 width: '100%',
@@ -28,12 +28,11 @@ define([
             }
 
 
-            this.dom.on('input', 'input,textarea', submit);
-            this.dom.on('submit', 'form', function (e) {
+            this.form = new Form(this.dom);
+            this.form.onChange(submit);
+            this.form.onSubmit(() => {
                 submit('submit');
-                e.preventDefault();
             });
-            this.dom.on('change', 'input,select', submit);
 
             this._values = new DataObject();
 
@@ -61,45 +60,8 @@ define([
             });
         },
 
-        setElement(el, value) {
-            switch (el.type) {
-                case 'checkbox':
-                    // $(el).attr('checked', value);
-                    el.checked = value;
-                    break;
-
-                case 'radio':
-                    var name = el.name;
-                    this.dom.find(`input[name="${name}"]`).each(function () {
-                        this.checked = false;
-                    });
-                    this.dom.find(`input[value="${value}"]`).each(function () {
-                        this.checked = true;
-                    });
-                    break;
-                default:
-                    // $(el).attr('value', value);
-                    el.value = value;
-                    break;
-            }
-        },
-
         resetForm() {
-            var form = this.currentForm;
-            if (!form || !this.dom) return;
-            for (let i = 0; i < form.length; i++) {
-                var $el = this.dom.find(`input[name="${form[i].name}"]`);
-                var el = $el[0];
-                if (!el) continue;
-                this.setElement(el, form[i].value);
-            }
-        },
-
-        setForm(data) {
-            if (!data) data = this.currentForm;
-            if (!data) return;
-
-
+            this.form.setData(this.currentForm);
         },
 
         setStyle() {
@@ -126,35 +88,11 @@ define([
         },
 
         getForm() {
-            if (!this.dom) return;
-            var inputs = this.dom.find('input,textarea,select');
-            var out = inputs.map(function () {
-                const {name, value, type} = this;
-                return {name, value, type, dom: this};
-            }).toArray().filter(o => {
-                if (!o.name) return false;
-                return (o.type !== 'radio' || o.dom.checked);
-            });
-
-            out.forEach(o => {
-                switch (o.type) {
-                    case 'number':
-                    case 'range':
-                        o.value = +o.value;
-                        break;
-                    case 'checkbox':
-                        o.value = o.dom.checked;
-                        break;
-                }
-            });
-
-            this.currentForm = out;
-            return out;
+            return this.currentForm = this.form.getData(false);
         },
 
         submit: function (type) {
             var out = this.getForm();
-
             if (type === 'submit') {
                 this.module.controller.onFormSubmitted(out);
             } else {
@@ -166,6 +104,8 @@ define([
                 this.renderPromise = this.renderPromise.then(() => {
                     this.getForm();
                     this.dom.empty();
+                }).catch(e => {
+                    Debug.warn('Error')
                 });
             },
             tpl: function () {
@@ -217,13 +157,7 @@ define([
         },
 
         fillForm: function () {
-            // Search for leaf properties
-            var form = this.getForm();
-            for (let i = 0; i < form.length; i++) {
-                var fillWith = this.formObject.getChildSync(form[i].name.split('.'));
-                fillWith = fillWith || null;
-                this.setElement(form[i].dom, fillWith);
-            }
+            this.form.setData(this.formObject);
             this.submit();
         },
 

@@ -119,16 +119,11 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
 
     Controller.prototype._doForm = function (event, out) {
-        var obj = new DataObject();
-
-        for (let i = 0; i < out.length; i++) {
-            obj.setChildSync(out[i].name.split('.'), out[i].value);
-        }
-        this.createDataFromEvent(event, 'form', obj);
-        this.sendActionFromEvent(event, 'form', obj);
+        this.createDataFromEvent(event, 'form', out);
+        this.sendActionFromEvent(event, 'form', out);
 
         if (this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
-            this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(obj)), this.module.getId());
+            this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(out)), this.module.getId());
         }
     };
 
