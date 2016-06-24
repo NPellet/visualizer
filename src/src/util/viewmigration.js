@@ -497,7 +497,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         vars_out.forEach(function (vars_out) {
             if (vars_out && vars_out.rel && vars_out.rel === oldRel) vars_out.rel = newRel;
         });
-        actions_out.forEach(function (actions_out) {
+        if (actions_out) actions_out.forEach(function (actions_out) {
             if (actions_out && actions_out.rel && actions_out.rel === oldRel) actions_out.rel = newRel;
         });
     }
