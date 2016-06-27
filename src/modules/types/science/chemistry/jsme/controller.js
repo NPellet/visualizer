@@ -112,7 +112,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 nocanonize: 'Prevent canonicalization and detection of aromaticity',
                                 nostereo: 'No stereochemistry in SMILES',
                                 reaction: 'Enable reaction input',
-                                multipart: 'Allow multipart structures',
+                                nomultipart: 'Don\'t allow multipart structures',
                                 polarnitro: "Don't convert automatically nitro to unpolar form",
                                 number: 'Allow to number atoms',
                                 depict: 'Only display structure (no editing)',
@@ -124,7 +124,9 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 atommovebutton: 'Add button to move atoms',
                                 removehs: 'Remove hydrogens when reading a molecule with explicit hydrogens',
                                 removehsc: 'Remove hydrogens bounded to C when reading a molecule with explicit hydrogens',
-                                nozoom: 'Prevent zoom with scroll wheel'
+                                nozoom: 'Prevent zoom with scroll wheel',
+                                noshowdraganddropsymbolindepictmode: 'Hide the drag and drop symbol in depict mode',
+                                addnewpart: 'Allow add new part'
                             }
                         },
                         defaultaction: {
