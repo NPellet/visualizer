@@ -100,6 +100,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
                 that.setButtonColor(that.module.getConfiguration('offColor'));
             }
 
+            this.dom.attr('title', that.module.getConfiguration('title'));
             this.resolveReady();
         },
 

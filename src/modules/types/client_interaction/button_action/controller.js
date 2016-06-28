@@ -85,6 +85,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             'default': 'Toggle action on',
                             displayTarget: ['t']
                         },
+                        title: {
+                            type: 'text',
+                            title: 'Tooltip',
+                            default: ''
+                        },
                         onColor: {
                             type: 'spectrum',
                             title: 'Color (on)',
@@ -150,7 +155,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {key: 'svg', title: 'svg'},
                                 {key: 'content', title: 'Content'}
                             ],
-                            default: 'content'
+                            default: 'content' 
                         }
                     }
                 }
@@ -162,6 +167,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         label: ['groups', 'group', 0, 'label', 0],
         onLabel: ['groups', 'group', 0, 'onLabel', 0],
         offLabel: ['groups', 'group', 0, 'offLabel', 0],
+        title: ['groups', 'group', 0, 'title', 0],
         onColor: ['groups', 'group', 0, 'onColor', 0],
         offColor: ['groups', 'group', 0, 'offColor', 0],
         text: ['groups', 'group', 0, 'text', 0],
