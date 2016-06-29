@@ -28,6 +28,7 @@ define(function () {
         'jcamp': 'string',
         'date': 'string',
         'downloadLink': 'string',
+        'openLink': 'string',
         'html': 'string',
         'boolean': 'boolean',
         'array': 'array',
