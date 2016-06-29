@@ -27,7 +27,9 @@ define([
         var args = arguments;
 
         function saveAndTrigger(data) {
-            args[0].module.definition.configuration.groups.group[0].svgcode = [data];
+            if(args[0].module.getConfigurationCheckbox('saveSvg', 'yes')) {
+                args[0].module.definition.configuration.groups.group[0].svgcode = [data];
+            }
             args[0].module.controller.onChange(data);
         }
 
@@ -87,6 +89,7 @@ define([
             } else {
                 svgCode = that.module.getConfiguration('svgcode');
             }
+            if (!svgCode) return Promise.resolve();
 
             return new Promise(resolve => {
                 if (this._configCheckBox('editable', 'isEditable')) {
@@ -154,7 +157,7 @@ define([
                 this.modifySvgFromArray(this.queuedSvgModifier, true);
             },
             svgInput: function (svgCode) {
-                this._renderSvg(svgCode);
+                this._renderSvg(svgCode).then(this._saveSvg.bind(this));
             }
         },
 

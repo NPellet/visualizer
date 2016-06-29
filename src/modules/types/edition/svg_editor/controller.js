@@ -84,6 +84,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             options: {doSanitize: 'yes'},
                             'default': []
                         },
+                        saveSvg: {
+                            type: 'checkbox',
+                            title: 'Save svg in module preferences',
+                            options: {
+                                yes: 'Yes'
+                            },
+                            default: ['yes']
+                        },
                         svgcode: {
                             type: 'jscode',
                             mode: 'svg',
@@ -98,7 +106,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.configAliases = {
         svgcode: ['groups', 'group', 0, 'svgcode', 0],
         editable: ['groups', 'group', 0, 'editable', 0],
-        sanitize: ['groups', 'group', 0, 'sanitize', 0]
+        sanitize: ['groups', 'group', 0, 'sanitize', 0],
+        saveSvg: ['groups', 'group', 0, 'saveSvg', 0]
     };
 
     return Controller;
