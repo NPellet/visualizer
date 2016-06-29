@@ -1060,7 +1060,7 @@ define([
                 fancytree.push(element);
             } else {
                 fancytree.push({
-                    title: name,
+                    title: name.replace(/(__view__)+/, ''),
                     folder: false,
                     view: value,
                     flavor: flavor
@@ -1293,7 +1293,15 @@ define([
             }
             map = map.get(folderKey);
         }
-        map.set(flavor[i], view);
+        const viewKey = getViewKey(map, flavor[i]);
+        map.set(viewKey, view);
+    }
+
+    function getViewKey(map, name) {
+        while (map.has(name)) {
+            name = '__view__' + name;
+        }
+        return name;
     }
 
     function validateName(name) {
