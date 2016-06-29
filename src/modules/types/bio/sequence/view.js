@@ -21,47 +21,56 @@ define([
             }
         },
 
-        inDom: function () {
+        update: {
+            sequence: function (value) {
+                this.sequence = value;
+                this.render();
+            },
+
+            annotations: function (value) {
+                this.annotations = value;
+                this.render();
+            }
+        },
+
+        blank: {
+            sequence: function () {
+            },
+            annotations: function () {
+            }
+        },
+
+        render: function () {
             var that = this;
-            var theSequence = 'METLCQRLNVCQDKILTHYENDSTDLRDHIDYWKHMRLECAIYYKAREMGFKHINHQVVPTLAVSKNKALQAIELQLTLETIYNSQYSNEKWTLQDVSLEVYLTAPTGCIKKHGYTVEVQFDGDICNTMHYTNWTHIYICEEAojs SVTVVEGQVDYYGLYYVHEGIRTYFVQFKDDAEKYSKNKVWEVHAGGQVILCPTSVFSSNEVSSPEIIRQHLANHPAATHTKAVALGTEETQTTIQRPRSEPDTGNPCHTTKLLHRDSVDSAPILTAFNSSHKGRINCNSNTTPIVHLKGDANTLKCLRYRFKKHCTLYTAVSSTWHWTGHNVKHKSAIVTLTYDSEWQRDQFLSQVKIPKTITVSTGFMSI';
+            this.clear();
+            if (!this.sequence) return;
+
+            var seq = String(this.sequence);
+            var annotations = this.annotations || {};
             var mySequence = new Biojs.Sequence({
-                sequence: theSequence,
+                sequence: seq,
                 target: this.dom.attr('id'),
                 format: 'CODATA',
-                id: 'P918283',
-                annotations: [
-                    {
-                        name: 'CATH',
-                        color: '#F0F020',
-                        html: 'Using color code #F0F020 ',
-                        regions: [{start: 122, end: 135}]
-                    },
-                    {
-                        name: 'TEST',
-                        html: '<br> Example of <b>HTML</b>',
-                        color: 'green',
-                        regions: [
-                            {start: 285, end: 292},
-                            {start: 293, end: 314, color: '#2E4988'}]
-                    }
-                ],
-                highlights: [
-                    {
-                        start: 30,
-                        end: 42,
-                        color: 'white',
-                        background: 'green',
-                        id: 'spin1'
-                    },
-                    {start: 139, end: 140},
-                    {start: 631, end: 633, color: 'white', background: 'blue'}
-                ]
+                annotations: annotations.annotations,
+                highlights: annotations.highlights
             });
 
             mySequence.onSelectionChange(function (data) {
                 that.module.controller.onSequenceSelectionChanged(data);
             });
+        },
 
+        resize: function () {
+            this.render();
+        },
+
+        clear: function () {
+            this.dom.html('');
+        },
+
+        inDom: function () {
+
+            this.render();
             // var mySeq = new Biojs.Sequence({
             //   sequenceUrl: 'http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=xml&compression=NO&structureId=100D',
             //   id: '100D'
