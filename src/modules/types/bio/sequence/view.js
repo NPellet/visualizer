@@ -3,10 +3,9 @@
 define([
     'modules/default/defaultview',
     'src/util/util',
-    'BiojsCore',
-    'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
-    'lib/biojs-1.0/src/main/javascript/Biojs.Sequence'
-], function (Default, Util, Biojs) {
+    'BiojsSequence',
+    'BiojsTooltip'
+], function (Default, Util) {
 
     function View() {
     }

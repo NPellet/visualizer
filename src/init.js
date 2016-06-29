@@ -66,6 +66,9 @@ require.config({
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
         x2js: 'components/x2js/xml2json.min',
+
+        BiojsSequence: 'lib/biojs-1.0/src/main/javascript/Biojs.Sequence',
+        BiojsTooltip: 'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
         BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
         BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
         BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
@@ -143,6 +146,8 @@ require.config({
         BiojsCore: {
             exports: 'Biojs'
         },
+        BiojsSequence: ['BiojsCore'],
+        BiojsTooltip: ['BiojsCore'],
         BiojsMyFeatureViewer: ['BiojsFeatureViewer'],
         BiojsFeatureViewer: [
             'BiojsCore',
