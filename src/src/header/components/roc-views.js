@@ -1046,13 +1046,14 @@ define([
 
         buildElement(fancytree, name, value, path, firstLevel, flavor) {
             if (value instanceof Map) {
+                const realName = name.replace('__folder__', '');
                 var element = {
-                    title: name,
+                    title: realName,
                     folder: true,
                     children: [],
                     path: path
                 };
-                if (firstLevel && name === this.flavor) {
+                if (firstLevel && realName === this.flavor) {
                     element.expanded = true;
                 }
                 this.buildFolder(element.children, value, path, false, flavor);
@@ -1286,10 +1287,11 @@ define([
             tree.set(flavorName, map);
         }
         for (var i = 0; i < flavor.length - 1; i++) {
-            if (!map.has(flavor[i])) {
-                map.set(flavor[i], new Map());
+            const folderKey = '__folder__' + flavor[i];
+            if (!map.has(folderKey)) {
+                map.set(folderKey, new Map());
             }
-            map = map.get(flavor[i]);
+            map = map.get(folderKey);
         }
         map.set(flavor[i], view);
     }
