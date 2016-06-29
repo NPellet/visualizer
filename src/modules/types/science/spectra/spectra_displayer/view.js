@@ -954,7 +954,7 @@ define([
 
         getSVGString() {
             var svg = this.dom.find('svg');
-            if (svg.length !== 1) return;
+            if (svg.length === 0) return;
             var serializer = new XMLSerializer();
             return svgDoctype + serializer.serializeToString(svg[0]);
         },
