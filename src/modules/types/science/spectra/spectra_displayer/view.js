@@ -215,9 +215,10 @@ define([
                     if (!cfg('displayXAxis', true)) {
                         xAxis.hide();
                     }
-                    xAxis.on('zoom', ([min, max]) => {
+                    const xZoomHandler = ([min, max]) => {
                         this.module.model.setXBoundaries(min, max);
-                    });
+                    };
+                    xAxis.on('zoom', xZoomHandler).on('zoomOutFull', xZoomHandler);
                     if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
                         xAxis.on('zoom', function () {
                             yAxis.scaleToFitAxis(this);
@@ -311,9 +312,10 @@ define([
                     if (!cfg('displayYAxis', true)) {
                         yAxis.hide();
                     }
-                    yAxis.on('zoom', ([min, max]) => {
+                    const yZoomHandler = ([min, max]) => {
                         this.module.model.setYBoundaries(min, max);
-                    });
+                    };
+                    yAxis.on('zoom', yZoomHandler).on('zoomOutFull', yZoomHandler);
                 } else {
                     yAxis
                         .setPrimaryGrid(false)
