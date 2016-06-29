@@ -320,6 +320,12 @@ define([
                 return charge.repeat(number);
             });
 
+            value = value.replace(/([+-])([0-9]+)/g, function (match) {
+                var number = match.replace(/[^0-9]/g, '') * 1;
+                var charge = match.replace(/[\(\)0-9]/g, '');
+                return charge.repeat(number);
+            });
+
 
             // need to deal with isotopes
             value = value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>');
@@ -347,7 +353,10 @@ define([
 
             // overlap sub and sup
             value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g,
-                '<span style="position: relative; font-size: 80%; vertical-align: baseline;"><sup style="position: absolute; top: -0.6em;">$2</sup><sub style="position: absolute; left: 0; top: 0.5em;">$1</sub></span></span>&nbsp;');
+                '<span style="position: relative; font-size: 80%;">'+
+                    '<span style="position: relative; bottom: 0.5em;">$2</span>'+
+                    '<span style="position: absolute; vertical-align: text-bottom; left: 0; bottom: -0.4em;">$1</span>'+
+                '</span>&nbsp;');
 
             $element.html(value);
         } else {

@@ -1,5 +1,5 @@
 {
-  "version": "2.56.1-0",
+  "version": "2.57.2-0",
   "modules": [
     {
       "url": "modules/types/display/single_value/",
@@ -66,8 +66,8 @@
             "top": 15
           },
           "size": {
-            "width": 22.04,
-            "height": 16.04
+            "width": 22.0181818,
+            "height": 16.0181818
           },
           "zIndex": 0,
           "display": true,
@@ -161,7 +161,7 @@
           },
           "size": {
             "width": 36,
-            "height": 44
+            "height": 27
           },
           "zIndex": 0,
           "display": true,
@@ -269,8 +269,8 @@
             "right": 0
           },
           "size": {
-            "width": 47.985714200000004,
-            "height": 13.9857142
+            "width": 48.0181818,
+            "height": 14.018181799999999
           },
           "display": true,
           "title": "A molecular formula",
@@ -363,8 +363,8 @@
             "right": 0
           },
           "size": {
-            "width": 47.985714200000004,
-            "height": 15.9857142
+            "width": 48.0181818,
+            "height": 16.0181818
           },
           "display": true,
           "title": "A SMILES",
@@ -457,8 +457,8 @@
             "right": 0
           },
           "size": {
-            "width": 47.985714200000004,
-            "height": 18.9857142
+            "width": 48.0181818,
+            "height": 19.0181818
           },
           "display": true,
           "title": "A molfile with 2D coordinates",
@@ -551,8 +551,8 @@
             "right": 0
           },
           "size": {
-            "width": 47.985714200000004,
-            "height": 18.9857142
+            "width": 48.0181818,
+            "height": 19.0181818
           },
           "display": true,
           "title": "A molfile with 3D coordinates",
@@ -655,8 +655,8 @@
             "top": 0
           },
           "size": {
-            "width": 21.9857142,
-            "height": 13.9857142
+            "width": 22.0181818,
+            "height": 14.018181799999999
           },
           "zIndex": 0,
           "display": true,
@@ -763,8 +763,8 @@
             "top": 32
           },
           "size": {
-            "width": 21.9857142,
-            "height": 18.9857142
+            "width": 22.0181818,
+            "height": 19.0181818
           },
           "zIndex": 0,
           "display": true,
@@ -871,8 +871,8 @@
             "top": 52
           },
           "size": {
-            "width": 21.9857142,
-            "height": 18.9857142
+            "width": 22.0181818,
+            "height": 19.0181818
           },
           "zIndex": 0,
           "display": true,
@@ -978,8 +978,8 @@
             "right": 0
           },
           "size": {
-            "width": 47.985714200000004,
-            "height": 18.9857142
+            "width": 48.0181818,
+            "height": 19.0181818
           },
           "display": true,
           "title": "A PDB coming from a URL",
@@ -1073,8 +1073,8 @@
             "top": 72
           },
           "size": {
-            "width": 21.9857142,
-            "height": 18.9857142
+            "width": 22.0181818,
+            "height": 19.0181818
           },
           "zIndex": 0,
           "display": true,
@@ -1149,8 +1149,8 @@
             "top": 40
           },
           "size": {
-            "width": 61.9857142,
-            "height": 41.985714200000004
+            "width": 62.0181818,
+            "height": 42.0181818
           },
           "zIndex": 0,
           "display": true,
@@ -1274,8 +1274,8 @@
             "top": 0
           },
           "size": {
-            "width": 61.9857142,
-            "height": 38.985714200000004
+            "width": 62.0181818,
+            "height": 39.0181818
           },
           "zIndex": 0,
           "display": true,
@@ -1307,6 +1307,186 @@
         }
       ],
       "title": "Twig template",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "editable",
+                  "enableAddRow",
+                  "autoEdit"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940"
+              ],
+              "customJpaths": [
+                "mf"
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "mf",
+                "jpath": [
+                  "mf"
+                ],
+                "editor": "string",
+                "forceType": "mf",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  1
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                [
+                  "yes"
+                ]
+              ],
+              "varname": [
+                "mfs"
+              ],
+              "data": [
+                "[{\"mf\":\"C10H12O2\"},{\"mf\":\"CO3---\"},{\"mf\":\"CO-3\"},{\"mf\":\"CO---\"},{\"mf\":\"CO+N3-\"},{\"mf\":\"[13C]C++H10O3NO2CO3--\"},{\"mf\":\"Ru+7\"}]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 30
+          },
+          "size": {
+            "width": 37.0181818,
+            "height": 33.0181818
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 14,
+      "vars_in": [
+        {},
+        {
+          "rel": "list",
+          "name": "mfs"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
       "actions_out": [
         {
           "jpath": []
