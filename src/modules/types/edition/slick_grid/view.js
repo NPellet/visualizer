@@ -21,12 +21,7 @@ define([
     cssPromises.push(Util.loadCss('components/slickgrid/slick.grid.css'));
     var cssLoaded = Promise.all(cssPromises);
 
-    // A simple filter
-    var columnFilters = {};
-    var columnFilterFunctions = {};
-
     var uniqueID = 0;
-    var searchFilter;
 
 
     var formatters = {
@@ -61,9 +56,9 @@ define([
         var columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
         var cids = _.map(columns, 'id');
-        for (var key in columnFilters) {
+        for (var key in ctx.columnFilters) {
             if (cids.indexOf(key) === -1) {
-                delete columnFilters[key];
+                delete ctx.columnFilters[key];
             }
         }
 
@@ -288,8 +283,8 @@ define([
         $(ctx.grid.getHeaderRow()).delegate(':input', 'change keyup', _.debounce(function (e) {
             var columnId = $(this).data('columnId');
             if (columnId != null) {
-                columnFilters[columnId] = $.trim($(this).val());
-                columnFilterFunctions[columnId] = getColumnFilterFunction(columnFilters[columnId]);
+                ctx.columnFilters[columnId] = $.trim($(this).val());
+                ctx.columnFilterFunctions[columnId] = getColumnFilterFunction(ctx.columnFilters[columnId]);
                 ctx.slick.data.refresh();
             }
         }, 250));
@@ -299,7 +294,7 @@ define([
             $("<input type='text'>")
                 .css('width', '100%')
                 .data('columnId', args.column.id)
-                .val(columnFilters[args.column.id])
+                .val(ctx.columnFilters[args.column.id])
                 .appendTo(args.node);
         });
 
@@ -609,8 +604,8 @@ define([
         }
 
 
-        if (ctx.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
-            ctx.slick.data.setFilter(searchFilter);
+        if (ctx.module.getConfigurationCheckbox('slickCheck', 'filterColumns') && ctx.searchFilter) {
+            ctx.slick.data.setFilter(ctx.searchFilter);
         }
 
         ctx.slick.data.setItems(ctx.module.data.get(), ctx.idPropertyName);
@@ -640,6 +635,9 @@ define([
 
         init: function () {
             var that = this, varname;
+            this.columnFilters = {};
+            this.columnFilterFunctions = {};
+            this.searchFilter = undefined;
             this._setScript('');
             this.title = String(this.module.definition.title);
             if (!this.$container) {
@@ -1107,15 +1105,15 @@ define([
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
 
-                searchFilter = function (item) {
-                    for (var columnId in columnFilters) {
-                        if (columnId !== undefined && columnFilters[columnId] !== '') {
+                this.searchFilter = function (item) {
+                    for (var columnId in that.columnFilters) {
+                        if (columnId !== undefined && that.columnFilters[columnId] !== '') {
                             try {
                                 var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
                                 var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                                 var jpath = _.clone(DataObject.resurrect(c.jpath));
                                 jpath.unshift(idx);
-                                if (!that.module.data.getChildSync(jpath) || !columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
+                                if (!that.module.data.getChildSync(jpath) || !that.columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
                                     return false;
                                 }
                             } catch (e) {
