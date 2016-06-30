@@ -352,11 +352,9 @@ define([
             });
 
             // overlap sub and sup
-            value = value.replace(/<sub>([0-9.]+)<\/sub><sup>([0-9]*[+‒])<\/sup>/g,
-                '<span style="position: relative; font-size: 80%;">'+
-                    '<span style="position: relative; bottom: 0.5em;">$2</span>'+
-                    '<span style="position: absolute; vertical-align: text-bottom; left: 0; bottom: -0.4em;">$1</span>'+
-                '</span>&nbsp;');
+            value = value.replace(/(<sub>[0-9.]+<\/sub>)(<sup>[0-9]*[+‒]<\/sup>)/g,
+                '<span class="superimpose">$2$1</span>'
+            );
 
             $element.html(value);
         } else {

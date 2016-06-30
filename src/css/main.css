@@ -934,3 +934,16 @@ li.safari {
     -webkit-flex: 1;
     flex: 1;
 }
+
+/* molecular formula renderer */
+span.superimpose {
+    flex-direction: column;
+    display: inline-flex;
+    justify-content: center;
+    text-align: left;
+    vertical-align: middle;
+}
+span.superimpose sup, span.superimpose sub {
+    line-height: 1;
+    font-size: 70%;
+}

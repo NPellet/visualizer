@@ -41,8 +41,7 @@ classes should alter those!
 }
 
 .slick-cell {
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 2px;
 }
 
 .slick-group {
