@@ -156,6 +156,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {key: 'content', title: 'Content'}
                             ],
                             default: 'content'
+                        },
+                        maskOpacity: {
+                            type: 'float',
+                            title: 'Mask opacity',
+                            default: 0.6
                         }
                     }
                 }
@@ -178,7 +183,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
         cancelLabel: ['groups', 'group', 0, 'cancelLabel', 0],
         startState: ['groups', 'group', 0, 'startState', 0],
         content: ['groups', 'group', 0, 'content', 0],
-        contentType: ['groups', 'group', 0, 'contentType', 0]
+        contentType: ['groups', 'group', 0, 'contentType', 0],
+        maskOpacity: ['groups', 'group', 0, 'maskOpacity', 0]
     };
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {

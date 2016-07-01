@@ -5,12 +5,12 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
     function View() {
     }
 
-    const MASK_OPACITY = 0.6;
     var onClick;
 
     $.extend(true, View.prototype, Default, {
         onResize: function () {
             var that = this;
+            this.maskOpacity = this.module.getConfiguration('maskOpacity');
             var label;
             this.dom = $('<div></div>').css({
                 width: '100%',
@@ -168,7 +168,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
         deactivateMask() {
             this.$mask.css({
                 backgroundColor: 'rgba(255, 255, 255)',
-                opacity: MASK_OPACITY
+                opacity: this.maskOpacity
             });
             this.dom.off('click', onClick);
             this.$div.css({
@@ -177,7 +177,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
         },
 
         toggleMask() {
-            if (this.$mask.css('opacity') == MASK_OPACITY) {
+            if (this.$mask.css('opacity') == this.maskOpacity) {
                 this.activateMask();
             } else {
                 this.deactivateMask();
