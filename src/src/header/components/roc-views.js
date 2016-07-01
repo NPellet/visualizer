@@ -1030,7 +1030,8 @@ define([
 
             var fancytree = [];
             for (var element of tree) {
-                this.buildElement(fancytree, element[0], element[1], [element[0]], true, element[0]);
+                var name = formatName(element[0]);
+                this.buildElement(fancytree, name, element[1], [name], true, name);
             }
             fancytree.sort(sortFancytree); // todo sort the root differently ?
 
@@ -1039,28 +1040,28 @@ define([
 
         buildFolder(fancytree, tree, path, firstLevel, flavor) {
             for (var element of tree) {
-                this.buildElement(fancytree, element[0], element[1], path.concat(element[0]), firstLevel, flavor);
+                var name = formatName(element[0]);
+                this.buildElement(fancytree, name, element[1], path.concat(name), firstLevel, flavor);
             }
             fancytree.sort(sortFancytree);
         }
 
         buildElement(fancytree, name, value, path, firstLevel, flavor) {
             if (value instanceof Map) {
-                const realName = name.replace('__folder__', '');
                 var element = {
-                    title: realName,
+                    title: name,
                     folder: true,
                     children: [],
                     path: path
                 };
-                if (firstLevel && realName === this.flavor) {
+                if (firstLevel && name === this.flavor) {
                     element.expanded = true;
                 }
                 this.buildFolder(element.children, value, path, false, flavor);
                 fancytree.push(element);
             } else {
                 fancytree.push({
-                    title: name.replace(/(__view__)+/, ''),
+                    title: name,
                     folder: false,
                     view: value,
                     flavor: flavor
@@ -1314,5 +1315,9 @@ define([
         name = name.trim();
         if (/^[a-zA-Z0-9$_-]+$/.test(name)) return name;
         return false;
+    }
+
+    function formatName(name) {
+        return name.replace('__folder__', '').replace(/(__view__)+/, '');
     }
 });
