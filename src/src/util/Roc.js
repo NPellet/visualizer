@@ -320,7 +320,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             for (var i = 0; i < attachments.length; i++) {
                                 delete entry._attachments[attachments[i]];
                             }
-                            var cdb = this._getCdb(getUuid(entry));
+                            var cdb = this._getCdb(entry);
                             return cdb.remove(attachments).then(() => {
                                 return this.get(entry, {noUpdate: true}).then(data => {
                                     entry._rev = data._rev;
@@ -416,9 +416,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
 
             getAttachment(entry, name, options) {
                 return this.__ready.then(() => {
-                    const uuid = getUuid(entry);
                     options = createOptions(options, 'getAttachment');
-                    const cdb = this._getCdb(uuid);
+                    const cdb = this._getCdb(entry);
                     return cdb.get(name)
                         .catch(handleError(this, options));
                 });
@@ -426,8 +425,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
 
             getAttachmentList(entry) {
                 return this.__ready.then(() => {
-                    const uuid = getUuid(entry);
-                    const cdb = this._getCdb(uuid);
+                    const cdb = this._getCdb(entry);
                     return cdb.list();
                 });
             }
@@ -468,13 +466,14 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                         if (!filename) return;
 
 
+                        options = createOptions(options, 'addAttachment');
                         return this.get(entry, {fromCache: true})
                             .then(entry => {
-                                var uuid = getUuid(entry);
-                                options = createOptions(options, 'addAttachment');
-                                const cdb = this._getCdb(uuid);
-                                return cdb.inlineUploads(attachments)
-                                    .then(() => this.get(uuid, {noUpdate: true}))
+                                const cdb = this._getCdb(entry);
+                                return cdb.inlineUploads(attachments, {
+                                    noRefresh: true
+                                })
+                                    .then(() => this.get(entry, {noUpdate: true}))
                                     .then(data => {
                                         entry._rev = data._rev;
                                         entry._attachments = data._attachments;
@@ -528,9 +527,23 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
             }
 
             // Private
-            _getCdb(uuid) {
+            _getCdb(entry) {
+                var isEntry, uuid;
+                var type = DataObject.getType(entry);
+                if (type === 'string') {
+                    uuid = String(entry);
+                } else if (type === 'object') {
+                    uuid = String(entry._id);
+                    isEntry = true;
+                } else {
+                    throw new Error('Bad arguments');
+                }
                 const docUrl = `${this.entryUrl}/${String(uuid)}`;
-                return new CDB(docUrl);
+                var cdb = new CDB(docUrl);
+                if (isEntry) {
+                    cdb.setDoc(entry);
+                }
+                return cdb;
             }
 
             _findByUuid(uuid, key) {
