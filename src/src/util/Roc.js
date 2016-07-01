@@ -77,6 +77,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
         const viewSearch = ['key', 'startkey', 'endkey'];
         const mandatoryOptions = ['url', 'database'];
 
+        const idb = new IDB('roc-documents');
+
         class Roc {
             constructor(opts) {
                 for (var key in opts) {
@@ -186,7 +188,6 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     if (!doc) return;
                     if (options.varName) {
                         this.typeUrl(doc.$content, doc);
-                        var idb = new IDB('roc-documents');
                         return API.createData(options.varName, doc).then(data => {
                             this.variables[options.varName] = {
                                 type: 'document',
@@ -299,6 +300,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                 entry.$creationDate = res.body.$creationDate;
                                 entry.$modificationDate = res.body.$modificationDate;
                                 this._updateByUuid(entry._id, entry);
+                                idb.delete(entry._id);
                             }
                             return entry;
                         })
@@ -321,7 +323,9 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                 delete entry._attachments[attachments[i]];
                             }
                             var cdb = this._getCdb(entry);
-                            return cdb.remove(attachments).then(() => {
+                            return cdb.remove(attachments, {
+                                noRefresh: true
+                            }).then(() => {
                                 return this.get(entry, {noUpdate: true}).then(data => {
                                     entry._rev = data._rev;
                                     entry._attachments = data._attachments;
