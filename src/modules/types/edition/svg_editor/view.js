@@ -27,7 +27,7 @@ define([
         var args = arguments;
 
         function saveAndTrigger(data) {
-            if(args[0].module.getConfigurationCheckbox('saveSvg', 'yes')) {
+            if (args[0].module.getConfigurationCheckbox('saveSvg', 'yes')) {
                 args[0].module.definition.configuration.groups.group[0].svgcode = [data];
             }
             args[0].module.controller.onChange(data);

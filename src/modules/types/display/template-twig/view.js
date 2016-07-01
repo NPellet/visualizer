@@ -28,7 +28,7 @@ define([
             }
 
 
-            if(this.form) this.form.unbind();
+            if (this.form) this.form.unbind();
             this.form = new Form(this.dom);
             this.form.onChange(submit);
             this.form.onSubmit(() => {

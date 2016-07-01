@@ -47,7 +47,7 @@ define([
 
             var seq = String(this.sequence);
             var annotations = this.annotations || {};
-            var mySequence = new Biojs.Sequence({
+            var mySequence = new window.Biojs.Sequence({
                 sequence: seq,
                 target: this.dom.attr('id'),
                 format: 'CODATA',
