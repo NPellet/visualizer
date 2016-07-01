@@ -49,6 +49,15 @@ define([
         }
 
         /**
+         * Set the document. Useful if another library is already manipulating this document
+         * and you don't want to make a duplicate GET request
+         * @param doc The document object.
+         */
+        setDoc(doc) {
+            this.lastDoc = doc;
+        }
+
+        /**
          @return {object} attachments - An array with the attachments metadata
          @return {number} attachments[].name - The name of the resource
          @return {string} attachments[].content_type - Resource's mime-type
@@ -75,12 +84,12 @@ define([
 
         /**
          * Upload several attachments in one revision
-         * @param {object[]} options
-         * @param {string} options[].name - The name of the attachment
-         * @param {string} options[].contentType - The contentType of the uploaded data
-         * @param {string} options[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
-         * @param {string} options[].content - The attachment data to upload. Alias of data.
-         * @param {Blob|string} options[].file - The attachment data to upload. Alias of data.
+         * @param {object[]} items
+         * @param {string} items[].name - The name of the attachment
+         * @param {string} items[].contentType - The contentType of the uploaded data
+         * @param {string} items[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
+         * @param {string} items[].content - The attachment data to upload. Alias of data.
+         * @param {Blob|string} items[].file - The attachment data to upload. Alias of data.
          * @example
          * // With dataurl
          * cdb.inlineUploads([{
@@ -100,20 +109,20 @@ define([
      * }]);
          * @returns {Promise.<object>} The new list of attachments
          */
-        inlineUploads(options) {
+        inlineUploads(items, options = {}) {
             var prom = this.list();
-            if (!options) return prom.then(() => {
+            if (!items) return prom.then(() => {
                 return attachmentsAsArray(this, this.lastAttachmentsResult);
             });
             return prom.then(() => {
-                if (!(Array.isArray(options))) {
+                if (!(Array.isArray(items))) {
                     throw new TypeError('options must be an array');
                 }
 
                 var prom = [];
-                for (let i = 0; i < options.length; i++) {
-                    let name = getName(options[i]);
-                    let item = options[i];
+                for (let i = 0; i < items.length; i++) {
+                    let name = getName(items[i]);
+                    let item = items[i];
                     let data = item.data || item.file || item.content;
                     if (typeof data === 'string') {
                         if (item.encoding === 'base64') {
@@ -174,40 +183,47 @@ define([
                     .set('Accept', 'application/json')
                     .send(this.lastDoc)
                     .end();
-            }).then(() => this.refresh());
+            }).then(res => {
+                console.log(res);
+                if (options.noRefresh) {
+                    return attachmentsAsArray(this, this.lastDoc._attachments);
+                } else {
+                    return this.refresh();
+                }
+            });
         }
 
 
         /**
          *
-         * @param {object} options
-         * @param {string} options.name - Name of the attachment to upload
-         * @param {string} options.filename - Alias for name
-         * @param {string} options.contentType - Content-Type of the attachment to upload
-         * @param {string|Blob} options.data -  The attachment's content to upload
-         * @param {string|Blob} options.file - The attachments's content to upload
-         * @param {string|Blob} options.content - The attachments's content to upload
+         * @param {object} item
+         * @param {string} item.name - Name of the attachment to upload
+         * @param {string} item.filename - Alias for name
+         * @param {string} item.contentType - Content-Type of the attachment to upload
+         * @param {string|Blob} item.data -  The attachment's content to upload
+         * @param {string|Blob} item.file - The attachments's content to upload
+         * @param {string|Blob} item.content - The attachments's content to upload
          * @returns {Promise.<Object>} The new list of attachments
          */
-        upload(options) {
-            let data = options.data || options.file || options.content;
+        upload(item, options = {}) {
+            let data = item.data || item.file || item.content;
             return this.list().then(() => {
-                if (!options) {
+                if (!item) {
                     throw new Error('Invalid arguments');
                 }
-                let contentType = options.contentType;
+                let contentType = item.contentType;
                 if (!contentType && data instanceof Blob) {
                     contentType = data.type;
                 } else if (typeof data === 'string') {
-                    if (options.encoding === 'base64') {
-                        data = options.data;
+                    if (item.encoding === 'base64') {
+                        data = item.data;
                     } else {
                         let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
                         if (dataUrl) {
                             data = util.b64toBlob(data.slice(dataUrl[0].length), dataUrl[1]);
                             contentType = dataUrl[1];
                         } else {
-                            data = new Blob([data], {content_type: options.contentType});
+                            data = new Blob([data], {content_type: item.contentType});
                         }
                     }
                 } else if (!(data instanceof Blob)) {
@@ -218,7 +234,7 @@ define([
                     throw new Error('Content-Type unresolved. Cannot upload document without content-type');
                 }
                 return superagent
-                    .put(this.docUrl + '/' + getName(options))
+                    .put(this.docUrl + '/' + getName(item))
                     .withCredentials()
                     .query({rev: this.lastDoc._rev})
                     .set('Content-Type', contentType)
@@ -229,7 +245,13 @@ define([
                             this.lastDoc._rev = res.body.rev;
                         }
                     });
-            }).then(() => this.refresh());
+            }).then(() => {
+                if (options.noRefresh) {
+                    return attachmentsAsArray(this, this.lastDoc._attachments);
+                } else {
+                    return this.refresh();
+                }
+            });
         }
 
         /**
@@ -261,9 +283,9 @@ define([
          * @param name The name of the attachment to remove.
          * @returns {Promise.<Object>} The new list of attachments
          */
-        remove(name) {
+        remove(name, options = {}) {
             if (Array.isArray(name)) {
-                return inlineRemove(this, name);
+                return inlineRemove(this, name, options);
             }
             return this.list().then(() => {
                 if (!this.lastDoc._attachments[name]) throw new Error('Cannot remove attachment, attachment does not exist.');
@@ -326,7 +348,7 @@ define([
         // The problem with this is that it doesn't allow to change the contentType
         // (because Blobs are immutable) if the browser did not set it correctly or if
         // the user wants to manually change it will not work properly
-        uploads1(files) {
+        uploads1(files, options = {}) {
             if (!Array.isArray(files)) {
                 throw new Error('uploads expects an array as parameter');
             }
@@ -340,14 +362,18 @@ define([
             req.field('_rev', this.lastDoc._rev);
             return req.end().then(res => {
                 if (res.status !== 201) throw new Error('Error uploading attachments, couchdb returned status code ' + res.status);
-                return this.refresh();
+                if (options.noRefresh) {
+                    return attachmentsAsArray(this, this.lastDoc._attachments);
+                } else {
+                    return this.refresh();
+                }
             });
         }
     }
 
 
     // Private function
-    function inlineRemove(ctx, names) {
+    function inlineRemove(ctx, names, options = {}) {
         return ctx.list().then(() => {
             if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
             if (names.length === 0) return ctx.list();
@@ -363,10 +389,15 @@ define([
                 .then(res => {
                     if (res && res.body && res.body.rev) {
                         ctx.lastDoc._rev = res.body.rev;
-                        return attachmentsAsArray(ctx, ctx.lastDoc._attachments);
                     }
                 });
-        }).then(() => ctx.refresh());
+        }).then(() => {
+            if (options.noRefresh) {
+                return attachmentsAsArray(ctx, ctx.lastDoc._attachments);
+            } else {
+                return ctx.refresh();
+            }
+        });
     }
 
     function attachmentsAsArray(ctx, att) {
