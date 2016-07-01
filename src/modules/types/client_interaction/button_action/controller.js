@@ -155,7 +155,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {key: 'svg', title: 'svg'},
                                 {key: 'content', title: 'Content'}
                             ],
-                            default: 'content' 
+                            default: 'content'
                         }
                     }
                 }
@@ -180,6 +180,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
         content: ['groups', 'group', 0, 'content', 0],
         contentType: ['groups', 'group', 0, 'contentType', 0]
     };
+
+    Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        activate: 'Activate button',
+        deactivate: 'Deactivate button',
+        toggle: 'Toggle button'
+    });
 
     return Controller;
 

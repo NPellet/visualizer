@@ -5,6 +5,9 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
     function View() {
     }
 
+    const MASK_OPACITY = 0.6;
+    var onClick;
+
     $.extend(true, View.prototype, Default, {
         onResize: function () {
             var that = this;
@@ -24,7 +27,8 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
                 label = this.module.getConfiguration('label');
             }
 
-            function onClick(e, val) {
+            onClick = function (e, val) {
+                console.log('clicked');
                 var prom = Promise.resolve(true);
                 if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                     prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
@@ -42,7 +46,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
                     }
                     that.module.controller.onClick(val);
                 });
-            }
+            };
 
             var button = new Button(
                 label,
@@ -56,28 +60,31 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
             );
 
 
-
             this.module.getDomContent().html(this.dom);
-            if (!content) {
+
+            var buttonType = this.getButtonType();
+            if (buttonType === 'button') {
                 this.dom.html(button.render().css({
                     position: 'absolute',
                     bottom: 3
                 }));
-            } else if (contentType === 'imageUrl') {
-                var $img = $('<img src="' + content + '"/>');
-                $img.css({
+            } else if (buttonType === 'imageUrl') {
+                var $div = $('<div><img src="' + content + '"/></div>');
+                $div.find('img').css({
                     width: this.width,
                     height: this.height,
-                    cursor: 'pointer',
                     objectFit: 'contain'
                 });
-                this.dom.html($img);
+                $div.css({
+                    cursor: 'pointer'
+                });
+                this.dom.html($div);
                 this.dom.css({
                     overflow: 'hidden'
                 });
 
                 this.dom.on('click', onClick);
-            } else if (contentType === 'svg') {
+            } else if (buttonType === 'svg') {
                 var $div = $('<div>');
                 $div.append(content);
                 $div.css('cursor', 'pointer');
@@ -87,7 +94,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
                 });
                 $div.on('click', onClick);
                 this.dom.html($div);
-            } else {
+            } else if (buttonType === 'content') {
                 var $div = $('<div>');
                 $div.append(content);
                 $div.css('cursor', 'pointer');
@@ -95,6 +102,12 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
                 this.dom.html($div);
             }
             this.button = button;
+
+            if (buttonType !== 'button') {
+                this.$div = $div;
+                this.$mask = $('<div style="position: absolute; width:100%; height: 100%; background-color: rgba(255, 255, 255, 0); pointer-events: none"></div>');
+                this.dom.prepend(this.$mask);
+            }
 
             if (buttonType === 'toggle' && !content) {
                 that.setButtonColor(that.module.getConfiguration('offColor'));
@@ -104,9 +117,123 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
             this.resolveReady();
         },
 
+        activate: function () {
+            var type = this.getButtonType();
+            switch (type) {
+                case 'button':
+                    this.activateButton();
+                    break;
+                default:
+                    this.activateMask();
+                    break;
+            }
+        },
+
+        deactivate: function () {
+            var type = this.getButtonType();
+            switch (type) {
+                case 'button':
+                    this.deactivateButton();
+                    break;
+                default:
+                    this.deactivateMask();
+                    break;
+            }
+        },
+
+        toggle: function () {
+            var type = this.getButtonType();
+            switch (type) {
+                case 'button':
+                    this.toggleButton();
+                    break;
+                default:
+                    this.toggleMask();
+                    break;
+            }
+        },
+
+        activateMask() {
+            this.$mask.css({
+                backgroundColor: 'rgba(255, 255, 255)',
+                opacity: 0
+            });
+            this.dom.off('click', onClick);
+            this.dom.on('click', onClick);
+            this.$div.css({
+                cursor: 'pointer'
+            });
+        },
+
+        deactivateMask() {
+            this.$mask.css({
+                backgroundColor: 'rgba(255, 255, 255)',
+                opacity: MASK_OPACITY
+            });
+            this.dom.off('click', onClick);
+            this.$div.css({
+                cursor: 'auto'
+            });
+        },
+
+        toggleMask() {
+            if (this.$mask.css('opacity') == MASK_OPACITY) {
+                this.activateMask();
+            } else {
+                this.deactivateMask();
+            }
+        },
+
+        deactivateButton() {
+            var $button = this.dom.find('button');
+            $button.attr('disabled', true);
+            $button.css({
+                cursor: 'auto',
+                pointerEvent: 'none'
+            });
+        },
+
+        activateButton() {
+            var $button = this.dom.find('button');
+            $button.removeAttr('disabled');
+            $button.css({
+                cursor: 'pointer',
+                pointerEvent: 'auto'
+            });
+        },
+
+        toggleButton() {
+            if (this.dom.find('button').attr('disabled')) {
+                this.activateButton();
+            } else {
+                this.deactivateButton();
+            }
+        },
+
         setButtonColor: function (color) {
             color = 'rgba(' + color.join(',') + ')';
             this.button.setColorCss(color);
+        },
+
+        getButtonType: function () {
+            var contentType = this.module.getConfiguration('contentType');
+            if (contentType === 'content') {
+                var content = this.module.getConfiguration('content');
+                if (!content) return 'button';
+            }
+            return contentType;
+        },
+
+        onActionReceive: {
+            activate: function () {
+                this.activate();
+            },
+            deactivate: function () {
+                this.deactivate();
+            },
+            toggle: function () {
+                this.toggle();
+            }
         }
     });
 
