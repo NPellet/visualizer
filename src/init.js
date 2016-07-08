@@ -72,7 +72,8 @@ require.config({
         BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
         BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
         BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
-        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
+        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer',
+        msa: 'lib/msa/msa.min'
     },
     shim: {
         katex: {
@@ -92,6 +93,9 @@ require.config({
                 // Allow cross-origin images
                 this.THREE.ImageUtils.crossOrigin = 'anonymous';
             }
+        },
+        msa: {
+            exports: 'msa'
         },
         'x2js': {
             exports: 'X2JS'
