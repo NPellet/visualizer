@@ -23,7 +23,7 @@ div.ci-module-wrapper .ci-module {
     height: 17px !important;
     background: #d9e1e4 !important;
     color: #869092 !important;
-    font-size: 16px !important;
+    font-size: 15px !important;
     padding: 2px !important;
 
 }
@@ -350,7 +350,8 @@ div.ci-module-header-toolbar ul {
 }
 
 div.ci-module-header-toolbar ul li {
-    margin: 0 0 0 6px;
+    font-size: 16px;
+    margin: -3px 0 0 6px;
     list-style-type: none;
     cursor: pointer;
     color: #666666;
