@@ -986,7 +986,7 @@ define([
 
         getSlickOptions: function () {
             var that = this;
-            console.log(that.module.getConfiguration('slick.headerRowHeight'))
+            console.log(that.module.getConfiguration('slick.headerRowHeight'));
             return {
                 editable: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 enableAddRow: that.module.getConfigurationCheckbox('slickCheck', 'enableAddRow'),
