@@ -1,3 +1,39 @@
+<a name="2.58.0"></a>
+# [2.58.0](https://github.com/NPellet/visualizer/compare/v2.57.1...v2.58.0) (2016-07-11)
+
+
+### Bug Fixes
+
+* **biojs:** fix dependency load order ([a46df4d](https://github.com/NPellet/visualizer/commit/a46df4d)), closes [#917](https://github.com/NPellet/visualizer/issues/917)
+* **grid:** new module with same size and pos in other layers ([#911](https://github.com/NPellet/visualizer/issues/911)) ([37a0a0e](https://github.com/NPellet/visualizer/commit/37a0a0e)), closes [#846](https://github.com/NPellet/visualizer/issues/846)
+* **roc:** delete from idb when saving ([3be3996](https://github.com/NPellet/visualizer/commit/3be3996))
+* **roc-views:** fix error with folder paths ([db73271](https://github.com/NPellet/visualizer/commit/db73271))
+* **roc-views:** fix tree generation when view has same name and path as other view ([7eff41f](https://github.com/NPellet/visualizer/commit/7eff41f))
+* **roc-views:** fix tree generation when view has same name as folder ([015e9ce](https://github.com/NPellet/visualizer/commit/015e9ce))
+* **single_value:** inline edit use original variable casted to string ([160c398](https://github.com/NPellet/visualizer/commit/160c398))
+* **slickgrid:** fix header search problem ([fa0616a](https://github.com/NPellet/visualizer/commit/fa0616a))
+* **spectra_displayer:** fix getSVGString in case of multiple svg elements ([37c854e](https://github.com/NPellet/visualizer/commit/37c854e))
+* add openLink to structures list ([3adb26c](https://github.com/NPellet/visualizer/commit/3adb26c))
+* **spectra_displayer:** handle zoomOutFull event ([dba5fc6](https://github.com/NPellet/visualizer/commit/dba5fc6))
+* **spectra_displayer:** keep color and style on selection ([1346efe](https://github.com/NPellet/visualizer/commit/1346efe))
+* **typerenderer:** mf rendering enforce line height ([a6f6aa7](https://github.com/NPellet/visualizer/commit/a6f6aa7))
+
+
+### Features
+
+* **action_button:** add tooltip title ([3b4e80c](https://github.com/NPellet/visualizer/commit/3b4e80c)), closes [#925](https://github.com/NPellet/visualizer/issues/925)
+* **button_action:** actions in: activate, deactivate, toggle ([5c3df17](https://github.com/NPellet/visualizer/commit/5c3df17))
+* **core:** allow general css options ([688aeb9](https://github.com/NPellet/visualizer/commit/688aeb9))
+* **module:** new module for sequence alignment (msa) ([9d87e8f](https://github.com/NPellet/visualizer/commit/9d87e8f))
+* **sequence:** accept input variables ([24e1536](https://github.com/NPellet/visualizer/commit/24e1536))
+* **single_value:** add debouncing option ([4f21086](https://github.com/NPellet/visualizer/commit/4f21086))
+* **spectra_displayer:** add option to display tracking information about a serie ([d047303](https://github.com/NPellet/visualizer/commit/d047303))
+* **svg_editor:** save svg is an option ([e92b974](https://github.com/NPellet/visualizer/commit/e92b974)), closes [#923](https://github.com/NPellet/visualizer/issues/923)
+* **ui:** add ui.form ([fd58d4c](https://github.com/NPellet/visualizer/commit/fd58d4c))
+* **util:** simple hash function ([dd501ab](https://github.com/NPellet/visualizer/commit/dd501ab))
+
+
+
 <a name="2.57.1"></a>
 ## [2.57.1](https://github.com/NPellet/visualizer/compare/v2.57.0...v2.57.1) (2016-06-16)
 
