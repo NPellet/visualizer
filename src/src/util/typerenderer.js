@@ -38,7 +38,7 @@ define([
         var prom = [];
         prom.push(Util.loadCss('components/flag-icon-css/css/flag-icon.min.css'));
         prom.push(new Promise(function (resolve) {
-            require(['browserified/country-data/index.js'], resolve);
+            require(['countryData'], resolve);
         }));
 
         return Promise.all(prom).then(data => {
