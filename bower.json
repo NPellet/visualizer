@@ -48,7 +48,7 @@
     "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
     "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jsbarcode": "1.6.1",
-    "jsgraph": "v1.14.10-7",
+    "jsgraph": "v1.14.10-10",
     "jsme": "b64a65779879fd6e7faaddd532760882625238c1",
     "jsmol": "v1.0.0",
     "jsnmr": "v0.0.14",
@@ -87,7 +87,7 @@
     "mathjs": "~3.2.1"
   },
   "resolutions": {
-    "jsgraph": "v1.14.10-7",
+    "jsgraph": "v1.14.10-10",
     "jcampconverter": "2.4.5",
     "jquery": "2.2.1"
   },

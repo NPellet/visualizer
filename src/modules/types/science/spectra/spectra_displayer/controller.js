@@ -544,6 +544,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                     title: 'X is monotoneous',
                                     options: {yes: ''},
                                     default: []
+                                },
+                                tracking: {
+                                    type: 'checkbox',
+                                    title: 'Display tracking info',
+                                    options: {yes: ''},
+                                    default: []
                                 }
                             }
                         }
@@ -668,7 +674,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     Controller.prototype.print = function () {
         return this.module.view.getSVGString();
     };
-    
+
     Controller.prototype.exportSVG = function (svgStr) {
         this.sendActionFromEvent('onExportSVG', 'svgString', svgStr);
     };

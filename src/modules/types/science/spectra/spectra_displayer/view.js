@@ -498,6 +498,10 @@ define([
                         if (plotinfos[i].degrade) {
                             serie.degrade(plotinfos[i].degrade);
                         }
+
+                        if (plotinfos[i].tracking && plotinfos[i].tracking[0] === 'yes') {
+                            serie.allowTrackingLine({});
+                        }
                     }
                 }
             }
