@@ -90,6 +90,12 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             title: 'Row Height'
                         },
 
+                        'slick.headerRowHeight': {
+                            type: 'text',
+                            title: 'Header row height',
+                            default: 30
+                        },
+
                         'slick.selectionModel': {
                             type: 'combo',
                             title: 'Selection',
@@ -366,6 +372,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'colorjPath': ['groups', 'group', 0, 'colorjpath', 0],
         'slickCheck': ['groups', 'group', 0, 'slickCheck', 0],
         'slick.rowHeight': ['groups', 'group', 0, 'slick.rowHeight', 0],
+        'slick.headerRowHeight': ['groups', 'group', 0, 'slick.headerRowHeight', 0],
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
         'filterType': ['groups', 'group', 0, 'filterType', 0],
