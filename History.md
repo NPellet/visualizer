@@ -1,3 +1,13 @@
+<a name="2.58.1"></a>
+## [2.58.1](https://github.com/NPellet/visualizer/compare/v2.58.0...v2.58.1) (2016-07-11)
+
+
+### Bug Fixes
+
+* **renderer:** flag renderer ([a1d9442](https://github.com/NPellet/visualizer/commit/a1d9442))
+
+
+
 <a name="2.58.0"></a>
 # [2.58.0](https://github.com/NPellet/visualizer/compare/v2.57.1...v2.58.0) (2016-07-11)
 
