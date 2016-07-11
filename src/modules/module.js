@@ -139,6 +139,18 @@ define([
             return html;
         },
 
+        setCustomStyle: function () {
+            var css = this.definition.css;
+            if (!css) return;
+            css = css[0];
+            var style = {
+                fontSize: css.fontSize[0],
+                fontFamily: css.fontFamily[0]
+            };
+            console.log('css', style);
+            this.dom.find('.ci-module-content').css(style);
+        },
+
         drawToolbar: function () {
             var isLocked = API.isViewLocked();
             var $ul = this.dom.find('.ci-module-header-toolbar ul');
@@ -308,6 +320,7 @@ define([
 
         inDom: function () {
             this.drawToolbar();
+            this.setCustomStyle();
             this.view.inDom();
             this.controller.inDom();
             this.model.inDom();
@@ -661,6 +674,24 @@ define([
                                         default: 'begin'
                                     }
                                 }
+                            },
+                            customCss: {
+                                options: {
+                                    title: 'Custom css',
+                                    type: 'list'
+                                },
+                                fields: {
+                                    fontSize: {
+                                        type: 'text',
+                                        title: 'Font size',
+                                        default: ''
+                                    },
+                                    fontFamily: {
+                                        type: 'text',
+                                        title: 'Font Family',
+                                        default: ''
+                                    }
+                                }
                             }
                         },
                         sections: {
@@ -935,6 +966,10 @@ define([
                     var customToolbar = that.definition.toolbar.custom;
                 }
 
+                if (that.definition.css) {
+                    var customCss = that.definition.css;
+                }
+
 
                 that.eachLayer(function (layer, name) {
                     if (layer.display) {
@@ -955,7 +990,8 @@ define([
                             groups: {
                                 layerDisplay: [{displayOn: [allLayerDisplay]}],
                                 commonToolbar,
-                                customToolbar
+                                customToolbar,
+                                customCss
                             },
                             sections: {layer: [{groups: {group: allLayers}}]}
                         }],
@@ -992,6 +1028,8 @@ define([
                 that.definition.toolbar = {};
                 that.definition.toolbar.custom = value.module_config[0].groups.customToolbar;
                 that.definition.toolbar.common = value.module_config[0].groups.commonToolbar;
+
+                that.definition.css = value.module_config[0].groups.customCss;
 
                 if (value.vars_out) {
                     that.setSendVars(value.vars_out[0].groups.group[0]);
@@ -1300,6 +1338,7 @@ define([
             this.controller.init();
             this.view.init();
             this.drawToolbar();
+            this.setCustomStyle();
             this.view.inDom();
             this.toggleLayer(this.getActiveLayerName());
             this.model.resetListeners();
