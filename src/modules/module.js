@@ -147,7 +147,6 @@ define([
                 fontSize: css.fontSize[0],
                 fontFamily: css.fontFamily[0]
             };
-            console.log('css', style);
             this.dom.find('.ci-module-content').css(style);
         },
 
