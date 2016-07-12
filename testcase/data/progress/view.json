@@ -1,5 +1,5 @@
 {
-  "version": "2.17.9-0",
+  "version": "2.58.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -82,7 +82,28 @@
       ],
       "title": "Total",
       "actions_out": [],
-      "zindex": 3
+      "zindex": 3,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/display/progress/",
@@ -110,7 +131,7 @@
         "Default layer": {
           "position": {
             "left": 18,
-            "top": 15
+            "top": 16
           },
           "size": {
             "width": 49,
@@ -154,7 +175,28 @@
       "title": "",
       "vars_out": [],
       "actions_out": [],
-      "zindex": 1
+      "zindex": 1,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -249,7 +291,28 @@
           "name": "inc"
         }
       ],
-      "zindex": 3
+      "zindex": 3,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -344,7 +407,28 @@
           "name": "inc"
         }
       ],
-      "zindex": 3
+      "zindex": 3,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -439,7 +523,28 @@
           "name": "set"
         }
       ],
-      "zindex": 3
+      "zindex": 3,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -534,7 +639,28 @@
           "name": "tot"
         }
       ],
-      "zindex": 3
+      "zindex": 3,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/display/progress/",
@@ -562,7 +688,7 @@
         "Default layer": {
           "position": {
             "left": 18,
-            "top": 22
+            "top": 26
           },
           "size": {
             "width": 49,
@@ -606,7 +732,28 @@
       "title": "",
       "vars_out": [],
       "actions_out": [],
-      "zindex": 3
+      "zindex": 3,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -701,7 +848,28 @@
           "name": "set"
         }
       ],
-      "zindex": 2
+      "zindex": 2,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     }
   ],
   "variables": [],
