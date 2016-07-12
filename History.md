@@ -1,3 +1,18 @@
+<a name="2.59.0"></a>
+# [2.59.0](https://github.com/NPellet/visualizer/compare/v2.58.1...v2.59.0) (2016-07-12)
+
+
+### Bug Fixes
+
+* **smart_array_filter:** force DataObject conversion ([cba88c5](https://github.com/NPellet/visualizer/commit/cba88c5))
+
+
+### Features
+
+* **slick_grid:** option to keep selected elements from being filtered ([d703c6a](https://github.com/NPellet/visualizer/commit/d703c6a))
+
+
+
 <a name="2.58.1"></a>
 ## [2.58.1](https://github.com/NPellet/visualizer/compare/v2.58.0...v2.58.1) (2016-07-11)
 
