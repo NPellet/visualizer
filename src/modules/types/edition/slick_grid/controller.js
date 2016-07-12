@@ -44,6 +44,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 rowNumbering: 'Show row number when scrolling',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
                                 filterColumns: 'Enable search header',
+                                keepSelected: 'Keep selected elements when filtering',
                                 backToTop: 'Don\'t remember scroll position on new variable',
                                 forgetLastActive: 'Don\'t scroll back to last active row on new variable',
                                 highlightScroll: 'Scroll to highlighted line',

@@ -1105,8 +1105,15 @@ define([
                 this.slick.options = this.getSlickOptions();
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
-
+                var keepSelected = this.module.getConfigurationCheckbox('slickCheck', 'keepSelected')
                 this.searchFilter = function (item) {
+                    // keep s
+                    if (keepSelected) {
+                        var selected = that._getSelectedItems();
+                        if (selected.find(s => item[that.idPropertyName] === s[that.idPropertyName])) {
+                            return true;
+                        }
+                    }
                     for (var columnId in that.columnFilters) {
                         if (columnId !== undefined && that.columnFilters[columnId] !== '') {
                             try {
