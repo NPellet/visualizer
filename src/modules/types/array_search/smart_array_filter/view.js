@@ -56,7 +56,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function ($, Default
         },
         update: {
             input: function (value) {
-                this._data = value.resurrect();
+                this._data = JSON.parse(JSON.stringify(value));
                 this._originalData = value.slice();
                 this.module.controller.onQuery(this._query || '');
             }
