@@ -1105,7 +1105,7 @@ define([
                 this.slick.options = this.getSlickOptions();
                 this.generateUniqIds();
                 this.addRowAllowed = this.module.getConfigurationCheckbox('slickCheck', 'enableAddRow');
-                var keepSelected = this.module.getConfigurationCheckbox('slickCheck', 'keepSelected')
+                var keepSelected = this.module.getConfigurationCheckbox('slickCheck', 'keepSelected');
                 this.searchFilter = function (item) {
                     // keep s
                     if (keepSelected) {
