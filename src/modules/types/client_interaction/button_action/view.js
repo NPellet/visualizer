@@ -28,7 +28,6 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
             }
 
             onClick = function (e, val) {
-                console.log('clicked');
                 var prom = Promise.resolve(true);
                 if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                     prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
