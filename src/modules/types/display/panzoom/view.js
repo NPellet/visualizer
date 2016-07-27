@@ -538,13 +538,18 @@ define([
 
 
                 $(this).css('cursor', 'pointer');
+                var base = {shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, altKey: e.altKey};
+                var clickedPixel = Object.assign({}, base);
                 var allClickedPixels = {};
-                var clickedPixel = {};
                 getPixels(e, allClickedPixels, clickedPixel);
-                if (!_.isEmpty(clickedPixel)) {
+                if (Object.keys(clickedPixel).length !== 3) {
                     that.module.controller.clickedPixel(clickedPixel);
                 }
-                if (!_.isEmpty(allClickedPixels)) {
+                if (Object.keys(allClickedPixels).length !== 0) {
+                    var keys = Object.keys(allClickedPixels);
+                    for (var i = 0; i < keys.length; i++) {
+                        Object.assign(allClickedPixels[keys[i]], base);
+                    }
                     that.module.controller.allClickedPixels(allClickedPixels);
                 }
             });
@@ -552,24 +557,31 @@ define([
             // Handle move event
             that.dom.off('mousemove.panzoom');
             that.dom.on('mousemove.panzoom', function (e) {
+                var base = {shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, altKey: e.altKey};
                 if (that.state === 'pan') {
                     return;
                 }
                 var allHoverPixels = {};
-                var hoverPixel = {};
+                var hoverPixel = Object.assign({}, base);
                 getPixels(e, allHoverPixels, hoverPixel);
-                if (!_.isEmpty(hoverPixel) && !_.isEqual(DataObject.resurrect(that.lastHoverPixel), hoverPixel)) {
+
+                var hoverPixelKeys = Object.keys(hoverPixel);
+                if (hoverPixelKeys.length > 3 && !_.isEqual(DataObject.resurrect(that.lastHoverPixel), hoverPixel)) {
                     that.module.controller.hoverPixel(hoverPixel);
                     that.lastHoverPixel = hoverPixel;
                     that.highlightOn(hoverPixel);
                 }
-                if (_.isEmpty(hoverPixel)) {
+                if (hoverPixelKeys.length === 3) {
                     that.highlightOff();
                 }
-                if (!_.isEmpty(hoverPixel) && that._hl === undefined) {
+                if (hoverPixelKeys.length > 3 && that._hl === undefined) {
                     that.highlightOn(hoverPixel);
                 }
                 if (!_.isEmpty(allHoverPixels) && !_.isEqual(DataObject.resurrect(that.lastAllHoverPixels), allHoverPixels)) {
+                    var keys = Object.keys(allHoverPixels);
+                    for (var i = 0; i < keys.length; i++) {
+                        Object.assign(allHoverPixels[keys[i]], base);
+                    }
                     that.module.controller.allHoverPixels(allHoverPixels);
                     that.lastAllHoverPixels = allHoverPixels;
                 }
