@@ -1,6 +1,17 @@
 'use strict';
 
-define(['jquery', 'src/main/datas'], function ($) {
+const dataTransform = {
+    exponential10: {
+        forward: function (input) {
+            return Math.pow(10, input);
+        },
+        backward: function (input) {
+            return Math.log10(input);
+        }
+    }
+};
+
+define(['jquery', 'src/util/debug'], function ($, Debug) {
     class Form {
         constructor(dom) {
             this.dom = $(dom);
@@ -14,7 +25,12 @@ define(['jquery', 'src/main/datas'], function ($) {
             var inputs = this.dom.find('input,textarea,select');
             var out = inputs.map(function () {
                 const {name, value, type} = this;
-                return {name, value, type, dom: this};
+                return {
+                    name,
+                    value,
+                    type,
+                    transform: getTransform(this, 'forward'),
+                    dom: this};
             }).toArray().filter(o => {
                 if (!o.name) return false;
                 return (o.type !== 'radio' || o.dom.checked);
@@ -24,10 +40,13 @@ define(['jquery', 'src/main/datas'], function ($) {
                 switch (o.type) {
                     case 'number':
                     case 'range':
-                        o.value = +o.value;
+                        o.value = o.transform(+o.value);
                         break;
                     case 'checkbox':
                         o.value = o.dom.checked;
+                        break;
+                    default:
+                        o.value = o.transform(o.value);
                         break;
                 }
             });
@@ -74,6 +93,7 @@ define(['jquery', 'src/main/datas'], function ($) {
         }
 
         _setElement(el, value) {
+            var transform = getTransform(el, 'backward');
             switch (el.type) {
                 case 'checkbox':
                     el.checked = value;
@@ -90,7 +110,7 @@ define(['jquery', 'src/main/datas'], function ($) {
                     break;
                 default:
                     // $(el).attr('value', value);
-                    el.value = value;
+                    el.value = transform(value);
                     break;
             }
         }
@@ -133,3 +153,21 @@ define(['jquery', 'src/main/datas'], function ($) {
 
     return Form;
 });
+
+function getTransform(dom, type) {
+    if (type !== 'forward' && type !== 'backward') throw new TypeError('Type should be "forward" or "backward"');
+    var transform = dom.getAttribute('data-transform');
+    var transformFn;
+    if (transform) {
+        if (!dataTransform[transform]) {
+            Debug.warn(`util/Form: invalid attribute value for data-transform: ${transform} (transform not found)`);
+        } else {
+            transformFn = dataTransform[transform][type];
+        }
+    }
+    return transformFn || identity;
+}
+
+function identity(input) {
+    return input;
+}
