@@ -514,8 +514,8 @@ define([
         });
 
         ctx.grid.onSelectedRowsChanged.subscribe(function (e, args) {
-            ctx.lastSelectedRows = args.rows;
-            var selectedItems = ctx._getItemsInfo(args.rows);
+            ctx.lastSelectedRows = args.rows.slice().sort();
+            var selectedItems = ctx._getItemsInfo(ctx.lastSelectedRows);
             if (ctx.hasFilter) {
                 ctx._runFilter({
                     event: 'rowsSelected',
