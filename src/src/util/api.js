@@ -310,7 +310,8 @@ define([
     };
 
     exports.preventUnload = function (message) {
-        window.onbeforeunload = function () {
+        window.onbeforeunload = function (e) {
+            e.returnValue = message;
             return message;
         };
     };
