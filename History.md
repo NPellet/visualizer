@@ -1,3 +1,21 @@
+<a name="2.60.0"></a>
+# [2.60.0](https://github.com/NPellet/visualizer/compare/v2.59.0...v2.60.0) (2016-08-05)
+
+
+### Bug Fixes
+
+* correctly show message for API.preventUnload ([c617b9f](https://github.com/NPellet/visualizer/commit/c617b9f))
+* **form:** buttons should not submit the form ([4e357be](https://github.com/NPellet/visualizer/commit/4e357be))
+* **slickgrid:** keep selected rows sorted ([6eef947](https://github.com/NPellet/visualizer/commit/6eef947))
+
+
+### Features
+
+* **panzoom:** send modifier keys along with click and hover events ([dfe6d75](https://github.com/NPellet/visualizer/commit/dfe6d75))
+* **twig:** add data transforms to form ([6b69315](https://github.com/NPellet/visualizer/commit/6b69315))
+
+
+
 <a name="2.59.0"></a>
 # [2.59.0](https://github.com/NPellet/visualizer/compare/v2.58.1...v2.59.0) (2016-07-12)
 
