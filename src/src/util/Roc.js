@@ -193,7 +193,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                 type: 'document',
                                 data: data
                             };
-                            if(options.track) {
+                            if (options.track) {
                                 data.onChange(() => {
                                     idb.set(data._id, data.resurrect());
                                 });
@@ -220,8 +220,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     options = createOptions(options, 'get');
                     if (options.fromCache) {
                         var e = this._findByUuid(uuid);
-                        if(e) return e;
-                        if(!options.fallback) return e;
+                        if (e) return e;
+                        if (!options.fallback) return e;
                     }
                     return superagent.get(`${this.entryUrl}/${uuid}`)
                         .withCredentials()
@@ -334,7 +334,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                     entry._attachments = data._attachments;
                                     entry.$creationDate = data.$creationDate;
                                     entry.$modificationDate = data.$modificationDate;
-                                    if(entry.triggerChange) {
+                                    if (entry.triggerChange) {
                                         entry.triggerChange();
                                     }
                                     return entry;
@@ -414,7 +414,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
 
                                         return this.processor.process(type, entry.$content, attachment).then(() => {
                                             this.typeUrl(entry.$content, entry);
-                                            if(entry.triggerChange) {
+                                            if (entry.triggerChange) {
                                                 entry.triggerChange();
                                             }
                                             return entry;
@@ -492,7 +492,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                         entry._attachments = data._attachments;
                                         entry.$creationDate = data.$creationDate;
                                         entry.$modificationDate = data.$modificationDate;
-                                        if(entry.triggerChange) {
+                                        if (entry.triggerChange) {
                                             entry.triggerChange();
                                         }
                                         return entry;
