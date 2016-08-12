@@ -85,6 +85,10 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         onBondHover: {
             label: 'A bond was hovered',
             refAction: ['bond']
+        },
+        onMolfileLoaded: {
+            label: 'A molfile was loaded',
+            refAction: ['mol']
         }
     };
 
@@ -190,6 +194,15 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         };
     };
 
+    /**
+     * We receive an event from JSME
+     * @param mol
+     * @param molV3
+     * @param smiles
+     * @param jme
+     * @param svg
+     * @param action
+     */
     Controller.prototype.onChange = function (mol, molV3, smiles, jme, svg, action) {
         var currentValue = this.module.view._currentValue;
 
@@ -206,6 +219,11 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                 currentValue.setValue(jme, true);
             }
             this.module.model.dataTriggerChange(currentValue);
+        }
+
+        // we loaded an external file
+        if (action === 'readMolFile') {
+            this.sendActionFromEvent('onMolfileLoaded', 'mol', mol);
         }
 
         // Always create smiles because smiles is not a possible input variable
@@ -243,6 +261,10 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
 
     Controller.prototype.onBondHover = function (bond) {
         this.sendActionFromEvent('onBondHover', 'bond', bond);
+    };
+
+    Controller.prototype.onMolfileLoaded = function (molfile) {
+        this.sendActionFromEvent('onMolfileLoaded', 'mol', molfile);
     };
 
     Controller.prototype.configAliases = {
