@@ -87,7 +87,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
             refAction: ['bond']
         },
         onMolfileLoaded: {
-            label: 'A molfile was loaded',
+            label: 'A non empty molfile was loaded',
             refAction: ['mol']
         }
     };
@@ -222,7 +222,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         }
 
         // we loaded an external file
-        if (action === 'readMolFile') {
+        if (action === 'readMolFile' && smiles!=='') {
             this.sendActionFromEvent('onMolfileLoaded', 'mol', mol);
         }
 

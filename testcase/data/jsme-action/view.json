@@ -1,0 +1,381 @@
+{
+	"modules": [
+		{
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"highlightLine": [
+								[
+									"Yes"
+								]
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molecule",
+								"jpath": "element.molfile",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "mols2d"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": [
+						"molfile"
+					],
+					"name": "mol2d"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"url": "modules/types/display/jqgrid/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 40,
+						"height": 41
+					},
+					"display": true,
+					"title": "Untitled module",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Untitled module",
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			}
+		},
+		{
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook"
+								]
+							],
+							"defaultaction": [
+								null
+							],
+							"labelsize": [
+								14
+							],
+							"bondwidth": [
+								1
+							],
+							"highlightColor": [
+								"3"
+							],
+							"outputResult": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "mol2d"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onStructureChange",
+					"rel": "mol",
+					"jpath": [],
+					"name": "molfile"
+				}
+			],
+			"url": "modules/types/science/chemistry/jsme/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 41,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 41
+					},
+					"display": true,
+					"title": "Input mol2d, output molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Input mol2d, output molfile",
+			"actions_out": [
+				{
+					"event": "onMolfileLoaded",
+					"rel": "mol",
+					"jpath": [],
+					"name": "loaded"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"script": [
+								"console.log(\"Received action\")\nconsole.log(getAction())"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 89,
+						"top": 0
+					},
+					"size": {
+						"width": 49,
+						"height": 41
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 9,
+			"vars_in": [
+				{
+					"rel": "inputValue",
+					"name": ""
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "execute",
+					"name": "loaded"
+				}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		}
+	],
+	"variables": [
+		{
+			"varname": "mol2d",
+			"jpath": [
+				"mol2d"
+			]
+		},
+		{
+			"varname": "mols3d",
+			"jpath": [
+				"mols3d"
+			]
+		},
+		{
+			"varname": "mol3d",
+			"jpath": [
+				"mol3d"
+			]
+		},
+		{
+			"varname": "mols2d",
+			"jpath": [
+				"mols2d"
+			]
+		}
+	],
+	"configuration": {
+		"title": "No title"
+	},
+	"version": "2.60.1-0",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"aliases": [],
+	"pouchvariables": []
+}
