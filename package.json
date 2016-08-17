@@ -65,7 +65,7 @@
   },
   "private": true,
   "dependencies": {
-    "country-data": "0.0.24",
+    "country-data": "0.0.27",
     "mime-types": "^2.1.10",
     "superagent": "^2.0.0"
   }
