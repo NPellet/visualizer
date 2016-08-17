@@ -222,7 +222,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         }
 
         // we loaded an external file
-        if (action === 'readMolFile' && smiles!=='') {
+        if (action === 'readMolFile' && smiles !== '') {
             this.sendActionFromEvent('onMolfileLoaded', 'mol', mol);
         }
 
