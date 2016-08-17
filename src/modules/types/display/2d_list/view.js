@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'], function (Default, Renderer, API) {
+define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 'src/util/util'], function (Default, Renderer, API, Util) {
 
     function View() {
     }
@@ -12,7 +12,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
             html.push('<div class="ci-displaylist-list-2d"></div>');
             this.dom = $(html.join(''));
             this.module.getDomContent().html(this.dom);
-
+            this.rendererOptions = Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
+            var forceType = this.module.getConfiguration('forceType');
+            if (forceType) this.rendererOptions.forceType = forceType;
         },
         blank: {
             list: function () {
@@ -88,7 +90,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                     });
                 }
 
-                Renderer.render(td, element, valJpath);
+
+                Renderer.render(td, element, valJpath, that.rendererOptions);
 
                 API.listenHighlight(element, function (onOff, key) {
                     if (onOff) {

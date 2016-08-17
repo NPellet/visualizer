@@ -1,6 +1,7 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
+    var typeList = Util.getStructuresComboOptions();
 
     function Controller() {
     }
@@ -74,6 +75,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         height: {
                             type: 'text',
                             title: 'Cell height'
+                        },
+                        forceType: {
+                            type: 'combo',
+                            title: 'Force type',
+                            default: '',
+                            options: typeList
+                        },
+                        rendererOptions: {
+                            type: 'text',
+                            default: '',
+                            title: 'Renderer options'
                         }
                     }
                 }
@@ -85,7 +97,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
         colnumber: ['groups', 'group', 0, 'colnumber', 0],
         colorjpath: ['groups', 'group', 0, 'colorjPath', 0],
         valjpath: ['groups', 'group', 0, 'valjPath', 0],
-        height: ['groups', 'group', 0, 'height', 0]
+        height: ['groups', 'group', 0, 'height', 0],
+        forceType: ['groups', 'group', 0, 'forceType', 0],
+        rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0]
     };
 
     return Controller;

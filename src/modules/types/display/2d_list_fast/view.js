@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'], function (Default, Renderer, API) {
+define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 'src/util/util'], function (Default, Renderer, API, Util) {
 
     function View() {
     }
@@ -10,6 +10,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
         init: function () {
             this.dom = $('<div class="ci-displaylist-list-2d-fast"></div>');
             this.module.getDomContent().html(this.dom);
+            this.rendererOptions = Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
+            var forceType = this.module.getConfiguration('forceType');
+            if (forceType) this.rendererOptions.forceType = forceType;
         },
 
         blank: {
@@ -140,7 +143,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api'],
                 }
             }, false, this.module.getId());
 
-            return [Renderer.render(td, element, valJpath), td];
+            return [Renderer.render(td, element, valJpath, this.rendererOptions), td];
         },
 
         setDim: function (val) {
