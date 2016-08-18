@@ -1,3 +1,14 @@
+<a name="2.61.0"></a>
+# [2.61.0](https://github.com/NPellet/visualizer/compare/v2.60.0...v2.61.0) (2016-08-18)
+
+
+### Features
+
+* **2d_list:** forceType and rendererOptions options ([fd42e40](https://github.com/NPellet/visualizer/commit/fd42e40)), closes [#941](https://github.com/NPellet/visualizer/issues/941)
+* **jsme:** Add new action out to JSME for external change of molfile ([a8bf001](https://github.com/NPellet/visualizer/commit/a8bf001))
+
+
+
 <a name="2.60.0"></a>
 # [2.60.0](https://github.com/NPellet/visualizer/compare/v2.59.0...v2.60.0) (2016-08-05)
 
