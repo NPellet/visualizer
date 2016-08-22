@@ -447,7 +447,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
             refAction: ['rows']
         },
         onRowActive: {
-            label: 'Row actived',
+            label: 'Row activated',
             refVariable: ['row'],
             refAction: ['row']
         },
