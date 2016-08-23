@@ -231,6 +231,7 @@ div.ci-module-wrapper .ci-module {
     box-sizing: border-box;
     font-size: 3em;
     color: #333333;
+    z-index: 1000;
 }
 
 .ci-module-loading.ci-module-loading-visible {

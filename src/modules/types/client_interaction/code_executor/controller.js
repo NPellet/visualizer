@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/api', 'src/util/debug', 'src/util/sandbox', 'src/util/util'], function (CodeEditor, API, Debug, Sandbox, Util) {
+define([
+    'jquery',
+    'modules/types/client_interaction/code_editor/controller',
+    'src/util/api',
+    'src/util/debug',
+    'src/util/sandbox',
+    'src/util/util'
+], function ($, CodeEditor, API, Debug, Sandbox, Util) {
 
     function Controller() {
         CodeEditor.call(this);
@@ -8,6 +15,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
         this.outputObject = {};
         this.reloaded = true;
         this.scriptID = 0;
+        this.executing = 0;
     }
 
     Util.inherits(Controller, CodeEditor);
@@ -121,6 +129,9 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     Controller.prototype.onButtonClick = function (name) {
+        if (this.executing > 0) {
+            return Debug.warn('Already executing...');
+        }
         this.initExecutor().then(function (executor) {
             executor.setButton(name);
             executor.execute();
@@ -149,6 +160,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     Controller.prototype.initImpl = function () {
+        this.stopExecution();
         var neededLibs = this.module.getConfiguration('libs');
         var urls = [];
         var aliases = [];
@@ -207,6 +219,20 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
 
     Controller.prototype.onGlobalPreferenceChange = function () {
         this.reloaded = true;
+    };
+
+    Controller.prototype.startExecution = function () {
+        this.executing++;
+        this.module.view.disableButtons();
+    };
+
+    Controller.prototype.stopExecution = function () {
+        if (this.executing > 0) {
+            this.executing--;
+        }
+        if (this.executing === 0) {
+            this.module.view.enableButtons();
+        }
     };
 
     function ScriptExecutor(controller, libs) {
@@ -341,6 +367,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
     };
 
     ScriptExecutor.prototype.execute = function () {
+        this.controller.startExecution();
         var variables = this.controller.module.view._input;
         var ctxVariables = {};
         var varNum = 0;
@@ -379,6 +406,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/api
             }
         }, function (e) {
             reportError(that.title, e);
+        }).then(function () {
+            that.controller.stopExecution();
         });
     };
 

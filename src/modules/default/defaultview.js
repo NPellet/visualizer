@@ -84,7 +84,8 @@ define(['src/util/util'], function (Util) {
             }
         },
 
-        showLoading: function () {
+        showLoading: function (customText = 'Loading ...') {
+            this.module.domLoading.text(customText);
             this.module.domLoading.addClass('ci-module-loading-visible');
         },
 

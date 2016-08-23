@@ -1,5 +1,5 @@
 {
-  "version": "2.28.5-0",
+  "version": "2.61.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -27,7 +27,7 @@
                 []
               ],
               "script": [
-                "set('x', 1);"
+                "var date = Date.now()\nwhile(Date.now()-date < 1000){}\nset('x', 1);"
               ]
             }
           ],
@@ -54,7 +54,7 @@
           },
           "size": {
             "width": 32,
-            "height": 10
+            "height": 17
           },
           "zIndex": 0,
           "display": true,
@@ -70,7 +70,7 @@
           "name": "Default layer"
         }
       },
-      "id": 2,
+      "id": 1,
       "vars_in": [
         {}
       ],
@@ -88,7 +88,28 @@
           "name": "x"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/display/single_value/",
@@ -163,7 +184,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 2,
       "vars_in": [
         {
           "rel": "value",
@@ -175,7 +196,28 @@
       ],
       "title": "",
       "vars_out": [],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_executor/",
@@ -194,7 +236,7 @@
                 []
               ],
               "script": [
-                "setAsync();\n\nsetTimeout(function(){\n    set('x', 2);\n    done();\n}, 500);"
+                "setAsync();\n\nsetTimeout(function(){\n    set('x', 2);\n    done();\n}, 1000);"
               ]
             }
           ],
@@ -217,7 +259,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 11
+            "top": 18
           },
           "size": {
             "width": 32,
@@ -237,7 +279,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 3,
       "vars_in": [
         {}
       ],
@@ -255,7 +297,28 @@
           "name": "x"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_executor/",
@@ -274,7 +337,7 @@
                 []
               ],
               "script": [
-                "return Promise.resolve()\n    .then(function(){\n        set('x', 3);\n    });"
+                "return new Promise(resolve => {\n    setTimeout(resolve, 1000);\n}).then(function(){\n    set('x', 3);\n});"
               ]
             }
           ],
@@ -297,7 +360,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 34
+            "top": 41
           },
           "size": {
             "width": 32,
@@ -317,7 +380,7 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 4,
       "vars_in": [
         {}
       ],
@@ -335,7 +398,28 @@
           "name": "x"
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     }
   ],
   "variables": [],

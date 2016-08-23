@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (Default, Util, ace, Context, $) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'ace/ace',
+    'src/util/context',
+    'jquery',
+    'forms/button'
+], function (Default, Util, ace, Context, $, Button) {
 
     function View() {
     }
@@ -22,6 +29,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
         this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
         this._input = {};
+        this.buttons = [];
         this.module.getDomContent().html(table);
     };
 
@@ -45,11 +53,16 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             if (buttons) {
                 buttons.forEach(function (button, idx) {
                     var onclick = that.module.controller.onButtonClick.bind(that.module.controller, button.name);
-                    that.buttonCell.append(
-                        $('<span>' + button.label + '</span>')
-                            .addClass('form-button')
-                            .on('click', onclick)
+                    var b = new Button(
+                        button.label,
+                        onclick,
+                        {
+                            color: 'Grey',
+                            disabled: false
+                        }
                     );
+                    that.buttonCell.append(b.render());
+                    that.buttons.push(b);
                     if (idx === 0 && that.editor) {
                         that.editor.commands.addCommand({
                             name: 'run',
@@ -66,6 +79,14 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         }
 
         this.resolveReady();
+    };
+
+    View.prototype.disableButtons = function () {
+        this.buttons.forEach(b => b.disable());
+    };
+
+    View.prototype.enableButtons = function () {
+        this.buttons.forEach(b => b.enable());
     };
 
     View.prototype.onResize = function () {
