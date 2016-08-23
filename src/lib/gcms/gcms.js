@@ -320,7 +320,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     return;
                 }
 
-                that.lockTrackingLine = !that.lockTrackingLine;
+                //that.lockTrackingLine = !that.lockTrackingLine;
             });
 
             var shape = this.gcGraph.newShape({
