@@ -984,8 +984,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             if (!isNaN(self.msGraph.getBottomAxis().getMinValue())) {
 
-                self.msGraph.getLeftAxis().scaleToFitAxis(self.msGraph.getBottomAxis(), self.msSerieMouseTrack);
-//								self.msGraph.getLeftAxis().setMinMaxToFitSeries();
+                // self.msGraph.getLeftAxis().scaleToFitAxis(self.msGraph.getBottomAxis(), self.msSerieMouseTrack);
+                self.msGraph.getLeftAxis().setMinMaxToFitSeries();
 
             } else {
 
