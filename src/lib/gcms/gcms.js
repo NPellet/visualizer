@@ -511,6 +511,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
         doMsFromAUC: function (annot, shape) { // Creating an averaged MS on the fly
+            if (!this.gcSerie) return;
 
             var data = annot.getProperties();
             var that = this;
