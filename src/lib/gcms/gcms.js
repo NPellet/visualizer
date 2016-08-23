@@ -758,7 +758,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 serie = this.gcGraph.newSerie(i, {
                     useSlots: false
                 }).autoAxis().setData(gc[i]).XIsMonotoneous();
-
+                serie.setLineWidth(1, 'selected');
+                this.gcGraph.selectSerie(serie);
                 serie.autoAxis();
                 this.gcGraph.redraw();
                 this.gcGraph.drawSeries();
