@@ -13,8 +13,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         this.options = $.extend(true, {}, defaults, options);
 
         // A GC can have more than 1 serie
-        this.gcData = [];
-        this.gcSeries = [];
+        this.gcData = null;
+        this.gcSerie = null;
 
         // Contains the ms Data
         this.msData = null;
@@ -80,43 +80,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                         }
                     }
                 ],
-
-                /*
-
-                 onAnnotationMake: function( annot, shape ) {
-
-                 switch( annot.type ) {
-                 case 'areaundercurve':
-                 that.trigger( 'AUCCreated', [ annot ] );
-                 break;
-                 }
-
-                 //						that.onAnnotationMake( annot );
-                 },
-
-                 onAnnotationSelect: function( annot, shape ) {
-
-                 switch(annot.type) {
-                 case 'areaundercurve':
-                 that.doMsFromAUC( annot, shape );
-                 //that.AUCSelected( annot );
-                 that.trigger( 'AUCSelected', [ this ] );
-
-                 break;
-                 }
-                 },
-
-                 onAnnotationChange: function( annot, shape ) {
-
-                 that.doMsFromAUC( annot, this );
-
-                 switch( annot.type ) {
-                 case 'surfaceUnderCurve':
-                 that.trigger( 'AUCChanged', [ this ] );
-                 break;
-                 }
-                 },
-                 */
 
                 onAnnotationRemove: function (annot) {
 
@@ -256,7 +219,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
                  var annot = new DataObject(annot, true);
 
-                 var val = annot.pos.x,
+                 var val = annot.position[0].x,
                  index,
                  index2,
                  val,
@@ -340,6 +303,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             };
 
             this.gcGraph = new Graph(this.domGC, optionsGc, axisGc);
+
+            this.setupGCEvents();
+
             this.msGraph = new Graph(this.domMS, optionsMs, axisMs);
 
             this.msGraph.getBottomAxis().zoom(0, 100);
@@ -358,17 +324,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             });
 
             var shape = this.gcGraph.newShape({
-                pos: {
-                    x: 100,
-                    y: 'min'
-                },
-
-                pos2: {
-                    x: 100,
-                    y: 'max'
-                },
-
                 type: 'line',
+                position: [
+                    {x: 100, y: 'min'},
+                    {x: 100, y: 'max'}
+                ],
                 strokeColor: 'rgba(0, 0, 0, 1)',
                 strokeWidth: 2
             });
@@ -387,7 +347,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             });
 
             this.gcGraph.on('shapeSelect', function (shape) {
-                var data = shape.getData();
+                var data = shape.getProperties();
                 if (data.ingredient) {
                     that.trigger('ingredientSelected', data.ingredient);
                 }
@@ -397,66 +357,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     that.trigger('AUCSelected', data);
                 }
             });
-
-
-            /*this.gcGraph.shapeHandlers.onCreated.push(function (shape) {
-
-                if (!( shape.data.type == 'areaundercurve' )) {
-                    return;
-                }
-
-                shape.setSerie(that.gcGraph.getSerie(0));
-
-                that.aucs.push(shape);
-                that.trigger('AUCCreated', shape);
-            });
-
-            this.gcGraph.shapeHandlers.onAfterMoved.push(function (shape) {
-
-                if (!( shape.data.type == 'areaundercurve' )) {
-                    return;
-                }
-
-                that.doMsFromAUC(shape.data, shape);
-                that.trigger('AUCChange', shape);
-            });
-
-            this.gcGraph.shapeHandlers.onAfterResized.push(function (shape) {
-
-                if (!( shape.data.type == 'areaundercurve' )) {
-                    return;
-                }
-
-                that.doMsFromAUC(shape.data, shape);
-                that.trigger('AUCChange', shape);
-            });
-
-            this.gcGraph.shapeHandlers.onSelected.push(function (shape) {
-
-                if (!( shape.data.type == 'areaundercurve' )) {
-                    return;
-                }
-
-                that.trigger('AUCSelected', shape);
-            });
-
-            this.gcGraph.shapeHandlers.onUnselected.push(function (shape) {
-
-                if (!( shape.data.type == 'areaundercurve' )) {
-                    return;
-                }
-
-                that.trigger('AUCUnselected', shape);
-            });
-
-            this.gcGraph.shapeHandlers.onRemoved.push(function (shape) {
-
-                if (!( shape.data.type == 'areaundercurve' )) {
-                    return;
-                }
-
-                that.trigger('AUCRemoved', shape);
-            });*/
 
             this.gcGraph.getXAxis().on('zoom', function () {
                 that.gcGraph.getYAxis().scaleToFitAxis();
@@ -469,6 +369,101 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.lockTrackingLine = false;
 
+        },
+
+        setupGCEvents() {
+            var graph = this.gcGraph;
+
+            graph.on('shapeNew', (shape) => {
+                if (shape.type === 'areaundercurve') {
+                    this.trigger('AUCCreated', [shape]);
+                }
+            });
+
+            graph.on('shapeSelected', (shape) => {
+                if (shape.type === 'areaundercurve') {
+                    this.doMsFromAUC(shape);
+                    this.trigger('AUCSelected', [shape]);
+                }
+            });
+
+            graph.on('shapeChanged', (shape) => {
+                if (shape.type === 'areaundercurve') {
+                    this.doMsFromAUC(shape);
+                    this.trigger('AUCChanged', [shape]);
+                }
+            });
+
+            graph.on('shapeMouseOver', (shape) => {
+                if (shape.type === 'areaundercurve') {
+                    this.doMsFromAUC(shape);
+                }
+            });
+
+            graph.on('shapeMouseOut', (shape) => {
+                if (shape.type === 'areaundercurve') {
+                    this.clearMsFromAuc();
+                }
+            });
+
+            /*this.gcGraph.shapeHandlers.onCreated.push(function (shape) {
+
+             if (!( shape.data.type == 'areaundercurve' )) {
+             return;
+             }
+
+             shape.setSerie(that.gcGraph.getSerie(0));
+
+             that.aucs.push(shape);
+             that.trigger('AUCCreated', shape);
+             });
+
+             this.gcGraph.shapeHandlers.onAfterMoved.push(function (shape) {
+
+             if (!( shape.data.type == 'areaundercurve' )) {
+             return;
+             }
+
+             that.doMsFromAUC(shape.data, shape);
+             that.trigger('AUCChange', shape);
+             });
+
+             this.gcGraph.shapeHandlers.onAfterResized.push(function (shape) {
+
+             if (!( shape.data.type == 'areaundercurve' )) {
+             return;
+             }
+
+             that.doMsFromAUC(shape.data, shape);
+             that.trigger('AUCChange', shape);
+             });
+
+             this.gcGraph.shapeHandlers.onSelected.push(function (shape) {
+
+             if (!( shape.data.type == 'areaundercurve' )) {
+             return;
+             }
+
+             that.trigger('AUCSelected', shape);
+             });
+
+             this.gcGraph.shapeHandlers.onUnselected.push(function (shape) {
+
+             if (!( shape.data.type == 'areaundercurve' )) {
+             return;
+             }
+
+             that.trigger('AUCUnselected', shape);
+             });
+
+             this.gcGraph.shapeHandlers.onRemoved.push(function (shape) {
+
+             if (!( shape.data.type == 'areaundercurve' )) {
+             return;
+             }
+
+             that.trigger('AUCRemoved', shape);
+             });*/
         },
 
         msShapesSelectChange: function () {
@@ -517,26 +512,25 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
         doMsFromAUC: function (annot, shape) { // Creating an averaged MS on the fly
 
-            var that = this,
-                xStart = annot.pos.x,
-                xEnd = annot.pos2.x,
-
-                indexStart = that.gcSeries[0].searchClosestValue(xStart).xBeforeIndex,
-                indexEnd = that.gcSeries[0].searchClosestValue(xEnd).xBeforeIndex,
-                indexMin = Math.min(indexStart, indexEnd),
-                indexMax = Math.max(indexStart, indexEnd),
-                obj = [],
-                allMs = [],
-                i,
-                j,
-                l,
-                floor,
-                finalMs = [];
+            var data = annot.getProperties();
+            var that = this;
+            var xStart = data.position[0].x;
+            var xEnd = data.position[1].x;
+            var indexStart = that.gcSerie.searchClosestValue(xStart).xBeforeIndex;
+            var indexEnd = that.gcSerie.searchClosestValue(xEnd).xBeforeIndex;
+            var indexMin = Math.min(indexStart, indexEnd);
+            var indexMax = Math.max(indexStart, indexEnd);
+            var obj = [];
+            var allMs = [];
+            var i;
+            var j;
+            var l;
+            var floor;
+            var finalMs = [];
 
             if (indexMax == indexMin) {
                 return;
             }
-            //	console.log( that.msData, indexMin, indexMax );
 
             for (i = indexMin; i <= indexMax; i++) {
 
@@ -556,11 +550,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 }
             }
 
-            allMs.sort(function (a, b) {
-                return a - b;
-            });
+            allMs.sort((a, b) => a - b);
 
-            for (var i = 0; i < allMs.length; i++) {
+            for (i = 0; i < allMs.length; i++) {
                 finalMs.push(allMs[i]);
                 finalMs.push(Math.round(obj[allMs[i]] / Math.abs(indexMax - indexMin)));
             }
@@ -588,17 +580,13 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     })
                     .autoAxis()
                     .setYAxis(that.msGraph.getRightAxis())
-                    .setLineWidth(3);
+                    .setLineWidth(1.5);
             }
 
             buffer.msFromAucSerie.setData(finalMs);
             buffer.msFromAucSerie.setLineColor(annot.strokeColor || annot.fillColor || 'red');
 
-            that.msGraph._updateAxes();
-            //that.msGraph.getRightAxis().setMaxValue(that.msGraph.getBoundaryAxisFromSeries(that.msGraph.getRightAxis(), 'y', 'max'));
-
-            //that.msGraph.getRightAxis().setMinMaxToFitSeries();
-
+            // that.msGraph._updateAxes();
 
             if (this.firstMsSerie) {
                 that.msGraph.getBottomAxis().setMinMaxToFitSeries();
@@ -606,13 +594,19 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
 
             that.msGraph.getRightAxis().scaleToFitAxis(that.msGraph.getBottomAxis()/*, buffer.msFromAucSerie */);
-            //that.msGraph.getLeftAxis().setMinMaxToFitSeries();
 
             that.msGraph.redraw();
             that.msGraph.drawSeries();
 
 
             that.trigger('onMsFromAUCChange', [finalMs, annot, buffer.msFromAucSerie]);
+        },
+
+        clearMsFromAuc() {
+            if (this.msFromAucSerie) {
+                this.msFromAucSerie.setData(null);
+                this.msFromAucSerie.draw();
+            }
         },
 
 
@@ -712,14 +706,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.options.msIsContinuous = cont;
         },
 
-        /*resize: function(width, height) {
-         this.gcGraph.resize(width - 10, height / 2 - 10);
-         this.msGraph.resize(width - 10, height / 2 - 10);
-
-         this.gcGraph.drawSeries();
-         this.msGraph.drawSeries();
-         },*/
-
         getGC: function () {
             return this.gcGraph;
         },
@@ -729,13 +715,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
         blank: function () {
-            if (!this.gcSeries) return;
+            if (!this.gcSerie) return;
 
-            for (var i = 0; i < this.gcSeries.length; i++) {
-                this.gcSeries[i].kill();
-            }
-            this.gcSeries = [];
-            this.gcData = [];
+            this.gcSerie.kill();
+            this.gcSerie = null;
+            this.gcData = null;
 
             if (this.msSerieMouseTrack) {
                 this.msSerieMouseTrack.kill(true);
@@ -773,7 +757,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
 
                 this.gcData = gc[i];
-                this.gcSeries.push(serie);
+                this.gcSerie = serie;
 
                 break;
             }
@@ -794,6 +778,19 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
         setMS: function (ms) {
+            var minX = Infinity;
+            var maxX = -Infinity;
+            for (var i = 0; i < ms.length; i++) {
+                for (var j = 0; j < ms[i].length; j += 2) {
+                    if (ms[i][j] > maxX) {
+                        maxX = ms[i][j];
+                    }
+                    if (ms[i][j] < minX) {
+                        minX = ms[i][j];
+                    }
+                }
+            }
+            this.msGraph.getBottomAxis().forceMin(minX).forceMax(maxX);
             this.msData = ms;
         },
 
@@ -951,7 +948,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     .msGraph
                     .newSerie('', {
                         lineToZero: !that.options.msIsContinuous,
-                        lineColor: 'rgba( 100, 100, 100, 0.5 )'
+                        lineColor: 'black'
                     })
                     .autoAxis();
             }
@@ -959,9 +956,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             var xVal = that.gcData[x * 2];
 
-            var trackData = that.trackingLineGC.getData();
-            trackData.pos.x = xVal;
-            trackData.pos2.x = xVal;
+            var trackData = that.trackingLineGC.getProperties();
+            trackData.position[0].x = xVal;
+            trackData.position[1].x = xVal;
 
             that.trackingLineGC.redraw();
 

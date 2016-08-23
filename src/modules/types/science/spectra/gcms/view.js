@@ -47,8 +47,8 @@ define([
 
                 AUCCreated: function (auc) {
 
-                    var pos = Math.round(auc.data.pos.x);
-                    var pos2 = Math.round(auc.data.pos2.x);
+                    // var pos = Math.round(auc.getProperties().position[0].x);
+                    // var pos2 = Math.round(auc.getProperties().position[1].x);
 //					var color = rgbToHex.apply( this, auc.data.color );
 
 
@@ -56,8 +56,9 @@ define([
 
                 AUCChange: function (auc) {
 
-                    var pos = Math.round(auc.data.pos.x);
-                    var pos2 = Math.round(auc.data.pos2.x);
+                    var data = auc.getProperties();
+                    var pos = Math.round(data.position[0].x);
+                    var pos2 = Math.round(data.position[1].x);
 
                     if (auc.msFromAucSerie) {
                         auc.msFromAucSerie.setLineColor('rgba(255, 0, 0, 1)');
