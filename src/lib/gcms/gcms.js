@@ -14,11 +14,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
         // A GC can have more than 1 serie
         this.gcData = [];
+        this.gcSeries = [];
 
         // Contains the ms Data
         this.msData = null;
-
-        this.gcSeries = [];
 
         this.domGC = domGC;
         this.domMS = domMS;
@@ -730,21 +729,14 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
         blank: function () {
-            /*
-             var i = 0,
-             l = this.gcData.length;
-             */
+            if (!this.gcSeries) return;
 
-            if (this.gcData && this.gcData.kill) {
-                this.gcData.kill();
+            for (var i = 0; i < this.gcSeries.length; i++) {
+                this.gcSeries[i].kill();
             }
+            this.gcSeries = [];
+            this.gcData = [];
 
-            /*
-             for( ; i < l ; i++ ) {
-             this.gcData[i].kill();
-             }
-             this.gcData = [];
-             */
             if (this.msSerieMouseTrack) {
                 this.msSerieMouseTrack.kill(true);
                 this.msSerieMouseTrack = false;
@@ -760,15 +752,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
 
             this.blank();
-            this.gcData = [];
 
             for (var i in gc) {
 
                 serie = this.gcGraph.newSerie(i, {
                     useSlots: false
                 }).autoAxis().setData(gc[i]).XIsMonotoneous();
-
-                this.gcData.push(serie);
 
                 serie.autoAxis();
                 this.gcGraph.redraw();
@@ -798,6 +787,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 auc.setPosition();
             });
 
+            this.gcGraph.autoscaleAxes();
+            this.gcGraph.draw();
             this.updateIngredientPeaks();
         },
 

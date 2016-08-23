@@ -1,10 +1,12 @@
 'use strict';
 
 define([
+    'jquery',
     'modules/default/defaultview',
     'src/util/datatraversing',
     'lib/gcms/gcms'
-], function (Default,
+], function ($,
+             Default,
              Traversing,
              GCMS) {
 
@@ -14,9 +16,6 @@ define([
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-
-            this.namedSeries = {};
-
             var div1 = document.createElement('div');
             var div2 = document.createElement('div');
 
@@ -173,30 +172,24 @@ define([
         },
 
         update: {
-            'jcamp': function (moduleValue) {
-                var that = this;
-
+            jcamp: function (moduleValue) {
                 moduleValue = String(moduleValue.get());
-                require(['jcampconverter'], function (tojcamp) {
-
-                    tojcamp.convert(moduleValue, true).then(function (jcamp) {
-
+                require(['jcampconverter'], (tojcamp) => {
+                    tojcamp.convert(moduleValue, true).then((jcamp) => {
                         if (jcamp.gcms) {
+                            this.gcmsInstance.setGC(jcamp.gcms.gc);
+                            this.gcmsInstance.setMS(jcamp.gcms.ms);
 
-                            that.gcmsInstance.setGC(jcamp.gcms.gc);
-                            that.gcmsInstance.setMS(jcamp.gcms.ms);
+                            this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
+                            this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
 
-                            that.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
-                            that.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
-
-                            that.jcamp = jcamp;
+                            this.jcamp = jcamp;
                         }
                     });
-
                 });
             },
 
-            'annotationgc': function (value) {
+            annotationgc: function (value) {
                 if (!value) {
                     return;
                 }
@@ -205,12 +198,12 @@ define([
                 this.addAnnotations(value);
             },
 
-            'gcms': function (moduleValue) {
+            gcms: function (moduleValue) {
                 this.gcmsInstance.setGC(moduleValue.gc);
                 this.gcmsInstance.setMS(moduleValue.ms);
             },
 
-            'gc': function (moduleValue) {
+            gc: function (moduleValue) {
                 var that = this;
                 if (!this.gcmsInstance || !moduleValue)
                     return;
@@ -225,18 +218,18 @@ define([
             },
 
 
-            'ms': function (moduleValue, name, cont) {
+            ms: function (moduleValue, name, cont) {
                 if (!this.gcmsInstance || !moduleValue)
                     return;
 
                 this.gcmsInstance.setExternalMS(moduleValue, {});
             },
 
-            'mscont': function (moduleValue, name) {
+            mscont: function (moduleValue, name) {
                 this.update.ms(moduleValue, name, true);
             },
 
-            'ingredientList': function (value, varName) {
+            ingredientList: function (value, varName) {
 
                 var that = this;
 
@@ -252,7 +245,7 @@ define([
                 });
             },
 
-            'RIComponents': function (value) {
+            RIComponents: function (value) {
 
                 if (value) {
                     this.gcmsInstance.setRIComponents(value);
