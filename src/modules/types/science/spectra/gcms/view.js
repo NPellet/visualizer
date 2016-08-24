@@ -4,11 +4,13 @@ define([
     'jquery',
     'modules/default/defaultview',
     'src/util/datatraversing',
-    'lib/gcms/gcms'
+    'lib/gcms/gcms',
+    'jcampconverter'
 ], function ($,
              Default,
              Traversing,
-             GCMS) {
+             GCMS,
+             Converter) {
 
     function View() {
     }
@@ -43,17 +45,6 @@ define([
             var that = this;
 
             var gcmsinstance = new GCMS(this.div1, this.div2, {
-
-
-                AUCCreated: function (auc) {
-
-                    // var pos = Math.round(auc.getProperties().position[0].x);
-                    // var pos2 = Math.round(auc.getProperties().position[1].x);
-//					var color = rgbToHex.apply( this, auc.data.color );
-
-
-                },
-
                 AUCChange: function (auc) {
 
                     var data = auc.getProperties();
@@ -63,12 +54,9 @@ define([
                     if (auc.msFromAucSerie) {
                         auc.msFromAucSerie.setLineColor('rgba(255, 0, 0, 1)');
                         auc.msFromAucSerie.applyLineStyles();
-
-//									auc.msFromAucSerie.showPeakPicking();
                     }
 
                     if (auc.data._originalSource) {
-
                         auc.data._originalSource.set('from', pos);
                         auc.data._originalSource.set('to', pos2);
 
@@ -77,32 +65,18 @@ define([
                 },
 
                 onMsFromAUCChange: function (ms) {
-
                     that.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
-
                 },
 
 
                 AUCSelected: function (auc) {
-
-                    /*	if( auc.msFromAucSerie ) {
-                     auc.msFromAucSerie.setLineColor( 'rgba(255, 0, 0, 1)' );
-                     auc.msFromAucSerie.applyLineStyles();
-
-                     auc.msFromAucSerie.showPeakPicking( true );
-                     }*/
                     if (auc.data) {
-
                         that.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
-
                         that.module.controller.sendActionFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
-
                     }
-
                 },
 
                 AUCUnselected: function (auc) {
-
                     var rgb = auc.data.color;
 
                     auc.set('fillColor', 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 0.3)');
@@ -116,42 +90,33 @@ define([
                         auc.msFromAucSerie.applyLineStyles();
                         auc.msFromAucSerie.hidePeakPicking(true);
                     }
-
                 },
 
                 AUCRemoved: function (auc) {
-
-
                     if (auc.msFromAucSerie) {
                         auc.msFromAucSerie.kill();
                     }
-
                 },
 
                 MZChange: function (ms) {
-
                     that.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
                 },
 
                 MSChangeIndex: function (msIndex, ms) {
                     that.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
                     that.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
-
                 },
 
                 onZoomGC: function (from, to) {
-
                     that.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [from, to]);
                     that.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
                 },
 
                 ingredientSelected: function (ingredient) {
-
                     that.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
                 },
 
                 onlyOneMS: true
-
             });
 
             this.gcmsInstance = gcmsinstance;
@@ -159,7 +124,6 @@ define([
 
         unload: function () {
             this.dom.remove();
-            //this.gcmsInstance = false;
         },
 
         onResize: function () {
@@ -167,26 +131,37 @@ define([
         },
 
         blank: {
-            jcamp: function (varname) {
-                //	this.gcmsInstance.blank();
+            jcamp() {
+                this.gcmsInstance.blank();
+            },
+            jcampRO() {
+                this.gcmsInstance.blankRO();
             }
         },
 
         update: {
             jcamp: function (moduleValue) {
                 moduleValue = String(moduleValue.get());
-                require(['jcampconverter'], (tojcamp) => {
-                    tojcamp.convert(moduleValue, true).then((jcamp) => {
-                        if (jcamp.gcms) {
-                            this.gcmsInstance.setGC(jcamp.gcms.gc);
-                            this.gcmsInstance.setMS(jcamp.gcms.ms);
+                Converter.convert(moduleValue, true).then((jcamp) => {
+                    if (jcamp.gcms) {
+                        this.gcmsInstance.setGC(jcamp.gcms.gc);
+                        this.gcmsInstance.setMS(jcamp.gcms.ms);
 
-                            this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
-                            this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
+                        this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
+                        this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
 
-                            this.jcamp = jcamp;
-                        }
-                    });
+                        this.jcamp = jcamp;
+                    }
+                });
+            },
+
+            jcampRO: function (moduleValue) {
+                moduleValue = String(moduleValue.get());
+                Converter.convert(moduleValue, true).then((jcamp) => {
+                    if (jcamp.gcms) {
+                        this.gcmsInstance.setGCRO(jcamp.gcms.gc);
+                        this.gcmsInstance.setMSRO(jcamp.gcms.ms);
+                    }
                 });
             },
 
@@ -209,15 +184,12 @@ define([
                 if (!this.gcmsInstance || !moduleValue)
                     return;
 
-                require(['jcampconverter'], function (tojcamp) {
-                    var jcamp = tojcamp(moduleValue.get()).done(function (jcamp) {
-                        if (jcamp.spectra) {
-                            that.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
-                        }
-                    });
+                Converter.convert(moduleValue.get()).then(function (jcamp) {
+                    if (jcamp.spectra) {
+                        that.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
+                    }
                 });
             },
-
 
             ms: function (moduleValue, name, cont) {
                 if (!this.gcmsInstance || !moduleValue)
@@ -228,30 +200,6 @@ define([
 
             mscont: function (moduleValue, name) {
                 this.update.ms(moduleValue, name, true);
-            },
-
-            ingredientList: function (value, varName) {
-
-                var that = this;
-
-                if (!value) {
-                    return;
-                }
-
-
-                this.ingredientList = value;
-
-                this.ingredientList.map(function (source) {
-                    that.gcmsInstance.addIngredient(source);
-                });
-            },
-
-            RIComponents: function (value) {
-
-                if (value) {
-                    this.gcmsInstance.setRIComponents(value);
-                }
-
             }
         },
 
@@ -260,8 +208,6 @@ define([
         },
 
         resetAnnotationsGC: function () {
-
-
             if (!this.gcmsInstance) {
                 return;
             }
@@ -270,7 +216,6 @@ define([
         },
 
         addAnnotations: function (a) {
-
             var that = this;
             a.map(function (source) {
 
@@ -284,7 +229,6 @@ define([
 
         onActionReceive: {
             fromtoGC: function (value, name) {
-
                 var from = value.from - Math.abs(value.to - value.from) * 0.1;
                 var to = value.to + Math.abs(value.to - value.from) * 0.1;
 
@@ -295,7 +239,6 @@ define([
                 this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
 
                 this.gcmsInstance.updateIngredientPeaks();
-
             },
 
             fromtoMS: function (value, name) {
@@ -303,7 +246,6 @@ define([
             },
 
             externalMS: function (value, name) {
-
                 var that = this;
                 if (!this.gcmsInstance || !value) {
                     return;
@@ -321,12 +263,9 @@ define([
                 this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
                 this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (value.pos.x + value.pos2.x) / 2);
                 this.gcmsInstance.updateIngredientPeaks();
-
             },
 
             centerGC: function (value) {
-
-
                 var a = this.gcmsInstance.getGC().getBottomAxis();
 
                 var mi = a.getCurrentMin();

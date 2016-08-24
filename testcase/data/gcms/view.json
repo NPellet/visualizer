@@ -1,262 +1,342 @@
 {
-  "version": "2.13.1-b2",
-  "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
-  },
-  "modules": [
-	{
-	  "url": "modules/types/display/fasttable/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				null
-			  ]
+	"version": "2.61.1-0",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
 			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.name",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0,
-			"top": 0
-		  },
-		  "size": {
-			"width": 22,
-			"height": 14
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "List",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 1,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "result"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "List",
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"jcamp"
-		  ],
-		  "name": "jcamp"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
+		},
+		"xWidth": 10,
+		"yHeight": 10
 	},
-	{
-	  "url": "modules/types/science/spectra/gcms/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "continuous": [
-				[]
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 23,
-			"top": 0
-		  },
-		  "size": {
-			"width": 98,
-			"height": 58
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "GC-MS",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 2,
-	  "vars_in": [
+	"modules": [
 		{
-		  "rel": "jcamp",
-		  "name": "jcamp"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "GC-MS",
-	  "vars_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
-	}
-  ],
-  "variables": [
-	{
-	  "varname": "result",
-	  "jpath": [
-		"result"
-	  ]
-	}
-  ],
-  "pouchvariables": [
-	{}
-  ],
-  "configuration": {
-	"title": "2D spectra Demo"
-  },
-  "actionscripts": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  {
-			"name": [
-			  null
+			"url": "modules/types/display/fasttable/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"nblines": [
+								20
+							],
+							"toggle": [
+								null
+							],
+							"colorjpath": [
+								null
+							],
+							"filterRow": [
+								null
+							],
+							"highlightLine": [
+								[
+									"Yes"
+								]
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": "element.name",
+								"number": [],
+								"editable": "none"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 22,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "List",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "result"
+				}
 			],
-			"script": [
-			  null
+			"actions_in": [
+				{}
+			],
+			"title": "List",
+			"vars_out": [
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": [
+						"jcamp"
+					],
+					"name": "jcamp"
+				},
+				{
+					"event": "onHover",
+					"rel": "row",
+					"jpath": [
+						"jcamp"
+					],
+					"name": "jcampRO"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
 			]
-		  }
-		]
-	  }
-	}
-  ],
-  "crons": [
-	{}
-  ],
-  "couch_replication": [
-	{
-	  "sections": {},
-	  "groups": {
-		"couch": [
-		  [
-			{
-			  "direction": "both",
-			  "continuous": []
-			}
-		  ]
-		]
-	  }
-	}
-  ],
-  "init_script": [
-	{
-	  "sections": {},
-	  "groups": {
-		"general": [
-		  {
-			"script": [
-			  null
+		},
+		{
+			"url": "modules/types/science/spectra/gcms/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"continuous": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 23,
+						"top": 0
+					},
+					"size": {
+						"width": 98,
+						"height": 58
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "GC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				},
+				{
+					"rel": "jcampRO",
+					"name": "jcampRO"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "GC-MS",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
 			]
-		  }
-		]
-	  }
-	}
-  ],
-  "custom_filters": [
-	{
-	  "sections": {
-		"filters": [
-		  {
+		}
+	],
+	"variables": [
+		{
+			"varname": "result",
+			"jpath": [
+				"result"
+			]
+		}
+	],
+	"pouchvariables": [
+		{}
+	],
+	"configuration": {
+		"title": "2D spectra Demo"
+	},
+	"actionscripts": [
+		{
 			"sections": {},
 			"groups": {
-			  "filter": [
-				{
-				  "name": [
-					null
-				  ],
-				  "script": [
-					null
-				  ]
-				}
-			  ],
-			  "libs": [
-				[
-				  {}
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
 				]
-			  ]
 			}
-		  }
-		]
-	  },
-	  "groups": {}
-	}
-  ],
-  "actionfiles": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  [
-			{}
-		  ]
-		]
-	  }
-	}
-  ]
+		}
+	],
+	"crons": [
+		{}
+	],
+	"couch_replication": [
+		{
+			"sections": {},
+			"groups": {
+				"couch": [
+					[
+						{
+							"direction": "both",
+							"continuous": []
+						}
+					]
+				]
+			}
+		}
+	],
+	"init_script": [
+		{
+			"sections": {},
+			"groups": {
+				"general": [
+					{
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"custom_filters": [
+		{
+			"sections": {
+				"filters": [
+					{
+						"sections": {},
+						"groups": {
+							"filter": [
+								{
+									"name": [
+										null
+									],
+									"script": [
+										null
+									]
+								}
+							],
+							"libs": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				]
+			},
+			"groups": {}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	],
+	"aliases": []
 }

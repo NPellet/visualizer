@@ -9,15 +9,20 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     };
 
     function GCMS(domGC, domMS, options) {
-
         this.options = $.extend(true, {}, defaults, options);
 
         // A GC can have more than 1 serie
         this.gcData = null;
         this.gcSerie = null;
+        this.msSerieMouseTrack = null;
+
+        this.gcDataRO = null;
+        this.gcSerieRO = null;
+        this.msSerieMouseTrackRO = null;
 
         // Contains the ms Data
         this.msData = null;
+        this.msDataRO = null;
 
         this.domGC = domGC;
         this.domMS = domMS;
@@ -31,12 +36,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     }
 
     GCMS.prototype = {
-
         init: function () {
-
             var that = this;
             var optionsGc = {
-
                 paddingTop: 25,
                 paddingBottom: 0,
                 paddingLeft: 20,
@@ -95,24 +97,14 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     that.killMsFromAUC();
 
                 },
-                handleMouseLeave: function () {
-
-//							if( that.msSerieMouseTrack ) {
-//								that.msSerieMouseTrack.kill();
-//								that.msSerieMouseTrack = false;
-//							}
-                },
                 onMouseMoveData: function (e, val) {
-
                     if (that.lockTrackingLine) {
                         return;
                     }
 
-                    for (var i in val) { // Get the first value
-                        break;
-                    }
+                    var i = Object.keys(val)[0];
 
-                    if (val[i] == undefined || !that.msData) {
+                    if (val[i] == undefined || (!that.msData && !that.msDataRO)) {
                         return;
                     }
 
@@ -135,22 +127,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                         axisDataSpacing: {min: 0, max: 0.1},
 
                         onZoom: function (from, to) {
-
                             // Zoom on GC has changed
                             that.updateIngredientPeaks();
-
-
                             that.trigger('onZoomGC', [from, to]);
                         }
                     }
                 ],
-                // top: [
-                //     {
-                //         labelValue: 'RI',
-                //         primaryGrid: false,
-                //         secondaryGrid: false
-                //     }
-                // ],
                 left: [
                     {
                         labelValue: 'Intensity (-)',
@@ -491,25 +473,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.msGraph._dom.style.height = h2 + 'px';
         },
 
-
-        // setRIComponents: function (components) {
-        //
-        //
-        //     this.gcGraph.getTopAxis().linkToAxis(this.gcGraph.getBottomAxis(), function (val) {
-        //
-        //         var result = 0;
-        //         var i;
-        //         for (i = 0; i < components.length; i++) {
-        //             result += components[i] * Math.pow(val, components.length - i - 1);
-        //         }
-        //         return result;
-        //
-        //     }, 1);
-        //
-        //     this.gcGraph.redraw();
-        //     this.gcGraph.drawSeries();
-        // },
-
         doMsFromAUC: function (annot, shape) { // Creating an averaged MS on the fly
             if (!this.gcSerie) return;
 
@@ -721,7 +684,20 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             if (this.msSerieMouseTrack) {
                 this.msSerieMouseTrack.kill(true);
-                this.msSerieMouseTrack = false;
+                this.msSerieMouseTrack = null;
+            }
+        },
+
+        blankRO() {
+            if (!this.gcSerieRO) return;
+
+            this.gcSerieRO.kill();
+            this.gcSerieRO = null;
+            this.gcDataRO = null;
+
+            if (this.msSerieMouseTrackRO) {
+                this.msSerieMouseTrackRO.kill(true);
+                this.msSerieMouseTrackRO = null;
             }
         },
 
@@ -737,15 +713,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             for (var i in gc) {
 
-                serie = this.gcGraph.newSerie(i, {
+                serie = this.gcGraph.newSerie('gc', {
                     useSlots: false
                 }).autoAxis().setData(gc[i]).XIsMonotoneous();
                 serie.setLineWidth(1, 'selected');
                 this.gcGraph.selectSerie(serie);
-                serie.autoAxis();
-                this.gcGraph.redraw();
-                this.gcGraph.drawSeries();
-
 
                 var axis = this.gcGraph.getBottomAxis();
                 var from = axis.getCurrentMin();
@@ -772,7 +744,32 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.gcGraph.autoscaleAxes();
             this.gcGraph.draw();
-            this.updateIngredientPeaks();
+            this.gcGraph.drawSeries();
+        },
+
+        setGCRO(gc) {
+            if (!this.gcGraph) {
+                return;
+            }
+
+            this.blankRO();
+
+            for (var i in gc) {
+                var serie = this.gcGraph.newSerie('gcro', {
+                    useSlots: false,
+                    selectable: false,
+                    lineColor: 'lightgreen'
+                }).autoAxis().setData(gc[i]).XIsMonotoneous();
+
+                this.gcDataRO = gc[i];
+                this.gcSerieRO = serie;
+
+                break;
+            }
+
+            this.gcGraph.autoscaleAxes();
+            this.gcGraph.draw();
+            this.gcGraph.drawSeries();
         },
 
         setMS: function (ms) {
@@ -790,6 +787,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
             this.msGraph.getBottomAxis().forceMin(minX).forceMax(maxX);
             this.msData = ms;
+        },
+
+        setMSRO(ms) {
+            this.msDataRO = ms;
         },
 
         setExternalGC: function (gc) {
@@ -876,179 +877,74 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.msGraph.drawSeries();
         },
 
-        addIngredient: function (ingredient) {
-            ingredient.color = ingredient.color || [100, 100, 100];
-
-
-            var that = this,
-                obj = {
-                    pos: {
-                        x: ingredient.rt_x,
-                        y: ingredient.rt_y,
-                        dy: '-10px'
-
-                    },
-                    pos2: {
-                        dx: 0,
-                        dy: '-30px'
-                    },
-
-                    ingredient: ingredient,
-
-                    locked: true,
-                    selectable: true,
-                    moveable: false,
-                    resizeable: false,
-
-                    type: 'line',
-                    strokeColor: 'rgb(' + ingredient.color.join() + ')',
-                    strokeWidth: 2,
-                    label: {
-                        position: {
-                            dx: 0,
-                            dy: '-40px'
-                        },
-                        baseline: 'middle',
-                        angle: -90,
-                        color: 'rgb(' + ingredient.color.join() + ')',
-                        size: 12,
-                        text: ingredient.name
-                    }
-                };
-
-
-            this.gcGraph.newShape(obj).then(function (shape) {
-
-                that.ingredients.push([ingredient, shape]);
-
-                shape.draw();
-                shape.redraw();
-            });
-
-            this.updateIngredientPeaks();
-        },
-
-
         setMSIndexData: function (x) {
-
             this.recalculateMSMove(x);
         },
 
         recalculateMSMove: function (x) {
-            var that = this;
-            var ms = that.msData[x];
+            var ms = this.msData ? this.msData[x] : null;
+            var msro = this.msDataRO ? this.msDataRO[x] : null;
 
-            that.trigger('MSChangeIndex', [x, ms]);
+            this.trigger('MSChangeIndex', [x, ms]);
 
-            if (!that.msSerieMouseTrack) {
-
-                that.msSerieMouseTrack = that
+            if (!this.msSerieMouseTrack) {
+                this.msSerieMouseTrack = this
                     .msGraph
-                    .newSerie('', {
-                        lineToZero: !that.options.msIsContinuous,
+                    .newSerie('ms', {
+                        lineToZero: !this.options.msIsContinuous,
                         lineColor: 'black'
                     })
                     .autoAxis();
             }
 
+            if (!this.msSerieMouseTrackRO) {
+                this.msSerieMouseTrackRO = this
+                    .msGraph
+                    .newSerie('msro', {
+                        lineToZero: !this.options.msIsContinuous,
+                        lineColor: 'lightgreen'
+                    })
+                    .autoAxis();
+            }
 
-            var xVal = that.gcData[x * 2];
+            var xVal = this.gcData ? this.gcData[x * 2] : this.gcDataRO[x * 2];
 
-            var trackData = that.trackingLineGC.getProperties();
+            var trackData = this.trackingLineGC.getProperties();
             trackData.position[0].x = xVal;
             trackData.position[1].x = xVal;
 
-            that.trackingLineGC.redraw();
+            this.trackingLineGC.redraw();
 
-            if (!ms) {
+            if (!ms && !msro) {
                 return;
             }
 
-
-            that.msSerieMouseTrack.setData(ms);
-
-
-            if (that.firstMsSerie) {
-                that.msGraph.getBottomAxis().setMinMaxToFitSeries();
-                that.firstMsSerie = false;
+            if (ms) {
+                this.msSerieMouseTrack.setData(ms);
             }
 
-            that.msGraph.draw();
+            if (msro) {
+                this.msSerieMouseTrackRO.setData(msro);
+            }
 
+            if (this.firstMsSerie) {
+                this.msGraph.getBottomAxis().setMinMaxToFitSeries();
+                this.firstMsSerie = false;
+            }
 
-            if (!isNaN(that.msGraph.getBottomAxis().getMinValue())) {
+            this.msGraph.draw();
 
-                // that.msGraph.getLeftAxis().scaleToFitAxis(that.msGraph.getBottomAxis(), that.msSerieMouseTrack);
-                that.msGraph.getLeftAxis().setMinMaxToFitSeries();
-
+            if (!isNaN(this.msGraph.getBottomAxis().getMinValue())) {
+                this.msGraph.getLeftAxis().setMinMaxToFitSeries();
             } else {
-
-                that.msGraph.autoscaleAxes();
+                this.msGraph.autoscaleAxes();
             }
-            // Autoscale y ?
 
-            that.msGraph.redraw();
-            that.msSerieMouseTrack.draw();
-        },
-
-        updateIngredientPeaks: function () {
-
-            var that = this;
-            var min = this.gcGraph.getXAxis().getMinValue();
-            var max = this.gcGraph.getXAxis().getMaxValue();
-
-            this.ingredients = this.ingredients.sort(function (a, b) {
-
-                if (a[0].rt_x < min || a[0].rt_x > max) {
-
-                    return 1;
-                }
-
-                if (b[0].rt_x < min || b[0].rt_x > max) {
-
-                    return -1;
-                }
-
-                return -(a[0].rt_y - b[0].rt_y);
-            });
-
-
-            var limit = 20,
-                xs = [];
-
-            for (var i = 0; i < this.ingredients.length; i++) {
-
-                var cont = false;
-                var valX = that.gcGraph.getXAxis().getPx(this.ingredients[i][0].rt_x);
-
-                for (var j = 0; j < xs.length; j++) {
-
-                    var x = xs[j];
-
-                    if (Math.abs(x - valX) < 15) {
-                        this.ingredients[i][1].toggleLabel(0, false);
-                        limit++;
-                        cont = true;
-                        break;
-                    }
-                }
-
-                if (cont) {
-
-                    continue;
-                } else {
-                    xs.push(valX);
-                }
-
-
-                if (i < limit) {
-                    this.ingredients[i][1].toggleLabel(0, true);
-                } else {
-                    this.ingredients[i][1].toggleLabel(0, false);
-                }
-            }
+            this.msGraph.redraw();
+            this.msSerieMouseTrack.draw();
         }
     };
 
     return GCMS;
+
 });

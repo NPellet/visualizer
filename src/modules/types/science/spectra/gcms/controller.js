@@ -1,6 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define([
+    'jquery',
+    'modules/default/defaultcontroller'
+], function ($, Default) {
 
     function Controller() {
     }
@@ -59,7 +62,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
         jcamp: {
             type: ['jcamp', 'string'],
-            label: 'GC-MS data via JCamp'
+            label: 'GC-MS data via jcamp'
+        },
+
+        jcampRO: {
+            type: ['jcamp', 'string'],
+            label: 'GC-MS data via jcamp (read-only)'
         },
 
         gc: {
@@ -191,7 +199,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     };
 
-    Controller.prototype.variablesIn = ['gcms', 'jcamp', 'gc', 'ms', 'mscont', 'annotationgc', 'ingredientList', 'RIComponents'];
+    Controller.prototype.variablesIn = ['gcms', 'jcamp', 'jcampRO', 'gc', 'ms', 'mscont', 'annotationgc'/*, 'ingredientList', 'RIComponents'*/];
 
     Controller.prototype.actionsIn = {
         fromtoGC: 'From - To on GC',
@@ -206,7 +214,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configurationStructure = function (section) {
-
         return {
             groups: {
                 group: {
