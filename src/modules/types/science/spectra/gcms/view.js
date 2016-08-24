@@ -49,7 +49,7 @@ define([
                 return Color.array2rgba(value);
             };
             var aucColor = getConfig('auccolor');
-            var autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)')
+            var autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)');
 
             this.gcmsInstance = new GCMS(this.div1, this.div2, {
                 gcSize: this.module.getConfiguration('gcsize'),
