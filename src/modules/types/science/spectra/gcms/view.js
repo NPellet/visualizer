@@ -5,12 +5,14 @@ define([
     'modules/default/defaultview',
     'src/util/datatraversing',
     'lib/gcms/gcms',
-    'jcampconverter'
+    'jcampconverter',
+    'src/util/color'
 ], function ($,
              Default,
              Traversing,
              GCMS,
-             Converter) {
+             Converter,
+             Color) {
 
     function View() {
     }
@@ -41,10 +43,20 @@ define([
         },
 
         inDom: function () {
-
             var that = this;
-            var gcmsinstance = new GCMS(this.div1, this.div2, {
-                gcsize: this.module.getConfiguration('gcsize'),
+            var getConfig = (name) => {
+                var value = this.module.getConfiguration(name);
+                return Color.array2rgba(value);
+            };
+            var aucColor = getConfig('auccolor');
+            var autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)')
+
+            this.gcmsInstance = new GCMS(this.div1, this.div2, {
+                gcSize: this.module.getConfiguration('gcsize'),
+                mainColor: getConfig('maincolor'),
+                roColor: getConfig('rocolor'),
+                aucColor: aucColor,
+                aucColorT: autColorT,
                 AUCChange: function (auc) {
 
                     var data = auc.getProperties();
@@ -52,7 +64,7 @@ define([
                     var pos2 = Math.round(data.position[1].x);
 
                     if (auc.msFromAucSerie) {
-                        auc.msFromAucSerie.setLineColor('rgba(255, 0, 0, 1)');
+                        auc.msFromAucSerie.setLineColor(aucColor);
                         auc.msFromAucSerie.applyLineStyles();
                     }
 
@@ -118,8 +130,6 @@ define([
 
                 onlyOneMS: true
             });
-
-            this.gcmsInstance = gcmsinstance;
         },
 
         unload: function () {
@@ -172,34 +182,6 @@ define([
 
                 this.resetAnnotationsGC();
                 this.addAnnotations(value);
-            },
-
-            gcms: function (moduleValue) {
-                this.gcmsInstance.setGC(moduleValue.gc);
-                this.gcmsInstance.setMS(moduleValue.ms);
-            },
-
-            gc: function (moduleValue) {
-                var that = this;
-                if (!this.gcmsInstance || !moduleValue)
-                    return;
-
-                Converter.convert(moduleValue.get()).then(function (jcamp) {
-                    if (jcamp.spectra) {
-                        that.gcmsInstance.setExternalGC(jcamp.spectra[0].data[0]);
-                    }
-                });
-            },
-
-            ms: function (moduleValue, name, cont) {
-                if (!this.gcmsInstance || !moduleValue)
-                    return;
-
-                this.gcmsInstance.setExternalMS(moduleValue, {});
-            },
-
-            mscont: function (moduleValue, name) {
-                this.update.ms(moduleValue, name, true);
             }
         },
 
@@ -243,17 +225,6 @@ define([
 
             fromtoMS: function (value, name) {
                 this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
-            },
-
-            externalMS: function (value, name) {
-                var that = this;
-                if (!this.gcmsInstance || !value) {
-                    return;
-                }
-
-                this.gcmsInstance.setExternalMS(value, {});
-
-                that.module.controller.createDataFromEvent('onMSChange', 'ms', value);
             },
 
             zoomOnAnnotation: function (value, name) {

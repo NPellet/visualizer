@@ -19,7 +19,7 @@ define(function () {
     };
 
     exports.array2rgba = function (arr) {
-        if (!Array.isArray(arr)) return;
+        if (!Array.isArray(arr)) return arr;
         if (arr.length === 3) {
             return 'rgba(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ',1)';
         } else if (arr.length === 4) {

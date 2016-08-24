@@ -6,13 +6,17 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         msIsContinuous: false,
         title: 'GC-MS',
         onlyOneMS: false,
-        gcsize: '50'
+        gcSize: '50',
+        mainColor: 'black',
+        roColor: 'rgba(0, 150, 0, 1)',
+        aucColor: 'rgba(200, 0, 0, 1)',
+        aucColorT: 'rgba(200, 0, 0, 0.3)'
     };
 
     function GCMS(domGC, domMS, options) {
         this.options = $.extend(true, {}, defaults, options);
 
-        this.sizeFactor = parseFloat(this.options.gcsize) / 100;
+        this.sizeFactor = parseFloat(this.options.gcSize) / 100;
 
         // A GC can have more than 1 serie
         this.gcData = null;
@@ -53,9 +57,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     zoom: {zoomMode: 'x'},
                     shape: {
                         type: 'areaundercurve',
-                        color: [200, 0, 0],
-                        fillColor: 'rgba(200,0,0,0.3)',
-                        strokeColor: 'rgba(200,0,0,1)',
+                        fillColor: this.options.aucColorT,
+                        strokeColor: this.options.aucColor,
                         strokeWidth: 2
                     }
                 },
@@ -586,9 +589,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     ],
 
                     type: 'areaundercurve',
-                    color: [200, 0, 0],
-                    fillColor: 'rgba(200,0,0,0.3)',
-                    strokeColor: 'rgba(200,0,0,1)',
+                    fillColor: this.options.aucColorT,
+                    strokeColor: this.options.aucColor,
                     strokeWidth: 2,
                     selectable: true
                 };
@@ -716,7 +718,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             for (var i in gc) {
 
                 serie = this.gcGraph.newSerie('gc', {
-                    useSlots: false
+                    useSlots: false,
+                    lineColor: this.options.mainColor
                 }).autoAxis().setData(gc[i]).XIsMonotoneous();
                 serie.setLineWidth(1, 'selected');
                 this.gcGraph.selectSerie(serie);
@@ -760,7 +763,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 var serie = this.gcGraph.newSerie('gcro', {
                     useSlots: false,
                     selectable: false,
-                    lineColor: 'green'
+                    lineColor: this.options.roColor
                 }).autoAxis().setData(gc[i]).XIsMonotoneous();
 
                 this.gcDataRO = gc[i];
@@ -795,70 +798,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.msDataRO = ms;
         },
 
-        setExternalGC: function (gc) {
-
-            if (this.extGC) {
-                this.extGC.kill(true);
-            }
-
-            this.extGC = this.gcGraph.newSerie('external', {useSlots: true, lineWidth: 2, lineColor: 'red'});
-            this.extGC.setXAxis(this.gcGraph.getXAxis());
-            this.extGC.setYAxis(this.gcGraph.getRightAxis(0, {
-                primaryGrid: false,
-                secondaryGrid: false,
-                axisDataSpacing: {min: 0, max: 0},
-                display: false
-            }));
-            this.extGC.setData(gc);
-
-            this.gcGraph.redraw();
-            this.gcGraph.drawSeries();
-        },
-
-
-        setExternalMS: function (ms, options) {
-
-            if (this.msFromAucSerie) {
-                this.msFromAucSerie.kill(true);
-                this.msFromAucSerie = false;
-            }
-
-            if (this.extMS) {
-                this.extMS.kill(true);
-            }
-
-            this.extMS = this.msGraph
-                .newSerie('ext', {autoPeakPicking: true, lineToZero: !options.continuous, autoPeakPickingNb: 10})
-                .autoAxis()
-                .setYAxis(this.msGraph.getRightAxis())
-                .setLineWidth(3);
-
-
-            this.extMS.setData(ms);
-            this.extMS.setLineColor(options.strokeColor || options.fillColor || 'green');
-
-
-            if (this.firstMsSerie) {
-                this.msGraph.getBottomAxis().setMinMaxToFitSeries();
-                this.firstMsSerie = false;
-            }
-
-            this.msGraph._updateAxes();
-
-            this.msGraph.getRightAxis().scaleToFitAxis(this.msGraph.getBottomAxis());
-
-
-            this.msGraph.redraw(true, true, false);
-            this.msGraph.drawSeries();
-        },
-
-        removeExternalMS: function () {
-
-            if (this.extMS) {
-                this.extMS.kill(true);
-            }
-        },
-
         trigger: function (func, params) {
 
             if (!Array.isArray(params)) {
@@ -868,15 +807,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             if (this.options[func]) {
                 this.options[func].apply(this, params);
             }
-        },
-
-        redrawMs: function () {
-
-            this.msGraph._updateAxes();
-            this.msGraph.getRightAxis().scaleToFitAxis(this.msGraph.getBottomAxis());
-
-            this.msGraph.redraw();
-            this.msGraph.drawSeries();
         },
 
         setMSIndexData: function (x) {
@@ -894,7 +824,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     .msGraph
                     .newSerie('ms', {
                         lineToZero: !this.options.msIsContinuous,
-                        lineColor: 'black'
+                        lineColor: this.options.mainColor
                     })
                     .autoAxis();
             }
@@ -904,7 +834,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     .msGraph
                     .newSerie('msro', {
                         lineToZero: !this.options.msIsContinuous,
-                        lineColor: 'green'
+                        lineColor: this.options.roColor
                     })
                     .autoAxis();
             }

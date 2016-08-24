@@ -199,7 +199,7 @@ define([
 
     };
 
-    Controller.prototype.variablesIn = ['gcms', 'jcamp', 'jcampRO', 'gc', 'ms', 'mscont', 'annotationgc'/*, 'ingredientList', 'RIComponents'*/];
+    Controller.prototype.variablesIn = ['gcms', 'jcamp', 'jcampRO', 'annotationgc'];
 
     Controller.prototype.actionsIn = {
         fromtoGC: 'From - To on GC',
@@ -209,7 +209,6 @@ define([
         displayChemicalLabels: 'Display chemical labels',
         hideChemicalLabels: 'Hide chemical labels',
         centerGC: 'Center GC at value',
-        externalMS: 'Set external MS',
         setMSIndexData: 'Change MS data index'
     };
 
@@ -222,7 +221,6 @@ define([
                     },
 
                     fields: {
-
                         continuous: {
                             type: 'checkbox',
                             title: 'MS Continuous',
@@ -232,6 +230,21 @@ define([
                             type: 'text',
                             title: 'Size of GC graph (in %)',
                             default: '50'
+                        },
+                        maincolor: {
+                            type: 'spectrum',
+                            title: 'Main color',
+                            default: [0, 0, 0, 1]
+                        },
+                        rocolor: {
+                            type: 'spectrum',
+                            title: 'Read-only color',
+                            default: [0, 150, 0, 1]
+                        },
+                        auccolor: {
+                            type: 'spectrum',
+                            title: 'AUC color',
+                            default: [200, 0, 0, 1]
                         }
                     }
                 }
@@ -247,7 +260,10 @@ define([
 
     Controller.prototype.configAliases = {
         continuous: ['groups', 'group', 0, 'continuous', 0],
-        gcsize: ['groups', 'group', 0, 'gcsize', 0]
+        gcsize: ['groups', 'group', 0, 'gcsize', 0],
+        maincolor: ['groups', 'group', 0, 'maincolor', 0],
+        rocolor: ['groups', 'group', 0, 'rocolor', 0],
+        auccolor: ['groups', 'group', 0, 'auccolor', 0]
     };
 
     return Controller;
