@@ -39,7 +39,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         this.init();
 
         this.aucs = [];
-        this.ingredients = [];
     }
 
     GCMS.prototype = {
@@ -134,7 +133,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
                         onZoom: function (from, to) {
                             // Zoom on GC has changed
-                            that.updateIngredientPeaks();
                             that.trigger('onZoomGC', [from, to]);
                         }
                     }
@@ -336,11 +334,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.gcGraph.on('shapeSelect', function (shape) {
                 var data = shape.getProperties();
-                if (data.ingredient) {
-                    that.trigger('ingredientSelected', data.ingredient);
-                }
-
-
                 if (data.type == 'areaundercurve') {
                     that.trigger('AUCSelected', data);
                 }
@@ -364,6 +357,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             graph.on('shapeNew', (shape) => {
                 if (shape.type === 'areaundercurve') {
+                    this.aucs.push(shape);
                     this.trigger('AUCCreated', [shape]);
                 }
             });
@@ -372,6 +366,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 if (shape.type === 'areaundercurve') {
                     this.doMsFromAUC(shape);
                     this.trigger('AUCSelected', [shape]);
+                }
+            });
+
+            graph.on('shapeUnselected', (shape) => {
+                if (shape.type === 'areaundercurve') {
+                    this.trigger('AUCUnselected', [shape]);
                 }
             });
 
@@ -394,18 +394,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 }
             });
 
-            /*this.gcGraph.shapeHandlers.onCreated.push(function (shape) {
-
-             if (!( shape.data.type == 'areaundercurve' )) {
-             return;
-             }
-
-             shape.setSerie(that.gcGraph.getSerie(0));
-
-             that.aucs.push(shape);
-             that.trigger('AUCCreated', shape);
-             });
-
+            /*
              this.gcGraph.shapeHandlers.onAfterMoved.push(function (shape) {
 
              if (!( shape.data.type == 'areaundercurve' )) {
@@ -424,24 +413,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
              that.doMsFromAUC(shape.data, shape);
              that.trigger('AUCChange', shape);
-             });
-
-             this.gcGraph.shapeHandlers.onSelected.push(function (shape) {
-
-             if (!( shape.data.type == 'areaundercurve' )) {
-             return;
-             }
-
-             that.trigger('AUCSelected', shape);
-             });
-
-             this.gcGraph.shapeHandlers.onUnselected.push(function (shape) {
-
-             if (!( shape.data.type == 'areaundercurve' )) {
-             return;
-             }
-
-             that.trigger('AUCUnselected', shape);
              });
 
              this.gcGraph.shapeHandlers.onRemoved.push(function (shape) {
@@ -553,7 +524,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
 
             buffer.msFromAucSerie.setData(finalMs);
-            buffer.msFromAucSerie.setLineColor(annot.strokeColor || annot.fillColor || 'red');
+            buffer.msFromAucSerie.setLineColor(annot.strokeColor || annot.fillColor || this.options.aucColor);
 
             // that.msGraph._updateAxes();
 
@@ -657,14 +628,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
         zoomOnGC: function (start, end, y) {
-
             this.gcGraph.getBottomAxis().zoom(start - (end - start) * 0.4, end + (end - start) * 0.4);
             this.gcGraph.getLeftAxis().scaleToFitAxis(this.gcGraph.getBottomAxis(), start, end);
 
             this.gcGraph.redraw();
             this.gcGraph.drawSeries();
-
-            this.updateIngredientPeaks();
         },
 
         setMSContinuous: function (cont) {

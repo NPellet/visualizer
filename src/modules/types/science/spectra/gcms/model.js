@@ -1,23 +1,19 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+define([
+    'jquery',
+    'modules/default/defaultmodel',
+    'src/util/datatraversing'
+], function ($, Default, Traversing) {
 
     function Model() {
     }
 
     $.extend(true, Model.prototype, Default, {
-
         getjPath: function (rel) {
             var data = [];
             var view = this.module.view;
             switch (rel) {
-
-                case 'mzList':
-                case 'selectedIngredient':
-                    if (view.gcmsInstance.ingredients[0]) data = view.gcmsInstance.ingredients[0][0];
-
-                    break;
-
                 case 'GCIntegration':
                     if (view.annotations) data = view.annotations[0];
                     break;
@@ -34,8 +30,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
             return jpaths;
         }
-
-
     });
 
     return Model;
