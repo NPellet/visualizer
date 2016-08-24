@@ -111,7 +111,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                         return;
                     }
 
-                    var x = val[i].xBeforeIndex;
+                    var x = val[i].xIndexClosest;
 
                     if (x) {
                         that.recalculateMSMove(x);
@@ -760,7 +760,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 var serie = this.gcGraph.newSerie('gcro', {
                     useSlots: false,
                     selectable: false,
-                    lineColor: 'lightgreen'
+                    lineColor: 'green'
                 }).autoAxis().setData(gc[i]).XIsMonotoneous();
 
                 this.gcDataRO = gc[i];
@@ -904,7 +904,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     .msGraph
                     .newSerie('msro', {
                         lineToZero: !this.options.msIsContinuous,
-                        lineColor: 'lightgreen'
+                        lineColor: 'green'
                     })
                     .autoAxis();
             }

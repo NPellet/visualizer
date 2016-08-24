@@ -147,6 +147,9 @@
 						{
 							"continuous": [
 								[]
+							],
+							"gcsize": [
+								"40"
 							]
 						}
 					]
@@ -159,8 +162,8 @@
 						"top": 0
 					},
 					"size": {
-						"width": 98,
-						"height": 58
+						"width": 223,
+						"height": 125
 					},
 					"zIndex": 0,
 					"display": true,
