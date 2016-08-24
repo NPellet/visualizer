@@ -57,57 +57,10 @@ define([
                 roColor: getConfig('rocolor'),
                 aucColor: aucColor,
                 aucColorT: autColorT,
-                AUCChange: function (auc) {
 
-                    var data = auc.getProperties();
-                    var pos = Math.round(data.position[0].x);
-                    var pos2 = Math.round(data.position[1].x);
-
-                    if (auc.msFromAucSerie) {
-                        auc.msFromAucSerie.setLineColor(aucColor);
-                        auc.msFromAucSerie.applyLineStyles();
-                    }
-
-                    if (auc.data._originalSource) {
-                        auc.data._originalSource.set('from', pos);
-                        auc.data._originalSource.set('to', pos2);
-
-                        auc.data._originalSource.triggerChange();
-                    }
-                },
 
                 onMsFromAUCChange: function (ms) {
                     that.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
-                },
-
-
-                AUCSelected: function (auc) {
-                    if (auc.data) {
-                        that.module.controller.createDataFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
-                        that.module.controller.sendActionFromEvent('onIntegralSelect', 'GCIntegration', auc.data._originalSource);
-                    }
-                },
-
-                AUCUnselected: function (auc) {
-                    var rgb = auc.data.color;
-
-                    auc.set('fillColor', 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 0.3)');
-                    auc.set('strokeColor', 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 1)');
-
-                    auc.setFillColor();
-                    auc.setStrokeColor();
-
-                    if (auc.msFromAucSerie) {
-                        auc.msFromAucSerie.setLineColor('rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', 0.3)');
-                        auc.msFromAucSerie.applyLineStyles();
-                        auc.msFromAucSerie.hidePeakPicking(true);
-                    }
-                },
-
-                AUCRemoved: function (auc) {
-                    if (auc.msFromAucSerie) {
-                        auc.msFromAucSerie.kill();
-                    }
                 },
 
                 MZChange: function (ms) {
@@ -122,10 +75,6 @@ define([
                 onZoomGC: function (from, to) {
                     that.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [from, to]);
                     that.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
-                },
-
-                ingredientSelected: function (ingredient) {
-                    that.module.controller.sendActionFromEvent('onIngredientSelected', 'selectedIngredient', ingredient);
                 },
 
                 onlyOneMS: true
@@ -210,7 +159,7 @@ define([
 
 
         onActionReceive: {
-            fromtoGC: function (value, name) {
+            fromtoGC: function (value) {
                 var from = value.from - Math.abs(value.to - value.from) * 0.1;
                 var to = value.to + Math.abs(value.to - value.from) * 0.1;
 
@@ -223,11 +172,11 @@ define([
                 this.gcmsInstance.updateIngredientPeaks();
             },
 
-            fromtoMS: function (value, name) {
+            fromtoMS: function (value) {
                 this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
             },
 
-            zoomOnAnnotation: function (value, name) {
+            zoomOnAnnotation: function (value) {
                 if (!value.pos && !value.pos2) {
                     return;
                 }

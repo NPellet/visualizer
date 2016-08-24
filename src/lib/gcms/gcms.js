@@ -650,6 +650,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         blank: function () {
             if (!this.gcSerie) return;
 
+            this.gcGraph.removeShapes();
             this.gcSerie.kill();
             this.gcSerie = null;
             this.gcData = null;
