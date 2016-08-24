@@ -227,6 +227,11 @@ define([
                             type: 'checkbox',
                             title: 'MS Continuous',
                             options: {'continuous': 'Continuous'}
+                        },
+                        gcsize: {
+                            type: 'text',
+                            title: 'Size of GC graph (in %)',
+                            default: '50'
                         }
                     }
                 }
@@ -241,7 +246,8 @@ define([
     };
 
     Controller.prototype.configAliases = {
-        continuous: ['groups', 'group', 0, 'continuous', 0]
+        continuous: ['groups', 'group', 0, 'continuous', 0],
+        gcsize: ['groups', 'group', 0, 'gcsize', 0]
     };
 
     return Controller;

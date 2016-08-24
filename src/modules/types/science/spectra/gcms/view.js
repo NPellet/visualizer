@@ -43,8 +43,8 @@ define([
         inDom: function () {
 
             var that = this;
-
             var gcmsinstance = new GCMS(this.div1, this.div2, {
+                gcsize: this.module.getConfiguration('gcsize'),
                 AUCChange: function (auc) {
 
                     var data = auc.getProperties();

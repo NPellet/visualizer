@@ -5,11 +5,14 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     var defaults = {
         msIsContinuous: false,
         title: 'GC-MS',
-        onlyOneMS: false
+        onlyOneMS: false,
+        gcsize: '50'
     };
 
     function GCMS(domGC, domMS, options) {
         this.options = $.extend(true, {}, defaults, options);
+
+        this.sizeFactor = parseFloat(this.options.gcsize) / 100;
 
         // A GC can have more than 1 serie
         this.gcData = null;
@@ -459,9 +462,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
 
         resize: function (w, h) {
-
-            var h1 = h * 0.7;
-            var h2 = h * 0.3;
+            var h1 = h * this.sizeFactor;
+            var h2 = h * (1 - this.sizeFactor);
 
             this.gcGraph.resize(w, h1);
             this.msGraph.resize(w, h2);
