@@ -48,9 +48,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     zoom: {zoomMode: 'x'},
                     shape: {
                         type: 'areaundercurve',
-                        color: [0, 100, 100],
-                        fillColor: 'rgba(0,100,100,0.3)',
-                        strokeColor: 'rgba(0,100,100,1)',
+                        color: [200, 0, 0],
+                        fillColor: 'rgba(200,0,0,0.3)',
+                        strokeColor: 'rgba(200,0,0,1)',
                         strokeWidth: 2
                     }
                 },
@@ -615,18 +615,15 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             var that = this,
                 obj = {
-                    pos: {
-                        x: from
-                    },
-
-                    pos2: {
-                        x: to
-                    },
+                    position: [
+                        {x: from},
+                        {x: to}
+                    ],
 
                     type: 'areaundercurve',
-                    color: [0, 100, 100],
-                    fillColor: 'rgba(0,100,100,0.3)',
-                    strokeColor: 'rgba(0,100,100,1)',
+                    color: [200, 0, 0],
+                    fillColor: 'rgba(200,0,0,0.3)',
+                    strokeColor: 'rgba(200,0,0,1)',
                     strokeWidth: 2,
                     selectable: true
                 };
