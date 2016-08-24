@@ -144,13 +144,13 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                         }
                     }
                 ],
-                top: [
-                    {
-                        labelValue: 'RI',
-                        primaryGrid: false,
-                        secondaryGrid: false
-                    }
-                ],
+                // top: [
+                //     {
+                //         labelValue: 'RI',
+                //         primaryGrid: false,
+                //         secondaryGrid: false
+                //     }
+                // ],
                 left: [
                     {
                         labelValue: 'Intensity (-)',
@@ -492,23 +492,23 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
 
-        setRIComponents: function (components) {
-
-
-            this.gcGraph.getTopAxis().linkToAxis(this.gcGraph.getBottomAxis(), function (val) {
-
-                var result = 0;
-                var i;
-                for (i = 0; i < components.length; i++) {
-                    result += components[i] * Math.pow(val, components.length - i - 1);
-                }
-                return result;
-
-            }, 1);
-
-            this.gcGraph.redraw();
-            this.gcGraph.drawSeries();
-        },
+        // setRIComponents: function (components) {
+        //
+        //
+        //     this.gcGraph.getTopAxis().linkToAxis(this.gcGraph.getBottomAxis(), function (val) {
+        //
+        //         var result = 0;
+        //         var i;
+        //         for (i = 0; i < components.length; i++) {
+        //             result += components[i] * Math.pow(val, components.length - i - 1);
+        //         }
+        //         return result;
+        //
+        //     }, 1);
+        //
+        //     this.gcGraph.redraw();
+        //     this.gcGraph.drawSeries();
+        // },
 
         doMsFromAUC: function (annot, shape) { // Creating an averaged MS on the fly
             if (!this.gcSerie) return;
@@ -559,7 +559,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
 
             if (this.options.onlyOneMS) {
-                var buffer = self;
+                var buffer = that;
 
                 if (this.extMS) {
                     this.extMS.kill(true);
@@ -605,7 +605,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
         clearMsFromAuc() {
             if (this.msFromAucSerie) {
-                this.msFromAucSerie.setData(null);
+                this.msFromAucSerie.setData([]);
                 this.msFromAucSerie.draw();
             }
         },
