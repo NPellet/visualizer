@@ -39,6 +39,7 @@ require.config({
         jquery: 'components/jquery/dist/jquery',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
+        'jquery-ui/menu': 'components/jquery-ui/ui/widgets/menu',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
         'json-chart': 'components/json-chart/dist/json-chart.min',
         'notifyjs': 'components/notifyjs/dist/notify-combined.min',
@@ -119,7 +120,7 @@ require.config({
         'lib/threejs/TrackballControls': ['threejs'],
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
         'lib/couchdb/jquery.couch': ['jquery'],
-        slickgrid_core: ['jquery', 'jquery-ui/core', 'jquery-ui/sortable', 'jquery-tmpl'],
+        slickgrid_core: ['jquery', 'jquery-ui/core', 'jquery-ui/widgets/sortable', 'jquery-tmpl'],
         slickgrid: {
             deps: ['slickgrid_core',
                 'components/slickgrid/slick.groupitemmetadataprovider',
@@ -146,7 +147,7 @@ require.config({
             deps: ['lib/pixastic/pixastic/pixastic.core'],
             exports: 'Pixastic'
         },
-        fancytree: ['jquery-ui/core', 'jquery-ui/effect-blind', 'jquery-ui/droppable', 'jquery-ui/draggable'],
+        fancytree: ['jquery-ui/core', 'jquery-ui/effects/effect-blind', 'jquery-ui/widgets/droppable', 'jquery-ui/widgets/draggable'],
         'moment-duration-format': ['moment'],
         BiojsCore: {
             exports: 'Biojs'
