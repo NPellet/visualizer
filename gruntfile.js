@@ -138,7 +138,7 @@ module.exports = function (grunt) {
                             ['./fancytree/dist/jquery.fancytree*.js', './fancytree/dist/skin-lion/*'],
                             ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
                             './jquery/dist/*',
-                            ['./jquery-ui/ui/*.js', 'jquery-ui/ui/effects/*.js', 'jquery-ui/ui/widgets/*.js', './jquery-ui/themes/base/**'],
+                            ['./jquery-ui/ui/*.js', './jquery-ui/ui/effects/*.js', './jquery-ui/ui/widgets/*.js', './jquery-ui/themes/base/**'],
                             './threejs/build/three.min.js',
                             './ace/src/**',
                             ['./ckeditor/skins/**', './ckeditor/ckeditor.js', './ckeditor/styles.js', './ckeditor/contents.css', './ckeditor/adapters/jquery.js', './ckeditor/lang/en.js', './ckeditor/plugins/**', './ckeditor/config.js'],
