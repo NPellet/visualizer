@@ -44,7 +44,7 @@
     "jquery-mousewheel": "3.1.13",
     "jquery-qrcode": "cheminfo/jquery-qrcode#1170d085ffb9e8c5de5290041902923ceca3c9e7",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
-    "jquery-ui": "1.11.4",
+    "jquery-ui": "1.12.0",
     "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
     "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jsbarcode": "1.6.1",
