@@ -67,6 +67,7 @@
   "dependencies": {
     "country-data": "0.0.27",
     "mime-types": "^2.1.10",
-    "superagent": "^2.0.0"
+    "superagent": "^2.0.0",
+    "twig": "^0.9.5"
   }
 }
