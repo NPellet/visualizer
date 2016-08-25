@@ -87,7 +87,7 @@
     "mathjs": "~3.2.1"
   },
   "resolutions": {
-    "jsgraph": "v1.14.10-10",
+    "jsgraph": "v1.15.2",
     "jcampconverter": "2.4.5",
     "jquery": "2.2.1"
   },
