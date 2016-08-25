@@ -120,7 +120,7 @@ require.config({
         'lib/threejs/TrackballControls': ['threejs'],
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
         'lib/couchdb/jquery.couch': ['jquery'],
-        slickgrid_core: ['jquery', 'jquery-ui/core', 'jquery-ui/widgets/sortable', 'jquery-tmpl'],
+        slickgrid_core: ['jquery', 'jquery-ui/widgets/sortable', 'jquery-tmpl'],
         slickgrid: {
             deps: ['slickgrid_core',
                 'components/slickgrid/slick.groupitemmetadataprovider',
@@ -147,7 +147,7 @@ require.config({
             deps: ['lib/pixastic/pixastic/pixastic.core'],
             exports: 'Pixastic'
         },
-        fancytree: ['jquery-ui/core', 'jquery-ui/effects/effect-blind', 'jquery-ui/widgets/droppable', 'jquery-ui/widgets/draggable'],
+        fancytree: ['jquery-ui/effects/effect-blind', 'jquery-ui/widgets/droppable', 'jquery-ui/widgets/draggable'],
         'moment-duration-format': ['moment'],
         BiojsCore: {
             exports: 'Biojs'

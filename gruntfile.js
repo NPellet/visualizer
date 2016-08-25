@@ -60,6 +60,16 @@ module.exports = function (grunt) {
                         standalone: 'superagent'
                     }
                 }
+            },
+            twig: {
+                files: {
+                    'src/browserified/twig/twig.js': ['./node_modules/twig/twig.min.js']
+                },
+                options: {
+                    browserifyOptions: {
+                        standalone: 'Twig'
+                    }
+                }
             }
         },
         pkg: grunt.file.readJSON('package.json'),
@@ -128,7 +138,7 @@ module.exports = function (grunt) {
                             ['./fancytree/dist/jquery.fancytree*.js', './fancytree/dist/skin-lion/*'],
                             ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
                             './jquery/dist/*',
-                            ['./jquery-ui/ui/*.js', './jquery-ui/themes/smoothness/**'],
+                            ['./jquery-ui/ui/*.js', 'jquery-ui/ui/effects/*.js', 'jquery-ui/ui/widgets/*.js', './jquery-ui/themes/smoothness/**'],
                             './threejs/build/three.min.js',
                             './ace/src/**',
                             ['./ckeditor/skins/**', './ckeditor/ckeditor.js', './ckeditor/styles.js', './ckeditor/contents.css', './ckeditor/adapters/jquery.js', './ckeditor/lang/en.js', './ckeditor/plugins/**', './ckeditor/config.js'],
@@ -146,7 +156,6 @@ module.exports = function (grunt) {
                             './colors/css/colors.min.css',
                             './pouchdb/dist/pouchdb.min.js',
                             './uri.js/src/*.js',
-                            './twig.js/twig.*',
                             './onde/src/*',
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
                             './superagent/superagent.js',
