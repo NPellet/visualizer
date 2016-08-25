@@ -3,7 +3,11 @@
 // Inspired from node-progress
 // https://github.com/tj/node-progress/blob/master/lib/node-progress.js
 
-define(['modules/default/defaultview', 'src/util/color', 'jquery-ui/progressbar'], function (Default, Color) {
+define([
+    'modules/default/defaultview',
+    'src/util/color',
+    'jquery-ui/widgets/progressbar'
+], function (Default, Color) {
 
     function View() {
     }

@@ -16,7 +16,7 @@ define([
     'forms/button',
     'src/util/couchshare',
     'src/util/Form',
-    'jquery-ui/dialog'
+    'jquery-ui/widgets/dialog'
 ], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer, Form) {
 
     var exports = {};

@@ -1,5 +1,10 @@
 'use strict';
-define(['jquery', 'src/util/config', 'src/util/versioning', 'jquery-ui/menu'], function ($, Config, Versioning) {
+define([
+    'jquery',
+    'src/util/config',
+    'src/util/versioning',
+    'jquery-ui/widgets/menu'
+], function ($, Config, Versioning) {
 
     var contextMenu;
 

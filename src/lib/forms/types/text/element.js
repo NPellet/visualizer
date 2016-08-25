@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery-ui/autocomplete'], function () {
+define(['jquery-ui/widgets/autocomplete'], function () {
 
     var FieldConstructor = function () {
     };

@@ -6,7 +6,13 @@
  * @namespace Slick
  */
 
-define(['src/util/util', 'lodash', 'components/spectrum/spectrum', 'jquery', 'jquery-ui/datepicker'], function (Util, _) {
+define([
+    'src/util/util',
+    'lodash',
+    'components/spectrum/spectrum',
+    'jquery',
+    'jquery-ui/widgets/datepicker'
+], function (Util, _) {
     Util.loadCss('./components/spectrum/spectrum.css');
 
     function setItemId(newItem, grid) {
