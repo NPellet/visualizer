@@ -39,7 +39,6 @@ require.config({
         jquery: 'components/jquery/dist/jquery',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
         'jquery-ui': 'components/jquery-ui/ui',
-        'jquery-ui/menu': 'components/jquery-ui/ui/widgets/menu',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
         'json-chart': 'components/json-chart/dist/json-chart.min',
         'notifyjs': 'components/notifyjs/dist/notify-combined.min',
@@ -163,6 +162,11 @@ require.config({
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'
         ],
         BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
+    },
+    map: {
+        'components/ui-contextmenu/jquery.ui-contextmenu.min': {
+            'jquery-ui/menu': 'jquery-ui/widgets/menu'
+        }
     }
 });
 
