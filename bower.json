@@ -24,7 +24,7 @@
     "katex": "Khan/KaTeX#v0.6.0",
     "ace": "ajaxorg/ace-builds#4c1551465499afb012ddb053a18872de83350357",
     "async": "2.0.1",
-    "bluebird": "3.3.5",
+    "bluebird": "3.4.2",
     "bowser": "1.0.0",
     "chroma-js": "1.1.1",
     "ckeditor": "4.5.8",
