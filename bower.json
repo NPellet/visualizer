@@ -87,8 +87,9 @@
   },
   "resolutions": {
     "jsgraph": "v1.15.2",
-    "jcampconverter": "2.4.5",
-    "jquery": "2.2.1"
+    "jcampconverter": "2.6.0",
+    "jquery": "2.2.1",
+    "eventEmitter": "^5.1.0"
   },
   "private": true
 }
