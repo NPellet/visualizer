@@ -212,7 +212,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
     function unlisten(module) {
         var moduleId = module.getId();
-        for (const variable of allVariables.values()) {
+        for (var variable of allVariables.values()) {
             variable.unlisten(moduleId);
         }
     }
@@ -253,7 +253,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         var eventJpath = event.jpath;
         var el = eventJpath.length;
         var varJpath, j, l;
-        loop1: for (const variable of allVariables.values()) {
+        loop1: for (var variable of allVariables.values()) {
             varJpath = variable.getjPath();
             if (varJpath) {
                 l = Math.min(varJpath.length, el);
