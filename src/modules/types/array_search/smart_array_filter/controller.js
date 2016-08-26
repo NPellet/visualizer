@@ -59,6 +59,11 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
                             title: 'Search debouncing (ms)',
                             default: 100
                         },
+                        limit: {
+                            type: 'float',
+                            title: 'Limit output length (0 to disable)',
+                            default: 0
+                        },
                         initialValue: {
                             type: 'text',
                             title: 'Initial value',
@@ -82,6 +87,7 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
 
     Controller.prototype.configAliases = {
         debounce: ['groups', 'group', 0, 'debounce', 0],
+        limit: ['groups', 'group', 0, 'limit', 0],
         initialValue: ['groups', 'group', 0, 'initialValue', 0],
         placeholder: ['groups', 'group', 0, 'placeholder', 0],
         fontSize: ['groups', 'group', 0, 'fontSize', 0]
@@ -90,7 +96,11 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
     Controller.prototype.onQuery = function (query) {
         var array = this.module.view._data;
         if (!array) return;
-        var result = filter(array, {keywords: query, index: true});
+        var result = filter(array, {
+            keywords: query,
+            index: true,
+            limit: this.module.getConfiguration('limit', 0)
+        });
         var original = this.module.view._originalData;
         var toSend = new Array(result.length);
         for (var i = 0; i < result.length; i++) {
