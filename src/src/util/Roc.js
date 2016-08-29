@@ -202,7 +202,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                 idb.get(data._id).then(localEntry => {
                                     if (!localEntry) return;
                                     if (localEntry._rev === doc._rev) {
-                                        this._updateByUuid(data._id, localEntry);
+                                        this._updateByUuid(data._id, localEntry, options);
                                     } else {
                                         idb.delete(data._id);
                                     }
@@ -231,7 +231,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             if (res.body && res.status == 200) {
                                 this._defaults(res.body.$content);
                                 if (!options.noUpdate) {
-                                    this._updateByUuid(uuid, res.body);
+                                    this._updateByUuid(uuid, res.body, options);
                                 }
                                 return res.body;
                             }
@@ -278,7 +278,9 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                         var idx = v.data.length;
                                         v.data.push(entry);
                                         v.data.traceSync([idx]);
-                                        v.data.triggerChange();
+                                        if (!options.noTrigger) {
+                                            v.data.triggerChange();
+                                        }
                                     } else if (v.type === 'query') {
                                         this.query(v.viewName, v.options);
                                     }
@@ -303,7 +305,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                 entry._rev = res.body.rev;
                                 entry.$creationDate = res.body.$creationDate;
                                 entry.$modificationDate = res.body.$modificationDate;
-                                this._updateByUuid(entry._id, entry);
+                                this._updateByUuid(entry._id, entry, options);
                                 idb.delete(entry._id);
                             }
                             return entry;
@@ -335,7 +337,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                     entry._attachments = data._attachments;
                                     entry.$creationDate = data.$creationDate;
                                     entry.$modificationDate = data.$modificationDate;
-                                    if (entry.triggerChange) {
+                                    if (entry.triggerChange && !options.noTrigger) {
                                         entry.triggerChange();
                                     }
                                     return entry;
@@ -375,7 +377,9 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     toDelete = _.difference(toDelete, toKeep);
                     return this.deleteAttachment(entry, toDelete, options).then(() => {
                         arr.splice(idx, 1);
-                        arr.triggerChange();
+                        if (!options.noTrigger) {
+                            arr.triggerChange();
+                        }
                         return entry;
                     });
                 });
@@ -415,7 +419,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
 
                                         return this.processor.process(type, entry.$content, attachment).then(() => {
                                             this.typeUrl(entry.$content, entry);
-                                            if (entry.triggerChange) {
+                                            if (entry.triggerChange && !options.noTrigger) {
                                                 entry.triggerChange();
                                             }
                                             return entry;
@@ -493,7 +497,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                         entry._attachments = data._attachments;
                                         entry.$creationDate = data.$creationDate;
                                         entry.$modificationDate = data.$modificationDate;
-                                        if (entry.triggerChange) {
+                                        if (entry.triggerChange && !options.noTrigger) {
                                             entry.triggerChange();
                                         }
                                         return entry;
@@ -527,7 +531,9 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                     const idx = this._findIndexByUuid(uuid, key);
                                     if (idx !== -1) {
                                         this.variables[key].data.splice(idx, 1);
-                                        this.variables[key].data.triggerChange();
+                                        if (!option.noTrigger) {
+                                            this.variables[key].data.triggerChange();
+                                        }
                                     }
                                 }
 
@@ -614,7 +620,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 return -1;
             }
 
-            _updateByUuid(uuid, data) {
+            _updateByUuid(uuid, data, options) {
                 for (let key in this.variables) {
                     if (this.variables[key].type === 'view') {
                         const idx = this._findIndexByUuid(uuid, key);
@@ -622,7 +628,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             this.typeUrl(data.$content, data);
                             //this.variables[key].data.setChildSync([idx], data);
                             let row = this.variables[key].data.getChildSync([idx]);
-                            this._updateDocument(row, data);
+                            this._updateDocument(row, data, options);
                         }
                     } else if (this.variables[key].type === 'document') {
                         uuid = String(uuid);
@@ -631,7 +637,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             //var newData = DataObject.resurrect(data);
                             this.typeUrl(data.$content, data);
                             let doc = this.variables[key].data;
-                            this._updateDocument(doc, data);
+                            this._updateDocument(doc, data, options);
                         }
                     } else if (this.variables[key].type === 'query' && this.queryAutoRefresh) {
                         const idx = this._findIndexByUuid(uuid, key);
@@ -650,7 +656,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                         let key = keys[i];
                         doc[key] = data[key];
                     }
-                    doc.triggerChange();
+                    if (doc.triggerChange && !doc.noTrigger)
+                        doc.triggerChange();
                 }
             }
 
