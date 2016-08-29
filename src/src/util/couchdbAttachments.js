@@ -184,7 +184,6 @@ define([
                     .send(this.lastDoc)
                     .end();
             }).then(res => {
-                console.log(res);
                 if (options.noRefresh) {
                     return attachmentsAsArray(this, this.lastDoc._attachments);
                 } else {
