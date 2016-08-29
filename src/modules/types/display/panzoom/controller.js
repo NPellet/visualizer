@@ -33,6 +33,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
         },
         allpixel: {
             label: 'A hash map of pixels by varname'
+        },
+        transform: {
+            label: 'A transform matrix (as a 6-element array)',
+            type: 'array'
         }
     };
 
@@ -46,6 +50,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
             label: 'A pixel was hovered',
             refVariable: ['pixel', 'allpixel'],
             refAction: ['pixel']
+        },
+        transformChanged: {
+            label: 'The image pan or zoom changed',
+            refVariable: ['transform'],
+            refAction: ['transform']
         }
     };
 
@@ -53,7 +62,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         hide: 'Hide an image',
-        show: 'Show an image'
+        show: 'Show an image',
+        transform: 'Set image transform'
     });
 
     Controller.prototype.configurationStructure = function () {
@@ -180,6 +190,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.allHoverPixels = function (allHoverPixels) {
         this.lastHoverPixels = allHoverPixels;
         this.createDataFromEvent('hover', 'allpixel', allHoverPixels);
+    };
+
+    Controller.prototype.transformChanged = function (transformMatrix) {
+        transformMatrix = transformMatrix.slice(0, 6);
+        console.log(transformMatrix);
+        this.createDataFromEvent('transformChanged', 'transform', transformMatrix);
+        this.sendActionFromEvent('transformChanged', 'transform', transformMatrix);
     };
 
     return Controller;

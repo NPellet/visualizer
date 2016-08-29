@@ -402,7 +402,7 @@ define([
                     var z = Math.min(that.himg.width / w * focusR, that.himg.height / h * focusR);
                     z = Math.max(1, z);
                     var transform = [z, 0, 0, z, -z * that.himg.f * x, -z * that.himg.f * y];
-                    that.setTransform(transform);
+                    that.setTransform(transform, true);
                 }
             });
         },
@@ -461,6 +461,7 @@ define([
                 that.images[i].$panzoomEl.off('panzoompan');
                 that.images[i].$panzoomEl.on('panzoompan', function (data, panzoom) {
                     that.lastTransform = panzoom.getMatrix();
+                    that.module.controller.transformChanged(that.lastTransform);
 
                     for (var j = 0; j < that.images.length; j++) {
                         if (that.state === 'done') {
@@ -498,6 +499,7 @@ define([
                     focal: e
                 });
                 that.lastTransform = that.images[0].$panzoomEl.panzoom('getMatrix');
+                that.module.controller.transformChanged(that.lastTransform);
                 for (var j = 1; j < that.images.length; j++) {
                     var instance = that.images[j].$panzoomEl.panzoom('instance');
                     instance.setMatrix(that.lastTransform);
@@ -594,13 +596,17 @@ define([
                     that.images[i].$panzoomEl.panzoom('reset');
                     if (i === 0) {
                         that.lastTransform = that.images[i].$panzoomEl.panzoom('getMatrix');
+                        that.module.controller.transformChanged(that.lastTransform);
                     }
                 }
             });
         },
 
-        setTransform: function (transform) {
+        setTransform: function (transform, noEvent) {
             this.lastTransform = transform;
+            if (!noEvent) {
+                this.module.controller.transformChanged(this.lastTransform);
+            }
             for (var j = 0; j < this.images.length; j++) {
                 var panzoomInstance = this.images[j].$panzoomEl.panzoom('instance');
                 panzoomInstance.setMatrix(this.lastTransform);
@@ -741,6 +747,9 @@ define([
                 if (!this.toHide[varname]) return;
                 this.toHide[varname] = false;
                 this.doImage(varname);
+            },
+            transform: function (transformMatrix) {
+                this.setTransform(transformMatrix, true);
             }
         },
 
