@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function (Default) {
+define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
 
     var transformChanged;
 
@@ -206,7 +206,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.setTransformThrottling = function (throttling) {
-        debugger;
         if (throttling > 0) {
             transformChanged = _.throttle(transformMatrix, throttling);
         } else {
