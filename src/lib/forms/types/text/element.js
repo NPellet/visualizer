@@ -6,7 +6,6 @@ define(['jquery-ui/widgets/autocomplete'], function () {
     };
 
     FieldConstructor.prototype.__makeDom = function () {
-
         var self = this,
             dom = $('<div />'),
 
@@ -33,9 +32,7 @@ define(['jquery-ui/widgets/autocomplete'], function () {
 
                 });
 
-
         this.checkValue();
-
 
         this.dom = dom;
         this.input = input;
@@ -44,29 +41,20 @@ define(['jquery-ui/widgets/autocomplete'], function () {
         return dom;
     };
 
-
     FieldConstructor.prototype.inDom = function () {
-
-        var self = this;
-
         if (this.field.getOptions(this)) {
-
             this.input.autocomplete({
                 minLength: 0,
                 source: this.field.getOptions(this)
             });
 
-            this.input.bind('focus', function () {
-                self.input.autocomplete('search', self.value);
-            });
+            this.input.bind('click', () => this.input.autocomplete('search', this.value));
 
             this.input.autocomplete('widget').addClass('form-autocomplete');
-            //this.input.autocomplete( 'search', this.value ); // To allow to display everything when the field is blank
         }
-    }
+    };
 
     FieldConstructor.prototype.checkValue = function () {
-
         if (this.value === null) {
             this.value = '';
         }
