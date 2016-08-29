@@ -649,14 +649,14 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 }
             }
 
-            _updateDocument(doc, data) {
+            _updateDocument(doc, data, options) {
                 if (doc && data) {
                     let keys = Object.keys(data);
                     for (let i = 0; i < keys.length; i++) {
                         let key = keys[i];
                         doc[key] = data[key];
                     }
-                    if (doc.triggerChange && !doc.noTrigger)
+                    if (doc.triggerChange && !options.noTrigger)
                         doc.triggerChange();
                 }
             }
