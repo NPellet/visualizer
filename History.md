@@ -1,3 +1,36 @@
+<a name="2.62.0"></a>
+# [2.62.0](https://github.com/NPellet/visualizer/compare/v2.61.0...v2.62.0) (2016-08-29)
+
+
+### Bug Fixes
+
+* **gcms:** don't lock tracking line on click ([d6c3b0f](https://github.com/NPellet/visualizer/commit/d6c3b0f))
+* make gcms module work again ([2d195e1](https://github.com/NPellet/visualizer/commit/2d195e1))
+* **gcms:** autoselect the GC serie ([e1489b6](https://github.com/NPellet/visualizer/commit/e1489b6))
+* **gcms:** correct left axis scaling for MS ([76ea9c1](https://github.com/NPellet/visualizer/commit/76ea9c1))
+* **gcms:** don't do MS if no GC ([e62bd69](https://github.com/NPellet/visualizer/commit/e62bd69))
+* **gcms:** fix custom colors ([fe54de4](https://github.com/NPellet/visualizer/commit/fe54de4))
+* **gcms:** remove shapes when main GC changes ([b42aaf8](https://github.com/NPellet/visualizer/commit/b42aaf8))
+* **gcms:** remove top axis and clear MS on mouseOut ([a92bdd5](https://github.com/NPellet/visualizer/commit/a92bdd5))
+* **gcms:** reset data when a new GC is coming ([359e605](https://github.com/NPellet/visualizer/commit/359e605))
+* **gcms:** same color for AUC and MS ([288b800](https://github.com/NPellet/visualizer/commit/288b800))
+* **gcms:** use closest index, change green color ([1f59e15](https://github.com/NPellet/visualizer/commit/1f59e15))
+* **slickgrid:** spelling mistake ([4c846d0](https://github.com/NPellet/visualizer/commit/4c846d0))
+
+
+### Features
+
+* **code_executor:** disable buttons when script is executing ([51d2903](https://github.com/NPellet/visualizer/commit/51d2903))
+* **gcms:** add option to change the size of GC graph ([24a1217](https://github.com/NPellet/visualizer/commit/24a1217))
+* **gcms:** allow a second, read-only input ([56f831a](https://github.com/NPellet/visualizer/commit/56f831a))
+* **gcms:** allow to change colors ([d9aec34](https://github.com/NPellet/visualizer/commit/d9aec34))
+* use new base jquery-ui theme ([c39cf04](https://github.com/NPellet/visualizer/commit/c39cf04))
+* **panzoom:** add in and out action for setting / exporting image transforms ([1f14675](https://github.com/NPellet/visualizer/commit/1f14675)), closes [#944](https://github.com/NPellet/visualizer/issues/944)
+* **panzoom:** add throttling option for sending transform ([3873621](https://github.com/NPellet/visualizer/commit/3873621))
+* **smart-array-filter:** add limit option ([21ea272](https://github.com/NPellet/visualizer/commit/21ea272))
+
+
+
 <a name="2.61.0"></a>
 # [2.61.0](https://github.com/NPellet/visualizer/compare/v2.60.0...v2.61.0) (2016-08-18)
 
