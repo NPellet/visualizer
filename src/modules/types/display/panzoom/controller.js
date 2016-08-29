@@ -2,6 +2,8 @@
 
 define(['modules/default/defaultcontroller'], function (Default) {
 
+    var transformChanged;
+
     function Controller() {
     }
 
@@ -98,6 +100,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 yes: 'Yes'
                             },
                             default: []
+                        },
+                        transformThrottling: {
+                            type: 'float',
+                            title: 'Throttle send transform',
+                            default: 0
                         }
                     }
                 },
@@ -172,7 +179,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.configAliases = {
         img: ['groups', 'img', 0],
-        focusOnHighlight: ['groups', 'group', 0, 'focusOnHighlight', 0]
+        focusOnHighlight: ['groups', 'group', 0, 'focusOnHighlight', 0],
+        transformThrottling: ['groups', 'group', 0, 'transformThrottling', 0]
     };
 
     Controller.prototype.clickedPixel = function (clickedPixel) {
@@ -194,11 +202,24 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.transformChanged = function (transformMatrix) {
         transformMatrix = transformMatrix.slice(0, 6);
-        console.log(transformMatrix);
-        this.createDataFromEvent('transformChanged', 'transform', transformMatrix);
-        this.sendActionFromEvent('transformChanged', 'transform', transformMatrix);
+        transformChanged(this, transformMatrix);
+    };
+
+    Controller.prototype.setTransformThrottling = function (throttling) {
+        debugger;
+        if (throttling > 0) {
+            transformChanged = _.throttle(transformMatrix, throttling);
+        } else {
+            transformChanged = transformMatrix;
+        }
+
     };
 
     return Controller;
 
 });
+
+function transformMatrix(ctx, transformMatrix) {
+    ctx.createDataFromEvent('transformChanged', 'transform', transformMatrix);
+    ctx.sendActionFromEvent('transformChanged', 'transform', transformMatrix);
+}

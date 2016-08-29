@@ -51,6 +51,8 @@ define([
         },
 
         inDom: function () {
+            var transformThrottling = this.module.getConfiguration('transformThrottling');
+            this.module.controller.setTransformThrottling(transformThrottling);
             this.resolveReady();
         },
 
