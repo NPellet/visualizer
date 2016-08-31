@@ -57,8 +57,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             type: 'checkbox',
                             title: 'Auto Columns',
                             options: {
-                                remove: 'Remove line',
-                                select: 'Select line',
+                                remove: 'Remove row',
+                                select: 'Select row',
                                 reorder: 'Reorder'
                             },
                             default: []
