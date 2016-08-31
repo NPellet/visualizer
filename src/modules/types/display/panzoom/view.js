@@ -25,7 +25,7 @@ define([
             var that = this;
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();
-                this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+                this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
                 this.module.getDomContent().html(this.dom);
             }
             this.dom.off('mouseleave');
@@ -83,13 +83,13 @@ define([
         },
 
         clearImage: function (varname) {
-            var idx = _.findIndex(this.images, function (img) {
-                return img.name === varname;
+            currentPromise = currentPromise.then(() => {
+                var idx = _.findIndex(this.images, img => img.name === varname);
+                if (idx === -1) return;
+                this.images[idx].$panzoomEl.panzoom('destroy');
+                this.images[idx].$parent.remove();
+                this.images.slice(idx, 1);
             });
-            if (idx === -1) return;
-            this.images[idx].$panzoomEl.panzoom('destroy');
-            this.images[idx].$parent.remove();
-            this.images.slice(idx, 1);
         },
 
         doImage: function (varname, value, options, updateHighlights) {
