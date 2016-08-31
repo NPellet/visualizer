@@ -11,7 +11,6 @@ define([
     'components/jquery-mousewheel/jquery.mousewheel'
 ], function (API, Debug, Default, Util, _, bowser) {
 
-    var currentPromise = Promise.resolve();
     var focusR = 0.5;
 
     function View() {
@@ -20,6 +19,7 @@ define([
     $.extend(true, View.prototype, Default, {
 
         init: function () {
+            this.currentPromise = Promise.resolve();
             this.toHide = this.toHide || {};
             this.transforms = this.transforms || {};
             var that = this;
@@ -83,7 +83,7 @@ define([
         },
 
         clearImage: function (varname) {
-            currentPromise = currentPromise.then(() => {
+            this.currentPromise = this.currentPromise.then(() => {
                 var idx = _.findIndex(this.images, img => img.name === varname);
                 if (idx === -1) return;
                 this.images[idx].$panzoomEl.panzoom('destroy');
@@ -94,7 +94,7 @@ define([
 
         doImage: function (varname, value, options, updateHighlights) {
             var that = this;
-            currentPromise = currentPromise.then(function () {
+            this.currentPromise = this.currentPromise.then(function () {
                 return that.addImage(varname, value, options);
             }).then(function () {
                 that.panzoomMode(varname);
@@ -107,7 +107,7 @@ define([
                 Debug.warn('panzoom: image failed to load', e);
             });
 
-            return currentPromise;
+            return this.currentPromise;
         },
 
         doSvg: function (varname, value, options, updateHighlights) {
