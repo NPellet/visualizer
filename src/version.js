@@ -8,7 +8,7 @@ define(['lib/semver/semver'], function (semver) {
     var PATCH = 1;
     var PRERELEASE = 0;
     var IS_RELEASE = false;
-    var BUILD_TIME = null;
+    var BUILD_TIME = 1472565138129;
     var INCLUDED_MODULE_CSS = [];
     /* END */
 

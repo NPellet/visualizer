@@ -226,33 +226,54 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
         'export': Util.noop,
 
         print: function () {
-            return this.module.getDomContent()[0].innerHTML;
+            var $dom = this.module.getDomContent();
+            var $domCopy = $dom.clone();
+            var $canvas = $dom.find('canvas');
+            var $canvasCopy = $domCopy.find('canvas');
+
+            $canvas.each(function (index) {
+                var dataUrl = this.toDataURL();
+                var img = new Image();
+                img.src = dataUrl;
+                img.width = this.width;
+                img.height = this.height;
+                $($canvasCopy[index]).after(img);
+                $($canvasCopy[index]).remove();
+            });
+            return $domCopy[0].innerHTML;
         },
 
         configurationStructure: Util.noop,
 
-        configFunctions: {},
+        configFunctions: {}
+        ,
 
-        configAliases: {},
+        configAliases: {}
+        ,
 
-        events: {},
+        events: {}
+        ,
 
         variablesIn: [],
 
         actionsIn: {
             _editPreferences: 'Edit preferences'
-        },
+        }
+        ,
 
         resolveReady: function () {
             this.module._resolveController();
-        },
+        }
+        ,
 
         onBeforeRemove: function () {
             return true;
-        },
+        }
+        ,
 
         onRemove: Util.noop
 
-    };
+    }
+        ;
 
 });
