@@ -207,9 +207,9 @@ define([
                     onLoaded.call($img);
                 } else {
                     $img
-                        .attr('src', String(variable.get()))
                         .on('load', onLoaded)
-                        .on('error', onError);
+                        .on('error', onError)
+                        .attr('src', String(variable.get()));
                 }
 
                 function onError(e) {
