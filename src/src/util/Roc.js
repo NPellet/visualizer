@@ -531,7 +531,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                     const idx = this._findIndexByUuid(uuid, key);
                                     if (idx !== -1) {
                                         this.variables[key].data.splice(idx, 1);
-                                        if (!option.noTrigger) {
+                                        if (!options.noTrigger) {
                                             this.variables[key].data.triggerChange();
                                         }
                                     }

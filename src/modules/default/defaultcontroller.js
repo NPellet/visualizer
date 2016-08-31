@@ -245,35 +245,28 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
         configurationStructure: Util.noop,
 
-        configFunctions: {}
-        ,
+        configFunctions: {},
 
-        configAliases: {}
-        ,
+        configAliases: {},
 
-        events: {}
-        ,
+        events: {},
 
         variablesIn: [],
 
         actionsIn: {
             _editPreferences: 'Edit preferences'
-        }
-        ,
+        },
 
         resolveReady: function () {
             this.module._resolveController();
-        }
-        ,
+        },
 
         onBeforeRemove: function () {
             return true;
-        }
-        ,
+        },
 
         onRemove: Util.noop
 
-    }
-        ;
+    };
 
 });
