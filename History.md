@@ -1,3 +1,24 @@
+<a name="2.63.0"></a>
+# [2.63.0](https://github.com/NPellet/visualizer/compare/v2.62.0...v2.63.0) (2016-09-02)
+
+
+### Bug Fixes
+
+* **forms:** limit margin of button elements ([70398ce](https://github.com/NPellet/visualizer/commit/70398ce))
+* **roc:** fix noTrigger ([b32429e](https://github.com/NPellet/visualizer/commit/b32429e))
+* **typerenderer:** no scrollbar for OCL (v2) ([27eff33](https://github.com/NPellet/visualizer/commit/27eff33))
+
+
+### Features
+
+* **API:** add onAction and offAction methods ([33d7927](https://github.com/NPellet/visualizer/commit/33d7927))
+* **core:** when printing module, convert all canvases to images ([008ccb8](https://github.com/NPellet/visualizer/commit/008ccb8)), closes [#946](https://github.com/NPellet/visualizer/issues/946)
+* **modules:** add default events for loaded module and updated variable ([a4a3481](https://github.com/NPellet/visualizer/commit/a4a3481))
+* **roc:** add noTrigger option ([f8fdac6](https://github.com/NPellet/visualizer/commit/f8fdac6))
+* **slickgrid:** allow custom id property (faster) ([abbdf36](https://github.com/NPellet/visualizer/commit/abbdf36))
+
+
+
 <a name="2.62.0"></a>
 # [2.62.0](https://github.com/NPellet/visualizer/compare/v2.61.0...v2.62.0) (2016-08-29)
 
