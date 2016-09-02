@@ -677,7 +677,7 @@ define([
                 row.isAction = true;
                 return row;
             });
-            this.idPropertyName = '_sgid';
+            this.idPropertyName = this.module.getConfiguration('idProperty') || '_sgid';
             if (this.module.getConfiguration('filterType') === 'pref') {
                 this._setScript(this.module.getConfiguration('filterRow'));
             }
@@ -986,7 +986,6 @@ define([
 
         getSlickOptions: function () {
             var that = this;
-            console.log(that.module.getConfiguration('slick.headerRowHeight'));
             return {
                 editable: that.module.getConfigurationCheckbox('slickCheck', 'editable'),
                 enableAddRow: that.module.getConfigurationCheckbox('slickCheck', 'enableAddRow'),
@@ -1515,13 +1514,16 @@ define([
         },
 
         setNextUniqId: function (item, force) {
-            if (!item[this.idPropertyName] || force) {
+            var autoId = !(this.module.getConfiguration('idProperty'));
+            if (autoId && (item[this.idPropertyName] === undefined || force)) {
                 Object.defineProperty(item, this.idPropertyName, {
                     value: 'id_' + ++uniqueID,
                     writable: true,
                     configurable: false,
                     enumerable: false
                 });
+            } else if (!autoId && !item[this.idPropertyName]) {
+                throw new Error(`An element of slick grid input does not define it's id property "${this.idPropertyName}"`);
             }
         },
 
@@ -1531,6 +1533,21 @@ define([
                 // return false if void line
                 return l ? !l.match(/^\s*\/\/a/) : false;
             });
+        },
+
+        _findItem: function (row) {
+            var item;
+            var data = this.module.data.get();
+            if (_.isNumber(row) || row instanceof DataNumber) {
+                item = data[row];
+            } else if (typeof row === 'string' || row instanceof DataString) {
+                item = {
+                    [this.idPropertyName]: String(row)
+                };
+            } else {
+                item = row;
+            }
+            return item;
         },
 
         exportToTabDelimited: function () {
@@ -1601,34 +1618,24 @@ define([
             },
             hoverRow: function (row) {
                 // row can be the row itself or the array's index
-                var item;
-                var data = this.module.data.get();
-                if (_.isNumber(row) || row instanceof DataNumber) {
-                    item = data[row];
-                } else {
-                    item = row;
-                }
+                var item = this._findItem(row);
 
                 if (item && item[this.idPropertyName]) {
                     var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
+                    item = this.slick.data.getItem(dataIdx);
                     this.module.controller.onHover(dataIdx, item);
                     this.grid.scrollRowToTop(gridRow);
                 }
             },
 
             selectRow: function (row) {
-                var item;
-                var data = this.module.data.get();
-                if (_.isNumber(row) || row instanceof DataNumber) {
-                    item = data[row];
-                } else {
-                    item = row;
-                }
+                var item = this._findItem(row);
 
                 if (item && item[this.idPropertyName]) {
                     var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
+                    item = this.slick.data.getItem();
                     this.module.controller.onClick(dataIdx, item);
                     if (!_.isUndefined(gridRow)) {
                         this.grid.scrollRowToTop(gridRow);
@@ -1639,18 +1646,31 @@ define([
             },
 
             selectRows: function (rows) {
-                var srows;
+                var srows, items;
                 if (rows === 'all') {
                     srows = new Array(this.slick.data.getLength());
                     for (var i = 0; i < srows.length; i++) {
                         srows[i] = i;
                     }
-                } else if (Array.isArray(rows)) {
+                } else if (Array.isArray(rows) && (!rows.length || rows.length && (typeof rows[0] === 'number' || rows[0] instanceof DataNumber))) {
                     srows = rows;
+                } else if (Array.isArray(rows)) {
+                    items = rows.map(this._findItem.bind(this));
+                } else if (typeof rows === 'number' || rows instanceof DataNumber) {
+                    srows = [rows];
+                } else if (rows) {
+                    items = [this._findItem(rows)];
                 } else {
                     srows = [];
                 }
-                this.grid.setSelectedRows(srows);
+                if (items) {
+                    srows = items.map(i => {
+                        return this.slick.data.getRowById(i[this.idPropertyName]);
+                    });
+                }
+                if (srows) {
+                    this.grid.setSelectedRows(srows);
+                }
             },
 
             showColumn: function (column) {

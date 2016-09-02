@@ -106,6 +106,11 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             ],
                             'default': 'row'
                         },
+                        idProperty: {
+                            type: 'text',
+                            title: 'Id property',
+                            default: ''
+                        },
                         filterType: {
                             type: 'combo',
                             title: 'Filter script source',
@@ -376,6 +381,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         'slick.headerRowHeight': ['groups', 'group', 0, 'slick.headerRowHeight', 0],
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
+        'idProperty': ['groups', 'group', 0, 'idProperty', 0],
         'filterType': ['groups', 'group', 0, 'filterType', 0],
         'filterRow': ['groups', 'group', 0, 'filterRow', 0],
         'cols': ['groups', 'cols', 0],
