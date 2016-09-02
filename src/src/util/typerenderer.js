@@ -248,7 +248,7 @@ define([
                 console.log(h, w);
                 var can = $('<canvas>', {id: id});
                 var canEl = can.get(0);
-                canEl.height = h - 3;
+                canEl.height = h - 5;
                 canEl.width = w;
                 $element.html(can);
                 ACT.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
