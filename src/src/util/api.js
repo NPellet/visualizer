@@ -320,6 +320,14 @@ define([
         window.onbeforeunload = null;
     };
 
+    exports.onAction = function onAction(names, callback) {
+        return exports.getRepositoryActions().listen(names, callback);
+    };
+
+    exports.offAction = function (actionId) {
+        return exports.getRepositoryActions().unlisten(actionId);
+    };
+
     return exports;
 
 });
