@@ -284,8 +284,7 @@ h2 .form-duplicator-wrapper {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f5f6', endColorstr='#dce1e5', GradientType=0); /* IE6-9 */
 
     border: 1px solid rgba(0, 0, 0, 0.2);
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .form-button {
