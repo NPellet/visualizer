@@ -34,8 +34,11 @@ define([
             module._resolveModel = res;
         });
 
+        const start = Date.now();
         module._onReady = Promise.all([module.viewReady, module.controllerReady, module.modelReady]);
-        module._onReady.then(function () {
+        module._onReady.then(() => {
+            module.controller.sendActionFromEvent('_onLoaded', '_moduleUrl', moduleURL);
+            module.controller.sendActionFromEvent('_onLoaded', '_loadTime', Date.now() - start);
             module.updateAllView();
         }, function (err) {
             Debug.error('Caught error in module ready state', err);
@@ -185,20 +188,9 @@ define([
             return this._onReady;
         },
 
-        /**
-         * Called to update the view (normally after a change of data)
-         */
-        updateView: function (rel) {
-            this.onReady().then(function () {
-                var val = API.getVariable(this.getNameFromRel(rel));
-                if (!val) {
-                    return;
-                }
-                if (this.view.update && this.view.update[rel]) {
-                    this.view.update[rel].call(this.view, val[1], val[0][0]);
-                }
-            }, function (err) {
-                Debug.error('Error during view update', err);
+        updateView(rel, varValue, varName) {
+            return Promise.resolve(this.view.update[rel].call(this.view, varValue, varName)).then(() => {
+                this.controller.sendActionFromEvent('_onVarUpdated', '_varName', varName);
             });
         },
 
@@ -450,9 +442,9 @@ define([
                 width: '80%'
             });
 
-            var references = this.controller.references,
-                events = this.controller.events,
-                i, l, keys;
+            var references = $.extend({}, this.controller.defaultReferences, this.controller.references);
+            var events = $.extend({}, this.controller.defaultEvents, this.controller.events);
+            var i, l, keys;
 
             // Filters
             var filter = API.getAllFilters(),
@@ -564,7 +556,7 @@ define([
             }
 
             // ACTIONS IN
-            var actionsIn = this.controller.actionsIn || {};
+            var actionsIn = $.extend({}, this.controller.defaultActionsIn, this.controller.actionsIn);
             var actionsInList = [];
 
             for (i in actionsIn) {

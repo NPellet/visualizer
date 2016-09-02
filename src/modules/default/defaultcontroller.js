@@ -249,13 +249,38 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
         configAliases: {},
 
+        defaultReferences: {
+            _loadTime: {
+                label: 'Loading time'
+            },
+            _moduleUrl: {
+                label: 'Module URL'
+            },
+            _varName: {
+                label: 'Variable name',
+                type: 'string'
+            }
+        },
+        references: {},
+
+        defaultEvents: {
+            _onLoaded: {
+                label: 'Module loaded',
+                refAction: ['_loadTime', '_moduleUrl']
+            },
+            _onVarUpdated: {
+                label: 'Variable updated',
+                refAction: ['_varName']
+            }
+        },
         events: {},
 
         variablesIn: [],
 
-        actionsIn: {
+        defaultActionsIn: {
             _editPreferences: 'Edit preferences'
         },
+        actionsIn: {},
 
         resolveReady: function () {
             this.module._resolveController();
