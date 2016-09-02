@@ -88,6 +88,7 @@ module.exports = function (grunt) {
                             '!modules/**/lib/**/*.js',
                             'src/**/*.js',
                             '!lib/**/*',
+                            'lib/forms/**/*.js',
                             'lib/chemistry/*.js',
                             'lib/twigjs/*.js'
                         ], // Actual pattern(s) to match.
