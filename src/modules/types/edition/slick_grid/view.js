@@ -1546,6 +1546,9 @@ define([
         _findItem: function (row) {
             var item;
             var data = this.module.data.get();
+            if (typeof row === 'function') {
+                return data.find(row);
+            }
             if (_.isNumber(row) || row instanceof DataNumber) {
                 item = data[row];
             } else if (typeof row === 'string' || row instanceof DataString) {
@@ -1654,8 +1657,12 @@ define([
             },
 
             selectRows: function (rows) {
+                var data = this.module.data.get();
                 var srows, items;
-                if (rows === 'all') {
+                if (typeof rows === 'function') {
+                   items = data.filter(rows);
+                }
+                else if (rows === 'all') {
                     srows = new Array(this.slick.data.getLength());
                     for (var i = 0; i < srows.length; i++) {
                         srows[i] = i;
