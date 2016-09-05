@@ -1660,9 +1660,8 @@ define([
                 var data = this.module.data.get();
                 var srows, items;
                 if (typeof rows === 'function') {
-                   items = data.filter(rows);
-                }
-                else if (rows === 'all') {
+                    items = data.filter(rows);
+                } else if (rows === 'all') {
                     srows = new Array(this.slick.data.getLength());
                     for (var i = 0; i < srows.length; i++) {
                         srows[i] = i;
