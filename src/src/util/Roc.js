@@ -62,7 +62,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
             getQuery: {
                 401: 'Unauthorized to get query',
                 404: 'Query does not exist'
-            }
+            },
+            getGroups: {}
         };
 
         for (let key in defaultOptions.messages) {
@@ -75,7 +76,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
         }
 
         const viewSearchJsonify = ['key', 'startkey', 'endkey'];
-        const viewSearch = ['limit'];
+        const viewSearch = ['limit', 'mine', 'groups'];
         const mandatoryOptions = ['url', 'database'];
 
         const idb = new IDB('roc-documents');
@@ -117,6 +118,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             if (res && res.body && res.status == 200) {
                                 if (options.filter) {
                                     res.body = res.body.filter(options.filter);
+                                } if(options.sort) {
+                                    res.body = res.body.sort(options.sort);
                                 }
                                 if (options.varName) {
                                     for (var i = 0; i < res.body.length; i++) {
@@ -157,6 +160,9 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             if (res && res.body && res.status == 200) {
                                 if (options.filter) {
                                     res.body = res.body.filter(options.filter);
+                                }
+                                if(options.sort) {
+                                    res.body = res.body.sort(options.sort);
                                 }
                                 if (options.varName) {
                                     for (var i = 0; i < res.body.length; i++) {
@@ -249,6 +255,13 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     return this.get(entry)
                         .catch(handleError(this, options));
                 });
+            }
+
+            getGroups(options) {
+                return this.__ready.then(() => {
+                    options = createOptions(options, 'getGroups');
+                    return superagent.get(`${this.databaseUrl}groups`).then(res => res.body).catch(handleError(this, options));
+                })
             }
 
             create(entry, options) {
@@ -417,7 +430,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                             throw new Error('no processor');
                                         }
 
-                                        return this.processor.process(type, entry.$content, attachment).then(() => {
+                                        return Promise.resolve(this.processor.process(type, entry.$content, attachment)).then(() => {
                                             this.typeUrl(entry.$content, entry);
                                             if (entry.triggerChange && !options.noTrigger) {
                                                 entry.triggerChange();
