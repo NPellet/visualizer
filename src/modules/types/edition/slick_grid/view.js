@@ -696,7 +696,8 @@ define([
                             action: colDef.colDef.action,
                             tooltip: colDef.colDef.tooltip,
                             backgroundColor: Color.array2rgba(colDef.colDef.backgroundColor),
-                            color: colDef.colDef.color
+                            color: colDef.colDef.color,
+                            clickMode: colDef.colDef.clickMode
                         }
                     };
 
@@ -716,19 +717,27 @@ define([
                     var $cellNode = $(cellNode);
 
                     $cellNode.css('backgroundColor', context.renderOptions.backgroundColor);
+                    $cellNode.css('cursor', 'default');
                     $cellNode.find('a').css('color', context.renderOptions.color);
 
                     var $a = $cellNode.find('a');
                     $a.attr('title', context.renderOptions.tooltip);
 
                     if (context.renderOptions.action) {
-                        $a.addClass('icon-clickable');
-                        if ($a.length) {
-                            $a[0].onclick = function () {
+                        if (context.renderOptions.clickMode === 'text') {
+                            $a.addClass('icon-clickable');
+                            if ($a.length) {
+                                $a[0].onclick = function () {
+                                    API.doAction(context.renderOptions.action, dataContext);
+                                };
+                            }
+                        } else if (context.renderOptions.clickMode === 'background') {
+                            $cellNode.css('cursor', 'pointer');
+                            $cellNode.off('click.action');
+                            $cellNode.on('click.action', function () {
                                 API.doAction(context.renderOptions.action, dataContext);
-                            };
+                            });
                         }
-
                     }
                 }
             };

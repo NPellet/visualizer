@@ -268,6 +268,15 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             ],
                             default: 'end'
                         },
+                        clickMode: {
+                            type: 'combo',
+                            title: 'Click mode',
+                            options: [
+                                {key: 'text', title: 'Text or icon'},
+                                {key: 'background', title: 'Background'}
+                            ],
+                            default: 'text'
+                        },
                         width: {
                             type: 'text',
                             title: 'Width'
