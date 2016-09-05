@@ -1,3 +1,19 @@
+<a name="2.64.0"></a>
+# [2.64.0](https://github.com/NPellet/visualizer/compare/v2.63.1...v2.64.0) (2016-09-05)
+
+
+### Bug Fixes
+
+* **tree:** support native DataObjects ([4ff87d9](https://github.com/NPellet/visualizer/commit/4ff87d9))
+
+
+### Features
+
+* **slickgrid:** action columns text or background click modes ([50ad3f8](https://github.com/NPellet/visualizer/commit/50ad3f8))
+* **slickgrid:** allow select / click row(s) action value to be a function ([c42b813](https://github.com/NPellet/visualizer/commit/c42b813))
+
+
+
 <a name="2.63.1"></a>
 ## [2.63.1](https://github.com/NPellet/visualizer/compare/v2.63.0...v2.63.1) (2016-09-02)
 
