@@ -4,7 +4,7 @@ define([], function () {
     var uniqueID = 0;
 
     function annotateTree(tree, data, options) {
-        for (var i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             data[i] = DataObject.check(data[i]);
         }
 
@@ -24,10 +24,10 @@ define([], function () {
             var element = data[node.index];
             if (element) {
                 node.data.data = element;
-                for (var i = 0; i < keys.length; ++i) {
+                for (let i = 0; i < keys.length; ++i) {
                     var value = element.getChildSync(options[keys[i]]);
                     if (value) {
-                        node['data'][keys[i]] = value.get().resurrect();
+                        node['data'][keys[i]] = DataObject.resurrect(value.get());
                     }
                 }
             }
@@ -35,7 +35,7 @@ define([], function () {
 
         // go inside of each node
         if (node.children !== undefined) {
-            for (var i = 0; i < node.children.length; ++i) {
+            for (let i = 0; i < node.children.length; ++i) {
                 traversal(node.children[i], data, options, keys);
             }
         }
