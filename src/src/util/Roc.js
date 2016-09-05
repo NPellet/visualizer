@@ -118,7 +118,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             if (res && res.body && res.status == 200) {
                                 if (options.filter) {
                                     res.body = res.body.filter(options.filter);
-                                } if(options.sort) {
+                                } if (options.sort) {
                                     res.body = res.body.sort(options.sort);
                                 }
                                 if (options.varName) {
@@ -161,7 +161,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                 if (options.filter) {
                                     res.body = res.body.filter(options.filter);
                                 }
-                                if(options.sort) {
+                                if (options.sort) {
                                     res.body = res.body.sort(options.sort);
                                 }
                                 if (options.varName) {
@@ -261,7 +261,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 return this.__ready.then(() => {
                     options = createOptions(options, 'getGroups');
                     return superagent.get(`${this.databaseUrl}groups`).then(res => res.body).catch(handleError(this, options));
-                })
+                });
             }
 
             create(entry, options) {
