@@ -726,6 +726,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 this._traverseFilename(v, v => {
                     if (v.data && v.data.url) {
                         delete v.data;
+                        delete v.url;
                     }
                 });
             }
@@ -747,7 +748,9 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     v.data = {
                         type: vtype || 'string'
                     };
-                    v.data[prop] = `${this.entryUrl}/${entry._id}/${v.filename}`;
+                    var url = `${this.entryUrl}/${entry._id}/${v.filename}`;
+                    v.url = url;
+                    v.data[prop] = url;
                 });
             }
         }
