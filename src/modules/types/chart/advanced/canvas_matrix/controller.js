@@ -75,7 +75,7 @@ define([
             controller.createDataFromEvent(name, 'point', {
                 row: keyed[1],
                 column: keyed[0],
-                value: data[keyed[0]][keyed[1]]
+                value: data[keyed[1]][keyed[0]]
             });
 
             controller.createDataFromEvent(name, 'fullRow', data[keyed[1]].slice());
