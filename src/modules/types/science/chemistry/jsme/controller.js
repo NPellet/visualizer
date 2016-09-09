@@ -129,6 +129,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 removehs: 'Remove hydrogens when reading a molecule with explicit hydrogens',
                                 removehsc: 'Remove hydrogens bounded to C when reading a molecule with explicit hydrogens',
                                 nozoom: 'Prevent zoom with scroll wheel',
+                                toggle: 'Allow to switch from edition to depict mode',
                                 noshowdraganddropsymbolindepictmode: 'Hide the drag and drop symbol in depict mode',
                                 addnewpart: 'when reading or pasting a new molecule, add it to the existing molecules'
                             }
