@@ -214,6 +214,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
 
     };
 
+    Controller.prototype.export = function () {
+        return this.module.view.export();
+    };
+
     return Controller;
 
 });

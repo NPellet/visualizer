@@ -298,6 +298,7 @@ define([
                         grid.setSelectionModel(new Slick.RowSelectionModel());
                         grid.onClick.subscribe(function (e, args) {
                             // Get id
+                            if (options.noSelect) return;
                             lastClickedId = data.mapRowsToIds([args.row])[0];
                             if (options.noConfirmation) {
                                 resolve(lastClickedId);

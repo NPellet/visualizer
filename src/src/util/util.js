@@ -504,6 +504,10 @@ define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'co
         return blob;
     };
 
+    exports.toB64 = function (str) {
+        return btoa(unescape(encodeURIComponent(String(str))));
+    };
+
     exports.getStructuresComboOptions = function () {
         var typeList = [];
         typeList.push({key: '', title: 'none'});

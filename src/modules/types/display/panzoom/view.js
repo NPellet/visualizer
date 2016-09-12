@@ -5,11 +5,12 @@ define([
     'src/util/debug',
     'modules/default/defaultview',
     'src/util/util',
+    'src/util/ui',
     'lodash',
     'bowser',
     'components/jquery.panzoom/dist/jquery.panzoom',
     'components/jquery-mousewheel/jquery.mousewheel'
-], function (API, Debug, Default, Util, _, bowser) {
+], function (API, Debug, Default, Util, UI, _, bowser) {
 
     var focusR = 0.5;
 
@@ -725,6 +726,42 @@ define([
 
         getDom: function () {
             return this.dom;
+        },
+
+        export: function() {
+            var images = this.images.filter(img => img.type === 'image' || img.type === 'svg');
+            var choices = images.map(img => {
+                var val;
+                if (img.type === 'image') {
+                    val = img.$img[0].src;
+                } else {
+                    val = 'data:image/svg+xml;base64,' + Util.toB64(img.$img.html());
+                }
+                return {
+                    name: String(img.name),
+                    link: {
+                        type: 'downloadLink',
+                        value: val,
+                        _options: {
+                            filename: String(img.name)
+                        }
+                    }
+                };
+            });
+            UI.choose(choices, {
+                columns: [{
+                    id: 'name',
+                    name: 'name',
+                    field: 'name'
+                }, {
+                    id: 'link',
+                    name: 'link',
+                    field: 'link'
+                }],
+                idField: 'name',
+                noSelect: true,
+                noConfirmation: true
+            });
         },
 
         onActionReceive: {

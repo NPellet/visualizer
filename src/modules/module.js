@@ -1255,12 +1255,14 @@ define([
             var that = this;
             var prom = Promise.resolve(that.controller.export());
             prom.then(function (text) {
-                ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
-                    title: 'Export data from module ' + that.getTitle(),
-                    width: '70%',
-                    height: 500,
-                    noWrap: true
-                }).children('textarea').text(text);
+                if (typeof text === 'string') {
+                    ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
+                        title: 'Export data from module ' + that.getTitle(),
+                        width: '70%',
+                        height: 500,
+                        noWrap: true
+                    }).children('textarea').text(text);
+                }
             });
         },
 
