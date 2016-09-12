@@ -5,13 +5,14 @@ define([
     'src/util/debug',
     'lodash',
     'src/util/util',
+    'src/util/ui',
     'src/util/color',
     'src/util/api',
     'src/util/typerenderer',
     'slickgrid',
     'src/util/sandbox',
     'src/data/structures'
-], function (Default, Debug, _, Util, Color, API, Renderer, Slick, Sandbox, structures) {
+], function (Default, Debug, _, Util, UI, Color, API, Renderer, Slick, Sandbox, structures) {
 
     function View() {
     }
@@ -1562,30 +1563,60 @@ define([
         },
 
         exportToTabDelimited: function () {
+            this._makeDataObjects();
             var cols = this.grid.getColumns();
-            var data = this.module.data.get();
-            var txt = '';
-            var line = [], i, j;
-            for (i = 0; i < cols.length; i++) {
-                if (cols[i].jpath) // ignore special columns
-                    line.push(cols[i].name || '');
+            var choices = [{
+                key: 'all',
+                description: 'Export entire list'
+            }];
+            if (this.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
+                choices.push({
+                    key: 'filtered',
+                    description: 'Export filtered list'
+                });
             }
-            txt += line.join('\t') + '\r\n';
-            for (i = 0; i < data.length; i++) {
-                line = [];
-                for (j = 0; j < cols.length; j++) {
-                    var jpath = cols[j].jpath;
-                    if (!jpath) continue; // again
-                    jpath = jpath.slice(0);
-                    jpath.unshift(i);
-                    var el = this.module.data.getChildSync(jpath, false);
-                    el = el ? el.get() : '';
-                    if (typeof el === 'string') el = el.replace(/\r/g, '\\r').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
-                    line.push(el);
+            if (this.module.getConfigurationCheckbox('slickCheck', 'editable')) {
+                choices.push({
+                    key: 'selected',
+                    description: 'Export selected elements'
+                });
+            }
+
+            var data;
+            return UI.choose(choices, {
+                autoSelect: true,
+                noConfirmation: true
+            }).then(selection => {
+                if (selection === 'filtered') {
+                    data = this.slick.data.getItems(true);
+                } else if (selection === 'selected') {
+                    data = _.map(this._getItemsInfo(this.lastSelectedRows || []), 'item');
+                } else {
+                    data = this.slick.data.getItems();
+                }
+                var txt = '';
+                var line = [], i, j;
+                for (i = 0; i < cols.length; i++) {
+                    if (cols[i].jpath) // ignore special columns
+                        line.push(cols[i].name || '');
                 }
                 txt += line.join('\t') + '\r\n';
-            }
-            return txt;
+                for (i = 0; i < data.length; i++) {
+                    line = [];
+                    for (j = 0; j < cols.length; j++) {
+                        var jpath = cols[j].jpath;
+                        if (!jpath) continue; // again
+                        var el = data[i].getChildSync(jpath, false);
+                        el = el ? el.get() : '';
+                        if (typeof el === 'string') el = el.replace(/\r/g, '\\r').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+                        line.push(el);
+                    }
+                    txt += line.join('\t') + '\r\n';
+                }
+                return txt;
+            });
+
+
         },
 
         showColumn: function (column) {
