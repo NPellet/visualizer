@@ -195,7 +195,6 @@ define([
         var fromArray = Array.isArray(list);
 
         if (!options.asynchronous) {
-            allProm = [];
             if (fromArray) {
                 arr = list;
             } else {
@@ -208,7 +207,8 @@ define([
                     };
                 }
             }
-            addItems(arr);
+            _ready = addItems(arr);
+            allProm = [_ready];
         } else if (fromArray) {
             sources = list.length;
             var allProm = new Array(list.length);
