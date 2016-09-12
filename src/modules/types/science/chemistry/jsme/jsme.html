@@ -68,11 +68,22 @@
         // becuase you may have quick events like reset / setMolfile, the molFile that will be
         // send in the action will corresponds to the last event !
         var action = result.action;
+
+        var mol = window.jsmeApplet.molFile();
+        var molV3 = window.jsmeApplet.molFile(true);
+        var jme = window.jsmeApplet.jmeFile();
+        var smiles = window.jsmeApplet.smiles();
+        var svg = window.jsmeApplet.getMolecularAreaGraphicsString();
+        window.doPostMessage('onChange', {mol: mol, molV3: molV3, smiles: smiles, jme: jme, svg: svg, action: action});
+
+/*
         setTimeout(function () {
             var mol = window.jsmeApplet.molFile();
             var molV3 = window.jsmeApplet.molFile(true);
             var jme = window.jsmeApplet.jmeFile();
             var smiles = window.jsmeApplet.smiles();
+
+
             var svg = window.jsmeApplet.getMolecularAreaGraphicsString();
             svg = svg.split('\n').filter(function (line, i) {
                 if (i === 1) return false; // remove main white background
@@ -82,6 +93,7 @@
             }).join('\n');
             window.doPostMessage('onChange', {mol: mol, molV3: molV3, smiles: smiles, jme: jme, svg: svg, action: action});
         });
+*/
     };
 
     function setDefaultAction() {

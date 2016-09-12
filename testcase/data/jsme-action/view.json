@@ -37,7 +37,7 @@
 					]
 				}
 			},
-			"id": 7,
+			"id": 1,
 			"vars_in": [
 				{
 					"rel": "list",
@@ -140,7 +140,7 @@
 					]
 				}
 			},
-			"id": 8,
+			"id": 2,
 			"vars_in": [
 				{
 					"rel": "mol",
@@ -156,6 +156,30 @@
 					"rel": "mol",
 					"jpath": [],
 					"name": "molfile"
+				},
+				{
+					"event": "onStructureChange",
+					"rel": "smiles",
+					"jpath": [],
+					"name": "smiles"
+				},
+				{
+					"event": "onStructureChange",
+					"rel": "jme",
+					"jpath": [],
+					"name": "jme"
+				},
+				{
+					"event": "onStructureChange",
+					"rel": "molV3",
+					"jpath": [],
+					"name": "molfilev3"
+				},
+				{
+					"event": "onStructureChange",
+					"rel": "svg",
+					"jpath": [],
+					"name": "svg"
 				}
 			],
 			"url": "modules/types/science/chemistry/jsme/",
@@ -284,7 +308,7 @@
 					"name": "Default layer"
 				}
 			},
-			"id": 9,
+			"id": 3,
 			"vars_in": [
 				{
 					"rel": "inputValue",
@@ -304,6 +328,533 @@
 				}
 			],
 			"actions_out": [],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"text"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[]
+							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								0
+							],
+							"script": [
+								null
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 42
+					},
+					"size": {
+						"width": 40,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "molfile"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "Molfile",
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"text"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[]
+							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								0
+							],
+							"script": [
+								""
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 41,
+						"top": 42
+					},
+					"size": {
+						"width": 40,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Molfile V3",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "molfilev3"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "Molfile V3",
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"text"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[]
+							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								0
+							],
+							"script": [
+								""
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 82,
+						"top": 42
+					},
+					"size": {
+						"width": 40,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "JME",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "jme"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "JME",
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								[]
+							],
+							"debounce": [
+								0
+							],
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								null
+							],
+							"align": [
+								null
+							],
+							"valign": [
+								null
+							],
+							"rendererOptions": [
+								""
+							],
+							"forceType": [
+								"svg"
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 123,
+						"top": 42
+					},
+					"size": {
+						"width": 41,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "svg"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "",
+			"vars_out": [],
 			"toolbar": {
 				"custom": [
 					[
@@ -366,7 +917,7 @@
 	"configuration": {
 		"title": "No title"
 	},
-	"version": "2.60.1-0",
+	"version": "2.64.1-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
