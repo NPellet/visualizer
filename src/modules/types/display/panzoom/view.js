@@ -728,7 +728,7 @@ define([
             return this.dom;
         },
 
-        export: function() {
+        export: function () {
             var images = this.images.filter(img => img.type === 'image' || img.type === 'svg');
             var choices = images.map(img => {
                 var val;
