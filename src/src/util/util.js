@@ -4,7 +4,14 @@
  * Global utility methods
  * @module src/util/util
  */
-define(['src/util/debug', 'src/util/color', 'lodash', 'src/data/structures', 'components/web-animations-js/web-animations.min'], function (Debug, Color, _, structures) {
+define([
+    'bluebird',
+    'lodash',
+    './debug',
+    './color',
+    '../data/structures',
+    'components/web-animations-js/web-animations.min'
+], function (Promise, _, Debug, Color, structures) {
 
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
