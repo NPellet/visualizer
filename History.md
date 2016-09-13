@@ -1,3 +1,22 @@
+<a name="2.65.0"></a>
+# [2.65.0](https://github.com/NPellet/visualizer/compare/v2.64.0...v2.65.0) (2016-09-13)
+
+
+### Bug Fixes
+
+* **core:** fix ui.choose when synchronous with autoSelect option ([7171576](https://github.com/NPellet/visualizer/commit/7171576))
+* **core:** load bluebird for superagent-promise ([bc59380](https://github.com/NPellet/visualizer/commit/bc59380))
+* **core:** load bluebird for util.js ([c4abbae](https://github.com/NPellet/visualizer/commit/c4abbae))
+* **matrix:** the value clicked was shifted ([#959](https://github.com/NPellet/visualizer/issues/959)) ([a57a250](https://github.com/NPellet/visualizer/commit/a57a250)), closes [#958](https://github.com/NPellet/visualizer/issues/958)
+
+
+### Features
+
+* **panzoom:** implement export of images ([b6185e1](https://github.com/NPellet/visualizer/commit/b6185e1)), closes [#691](https://github.com/NPellet/visualizer/issues/691)
+* **slickgrid:** export options can be all, filtered or selected ([f824c6b](https://github.com/NPellet/visualizer/commit/f824c6b)), closes [#960](https://github.com/NPellet/visualizer/issues/960)
+
+
+
 <a name="2.64.0"></a>
 # [2.64.0](https://github.com/NPellet/visualizer/compare/v2.63.1...v2.64.0) (2016-09-05)
 
