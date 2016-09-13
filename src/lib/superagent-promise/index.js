@@ -1,6 +1,6 @@
 'use strict';
 // https://github.com/lightsofapollo/superagent-promise
-define(['browserified/superagent/index'], function (superagent) {
+define(['browserified/superagent/index', 'bluebird'], function (superagent, Promise) {
 /**
  * Promise wrapper for superagent
  */

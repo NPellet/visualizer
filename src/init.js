@@ -23,6 +23,7 @@ require.config({
         'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
         ace: 'components/ace/src',
         async: 'components/async/lib/async',
+        bluebird: 'components/bluebird/js/browser/bluebird.min',
         bowser: 'components/bowser/bowser.min',
         chroma: 'components/chroma-js/chroma.min',
         ckeditor: 'components/ckeditor/ckeditor',
@@ -177,7 +178,7 @@ require([
     'src/main/datas',
     'src/main/entrypoint',
     'uri/URI.fragmentQuery',
-    'components/bluebird/js/browser/bluebird.min',
+    'bluebird',
     'components/setImmediate/setImmediate'
 
 ], function ($, Datas, EntryPoint, URI, Promise) {
