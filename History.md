@@ -1,3 +1,13 @@
+<a name="2.65.1"></a>
+## [2.65.1](https://github.com/NPellet/visualizer/compare/v2.65.0...v2.65.1) (2016-09-13)
+
+
+### Bug Fixes
+
+* **jsgraph:** update jsgraph to fix legend on Firefox ([0b926e0](https://github.com/NPellet/visualizer/commit/0b926e0))
+
+
+
 <a name="2.65.0"></a>
 # [2.65.0](https://github.com/NPellet/visualizer/compare/v2.64.0...v2.65.0) (2016-09-13)
 
