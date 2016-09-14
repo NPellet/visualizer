@@ -245,7 +245,6 @@ define([
                 var id = Util.getNextUniqueId();
                 var h = Math.max(100, $element.height());
                 var w = $element.width() > 50 ? $element.width() : 200;
-                console.log(h, w);
                 var can = $('<canvas>', {id: id});
                 var canEl = can.get(0);
                 canEl.height = h - 5;
@@ -438,6 +437,36 @@ define([
             $element.html('<span style="color: green;">&#10004;</span>');
         else
             $element.html('<span style="color: red;">&#10008;</span>');
+    };
+
+    functions.gradient = {};
+    functions.gradient.init = function () {
+        return new Promise(resolve => {
+            require(['src/util/colorbar'], function (colorbar) {
+                functions.gradient.colorbar = colorbar;
+                resolve();
+            });
+        });
+    };
+    functions.gradient.toscreen = function ($element, value, root, options) {
+        var defaultColorBar = {
+            axis: {
+                orientation: 'left',
+                ticks: 0,
+                order: 'asc'
+            },
+            domain: [0, 1],
+            stopType: 'value'
+        };
+        var colorBar = Object.assign({}, defaultColorBar, options);
+        colorBar.width = $element.width() - 5;
+        colorBar.height = $element.height() - 5;
+        colorBar.stops = new Array(value.length);
+        colorBar.stopPositions = new Array(value.length);
+        colorBar.stops = value.map(v => v.color);
+        colorBar.stopPositions = value.map(v => v.value);
+
+        functions.gradient.colorbar.renderSvg($element[0], colorBar);
     };
 
     functions.colorbar = {};

@@ -337,7 +337,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
                 var colorbarx = boundingBox[0];
                 var colorbary = boundingBox[1];
                 var svgMarkup = colorbar.getSvg({
-                    width: 20,
+                    width: 50,
                     height: boundingBox[3] * 0.95 - 20,
                     axis: {
                         orientation: 'left',

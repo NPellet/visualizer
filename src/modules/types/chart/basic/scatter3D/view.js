@@ -816,7 +816,7 @@ define([
             });
             if (!this.module.getConfiguration('gradient') || this.module.getConfiguration('gradient').length <= 1) return;
             colorbar.renderSvg(this.$colorbar[0], {
-                width: 20,
+                width: 50,
                 height: 200,
                 axis: {
                     orientation: 'left',

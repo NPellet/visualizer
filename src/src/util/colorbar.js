@@ -44,6 +44,7 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
     };
 
     exports.renderSvg = function (el, options) {
+        console.log(options);
         var stopPositions;
         // Default stop type is percent
         if (options.stopType === 'values') {
@@ -58,8 +59,19 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         }
         var linearg = getGradientXY(options.axis.orientation);
         var margin = 30;
-        var totalWidth = options.width + margin;
-        var totalHeight = options.height + margin;
+        var gradientWidth, totalWidth = options.width, gradientHeight, totalHeight = options.height;
+        if (options.axis && options.axis.orientation === 'bottom' || options.axis.orientation === 'bottom') {
+            gradientWidth = totalWidth;
+            gradientHeight = options.height - margin;
+        } else if (options.axis && options.axis.orientation === 'left' || options.axis.orientation === 'right') {
+            gradientHeight = totalHeight;
+            gradientWidth = totalWidth - margin;
+        } else {
+            gradientWidth = totalWidth;
+            gradientHeight = totalHeight;
+        }
+
+        console.log(totalWidth, totalHeight, gradientWidth, gradientHeight);
         var svg = d3.select(el).append('svg')
             .attr('width', totalWidth)
             .attr('height', totalHeight);
@@ -103,8 +115,8 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             });
         g.append('rect')
             .style('fill', 'url(#' + id + ')')
-            .attr('width', options.width)
-            .attr('height', options.height);
+            .attr('width', gradientWidth)
+            .attr('height', gradientHeight);
 
 
         var x = d3.scale.linear()
@@ -112,29 +124,33 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         if (!options.axis.tickValues) {
             x = x.nice();
         }
-        x.range([0, (options.axis.orientation === 'bottom' || options.axis.orientation === 'top' ? options.width : options.height)]);
-        var axis = d3.svg.axis()
-            .scale(x)
-            .orient(options.axis.orientation)
-            .tickSize(6);
-        if (options.axis.ticks) {
-            axis.ticks(options.axis.ticks);
-        } else if (options.axis.tickValues) {
-            axis.tickValues(options.axis.tickValues);
+        x.range([0, (options.axis.orientation === 'bottom' || options.axis.orientation === 'top' ? gradientWidth : gradientHeight)]);
+        if (options.axis && options.axis.orientation) {
+            var axis = d3.svg.axis()
+                .scale(x)
+                .orient(options.axis.orientation)
+                .tickSize(6);
+            if (options.axis.ticks) {
+                axis.ticks(options.axis.ticks);
+            } else if (options.axis.tickValues) {
+                axis.tickValues(options.axis.tickValues);
+            }
+
+
+            g.append('g')
+                .attr('class', 'key')
+                .attr('transform', function () {
+                    var tx = 0, ty = 0;
+                    if (options.axis.orientation === 'bottom') {
+                        ty += gradientHeight;
+                    } else if (options.axis.orientation === 'right') {
+                        tx += gradientWidth;
+                    }
+                    return 'translate(' + tx + ',' + ty + ')';
+                })
+                .call(axis);
         }
 
-        g.append('g')
-            .attr('class', 'key')
-            .attr('transform', function () {
-                var tx = 0, ty = 0;
-                if (options.axis.orientation === 'bottom') {
-                    ty += options.height;
-                } else if (options.axis.orientation === 'right') {
-                    tx += options.width;
-                }
-                return 'translate(' + tx + ',' + ty + ')';
-            })
-            .call(axis);
 
         return svg.html();
     };
