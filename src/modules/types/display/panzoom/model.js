@@ -9,10 +9,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     $.extend(true, Model.prototype, Default, {
         getjPath: function (rel) {
             var data;
-            console.log('getjpath', rel);
             switch (rel) {
                 case 'allpixel':
-                    console.log('allpixel');
                     data = this.module.controller.lastHoverPixels;
                     break;
             }

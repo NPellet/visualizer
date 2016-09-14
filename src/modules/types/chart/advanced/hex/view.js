@@ -186,7 +186,6 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.opacity = this.opacity.map(function (val) {
                 return val === undefined ? 1 : val;
             });
-            console.log(this.color);
         },
 
         _fontSize: function (px) {
