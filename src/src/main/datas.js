@@ -26,7 +26,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             currentProto = object;
             while (true) { // eslint-disable-line no-constant-condition
                 nextProto = currentProto.__proto__;
-                if (nextProto === null || (nextProto.constructor && nextProto.constructor.name === 'Array')) {
+                if (nextProto === null ||
+                    (nextProto.constructor && (nextProto.constructor === Array || nextProto.constructor.name === 'Array'))) {
                     currentProto.__proto__ = DataArray.prototype;
                     break;
                 }
@@ -42,7 +43,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 currentProto = object;
                 while (true) { // eslint-disable-line no-constant-condition
                     nextProto = currentProto.__proto__;
-                    if (nextProto === null || (nextProto.constructor && nextProto.constructor.name === 'Object')) {
+                    if (nextProto === null ||
+                        (nextProto.constructor && (nextProto.constructor === Object || nextProto.constructor.name === 'Object'))) {
                         currentProto.__proto__ = DataObject.prototype;
                         break;
                     }
