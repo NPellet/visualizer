@@ -44,7 +44,6 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
     };
 
     exports.renderSvg = function (el, options) {
-        console.log(options);
         var stopPositions;
         // Default stop type is percent
         if (options.stopType === 'values') {
@@ -71,7 +70,6 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             gradientHeight = totalHeight;
         }
 
-        console.log(totalWidth, totalHeight, gradientWidth, gradientHeight);
         var svg = d3.select(el).append('svg')
             .attr('width', totalWidth)
             .attr('height', totalHeight);
