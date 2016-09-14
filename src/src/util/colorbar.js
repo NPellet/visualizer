@@ -46,12 +46,12 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
     exports.renderSvg = function (el, options) {
         var stopPositions;
         // Default stop type is percent
+        var domMin = d3.min(options.domain);
+        var domMax = d3.max(options.domain);
         if (options.stopType === 'values') {
             // convert values to percentages
-            var max = d3.max(options.stopPositions);
-            var min = d3.min(options.stopPositions);
             stopPositions = options.stopPositions.map(function (s) {
-                return (s - min) / (max - min);
+                return (s - domMin) / (domMax - domMin);
             });
         } else {
             stopPositions = options.stopPositions;

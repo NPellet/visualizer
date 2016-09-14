@@ -34,7 +34,7 @@ define(function () {
         'array': 'array',
         'regexp': 'string',
         'regex': 'string',
-        'gradient': 'array',
+        'gradient': 'object',
         'colorBar': {
             'type': 'array',
             'elements': {

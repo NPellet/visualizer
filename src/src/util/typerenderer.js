@@ -450,22 +450,16 @@ define([
     };
     functions.gradient.toscreen = function ($element, value, root, options) {
         var defaultColorBar = {
-            axis: {
-                orientation: 'left',
-                ticks: 0,
-                order: 'asc'
-            },
             domain: [0, 1],
-            stopType: 'value'
+            stopType: 'values'
         };
-        var colorBar = Object.assign({}, defaultColorBar, options);
-        colorBar.width = $element.width() - 5;
-        colorBar.height = $element.height() - 5;
-        colorBar.stops = new Array(value.length);
-        colorBar.stopPositions = new Array(value.length);
-        colorBar.stops = value.map(v => v.color);
-        colorBar.stopPositions = value.map(v => v.value);
+        var colorBar = Object.assign({}, defaultColorBar, value, options);
+        colorBar.stops = colorBar.stops || colorBar.color;
+        colorBar.stopPositions = colorBar.stopPositions || colorBar.x;
+        colorBar.width = $element.width();
+        colorBar.height = $element.height();
 
+        $element.html('');
         functions.gradient.colorbar.renderSvg($element[0], colorBar);
     };
 
