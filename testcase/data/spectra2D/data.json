@@ -98,7 +98,7 @@
     "type": "jcamp",
     "url": "../testcase/data/spectra2D/cosy.jdx",
     "_options": {
-      "nbContourLevels": 10,
+      "nbContourLevels": 8,
       "noiseMultiplier": 2
     },
     "timeout": 3600
