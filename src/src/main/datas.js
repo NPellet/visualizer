@@ -512,6 +512,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             var that = this;
 
             if (typeof jpath === 'string') { // Old version
+                Debug.warn('Using jpath strings is deprecated');
                 jpath = jpath.split('.');
                 jpath.shift();
             }
@@ -558,6 +559,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             var that = this;
 
             if (typeof jpath === 'string') { // Old version
+                Debug.warn('Using jpath strings is deprecated');
                 jpath = jpath.split('.');
                 jpath.shift();
             }
