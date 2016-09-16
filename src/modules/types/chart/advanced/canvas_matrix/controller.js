@@ -68,7 +68,7 @@ define([
 
             controller.setVarFromEvent(name, 'intersect', 'matrix', intersect);
 
-            if (typeof data[keyed[0]] === 'undefined') {
+            if (typeof data[keyed[1]] === 'undefined') {
                 return;
             }
 
