@@ -131,7 +131,7 @@ define([
                  (twig does some check depending on the filter used
                  and the values need to be native)
                  */
-                this._values[name] = value.resurrect();
+                this._values[name] = DataObject.resurrect(value.get());
                 this.rerender();
             },
             tpl: function (value) {
