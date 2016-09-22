@@ -56,10 +56,13 @@ define([
                 return;
             }
 
-            controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', keyed[1]]);
-            controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', keyed[0]]);
+            var row = keyed[1];
+            var column = keyed[0];
 
-            var intersect = [keyed[1], keyed[0]];
+            controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', row]);
+            controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', column]);
+
+            var intersect = [row, column];
             var data = controller.module.getDataFromRel('matrix').get();
             if (data.data) {
                 data = data.data;
@@ -68,22 +71,22 @@ define([
 
             controller.setVarFromEvent(name, 'intersect', 'matrix', intersect);
 
-            if (typeof data[keyed[1]] === 'undefined') {
+            if (typeof data[row] === 'undefined') {
                 return;
             }
 
             controller.createDataFromEvent(name, 'point', {
-                row: keyed[1],
-                column: keyed[0],
-                value: data[keyed[1]][keyed[0]]
+                row: row,
+                column: column,
+                value: data[row][column]
             });
 
-            controller.createDataFromEvent(name, 'fullRow', data[keyed[1]].slice());
+            controller.createDataFromEvent(name, 'fullRow', data[row].slice());
 
-            var l = data[0].length;
+            var l = data.length;
             var col = new Array(l);
             for (var i = 0; i < l; i++) {
-                col[i] = data[i][keyed[0]];
+                col[i] = data[i][column];
             }
             controller.createDataFromEvent(name, 'fullCol', col);
         };
