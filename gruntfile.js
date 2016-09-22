@@ -175,7 +175,7 @@ module.exports = function (grunt) {
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
                             './chroma-js/chroma.min.js',
-                            './async/lib/async.js',
+                            './async/dist/**',
                             './jsnmr/dist/**',
                             './loglevel/dist/loglevel.min.js',
                             './marked/lib/marked.js',

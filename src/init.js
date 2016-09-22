@@ -22,7 +22,7 @@ require.config({
         moment: 'components/moment/min/moment.min',
         'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
         ace: 'components/ace/src',
-        async: 'components/async/lib/async',
+        async: 'components/async/dist/async',
         bluebird: 'components/bluebird/js/browser/bluebird.min',
         bowser: 'components/bowser/bowser.min',
         chroma: 'components/chroma-js/chroma.min',
