@@ -17,6 +17,9 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
             arrayvalue: function () {
                 this.dom.empty();
             },
+            textlist: function () {
+                this.dom.empty();
+            },
             textvalue: function () {
                 this.dom.empty();
             }
@@ -30,6 +33,15 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 if (!Array.isArray(value)) {
                     return;
                 }
+                this._oneWordPerLine = true;
+                this.processChart(value);
+            },
+            textlist: function (value) {
+                if (!value.get()) {
+                    return;
+                }
+                value = value.get();
+                this._oneWordPerLine = true;
                 this.processChart(value);
             },
             textvalue: function (value) {
@@ -37,6 +49,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     return;
                 }
                 value = value.get();
+                this._oneWordPerLine = false;
                 this.processChart(value);
             }
         },
@@ -94,7 +107,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                 tags = {};
                 var cases = {};
 
-                text.split(that.module.getConfigurationCheckbox('oneWordPerLine', 'oneWordPerLine') ? /\n/g : wordSeparators).forEach(function (word) {
+                text.split(that._oneWordPerLine ? /\n/g : wordSeparators).forEach(function (word) {
                     if (discard.test(word)) return;
                     word = word.replace(punctuation, '');
                     if (stopWords.test(word.toLowerCase())) return;
@@ -152,7 +165,7 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     .fontSize(function (d) {
                         return that.fontSize(+d.value);
                     })
-                    .text(function (d) {return d.key; })
+                    .text(function (d) { return d.key; })
                     .on('end', draw);
             } else {
                 that.layout
