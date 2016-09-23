@@ -1018,7 +1018,7 @@ define([
                 explicitInitialization: true,
                 rowHeight: that.module.getConfiguration('slick.rowHeight'),
                 showHeaderRow: that.module.getConfigurationCheckbox('slickCheck', 'filterColumns'),
-                headerRowHeight: that.module.getConfiguration('slick.headerRowHeight')
+                headerRowHeight: +that.module.getConfiguration('slick.headerRowHeight')
             };
         },
 
