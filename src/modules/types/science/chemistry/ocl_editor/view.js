@@ -66,7 +66,8 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
 
         initEditor: function () {
             var controller = this.module.controller;
-            this.editor = OCL.StructureEditor.createEditor(this.id);
+            var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
+            this.editor = new OCL.StructureEditor(this.id, useSVG, 1);
             this.editor.setChangeListenerCallback(this.module.controller.onChange.bind(controller));
             this.editor.setIDCode(controller.currentMol.idcode, controller.currentMol.coordinates);
             this.setFragment();

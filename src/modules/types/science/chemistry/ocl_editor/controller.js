@@ -52,9 +52,10 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
                         prefs: {
                             type: 'checkbox',
                             title: 'Options',
-                            default: [],
+                            default: ['svg'],
                             options: {
-                                queryFeatures: 'Enable query features'
+                                queryFeatures: 'Enable query features',
+                                svg: 'Use SVG toolbar'
                                 // inPlace: 'In-place modification of input'
                             }
                         }
