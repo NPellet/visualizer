@@ -92,7 +92,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         },
 
                         'slick.headerRowHeight': {
-                            type: 'text',
+                            type: 'float',
                             title: 'Header row height',
                             default: 30
                         },
