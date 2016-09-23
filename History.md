@@ -1,3 +1,22 @@
+<a name="2.66.0"></a>
+# [2.66.0](https://github.com/NPellet/visualizer/compare/v2.65.1...v2.66.0) (2016-09-23)
+
+
+### Bug Fixes
+
+* **canvas_matrix:** fullCol method out of range ([#966](https://github.com/NPellet/visualizer/issues/966)) ([8e7110b](https://github.com/NPellet/visualizer/commit/8e7110b))
+* **canvas_matrix:** return when data row is undefined ([#964](https://github.com/NPellet/visualizer/issues/964)) ([14c41cb](https://github.com/NPellet/visualizer/commit/14c41cb))
+* **slickgrid:** fix the header height option ([88df796](https://github.com/NPellet/visualizer/commit/88df796))
+* **twig:** get dataobject's value ([57f0ce9](https://github.com/NPellet/visualizer/commit/57f0ce9))
+
+
+### Features
+
+* **ocl_editor:** add SVG toolbar option and set it by default ([dae037d](https://github.com/NPellet/visualizer/commit/dae037d))
+* **typerenderer:** add gradient type renderer ([8be50f7](https://github.com/NPellet/visualizer/commit/8be50f7))
+
+
+
 <a name="2.65.1"></a>
 ## [2.65.1](https://github.com/NPellet/visualizer/compare/v2.65.0...v2.65.1) (2016-09-13)
 
