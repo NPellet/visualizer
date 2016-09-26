@@ -74,7 +74,7 @@
     "requirejs": "2.3.2",
     "select2": "4.0.0",
     "setImmediate": "YuzuJS/setImmediate#1.0.5",
-    "slickgrid": "cheminfo/SlickGrid#bbe7d115311c66a521648a9e09f53f4139647558",
+    "slickgrid": "cheminfo/SlickGrid#611e2cd035dd4ba2bf930b57b38f0787ddc380ce",
     "smart-array-filter": "1.1.0",
     "spectrum": "1.8.0",
     "sprintf": "1.0.3",
