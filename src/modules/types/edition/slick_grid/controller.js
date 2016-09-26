@@ -40,7 +40,6 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 enableAddRow: 'Enable add row',
                                 autoEdit: 'Enable Auto Edit',
                                 forceFitColumns: 'Force fit Columns',
-                                autoFocus: 'Auto Focus',
                                 rowNumbering: 'Show row number when scrolling',
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
                                 filterColumns: 'Enable search header',
