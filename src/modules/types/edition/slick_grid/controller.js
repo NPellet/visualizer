@@ -44,8 +44,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 oneUncollapsed: 'Maximum One group uncollapsed (per level)',
                                 filterColumns: 'Enable search header',
                                 keepSelected: 'Keep selected elements when filtering',
-                                backToTop: 'Don\'t remember scroll position on new variable',
-                                forgetLastActive: 'Don\'t scroll back to last active row on new variable',
+                                backToTop: 'Don\'t remember scroll position',
+                                forgetLastActive: 'Don\'t remember last active cell',
                                 highlightScroll: 'Scroll to highlighted line',
                                 collapseGroup: 'Collapse groups on start',
                                 ignoreMyHighlights: 'Ignore highlights from myself'
