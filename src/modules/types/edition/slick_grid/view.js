@@ -778,8 +778,11 @@ define([
                 if (removed.length) removedRows.push(removed[0]);
             }
             this.lastSelectedRows = [];
-            this.module.controller.onRowsDelete(removedRows);
-            this.module.data.triggerChange();
+            if (removedRows.length) {
+                this._deleteFilter(removedRows);
+                this.module.controller.onRowsDelete(removedRows);
+                this.module.data.triggerChange();
+            }
         },
 
         getAllSlickColumns: function () {
@@ -1191,8 +1194,11 @@ define([
                     // delete the row...
                     var itemInfo = that._getItemInfoFromRow(args.row);
                     var removed = that.module.data.get().splice(itemInfo.idx, 1);
-                    if (removed.length) that.module.controller.onRowsDelete(removed);
-                    that.module.data.triggerChange();
+                    if (removed.length) {
+                        that._deleteFilter(removed);
+                        that.module.controller.onRowsDelete(removed);
+                        that.module.data.triggerChange();
+                    }
                 }
             });
         },
@@ -1255,6 +1261,7 @@ define([
         //    this.rows           Content of the rows associated to event
         //    this.row            Content of the row associated to event
         //    this.cell           Content of the cell associated to event
+        //    this.previous       Content of the cell associated to the event before it was edited
         //    this.column         Description of the column associated to event
 
         // Row description
@@ -1264,6 +1271,7 @@ define([
 
         // Possible events:
         //    rowsChanged         Rows has changed
+        //    rowsDeleted         Rows have been deleted
         //    cellChanged         A cell has changed
         //    inView              Rows are now in view
         //    rowsSelected        A new selection of rows has been made
@@ -1355,6 +1363,14 @@ define([
             // If used asynchronously (e.g. in debounce)
             //that.grid.invalidateAllRows();
             //that.grid.render();
+        },
+
+        _deleteFilter: function (deletedRows) {
+            if (!this.hasFilter) return;
+            this._runFilter({
+                event: 'rowsDeleted',
+                rows: deletedRows
+            });
         },
 
         _selectHighlight: function () {
