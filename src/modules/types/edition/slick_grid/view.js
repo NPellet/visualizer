@@ -449,6 +449,7 @@ define([
                                     row: args.row,
                                     cell: i
                                 }),
+                                previous: args.previous,
                                 column: columns[i]
                             });
                         }
@@ -457,7 +458,8 @@ define([
                             event: 'cellChanged',
                             row: itemInfo,
                             cell: ctx._getCell(args),
-                            column: column
+                            column: column,
+                            previous: args.previous
                         });
                     }
 

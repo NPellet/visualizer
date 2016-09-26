@@ -521,7 +521,7 @@ define([
     function booleanLoadValue(item) {
         this.defaultValue = item.getChildSync(this.args.column.jpath);
         if (this.defaultValue) {
-            var val = this.defaultValue.get();
+            var val = this.defaultValue = this.defaultValue.get();
         }
         if (val) {
             if ((val instanceof DataBoolean) && !val.get()) {
@@ -539,7 +539,7 @@ define([
     }
 
     function booleanIsValueChanged() {
-        return this.serializeValue !== this.defaultValue;
+        return this.serializeValue() !== this.defaultValue;
     }
 
     function booleanApplyValue(item, state, type) {
