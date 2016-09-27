@@ -623,7 +623,7 @@ define([
             ctx.grid.setSelectedRows(ctx.lastSelectedRows);
         }
         if (!_.isUndefined(ctx.lastActiveRow) && !ctx.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {
-            ctx.grid.gotoCell(ctx.lastActiveRow, ctx.lastActiveCell, ctx.module.getConfigurationCheckbox('slickCheck', 'autoEdit'), true);
+            ctx.grid.gotoCell(ctx.lastActiveRow, ctx.lastActiveCell, false, true);
         }
 
 
