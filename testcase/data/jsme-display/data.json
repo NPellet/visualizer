@@ -1,4 +1,10 @@
-{"_dataFilename":"/Demo/Chemistry/molfile2d_highlight/.results/Master/1380817657539.json","_dataUrl":"http://script.epfl.ch/script/HD/Load/Na761mCBuH?filename=test%40patiny.com%2F%2FDemo%2FChemistry%2Fmolfile2d_highlight%2F.results%2FMaster%2F1380817657539.json","_saved":1380817657542,"_viewFilename":"Demo/Chemistry/molfile2d_highlight/.views/Master/1380816972710.json","mols2d":[{"toDisplay":{}
+{"_dataFilename":"/Demo/Chemistry/molfile2d_highlight/.results/Master/1380817657539.json","_dataUrl":"http://script.epfl.ch/script/HD/Load/Na761mCBuH?filename=test%40patiny.com%2F%2FDemo%2FChemistry%2Fmolfile2d_highlight%2F.results%2FMaster%2F1380817657539.json","_saved":1380817657542,"_viewFilename":"Demo/Chemistry/molfile2d_highlight/.views/Master/1380816972710.json",
+  "mols2d":[
+    {"toDisplay":{}
+    ,"name":-1
+    ,"value":"Untitled Document-3\r\n  ChemDraw02101114182D\r\n\r\n  0  0  0  0  0  0  0  0  0  0999 V2000\r\nEND\r\n","type":"mol2d"}
+    ,
+    {"toDisplay":{}
 ,"name":0,"_highlight":[0],"molfile":{"_atoms":{"2":[2,3,0],"1":[1,3,2],"0":[3,5,2]}
 ,"value":"Untitled Document-3\r\n  ChemDraw02101114182D\r\n\r\n  6  6  0  0  0  0  0  0  0  0999 V2000\r\n   -0.7145    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\r\n   -0.7145   -0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\r\n   -0.0000   -0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\r\n    0.7145   -0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\r\n    0.7145    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\r\n   -0.0000    0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\r\n  1  2  2  0      \r\n  2  3  1  0      \r\n  3  4  2  0      \r\n  4  5  1  0      \r\n  5  6  2  0      \r\n  6  1  1  0      \r\nM  END\r\n","_highlight":[0],"type":"mol2d"}
 }
