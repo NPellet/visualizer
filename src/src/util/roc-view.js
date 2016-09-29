@@ -242,6 +242,11 @@ define(['./util'], function (Util) {
         setRevision(rev) {
             this._revision = rev;
         }
+
+        getRevisionData(rev) {
+            return this.manager.getRequestDB(`/entry/${this.id}?rev=${rev}`)
+                .then(getRes => getRes.body);
+        }
     }
 
     return RocView;

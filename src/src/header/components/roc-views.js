@@ -14,7 +14,8 @@ define([
     'src/util/uploadUi',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
-    'jquery-ui/widgets/accordion'
+    'jquery-ui/widgets/accordion',
+    'jquery-ui/widgets/tooltip'
 ], function ($,
              _,
              superagent,
@@ -861,11 +862,20 @@ define([
                 })));
                 this.$revBox.append('<br>');
                 revs.forEach(rev => {
-                    this.$revBox.append($('<p>').html($('<a>', {
+                    const revLink = $('<a>', {
                         click: this.loadRevision.bind(this, node, rev),
                         css: fakeLink,
-                        text: rev
-                    })));
+                        class: 'roc-revision-link',
+                        text: rev,
+                        title: ''
+                    });
+
+                    revLink.tooltip({
+                        content: this.updateRevInfo.bind(this, node, rev)
+                    });
+
+                    const openRevLink = $('<p>').html(revLink);
+                    this.$revBox.append(openRevLink);
                 });
             });
         }
@@ -874,6 +884,13 @@ define([
             const view = node.data.view;
             view.setRevision(rev);
             this.loadNode(node);
+        }
+
+        updateRevInfo(node, rev, callback) {
+            const view = node.data.view;
+            view.getRevisionData(rev).then(data => {
+                callback(new Date(data.$modificationDate).toLocaleString());
+            });
         }
 
         saveAs() {
