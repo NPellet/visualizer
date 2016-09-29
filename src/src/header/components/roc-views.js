@@ -252,7 +252,8 @@ define([
 
             var main = $('<div>', {
                 css: {
-                    marginTop: '20px'
+                    marginTop: '20px',
+                    width: '710px'
                 }
             });
 
@@ -300,7 +301,7 @@ define([
                     display: 'inline-block',
                     height: '100%',
                     marginLeft: '10px',
-                    width: '320px'
+                    width: '340px'
                 }
             });
 
@@ -324,7 +325,11 @@ define([
             this.$infoBox = $('<div>').appendTo(rightAccordion);
 
             rightAccordion.append('<h3>Revisions</h3>');
-            this.$revBox = $('<div>').appendTo(rightAccordion);
+            this.$revBox = $('<div>', {
+                css: {
+                    maxHeight: '300px'
+                }
+            }).appendTo(rightAccordion);
 
             rightAccordion.append('<h3>Attachments</h3>');
             this.$attachmentsBox = $('<div>').appendTo(rightAccordion);
@@ -381,6 +386,7 @@ define([
             rightButtons
                 .append(closeButton)
                 .append(saveButton)
+                .append('<br>')
                 .append(saveAsButton)
                 .append(saveAsText);
 
@@ -848,6 +854,12 @@ define([
             this.$revBox.html('loading...');
             view.getRevisions(force).then(revs => {
                 this.$revBox.empty();
+                this.$revBox.append($('<p>').html($('<a>', {
+                    click: this.reloadRevisions.bind(this, node, true),
+                    css: fakeLink,
+                    text: 'refresh'
+                })));
+                this.$revBox.append('<br>');
                 revs.forEach(rev => {
                     this.$revBox.append($('<p>').html($('<a>', {
                         click: this.loadRevision.bind(this, node, rev),
@@ -855,12 +867,6 @@ define([
                         text: rev
                     })));
                 });
-                this.$revBox.append('<br>');
-                this.$revBox.append($('<p>').html($('<a>', {
-                    click: this.reloadRevisions.bind(this, node, true),
-                    css: fakeLink,
-                    text: 'refresh'
-                })));
             });
         }
 

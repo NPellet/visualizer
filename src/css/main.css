@@ -496,26 +496,12 @@ div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid tr.ui-state
 
 .header-button-list {
     background-color: #e0e0e0;
-    border: 1px solid #666666;
-    border-right-width: 0px;
-    box-shadow: 0px 5px 5px rgba(100, 100, 100, 0.3);
-    padding: 0px;
-    margin: 0px;
+    border: 1px solid #777777;
+    margin: 0;
     z-index: 900;
-    padding: 25px;
-    padding-top: 15px;
-    padding-bottom: 20px;
+    padding: 15px 25px 20px;
     position: fixed;
     min-width: 180px;
-    /*width: 240px;*/
-    /*height: 400px;*/
-    /*
-        -moz-column-count: 2;
-        -moz-column-gap: 30px;
-        -webkit-column-count: 2;
-        -webkit-column-gap: 30px;
-        column-count: 2;
-        column-gap: 30px;*/
 }
 
 .header-button-list li {

@@ -52,7 +52,6 @@ define(['jquery', 'src/util/util'], function ($, Util) {
         var w = this.$_elToOpen.outerWidth(true),
             h = this.$_dom.outerHeight(true),
             pos = this.$_dom.position(),
-            fullH = $(window).outerHeight(true),
             fullW = $('#header').outerWidth(true),
             newLeft, newTop;
 
