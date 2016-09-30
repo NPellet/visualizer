@@ -385,36 +385,36 @@ define([
         if (color === undefined) color = 'black';
         // Image taken from https://github.com/jxnblk/loading (loading-bars.svg)
         var $elem = $(`
- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="black">
-   <style>
-     @keyframes ci-loading-rectangles {
-       0% {transform: none}
-       25% { transform: matrix(1,0,0,2,0,-16) }
-       50% { transform: none}
-     }
-     .ci-loading-rectanim {
-       animation: ci-loading-rectangles 1s infinite
-     }
-     #ci-loading-rectanim-2 {
-       animation-delay: 0.16s;
-     }
-     #ci-loading-rectanim-3 {
-       animation-delay: 0.32s;
-     }
-     #ci-loading-rectanim-4 {
-       animation-delay: 0.48s;
-     }
-     #ci-loading-rectanim-5 {
-       animation-delay: 0.64s;
-     }
-   </style>
-   <rect class="ci-loading-rectanim" id="ci-loading-rectanim-1" x="0" y="12" width="4" height="8"></rect>
-   <rect class="ci-loading-rectanim" id="ci-loading-rectanim-2" x="7" y="12" width="4" height="8"></rect>
-   <rect class="ci-loading-rectanim" id="ci-loading-rectanim-3" x="14" y="12" width="4" height="8"></rect>
-   <rect class="ci-loading-rectanim" id="ci-loading-rectanim-4" x="21" y="12" width="4" height="8"></rect>
-   <rect class="ci-loading-rectanim" id="ci-loading-rectanim-5" x="28" y="12" width="4" height="8"></rect>
-</svg>
-`).attr({
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="black">
+               <style>
+                 @keyframes ci-loading-rectangles {
+                   0% {transform: none}
+                   25% { transform: matrix(1,0,0,2,0,-16) }
+                   50% { transform: none}
+                 }
+                 .ci-loading-rectanim {
+                   animation: ci-loading-rectangles 1s infinite
+                 }
+                 #ci-loading-rectanim-2 {
+                   animation-delay: 0.16s;
+                 }
+                 #ci-loading-rectanim-3 {
+                   animation-delay: 0.32s;
+                 }
+                 #ci-loading-rectanim-4 {
+                   animation-delay: 0.48s;
+                 }
+                 #ci-loading-rectanim-5 {
+                   animation-delay: 0.64s;
+                 }
+               </style>
+               <rect class="ci-loading-rectanim" id="ci-loading-rectanim-1" x="0" y="12" width="4" height="8"></rect>
+               <rect class="ci-loading-rectanim" id="ci-loading-rectanim-2" x="7" y="12" width="4" height="8"></rect>
+               <rect class="ci-loading-rectanim" id="ci-loading-rectanim-3" x="14" y="12" width="4" height="8"></rect>
+               <rect class="ci-loading-rectanim" id="ci-loading-rectanim-4" x="21" y="12" width="4" height="8"></rect>
+               <rect class="ci-loading-rectanim" id="ci-loading-rectanim-5" x="28" y="12" width="4" height="8"></rect>
+            </svg>
+        `).attr({
             width: size,
             height: size,
             fill: color
