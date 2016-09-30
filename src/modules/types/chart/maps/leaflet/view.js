@@ -111,8 +111,6 @@ define([
             });
             this.module.getDomContent().html(this.dom);
 
-            API.killHighlight(this.module.getId());
-
             // Construct default marker options
             Marker.setDefaultOptions({
                 kind: this.module.getConfiguration('markerkind'),
@@ -276,13 +274,12 @@ define([
         },
 
         addGeoJSON: function (geojson, varname) {
-            geojson.addTo(this.map);
+            this.map.addLayer(geojson);
             this.mapLayers[varname] = geojson;
             this.mapBounds[varname] = new L.LatLngBounds();
-            var that = this;
-            geojson.eachLayer(function (layer) {
-                addEvents.call(that, layer);
-                that.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
+            geojson.eachLayer((layer) => {
+                this.addEvents(layer, varname);
+                this.mapBounds[varname].extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
             });
         },
         updateFit: function (varname) {
@@ -337,7 +334,7 @@ define([
         }
     });
 
-    function addEvents(layer) {
+    function addEvents(layer, varname) {
 
         var data = layer.feature.properties || {};
         var that = this;
@@ -373,7 +370,7 @@ define([
                     }
                 }
             }
-        }, false, this.module.getId());
+        }, false, this.module.getId() + '_' + varname);
 
         layer.addEventListener({
             mouseover: function () {
@@ -390,8 +387,9 @@ define([
     }
 
     function clearLayer(varname) {
+        API.killHighlight(this.module.getId() + '_' + varname);
         if (this.mapLayers.hasOwnProperty(varname)) {
-            this.mapLayers[varname].clearLayers();
+            this.map.removeLayer(this.mapLayers[varname]);
             delete this.mapLayers[varname];
         }
         if (this.mapLayer.hasOwnProperty(varname)) {
