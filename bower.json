@@ -55,7 +55,7 @@
     "json-chart": "1.1.0",
     "jsoneditor": "5.5.7",
     "jszip": "3.0.0",
-    "leaflet": "0.7.7",
+    "leaflet": "1.0.1",
     "leaflet-omnivore": "0.3.2",
     "lodash": "4.15.0",
     "loglevel": "1.4.0",
