@@ -7,14 +7,17 @@ define(['src/util/util', 'src/util/api', 'modules/modulefactory', 'src/main/grid
             var modules = ModuleFactory.getModulesById();
             var keys = Object.keys(modules);
 
-            var modulesArr = new Array(keys.length);
+            var modulesArr = [];
             var layers = API.getLayerNames();
             var activeLayer = API.getActiveLayerName();
             var layersArr = [];
             for (var i = 0; i < keys.length; i++) {
-                modulesArr[i] = modules[keys[i]];
-                modulesArr[i].text = keys[i] + ' ' + modulesArr[i].moduleName;
-                modulesArr[i].cat = 'module';
+                if (!modules[keys[i]].hidden) {
+                    const module = modules[keys[i]];
+                    modulesArr.push(module);
+                    module.text = keys[i] + ' ' + module.moduleName;
+                    module.cat = 'module';
+                }
             }
 
             for (i = 0; i < layers.length; i++) {
