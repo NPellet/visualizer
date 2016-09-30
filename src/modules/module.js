@@ -405,7 +405,7 @@ define([
                         }
                     } else {
                         $.extend(true, this.definition.layers[i], this.getLayer(this.getActiveLayerName()));
-                        if (blank) {
+                        if (blank || activeLayer !== this.getActiveLayerName()) {
                             this.definition.layers[i].display = false;
                         }
                     }
