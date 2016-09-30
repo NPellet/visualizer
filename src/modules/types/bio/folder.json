@@ -5,12 +5,12 @@
       "url": "modules/types/bio/feature_viewer/"
     },
     {
-      "moduleName": "Sequence displayer",
-      "url": "modules/types/bio/sequence/"
+      "moduleName": "Sequence alignment displayer",
+      "url": "modules/types/bio/seq_alignment/"
     },
     {
-      "moduleName": "Sequence alignment",
-      "url": "modules/types/bio/seq_alignment/"
+      "moduleName": "Sequence displayer",
+      "url": "modules/types/bio/sequence/"
     }
   ],
   "name": "Bio",

@@ -28,7 +28,8 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
         author: 'Michaël Zasso',
         date: '13.05.2014',
         license: 'MIT',
-        cssClass: 'dualview'
+        cssClass: 'dualview',
+        hidden: true
     };
 
     Controller.prototype.references = {

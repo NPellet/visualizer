@@ -2,7 +2,8 @@
   "modules": [
     {
       "moduleName": "Edit/Display",
-      "url": "modules/types/edition/dualview/"
+      "url": "modules/types/edition/dualview/",
+      "hidden": true
     },
     {
       "moduleName": "Filter editor",
