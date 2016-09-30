@@ -78,6 +78,30 @@ define([
                         mouseActions: []
                     };
 
+                    options.plugins['drag'] = {};
+                    options.mouseActions.push({
+                        plugin: 'drag',
+                        shift: true,
+                        ctrl: false
+                    });
+
+                    options.plugins['zoom'] = {};
+                    options.mouseActions.push({
+                        plugin: 'zoom',
+                        type: 'dblclick',
+                        options: {
+                            mode: 'total'
+                        }
+                    });
+                    options.mouseActions.push({
+                        plugin: 'zoom',
+                        type: 'dblclick',
+                        shift: true,
+                        options: {
+                            mode: 'gradualXY'
+                        }
+                    });
+
                     var zoom = cfg('zoom');
                     if (zoom && zoom !== 'none') {
                         var zoomOptions = {};
@@ -92,31 +116,10 @@ define([
                             zoomOptions.axes = 'serieSelected';
                         }
                         options.plugins['zoom'] = zoomOptions;
-                        options.plugins['drag'] = {};
                         options.mouseActions.push({
                             plugin: 'zoom',
                             shift: false,
                             ctrl: false
-                        });
-                        options.mouseActions.push({
-                            plugin: 'drag',
-                            shift: true,
-                            ctrl: false
-                        });
-                        options.mouseActions.push({
-                            plugin: 'zoom',
-                            type: 'dblclick',
-                            options: {
-                                mode: 'total'
-                            }
-                        });
-                        options.mouseActions.push({
-                            plugin: 'zoom',
-                            type: 'dblclick',
-                            shift: true,
-                            options: {
-                                mode: 'gradualXY'
-                            }
                         });
                     }
 
@@ -126,7 +129,7 @@ define([
                             baseline: cfg('wheelbaseline', 0)
                         };
 
-                        if (wheel === 'xAxis') {
+                        if (wheel === 'zoomX') {
                             wheelOptions.direction = 'x';
                         } else {
                             wheelOptions.direction = 'y';
@@ -137,10 +140,6 @@ define([
                             type: 'mousewheel',
                             options: wheelOptions
                         });
-
-                        if (!options.plugins.zoom) {
-                            options.plugins.zoom = {};
-                        }
                     }
 
                     const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
