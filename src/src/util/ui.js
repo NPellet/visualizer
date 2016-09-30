@@ -16,12 +16,32 @@ define([
     'forms/button',
     'src/util/couchshare',
     'src/util/Form',
+    'notifyjs',
     'jquery-ui/widgets/dialog'
 ], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer, Form) {
+    // On load add the style for the progress notification
+    $.notify.addStyle('inprogress', {
+        html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(24, 'black').css('vertical-align', 'middle').wrap('<div/>').parent().html()}</div>`,
+        classes: {
+            xxx: {
+                'font-weight': 'bold',
+                padding: '8px 15px 8px 14px',
+                'text-shadow': '0 1px 0 rgba(255, 255, 255, 0.5)',
+                border: '1px solid #fbeed5',
+                'border-radius': '4px',
+                'white-space': 'nowrap',
+                'padding-left': '25px',
+                'background-repeat': 'no-repeat',
+                'background-position': '3px 7px',
+                color: '#3A87AD',
+                'background-color': '#D9EDF7',
+                'border-color': '#BCE8F1'
+            }
+        }
+    });
 
     var exports = {};
-
-
+    var inProgress = {};
     var $dialog;
 
     exports.showCode = function (opts) {
@@ -554,6 +574,7 @@ define([
 
     exports.showNotification = function () {
         var args = arguments;
+        args[1] = args[1] || 'error';
         if (args[1] && (typeof args[1] === 'string')) {
             args[1] = {
                 className: args[1],
@@ -562,9 +583,24 @@ define([
         } else if (args[1] && args[1].className === 'error') {
             args[1] = Object.assign({autoHide: false}, args[1]);
         }
-        require(['notifyjs'], function () {
-            $.notify.apply($.notify, args);
+        $.notify.apply($.notify, args);
+    };
+
+    exports.startProgress = function (text) {
+        var id = Util.getNextUniqueId(true);
+        exports.showNotification(text, {
+            style: 'inprogress',
+            autoHide: false,
+            className: 'xxx'
         });
+        inProgress[id] = $('.notifyjs-inprogress-xxx').last();
+        return id;
+    };
+
+    exports.stopProgress = function (id) {
+        if (!inProgress[id]) return;
+        inProgress[id].trigger('notify-hide');
+        delete inProgress[id];
     };
 
     exports.getSafeElement = function (el) {
