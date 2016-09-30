@@ -78,35 +78,6 @@
       "actions_out": []
     },
     {
-      "url": "modules/types/legacy/var_editor/",
-      "configuration": {},
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 8,
-            "top": 8
-          },
-          "size": {
-            "width": 42,
-            "height": 26
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 2
-    },
-    {
       "url": "modules/types/edition/rich_text/",
       "configuration": {
         "sections": {},
