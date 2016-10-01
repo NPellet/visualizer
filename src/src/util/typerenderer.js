@@ -154,7 +154,7 @@ define([
     functions.color = {};
     functions.color.toscreen = function ($element, val) {
         var result = '<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
-            '<div style="background-color: ' + val + '; width: 100%; height:100%; padding:0; margin:0">&nbsp;</div></div>';
+            '<div style="background-color: ' + val + '; width: 100%; height:100%; min-height: 1px; padding:0; margin:0"></div></div>';
         $element.html(result);
     };
 
@@ -466,7 +466,7 @@ define([
     functions.colorbar = {};
     functions.colorbar.toscreen = function ($element, value) {
 
-        var div = $('<div>&nbsp;</div>');
+        var div = $('<div></div>');
         var gradient = 'linear-gradient(to right';
 
         var total = 0, i = 0, l = value.length;
@@ -483,8 +483,9 @@ define([
 
         div.css({
             height: '100%',
-            width: '100%'
-        })/*.css('background','-webkit-'+gradient).css('background','-moz-'+gradient)*/.css('background', gradient);
+            width: '100%',
+            minHeight: '1px'
+        }).css('background', gradient);
         $element.html(div);
     };
 
@@ -555,7 +556,8 @@ define([
 
                 for (var i = 0; i < length; i++) {
                     var element = value[i];
-                    var span = $('<td>&nbsp;</td>').css({
+                    var span = $('<td></td>').css({
+                        minHeight: '1px',
                         'width': (100 * element.size / totalSize) + '%',
                         'border': 'none',
                         overflow: 'hidden',
