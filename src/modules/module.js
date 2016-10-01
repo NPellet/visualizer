@@ -8,12 +8,13 @@ define([
     'src/util/util',
     'src/util/fullscreen',
     'src/util/debug',
+    'src/main/datas',
     'src/main/variables',
     'src/util/ui',
     'version',
     'forms/form',
     'src/main/grid'
-], function ($, _, ContextMenu, API, Util, Fullscreen, Debug, Variables, ui, Version, Form) {
+], function ($, _, ContextMenu, API, Util, Fullscreen, Debug, Datas, Variables, ui, Version, Form) {
     function init(module) {
         //define object properties
         var originalURL = String(module.definition.getChildSync(['url'], true).get());
@@ -1065,17 +1066,15 @@ define([
             that._onReady = Promise.all([that.viewReady, that.controllerReady]);
         },
 
-        getConfiguration: function (aliasName, fallbackValue) {
-            var cfgEl = this.definition.configuration,
-                alias = this.controller.configAliases[aliasName],
-                toReturn;
+        getConfiguration(aliasName, fallbackValue) {
+            var cfgEl = this.definition.configuration;
+            var alias = this.controller.configAliases[aliasName];
+            var toReturn;
 
             if (alias) {
-                for (var i = 0, l = alias.length; i < l; i++) {
+                for (var i = 0; i < alias.length; i++) {
                     cfgEl = cfgEl[alias[i]];
-
                     if (typeof cfgEl === 'undefined') {
-
                         toReturn = this._getConfigurationDefault(alias, aliasName);
                         break;
                     }
@@ -1083,13 +1082,13 @@ define([
             } else {
                 Debug.warn('Alias ' + aliasName + ' not defined ');
             }
+
             if (toReturn == undefined)
                 toReturn = this._doConfigurationFunction(cfgEl, aliasName);
             if (toReturn == undefined)
                 toReturn = fallbackValue;
 
-            return toReturn;
-
+            return Datas.resurrect(toReturn);
         },
 
         getConfigurationCheckbox: function (aliasName, optionName) {
