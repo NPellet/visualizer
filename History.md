@@ -1,3 +1,29 @@
+<a name="2.67.0"></a>
+# [2.67.0](https://github.com/NPellet/visualizer/compare/v2.66.0...v2.67.0) (2016-10-03)
+
+
+### Bug Fixes
+
+* **header:** better layout for small screens ([47330eb](https://github.com/NPellet/visualizer/commit/47330eb))
+* **leaflet:** fix memory leak ([48b3094](https://github.com/NPellet/visualizer/commit/48b3094))
+* **module:** always return a native object in getConfiguration ([254c2fb](https://github.com/NPellet/visualizer/commit/254c2fb))
+* **module:** only copy modules from current layer when a new layer is created ([b6d6fa1](https://github.com/NPellet/visualizer/commit/b6d6fa1))
+* **roc-views:** add tooltip for revision modification date ([d327156](https://github.com/NPellet/visualizer/commit/d327156))
+* **slickgrid:** in autoEdit mode, reedit cell on update ([c9323bf](https://github.com/NPellet/visualizer/commit/c9323bf))
+* **slickgrid:** remove unused option "autoFocus" ([3e9cc33](https://github.com/NPellet/visualizer/commit/3e9cc33))
+* **spectra_displayer:** allow to drag when the zoom is inactive ([5e14b6b](https://github.com/NPellet/visualizer/commit/5e14b6b))
+* **typerenderer:** use min-height to ensure empty divs have a size ([348cec1](https://github.com/NPellet/visualizer/commit/348cec1))
+
+
+### Features
+
+* **core:** remove legacy modules ([54818eb](https://github.com/NPellet/visualizer/commit/54818eb))
+* **searchBox:** don't show hidden modules in the list ([41ce0a6](https://github.com/NPellet/visualizer/commit/41ce0a6))
+* **slickgrid:** add rowsDeleted filter event ([2e90c9c](https://github.com/NPellet/visualizer/commit/2e90c9c))
+* **slickgrid:** onCellChange event add previous value ([43486d6](https://github.com/NPellet/visualizer/commit/43486d6))
+
+
+
 <a name="2.66.0"></a>
 # [2.66.0](https://github.com/NPellet/visualizer/compare/v2.65.1...v2.66.0) (2016-09-23)
 
