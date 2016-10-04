@@ -1,3 +1,13 @@
+<a name="2.67.1"></a>
+## [2.67.1](https://github.com/NPellet/visualizer/compare/v2.67.0...v2.67.1) (2016-10-04)
+
+
+### Bug Fixes
+
+* revert JSME to working version ([62d0d78](https://github.com/NPellet/visualizer/commit/62d0d78))
+
+
+
 <a name="2.67.0"></a>
 # [2.67.0](https://github.com/NPellet/visualizer/compare/v2.66.0...v2.67.0) (2016-10-03)
 
