@@ -1,3 +1,15 @@
+<a name="2.68.0"></a>
+# [2.68.0](https://github.com/NPellet/visualizer/compare/v2.67.1...v2.68.0) (2016-10-05)
+
+
+### Bug Fixes
+
+* **periodic-table:** make css locally scoped ([7bd838b](https://github.com/NPellet/visualizer/commit/7bd838b))
+* **urldata:** use res.text only if res.body is null or undefined ([5290f41](https://github.com/NPellet/visualizer/commit/5290f41))
+* **urldata:** use res.text only if res.body is undefined ([33df663](https://github.com/NPellet/visualizer/commit/33df663))
+
+
+
 <a name="2.67.1"></a>
 ## [2.67.1](https://github.com/NPellet/visualizer/compare/v2.67.0...v2.67.1) (2016-10-04)
 
