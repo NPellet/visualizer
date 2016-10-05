@@ -31,7 +31,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
                 Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
                 throw new Error(`Expected status !== 200, got ${res.status}`);
             } else {
-                var data = res.body || res.text;
+                var data = res.body === undefined ? res.text : res.body;
                 Debug.info('DataURL: Found ' + url + ' by AJAX');
                 LRU.create(storeName, options.databaseLimit || DEFAULT_STORE_DB_LIMIT);
                 LRU.store(storeName, url, data);
