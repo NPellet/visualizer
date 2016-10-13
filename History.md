@@ -1,3 +1,18 @@
+<a name="2.69.0"></a>
+# [2.69.0](https://github.com/NPellet/visualizer/compare/v2.68.0...v2.69.0) (2016-10-13)
+
+
+### Bug Fixes
+
+* **onde:** use latest input object when rendering form ([a782f65](https://github.com/NPellet/visualizer/commit/a782f65))
+
+
+### Features
+
+* **Twig:** extend filter with all Math functions ([5e5d97a](https://github.com/NPellet/visualizer/commit/5e5d97a))
+
+
+
 <a name="2.68.0"></a>
 # [2.68.0](https://github.com/NPellet/visualizer/compare/v2.67.1...v2.68.0) (2016-10-05)
 
