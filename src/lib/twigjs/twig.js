@@ -67,6 +67,15 @@ define([
         console.log.apply(console, arguments);
     });
 
+    // Add filters for mathematical functions
+    Object.getOwnPropertyNames(Math).forEach(function(method) {
+        if(typeof Math[method] === 'function') {
+            Twig.extendFilter(method, function() {
+                return Math[method].apply(null, arguments);
+            });
+        }
+    });
+
     return Twig;
 
 });
