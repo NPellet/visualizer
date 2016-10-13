@@ -149,7 +149,11 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 return;
             }
             this.dom.find('.form-button').show();
-            this.form.render(schema, this.inputVal, {});
+            // We use inputObj rather that inputVal because we want the form
+            // to be rendered with the current values, not with the values
+            // such as it was when it last came into the module
+            var fillWith = this.inputObj ? this.inputObj.get().resurrect() : null;
+            this.form.render(schema, fillWith, {});
             if (this.module.getConfigurationCheckbox('hasButton', 'onload')) {
                 this.exportForm();
             }
