@@ -110,6 +110,7 @@ define([
 
         if (ctx.module.getConfigurationCheckbox('toolbar', 'showHide')) {
 
+            // eslint-disable-next-line no-template-curly-in-string
             ctx.$showHideSelection = $.tmpl('<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>', {
                 columns: columns
             });
@@ -1039,6 +1040,7 @@ define([
             }
 
             var $modal = $("<div class='item-details-form'></div>");
+            // eslint-disable-next-line no-template-curly-in-string
             $modal = $.tmpl('<div class=\'item-details-form\'>\n    {{each columns}}\n    <div class=\'item-details-label\'>\n        ${name}\n    </div>\n    <div class=\'item-details-editor-container\' data-editorid=\'${id.replace(/[^a-zA-Z0-9_-]/g, "_")}\'></div>\n    {{/each}}\n\n    <hr/>\n    <div class=\'item-details-form-buttons\'>\n        <button data-action=\'save\'>Save</button>\n        <button data-action=\'cancel\'>Cancel</button>\n    </div>\n</div>', {
                 context: this.grid.getDataItem(this.grid.getActiveCell().row),
                 columns: editableColumns
