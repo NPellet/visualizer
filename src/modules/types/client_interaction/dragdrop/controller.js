@@ -339,7 +339,7 @@ define(['modules/default/defaultcontroller',
                     defs.push(def);
                     if (item.kind === 'file') {
                         item = item.getAsFile();
-                        if (meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream'))) {
+                        if ((meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream')))) {
                             meta.def = def;
                             this.read(item, meta);
                         } else {
@@ -358,7 +358,7 @@ define(['modules/default/defaultcontroller',
                 item = data.files[i];
                 def = $.Deferred();
                 defs.push(def);
-                if (meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream'))) {
+                if ((meta = this.checkMetadata(item, cfg, mimeFromName('application/octet-stream')))) {
                     meta.def = def;
                     this.read(item, meta);
                 } else {

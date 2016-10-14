@@ -350,7 +350,7 @@ define([
 
         toggleLayer: function (newLayerShown, layerOut) {
             var layer;
-            if (layer = this.getLayer(newLayerShown)) {
+            if ((layer = this.getLayer(newLayerShown))) {
                 if (!layer.display) {
                     this.hide();
                     return;

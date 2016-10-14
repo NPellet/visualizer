@@ -34,7 +34,7 @@ define([
         for (i = 0; i < data.length; i++) {
             if (isNaN(data[i].value)) throw new Error('not a number');
             name = data[i].name;
-            if (res = regDelta.exec(name)) {
+            if ((res = regDelta.exec(name))) {
                 chemicalShifts[res[1]] = +data[i].value;
                 multiplicity[res[1]] = 2;
             }
@@ -52,7 +52,7 @@ define([
             name = data[i].name;
             if (regDelta.test(name)) {
                 // already handled
-            } else if (res = regCoupling.exec(name)) {
+            } else if ((res = regCoupling.exec(name))) {
                 coupling[res[1]][res[2]] = +data[i].value;
                 coupling[res[2]][res[1]] = +data[i].value;
             } else {

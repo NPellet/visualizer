@@ -95,7 +95,7 @@ define(['jquery', 'modules/module', 'src/util/debug', 'src/util/util'], function
             return Promise.all(prom).then(function () {
                 that.traverseModules(function (module) {
                     var id;
-                    if (id = Util.moduleIdFromUrl(module.url)) {
+                    if ((id = Util.moduleIdFromUrl(module.url))) {
                         module.id = id;
                     }
                     module.url = module.url.replace(/\/$/, '') + '/';

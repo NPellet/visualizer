@@ -22,7 +22,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
             this._url = false;
 
 
-            if (searchparams = cfg('searchparams')) {
+            if ((searchparams = cfg('searchparams'))) {
 
                 for (var i in searchparams) {
                     if (!i || !searchparams[i].label)
