@@ -747,4 +747,3 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     return View;
 });
 
-

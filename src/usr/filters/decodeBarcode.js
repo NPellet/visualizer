@@ -17,7 +17,6 @@ define(function () {
             image.src = dataObject.get();
 
 
-
             function doDecode() {
                 var workerCount = 0;
                 function receiveMessage(e) {

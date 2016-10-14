@@ -74,7 +74,6 @@ define([
         var browserListed = _.some(bmap);
 
 
-
         if (!browserListed) {
             Debug.warn('browser not recognized');
             return true;
@@ -110,7 +109,6 @@ define([
         var feat = {features: _.cloneDeep(features)};
         return _.template(tmpl)(_.merge(feat, recommendedBrowsers));
     }
-
 
 
     return {

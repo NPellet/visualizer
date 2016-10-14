@@ -16,7 +16,6 @@ rules:
   no-self-assign: 0
   array-callback-return: 0
   no-cond-assign: 0
-  no-multiple-empty-lines: 0
 
   comma-dangle:
     - 2
