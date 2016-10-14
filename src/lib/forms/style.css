@@ -426,6 +426,10 @@ h2 .form-duplicator-wrapper {
     border: 1px solid rgba(15, 140, 57, 9);
 }
 
+.form-button.hidden {
+    display: none;
+}
+
 .form-button.disabled, .form-button.disabled:hover {
 
     background: rgb(244, 244, 244); /* Old browsers */

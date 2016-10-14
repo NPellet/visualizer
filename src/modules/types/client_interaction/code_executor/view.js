@@ -61,6 +61,10 @@ define([
                             disabled: false
                         }
                     );
+                    b.name = button.name;
+                    if (button.hide && button.hide.indexOf('hide') > -1) {
+                        b.hide();
+                    }
                     that.buttonCell.append(b.render());
                     that.buttons.push(b);
                     if (idx === 0 && that.editor) {

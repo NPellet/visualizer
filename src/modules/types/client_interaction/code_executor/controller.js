@@ -113,6 +113,14 @@ define([
                             type: 'text',
                             title: 'Label',
                             'default': 'Execute'
+                        },
+                        hide: {
+                            type: 'checkbox',
+                            title: 'Hide on load',
+                            options: {
+                                hide: 'Yes'
+                            },
+                            default: []
                         }
                     }
                 }
@@ -235,6 +243,24 @@ define([
         }
     };
 
+    Controller.prototype.showButton = function (name) {
+        this._changeButton(name, 'show');
+    };
+
+    Controller.prototype.hideButton = function (name) {
+        this._changeButton(name, 'hide');
+    };
+
+    Controller.prototype._changeButton = function (name, type) {
+        if (!this.module.view.buttons) return;
+        var button = this.module.view.buttons.find(b => b.name === name);
+        if (button) {
+            button[type]();
+        } else {
+            Debug.error(`button ${name} not found`);
+        }
+    };
+
     function ScriptExecutor(controller, libs) {
         this.controller = controller;
         this.title = String(controller.module.definition.title);
@@ -278,8 +304,15 @@ define([
         var sendAction = function (name, value) {
             API.doAction(name, value);
         };
+        var showButton = function (name) {
+            executor.controller.showButton(name);
+        };
+        var hideButton = function (name) {
+            executor.controller.hideButton(name);
+        };
         var context = {
             variables: {},
+            variable: null,
             event: null,
             button: null,
             action: null,
@@ -291,41 +324,45 @@ define([
                     return variable.get();
                 }
             },
-            sendAction: sendAction,
-            setAsync: setAsync,
-            done: done,
-            clear: clear,
-            unset: unset
+            sendAction,
+            setAsync,
+            done,
+            clear,
+            unset,
+            showButton,
+            hideButton
         };
 
         var ctx = {
-            getVariable: function () {
+            getVariable() {
                 return context.variable;
             },
-            getVariables: function () {
+            getVariables() {
                 return context.variables;
             },
-            getEvent: function () {
+            getEvent() {
                 return context.event;
             },
-            getButton: function () {
+            getButton() {
                 return context.button;
             },
-            getAction: function () {
+            getAction() {
                 return context.action;
             },
-            getDefined: function () {
+            getDefined() {
                 return context.defined;
             },
             'set': setter,
             'get': function (name) {
                 return context.get(name);
             },
-            sendAction: sendAction,
-            setAsync: setAsync,
-            done: done,
-            clear: clear,
-            unset: unset
+            sendAction,
+            setAsync,
+            done,
+            clear,
+            unset,
+            showButton,
+            hideButton
         };
         executor.context = context;
         return ctx;
