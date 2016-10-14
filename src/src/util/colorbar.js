@@ -3,6 +3,8 @@
 define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chroma) {
     var exports = {};
 
+    const margin = 30;
+
     Util.loadCss('src/util/colorbar.css');
 
     exports.getColorScale = function (options) {
@@ -57,13 +59,9 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             stopPositions = options.stopPositions;
         }
         var linearg = getGradientXY(options.axis.orientation);
-        var margin = 30;
         var gradientWidth, totalWidth = options.width, gradientHeight, totalHeight = options.height;
-        if (options.axis && options.axis.orientation === 'bottom' || options.axis.orientation === 'bottom') {
-            gradientWidth = totalWidth;
-            gradientHeight = options.height - margin;
-        } else if (options.axis && options.axis.orientation === 'left' || options.axis.orientation === 'right') {
-            gradientHeight = totalHeight;
+        if (options.axis) {
+            gradientHeight = totalHeight - margin;
             gradientWidth = totalWidth - margin;
         } else {
             gradientWidth = totalWidth;
@@ -96,26 +94,14 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         var g = svg.append('g')
             .attr('class', 'key')
             .attr('transform', function () {
-                var tx = 0;
-                var ty = 0;
-                if (options.axis.orientation === 'left' || options.axis.orientation === 'right') {
-                    ty += margin / 2;
-                } else if (options.axis.orientation === 'bottom' || options.axis.orientation === 'top') {
-                    tx += margin / 2;
-                }
-                if (options.axis.orientation === 'left') {
-                    tx += margin;
-                }
-                if (options.axis.orientation === 'top') {
-                    ty += margin;
-                }
+                var tx = getTx(options);
+                var ty = getTy(options);
                 return 'translate(' + tx + ',' + ty + ')';
             });
         g.append('rect')
             .style('fill', 'url(#' + id + ')')
             .attr('width', gradientWidth)
             .attr('height', gradientHeight);
-
 
         var x = d3.scale.linear()
             .domain(options.domain);
@@ -160,6 +146,28 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             return ['0%', '0%', '100%', '0%'];
         }
 
+    }
+
+    function getTx(options) {
+        var tx = 0;
+        if (options.axis.orientation === 'bottom' || options.axis.orientation === 'top') {
+            tx += margin / 2;
+        }
+        if (options.axis.orientation === 'left') {
+            tx += margin;
+        }
+        return tx;
+    }
+
+    function getTy(options) {
+        var ty = 0;
+        if (options.axis.orientation === 'left' || options.axis.orientation === 'right') {
+            ty += margin / 2;
+        }
+        if (options.axis.orientation === 'top') {
+            ty += margin;
+        }
+        return ty;
     }
 
     return exports;
