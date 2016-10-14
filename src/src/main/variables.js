@@ -141,7 +141,6 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         }
 
         unlisten(moduleId) {
-            moduleId = moduleId;
             if (this._listenedBy.has(moduleId)) {
                 for (var i = 0, ii = this._listeners.length; i < ii; i++) {
                     if (this._listeners[i].id === moduleId) {
