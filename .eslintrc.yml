@@ -12,7 +12,6 @@ rules:
   camelcase: 0
   no-unused-vars: 0
   no-redeclare: 0
-  no-fallthrough: 0
   array-callback-return: 0
 
   comma-dangle:

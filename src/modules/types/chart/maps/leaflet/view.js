@@ -54,7 +54,7 @@ define([
                 break;
             case 'circle':
                 this.div.css('border-radius', merged.size);
-            default:
+            default: // eslint-disable-line no-fallthrough
                 this.div.css('background', merged.color);
                 break;
         }

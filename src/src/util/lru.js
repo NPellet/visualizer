@@ -92,7 +92,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     var objectStore = db.createObjectStore('lru', {keyPath: 'index'});
                     objectStore.createIndex('key', 'key', {unique: true});
                     objectStore.createIndex('store', 'store', {unique: false});
-                case 1:
+                case 1: // eslint-disable-line no-fallthrough
                     if (!objectStore) objectStore = e.currentTarget.transaction.objectStore('lru');
                     objectStore.deleteIndex('key');
 
