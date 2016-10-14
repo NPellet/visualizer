@@ -518,7 +518,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 
     function eachModule(view, callback, moduleNames) {
         if (view.modules) {
-            if (typeof(moduleNames) === 'string') {
+            if (typeof moduleNames === 'string') {
                 moduleNames = [moduleNames];
             } else if (!Array.isArray(moduleNames)) {
                 moduleNames = [''];

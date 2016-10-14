@@ -115,7 +115,7 @@ define(function () {
                 case 4:
                     return 'rgba(' + color.join(',') + ')';
             }
-        } else if (typeof(color) == 'object') {
+        } else if (typeof color === 'object') {
             return 'rgb(' + Math.round(color.r * 255) + ', ' + Math.round(color.g * 255) + ', ' + Math.round(color.b * 255) + ')';
         }
 
