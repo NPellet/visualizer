@@ -197,7 +197,7 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api', 'src
             for (var i = 0; i < hl.length; i++) {
                 (function (i) {
                     API.listenHighlight({_highlight: hl[i]}, function (onOff, key) {
-                        if (!key instanceof Array) {
+                        if (Array.isArray(key)) {
                             key = [key];
                         }
                         if (onOff) {

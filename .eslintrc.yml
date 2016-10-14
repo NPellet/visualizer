@@ -18,7 +18,6 @@ rules:
   no-cond-assign: 0
   no-multiple-empty-lines: 0
   space-unary-ops: 0
-  no-unsafe-negation: 0
 
   comma-dangle:
     - 2
