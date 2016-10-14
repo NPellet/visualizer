@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "build": "grunt build --clean-images",
-    "eslint": "eslint src",
-    "eslint-fix": "eslint src --fix",
+    "eslint": "eslint src --cache",
+    "eslint-fix": "npm run eslint -- --fix",
     "install-components": "bower install --quiet --config.interactive=false",
     "install-browserified": "grunt browserify",
     "postinstall": "npm run install-components && npm run install-browserified",
