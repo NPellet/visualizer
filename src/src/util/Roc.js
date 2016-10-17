@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug',  'superagent', 'uri/URI', 'lodash', 'src/util/couchdbAttachments', 'src/util/mimeTypes', 'src/util/IDBKeyValue'],
+define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug', 'superagent', 'uri/URI', 'lodash', 'src/util/couchdbAttachments', 'src/util/mimeTypes', 'src/util/IDBKeyValue'],
     function (API, ui, Util, Debug, superagent, URI, _, CDB, mimeTypes, IDB) {
 
         const defaultOptions = {
@@ -189,7 +189,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug',  'supe
                                             res.body[i].userWrite = {
                                                 type: 'boolean',
                                                 url: `${this.entryUrl}/${res.body[i].id}/_rights/write`
-                                            }
+                                            };
                                         }
                                     }
                                     for (var i = 0; i < res.body.length; i++) {
@@ -288,7 +288,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug',  'supe
                 return this.__ready.then(() => {
                     options = createOptions(options, 'getGroups');
                     return superagent.get(`${this.databaseUrl}groups`).then(res => res.body).catch(handleError(this, options));
-                })
+                });
             }
 
             create(entry, options) {
@@ -633,7 +633,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug',  'supe
 
 
             deleteGroup(entry, group, options) {
-                return this.addGroup(entry, group, options, true)
+                return this.addGroup(entry, group, options, true);
             }
 
 
