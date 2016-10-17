@@ -20,7 +20,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
             }
         };
 
-        const getTypes = ['get', 'getAttachment', 'getView', 'getQuery'];
+        const getTypes = ['get', 'getAttachment', 'getView', 'getQuery', 'getTokens', 'getGroups', 'getToken'];
 
         const messagesByType = {
             get: {
@@ -39,7 +39,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
             delete: {
                 200: 'Entry deleted',
                 401: 'Unauthorized to delete entry',
-                404: 'Cannot delet entry: does not exist'
+                404: 'Cannot delete entry: does not exist'
             },
             addAttachment: {
                 200: 'Added attachment',
@@ -63,7 +63,21 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 401: 'Unauthorized to get query',
                 404: 'Query does not exist'
             },
-            getGroups: {}
+            getGroups: {},
+            addGroup: {
+                401: 'Unauthorized to add group',
+                200: 'Group added to entry'
+            },
+            getTokens: {},
+            getToken: {},
+            createToken: {
+                200: 'Token created',
+                401: 'Unauthorized to create token'
+            },
+            deleteToken: {
+                200: 'Token deleted',
+                401: 'Unauthorized to delete token'
+            }
         };
 
         for (let key in defaultOptions.messages) {
@@ -118,7 +132,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                             if (res && res.body && res.status == 200) {
                                 if (options.filter) {
                                     res.body = res.body.filter(options.filter);
-                                } if (options.sort) {
+                                }
+                                if (options.sort) {
                                     res.body = res.body.sort(options.sort);
                                 }
                                 if (options.varName) {
@@ -165,6 +180,18 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                                     res.body = res.body.sort(options.sort);
                                 }
                                 if (options.varName) {
+                                    if (options.addRightsInfo) {
+                                        for (var i = 0; i < res.body.length; i++) {
+                                            res.body[i].anonymousRead = {
+                                                type: 'boolean',
+                                                url: `${this.entryUrl}/${res.body[i].id}/_rights/read?asAnonymous=true`
+                                            };
+                                            res.body[i].userWrite = {
+                                                type: 'boolean',
+                                                url: `${this.entryUrl}/${res.body[i].id}/_rights/write`
+                                            }
+                                        }
+                                    }
                                     for (var i = 0; i < res.body.length; i++) {
                                         res.body[i].document = {
                                             type: 'object',
@@ -261,7 +288,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 return this.__ready.then(() => {
                     options = createOptions(options, 'getGroups');
                     return superagent.get(`${this.databaseUrl}groups`).then(res => res.body).catch(handleError(this, options));
-                });
+                })
             }
 
             create(entry, options) {
@@ -445,6 +472,14 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 });
             }
 
+            discardLocal(entry) {
+                var uuid = getUuid(entry);
+                return idb.delete(uuid).then(() => {
+                    // Get from server again
+                    return this.get(entry);
+                });
+            }
+
             getAttachment(entry, name, options) {
                 return this.__ready.then(() => {
                     options = createOptions(options, 'getAttachment');
@@ -528,6 +563,77 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     if (!doc) return;
                     return this.addAttachment(doc._id, attachment, options);
                 });
+            }
+
+            getTokens(options) {
+                return this.__ready.then(() => {
+                    options = createOptions(options, 'getTokens');
+                    return superagent.get(`${this.databaseUrl}token`)
+                        .withCredentials()
+                        .then(handleSuccess(this, options))
+                        .then(res => res.body)
+                        .catch(handleError(this, options));
+                });
+            }
+
+            getToken(token, options) {
+                return this.__ready.then(() => {
+                    options = createOptions(options, 'getToken');
+                    var tokenId = getTokenId(token);
+                    return superagent.get(`${this.databaseUrl}token/${tokenId}`)
+                        .withCredentials()
+                        .then(handleSuccess(this, options))
+                        .then(res => res.body)
+                        .catch(handleError(this, options));
+                });
+            }
+
+            createToken(entry, options) {
+                return this.__ready.then(() => {
+                    options = createOptions(options, 'createToken');
+                    var uuid = getUuid(entry);
+                    return superagent.post(`${this.entryUrl}/${uuid}/_token`)
+                        .withCredentials()
+                        .then(handleSuccess(this, options))
+                        .then(res => res.body)
+                        .catch(handleError(this, options));
+                });
+            }
+
+            deleteToken(token, options) {
+                return this.__ready.then(() => {
+                    options = createOptions(options, 'deleteToken');
+                    var tokenId = getTokenId(token);
+                    return superagent.del(`${this.databaseUrl}token/${tokenId}`)
+                        .withCredentials()
+                        .then(handleSuccess(this, options))
+                        .then(res => res.body)
+                        .catch(handleError(this, options));
+                });
+            }
+
+            addGroup(entry, group, options, remove) {
+                var method = remove ? 'del' : 'put';
+                return this.__ready.then(() => {
+                    const uuid = getUuid(entry);
+                    options = createOptions(options, 'addGroup');
+                    return superagent[method](`${this.entryUrl}/${uuid}/_owner/${String(group)}`)
+                        .withCredentials()
+                        .then(handleSuccess(this, options))
+                        .then(res => {
+                            if (!options.noUpdate) {
+                                this.get(uuid).then(() => res.body);
+                            } else {
+                                return res.body;
+                            }
+                        })
+                        .catch(handleError(this, options));
+                });
+            }
+
+
+            deleteGroup(entry, group, options) {
+                return this.addGroup(entry, group, options, true)
             }
 
 
@@ -726,7 +832,6 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 this._traverseFilename(v, v => {
                     if (v.data && v.data.url) {
                         delete v.data;
-                        delete v.url;
                     }
                 });
             }
@@ -748,9 +853,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     v.data = {
                         type: vtype || 'string'
                     };
-                    var url = `${this.entryUrl}/${entry._id}/${v.filename}`;
-                    v.url = url;
-                    v.data[prop] = url;
+                    v.data[prop] = `${this.entryUrl}/${entry._id}/${v.filename}`;
                 });
             }
         }
@@ -816,6 +919,19 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                 throw new Error('Bad arguments');
             }
             return String(uuid);
+        }
+
+        function getTokenId(token) {
+            var id;
+            var type = DataObject.getType(token);
+            if (type === 'string') {
+                id = token;
+            } else if (type === 'object') {
+                id = token.$id;
+            } else {
+                throw new Error('Bad arguments');
+            }
+            return String(id);
         }
 
         function defaultErrorHandler(err) {
