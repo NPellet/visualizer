@@ -171,7 +171,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                         );
                         obj = obj.data;
                     } catch (e) {
-                        console.error('Could not parse elements');
+                        Debug.error('Could not parse elements');
                         return;
                     }
                 }
