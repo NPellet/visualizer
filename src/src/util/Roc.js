@@ -1,7 +1,7 @@
 'use strict';
 
-define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI', 'lodash', 'src/util/couchdbAttachments', 'src/util/mimeTypes', 'src/util/IDBKeyValue'],
-    function (API, ui, Util, superagent, URI, _, CDB, mimeTypes, IDB) {
+define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug',  'superagent', 'uri/URI', 'lodash', 'src/util/couchdbAttachments', 'src/util/mimeTypes', 'src/util/IDBKeyValue'],
+    function (API, ui, Util, Debug, superagent, URI, _, CDB, mimeTypes, IDB) {
 
         const defaultOptions = {
             messages: {
@@ -405,7 +405,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
                     var arr = row.__parent;
                     var idx = arr.indexOf(row);
                     if (idx === -1) {
-                        console.warn('element to unattach not found');
+                        Debug.warn('element to unattach not found');
                         return;
                     }
 
@@ -904,7 +904,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
             const message = options.messages[err.status] || ctx.messages[err.status];
             if (message && !options.disableNotification) {
                 ui.showNotification(message, 'error');
-                console.error(err, err.stack);
+                Debug.error(err, err.stack);
             }
         }
 
@@ -936,7 +936,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'superagent', 'uri/URI',
 
         function defaultErrorHandler(err) {
             ui.showNotification(`Error: ${err.message}`, 'error');
-            console.error(err, err.stack);
+            Debug.error(err, err.stack);
         }
 
         function setContentType(attachment, fallback) {
