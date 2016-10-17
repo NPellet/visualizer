@@ -14,6 +14,13 @@ define([
 
     $.extend(true, View.prototype, Default, {
         init: function () {
+            var configTemplate = this.module.getConfiguration('template');
+            this.hasTemplate = new Promise((resolve) => {
+                this._resolveTemplate = resolve;
+            });
+            if (configTemplate) {
+                this._resolveTemplate();
+            }
             this.dom = $('<div>').css({
                 height: '100%',
                 width: '100%',
@@ -141,14 +148,16 @@ define([
                         data: tpl
                     });
                     this.rerender();
-                }).catch(e => {
+                }).then(() => this._resolveTemplate()).catch(e => {
                     Debug.info('Problem with template: ' + e);
                 });
             },
 
             form: function (value) {
                 this.formObject = value;
-                this.fillForm();
+                // fill form should execute when the template exists
+                // It doesn't make sense otherwise
+                this.hasTemplate.then(() => this.fillForm());
             },
 
             style: function (value) {
