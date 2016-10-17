@@ -1,3 +1,21 @@
+<a name="2.69.1"></a>
+## [2.69.1](https://github.com/NPellet/visualizer/compare/v2.69.0...v2.69.1) (2016-10-17)
+
+
+### Bug Fixes
+
+* **colorbar:** compute axis width and height properly ([456eea5](https://github.com/NPellet/visualizer/commit/456eea5))
+* **periodic_table:** use proper gradient height ([95b514f](https://github.com/NPellet/visualizer/commit/95b514f))
+* **twig:** wait for template to fill form ([cb57694](https://github.com/NPellet/visualizer/commit/cb57694))
+
+
+### Features
+
+* **code_executor:** add showButton and hideButton methods ([2aa8da5](https://github.com/NPellet/visualizer/commit/2aa8da5))
+* **Roc:** add token methods ([9b8e538](https://github.com/NPellet/visualizer/commit/9b8e538))
+
+
+
 <a name="2.69.0"></a>
 # [2.69.0](https://github.com/NPellet/visualizer/compare/v2.68.0...v2.69.0) (2016-10-13)
 
