@@ -274,6 +274,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 if (!found) return;
                 $elements.filter('.' + found).toggleClass('el-selected');
                 that.elementsSelected();
+                event.stopPropagation();
             });
 
             that.defaultLegend.on('input', '#foregroundSlider>input', event => {
