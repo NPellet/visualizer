@@ -96,13 +96,13 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             if (value && Array.isArray(value.data)) {
                 for (var j = 0; j < value.data[0].x.length; j++) {
                     data[j] = {};
-                    data[j]['xunit'] = value.data[0].x[j];
-                    data[j]['_highlight'] = [];
+                    data[j].xunit = value.data[0].x[j];
+                    data[j]._highlight = [];
                     for (var i = 0; i < value.data.length; i++) {
                         var index = 'serie' + i;
                         data[j][index] = value.data[i].y[j];
                         if (value.data[i]._highlight && value.data[i]._highlight[j]) {
-                            data[j]['_highlight'].push({
+                            data[j]._highlight.push({
                                 name: index,
                                 _highlight: value.data[i]._highlight[j]
                             });

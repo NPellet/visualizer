@@ -327,8 +327,8 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 this.listenFor(s, jp, i);
             }
 
-            element['id'] = String(i);
-            element['__source'] = s;
+            element.id = String(i);
+            element.__source = s;
 
             API.listenHighlight(s, function (onOff, key) {
                 $('#' + i)[onOff ? 'addClass' : 'removeClass']('ci-highlight');

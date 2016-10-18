@@ -27,7 +27,7 @@ define([], function () {
                 for (let i = 0; i < keys.length; ++i) {
                     var value = element.getChildSync(options[keys[i]]);
                     if (value) {
-                        node['data'][keys[i]] = DataObject.resurrect(value.get());
+                        node.data[keys[i]] = DataObject.resurrect(value.get());
                     }
                 }
             }

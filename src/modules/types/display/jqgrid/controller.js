@@ -248,7 +248,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
     };
 
-    Controller.prototype['export'] = function () {
+    Controller.prototype.export = function () {
         return this.module.view.exportToTabDelimited();
     };
 

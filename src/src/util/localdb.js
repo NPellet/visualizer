@@ -103,7 +103,7 @@ define(['jquery'], function ($) {
                         stack[e.target.result.value.branch] = e.target.result.value;
 
                     if (e.target.result)
-                        e.target.result['continue']();
+                        e.target.result.continue();
                     else {
 
                         def.resolve(stack);

@@ -787,12 +787,12 @@ define([
 
 
             var debugSet;
-            if (urls['debug']) {
-                Debug.setDebugLevel(parseInt(urls['debug']));
+            if (urls.debug) {
+                Debug.setDebugLevel(parseInt(urls.debug));
                 debugSet = true;
             }
 
-            if (urls['lockView']) {
+            if (urls.lockView) {
                 API.viewLock();
             }
 
@@ -811,7 +811,7 @@ define([
 
                 visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
 
-                var configJson = urls['config'] || visualizerDiv.attr('data-ci-config');
+                var configJson = urls.config || visualizerDiv.attr('data-ci-config');
                 if (!configJson) {
                     if (visualizerDiv.attr('config')) {
                         Debug.warn('config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.');
@@ -882,13 +882,13 @@ define([
                         Versioning.setURLType(type);
                         var $visualizer = $('#ci-visualizer');
 
-                        var viewURL = urls['viewURL'] || $visualizer.attr('data-ci-view');
+                        var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
                         if (!viewURL && $visualizer.attr('viewURL')) {
                             Debug.warn('viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.');
                             viewURL = $visualizer.attr('viewURL');
                         }
 
-                        var dataURL = urls['dataURL'] || $visualizer.attr('data-ci-data');
+                        var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
                         if (!dataURL && $visualizer.attr('dataURL')) {
                             Debug.warn('dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.');
                             dataURL = $visualizer.attr('dataURL');
@@ -896,13 +896,13 @@ define([
 
                         var viewInfo = {
                             view: {
-                                urls: urls['views'],
-                                branch: urls['viewBranch'],
+                                urls: urls.views,
+                                branch: urls.viewBranch,
                                 url: viewURL
                             },
                             data: {
-                                urls: urls['results'],
-                                branch: urls['resultBranch'],
+                                urls: urls.results,
+                                branch: urls.resultBranch,
                                 url: dataURL
                             }
                         };

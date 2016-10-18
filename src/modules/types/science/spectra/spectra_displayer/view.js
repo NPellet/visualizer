@@ -78,14 +78,14 @@ define([
                         mouseActions: []
                     };
 
-                    options.plugins['drag'] = {};
+                    options.plugins.drag = {};
                     options.mouseActions.push({
                         plugin: 'drag',
                         shift: true,
                         ctrl: false
                     });
 
-                    options.plugins['zoom'] = {};
+                    options.plugins.zoom = {};
                     options.mouseActions.push({
                         plugin: 'zoom',
                         type: 'dblclick',
@@ -115,7 +115,7 @@ define([
                         if (cfgCheckbox('independantYZoom', 'yes')) {
                             zoomOptions.axes = 'serieSelected';
                         }
-                        options.plugins['zoom'] = zoomOptions;
+                        options.plugins.zoom = zoomOptions;
                         options.mouseActions.push({
                             plugin: 'zoom',
                             shift: false,

@@ -186,7 +186,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
 
                 if (!lru.data[index]) {
-                    lru['_count'] = lru['_count'] + 1;
+                    lru._count += 1;
                 }
 
                 lru.data[index] = Date.now();

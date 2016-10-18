@@ -33,6 +33,10 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
             this.type = type;
         },
 
+        get reviver() {
+            return this._reviver;
+        },
+
         set reviver(rev) {
             this._reviver = rev;
         },
@@ -45,9 +49,9 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 return this._getServer().pipe(function (data) {
 
                     if (that.type == 'view') {
-                        return that._data['server'] = new DataObject(data, true);
+                        return that._data.server = new DataObject(data, true);
                     } else if (that.type == 'data') {
-                        return that._data['server'] = new DataObject(data, true);
+                        return that._data.server = new DataObject(data, true);
                     }
 
                 }, function () {
@@ -63,9 +67,9 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                     }
 
                     if (that.type == 'view') {
-                        return that._data['local'] = new DataObject(data, true);
+                        return that._data.local = new DataObject(data, true);
                     } else if (that.type == 'data') {
-                        return that._data['local'] = new DataObject(data, true);
+                        return that._data.local = new DataObject(data, true);
                     }
 
                 }, function () {
@@ -99,7 +103,7 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                 var all = {};
 
                 if (that.currentPath[1] == 'local' && alldata[branch].head)
-                    all['head'] = that.makeFilename(alldata[branch].head);
+                    all.head = that.makeFilename(alldata[branch].head);
 
                 for (var i = data.length - 1; i >= 0; i--)
                     all[data[i]._time] = that.makeFilename(data[i]);

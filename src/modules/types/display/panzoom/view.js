@@ -387,11 +387,11 @@ define([
         _drawHighlight: function (senderId) {
             var that = this;
             if (!this._highlighted || !this._highlighted.length) {
-                this.toHide['__highlight__'] = true;
+                this.toHide.__highlight__ = true;
                 this.highlightImage = this.highlightImage || {};
                 this.highlightImage.dataUrl = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
             } else {
-                this.toHide['__highlight__'] = false;
+                this.toHide.__highlight__ = false;
                 this.highlightImage = this._createHighlight(this._highlighted);
             }
             this.doImage('__highlight__').then(function () {
