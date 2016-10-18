@@ -262,6 +262,7 @@
 
 .periodic-table .periodicSlider {
     height: 50px;
+    margin-top: 10px;
 }
 
 .periodic-table .periodicSlider input{
