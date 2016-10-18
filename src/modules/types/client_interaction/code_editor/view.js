@@ -49,7 +49,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
             if (this.module.getConfigurationCheckbox('hasButton', 'button')) {
                 this.buttonCell.append(
-                    $('<span>' + this.module.getConfiguration('btnvalue') + '</span>')
+                    $('<button>' + this.module.getConfiguration('btnvalue') + '</button>')
                         .addClass('form-button')
                         .on('click', () => this.module.controller.onButtonClick(this.getCode()))
                 );
