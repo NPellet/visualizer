@@ -212,10 +212,10 @@ define([
         } else {
             this.reloaded = false;
             var prom = new Promise((resolve, reject) => {
-                require(this.neededUrls, () => {
+                require(this.neededUrls, (...args) => {
                     var libs = new Array(this.neededUrls.length);
                     for (var i = 0; i < this.neededUrls.length; i++) {
-                        libs[i] = arguments[i];
+                        libs[i] = args[i];
                     }
 
                     var executor = new ScriptExecutor(this, libs, {
