@@ -1,3 +1,19 @@
+<a name="2.70.0"></a>
+# [2.70.0](https://github.com/NPellet/visualizer/compare/v2.69.1...v2.70.0) (2016-10-18)
+
+
+### Bug Fixes
+
+* **periodic_table:** fix selection of elements by serie ([02d4047](https://github.com/NPellet/visualizer/commit/02d4047))
+* **periodic_table:** fix style by adding margin to slider ([ebcd785](https://github.com/NPellet/visualizer/commit/ebcd785))
+
+
+### Features
+
+* **slick_grid:** add double click event ([aad4932](https://github.com/NPellet/visualizer/commit/aad4932))
+
+
+
 <a name="2.69.1"></a>
 ## [2.69.1](https://github.com/NPellet/visualizer/compare/v2.69.0...v2.69.1) (2016-10-17)
 
