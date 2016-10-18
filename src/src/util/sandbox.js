@@ -1,6 +1,6 @@
 'use strict';
 
-define(function () {
+define(['babel'], function (babel) {
 
     function Sandbox() {
         this.contextData = [];
@@ -23,13 +23,15 @@ define(function () {
         if (sourceURL) {
             script += '//# sourceURL=' + sourceURL + '@' + this.scriptID++;
         }
-        return safeEval(script, this.contextString, this.contextData.slice());
+        script = this.contextString + script;
+        script = babel.transform(script, {presets: ['es2015', 'es2016', 'es2017']}).code;
+        return safeEval(script, this.contextData.slice());
     };
 
     return Sandbox;
 
-    function safeEval(script, ctxString, __ctx__, Sandbox) {
-        return eval(ctxString + script);
+    function safeEval(script, __ctx__, Sandbox, babel, safeEval) {
+        return eval(script);
     }
 
 });

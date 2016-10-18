@@ -202,7 +202,8 @@ module.exports = function (grunt) {
                             './jquery-qrcode/jquery.qrcode.min.js',
                             './mathjs/dist/math.min.js',
                             './nmr-simulation/**',
-                            './katex/dist/**'
+                            './katex/dist/**',
+                            './babel-standalone/**'
                         ],
                         dest: './build/components/'
                     },

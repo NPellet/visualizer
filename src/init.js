@@ -23,6 +23,7 @@ require.config({
         'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
         ace: 'components/ace/src',
         async: 'components/async/dist/async',
+        babel: 'components/babel-standalone/babel.min',
         bluebird: 'components/bluebird/js/browser/bluebird.min',
         bowser: 'components/bowser/bowser.min',
         chroma: 'components/chroma-js/chroma.min',
@@ -179,7 +180,8 @@ require([
     'src/main/entrypoint',
     'uri/URI.fragmentQuery',
     'bluebird',
-    'components/setImmediate/setImmediate'
+    'components/setImmediate/setImmediate',
+    'lib/regenerator/regenerator-runtime'
 
 ], function ($, Datas, EntryPoint, URI, Promise) {
     window.Promise = Promise;
