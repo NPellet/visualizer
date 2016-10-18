@@ -8,7 +8,6 @@ define(['components/jsbarcode/jsBarcode.min'], function () {
             var obj = dataObject.get();
             try {
                 $img.JsBarcode(obj.val || 'Hi!', obj);
-                console.log(obj);
                 return resolve({
                     type: 'png',
                     value: $img[0].src

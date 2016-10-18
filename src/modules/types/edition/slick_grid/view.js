@@ -474,7 +474,6 @@ define([
         });
 
         ctx.grid.onClick.subscribe(function (e, args) {
-            console.log('click')
             var columns = ctx.grid.getColumns();
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {

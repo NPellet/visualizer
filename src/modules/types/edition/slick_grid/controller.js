@@ -499,7 +499,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         this.sendActionFromEvent('onSelect', 'row', item);
     }, 250, {trailing: false});
 
-    Controller.prototype.onDoubleClick = function(row, item) {
+    Controller.prototype.onDoubleClick = function (row, item) {
         this.setVarFromEvent('onDoubleClick', 'row', 'list', [row]);
         this.sendActionFromEvent('onDoubleClick', 'row', item);
     };
