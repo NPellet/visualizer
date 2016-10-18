@@ -63,7 +63,7 @@ define([
                                 editor: 'Code editor',
                                 buttons: 'Buttons'
                             },
-                            'default': ['editor', 'buttons']
+                            default: ['editor', 'buttons']
                         },
                         execOnLoad: {
                             type: 'checkbox',
@@ -71,12 +71,20 @@ define([
                             options: {
                                 yes: 'Yes'
                             },
-                            'default': []
+                            default: []
+                        },
+                        asyncAwait: {
+                            type: 'checkbox',
+                            title: 'Async/Await support',
+                            options: {
+                                top: 'Top-level await'
+                            },
+                            default: []
                         },
                         script: {
                             type: 'jscode',
                             title: 'Code',
-                            'default': ''
+                            default: ''
                         }
                     }
                 },
@@ -107,12 +115,12 @@ define([
                         name: {
                             type: 'text',
                             title: 'Name',
-                            'default': 'button1'
+                            default: 'button1'
                         },
                         label: {
                             type: 'text',
                             title: 'Label',
-                            'default': 'Execute'
+                            default: 'Execute'
                         },
                         hide: {
                             type: 'checkbox',
@@ -131,6 +139,7 @@ define([
     Controller.prototype.configAliases = {
         script: ['groups', 'group', 0, 'script', 0],
         execOnLoad: ['groups', 'group', 0, 'execOnLoad', 0],
+        asyncAwait: ['groups', 'group', 0, 'asyncAwait', 0],
         display: ['groups', 'group', 0, 'display', 0],
         libs: ['groups', 'libs', 0],
         buttons: ['groups', 'buttons', 0]
@@ -201,25 +210,27 @@ define([
         if (!this.reloaded && this.currentScript == newScript) {
             promise = Promise.resolve(this._executor || this._loadingExecutor);
         } else {
-            var that = this;
             this.reloaded = false;
-            var prom = new Promise(function (resolve, reject) {
-                require(that.neededUrls, function () {
-                    var libs = new Array(that.neededUrls.length);
-                    for (var i = 0; i < that.neededUrls.length; i++) {
+            var prom = new Promise((resolve, reject) => {
+                require(this.neededUrls, () => {
+                    var libs = new Array(this.neededUrls.length);
+                    for (var i = 0; i < this.neededUrls.length; i++) {
                         libs[i] = arguments[i];
                     }
-                    var executor = new ScriptExecutor(that, libs);
-                    that.currentScript = newScript;
-                    that._executor = executor;
-                    that._loadingExecutor = null;
+
+                    var executor = new ScriptExecutor(this, libs, {
+                        topAwait: this.module.getConfigurationCheckbox('asyncAwait', 'top')
+                    });
+                    this.currentScript = newScript;
+                    this._executor = executor;
+                    this._loadingExecutor = null;
                     resolve(executor);
                 });
             });
             this._loadingExecutor = prom;
             promise = prom;
         }
-        return promise.then(function (executor) {
+        return promise.then((executor) => {
             executor.init();
             return executor;
         });
@@ -261,7 +272,7 @@ define([
         }
     };
 
-    function ScriptExecutor(controller, libs) {
+    function ScriptExecutor(controller, libs, options = {}) {
         this.controller = controller;
         this.title = String(controller.module.definition.title);
         this.libs = libs;
@@ -271,7 +282,7 @@ define([
         this._sandbox.setContext(context);
         try {
             this.theFunction = this._sandbox.run(
-                '(function(' +
+                `(${options.topAwait ? 'async ' : ''}function(` +
                 controller.neededAliases +
                 ') {' + theCode + '\n})',
                 'CodeExecutor' + this.controller.module.getId()
