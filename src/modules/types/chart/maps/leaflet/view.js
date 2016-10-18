@@ -344,7 +344,7 @@ define([
         var icon;
         if (layer instanceof L.Marker) {
             var options = {};
-            if (data instanceof DataObject) {
+            if (DataObject.isDataObject(data)) {
                 $.extend(options, data.getChildSync(this.markerjpath));
             }
             var marker = new Marker(options);

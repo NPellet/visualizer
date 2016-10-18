@@ -815,7 +815,7 @@ define([
                 var jp = jpath.slice(0);
                 jp.unshift(0);
                 var obj = that.module.data.getChildSync(jp);
-                if (obj instanceof DataObject) {
+                if (DataObject.isDataObject(obj)) {
                     type = obj.type;
                 }
                 return type;

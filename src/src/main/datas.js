@@ -17,6 +17,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
         return object;
     }
+    var DataObjectProto = DataObject.prototype;
 
     DataObject.check = function (object, transformNatives) {
         var currentProto, nextProto;
@@ -24,11 +25,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             return object;
         } else if (Array.isArray(object)) {
             currentProto = object;
-            while (true) { // eslint-disable-line no-constant-condition
+            while (currentProto !== DataArrayProto) { // eslint-disable-line no-constant-condition
                 nextProto = currentProto.__proto__;
                 if (nextProto === null ||
                     (nextProto.constructor && (nextProto.constructor === Array || nextProto.constructor.name === 'Array'))) {
-                    currentProto.__proto__ = DataArray.prototype;
+                    currentProto.__proto__ = DataArrayProto;
                     break;
                 }
                 currentProto = nextProto;
@@ -41,11 +42,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
             if (type === 'object') {
                 currentProto = object;
-                while (true) { // eslint-disable-line no-constant-condition
+                while (currentProto !== DataObjectProto) { // eslint-disable-line no-constant-condition
                     nextProto = currentProto.__proto__;
                     if (nextProto === null ||
                         (nextProto.constructor && (nextProto.constructor === Object || nextProto.constructor.name === 'Object'))) {
-                        currentProto.__proto__ = DataObject.prototype;
+                        currentProto.__proto__ = DataObjectProto;
                         break;
                     }
                     currentProto = nextProto;
@@ -113,7 +114,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
             l = object.length;
             target = new Array(l);
-            if (object instanceof DataArray) {
+            if (isDataArray(object)) {
                 target = DataArray(target);
             }
             for (i = 0; i < l; i++) {
@@ -124,7 +125,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
             var keys = Object.keys(object);
             l = keys.length;
-            if (object instanceof DataObject) {
+            if (isDataObject(object)) {
                 target = new DataObject();
             } else {
                 target = {};
@@ -232,12 +233,12 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 }
             }
         }
-        newArr.__proto__ = DataArray.prototype;
+        newArr.__proto__ = DataArrayProto;
         return newArr;
     }
 
-    DataArray.prototype = Object.create(Array.prototype);
-    Object.defineProperty(DataArray.prototype, 'constructor', {value: DataArray});
+    var DataArrayProto = DataArray.prototype = Object.create(Array.prototype);
+    Object.defineProperty(DataArrayProto, 'constructor', {value: DataArray});
 
     window.DataObject = DataObject;
     window.DataArray = DataArray;
@@ -277,7 +278,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                     return val;
                 if (typeof val[prop] !== 'undefined') {
                     dataObjectify(val, prop);
-                    if (val[prop] instanceof DataObject) {
+                    if (isDataObject(val[prop])) {
                         return val[prop].fetch(true);
                     } else {
                         return val[prop];
@@ -849,15 +850,15 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         setValue: setValue
     };
 
-    Object.defineProperties(DataObject.prototype, commonProperties);
-    Object.defineProperties(DataArray.prototype, commonProperties);
+    Object.defineProperties(DataObjectProto, commonProperties);
+    Object.defineProperties(DataArrayProto, commonProperties);
 
-    Object.defineProperty(DataObject.prototype, 'fetch', fetch);
-    Object.defineProperty(DataObject.prototype, 'resurrect', resurrectObject);
-    Object.defineProperty(DataObject.prototype, 'mergeWith', mergeWithObject);
+    Object.defineProperty(DataObjectProto, 'fetch', fetch);
+    Object.defineProperty(DataObjectProto, 'resurrect', resurrectObject);
+    Object.defineProperty(DataObjectProto, 'mergeWith', mergeWithObject);
 
-    Object.defineProperty(DataArray.prototype, 'resurrect', resurrectArray);
-    Object.defineProperty(DataArray.prototype, 'mergeWith', mergeWithArray);
+    Object.defineProperty(DataArrayProto, 'resurrect', resurrectArray);
+    Object.defineProperty(DataArrayProto, 'mergeWith', mergeWithArray);
 
     var nativeGetter = {
         value: function () {
@@ -918,8 +919,18 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     Object.defineProperties(DataNumber.prototype, commonNativeProperties);
     Object.defineProperties(DataBoolean.prototype, commonNativeProperties);
 
+    function isDataObject(object) {
+        return object instanceof DataObject && object.__proto__ === DataObjectProto;
+    }
+    DataObject.isDataObject = isDataObject;
+
+    function isDataArray(object) {
+        return object instanceof DataArray && object.__proto__ === DataArrayProto;
+    }
+    DataArray.isDataArray = isDataArray;
+
     function isSpecialObject(object) {
-        return (object instanceof DataObject || object instanceof DataArray || isSpecialNativeObject(object));
+        return (isDataObject(object) || isDataArray(object) || isSpecialNativeObject(object));
     }
 
     function isSpecialNativeObject(object) {
