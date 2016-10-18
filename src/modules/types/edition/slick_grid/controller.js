@@ -440,6 +440,11 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
             refVariable: ['row'],
             refAction: ['row']
         },
+        onDoubleClick: {
+            label: 'Row double clicked',
+            refVariable: ['row'],
+            refAction: ['row']
+        },
         onHover: {
             label: 'Row hovered',
             refVariable: ['row'],
@@ -493,6 +498,11 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         this.setVarFromEvent('onSelect', 'row', 'list', [row]);
         this.sendActionFromEvent('onSelect', 'row', item);
     }, 250, {trailing: false});
+
+    Controller.prototype.onDoubleClick = function(row, item) {
+        this.setVarFromEvent('onDoubleClick', 'row', 'list', [row]);
+        this.sendActionFromEvent('onDoubleClick', 'row', item);
+    };
 
     Controller.prototype.onActive = function (row, item) {
         this.setVarFromEvent('onRowActive', 'row', 'list', [row]);

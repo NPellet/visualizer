@@ -474,6 +474,7 @@ define([
         });
 
         ctx.grid.onClick.subscribe(function (e, args) {
+            console.log('click')
             var columns = ctx.grid.getColumns();
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
@@ -483,6 +484,11 @@ define([
                     }
                 }
             }
+        });
+
+        ctx.grid.onDblClick.subscribe(function (e, args) {
+            var itemInfo = ctx._getItemInfoFromRow(args.row);
+            ctx.module.controller.onDoubleClick(itemInfo.idx, itemInfo.item);
         });
 
         ctx.grid.onActiveCellChanged.subscribe(function (e, args) {
