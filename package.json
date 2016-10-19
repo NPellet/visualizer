@@ -66,7 +66,7 @@
   },
   "private": true,
   "dependencies": {
-    "country-data": "0.0.27",
+    "country-data": "^0.0.30",
     "mime-types": "^2.1.10",
     "superagent": "^2.0.0",
     "twig": "^0.9.5"

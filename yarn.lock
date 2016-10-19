@@ -1141,9 +1141,9 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-country-data@0.0.27:
-  version "0.0.27"
-  resolved "https://registry.yarnpkg.com/country-data/-/country-data-0.0.27.tgz#e7cbca793b7804a8457c4d28f36cb9d115104996"
+country-data:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/country-data/-/country-data-0.0.30.tgz#5248474bad9447467f7bc484a8a692e845a366e3"
   dependencies:
     currency-symbol-map "~2"
     underscore ">1.4.4"
