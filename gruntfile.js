@@ -75,7 +75,7 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         babel: {
             options: {
-                presets: ['es2015']
+                presets: ['es2015', 'es2016', 'es2017']
             },
             build: {
                 files: [

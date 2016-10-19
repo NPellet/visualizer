@@ -3,6 +3,8 @@ env:
   browser: true
   amd: true
   es6: true
+parserOptions:
+  ecmaVersion: 2017
 
 rules:
   # Disable those for now
