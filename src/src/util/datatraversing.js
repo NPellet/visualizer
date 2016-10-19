@@ -260,6 +260,12 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
                         for (i = 0; i < len; i++) {
                             this.getJPathsFromStructure(structure.elements[i] || structure.elements[0], (i + ''), children, jpathString);
                         }
+
+                        children.push({
+                            title: 'length',
+                            key: jpathString + '.length',
+                            children: []
+                        });
                         break;
                 }
             } else {
