@@ -1250,19 +1250,16 @@ define([
             this.domHeader.find('.ci-module-header-title').text(title);
         },
 
-        exportData: function () {
-            var that = this;
-            var prom = Promise.resolve(that.controller.export());
-            prom.then(function (text) {
-                if (typeof text === 'string') {
-                    ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
-                        title: 'Export data from module ' + that.getTitle(),
-                        width: '70%',
-                        height: 500,
-                        noWrap: true
-                    }).children('textarea').text(text);
-                }
-            });
+        async exportData() {
+            const text = await this.controller.export();
+            if (typeof text === 'string') {
+                ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
+                    title: 'Export data from module ' + this.getTitle(),
+                    width: '70%',
+                    height: 500,
+                    noWrap: true
+                }).children('textarea').text(text);
+            }
         },
 
         printView: function () {
