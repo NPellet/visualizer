@@ -300,7 +300,12 @@ define([
         return new Promise(function (resolve) {
             require([OCL], function (ACT) {
                 var mol = ACT.Molecule.fromMolfile(String(molfile));
-                resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
+                var coords = mol.getIDCoordinates();
+                if (coords === '') {
+                    mol.inventCoordinates();
+                    coords = mol.getIDCoordinates();
+                }
+                resolve(renderOpenChemLibStructure($element, mol.getIDCode(), coords, options));
             });
         });
     };
