@@ -632,54 +632,51 @@ define([
 
     functions.chart = chartRenderer;
 
-    //TODO replace with a Map when more browsers are supported
-    var typeInit = {};
+    const typeInit = new Map();
     const renderingMap = new WeakMap();
 
-    function _render($element, object, options) {
+    async function _render($element, object, options) {
         if (object == undefined) {
             $element.html('');
-            return Promise.resolve();
+            return;
         }
 
-        return Promise.resolve(object.get(true)).then(function (value) {
-            var type;
-            if (options && options.forceType) {
-                if (value && value.value) {
-                    value = value.value;
-                }
-                type = options.forceType.toLowerCase();
+        let value = await object.get(true);
+        let type;
+        if (options && options.forceType) {
+            if (value && value.value) {
+                value = value.value;
+            }
+            type = options.forceType.toLowerCase();
+        } else {
+            type = object.getType().toLowerCase();
+        }
+        if (!functions[type]) {
+            Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
+            $element.html(String(value));
+            return;
+        }
+
+        options = $.extend(options, object._options);
+        if (options.backgroundColor) {
+            $element.css('background-color', options.backgroundColor);
+        }
+        let init = typeInit.get(type);
+        if (!init) {
+            if (typeof functions[type].init === 'function') {
+                init = functions[type].init();
             } else {
-                type = object.getType().toLowerCase();
+                init = true;
             }
-            if (!functions[type]) {
-                Util.warnOnce('no-typerenderer-' + type, 'No renderer found for type ' + type);
-                $element.html(String(value));
-                return;
-            }
+            typeInit.set(type, init);
+        }
 
-            options = $.extend(options, object._options);
-            if (options.backgroundColor) {
-                $element.css('background-color', options.backgroundColor);
-            }
-            var init = typeInit[type];
-            if (!init) {
-                if (typeof functions[type].init === 'function') {
-                    init = Promise.resolve(functions[type].init());
-                } else {
-                    init = Promise.resolve();
-                }
-                typeInit[type] = init;
-            }
-
-            return init.then(function () {
-                return functions[type].toscreen($element, value, object, options);
-            });
-        });
+        await init;
+        return functions[type].toscreen($element, value, object, options);
     }
 
     return {
-        render: function (element, object, jpath, options) {
+        render(element, object, jpath, options) {
             if (typeof jpath === 'object' && !Array.isArray(jpath)) {
                 options = jpath;
                 jpath = null;
@@ -707,7 +704,7 @@ define([
             renderingMap.set(element, renderingPromise);
             return renderingPromise;
         },
-        addType: function (name, renderer) {
+        addType(name, renderer) {
             functions[name] = renderer;
         }
     };
