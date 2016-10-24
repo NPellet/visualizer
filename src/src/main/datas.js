@@ -385,64 +385,57 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         }
     };
 
-    var getChild = {
-        value: function (jpath) {
-
+    const getChild = {
+        value: async function (jpath) {
             if (typeof jpath === 'string') { // Old version
                 jpath = jpath.split('.');
                 jpath.shift();
             }
 
             if (!jpath || jpath.length === 0) {
-                return Promise.resolve(this);
+                return this;
             }
 
             jpath = jpath.slice();
 
-            var el = jpath.shift(); // Gets the current element and removes it from the array
+            const el = jpath.shift();
+            let subEl = await this.get(el, true);
 
-            return this.get(el, true).then(function (subEl) {
-                subEl = DataObject.check(subEl, true);
-
-                if (!subEl || (jpath.length === 0)) {
-                    return subEl;
-                } else {
-                    return subEl.getChild(jpath);
-                }
-            });
+            subEl = DataObject.check(subEl, true);
+            if (!subEl || (jpath.length === 0)) {
+                return subEl;
+            } else {
+                return subEl.getChild(jpath);
+            }
         }
     };
 
-    var trace = {
-        value: function (jpath) {
-
+    const trace = {
+        value: async function (jpath) {
             if (jpath && jpath.split) {
                 jpath = jpath.split('.');
                 jpath.shift();
             }
 
             if (!jpath || jpath.length === 0) {
-                return Promise.resolve(this);
+                return this;
             }
 
             jpath = jpath.slice();
 
-            var el = jpath.shift();
-            var that = this;
-            var promise = this.get(el, true);
-            return promise.then(function (subEl) {
-                if (typeof subEl !== 'undefined') {
-                    that.get()[el] = DataObject.check(subEl, true);
-                    if (subEl && subEl.linkToParent) {
-                        subEl.linkToParent(that, el);
-                    }
-                    if (!subEl || jpath.length === 0) {
-                        return subEl;
-                    }
-                    return subEl.trace(jpath);
+            const el = jpath.shift();
+            var subEl = await this.get(el, true);
+            if (typeof subEl !== 'undefined') {
+                this.get()[el] = DataObject.check(subEl, true);
+                if (subEl && subEl.linkToParent) {
+                    subEl.linkToParent(this, el);
                 }
-                return subEl;
-            });
+                if (!subEl || jpath.length === 0) {
+                    return subEl;
+                }
+                return subEl.trace(jpath);
+            }
+            return subEl;
         }
     };
 
@@ -860,32 +853,30 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     Object.defineProperty(DataArrayProto, 'resurrect', resurrectArray);
     Object.defineProperty(DataArrayProto, 'mergeWith', mergeWithArray);
 
-    var nativeGetter = {
-        value: function () {
+    const getNative = {
+        value: function getNative() {
             return this.s_;
         }
     };
 
-    var getChildNative = {
-        value: function (jpath) {
-            if (!jpath || jpath.length === 0) {
-                return Promise.resolve(this);
-            } else {
-                return Promise.resolve();
-            }
+    const getChildNative = {
+        value: async function getChildNative(jpath) {
+            return this.getChildSync(jpath);
         }
     };
 
-    var getChildSyncNative = {
-        value: function (jpath) {
+    const getChildSyncNative = {
+        value: function getChildSyncNative(jpath) {
             if (!jpath || jpath.length === 0) {
                 return this;
+            } else {
+                return undefined;
             }
         }
     };
 
-    var setValueNative = {
-        value: function (value, noTrigger) {
+    const setValueNative = {
+        value: function setValueNative(value, noTrigger) {
             this.s_ = this.nativeConstructor(value);
             if (!noTrigger) {
                 this.triggerChange(false, []);
@@ -893,26 +884,32 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         }
     };
 
-    var nativeToString = {
-        value: function () {
+    const toStringNative = {
+        value: function toStringNative() {
             return String(this.s_);
         }
     };
 
-    var commonNativeProperties = {
-        trace: trace,
+    const traceNative = {
+        value: async function traceNative(jpath) {
+            return this.getChildSync(jpath);
+        }
+    };
+
+    const commonNativeProperties = {
+        trace: traceNative,
         onChange: bindChange,
         unbindChange: unbindChange,
         triggerChange: triggerChange,
         linkToParent: linkToParent,
-        toJSON: nativeGetter, // The toJSON method is automatically called when JSON.stringify is used
-        get: nativeGetter,
-        resurrect: nativeGetter,
+        toJSON: getNative, // The toJSON method is automatically called when JSON.stringify is used
+        get: getNative,
+        resurrect: getNative,
         getChild: getChildNative,
         getChildSync: getChildSyncNative,
-        valueOf: nativeGetter,
+        valueOf: getNative,
         setValue: setValueNative,
-        toString: nativeToString
+        toString: toStringNative
     };
 
     Object.defineProperties(DataString.prototype, commonNativeProperties);
@@ -942,7 +939,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     }
 
     function transformNative(object) {
-
         var type;
 
         if (isSpecialNativeObject(object)) {
@@ -953,7 +949,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         }
 
         switch (type) {
-
             case 'string':
                 return new DataString(object);
 
@@ -963,7 +958,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             case 'boolean':
                 return new DataBoolean(object);
         }
-
     }
 
     return {
