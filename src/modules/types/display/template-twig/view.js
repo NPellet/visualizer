@@ -150,6 +150,8 @@ define([
                     this.rerender();
                 }).then(() => this._resolveTemplate()).catch(e => {
                     Debug.info('Problem with template: ' + e);
+                }).then(() => {
+                    this.submit();
                 });
             },
 

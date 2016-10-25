@@ -93,6 +93,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         }
 
         _setElement(el, value) {
+            if (value === null) return;
             var transform = getTransform(el, 'backward');
             switch (el.type) {
                 case 'checkbox':
