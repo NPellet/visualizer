@@ -305,7 +305,10 @@ define([
                     mol.inventCoordinates();
                     coords = mol.getIDCoordinates();
                 }
-                resolve(renderOpenChemLibStructure($element, mol.getIDCode(), coords, options));
+                var svg = mol.toSVG($element.width(), $element.height() - 5);
+                $element.html(svg);
+                resolve();
+                //resolve(renderOpenChemLibStructure($element, mol.getIDCode(), coords, options));
             });
         });
     };
@@ -676,7 +679,7 @@ define([
     }
 
     return {
-        render(element, object, jpath, options) {
+        render(element, object, jpath, options = {}) {
             if (typeof jpath === 'object' && !Array.isArray(jpath)) {
                 options = jpath;
                 jpath = null;
