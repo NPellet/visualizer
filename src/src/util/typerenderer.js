@@ -231,8 +231,7 @@ define([
         suppressChiralText: true,
         suppressESR: true,
         suppressCIPParity: true,
-        noStereoProblem: true,
-        useCanvas: true // todo change to false when SVG render accepts options
+        noStereoProblem: true
     };
 
     async function renderOpenChemLibStructure(isMol, $element, idcode, coordinates, options) {
@@ -259,7 +258,7 @@ define([
             if (!isMol) {
                 mol = OCL.Molecule.fromIDCode(idcode, coordinates);
             }
-            $element.html(mol.toSVG($element.width(), $element.height() - 5));
+            $element.html(mol.toSVG($element.width(), $element.height() - 5, null, options));
         }
     }
 
