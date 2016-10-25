@@ -231,21 +231,36 @@ define([
         suppressChiralText: true,
         suppressESR: true,
         suppressCIPParity: true,
-        noStereoProblem: true
+        noStereoProblem: true,
+        useCanvas: true // todo change to false when SVG render accepts options
     };
 
-    async function renderOpenChemLibStructure($element, idcode, coordinates, options) {
-        options = $.extend({}, defaultOpenChemLibStructureOptions, options);
+    async function renderOpenChemLibStructure(isMol, $element, idcode, coordinates, options) {
         const OCL = await asyncRequire(oclUrl);
-        const id = Util.getNextUniqueId();
-        let h = Math.max(100, $element.height());
-        let w = $element.width() > 50 ? $element.width() : 200;
-        let can = $('<canvas>', {id: id});
-        let canEl = can.get(0);
-        canEl.height = h - 5;
-        canEl.width = w;
-        $element.html(can);
-        OCL.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
+        options = $.extend({}, defaultOpenChemLibStructureOptions, options);
+
+        if (options.useCanvas) {
+            if (isMol) {
+                let mol = idcode;
+                idcode = mol.getIDCode();
+                coordinates = mol.getIDCoordinates();
+            }
+            const id = Util.getNextUniqueId();
+            let h = Math.max(100, $element.height());
+            let w = $element.width() > 50 ? $element.width() : 200;
+            let can = $('<canvas>', {id: id});
+            let canEl = can.get(0);
+            canEl.height = h - 5;
+            canEl.width = w;
+            $element.html(can);
+            OCL.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
+        } else {
+            let mol = idcode;
+            if (!isMol) {
+                mol = OCL.Molecule.fromIDCode(idcode, coordinates);
+            }
+            $element.html(mol.toSVG($element.width(), $element.height() - 5));
+        }
     }
 
     functions.jme = {};
@@ -259,14 +274,14 @@ define([
     functions.smiles.toscreen = async function ($element, smi, smiRoot, options) {
         const OCL = await asyncRequire(oclUrl);
         const mol = OCL.Molecule.fromSmiles(String(smi));
-        return renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options);
+        return renderOpenChemLibStructure(true, $element, mol, false, options);
     };
 
     functions.oclid = {};
     functions.oclid.toscreen = async function ($element, val, root, options) {
         const OCL = await asyncRequire(oclUrl);
         if (!root.coordinates) {
-            var mol = OCL.Molecule.fromIDCode(String(val), true);
+            const mol = OCL.Molecule.fromIDCode(String(val), true);
             Object.defineProperty(root, 'coordinates', {
                 configurable: true,
                 enumerable: false,
@@ -274,22 +289,18 @@ define([
                 writable: true
             });
         }
-        return renderOpenChemLibStructure($element, String(val), String(root.coordinates), options);
+        return renderOpenChemLibStructure(false, $element, String(val), String(root.coordinates), options);
     };
     functions.actelionid = functions.oclid;
 
     functions.mol2d = {};
     functions.mol2d.toscreen = async function ($element, molfile, molfileRoot, options) {
         const OCL = await asyncRequire(oclUrl);
-        var mol = OCL.Molecule.fromMolfile(String(molfile));
-        var coords = mol.getIDCoordinates();
-        if (coords === '') {
+        const mol = OCL.Molecule.fromMolfile(String(molfile));
+        if (mol.getIDCoordinates() === '') {
             mol.inventCoordinates();
-            coords = mol.getIDCoordinates();
         }
-        var svg = mol.toSVG($element.width(), $element.height() - 5);
-        $element.html(svg);
-        //resolve(renderOpenChemLibStructure($element, mol.getIDCode(), coords, options));
+        return renderOpenChemLibStructure(true, $element, mol, false, options);
     };
 
     functions.molfile2d = functions.mol2d;
