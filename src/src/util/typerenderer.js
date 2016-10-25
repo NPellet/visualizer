@@ -12,20 +12,27 @@ define([
     './typerenderer/chart'
 ], function (require, $, _, moment, numeral, sprintf, API, Util, chartRenderer) {
 
-    var functions = {};
-    var countryData;
+    function asyncRequire(libs) {
+        let onlyOne = false;
+        if (typeof libs === 'string') {
+            libs = [libs];
+            onlyOne = true;
+        }
+        return new Promise((resolve) => {
+            require(libs, function (...result) {
+                if (onlyOne) resolve(result[0]);
+                else resolve(result);
+            });
+        });
+    }
+
+    const functions = {};
 
     functions.latex = {};
-    functions.latex.init = function () {
-        var prom = [];
-        prom.push(Util.loadCss('components/katex/dist/katex.min.css'));
-        prom.push(new Promise(function (resolve) {
-            require(['katex'], function (katex) {
-                functions.latex.katex = katex;
-                resolve();
-            });
-        }));
-        return Promise.all(prom);
+    functions.latex.init = async function () {
+        const css = Util.loadCss('components/katex/dist/katex.min.css');
+        functions.latex.katex = await asyncRequire('katex');
+        await css;
     };
 
     functions.latex.toscreen = function ($element, val, rootVal, options) {
@@ -33,17 +40,12 @@ define([
         functions.latex.katex.render(String(val), $element[0], options);
     };
 
+    let countryData;
     functions.country = {};
-    functions.country.init = function () {
-        var prom = [];
-        prom.push(Util.loadCss('components/flag-icon-css/css/flag-icon.min.css'));
-        prom.push(new Promise(function (resolve) {
-            require(['countryData'], resolve);
-        }));
-
-        return Promise.all(prom).then(data => {
-            countryData = data[1];
-        });
+    functions.country.init = async function () {
+        const css = Util.loadCss('components/flag-icon-css/css/flag-icon.min.css');
+        countryData = await asyncRequire('countryData');
+        await css;
     };
     functions.country.toscreen = function ($element, val, rootVal, options) {
         val = String(val);
@@ -66,10 +68,8 @@ define([
     };
 
     functions.qrcode = {};
-    functions.qrcode.init = function () {
-        return new Promise(function (resolve) {
-            require(['components/jquery-qrcode/jquery.qrcode.min'], resolve);
-        });
+    functions.qrcode.init = async function () {
+        await asyncRequire('components/jquery-qrcode/jquery.qrcode.min');
     };
     functions.qrcode.toscreen = function ($element, val, rootVal, options) {
         options = Object.assign({
@@ -79,10 +79,8 @@ define([
     };
 
     functions.barcode = {};
-    functions.barcode.init = function () {
-        return new Promise(function (resolve) {
-            require(['jsbarcode'], resolve);
-        });
+    functions.barcode.init = async function () {
+        await asyncRequire('jsbarcode');
     };
 
     functions.barcode.toscreen = function ($element, val, rootVal, options) {
@@ -101,10 +99,8 @@ define([
     };
 
     functions.sparkline = {};
-    functions.sparkline.init = function () {
-        return new Promise(function (resolve) {
-            require(['sparkline'], resolve);
-        });
+    functions.sparkline.init = async function () {
+        await asyncRequire('sparkline');
     };
     functions.sparkline.toscreen = function ($el, val, rootval, options) {
         var defaultOptions = {
@@ -230,87 +226,70 @@ define([
         return $element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
     };
 
-    var OCL = 'openchemlib/openchemlib-full';
-    var defaultOpenChemLibStructureOptions = {
+    const oclUrl = 'openchemlib/openchemlib-full';
+    const defaultOpenChemLibStructureOptions = {
         suppressChiralText: true,
         suppressESR: true,
         suppressCIPParity: true,
         noStereoProblem: true
     };
 
-    function renderOpenChemLibStructure($element, idcode, coordinates, options) {
-        return new Promise(function (resolve) {
-            options = $.extend({}, defaultOpenChemLibStructureOptions, options);
-            require([OCL], function (ACT) {
-                var id = Util.getNextUniqueId();
-                var h = Math.max(100, $element.height());
-                var w = $element.width() > 50 ? $element.width() : 200;
-                var can = $('<canvas>', {id: id});
-                var canEl = can.get(0);
-                canEl.height = h - 5;
-                canEl.width = w;
-                $element.html(can);
-                ACT.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
-                resolve();
-            });
-        });
+    async function renderOpenChemLibStructure($element, idcode, coordinates, options) {
+        options = $.extend({}, defaultOpenChemLibStructureOptions, options);
+        const OCL = await asyncRequire(oclUrl);
+        const id = Util.getNextUniqueId();
+        let h = Math.max(100, $element.height());
+        let w = $element.width() > 50 ? $element.width() : 200;
+        let can = $('<canvas>', {id: id});
+        let canEl = can.get(0);
+        canEl.height = h - 5;
+        canEl.width = w;
+        $element.html(can);
+        OCL.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
     }
 
     functions.jme = {};
-    functions.jme.toscreen = function ($element, jme, jmeRoot, options) {
-        return new Promise(function (resolve) {
-            require(['lib/chemistry/jme-converter'], function (Converter) {
-                var converted = Converter.toMolfile(String(jme));
-                resolve(functions.mol2d.toscreen($element, converted, jmeRoot, options));
-            });
-        });
+    functions.jme.toscreen = async function ($element, jme, jmeRoot, options) {
+        const Converter = await asyncRequire('lib/chemistry/jme-converter');
+        const converted = Converter.toMolfile(String(jme));
+        return functions.mol2d.toscreen($element, converted, jmeRoot, options);
     };
 
     functions.smiles = {};
-    functions.smiles.toscreen = function ($element, smi, smiRoot, options) {
-        return new Promise(function (resolve) {
-            require([OCL], function (ACT) {
-                var mol = ACT.Molecule.fromSmiles(String(smi));
-                resolve(renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options));
-            });
-        });
+    functions.smiles.toscreen = async function ($element, smi, smiRoot, options) {
+        const OCL = await asyncRequire(oclUrl);
+        const mol = OCL.Molecule.fromSmiles(String(smi));
+        return renderOpenChemLibStructure($element, mol.getIDCode(), mol.getIDCoordinates(), options);
     };
 
     functions.oclid = {};
-    functions.oclid.toscreen = function ($element, val, root, options) {
-        return new Promise(function (resolve) {
-            require([OCL], function (ACT) {
-                if (!root.coordinates) {
-                    var mol = ACT.Molecule.fromIDCode(String(val), true);
-                    Object.defineProperty(root, 'coordinates', {
-                        configurable: true,
-                        enumerable: false,
-                        value: mol.getIDCoordinates(),
-                        writable: true
-                    });
-                }
-                resolve(renderOpenChemLibStructure($element, String(val), String(root.coordinates), options));
+    functions.oclid.toscreen = async function ($element, val, root, options) {
+        const OCL = await asyncRequire(oclUrl);
+        if (!root.coordinates) {
+            var mol = OCL.Molecule.fromIDCode(String(val), true);
+            Object.defineProperty(root, 'coordinates', {
+                configurable: true,
+                enumerable: false,
+                value: mol.getIDCoordinates(),
+                writable: true
             });
-        });
+        }
+        return renderOpenChemLibStructure($element, String(val), String(root.coordinates), options);
     };
     functions.actelionid = functions.oclid;
 
     functions.mol2d = {};
-    functions.mol2d.toscreen = function ($element, molfile, molfileRoot, options) {
-        return new Promise(function (resolve) {
-            require([OCL], function (ACT) {
-                var mol = ACT.Molecule.fromMolfile(String(molfile));
-                var coords = mol.getIDCoordinates();
-                if (coords === '') {
-                    mol.inventCoordinates();
-                    coords = mol.getIDCoordinates();
-                }
-                var svg = mol.toSVG($element.width(), $element.height() - 5);
-                $element.html(svg);
-                resolve();
-                //resolve(renderOpenChemLibStructure($element, mol.getIDCode(), coords, options));
-            });
-        });
+    functions.mol2d.toscreen = async function ($element, molfile, molfileRoot, options) {
+        const OCL = await asyncRequire(oclUrl);
+        var mol = OCL.Molecule.fromMolfile(String(molfile));
+        var coords = mol.getIDCoordinates();
+        if (coords === '') {
+            mol.inventCoordinates();
+            coords = mol.getIDCoordinates();
+        }
+        var svg = mol.toSVG($element.width(), $element.height() - 5);
+        $element.html(svg);
+        //resolve(renderOpenChemLibStructure($element, mol.getIDCode(), coords, options));
     };
 
     functions.molfile2d = functions.mol2d;
@@ -319,8 +298,6 @@ define([
     functions.mf.toscreen = function ($element, value) {
         if (value) {
             // need to deal with charge in parenthesis
-
-
             value = value.replace(/\(([0-9+-]+)\)/g, function (match) {
                 var number = match.replace(/[^0-9]/g, '') * 1;
                 var charge = match.replace(/[\(\)0-9]/g, '');
@@ -332,7 +309,6 @@ define([
                 var charge = match.replace(/[\(\)0-9]/g, '');
                 return charge.repeat(number);
             });
-
 
             // need to deal with isotopes
             value = value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>');
@@ -370,48 +346,44 @@ define([
 
     };
 
-    function bioPv(type, element, val, valRoot, options) {
+    async function bioPv(type, element, val, valRoot, options) {
         options = options || {};
-        return new Promise(function (resolve) {
-            require(['lib/bio-pv/bio-pv.min'], function (pv) {
-                var div = $('<div style="width:100%; height:100%" />');
-                element.html(div);
-                var mol;
-                if (type === 'pdb') {
-                    mol = pv.io.pdb(val, {loadAllModels: true});
-                } else if (type === 'mol3d') {
-                    mol = pv.io.sdf(val);
-                }
-                var viewer = pv.Viewer(div.get(0), {
-                    width: 0.99 * element.width(),
-                    height: Math.max(250, element.height() * 0.99),
-                    quality: 'medium'
-                });
-                viewer.addListener('viewerReady', function () {
-                    options.mode = viewer[options.mode] ? options.mode : 'cartoon';
-                    var id = Util.getNextUniqueId();
-                    if (type === 'pdb') {
-                        viewer.clear();
-                        mol.forEach(function (structure) {
-                            if (options.mode === 'cartoon') {
-                                var ligand = structure.select({rnames: ['RVP', 'SAH']});
-                                viewer.ballsAndSticks('ligand-' + id, ligand);
-                            }
-                            viewer[options.mode](id, structure);
-                            viewer.autoZoom();
-                        });
-                    } else if (type === 'mol3d') {
-                        viewer.ballsAndSticks(id, mol);
+        const pv = await asyncRequire('lib/bio-pv/bio-pv.min');
+        var div = $('<div style="width:100%; height:100%" />');
+        element.html(div);
+        var mol;
+        if (type === 'pdb') {
+            mol = pv.io.pdb(val, {loadAllModels: true});
+        } else if (type === 'mol3d') {
+            mol = pv.io.sdf(val);
+        }
+        var viewer = pv.Viewer(div.get(0), {
+            width: 0.99 * element.width(),
+            height: Math.max(250, element.height() * 0.99),
+            quality: 'medium'
+        });
+        viewer.addListener('viewerReady', function () {
+            options.mode = viewer[options.mode] ? options.mode : 'cartoon';
+            var id = Util.getNextUniqueId();
+            if (type === 'pdb') {
+                viewer.clear();
+                mol.forEach(function (structure) {
+                    if (options.mode === 'cartoon') {
+                        var ligand = structure.select({rnames: ['RVP', 'SAH']});
+                        viewer.ballsAndSticks('ligand-' + id, ligand);
                     }
-                    viewer.fitTo(mol);
-                    element.on('remove', remove);
-                    function remove() {
-                        viewer.destroy();
-                        element.off('remove');
-                    }
+                    viewer[options.mode](id, structure);
+                    viewer.autoZoom();
                 });
-                resolve();
-            });
+            } else if (type === 'mol3d') {
+                viewer.ballsAndSticks(id, mol);
+            }
+            viewer.fitTo(mol);
+            element.on('remove', remove);
+            function remove() {
+                viewer.destroy();
+                element.off('remove');
+            }
         });
     }
 
@@ -448,13 +420,8 @@ define([
     };
 
     functions.gradient = {};
-    functions.gradient.init = function () {
-        return new Promise(resolve => {
-            require(['src/util/colorbar'], function (colorbar) {
-                functions.gradient.colorbar = colorbar;
-                resolve();
-            });
-        });
+    functions.gradient.init = async function () {
+        functions.gradient.colorbar = await asyncRequire('src/util/colorbar');
     };
     functions.gradient.toscreen = function ($element, value, root, options) {
         var defaultColorBar = {
@@ -531,94 +498,81 @@ define([
         });
 
     };
-    functions.indicator.toscreen = function ($element, value) {
-        return new Promise(function (resolve) {
-            require(['src/util/color'], function (Color) {
-                if (!Array.isArray(value)) {
-                    return resolve();
-                }
-                var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
+    functions.indicator.toscreen = async function ($element, value) {
+        const Color = await asyncRequire('src/util/color');
+        if (!Array.isArray(value)) {
+            return;
+        }
+        var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
 
-                // if the first element of the array is a number ... we need to convert the array.
+        // if the first element of the array is a number ... we need to convert the array.
 
-                // Create a copy of the array
-                value = DataObject.resurrect(value);
-                value = _.cloneDeep(value);
+        // Create a copy of the array
+        value = DataObject.resurrect(value);
+        value = _.cloneDeep(value);
 
-                if (!isNaN(value[0])) {
-                    value = value.map(function (value) {
-                        return {'size': value};
-                    });
-                }
-
-                var length = value.length;
-                // no color ? we add some ...
-                var colors = Color.getDistinctColors(value.length);
-                var totalSize = 0;
-                for (var i = 0; i < length; i++) {
-                    if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
-                    if (!value[i].size && value[i].size !== 0) value[i].size = 10;
-                    totalSize += value[i].size;
-                }
-
-
-                for (var i = 0; i < length; i++) {
-                    var element = value[i];
-                    var span = $('<td></td>').css({
-                        minHeight: '1px',
-                        'width': (100 * element.size / totalSize) + '%',
-                        'border': 'none',
-                        overflow: 'hidden',
-                        'max-width': (100 * element.size / totalSize) + '%',
-                        'white-space': 'nowrap',
-                        'text-overflow': 'ellipsis'
-                    });
-                    if (element.bgcolor)
-                        span.css('background-color', element.bgcolor);
-                    if (element.color)
-                        span.css('color', element.color);
-                    if (element.text)
-                        span.append(element.text);
-                    if (element.class)
-                        span.addClass(element.class);
-                    if (element.icon)
-                        span.prepend('<i class="fa fa-' + element.icon + '"></i>');
-                    if (element.css)
-                        span.css(element.css);
-                    if (element.tooltip)
-                        span.attr('data-tooltip', element.tooltip);
-                    html += span.get(0).outerHTML;
-                }
-                html += '</tr></table>';
-                $element.html(html);
-                resolve();
+        if (!isNaN(value[0])) {
+            value = value.map(function (value) {
+                return {'size': value};
             });
-        });
+        }
+
+        var length = value.length;
+        // no color ? we add some ...
+        var colors = Color.getDistinctColors(value.length);
+        var totalSize = 0;
+        for (var i = 0; i < length; i++) {
+            if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
+            if (!value[i].size && value[i].size !== 0) value[i].size = 10;
+            totalSize += value[i].size;
+        }
+
+
+        for (var i = 0; i < length; i++) {
+            var element = value[i];
+            var span = $('<td></td>').css({
+                minHeight: '1px',
+                'width': (100 * element.size / totalSize) + '%',
+                'border': 'none',
+                overflow: 'hidden',
+                'max-width': (100 * element.size / totalSize) + '%',
+                'white-space': 'nowrap',
+                'text-overflow': 'ellipsis'
+            });
+            if (element.bgcolor)
+                span.css('background-color', element.bgcolor);
+            if (element.color)
+                span.css('color', element.color);
+            if (element.text)
+                span.append(element.text);
+            if (element.class)
+                span.addClass(element.class);
+            if (element.icon)
+                span.prepend('<i class="fa fa-' + element.icon + '"></i>');
+            if (element.css)
+                span.css(element.css);
+            if (element.tooltip)
+                span.attr('data-tooltip', element.tooltip);
+            html += span.get(0).outerHTML;
+        }
+        html += '</tr></table>';
+        $element.html(html);
     };
 
     functions.regexp = {};
-    functions.regexp.toscreen = function ($element, val) {
-        var value = String(val);
-        return new Promise(function (resolve) {
-            require(['lib/regexper/regexper'], function (Parser) {
-                var div = $('<div>').appendTo($element);
-                var parser = new Parser(div.get(0));
-                parser.parse(value).invoke('render');
-                resolve();
-            });
-        });
+    functions.regexp.toscreen = async function ($element, val) {
+        const value = String(val);
+        const Parser = await asyncRequire('lib/regexper/regexper');
+        const div = $('<div>').appendTo($element);
+        const parser = new Parser(div.get(0));
+        parser.parse(value).invoke('render');
     };
 
     functions.regex = functions.regexp;
 
     functions.object = {};
-    functions.object.init = function () {
-        return new Promise(resolve => {
-            require(['lib/twigjs/twig'], function (twig) {
-                functions.object.twig = twig;
-                resolve();
-            });
-        });
+    functions.object.init = async function () {
+        functions.object.twig = await asyncRequire('lib/twigjs/twig');
     };
     functions.object.toscreen = function ($element, value, root, options) {
         if (options.twig) {
