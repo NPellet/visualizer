@@ -234,6 +234,7 @@ define([
             var allProm = new Array(list.length);
             for (var i = 0; i < list.length; i++) {
                 allProm[i] = list[i].promise.then(addItems).catch(function (e) {
+                    Debug.error('failed', e);
                     sources--;
                     failedSources++;
                     updateHeader();
@@ -266,7 +267,7 @@ define([
             columns[i] = _.defaults(columns[i], slickDefaultColumn);
         }
 
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve) {
             Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
                 var $dialog = $('<div>');
                 var $slick = $('<div>');
@@ -274,6 +275,11 @@ define([
 
                 Promise.all(allProm).then(() => {
                     var len = data.getLength();
+                    if (len === 0) {
+                        resolve();
+                        $dialog.dialog('close');
+                        return;
+                    }
                     if (len === 1 && options.autoSelect) {
                         var id = data.mapRowsToIds([0])[0];
                         resolve(id);
