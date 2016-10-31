@@ -126,22 +126,22 @@ define([
             return superagent.del(this.rocDbUrl + url).withCredentials();
         }
 
-        verifyRoc() {
-            return this.getRequest('/auth/session')
-                .then(res => {
-                    if (res.statusCode !== 200) {
-                        return Debug.error('roc-views: unable to contact ' + this.rocUrl);
-                    }
-                    if (!res.body.ok) {
-                        return Debug.error('roc-views: unexpected response', res.body);
-                    }
-                    this.rocReady = true;
-                    if (res.body.authenticated) {
-                        this.rocAuthenticated = true;
-                        this.rocUsername = res.body.username;
-                        this.getMenuContent();
-                    }
-                });
+        async verifyRoc() {
+            const res = await this.getRequest('/auth/session');
+            if (res.statusCode !== 200) {
+                Debug.error('roc-views: unable to contact ' + this.rocUrl);
+                return;
+            }
+            if (!res.body.ok) {
+                Debug.error('roc-views: unexpected response', res.body);
+                return;
+            }
+            this.rocReady = true;
+            if (res.body.authenticated) {
+                this.rocAuthenticated = true;
+                this.rocUsername = res.body.username;
+                this.getMenuContent();
+            }
         }
 
         createDom() {
@@ -188,13 +188,11 @@ define([
             document.location.href = this.rocUrl + '/auth/login?continue=' + url;
         }
 
-        logout() {
-            this.getRequest('/auth/logout')
-                .then(() => {
-                    this.rocAuthenticated = false;
-                    this.rocUsername = null;
-                    this.openMenu('login');
-                });
+        async logout() {
+            await this.getRequest('/auth/logout');
+            this.rocAuthenticated = false;
+            this.rocUsername = null;
+            this.openMenu('login');
         }
 
         getMenuContent() {
@@ -413,13 +411,12 @@ define([
             return root;
         }
 
-        getViews() {
-            return this.getRequestDB('/entry/_all', {right: 'write'})
-                .then(returnBody)
-                .then(body => body.filter(view => view.$deleted !== true));
+        async getViews() {
+            const res = await this.getRequestDB('/entry/_all', {right: 'write'});
+            return res.body.filter(view => view.$deleted !== true);
         }
 
-        refresh() {
+        async refresh() {
             // Remove everything from last tree
             this.populateInfo();
             if (this.tree) {
@@ -431,145 +428,146 @@ define([
             this.setLoadedNode(null);
 
             // Create new tree
-            return this.getViews().then(views => {
-                var tree = this.getTree(views);
-                this.$tree.fancytree({
-                    source: tree,
-                    toggleEffect: false,
-                    debugLevel: 0,
-                    extensions: ['dnd', 'filter'],
-                    dnd: {
-                        autoExpandMS: 300,
-                        preventVoidMoves: true,
-                        preventRecursiveMoves: true,
-                        dragStart: node => {
-                            if (this.inSearch) return false; // Cannot move while search is active
-                            return !node.folder; // Can only move documents
-                        },
-                        dragEnter: (target, info) => {
-                            var theNode = info.otherNode;
-                            if (target.folder && target === theNode.parent) {
-                                return false; // Already in current folder
-                            }
-                            return !!target.folder; // Can only drop in a folder
-                        },
-                        dragDrop: (target, info) => {
-                            var theNode = info.otherNode;
-                            this.showHide(true);
-                            theNode.data.view.moveTo(target)
-                                .then(result => {
-                                    this.showHide(false);
-                                    if (result) theNode.moveTo(target);
-                                    else UI.showNotification('View could not be moved', 'error');
-                                });
-                        }
-                    },
-                    filter: {
-                        mode: 'hide',
-                        fuzzy: true
-                    },
-                    // events
-                    activate: (event, data) => this.onActivate(event, data),
-                    dblclick: (event, data) => this.onDblclick(event, data)
-                });
+            const views = await this.getViews();
 
-                this.$tree.on('mouseenter mouseleave', 'span.fancytree-title', event => {
-                    const node = $.ui.fancytree.getNode(event);
-                    if (event.type === 'mouseenter' && !node.folder) {
-                        this.populateInfo(node);
-                    } else {
-                        this.populateInfo(this.activeView);
+            var tree = this.getTree(views);
+            this.$tree.fancytree({
+                source: tree,
+                toggleEffect: false,
+                debugLevel: 0,
+                extensions: ['dnd', 'filter'],
+                dnd: {
+                    autoExpandMS: 300,
+                    preventVoidMoves: true,
+                    preventRecursiveMoves: true,
+                    dragStart: node => {
+                        if (this.inSearch) return false; // Cannot move while search is active
+                        return !node.folder; // Can only move documents
+                    },
+                    dragEnter: (target, info) => {
+                        var theNode = info.otherNode;
+                        if (target.folder && target === theNode.parent) {
+                            return false; // Already in current folder
+                        }
+                        return !!target.folder; // Can only drop in a folder
+                    },
+                    dragDrop: (target, info) => {
+                        var theNode = info.otherNode;
+                        this.showHide(true);
+                        theNode.data.view.moveTo(target)
+                            .then(result => {
+                                this.showHide(false);
+                                if (result) theNode.moveTo(target);
+                                else UI.showNotification('View could not be moved', 'error');
+                            });
                     }
-                });
-
-                this.tree = this.$tree.fancytree('getTree');
-
-                this.renderFlavor();
-
-                this.$tree.contextmenu({
-                    delegate: 'span.fancytree-title',
-                    preventContextMenuForPopup: true,
-                    show: false,
-                    menu: [],
-                    beforeOpen: (event, ui) => {
-                        if (this.inSearch) return false;
-                        var node = $.ui.fancytree.getNode(ui.target);
-
-                        if (node.folder) {
-                            var path = node.data.path;
-                            var menu = [
-                                {title: 'Create folder', cmd: 'createFolder', uiIcon: 'ui-icon-folder-collapsed'}
-                            ];
-                            if (path.length === 1) { // root of flavor
-                                menu.push({title: 'New flavor...', cmd: 'newFlavor', uiIcon: 'ui-icon-document-b'});
-                                menu.push({title: '----'});
-                                const flavors = this.flavors;
-                                for (var i = 0; i < flavors.length; i++) {
-                                    menu.push({
-                                        title: flavors[i],
-                                        cmd: 'switchFlavor',
-                                        uiIcon: (flavors[i] === this.flavor) ? 'ui-icon-check' : undefined
-                                    });
-                                }
-                            }
-                            this.$tree.contextmenu('replaceMenu', menu);
-                        } else {
-                            var flavors = this.flavors;
-                            var menuFlavors = [];
-                            var viewFlavors = node.data.view.flavors;
-                            for (var i = 0; i < flavors.length; i++) {
-                                var has = !!viewFlavors[flavors[i]];
-                                menuFlavors.push({
-                                    title: flavors[i],
-                                    cmd: 'toggleFlavor',
-                                    uiIcon: has ? 'ui-icon-check' : undefined
-                                });
-                            }
-                            this.$tree.contextmenu('replaceMenu', [
-                                {title: 'Rename', cmd: 'renameView', uiIcon: 'ui-icon-pencil'},
-                                {title: 'Delete', cmd: 'deleteView', uiIcon: 'ui-icon-trash'},
-                                {title: 'Flavors', children: menuFlavors}
-                            ]);
-                        }
-
-                        node.setActive();
-                    },
-                    select: (event, ui) => {
-                        const node = $.ui.fancytree.getNode(ui.target);
-                        let flavor;
-                        switch (ui.cmd) {
-                            case 'createFolder':
-                                this.createFolder(node);
-                                break;
-                            case 'deleteView':
-                                this.deleteView(node);
-                                break;
-                            case 'renameView':
-                                this.renameView(node);
-                                break;
-                            case 'toggleFlavor':
-                                flavor = ui.item.text();
-                                this.toggleFlavor(node, flavor);
-                                break;
-                            case 'switchFlavor':
-                                flavor = ui.item.text();
-                                this.switchToFlavor(flavor);
-                                break;
-                            case 'newFlavor':
-                                this.newFlavor();
-                                break;
-                            default:
-                                Debug.error(`unknown action: ${ui.cmd}`);
-                                break;
-                        }
-                    },
-                    createMenu(event) {
-                        $(event.target).css('z-index', 10000);
-                    }
-                });
-
-                this.selectLoadedNode();
+                },
+                filter: {
+                    mode: 'hide',
+                    fuzzy: true
+                },
+                // events
+                activate: (event, data) => this.onActivate(event, data),
+                dblclick: (event, data) => this.onDblclick(event, data)
             });
+
+            this.$tree.on('mouseenter mouseleave', 'span.fancytree-title', event => {
+                const node = $.ui.fancytree.getNode(event);
+                if (event.type === 'mouseenter' && !node.folder) {
+                    this.populateInfo(node);
+                } else {
+                    this.populateInfo(this.activeView);
+                }
+            });
+
+            this.tree = this.$tree.fancytree('getTree');
+
+            this.renderFlavor();
+
+            this.$tree.contextmenu({
+                delegate: 'span.fancytree-title',
+                preventContextMenuForPopup: true,
+                show: false,
+                menu: [],
+                beforeOpen: (event, ui) => {
+                    if (this.inSearch) return false;
+                    var node = $.ui.fancytree.getNode(ui.target);
+
+                    if (node.folder) {
+                        var path = node.data.path;
+                        var menu = [
+                            {title: 'Create folder', cmd: 'createFolder', uiIcon: 'ui-icon-folder-collapsed'}
+                        ];
+                        if (path.length === 1) { // root of flavor
+                            menu.push({title: 'New flavor...', cmd: 'newFlavor', uiIcon: 'ui-icon-document-b'});
+                            menu.push({title: '----'});
+                            const flavors = this.flavors;
+                            for (var i = 0; i < flavors.length; i++) {
+                                menu.push({
+                                    title: flavors[i],
+                                    cmd: 'switchFlavor',
+                                    uiIcon: (flavors[i] === this.flavor) ? 'ui-icon-check' : undefined
+                                });
+                            }
+                        }
+                        this.$tree.contextmenu('replaceMenu', menu);
+                    } else {
+                        var flavors = this.flavors;
+                        var menuFlavors = [];
+                        var viewFlavors = node.data.view.flavors;
+                        for (var i = 0; i < flavors.length; i++) {
+                            var has = !!viewFlavors[flavors[i]];
+                            menuFlavors.push({
+                                title: flavors[i],
+                                cmd: 'toggleFlavor',
+                                uiIcon: has ? 'ui-icon-check' : undefined
+                            });
+                        }
+                        this.$tree.contextmenu('replaceMenu', [
+                            {title: 'Rename', cmd: 'renameView', uiIcon: 'ui-icon-pencil'},
+                            {title: 'Delete', cmd: 'deleteView', uiIcon: 'ui-icon-trash'},
+                            {title: 'Flavors', children: menuFlavors}
+                        ]);
+                    }
+
+                    node.setActive();
+                },
+                select: (event, ui) => {
+                    const node = $.ui.fancytree.getNode(ui.target);
+                    let flavor;
+                    switch (ui.cmd) {
+                        case 'createFolder':
+                            this.createFolder(node);
+                            break;
+                        case 'deleteView':
+                            this.deleteView(node);
+                            break;
+                        case 'renameView':
+                            this.renameView(node);
+                            break;
+                        case 'toggleFlavor':
+                            flavor = ui.item.text();
+                            this.toggleFlavor(node, flavor);
+                            break;
+                        case 'switchFlavor':
+                            flavor = ui.item.text();
+                            this.switchToFlavor(flavor);
+                            break;
+                        case 'newFlavor':
+                            this.newFlavor();
+                            break;
+                        default:
+                            Debug.error(`unknown action: ${ui.cmd}`);
+                            break;
+                    }
+                },
+                createMenu(event) {
+                    $(event.target).css('z-index', 10000);
+                }
+            });
+
+            this.selectLoadedNode();
+
         }
 
         selectLoadedNode() {
@@ -651,28 +649,25 @@ define([
             var dialog = UI.dialog(div, {buttons: {Save}});
         }
 
-        deleteView(node) {
-            UI.confirm(`This will delete the view named "${node.title}" and all related data.<br>Are you sure?`, 'Yes, delete it!', 'Maybe not...').then(ok => {
+        async deleteView(node) {
+            if (await UI.confirm(`This will delete the view named "${node.title}" and all related data.<br>Are you sure?`, 'Yes, delete it!', 'Maybe not...')) {
+                this.showHide(true);
+                const ok = await node.data.view.remove();
+                this.showHide(false);
                 if (ok) {
-                    this.showHide(true);
-                    node.data.view.remove().then(ok => {
-                        this.showHide(false);
-                        if (ok) {
-                            UI.showNotification('View deleted', 'success');
-                            node.remove();
-                            if (node === this.loadedNode) {
-                                Versioning.switchView({view: {}, data: {}}, true, {
-                                    doNotLoad: true
-                                });
-                                this.setLoadedNode(null);
-                                this.setActiveView(null);
-                            }
-                        } else {
-                            UI.showNotification('Error while deleting view', 'error');
-                        }
-                    });
+                    UI.showNotification('View deleted', 'success');
+                    node.remove();
+                    if (node === this.loadedNode) {
+                        Versioning.switchView({view: {}, data: {}}, true, {
+                            doNotLoad: true
+                        });
+                        this.setLoadedNode(null);
+                        this.setActiveView(null);
+                    }
+                } else {
+                    UI.showNotification('Error while deleting view', 'error');
                 }
-            });
+            }
         }
 
         renameView(node) {
@@ -703,51 +698,49 @@ define([
             var dialog = UI.dialog(div, {buttons: {Rename}});
         }
 
-        toggleFlavor(node, flavor) {
+        async toggleFlavor(node, flavor) {
             const view = node.data.view;
             this.showHide(true);
-            return view.toggleFlavor(flavor, this.flavor)
-                .then(result => {
-                    this.showHide(false);
-                    if (!result) {
-                        UI.showNotification('Error while toggling flavor', 'error');
-                    } else if (result.state === 'err-one') {
-                        UI.showNotification('Cannot remove the last flavor', 'error');
-                    } else if (result.state === 'removed') {
-                        let found;
-                        this.tree.rootNode.visit(theNode => {
-                            if (theNode.data.view === view &&
-                                theNode.data.flavor === flavor) {
-                                found = theNode;
-                                return false;
-                            }
-                        });
-                        if (found) {
-                            found.remove();
-                        } else {
-                            throw new Error('Node not found');
-                        }
-                        UI.showNotification(`Flavor ${flavor} removed`, 'success');
-                    } else if (result.state === 'added') {
-                        let flavorNodes = this.tree.rootNode.getChildren();
-                        for (const child of flavorNodes) {
-                            if (child.title === flavor) {
-                                this.addNodeAndSelect(child, {
-                                    title: result.name,
-                                    folder: false,
-                                    view,
-                                    flavor
-                                });
-                                break;
-                            }
-                        }
-                        this.switchToFlavor(flavor);
-                        UI.showNotification(`Flavor ${flavor} added`, 'success');
-                    } else {
-                        throw new Error('unexpected result: ' + result);
+            const result = await view.toggleFlavor(flavor, this.flavor);
+            this.showHide(false);
+            if (!result) {
+                UI.showNotification('Error while toggling flavor', 'error');
+            } else if (result.state === 'err-one') {
+                UI.showNotification('Cannot remove the last flavor', 'error');
+            } else if (result.state === 'removed') {
+                let found;
+                this.tree.rootNode.visit(theNode => {
+                    if (theNode.data.view === view &&
+                        theNode.data.flavor === flavor) {
+                        found = theNode;
+                        return false;
                     }
-                    this.renderActiveView();
                 });
+                if (found) {
+                    found.remove();
+                } else {
+                    throw new Error('Node not found');
+                }
+                UI.showNotification(`Flavor ${flavor} removed`, 'success');
+            } else if (result.state === 'added') {
+                let flavorNodes = this.tree.rootNode.getChildren();
+                for (const child of flavorNodes) {
+                    if (child.title === flavor) {
+                        this.addNodeAndSelect(child, {
+                            title: result.name,
+                            folder: false,
+                            view,
+                            flavor
+                        });
+                        break;
+                    }
+                }
+                this.switchToFlavor(flavor);
+                UI.showNotification(`Flavor ${flavor} added`, 'success');
+            } else {
+                throw new Error('unexpected result: ' + result);
+            }
+            this.renderActiveView();
         }
 
         doSearch(value) {
@@ -850,33 +843,32 @@ define([
             this.$ownersList.html('Owners: ' + view.owners.join(', '));
         }
 
-        reloadRevisions(node, force) {
+        async reloadRevisions(node, force) {
             const view = node.data.view;
             this.$revBox.html('loading...');
-            view.getRevisions(force).then(revs => {
-                this.$revBox.empty();
-                this.$revBox.append($('<p>').html($('<a>', {
-                    click: this.reloadRevisions.bind(this, node, true),
+            const revs = await view.getRevisions(force);
+            this.$revBox.empty();
+            this.$revBox.append($('<p>').html($('<a>', {
+                click: this.reloadRevisions.bind(this, node, true),
+                css: fakeLink,
+                text: 'refresh'
+            })));
+            this.$revBox.append('<br>');
+            revs.forEach(rev => {
+                const revLink = $('<a>', {
+                    click: this.loadRevision.bind(this, node, rev),
                     css: fakeLink,
-                    text: 'refresh'
-                })));
-                this.$revBox.append('<br>');
-                revs.forEach(rev => {
-                    const revLink = $('<a>', {
-                        click: this.loadRevision.bind(this, node, rev),
-                        css: fakeLink,
-                        class: 'roc-revision-link',
-                        text: rev,
-                        title: ''
-                    });
-
-                    revLink.tooltip({
-                        content: this.updateRevInfo.bind(this, node, rev)
-                    });
-
-                    const openRevLink = $('<p>').html(revLink);
-                    this.$revBox.append(openRevLink);
+                    class: 'roc-revision-link',
+                    text: rev,
+                    title: ''
                 });
+
+                revLink.tooltip({
+                    content: this.updateRevInfo.bind(this, node, rev)
+                });
+
+                const openRevLink = $('<p>').html(revLink);
+                this.$revBox.append(openRevLink);
             });
         }
 
@@ -886,14 +878,13 @@ define([
             this.loadNode(node);
         }
 
-        updateRevInfo(node, rev, callback) {
+        async updateRevInfo(node, rev, callback) {
             const view = node.data.view;
-            view.getRevisionData(rev).then(data => {
-                callback(new Date(data.$modificationDate).toLocaleString());
-            });
+            const data = await view.getRevisionData(rev);
+            callback(new Date(data.$modificationDate).toLocaleString());
         }
 
-        saveAs() {
+        async saveAs() {
             let folder = this.activeNode;
             if (!folder.folder) return;
 
@@ -951,24 +942,26 @@ define([
             };
             const newView = new RocView(doc, this);
             this.showHide(true);
-            newView.save()
-                .then(() => {
-                    this.showHide(false);
-                    UI.showNotification('View saved', 'success');
-                    this.addNodeAndSelect(folder, {
-                        title: name,
-                        folder: false,
-                        view: newView,
-                        flavor
-                    });
-                    Versioning.switchView(newView.getViewSwitcher(), true, {
-                        doNotLoad: true
-                    });
 
-                }, error => {
-                    this.showHide(false);
-                    UI.showNotification('View could not be saved', 'error');
-                });
+            try {
+                await newView.save();
+            } catch (error) {
+                this.showHide(false);
+                UI.showNotification('View could not be saved', 'error');
+                return;
+            }
+
+            this.showHide(false);
+            UI.showNotification('View saved', 'success');
+            this.addNodeAndSelect(folder, {
+                title: name,
+                folder: false,
+                view: newView,
+                flavor
+            });
+            Versioning.switchView(newView.getViewSwitcher(), true, {
+                doNotLoad: true
+            });
         }
 
         closeLoadedView() {
@@ -1141,106 +1134,95 @@ define([
             }
         }
 
-        uploadFiles() {
+        async uploadFiles() {
             if (!this.activeView) return;
-            var docUrl = `${this.rocDbUrl}/entry/${this.activeView.data.view.id}`;
-            var couchA = new CouchdbAttachments(docUrl);
-            return couchA.fetchList().then(attachments => {
-                return uploadUi.uploadDialog(attachments, {
-                    mode: 'couch',
-                    docUrl
-                }).then(toUpload => {
-                    if (!toUpload || toUpload.length === 0) return;
-                    this.showHide(true);
-                    var parts;
-                    parts = _.partition(toUpload, function (v) {
-                        return v.toDelete;
-                    });
-                    var toDelete = parts[0];
-                    parts = _.partition(parts[1], function (v) {
-                        return v.size < UPLOAD_LIMIT;
-                    });
+            const docUrl = `${this.rocDbUrl}/entry/${this.activeView.data.view.id}`;
+            const couchA = new CouchdbAttachments(docUrl);
 
-                    var largeUploads = parts[1];
-                    var smallUploads = parts[0];
-
-                    // Sort to minimize number of requests
-                    smallUploads.sort(function (a, b) {
-                        if (a.size < b.size) return 1;
-                        else if (a.size === b.size) return 0;
-                        else return -1;
-                    });
-
-                    // Create inline uploads batch
-                    var inlineUploads = [];
-                    var current = [];
-                    var uploadSum = 0;
-                    var i;
-                    for (i = 0; i < smallUploads.length; i++) {
-                        uploadSum += smallUploads[i].size;
-                        if (uploadSum < UPLOAD_LIMIT) {
-                            current.push(smallUploads[i]);
-                        } else {
-                            inlineUploads.push(current);
-                            current = [smallUploads[i]];
-                            uploadSum = smallUploads[i].size;
-                        }
-                    }
-
-                    if (current.length) {
-                        inlineUploads.push(current);
-                    }
-
-                    var prom = Promise.resolve();
-
-                    prom = prom.then(function () {
-                        return couchA.remove(_.map(toDelete, 'name'));
-                    });
-                    for (i = 0; i < largeUploads.length; i++) {
-                        (function (i) {
-                            prom = prom.then(function () {
-                                return couchA.upload(largeUploads[i]);
-                            });
-                        })(i);
-                    }
-
-                    for (i = 0; i < inlineUploads.length; i++) {
-                        (function (i) {
-                            prom = prom.then(function () {
-                                return couchA.inlineUploads(inlineUploads[i]);
-                            });
-                        })(i);
-                    }
-
-                    prom = prom.then(() => {
-                        this.showHide(false);
-                        UI.showNotification('Files uploaded successfully', 'success');
-                    }, err => {
-                        this.showHide(false);
-                        UI.showNotification('Files upload failed (at least partially)', 'error');
-                        console.error(err.message, err.stack);
-                    });
-
-                    return prom.then(() => this.reloadCurrent());
-                });
+            const attachments = await couchA.fetchList();
+            const toUpload = await uploadUi.uploadDialog(attachments, {
+                mode: 'couch',
+                docUrl
             });
+
+            if (!toUpload || toUpload.length === 0) return;
+            this.showHide(true);
+            var parts;
+            parts = _.partition(toUpload, function (v) {
+                return v.toDelete;
+            });
+            var toDelete = parts[0];
+            parts = _.partition(parts[1], function (v) {
+                return v.size < UPLOAD_LIMIT;
+            });
+
+            var largeUploads = parts[1];
+            var smallUploads = parts[0];
+
+            // Sort to minimize number of requests
+            smallUploads.sort(function (a, b) {
+                if (a.size < b.size) return 1;
+                else if (a.size === b.size) return 0;
+                else return -1;
+            });
+
+            // Create inline uploads batch
+            var inlineUploads = [];
+            var current = [];
+            var uploadSum = 0;
+            for (let i = 0; i < smallUploads.length; i++) {
+                uploadSum += smallUploads[i].size;
+                if (uploadSum < UPLOAD_LIMIT) {
+                    current.push(smallUploads[i]);
+                } else {
+                    inlineUploads.push(current);
+                    current = [smallUploads[i]];
+                    uploadSum = smallUploads[i].size;
+                }
+            }
+
+            if (current.length) {
+                inlineUploads.push(current);
+            }
+
+            try {
+                await couchA.remove(_.map(toDelete, 'name'));
+
+                for (let i = 0; i < largeUploads.length; i++) {
+                    await couchA.upload(largeUploads[i]);
+                }
+
+                for (let i = 0; i < inlineUploads.length; i++) {
+                    await couchA.inlineUploads(inlineUploads[i]);
+                }
+
+                this.showHide(false);
+                UI.showNotification('Files uploaded successfully', 'success');
+            } catch (err) {
+                this.showHide(false);
+                UI.showNotification('Files upload failed (at least partially)', 'error');
+                console.error(err.message, err.stack);
+                return;
+            }
+
+            await this.reloadCurrent();
         }
 
-        reloadCurrent() {
+        async reloadCurrent() {
             if (!this.loadedNode) return;
-            return this.loadedNode.data.view.reload().then(() => this.renderActiveView());
+            await this.loadedNode.data.view.reload();
+            this.renderActiveView();
         }
 
-        togglePublic() {
+        async togglePublic() {
             if (!this.activeView) return;
             this.showHide(true);
-            return this.activeView.data.view.togglePublic().then(ok => {
-                this.showHide(false);
-                this.renderActiveView();
-                if (!ok) {
-                    UI.showNotification('Could not change permissions', 'error');
-                }
-            });
+            const ok = await this.activeView.data.view.togglePublic();
+            this.showHide(false);
+            this.renderActiveView();
+            if (!ok) {
+                UI.showNotification('Could not change permissions', 'error');
+            }
         }
 
         addOwner() {
@@ -1292,10 +1274,6 @@ define([
     }
 
     return RocViewManager;
-
-    function returnBody(response) {
-        return response.body;
-    }
 
     function sortFancytree(a, b) {
         if (a.folder === b.folder) {
