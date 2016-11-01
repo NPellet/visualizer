@@ -6,8 +6,9 @@
 define([
     'src/util/versioning',
     'superagent',
-    'src/util/util'
-], function (Versioning, superagent, util) {
+    'src/util/util',
+    'fetch'
+], function (Versioning, superagent, util, fetch) {
 
     var base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
@@ -263,17 +264,30 @@ define([
             return this.list().then(() => {
                 const _att = this.lastDoc._attachments[name];
                 if (!_att) throw new Error('The attachment ' + name + ' does not exist');
-                const req = superagent.get(this.docUrl + '/' + name).withCredentials();
-                if (options.responseType) {
-                    req.responseType(options.responseType);
+                var url = `${this.docUrl}/${name}`;
+                if (!options.responseType) {
+                    const req = superagent.get(url).withCredentials();
+                    if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
+                    return req.query({rev: this.lastDoc._rev})
+                        .then(res => {
+                            if (options.raw) return res.text;
+                            else if (options.responseType) return res.xhr.response;
+                            return res.body || res.text;
+                        });
+                } else {
+                    return fetch(url, {credentials: 'include'}).then(r => {
+                        switch (options.responseType) {
+                            case 'arraybuffer':
+                                return r.arrayBuffer();
+                            case 'blob':
+                                return r.blob();
+                            case 'json':
+                                return r.json();
+                            case 'text':
+                                return r.text();
+                        }
+                    })
                 }
-                if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
-                return req.query({rev: this.lastDoc._rev})
-                    .then(res => {
-                        if (options.raw) return res.text;
-                        else if (options.responseType) return res.xhr.response;
-                        return res.body || res.text;
-                    });
             });
         }
 
