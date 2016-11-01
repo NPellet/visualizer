@@ -1,6 +1,16 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/onde/src/onde', 'forms/button', 'lodash', 'src/util/debug', 'src/util/api'], function (Default, Util, $, onde, Button, _, Debug, API) {
+define([
+    'modules/default/defaultview',
+    'src/util/util',
+    'jquery',
+    'components/onde/src/onde',
+    'forms/button',
+    'lodash',
+    'src/util/debug',
+    'src/util/api',
+    'src/util/sandbox'
+], function (Default, Util, $, onde, Button, _, Debug, API, Sandbox) {
 
     function View() {
         this._id = Util.getNextUniqueId();
@@ -9,11 +19,12 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
     Util.loadCss('components/onde/src/onde.css');
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
-            var that = this;
-            var filter = this.module.getConfiguration('onchangeFilter');
+        init() {
+            const filter = this.module.getConfiguration('onchangeFilter');
             if (filter) {
-                eval('that.filter = function(data, jpath) { try { \n ' + filter + '\n } catch(_) { console.log(_); } }');
+                const sandbox = new Sandbox();
+                sandbox.setContext({API});
+                this.filter = sandbox.run('(function ondeOnChangeFilter(data, jpath) { try { \n ' + filter + '\n } catch(_) { console.log(_); } })', 'ondeOnChangeFilter');
             }
             this.dom = $('<form id="' + this._id + '">').css({
                 height: '100%',
@@ -25,8 +36,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 this.dom.append(
                     new Button(
                         this.module.getConfiguration('button_text'),
-                        function () {
-                            that.exportForm();
+                        () => {
+                            this.exportForm();
                         },
                         {color: 'green'}
                     ).render().css({
@@ -35,18 +46,18 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 );
             }
 
-            this.dom.on('submit', function (e) {
+            this.dom.on('submit', (e) => {
                 e.preventDefault();
-                that.exportForm();
+                this.exportForm();
                 return false;
             });
 
 
-            var debouncing = this.module.getConfiguration('debouncing', -1);
+            const debouncing = this.module.getConfiguration('debouncing', -1);
             if (debouncing > -1) {
-                var cb = function (e) {
+                let cb = (e) => {
                     if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
-                    that.exportForm();
+                    this.exportForm();
                 };
                 if (debouncing > 0) {
                     cb = _.debounce(cb, debouncing);
@@ -54,10 +65,10 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 this.dom.on('keyup change', cb);
             }
 
-            if (that.filter) {
-                this.dom.on('keyup change', function (e) {
+            if (this.filter) {
+                this.dom.on('keyup change', (e) => {
                     if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
-                    that._doFilter(e);
+                    this._doFilter(e);
                 });
             }
 
@@ -65,7 +76,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
 
         },
 
-        _doFilter: function (e) {
+        _doFilter(e) {
             var jpathSuccess = true;
             var $target = $(e.target);
             var fieldInfo = $target.data('fieldInfo');
@@ -96,20 +107,21 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
         },
 
         blank: {
-            inputValue: function () {
+            inputValue() {
                 this.inputObj = null;
                 this.inputVal = null;
             },
-            schema: function () {
+            schema() {
                 this.module.controller.inputSchema = {};
             }
         },
-        inDom: function () {
-            var that = this;
+
+        inDom() {
             this.module.getDomContent().html(this.dom);
             this.initForm();
+            let varname;
             if (this.module.getConfigurationCheckbox('saveInView', 'yes')) {
-                var varname = this.module.getConfiguration('varname');
+                varname = this.module.getConfiguration('varname');
             }
 
             if (varname) {
@@ -117,20 +129,21 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                     data.onChange(() => {
                         this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(data);
                     });
-                    that.resolveReady();
+                    this.resolveReady();
                 });
             } else {
-                that.resolveReady();
+                this.resolveReady();
             }
         },
-        initForm: function () {
-            var that = this;
+
+        initForm() {
             this.form = new onde.Onde(this.dom);
             this.renderForm();
-            this.form.on('field:delete', function (node) {
-                that.exportForm();
+            this.form.on('field:delete', () => {
+                this.exportForm();
             });
         },
+
         update: {
             inputValue: function (value) {
                 this.inputObj = value;
@@ -142,8 +155,9 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
                 this.renderForm();
             }
         },
-        renderForm: function () {
-            var schema = this.module.controller.getSchema();
+
+        renderForm() {
+            const schema = this.module.controller.getSchema();
             if (!schema) {
                 this.dom.find('.form-button').hide();
                 return;
@@ -152,14 +166,15 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery', 'components/on
             // We use inputObj rather that inputVal because we want the form
             // to be rendered with the current values, not with the values
             // such as it was when it last came into the module
-            var fillWith = this.inputObj ? this.inputObj.get().resurrect() : null;
+            const fillWith = this.inputObj ? this.inputObj.get().resurrect() : null;
             this.form.render(schema, fillWith, {});
             if (this.module.getConfigurationCheckbox('hasButton', 'onload')) {
                 this.exportForm();
             }
         },
-        exportForm: function () {
-            var data = this.form.getData();
+
+        exportForm() {
+            const data = this.form.getData();
             if (!data.errorCount) {
                 this._data = data.data;
                 this.module.controller.onSubmit(data.data);
