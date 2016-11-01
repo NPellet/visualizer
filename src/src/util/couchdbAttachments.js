@@ -286,7 +286,7 @@ define([
                             case 'text':
                                 return r.text();
                         }
-                    })
+                    });
                 }
             });
         }
