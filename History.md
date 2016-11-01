@@ -1,3 +1,13 @@
+<a name="2.71.1"></a>
+## [2.71.1](https://github.com/NPellet/visualizer/compare/v2.71.0...v2.71.1) (2016-11-01)
+
+
+### Bug Fixes
+
+* **build:** copy fetch on build ([bda1cd6](https://github.com/NPellet/visualizer/commit/bda1cd6))
+
+
+
 <a name="2.71.0"></a>
 # [2.71.0](https://github.com/NPellet/visualizer/compare/v2.70.0...v2.71.0) (2016-11-01)
 
