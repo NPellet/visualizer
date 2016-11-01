@@ -65,7 +65,7 @@ require.config({
         'smart-array-filter': 'components/smart-array-filter/dist/smart-array-filter.min',
         sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
         sprintf: 'components/sprintf/dist/sprintf.min',
-        superagent: 'lib/superagent-promise/index',
+        superagent: 'browserified/superagent/index',
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
         x2js: 'components/x2js/xml2json.min',
