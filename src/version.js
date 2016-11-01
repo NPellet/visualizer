@@ -36,6 +36,13 @@ define(['lib/semver/semver'], function (semver) {
         } else {
             buildTime = date.toLocaleDateString();
         }
+    } else {
+        // HEAD check
+        try {
+            eval('(async function() {})()');
+        } catch (e) {
+            alert('To use the unbuilt HEAD of the visualizer, you need a browser that supports async/await features (like Chrome 55+).\nIf you are not on HEAD, please report a bug on GitHub.');
+        }
     }
 
     return {

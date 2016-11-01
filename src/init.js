@@ -179,6 +179,7 @@ require.config({
 window.CKEDITOR_BASEPATH = require.toUrl('components/ckeditor/');
 
 require([
+    'version',
     'jquery',
     'src/main/datas',
     'src/main/entrypoint',
@@ -186,8 +187,7 @@ require([
     'bluebird',
     'components/setImmediate/setImmediate',
     'lib/regenerator/regenerator-runtime'
-
-], function ($, Datas, EntryPoint, URI, Promise) {
+], function (Version, $, Datas, EntryPoint, URI, Promise) {
     window.Promise = Promise;
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore
     $(document).ready(function () {
