@@ -61,7 +61,7 @@
     "lodash": "4.16.6",
     "loglevel": "1.4.1",
     "marked": "0.3.6",
-    "mathjs": "~3.2.1",
+    "mathjs": "3.6.0",
     "ml": "0.2.1",
     "modernizr": "2.8.3",
     "moment": "2.14.1",
