@@ -84,7 +84,8 @@
     "ui-contextmenu": "1.13.0",
     "uri.js": "1.18.1",
     "web-animations-js": "2.2.2",
-    "x2js": "1.2.0"
+    "x2js": "1.2.0",
+    "fetch": "^1.0.0"
   },
   "resolutions": {
     "jsgraph": "v1.15.3-1",

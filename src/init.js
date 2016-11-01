@@ -66,6 +66,7 @@ require.config({
         sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
         sprintf: 'components/sprintf/dist/sprintf.min',
         superagent: 'browserified/superagent/index',
+        fetch: 'components/fetch/fetch',
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
         x2js: 'components/x2js/xml2json.min',
@@ -81,6 +82,9 @@ require.config({
     shim: {
         katex: {
             exports: 'katex'
+        },
+        fetch: {
+            exports: 'fetch'
         },
         //mathjax: {
         //	exports: 'MathJax',
