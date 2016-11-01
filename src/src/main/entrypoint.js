@@ -20,6 +20,7 @@ define([
     'src/util/urldata',
     'src/util/ui',
     'src/util/config',
+    'src/util/sandbox',
     'src/util/shortcuts',
     'src/util/copyPasteManager',
     './forceLoad'
@@ -42,7 +43,8 @@ define([
     Util,
     UrlData,
     ui,
-    Config
+    Config,
+    Sandbox
 ) {
 
     var _viewLoaded, _dataLoaded, _modulesSet;
@@ -152,21 +154,18 @@ define([
             Debug.error('View loading problem', e, e.stack);
         });
 
-        function doInitScript() {
-            return new Promise(function (resolve, reject) {
-                if (view.init_script) {
-                    var prefix = '(function init_script(init_deferred){"use strict";\n';
-                    var script = view.init_script[0].groups.general[0].script[0] || '';
-                    var suffix = '\n})({resolve:resolve});';
-                    if (script.indexOf('init_deferred') === -1) {
-                        suffix += 'resolve();';
-                    }
-                    eval(prefix + script + suffix);
-                } else {
-                    resolve();
-                }
-            });
+        async function doInitScript() {
+            if (view.init_script) {
+                const sandbox = new Sandbox();
+                sandbox.setContext({API});
+                const prefix = '(async function init_script(){"use strict";\n';
+                const script = view.init_script[0].groups.general[0].script[0] || '';
+                const suffix = '\n});';
+                const func = sandbox.run(prefix + script + suffix, 'init_script');
+                return func();
+            }
         }
+
         function configureRequirejs() {
             if (!view.aliases) return;
             var paths = view.aliases;
