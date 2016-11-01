@@ -203,7 +203,8 @@ module.exports = function (grunt) {
                             './mathjs/dist/math.min.js',
                             './nmr-simulation/**',
                             './katex/dist/**',
-                            './babel-standalone/**'
+                            './babel-standalone/**',
+                            './fetch/fetch.js'
                         ],
                         dest: './build/components/'
                     },
