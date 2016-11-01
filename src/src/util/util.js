@@ -292,11 +292,11 @@ define([
     exports.noop = function noop() {
     };
 
-    var uniqueid = 0;
+    let uniqueid = 0;
     /**
      * Returns a unique id.
      * @param {boolean} [absolute]
-     * @returns {string}
+     * @return {string}
      */
     exports.getNextUniqueId = function getNextUniqueId(absolute) {
         if (absolute) {
@@ -307,8 +307,9 @@ define([
 
     /**
      * Mark that a method should not be used. Returns a modified function which warns once when called.
-     * @param {Function} method - the deprecated method
+     * @param {function} method - the deprecated method
      * @param {string} [message] - optional message to log
+     * @return {*}
      */
     exports.deprecate = function deprecate(method, message) {
         var warned = false;
@@ -349,8 +350,8 @@ define([
 
     /**
      * Prints a warning message only once per id
-     * @param id
-     * @param message
+     * @param {string} id
+     * @param {string} message
      */
     exports.warnOnce = function warnOnce(id, message) {
         if (!warnOnceCheck(id)) {
@@ -361,9 +362,9 @@ define([
     /**
      * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
      * property to access the super constructor
-     * @param {Function} ctor - New constructor
-     * @param {Function} superCtor - Super constructor
-     * @param {Object} [methods] - Methods to add to the new constructor
+     * @param {function} ctor - New constructor
+     * @param {function} superCtor - Super constructor
+     * @param {object} [methods] - Methods to add to the new constructor
      */
     exports.inherits = function (ctor, superCtor, methods) {
         ctor.super_ = superCtor;

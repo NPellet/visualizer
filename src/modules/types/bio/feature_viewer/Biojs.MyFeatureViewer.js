@@ -1,14 +1,14 @@
 'use strict';
 /*global Biojs canvg*/
 Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
-    /** @lends Biojs.DasProteinFeatureViewer */
+    /* @lends Biojs.DasProteinFeatureViewer */
     {
         /*
          * Private variables
          */
         _webservice: 'http://wwwdev.ebi.ac.uk/uniprot/featureViewer/image',
         _dasReference: 'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/',
-        /**
+        /*
          * Default values for the options
          * @name Biojs.DasProteinFeatureViewer-constructor
          */
@@ -39,13 +39,13 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
             proxyUrl: '../biojs/dependencies/proxy/proxy.php'
         },
 
-        /**
+        /*
          * Array containing the supported event names
          * @name Biojs.DasProteinFeatureViewer-eventTypes
          */
         eventTypes: [],
 
-        /**
+        /*
          * Opens a new window/tab in the browser with the graphical representation for all feature types.
          *
          * @example
@@ -58,7 +58,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
             window.open(dataURL); //open generated image in new tab/window
         },
 
-        /**
+        /*
          * Opens a new window/tab in the browser with the graphical representation as a plain image.
          * Note: For IE it does not reflect the drags/drops on sites
          *
@@ -111,7 +111,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
             }
         },
 
-        /**
+        /*
          * Applies a style, either "centered", "nonOverlapping", or "rows".
          * @param show
          *
@@ -125,7 +125,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
             }
         },
 
-        /**
+        /*
          * Shows/hide the horizontal guide lines.
          * @param show
          *
@@ -139,7 +139,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
             }
         },
 
-        /**
+        /*
          * Shows/hide the horizontal guide lines.
          * @param show
          *

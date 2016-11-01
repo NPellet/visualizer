@@ -1201,7 +1201,7 @@ define([
             } catch (err) {
                 this.showHide(false);
                 UI.showNotification('Files upload failed (at least partially)', 'error');
-                console.error(err.message, err.stack);
+                Debug.error(err.message, err.stack);
                 return;
             }
 

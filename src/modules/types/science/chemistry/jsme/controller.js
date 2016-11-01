@@ -195,14 +195,8 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         };
     };
 
-    /**
+    /*
      * We receive an event from JSME
-     * @param mol
-     * @param molV3
-     * @param smiles
-     * @param jme
-     * @param svg
-     * @param action
      */
     Controller.prototype.onChange = function (mol, molV3, smiles, jme, svg, action) {
         var currentValue = this.module.view._currentValue;

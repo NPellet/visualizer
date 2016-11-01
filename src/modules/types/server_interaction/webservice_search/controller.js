@@ -1,6 +1,14 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/URITemplate', 'src/util/debug', 'lodash'], function (Default, API, superagent, URITemplate, Debug, _) {
+define([
+    'jquery',
+    'modules/default/defaultcontroller',
+    'src/util/api',
+    'superagent',
+    'uri/URITemplate',
+    'src/util/debug',
+    'lodash'
+], function ($, Default, API, superagent, URITemplate, Debug, _) {
 
     function Controller() {
     }
@@ -410,7 +418,7 @@ define(['modules/default/defaultcontroller', 'src/util/api', 'superagent', 'uri/
                     that.onSearchDone(data);
                     that.module.view.unlock();
                 }).catch(function (e) {
-                    console.error(e, e.stack);
+                    Debug.error(e, e.stack);
                     that.module.view.unlock();
                 });
             }

@@ -123,7 +123,7 @@ define([
     /**
      * Check if a variable is defined
      * @param {string} varName - Name of the variable
-     * @returns {boolean}
+     * @return {boolean}
      */
     exports.existVariable = function existVariable(varName) {
         return Variables.exist(varName);
@@ -136,6 +136,7 @@ define([
      * @param {Variable} [sourceVariable] - Source variable. If set, the new variable will be created relative to its jpath
      * @param {string[]} jpath
      * @param {string} [filter] - Url of the filter to use with this variable
+     * @return {Promise}
      */
     exports.setVariable = function setVariable(name, sourceVariable, jpath, filter) {
         if (Array.isArray(sourceVariable)) {
@@ -155,6 +156,7 @@ define([
      * @param {string} name - Name of the variable
      * @param {*} data - Data to set
      * @param {string} [filter] - Url of the filter to use with this variable
+     * @return {Promise}
      */
     exports.createData = function createData(name, data, filter) {
         return exports.createDataJpath(name, data, [], filter);
@@ -173,7 +175,7 @@ define([
     /**
      * Get a variable by name
      * @param {string} name - Name of the variable
-     * @returns {Variable}
+     * @return {Variable}
      */
     exports.getVariable = function getVariable(name) {
         return Variables.getVariable(name);
@@ -183,7 +185,7 @@ define([
     /**
      * Get the DataObject associated to a variable
      * @param {string} varName - Name of the variable
-     * @returns {*} - DataObject or undefined
+     * @return {*} - DataObject or undefined
      */
     exports.getData = function getData(varName) {
         return exports.getVariable(varName).getData();
@@ -191,7 +193,7 @@ define([
 
     /**
      * Change the state of a highlight
-     * @param {object|array} element - Object with a _highlight property or array of highlight IDs
+     * @param {object|Array} element - Object with a _highlight property or array of highlight IDs
      * @param {boolean} onOff
      */
     exports.setHighlight = function setHighlight(element, onOff) {
@@ -280,7 +282,7 @@ define([
      * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
      * @param {string} name - Name of the cached value
      * @param {*} [value] - New value to set
-     * @returns {*} The cached value or undefined if used as a setter
+     * @return {*} The cached value or undefined if used as a setter
      */
     exports.cache = function cacheHandler(name, value) {
         if (arguments.length === 1) {
@@ -290,7 +292,7 @@ define([
         }
     };
 
-    /**
+    /*
      * Set the cache to an empty object
      */
     exports.cache.clear = function clearCache() {

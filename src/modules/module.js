@@ -208,7 +208,7 @@ define([
             }
         },
 
-        /**
+        /*
          * Returns the DOM object which corresponds to the module's content
          */
         getDomContent: function () {
@@ -217,7 +217,7 @@ define([
             throw 'The module has not been loaded yet';
         },
 
-        /**
+        /*
          * Returns the DOM object which corresponds to the module's wrapper
          */
         getDomWrapper: function () {
@@ -227,7 +227,7 @@ define([
             throw 'The module has not been loaded yet';
         },
 
-        /**
+        /*
          * Returns the DOM object which corresponds to the module's view
          */
         getDomView: function () {
@@ -237,7 +237,7 @@ define([
             throw 'The module\'s view doest not implement the getDom function';
         },
 
-        /**
+        /*
          * Returns the DOM object which corresponds to the module's header
          */
         getDomHeader: function () {
@@ -247,7 +247,7 @@ define([
             throw 'The module has not been loaded yet';
         },
 
-        /**
+        /*
          * Returns all accepted types defined in the controller
          */
         getAcceptedTypes: function (rel) {
@@ -1139,7 +1139,7 @@ define([
             return element;
         },
 
-        /**
+        /*
          * Returns the data for the module's model
          */
         getValue: function () {
@@ -1147,7 +1147,7 @@ define([
                 return this.model.getValue();
         },
 
-        /**
+        /*
          * Returns the current position of the module
          */
         getPosition: function (activeLayer) {
@@ -1155,7 +1155,7 @@ define([
             return layer.position;
         },
 
-        /**
+        /*
          * Returns the current size of the module
          */
         getSize: function (activeLayer) {

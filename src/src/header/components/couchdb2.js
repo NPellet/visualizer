@@ -719,7 +719,7 @@ define([
                         }, function (err) {
                             API.stopLoading(loadingId);
                             that.showError('Files upload failed (at least partially)');
-                            console.error(err.message, err.stack);
+                            Debug.error(err.message, err.stack);
                         });
 
                         prom.then(function () {
