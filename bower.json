@@ -82,7 +82,7 @@
     "sprintf": "1.0.3",
     "threejs": "r71",
     "ui-contextmenu": "1.13.0",
-    "uri.js": "1.18.1",
+    "uri.js": "1.18.2",
     "web-animations-js": "2.2.2",
     "x2js": "1.2.0",
     "fetch": "^1.0.0"
