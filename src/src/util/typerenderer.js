@@ -12,19 +12,7 @@ define([
     './typerenderer/chart'
 ], function (require, $, _, moment, numeral, sprintf, API, Util, chartRenderer) {
 
-    function asyncRequire(libs) {
-        let onlyOne = false;
-        if (typeof libs === 'string') {
-            libs = [libs];
-            onlyOne = true;
-        }
-        return new Promise((resolve) => {
-            require(libs, function (...result) {
-                if (onlyOne) resolve(result[0]);
-                else resolve(result);
-            });
-        });
-    }
+    const asyncRequire = API.require;
 
     const functions = {};
 
