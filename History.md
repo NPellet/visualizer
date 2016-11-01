@@ -1,3 +1,34 @@
+<a name="2.71.0"></a>
+# [2.71.0](https://github.com/NPellet/visualizer/compare/v2.70.0...v2.71.0) (2016-11-01)
+
+
+### Bug Fixes
+
+* **code_editor:** fix text size and alignment ([cc3f1f3](https://github.com/NPellet/visualizer/commit/cc3f1f3))
+* **code_executor:** fix regression caused by arrow function ([e5823d9](https://github.com/NPellet/visualizer/commit/e5823d9))
+* **datas:** correct tracer for native DataObjects ([3833015](https://github.com/NPellet/visualizer/commit/3833015))
+* **datas:** fix prototype chain of DataObject and DataArray ([a4f591d](https://github.com/NPellet/visualizer/commit/a4f591d))
+* **roc-views:** if node is not found in current flavor, switch the flavor ([2f10642](https://github.com/NPellet/visualizer/commit/2f10642))
+* **twig:** submit form when template changes ([4440a62](https://github.com/NPellet/visualizer/commit/4440a62))
+* **typerenderer:** force coordinate invention for molfiles without coordinates ([a4ba94c](https://github.com/NPellet/visualizer/commit/a4ba94c))
+* **ui:** ui.choose close dialog automatically if no choices ([334deea](https://github.com/NPellet/visualizer/commit/334deea))
+
+
+### Features
+
+* add array length to jpath selectors ([fc6d202](https://github.com/NPellet/visualizer/commit/fc6d202))
+* use babel to compile sandboxed scripts ([f2d362e](https://github.com/NPellet/visualizer/commit/f2d362e))
+* **API:** add require method that returns a Promise ([48ed78c](https://github.com/NPellet/visualizer/commit/48ed78c))
+* **code_executor:** allow top-level await as an option ([316f0e3](https://github.com/NPellet/visualizer/commit/316f0e3))
+* **core:** add fetch polyfill library ([85f1609](https://github.com/NPellet/visualizer/commit/85f1609))
+* **core:** use Sandbox to allow ES6 in init script ([e858bd0](https://github.com/NPellet/visualizer/commit/e858bd0))
+* **couchdbAttachment:** return xhr.response when responseType is user-defined ([64dbdcd](https://github.com/NPellet/visualizer/commit/64dbdcd))
+* **couchdbAttachment:** support responseTypes via fetch ([98f7397](https://github.com/NPellet/visualizer/commit/98f7397))
+* **typerenderer:** add support for SVG rendering of molecules ([483d947](https://github.com/NPellet/visualizer/commit/483d947))
+* **ui:** allow jpath in ui.choose columns ([0da23cb](https://github.com/NPellet/visualizer/commit/0da23cb))
+
+
+
 <a name="2.70.0"></a>
 # [2.70.0](https://github.com/NPellet/visualizer/compare/v2.69.1...v2.70.0) (2016-10-18)
 
