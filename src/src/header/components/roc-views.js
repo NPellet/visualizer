@@ -571,21 +571,36 @@ define([
         }
 
         selectLoadedNode() {
-            var viewUrl = Versioning.lastLoaded.view.url;
-            var reg = /\/([^\/]+)\/view\.json/;
-            var m = reg.exec(viewUrl);
+            const viewUrl = Versioning.lastLoaded.view.url;
+            const reg = /\/([^\/]+)\/view\.json/;
+            const m = reg.exec(viewUrl);
             if (m) {
-                var loadedDocId = m[1];
-                this.tree.visit(node => {
-                    if (node.data.view && node.data.view.id === loadedDocId &&
-                        node.data.flavor === this.flavor) {
-                        node.getParent().setExpanded(true);
-                        node.setActive(true);
-                        this.setLoadedNode(node);
-                        this.setActiveView(node);
-                        return false;
+                const loadNode = (node) => {
+                    node.getParent().setExpanded(true);
+                    node.setActive(true);
+                    this.setLoadedNode(node);
+                    this.setActiveView(node);
+                };
+
+                const loadedDocId = m[1];
+                let foundNode = false;
+                let otherNode;
+                this.tree.visit((node) => {
+                    if (node.data.view && node.data.view.id === loadedDocId) {
+                        if (node.data.flavor === this.flavor) {
+                            foundNode = true;
+                            loadNode(node);
+                            return false;
+                        } else if (!otherNode) {
+                            otherNode = node;
+                        }
                     }
                 });
+
+                if (!foundNode && otherNode) {
+                    this.switchToFlavor(otherNode.data.flavor);
+                    loadNode(otherNode);
+                }
             }
         }
 
