@@ -189,10 +189,9 @@ define([
             return this._onReady;
         },
 
-        updateView(rel, varValue, varName) {
-            return Promise.resolve(this.view.update[rel].call(this.view, varValue, varName)).then(() => {
-                this.controller.sendActionFromEvent('_onVarUpdated', '_varName', varName);
-            });
+        async updateView(rel, varValue, varName) {
+            await this.view.update[rel].call(this.view, varValue, varName);
+            this.controller.sendActionFromEvent('_onVarUpdated', '_varName', varName);
         },
 
         updateAllView: function () {

@@ -1,22 +1,26 @@
 'use strict';
 
-define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, Grid) {
+define([
+    'jquery',
+    'src/util/api',
+    'src/util/util',
+    'src/main/grid'
+], function ($, API, Util, Grid) {
 
     return {
-
-        setModule: function (module) {
+        setModule(module) {
             this.module = module;
         },
 
-        init: function () {
+        init() {
             this.initImpl();
         },
 
-        initImpl: function () {
+        initImpl() {
             this.resolveReady();
         },
 
-        getToolbar: function () {
+        getToolbar() {
             var tb = this.module.definition.toolbar;
             if (tb) {
                 var common = this.module.definition.toolbar.common[0].toolbar[0];
@@ -27,7 +31,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
             var toolbar = [
                 {
-                    onClick: function () {
+                    onClick() {
                         this.exportData();
                     },
                     title: 'Export Data',
@@ -35,7 +39,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                     ifLocked: true
                 },
                 {
-                    onClick: function () {
+                    onClick() {
                         this.printView();
                     },
                     title: 'Print',
@@ -43,7 +47,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                     ifLocked: true
                 },
                 {
-                    onClick: function () {
+                    onClick() {
                         this.enableFullscreen();
                     },
                     title: 'Show fullscreen',
@@ -51,7 +55,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                     ifLocked: true
                 },
                 {
-                    onClick: function () {
+                    onClick() {
                         this.doConfig(2);
                     },
                     title: 'Open Preferences',
@@ -59,7 +63,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                     ifLocked: false
                 }
                 //{
-                //    onClick: function() {
+                //    onClick() {
                 //        this.doConfig(3);
                 //    },
                 //    title: "Variables in",
@@ -67,14 +71,14 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                 //    ifLocked: true
                 //}
                 //{
-                //    onClick: function() {
+                //    onClick() {
                 //        this.doConfig(4)
                 //    },
                 //    title: "Variables out",
                 //    cssClass: 'fa fa-sign-out fa-lg'
                 //},
                 //{
-                //    onClick: function() {
+                //    onClick() {
                 //        Grid.removeModule(this);
                 //    },
                 //    title: "Remove module",
@@ -113,18 +117,15 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
 
         inDom: Util.noop,
 
-        setVarFromEvent: function (event, rel, relSource, jpath, callback) {
-
-            var varsOut, i = 0, first = true;
-
-            if (!(varsOut = this.module.vars_out())) {
+        setVarFromEvent(event, rel, relSource, jpath, callback) {
+            const varsOut = this.module.vars_out();
+            if (!varsOut) {
                 return;
             }
 
-            for (; i < varsOut.length; i++) {
-
+            let first = true;
+            for (let i = 0; i < varsOut.length; i++) {
                 if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
-
                     if (first && callback) {
                         first = false;
                         callback.call(this);
@@ -142,18 +143,15 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             }
         },
 
-        createDataFromEvent: function (event, rel, data, callback) {
-
-            var varsOut, i = 0, first = true;
-
-            if (!(varsOut = this.module.vars_out())) {
+        createDataFromEvent(event, rel, data, callback) {
+            const varsOut = this.module.vars_out();
+            if (!varsOut) {
                 return;
             }
 
-            for (; i < varsOut.length; i++) {
-
+            let first = true;
+            for (let i = 0; i < varsOut.length; i++) {
                 if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
-
                     if (first && callback) {
                         first = false;
                         data = callback.call(this);
@@ -164,39 +162,28 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             }
         },
 
-        sendActionFromEvent: function (event, rel, value) {
-            var actionsOut = this.module.actions_out(),
-                i,
-                jpath,
-                actionname;
+        sendActionFromEvent(event, rel, value) {
+            const actionsOut = this.module.actions_out();
 
             if (!actionsOut) {
                 return;
             }
 
-            i = actionsOut.length - 1;
-
-            for (; i >= 0; i--) {
-
+            for (let i = actionsOut.length - 1; i >= 0; i--) {
                 if (actionsOut[i].name && actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
-
-                    actionname = actionsOut[i].name;
-                    jpath = actionsOut[i].jpath;
+                    const actionName = actionsOut[i].name;
+                    const jpath = actionsOut[i].jpath;
 
                     if (value && jpath) {
-
                         if (!value.getChild) {
                             value = DataObject.check(value, true);
                         }
-                        (function (actionname) {
 
-                            value.getChild(jpath).then(function (returned) {
-
-                                API.doAction(actionname, returned);
-                            });
-                        })(actionname);
+                        value.getChild(jpath).then((returned) => {
+                            API.doAction(actionName, returned);
+                        });
                     } else {
-                        API.doAction(actionname, value);
+                        API.doAction(actionName, value);
                     }
                 }
             }
@@ -206,34 +193,30 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
             return this.sendActionFromEvent(event, rel, value);
         }, 'Use sendActionFromEvent instead.'),
 
-        allVariablesFor: function (event, rel, callback) {
-
-            var varsOut, i = 0;
-
-            if (!(varsOut = this.module.vars_out())) {
+        allVariablesFor(event, rel, callback) {
+            const varsOut = this.module.vars_out();
+            if (!varsOut) {
                 return;
             }
 
-            for (; i < varsOut.length; i++) {
-
+            for (let i = 0; i < varsOut.length; i++) {
                 if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel)) {
-
                     callback(varsOut[i]);
                 }
             }
         },
 
-        'export': Util.noop,
+        export: Util.noop,
 
-        print: function () {
-            var $dom = this.module.getDomContent();
-            var $domCopy = $dom.clone();
-            var $canvas = $dom.find('canvas');
-            var $canvasCopy = $domCopy.find('canvas');
+        print() {
+            const $dom = this.module.getDomContent();
+            const $domCopy = $dom.clone();
+            const $canvas = $dom.find('canvas');
+            const $canvasCopy = $domCopy.find('canvas');
 
             $canvas.each(function (index) {
-                var dataUrl = this.toDataURL();
-                var img = new Image();
+                const dataUrl = this.toDataURL();
+                const img = new Image();
                 img.src = dataUrl;
                 img.width = this.width;
                 img.height = this.height;
@@ -261,6 +244,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                 type: 'string'
             }
         },
+
         references: {},
 
         defaultEvents: {
@@ -273,6 +257,7 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
                 refAction: ['_varName']
             }
         },
+
         events: {},
 
         variablesIn: [],
@@ -282,16 +267,14 @@ define(['src/util/api', 'src/util/util', 'src/main/grid'], function (API, Util, 
         },
         actionsIn: {},
 
-        resolveReady: function () {
+        resolveReady() {
             this.module._resolveController();
         },
 
-        onBeforeRemove: function () {
+        onBeforeRemove() {
             return true;
         },
 
         onRemove: Util.noop
-
     };
-
 });

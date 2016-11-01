@@ -2,14 +2,12 @@
 
 define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug', 'src/util/util'], function (Entry, Traversing, API, Debug, Util) {
 
-    var model = {
-
-        setModule: function (module) {
+    const model = {
+        setModule(module) {
             this.module = module;
         },
 
-        init: function () {
-
+        init() {
             this.module.model = this;
             this.data = {};
 
@@ -18,20 +16,17 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
             this.resetListeners();
             this.initImpl();
-
         },
 
-        initImpl: function () {
+        initImpl() {
             this.resolveReady();
         },
 
-
         inDom: Util.noop,
 
-        resetListeners: function () {
+        resetListeners() {
             this.sourceMap = null;
             this.mapVars();
-            //API.getRepositoryData( ).unListen( this.getVarNameList(), this._varlisten );
             API.getRepositoryActions().unListen(this.getActionNameList(), this._actionlisten);
 
             var list = this.getVarNameList();
@@ -41,17 +36,14 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             this._actionlisten = API.getRepositoryActions().listen(this.getActionNameList(), this.onActionTrigger.bind(this));
         },
 
-        mapVars: function () {
-            // Indexing all variables in
-            var list = this.module.vars_in(),
-                listNames = [],
-                listRels = [],
-                varsKeyedName = {};
+        mapVars() {
+            const list = this.module.vars_in();
+            const listNames = [];
+            const listRels = [];
+            const varsKeyedName = {};
 
             if (Array.isArray(list)) {
-
-                for (var l = list.length, i = l - 1; i >= 0; i--) {
-
+                for (let i = list.length - 1; i >= 0; i--) {
                     listNames.push(list[i].name);
                     listRels.push(list[i].rel);
                     varsKeyedName[list[i].name] = list[i];
@@ -63,86 +55,63 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             this.listRels = listRels;
         },
 
-        getVarNameList: function () {
+        getVarNameList() {
             return this.listNames;
         },
 
-        getActionNameList: function () {
-            var list = this.module.actions_in(),
-                names = [],
-                i,
-                l;
-
+        getActionNameList() {
+            const list = this.module.actions_in();
             if (!list) {
-                return names;
+                return [];
             }
 
-            l = list.length;
-            i = l - 1;
-
-            for (; i >= 0; i--) {
+            const names = [];
+            for (let i = list.length - 1; i >= 0; i--) {
                 names.push(list[i].name);
             }
 
             return names;
         },
 
-        onVarChange: function (variable) {
+        onVarChange(variable) {
+            return Promise.all([this.module.onReady(), variable.onReady()]).then(() => {
+                const varName = variable.getName();
+                this.module.blankVariable(varName);
 
-            var that = this;
-            var i, l, k, m, rel;
+                const varValue = variable.getValue();
 
-            var varName = variable.getName();
-
-            Promise.all([this.module.onReady(), variable.onReady()]).then(function () {
-                that.module.blankVariable(varName);
-
-                // Gets through the input filter first
-                var varValue = variable.getValue();
-
-                // Then validate
-                if (!varName || !that.sourceMap || !that.sourceMap[varName] || !that.module.controller.references[that.sourceMap[varName].rel]) {
+                if (!varName || !this.sourceMap || !this.sourceMap[varName] || !this.module.controller.references[this.sourceMap[varName].rel]) {
                     return;
                 }
 
-                var data = that.buildData(varValue, that.module.controller.references[that.sourceMap[varName].rel].type);
+                let data = this.buildData(varValue, this.module.controller.references[this.sourceMap[varName].rel].type);
                 if (!data) {
                     return;
                 }
 
-                rel = that.module.getDataRelFromName(varName);
-
-                i = 0;
-                l = rel.length;
-                k = 0;
-
-                var vars = that.module.vars_in();
-
-                m = vars.length;
-                for (; k < m; k++) {
-                    if (vars[k].name == varName && that.module.view.update[vars[k].rel] && varValue !== null) {
-                        (function (j) {
-                            new Promise(function (resolve, reject) {
-                                if (vars[j].filter) {
-                                    require([vars[j].filter], function (filterFunction) {
-                                        if (filterFunction.filter) {
-                                            return filterFunction.filter(varValue, resolve, reject);
-                                        }
-                                        reject('No filter function defined');
-                                    });
-                                } else {
-                                    resolve(varValue);
-                                }
-                            }).then(function (varValue) {
-                                that.setData(vars[j].rel, varName, varValue);
-                                that.removeAllChangeListeners(vars[j].rel);
-                                that.module.updateView(vars[j].rel, varValue, varName);
-                            }, function (err) {
-                                Debug.error('Error while filtering the data : ', err.message, err.stack);
-                            }).catch(function (err) {
-                                Debug.error('Error while updating module : ', err.message, err.stack);
-                            });
-                        })(k);
+                const vars = this.module.vars_in();
+                for (let i = 0; i < vars.length; i++) {
+                    if (vars[i].name == varName && this.module.view.update[vars[i].rel] && varValue !== null) {
+                        new Promise((resolve, reject) => {
+                            if (vars[i].filter) {
+                                require([vars[i].filter], function (filterFunction) {
+                                    if (filterFunction.filter) {
+                                        return filterFunction.filter(varValue, resolve, reject);
+                                    }
+                                    reject('No filter function defined');
+                                });
+                            } else {
+                                resolve(varValue);
+                            }
+                        }).then((varValue) => {
+                            this.setData(vars[i].rel, varName, varValue);
+                            this.removeAllChangeListeners(vars[i].rel);
+                            this.module.updateView(vars[i].rel, varValue, varName);
+                        }, (err) => {
+                            Debug.error('Error while filtering the data : ', err.message, err.stack);
+                        }).catch((err) => {
+                            Debug.error('Error while updating module : ', err.message, err.stack);
+                        });
                     }
                 }
             }, function () {
@@ -150,20 +119,17 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             }).catch(function (err) {
                 Debug.error('Error while updating variable : ', err.message, err.stack);
             });
-
         },
 
-        onActionTrigger: function (value, actionName) {
-            var that = this;
-            this.module.onReady().then(function () {
-                var actionRel = that.module.getActionRelFromName(actionName[0]);
-                if (that.module.view.onActionReceive && that.module.view.onActionReceive[actionRel]) {
-                    that.module.view.onActionReceive[actionRel].call(that.module.view, value, actionName[0]);
-                }
-            });
+        async onActionTrigger(value, actionName) {
+            await this.module.onReady();
+            const actionRel = this.module.getActionRelFromName(actionName[0]);
+            if (this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel]) {
+                this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName[0]);
+            }
         },
 
-        buildData: function (data, sourceTypes) {
+        buildData(data, sourceTypes) {
             if (!data) {
                 return false;
             }
@@ -198,33 +164,33 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             return false;
         },
 
-        getValue: function () {
+        getValue() {
             return this.data;
         },
 
-        setData: function (rel, name, value) {
+        setData(rel, name, value) {
             if (!this.data[rel]) {
                 this.data[rel] = {};
             }
             this.data[rel][name] = value;
         },
 
-        getData: function (rel, name) {
+        getData(rel, name) {
             if (!this.data[rel]) {
                 return;
             }
             return this.data[rel][name];
         },
 
-        getAllDataFromRel: function (rel) {
+        getAllDataFromRel(rel) {
             return this.data[rel];
         },
 
-        getjPath: function (rel, subjPath) {
+        getjPath(rel, subjPath) {
             return this._getjPath(rel, subjPath);
         },
 
-        _getjPath: function (rel, subjPath) {
+        _getjPath(rel, subjPath) {
             var data = this.module.getDataFromRel(rel);
 
             if (data && subjPath !== undefined) {
@@ -234,50 +200,47 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             return Traversing.getJPathsFromElement(data); // (data,jpaths)
         },
 
-        resolveReady: function () {
+        resolveReady() {
             this.module._resolveModel();
         },
 
-        dataListenChange: function (data, callback, bindToRel) {
+        dataListenChange(data, callback, bindToRel) {
             if (!data) {
                 return;
             }
 
-            var that = this,
-                proxiedCallback = function (target, moduleId) {
-                    if (moduleId == that.module.getId()) {
-                        return;// Do not update itself;
-                    }
-
-                    callback.call(data, target);
-                };
+            const proxiedCallback = (target, moduleId) => {
+                if (moduleId == this.module.getId()) {
+                    return;// Do not update itself;
+                }
+                callback.call(data, target);
+            };
 
             if (this.addChangeListener(bindToRel, data, proxiedCallback)) {
                 data.onChange(proxiedCallback);
-
             } else {
                 Debug.setDebugLevel(1);
                 Debug.error('Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks');
             }
         },
 
-        highlightId: function (key, onOff) {
+        highlightId(key, onOff) {
             API.highlightId(key, onOff, this.module.getId());
         },
 
-        dataTriggerChange: function (data) { // self is not available
+        dataTriggerChange(data) { // self is not available
             data.triggerChange(false, [this.module.getId()]);
         },
 
-        dataSetChild: function (data, jpath, value) {
+        dataSetChild(data, jpath, value) {
             return data.setChild(jpath, value, this.module.getId());
         },
 
-        dataSetChildSync: function (data, jpath, value) {
+        dataSetChildSync(data, jpath, value) {
             return data.setChildSync(jpath, value, this.module.getId());
         },
 
-        addChangeListener: function (rel, data, callback) {
+        addChangeListener(rel, data, callback) {
             if (!rel) {
                 return false;
             }
@@ -292,7 +255,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             return true;
         },
 
-        removeAllChangeListeners: function (rel) {
+        removeAllChangeListeners(rel) {
             if (!this.triggerChangeCallbacksByRels[rel]) {
                 return;
             }
@@ -302,7 +265,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
             }
         },
 
-        removeChangeListener: function (data, callback) {
+        removeChangeListener(data, callback) {
             data.unbindChange(callback);
         }
     };

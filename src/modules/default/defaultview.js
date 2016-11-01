@@ -4,15 +4,15 @@ define(['src/util/util'], function (Util) {
 
     return {
 
-        initDefault: function () {
+        initDefault() {
             this.onReady = true;
         },
 
-        init: function () {
+        init() {
             this.resolveReady();
         },
 
-        setModule: function (module) {
+        setModule(module) {
             this.module = module;
         },
 
@@ -23,10 +23,10 @@ define(['src/util/util'], function (Util) {
         onResize: Util.noop,
 
         onActionReceive: {
-            _editPreferences: function (values) {
+            _editPreferences(values) {
 
-                var currentPreferences = this.module.definition.configuration,
-                    aliases = this.module.controller.configAliases;
+                var currentPreferences = this.module.definition.configuration;
+                var aliases = this.module.controller.configAliases;
 
                 var cfgEl;
 
@@ -58,49 +58,45 @@ define(['src/util/util'], function (Util) {
 
         inDom: Util.noop,
 
-        resolveReady: function () {
+        resolveReady() {
             this.module._resolveView();
         },
 
-        startLoading: function (rel) {
+        startLoading(rel) {
             this.loadingElements = this.loadingElements || [];
             if (this.relsForLoading().indexOf(rel) > -1 && this.loadingElements.indexOf(rel) == -1) {
-
                 this.loadingElements.push(rel);
                 this.showLoading();
             }
         },
 
-        endLoading: function (rel) {
+        endLoading(rel) {
             this.loadingElements = this.loadingElements || [];
-
             if (this.relsForLoading().indexOf(rel) > -1 && this.loadingElements.indexOf(rel) > -1) {
-
                 this.loadingElements.splice(this.loadingElements.indexOf(rel), 1);
-
                 if (this.loadingElements.length == 0) {
                     this.hideLoading();
                 }
             }
         },
 
-        showLoading: function (customText = 'Loading ...') {
+        showLoading(customText = 'Loading ...') {
             this.module.domLoading.text(customText);
             this.module.domLoading.addClass('ci-module-loading-visible');
         },
 
-        hideLoading: function () {
+        hideLoading() {
             this.module.domLoading.removeClass('ci-module-loading-visible');
         },
 
-        relsForLoading: function () {
+        relsForLoading() {
             return this._relsForLoading || (this._relsForLoading = []);
         },
 
         //TODO hack for chrome
         // see http://jsfiddle.net/jub3ohct/3/
-        refresh: function () {
-            var el = this.module.getDomContent();
+        refresh() {
+            const el = this.module.getDomContent();
             el.hide();
             setImmediate(function () {
                 el.show();
