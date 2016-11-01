@@ -154,7 +154,8 @@ define([
 
         function typeRenderer(cellNode, row, dataContext, colDef) {
             if (cellNode) {
-                Renderer.render(cellNode, dataContext[colDef.field], colDef.rendererOptions);
+                var val = DataObject.check(dataContext).getChildSync(colDef.jpath);
+                Renderer.render(cellNode, val, colDef.rendererOptions);
             }
         }
 
@@ -265,6 +266,9 @@ define([
 
         for (var i = 0; i < columns.length; i++) {
             columns[i] = _.defaults(columns[i], slickDefaultColumn);
+            if (!columns[i].jpath && columns[i].field) {
+                columns[i].jpath = [columns[i].field];
+            }
         }
 
         return new Promise(function (resolve) {
