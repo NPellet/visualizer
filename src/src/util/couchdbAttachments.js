@@ -271,7 +271,7 @@ define([
                 return req.query({rev: this.lastDoc._rev})
                     .then(res => {
                         if (options.raw) return res.text;
-                        else if (options.responseType === 'blob') return res.xhr.response;
+                        else if (options.responseType) return res.xhr.response;
                         return res.body || res.text;
                     });
             });
