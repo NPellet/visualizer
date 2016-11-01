@@ -67,7 +67,7 @@
     "moment": "2.15.2",
     "moment-duration-format": "~1.3.0",
     "nmr-simulation": "0.0.4",
-    "notifyjs": "0.3.2",
+    "notifyjs": "0.4.2",
     "numeral": "~1.5.3",
     "onde": "cheminfo/onde#126c1571a3b212abbefb5351ad9b192cef35e7a1",
     "openchemlib": "4.6.0",

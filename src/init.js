@@ -43,7 +43,7 @@ require.config({
         'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
         'json-chart': 'components/json-chart/dist/json-chart.min',
-        'notifyjs': 'components/notifyjs/dist/notify-combined.min',
+        'notifyjs': 'components/notifyjs/dist/notify',
         jsgraph: 'components/jsgraph/dist/jsgraph',
         jsnmr: 'components/jsnmr/dist/jsnmr',
         jsoneditor: 'components/jsoneditor/dist/jsoneditor-minimalist.min',
