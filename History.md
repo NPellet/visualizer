@@ -1,3 +1,13 @@
+<a name="2.71.2"></a>
+## [2.71.2](https://github.com/NPellet/visualizer/compare/v2.71.1...v2.71.2) (2016-11-02)
+
+
+### Bug Fixes
+
+* **couchdbAttachments:** duplicate request in some api functions ([944254c](https://github.com/NPellet/visualizer/commit/944254c))
+
+
+
 <a name="2.71.1"></a>
 ## [2.71.1](https://github.com/NPellet/visualizer/compare/v2.71.0...v2.71.1) (2016-11-01)
 
