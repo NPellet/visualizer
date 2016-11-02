@@ -596,8 +596,8 @@ define([
         $.notify.apply($.notify, args);
     };
 
-    exports.startProgress = function (text) {
-        var id = Util.getNextUniqueId(true);
+    exports.progress = function (id, text) {
+        if (!text) text = id;
         exports.showNotification(text, {
             style: 'inprogress',
             autoHide: false,
