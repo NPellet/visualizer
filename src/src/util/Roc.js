@@ -90,7 +90,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug', 'super
         }
 
         const viewSearchJsonify = ['key', 'startkey', 'endkey'];
-        const viewSearch = ['limit', 'mine', 'groups'];
+        const viewSearch = ['limit', 'mine', 'groups', 'descending'];
         const mandatoryOptions = ['url', 'database'];
 
         const idb = new IDB('roc-documents');
@@ -259,7 +259,6 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug', 'super
                     }
                     return superagent.get(`${this.entryUrl}/${uuid}`)
                         .withCredentials()
-                        .end()
                         .then(res => {
                             if (res.body && res.status == 200) {
                                 this._defaults(res.body.$content);
@@ -451,7 +450,8 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug', 'super
                             setContentType(attachment, fallback);
 
                             return this.get(entry, {fromCache: true, fallback: true}).then(entry => {
-                                return this.addAttachment(entry, attachment, createOptions(options, 'addAttachment'))
+                                var addAttachmentOptions = createOptions(options, 'addAttachment');
+                                return this.addAttachment(entry, attachment, addAttachmentOptions)
                                     .then(entry => {
                                         if (!this.processor) {
                                             throw new Error('no processor');
@@ -459,7 +459,7 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug', 'super
 
                                         return Promise.resolve(this.processor.process(type, entry.$content, attachment)).then(() => {
                                             this.typeUrl(entry.$content, entry);
-                                            if (entry.triggerChange && !options.noTrigger) {
+                                            if (entry.triggerChange && !addAttachmentOptions.noTrigger) {
                                                 entry.triggerChange();
                                             }
                                             return entry;
@@ -850,10 +850,22 @@ define(['src/util/api', 'src/util/ui', 'src/util/util', 'src/util/debug', 'super
                     } else {
                         prop = 'url';
                     }
-                    v.data = {
-                        type: vtype || 'string'
-                    };
-                    v.data[prop] = `${this.entryUrl}/${entry._id}/${v.filename}`;
+
+                    Object.defineProperty(v, 'data', {
+                        value: {
+                            type: vtype || 'string'
+                        },
+                        enumerable: false,
+                        writable: true,
+                        configurable: true
+                    });
+
+                    var dUrl = `${this.entryUrl}/${entry._id}/${v.filename}`;
+                    v.data[prop] = dUrl;
+                    Object.defineProperty(v, 'dUrl', {
+                        value: dUrl,
+                        enumerable: false
+                    });
                 });
             }
         }
