@@ -182,8 +182,7 @@ define([
                     .withCredentials()
                     .set('Content-Type', 'application/json')
                     .set('Accept', 'application/json')
-                    .send(this.lastDoc)
-                    .end();
+                    .send(this.lastDoc);
 
                 if (options.noRefresh) {
                     return attachmentsAsArray(this, this.lastDoc._attachments);
@@ -375,7 +374,7 @@ define([
                 req.attach('_attachments', file, getName(file));
             }
             req.field('_rev', this.lastDoc._rev);
-            const res = await req.end();
+            const res = await req;
             if (res.status !== 201) {
                 throw new Error('Error uploading attachments, couchdb returned status code ' + res.status);
             }
