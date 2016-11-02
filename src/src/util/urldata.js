@@ -25,7 +25,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
         if (withCredentials) {
             req.withCredentials();
         }
-        return req.end().then(function (res) {
+        return req.then(function (res) {
             delete pendings[url];
             if (res.status != 200) {
                 Debug.info('DataURL: Failing in retrieving ' + url + ' by AJAX.');
@@ -113,19 +113,16 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
 
         post: function urldataPost(url, data, type) {
             type = type || 'form';
-            return new Promise(function (resolve, reject) {
-                superagent
-                    .post(url)
-                    .type(type)
-                    .send(data)
-                    .end(function urldataPostResult(err, res) {
-                        if (err || res.status != 200) {
-                            reject(err || res.status);
-                        } else {
-                            resolve(res.body == null ? res.text : res.body);
-                        }
-                    });
-            });
+            return superagent
+                .post(url)
+                .type(type)
+                .send(data)
+                .then(res => {
+                    if (res.status !== 200) {
+                        return Promise.reject(res.status);
+                    }
+                    return res.body == null ? res.text : res.body;
+                });
         },
 
         empty: function (options) {
