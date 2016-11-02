@@ -1,3 +1,13 @@
+<a name="2.71.3"></a>
+## [2.71.3](https://github.com/NPellet/visualizer/compare/v2.71.2...v2.71.3) (2016-11-02)
+
+
+### Bug Fixes
+
+* **urldata:** bad usage of superagent end() ([29f517f](https://github.com/NPellet/visualizer/commit/29f517f))
+
+
+
 <a name="2.71.2"></a>
 ## [2.71.2](https://github.com/NPellet/visualizer/compare/v2.71.1...v2.71.2) (2016-11-02)
 
