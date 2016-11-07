@@ -6,116 +6,6 @@
 				"groups": {
 					"group": [
 						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							],
-							"highlightLine": [
-								[
-									"Yes"
-								]
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Molecule",
-								"jpath": "element.molfile",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 1,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "mols2d"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": [
-						"molfile"
-					],
-					"name": "mol2d"
-				}
-			],
-			"actions_out": [
-				{
-					"jpath": []
-				}
-			],
-			"url": "modules/types/display/jqgrid/",
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 0,
-						"top": 0,
-						"right": 0
-					},
-					"size": {
-						"width": 40,
-						"height": 41
-					},
-					"display": true,
-					"title": "Untitled module",
-					"bgColor": [
-						255,
-						255,
-						255,
-						0
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"title": "Untitled module",
-			"toolbar": {
-				"custom": [
-					[
-						{
-							"title": "",
-							"icon": "",
-							"action": "",
-							"position": "begin"
-						}
-					]
-				],
-				"common": [
-					{
-						"toolbar": [
-							[
-								"Open Preferences"
-							]
-						]
-					}
-				]
-			}
-		},
-		{
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
 							"prefs": [
 								[
 									"oldlook"
@@ -396,7 +286,7 @@
 								0
 							],
 							"script": [
-								null
+								"O=S(=O)(NCc1ccccc1)C2CCS(=O)([O-])C2\nJME 2016-10-19 Mon Nov 07 12:56:49 GMT+100 2016\n\n 18 19  0  0  0  0  0  0  0  0999 V2000\n    6.0627    2.8378    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n    9.4215    4.2672    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n    7.2809    3.5560    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.5977    3.1264    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.8586    2.1336    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5411    5.0910    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0\n    7.2668    4.9643    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.4989    3.3870    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    5.3445    4.0559    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    6.7810    1.6266    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    8.5906    5.3868    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6334    2.8167    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4222    2.0984    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4222    0.6971    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2181    2.7955    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    2.0984    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2181    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.6971    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  4  1  0  0  0  0\n  3  1  1  0  0  0  0\n  4  3  1  0  0  0  0\n  5  1  1  0  0  0  0\n  6  2  1  0  0  0  0\n  7  3  1  0  0  0  0\n  8  2  2  0  0  0  0\n  9  1  2  0  0  0  0\n 10  1  2  0  0  0  0\n 11  7  1  0  0  0  0\n 12  5  1  0  0  0  0\n 13 12  1  0  0  0  0\n 14 13  2  0  0  0  0\n 15 13  1  0  0  0  0\n 16 15  2  0  0  0  0\n 17 14  1  0  0  0  0\n 18 16  1  0  0  0  0\n 11  2  1  0  0  0  0\n 17 18  2  0  0  0  0\nM  CHG  1   6  -1\nM  END\n"
 							]
 						}
 					],
@@ -527,7 +417,7 @@
 								0
 							],
 							"script": [
-								""
+								"O=S(=O)(NCc1ccccc1)C2CCS(=O)([O-])C2\nJME 2016-10-19 Mon Nov 07 12:56:49 GMT+100 2016\n\n  0  0  0  0  0  0  0  0  0  0999 V3000\nM  V30 BEGIN CTAB\nM  V30 COUNTS 18 19 0 0 0\nM  V30 BEGIN ATOM\nM  V30 1 S 6.0627 2.8378 0.0000 0\nM  V30 2 S 9.4215 4.2672 0.0000 0\nM  V30 3 C 7.2809 3.5560 0.0000 0\nM  V30 4 C 8.5977 3.1264 0.0000 0\nM  V30 5 N 4.8586 2.1336 0.0000 0\nM  V30 6 O 10.5411 5.0910 0.0000 0 CHG=-1\nM  V30 7 C 7.2668 4.9643 0.0000 0\nM  V30 8 O 10.4989 3.3870 0.0000 0\nM  V30 9 O 5.3445 4.0559 0.0000 0\nM  V30 10 O 6.7810 1.6266 0.0000 0\nM  V30 11 C 8.5906 5.3868 0.0000 0\nM  V30 12 C 3.6334 2.8167 0.0000 0\nM  V30 13 C 2.4222 2.0984 0.0000 0\nM  V30 14 C 2.4222 0.6971 0.0000 0\nM  V30 15 C 1.2181 2.7955 0.0000 0\nM  V30 16 C 0.0000 2.0984 0.0000 0\nM  V30 17 C 1.2181 0.0000 0.0000 0\nM  V30 18 C 0.0000 0.6971 0.0000 0\nM  V30 END ATOM\nM  V30 BEGIN BOND\nM  V30 1 1 2 4\nM  V30 2 1 3 1\nM  V30 3 1 4 3\nM  V30 4 1 5 1\nM  V30 5 1 6 2\nM  V30 6 1 7 3\nM  V30 7 2 8 2\nM  V30 8 2 9 1\nM  V30 9 2 10 1\nM  V30 10 1 11 7\nM  V30 11 1 12 5\nM  V30 12 1 13 12\nM  V30 13 2 14 13\nM  V30 14 1 15 13\nM  V30 15 2 16 15\nM  V30 16 1 17 14\nM  V30 17 1 18 16\nM  V30 18 1 11 2\nM  V30 19 2 17 18\nM  V30 END BOND\nM  V30 END CTAB\nM  END\n"
 							]
 						}
 					],
@@ -658,7 +548,7 @@
 								0
 							],
 							"script": [
-								""
+								"18 19 S 13.20 -8.62 S 16.55 -7.19 C 14.41 -7.90 C 15.73 -8.33 N 11.99 -9.32 O- 17.67 -6.37 C 14.40 -6.49 O 17.63 -8.07 O 12.48 -7.40 O 13.91 -9.83 C 15.72 -6.07 C 10.77 -8.64 C 9.56 -9.36 C 9.56 -10.76 C 8.35 -8.66 C 7.13 -9.36 C 8.35 -11.46 C 7.13 -10.76 2 4 1 3 1 1 4 3 1 5 1 1 6 2 1 7 3 1 8 2 2 9 1 2 10 1 2 11 7 1 12 5 1 13 12 1 14 13 2 15 13 1 16 15 2 17 14 1 18 16 1 11 2 1 17 18 2"
 							]
 						}
 					],
@@ -886,6 +776,203 @@
 					]
 				}
 			]
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								"100"
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"pref"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/87ba3af17e07f6766c266385c41b177d5094150b/src/modules/types/edition/slick_grid/view.js#L1253-L1279"
+							],
+							"customJpaths": [
+								""
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Molfile",
+								"jpath": [
+									"molfile"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									1
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"position": "end",
+								"clickMode": "text"
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 40,
+						"height": 41
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "mols2d"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"molfile"
+					],
+					"name": "mol2d"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
 		}
 	],
 	"variables": [
@@ -917,7 +1004,7 @@
 	"configuration": {
 		"title": "No title"
 	},
-	"version": "2.64.1-0",
+	"version": "2.71.5-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
