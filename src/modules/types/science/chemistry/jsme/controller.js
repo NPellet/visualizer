@@ -106,7 +106,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                         prefs: {
                             type: 'checkbox',
                             title: 'Options',
-                            'default': ['oldlook'],
+                            'default': ['oldlook','nozoom','useopenchemlib'],
                             options: {
                                 noxbutton: 'Hide X button',
                                 rbutton: 'Show R button',
@@ -131,7 +131,9 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 nozoom: 'Prevent zoom with scroll wheel',
                                 toggle: 'Allow to switch from edition to depict mode',
                                 noshowdraganddropsymbolindepictmode: 'Hide the drag and drop symbol in depict mode',
-                                addnewpart: 'when reading or pasting a new molecule, add it to the existing molecules'
+                                addnewpart: 'when reading or pasting a new molecule, add it to the existing molecules',
+                                useopenchemlib: 'use OpenChemLib library for SMILES conversion, 2D coordinates computation and SVG export',
+                                exportSVG: 'enable / disable the menu item for SVG export'
                             }
                         },
                         defaultaction: {
