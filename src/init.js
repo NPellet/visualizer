@@ -15,60 +15,62 @@
 require.config({
     waitSeconds: 0,
     paths: {
-        katex: 'components/katex/dist/katex.min',
-        mathjs: 'components/mathjs/dist/math.min',
-        jsbarcode: 'components/jsbarcode/JsBarcode',
-        numeral: 'components/numeral/min/numeral.min',
-        moment: 'components/moment/min/moment.min',
-        'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
         ace: 'components/ace/src',
         async: 'components/async/dist/async',
-        babel: 'components/babel-standalone/babel.min',
-        bluebird: 'components/bluebird/js/browser/bluebird.min',
-        bowser: 'components/bowser/bowser.min',
+        babel: 'components/babel-standalone/babel',
+        bluebird: 'components/bluebird/js/browser/bluebird.core',
+        bowser: 'components/bowser/bowser',
         chroma: 'components/chroma-js/chroma.min',
         ckeditor: 'components/ckeditor/ckeditor',
+        countryData: 'browserified/country-data/index',
         d3: 'components/d3/d3.min',
         eventEmitter: 'components/eventEmitter/EventEmitter.min',
         fancytree: 'components/fancytree/dist/jquery.fancytree-all',
-        forms: 'lib/forms',
+        fetch: 'components/fetch/fetch',
         'file-saver': 'components/file-saver.js/FileSaver',
-        'highlightjs': 'lib/highlight.js/highlight.pack',
+        forms: 'lib/forms',
+        highlightjs: 'lib/highlight.js/highlight.pack',
         jcampconverter: 'components/jcampconverter/dist/jcampconverter.min',
         jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
-        slickgrid_core: 'components/slickgrid/slick.core',
-        slickgrid: 'components/slickgrid/slick.grid',
+        jsbarcode: 'components/jsbarcode/JsBarcode',
         jquery: 'components/jquery/dist/jquery',
         'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
-        'jquery-ui': 'components/jquery-ui/ui',
         'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
-        'json-chart': 'components/json-chart/dist/json-chart.min',
-        'notifyjs': 'components/notifyjs/dist/notify',
+        'jquery-ui': 'components/jquery-ui/ui',
         jsgraph: 'components/jsgraph/dist/jsgraph',
         jsnmr: 'components/jsnmr/dist/jsnmr',
         jsoneditor: 'components/jsoneditor/dist/jsoneditor-minimalist.min',
+        'json-chart': 'components/json-chart/dist/json-chart.min',
         jszip: 'components/jszip/dist/jszip.min',
-        loglevel: 'components/loglevel/dist/loglevel.min',
-        lodash: 'components/lodash/dist/lodash.min',
+        katex: 'components/katex/dist/katex.min',
+        lodash: 'components/lodash/dist/lodash',
+        loglevel: 'components/loglevel/dist/loglevel',
         'markdown-js': 'components/markdown-js/lib/markdown',
-        'mime-types': 'browserified/mime-types/index',
-        'countryData': 'browserified/country-data/index',
         marked: 'components/marked/lib/marked',
         //mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
+        mathjs: 'components/mathjs/dist/math.min',
+        'mime-types': 'browserified/mime-types/index',
+        moment: 'components/moment/moment',
+        'moment-duration-format': 'components/moment-duration-format/lib/moment-duration-format',
+        notifyjs: 'components/notifyjs/dist/notify',
         modernizr: 'components/modernizr/modernizr',
+        msa: 'lib/msa/msa.min',
         'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
+        numeral: 'components/numeral/numeral',
         openchemlib: 'components/openchemlib/dist',
         papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
         select2: 'components/select2/dist/js/select2.full',
+        slickgrid: 'components/slickgrid/slick.grid',
+        slickgrid_core: 'components/slickgrid/slick.core',
         'smart-array-filter': 'components/smart-array-filter/dist/smart-array-filter.min',
         sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
         sprintf: 'components/sprintf/dist/sprintf.min',
         superagent: 'browserified/superagent/index',
-        fetch: 'components/fetch/fetch',
         threejs: 'components/threejs/build/three.min',
         uri: 'components/uri.js/src',
+        'web-animations': 'components/web-animations-js/web-animations.min',
         x2js: 'components/x2js/xml2json.min',
 
         BiojsSequence: 'lib/biojs-1.0/src/main/javascript/Biojs.Sequence',
@@ -76,8 +78,7 @@ require.config({
         BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
         BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
         BiojsMyFeatureViewer: 'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
-        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer',
-        msa: 'lib/msa/msa.min'
+        BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
     },
     shim: {
         katex: {
@@ -190,10 +191,10 @@ require([
 ], function (Version, $, Datas, EntryPoint, URI, Promise) {
     window.Promise = Promise;
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore
-    $(document).ready(function () {
-        var url = new URI(window.location.href);
-        var type = (url.search().length > 0) ? 'search' : (url.fragment()[0] === '?' ? 'fragment' : 'search');
-        var query = new URI(url[type]()).query(true);
+    $(document).ready(() => {
+        const url = new URI(window.location.href);
+        const type = (url.search().length > 0) ? 'search' : (url.fragment()[0] === '?' ? 'fragment' : 'search');
+        const query = new URI(url[type]()).query(true);
         EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
     });
 });

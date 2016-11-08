@@ -10,7 +10,7 @@ define([
     './debug',
     './color',
     '../data/structures',
-    'components/web-animations-js/web-animations.min'
+    'web-animations'
 ], function (Promise, _, Debug, Color, structures) {
 
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
