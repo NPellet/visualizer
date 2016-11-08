@@ -90,9 +90,10 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 }
 
                 const vars = this.module.vars_in();
+                let proms = [];
                 for (let i = 0; i < vars.length; i++) {
                     if (vars[i].name == varName && this.module.view.update[vars[i].rel] && varValue !== null) {
-                        new Promise((resolve, reject) => {
+                        proms.push(new Promise((resolve, reject) => { // todo clean this mess
                             if (vars[i].filter) {
                                 require([vars[i].filter], function (filterFunction) {
                                     if (filterFunction.filter) {
@@ -106,14 +107,15 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                         }).then((varValue) => {
                             this.setData(vars[i].rel, varName, varValue);
                             this.removeAllChangeListeners(vars[i].rel);
-                            this.module.updateView(vars[i].rel, varValue, varName);
+                            return this.module.updateView(vars[i].rel, varValue, varName);
                         }, (err) => {
                             Debug.error('Error while filtering the data : ', err.message, err.stack);
                         }).catch((err) => {
                             Debug.error('Error while updating module : ', err.message, err.stack);
-                        });
+                        }));
                     }
                 }
+                return proms;
             }, function () {
                 // ignore
             }).catch(function (err) {

@@ -970,13 +970,13 @@ module.exports = function (grunt) {
     });
 
     function getVersionValue(str, name) {
-        var reg = new RegExp('var ' + name + ' = (.+?);\n');
+        const reg = new RegExp('const ' + name + ' = (.+?);\n');
         return reg.exec(str)[1];
     }
 
     function setVersionValue(str, name, value) {
-        var reg = new RegExp('var ' + name + ' = .+?;\n');
-        return str.replace(reg, 'var ' + name + ' = ' + value + ';\n');
+        const reg = new RegExp('const ' + name + ' = .+?;\n');
+        return str.replace(reg, 'const ' + name + ' = ' + value + ';\n');
     }
 
     grunt.registerTask('css:modules', function () {

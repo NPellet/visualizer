@@ -148,6 +148,7 @@ define([
                         data: tpl
                     });
                     this.rerender();
+                    return null;
                 }).then(() => this._resolveTemplate()).catch(e => {
                     Debug.info('Problem with template: ' + e);
                 }).then(() => {

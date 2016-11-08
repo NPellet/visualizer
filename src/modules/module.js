@@ -40,7 +40,7 @@ define([
         module._onReady.then(() => {
             module.controller.sendActionFromEvent('_onLoaded', '_moduleUrl', moduleURL);
             module.controller.sendActionFromEvent('_onLoaded', '_loadTime', Date.now() - start);
-            module.updateAllView();
+            return module.updateAllView();
         }, function (err) {
             Debug.error('Caught error in module ready state', err);
         }).catch(function (err) {
@@ -194,15 +194,15 @@ define([
             this.controller.sendActionFromEvent('_onVarUpdated', '_varName', varName);
         },
 
-        updateAllView: function () {
+        async updateAllView() {
             if (!this.view.update || !this.definition) {
                 return;
             }
-            var vars = this.vars_in();
-            for (var i = 0; i < vars.length; i++) {
-                var variable = API.getVar(vars[i].name);
+            const vars = this.vars_in();
+            for (let i = 0; i < vars.length; i++) {
+                const variable = API.getVar(vars[i].name);
                 if (variable.isDefined()) {
-                    this.model.onVarChange(variable);
+                    await this.model.onVarChange(variable);
                 }
             }
         },

@@ -452,6 +452,7 @@ define([
             if (that.wasSet) {
                 that.controller.createDataFromEvent('onScriptEnded', 'outputValue', that.controller.outputObject);
             }
+            return null;
         }, function (e) {
             reportError(that.title, e);
         }).then(function () {

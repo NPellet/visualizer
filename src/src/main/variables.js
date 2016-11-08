@@ -154,7 +154,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
         triggerChange(callback, moduleId) {
             if (this.rejectCurrentPromise) {
-                this.rejectCurrentPromise('latency');
+                this.rejectCurrentPromise(new Error('latency')); // todo remove this hack
                 this.rejectCurrentPromise = false;
             }
 
@@ -175,7 +175,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                                 _resolve(value);
                             }, error => {
                                 Debug.warn('Error during variable filtering : ', error);
-                                _reject('filter');
+                                _reject(new Error('filter')); // todo remove this hack
                             });
                     } else {
                         this._setValue(value);
@@ -188,8 +188,8 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             });
             var prom = this.currentPromise.catch(err => {
                 if (
-                    err === 'filter' || // Already caught
-                    err === 'latency' // Expected
+                    err.message === 'filter' || // Already caught
+                    err.message === 'latency' // Expected
                 ) {
                     return;
                 }

@@ -190,6 +190,11 @@ require([
     'lib/regenerator/regenerator-runtime'
 ], function (Version, $, Datas, EntryPoint, URI, Promise) {
     window.Promise = Promise;
+    Promise.config({
+        warnings: Version.head,
+        longStackTraces: Version.head,
+        monitoring: Version.head
+    });
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore
     $(document).ready(() => {
         const url = new URI(window.location.href);
