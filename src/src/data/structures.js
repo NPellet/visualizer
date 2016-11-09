@@ -25,6 +25,7 @@ define(function () {
         'number': 'number',
         'color': 'string',
         'mf': 'string',
+        'elecConfig': 'string',
         'jcamp': 'string',
         'date': 'string',
         'downloadLink': 'string',

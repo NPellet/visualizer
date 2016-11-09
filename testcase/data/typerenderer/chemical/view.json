@@ -1,5 +1,5 @@
 {
-  "version": "2.57.2-0",
+  "version": "2.71.5-0",
   "modules": [
     {
       "url": "modules/types/display/single_value/",
@@ -66,8 +66,8 @@
             "top": 15
           },
           "size": {
-            "width": 22.0181818,
-            "height": 16.0181818
+            "width": 22,
+            "height": 16
           },
           "zIndex": 0,
           "display": true,
@@ -83,7 +83,7 @@
           "name": "Default layer"
         }
       },
-      "id": 1,
+      "id": 15,
       "vars_in": [
         {
           "rel": "value",
@@ -177,7 +177,7 @@
           "name": "Default layer"
         }
       },
-      "id": 2,
+      "id": 16,
       "vars_in": [
         {}
       ],
@@ -245,7 +245,7 @@
           ]
         }
       },
-      "id": 3,
+      "id": 17,
       "vars_in": [
         {}
       ],
@@ -269,8 +269,8 @@
             "right": 0
           },
           "size": {
-            "width": 48.0181818,
-            "height": 14.018181799999999
+            "width": 48,
+            "height": 14
           },
           "display": true,
           "title": "A molecular formula",
@@ -339,7 +339,7 @@
           ]
         }
       },
-      "id": 4,
+      "id": 18,
       "vars_in": [
         {}
       ],
@@ -363,8 +363,8 @@
             "right": 0
           },
           "size": {
-            "width": 48.0181818,
-            "height": 16.0181818
+            "width": 48,
+            "height": 16
           },
           "display": true,
           "title": "A SMILES",
@@ -433,7 +433,7 @@
           ]
         }
       },
-      "id": 5,
+      "id": 19,
       "vars_in": [
         {}
       ],
@@ -457,8 +457,8 @@
             "right": 0
           },
           "size": {
-            "width": 48.0181818,
-            "height": 19.0181818
+            "width": 48,
+            "height": 19
           },
           "display": true,
           "title": "A molfile with 2D coordinates",
@@ -527,7 +527,7 @@
           ]
         }
       },
-      "id": 6,
+      "id": 20,
       "vars_in": [
         {}
       ],
@@ -551,8 +551,8 @@
             "right": 0
           },
           "size": {
-            "width": 48.0181818,
-            "height": 19.0181818
+            "width": 48,
+            "height": 19
           },
           "display": true,
           "title": "A molfile with 3D coordinates",
@@ -655,8 +655,8 @@
             "top": 0
           },
           "size": {
-            "width": 22.0181818,
-            "height": 14.018181799999999
+            "width": 22,
+            "height": 14
           },
           "zIndex": 0,
           "display": true,
@@ -672,7 +672,7 @@
           "name": "Default layer"
         }
       },
-      "id": 7,
+      "id": 21,
       "vars_in": [
         {
           "rel": "value",
@@ -763,8 +763,8 @@
             "top": 32
           },
           "size": {
-            "width": 22.0181818,
-            "height": 19.0181818
+            "width": 22,
+            "height": 19
           },
           "zIndex": 0,
           "display": true,
@@ -780,7 +780,7 @@
           "name": "Default layer"
         }
       },
-      "id": 8,
+      "id": 22,
       "vars_in": [
         {
           "rel": "value",
@@ -871,8 +871,8 @@
             "top": 52
           },
           "size": {
-            "width": 22.0181818,
-            "height": 19.0181818
+            "width": 22,
+            "height": 19
           },
           "zIndex": 0,
           "display": true,
@@ -888,7 +888,7 @@
           "name": "Default layer"
         }
       },
-      "id": 9,
+      "id": 23,
       "vars_in": [
         {
           "rel": "value",
@@ -954,7 +954,7 @@
           ]
         }
       },
-      "id": 10,
+      "id": 24,
       "vars_in": [
         {}
       ],
@@ -978,8 +978,8 @@
             "right": 0
           },
           "size": {
-            "width": 48.0181818,
-            "height": 19.0181818
+            "width": 48,
+            "height": 19
           },
           "display": true,
           "title": "A PDB coming from a URL",
@@ -1073,8 +1073,8 @@
             "top": 72
           },
           "size": {
-            "width": 22.0181818,
-            "height": 19.0181818
+            "width": 22,
+            "height": 19
           },
           "zIndex": 0,
           "display": true,
@@ -1090,7 +1090,7 @@
           "name": "Default layer"
         }
       },
-      "id": 11,
+      "id": 25,
       "vars_in": [
         {
           "rel": "value",
@@ -1149,8 +1149,8 @@
             "top": 40
           },
           "size": {
-            "width": 62.0181818,
-            "height": 42.0181818
+            "width": 62,
+            "height": 42
           },
           "zIndex": 0,
           "display": true,
@@ -1166,7 +1166,7 @@
           "name": "Default layer"
         }
       },
-      "id": 12,
+      "id": 26,
       "vars_in": [
         {
           "rel": "value",
@@ -1274,8 +1274,8 @@
             "top": 0
           },
           "size": {
-            "width": 62.0181818,
-            "height": 39.0181818
+            "width": 62,
+            "height": 39
           },
           "zIndex": 0,
           "display": true,
@@ -1291,7 +1291,7 @@
           "name": "Default layer"
         }
       },
-      "id": 13,
+      "id": 27,
       "vars_in": [
         {}
       ],
@@ -1453,8 +1453,8 @@
             "top": 30
           },
           "size": {
-            "width": 37.0181818,
-            "height": 33.0181818
+            "width": 37,
+            "height": 28
           },
           "zIndex": 0,
           "display": true,
@@ -1470,7 +1470,7 @@
           "name": "Default layer"
         }
       },
-      "id": 14,
+      "id": 28,
       "vars_in": [
         {},
         {
@@ -1513,6 +1513,256 @@
           }
         ]
       }
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "\"1s2 2s2 2p6\""
+              ]
+            }
+          ]
+        }
+      },
+      "id": 29,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "eleconfig"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0.9985795021057129,
+            "top": 58.999999618530275,
+            "right": 0
+          },
+          "size": {
+            "width": 34,
+            "height": 16
+          },
+          "display": true,
+          "title": "A SMILES",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "A SMILES",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                "elecConfig"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 75.99999961853027
+          },
+          "size": {
+            "width": 36,
+            "height": 15
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 30,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "eleconfig"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "",
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     }
   ],
   "variables": [

@@ -292,6 +292,15 @@ define([
 
     functions.molfile2d = functions.mol2d;
 
+    functions.elecconfig = {};
+    functions.elecconfig.toscreen = function ($element, value) {
+        if (value) {
+            $element.html(value.replace(/([a-z])([0-9]+)/g,'$1<sup>$2</sup>'));
+        } else {
+            $element.html('');
+        }
+    };
+
     functions.mf = {};
     functions.mf.toscreen = function ($element, value) {
         if (value) {
