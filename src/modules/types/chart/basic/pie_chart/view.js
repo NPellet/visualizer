@@ -132,7 +132,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         },
 
-        updateOptions: function () {
+        updateOptions() {
             this._options = {
                 grid: {
                     clickable: true,
@@ -145,15 +145,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                 }
             };
 
-
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
-
-            this._options.test = cfg('nodeSize') || 1;
-
-
+            this._options.test = this.module.getConfiguration('nodeSize') || 1;
         }
-
-
     });
 
     return View;

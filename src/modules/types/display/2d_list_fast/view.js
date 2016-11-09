@@ -58,7 +58,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
                 var val = moduleValue.get();
                 this.setDim(val);
 
-                var cfg = this.module.getConfiguration.bind(this.module);
+                var cfg = this.module.getConfiguration;
                 var cols, list, length;
 
                 if (this.dim === 1) {

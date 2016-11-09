@@ -113,8 +113,8 @@ define([
 
             if (this._data && this._data.length > 0) {
 
-                var cfg = this.module.getConfiguration.bind(this.module),
-                    cfgCb = this.module.getConfigurationCheckbox.bind(this.module);
+                var cfg = this.module.getConfiguration;
+                var cfgCb = this.module.getConfigurationCheckbox;
 
                 var parcoords = this.parcoords = d3.parcoords()('#' + (this._id));
 

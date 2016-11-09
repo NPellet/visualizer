@@ -53,8 +53,8 @@ define([
         inDom() {
             var prom = new Promise(resolve => {
 
-                var cfg = this.cfg = this.module.getConfiguration.bind(this.module);
-                var cfgCheckbox = this.cfgCheckbox = this.module.getConfigurationCheckbox.bind(this.module);
+                var cfg = this.module.getConfiguration;
+                var cfgCheckbox = this.module.getConfigurationCheckbox;
                 var graphurl = cfg('graphurl');
 
                 if (graphurl) {

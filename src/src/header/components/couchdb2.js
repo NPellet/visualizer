@@ -1032,9 +1032,9 @@ define([
 
         },
         loadFlavor: function () {
-            var proxyLazyLoad = $.proxy(this, 'lazyLoad'),
-                proxyClick = $.proxy(this, 'clickNode'),
-                that = this;
+            const proxyLazyLoad = this.lazyLoad.bind(this);
+            const proxyClick = this.clickNode.bind(this);
+            const that = this;
 
             var menuOptions = {
                 delegate: 'span.fancytree-title',

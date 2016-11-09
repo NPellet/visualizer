@@ -10,8 +10,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         init: function () {
             var that = this;
 
-            this.cfg = $.proxy(this.module.getConfiguration, this.module);
-            this.button = this.cfg('button')[0] === 'button';
+            this.button = this.module.getConfiguration('button')[0] === 'button';
             this.dom = $('<div>').addClass('ci-module-webservice_nmr_spin');
 
             var selector = [];
@@ -23,19 +22,19 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
             selector.push('<option value="6">ABCDEF</option>');
             selector.push('</select>');
             var selectorSelect = $(selector.join(''));
-            selectorSelect.val(this.cfg('systemSize')[0]);
+            selectorSelect.val(this.module.getConfiguration('systemSize')[0]);
             this.systemSelector = $('<h1>Select your spin system: </h1>');
             this.systemSelector.append(selectorSelect);
 
             this.dom.append(this.systemSelector);
 
             this.systemSelector.on('change', 'select', function () {
-                var s = that.cfg('systemSize', null, false);
+                var s = that.module.getConfiguration('systemSize', null, false);
                 s[0] = $(this).val();
                 that.init();
             });
 
-            this.system = $(this._getTable(this.cfg('systemSize')[0]));
+            this.system = $(this._getTable(this.module.getConfiguration('systemSize')[0]));
 
             if (!this.button) {
                 this.system.on('keyup', 'input[type=text]', function () {
@@ -52,13 +51,13 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
 
             if (this.button) {
                 require(['forms/button'], function (Button) {
-                    that.system.append((that.buttonInst = new Button(that.cfg('buttonlabel'), function () {
+                    that.system.append((that.buttonInst = new Button(that.module.getConfiguration('buttonlabel'), function () {
                         that.module.controller.doAnalysis();
                     })).render());
                 });
             }
 
-            if (this.cfg('onloadanalysis') === 'onload') {
+            if (this.module.getConfiguration('onloadanalysis') === 'onload') {
                 this.module.controller.doAnalysis();
             }
 
@@ -119,7 +118,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
             return '<form>' + content.join('') + '</form>';
         },
 
-        lock: function () {
+        lock() {
             this.locked = true;
             if (this.buttonInst) {
                 this.buttonInst.setTitle(this.module.getConfiguration('buttonlabel_exec'));
@@ -127,7 +126,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
             }
         },
 
-        unlock: function () {
+        unlock() {
             this.locked = false;
             if (this.buttonInst) {
                 this.buttonInst.setTitle(this.module.getConfiguration('buttonlabel'));

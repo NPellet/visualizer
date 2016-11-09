@@ -233,7 +233,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 }
             });
 
-            this.jqGrid = $.proxy($(this.domTable).jqGrid, $(this.domTable));
+            this.jqGrid = $(this.domTable).jqGrid.bind(this.domTable);
             this.resolveReady();
         },
 

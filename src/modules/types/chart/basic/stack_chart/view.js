@@ -30,7 +30,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             this.loadedData = $.Deferred();
 
             this._data = [];	// the data that will be sent to FLOT
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
+            var cfg = this.module.getConfiguration;
             var axis;
             var x;
             this.updateOptions(cfg, axis, x);
@@ -70,7 +70,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
          */
         update: {
             chart: function (moduleValue) {
-                var cfg = $.proxy(this.module.getConfiguration, this.module);
+                var cfg = this.module.getConfiguration;
 
                 this._convertChartToData(moduleValue.get().data);
                 var axis = moduleValue.get().axis;

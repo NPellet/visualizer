@@ -390,7 +390,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         },
 
         _getOptions(type) {
-            var cfg = this.module.getConfiguration.bind(this.module);
+            var cfg = this.module.getConfiguration;
             var r = {};
             ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'NoValueColor', 'FixedColor', 'Step', 'Label', 'Unit', 'Mode', 'Jpath'].forEach(val => {
                 var prop = val.toLowerCase();

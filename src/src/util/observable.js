@@ -31,7 +31,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
 
     Observable.prototype._proxiedSet = function () {
         if (!this.__proxiedSet)
-            this.__proxiedSet = $.proxy(this.set, this);
+            this.__proxiedSet = this.set.bind(this);
         return this.__proxiedSet;
     };
     // List of observables targets

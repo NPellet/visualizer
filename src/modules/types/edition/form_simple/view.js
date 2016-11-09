@@ -107,7 +107,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     case 'btn':
                     case 'both':
                         var btnLabel = that.module.getConfiguration('btnLabel');
-                        form.addButton(btnLabel, {color: 'blue'}, $.proxy(triggerFunction, form));
+                        form.addButton(btnLabel, {color: 'blue'}, triggerFunction.bind(form));
                     case 'change': // eslint-disable-line no-fallthrough
                         var debounce = that.module.getConfiguration('debounce');
                         options.onValueChanged = debounce > 0 ? _.debounce(changedFunction, debounce) : changedFunction;

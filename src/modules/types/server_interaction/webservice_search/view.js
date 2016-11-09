@@ -1,15 +1,18 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
+define([
+    'jquery',
+    'modules/default/defaultview',
+    'src/util/ui'
+], function ($, Default, ui) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
         init: function () {
-            var that = this,
-                cfg = $.proxy(this.module.getConfiguration, this.module),
-                searchparams;
+            var that = this;
+            var cfg = this.module.getConfiguration;
 
             this.dom = $('<div></div>');
             this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
@@ -21,7 +24,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
             this.oldVal = {};
             this._url = false;
 
-
+            var searchparams;
             if ((searchparams = cfg('searchparams'))) {
 
                 for (var i in searchparams) {

@@ -91,10 +91,10 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
 
                 var i;
 
-                var cfg = this.module.getConfiguration.bind(this.module);
-                var field1 = cfg('bgField1'),
-                    field2 = cfg('bgField2'),
-                    field3 = cfg('bgField3');
+                var cfg = this.module.getConfiguration;
+                var field1 = cfg('bgField1');
+                var field2 = cfg('bgField2');
+                var field3 = cfg('bgField3');
                 var fields = value.options.fields;
                 if (Array.isArray(fields)) {
                     for (i = 0; i < fields.length; i++) {

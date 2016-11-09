@@ -47,7 +47,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 
             list: function (moduleValue) {
 
-                var cfg = this.module.getConfiguration.bind(this.module),
+                var cfg = this.module.getConfiguration,
                     cols = cfg('colnumber', 4) || 4,
                     val = moduleValue.get(),
                     table = $('<table cellpadding="3" cellspacing="0">').css('text-align', 'center');

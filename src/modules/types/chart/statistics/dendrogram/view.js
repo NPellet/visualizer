@@ -119,7 +119,7 @@ define([
 
         getOptions() {
             var options = {};
-            var getConf = this.module.getConfiguration.bind(this.module);
+            var getConf = this.module.getConfiguration;
             maybePutOption(options, '$color', getConf('jpathColor'));
             maybePutOption(options, '$dim', getConf('jpathSize'));
             maybePutOption(options, '$type', getConf('jpathShape'));
@@ -145,7 +145,7 @@ define([
         },
 
         updateOptions() {
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
+            var cfg = this.module.getConfiguration;
 
             this._options = {
                 nodeSize: cfg('nodeSize') || 1,
@@ -163,7 +163,7 @@ define([
                 this.module.controller.onClick(this._idHash[node.id]);
             };
 
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
+            var cfg = this.module.getConfiguration;
 
             this.dom.empty();
 

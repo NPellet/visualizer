@@ -16,7 +16,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
                 }
             })();
 
-            var cfg = $.proxy(that.module.getConfiguration, that.module);
+            var cfg = this.module.getConfiguration;
 
             this._id = Util.getNextUniqueId();
             var $block = $('<div>', {Id: this._id});
@@ -82,7 +82,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
             }
             var that = this;
             this.module.viewReady.then(function () {
-                var cfg = $.proxy(that.module.getConfiguration, that.module);
+                var cfg = that.module.getConfiguration;
                 var segments = cfg('segments');
 
                 ///////////////////////
@@ -172,7 +172,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
 
         createGraph: function () {
             var that = this;
-            var cfg = $.proxy(that.module.getConfiguration, that.module);
+            var cfg = that.module.getConfiguration;
             var segments = cfg('segments');
             var zFunc = Parser.parse(that.zFunctionText).toJSFunction(['x', 'y']);
 

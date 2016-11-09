@@ -147,17 +147,15 @@ define([
             var pointedObjects = [];
             var lastMouseMoveEvent = null;
             var currentPoint = null;
-            var drawTickLabelsThrottled = $.proxy(_.throttle(that._drawTickLabels, 500), that);
-            var drawAxisLabelsThrottled = $.proxy(_.throttle(that._drawAxisLabels, 500), that);
-            var drawGraphTitleThrottled = $.proxy(_.throttle(that._drawGraphTitle, 500), that);
+            var drawTickLabelsThrottled = _.throttle(this._drawTickLabels.bind(this), 500);
+            var drawAxisLabelsThrottled = _.throttle(this._drawAxisLabels.bind(this), 500);
+            var drawGraphTitleThrottled = _.throttle(this._drawGraphTitle.bind(this), 500);
             var projections = [];
 
             init();
             animate();
 
-            var descSort = function (a, b) {
-                return a.distance - b.distance;
-            };
+            const descSort = (a, b) => (a.distance - b.distance);
 
             function getIntersectsBis(event) {
                 var width, height;
@@ -1881,7 +1879,6 @@ define([
                     }
                 }
             };
-            // var cfg = $.proxy( this.module.getConfiguration, this.module );
         }
     });
 

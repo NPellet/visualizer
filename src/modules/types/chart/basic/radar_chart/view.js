@@ -122,7 +122,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
         createChart: function (chart, data) {
 
-            var cfg = $.proxy(this.module.getConfiguration, this.module);
+            var cfg = this.module.getConfiguration;
             switch (cfg('preference')) {
                 case 'radar':
                     if (!chart.data[0].color) {

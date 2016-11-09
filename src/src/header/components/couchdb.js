@@ -23,8 +23,8 @@ define([
             var db = this.options.database || 'visualizer';
             this.database = $.couch.db(db);
 
-            this.showError = $.proxy(showError, this);
-            this.getFormContent = $.proxy(getFormContent, this);
+            this.showError = showError.bind(this);
+            this.getFormContent = getFormContent.bind(this);
 
             this.checkDatabase();
         },
@@ -345,26 +345,26 @@ define([
                 return false;
         },
         loadTree: function () {
-            var proxyLazyLoad = $.proxy(this, 'lazyLoad'),
-                proxyClickData = $.proxy(this, 'clickNode', 'Data'),
-                proxyClickView = $.proxy(this, 'clickNode', 'View'),
-                that = this;
+            const proxyLazyLoad = this.lazyLoad.bind(this);
+            const proxyClickData = this.clickNode.bind(this, 'Data');
+            const proxyClickView = this.clickNode.bind(this, 'View');
+            const that = this;
 
             var menuOptions = {
                 delegate: 'span.fancytree-title',
                 menu: [
                     {title: 'Delete', cmd: 'delete', uiIcon: 'ui-icon-trash'}
                 ],
-                beforeOpen: function (event, ui) {
+                beforeOpen(event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
                     if (node.folder) return false;
                     node.setActive();
                 },
-                select: function (event, ui) {
+                select(event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
                     that.contextClick(node, ui.cmd);
                 },
-                createMenu: function (event) {
+                createMenu(event) {
                     $(event.target).css('z-index', 1000);
                 }
             };
@@ -372,7 +372,7 @@ define([
             this.database.allDocs({
                 startkey: this.username + ':',
                 endkey: this.username + ':~',
-                success: function (data) {
+                success(data) {
                     var trees = createTrees(data.rows);
                     var datatree = $('#' + that.cssId('datatree'));
                     datatree.fancytree({
@@ -400,7 +400,7 @@ define([
                 }
             });
         },
-        contextClick: function (node, action) {
+        contextClick(node, action) {
             if (action === 'delete' && !node.folder) {
                 if (node.data.rev)
                     node = node.parent;

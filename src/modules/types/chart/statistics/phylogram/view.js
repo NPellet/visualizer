@@ -72,7 +72,7 @@ define([
 
         getOptions: function () {
             var options = {};
-            var getConf = this.module.getConfiguration.bind(this.module);
+            var getConf = this.module.getConfiguration;
             maybePutOption(options, '$color', getConf('jpathColor'));
             return options;
         },

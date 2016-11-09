@@ -793,7 +793,7 @@ define([
 
         getAllSlickColumns: function () {
             var that = this;
-            var tp = $.proxy(typeRenderer, this);
+            var tp = typeRenderer.bind(this);
 
             function getEditor(jpath) {
                 var editor;
