@@ -30,7 +30,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
             this.dom.append(this.systemSelector);
 
             this.systemSelector.on('change', 'select', function () {
-                var s = that.cfg('systemSize');
+                var s = that.cfg('systemSize', null, false);
                 s[0] = $(this).val();
                 that.init();
             });
