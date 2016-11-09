@@ -798,11 +798,11 @@ define([
 
             if (!Versioning.isViewLocked()) {
                 Context.listen(Context.getRootDom(), [
-                        ['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
-                            function () {
-                                var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem('ci-copy-module')));
-                                addModuleFromJSON(module);
-                            }]]
+                    ['<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
+                        function () {
+                            var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem('ci-copy-module')));
+                            addModuleFromJSON(module);
+                        }]]
                 );
 
                 if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('add') > -1) {
@@ -930,10 +930,10 @@ define([
                 }
 
                 Context.listen(Context.getRootDom(), [
-                        ['<li name="diagram"><a><span class="ui-icon ui-icon-zoomin"></span>View Diagram</a></li>',
-                            function () {
-                                diagram.showVariableDiagram();
-                            }]]
+                    ['<li name="diagram"><a><span class="ui-icon ui-icon-zoomin"></span>View Diagram</a></li>',
+                        function () {
+                            diagram.showVariableDiagram();
+                        }]]
                 );
                 Context.listen(
                     Context.getRootDom(), [

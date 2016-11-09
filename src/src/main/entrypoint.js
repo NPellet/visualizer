@@ -859,16 +859,16 @@ define([
                         Context.init(document.getElementById('modules-grid'));
                         if (!Versioning.isViewLocked()) {
                             Context.listen(Context.getRootDom(), [
-                                    ['<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
-                                        function () {
-                                            configureEntryPoint();
-                                        }]]
+                                ['<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
+                                    function () {
+                                        configureEntryPoint();
+                                    }]]
                             );
                             Context.listen(Context.getRootDom(), [
-                                    ['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
-                                        function () {
-                                            document.location.reload();
-                                        }]]
+                                ['<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
+                                    function () {
+                                        document.location.reload();
+                                    }]]
                             );
                         }
 
