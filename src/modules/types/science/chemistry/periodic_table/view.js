@@ -451,6 +451,27 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             this.module.controller.elementsSelected(sel);
         },
 
+        onActionReceive: {
+            select(val) {
+                var elements = this.dom.find('.element').toArray();
+
+                if (Array.isArray(val)) {
+                    for (var num = 0; num < val.length; num++) {
+                        var z = this.elements.findIndex((element) => element.Z === val[num]);
+                        if (z >= 0) {
+                            $(elements[z]).toggleClass('el-selected');
+                        }
+                    }
+                } else if (typeof val === 'function') {
+                    for (var elm = 0; elm < this.elements.length; elm++) {
+                        if (val(this.elements[elm])) {
+                            $(elements[elm]).toggleClass('el-selected');
+                        }
+                    }
+                }
+            }
+        },
+
         getZ($el) {
             return $el.attr('class').replace(/^.*[^a-zA-Z]e(\d+).*$/, '$1');
         },

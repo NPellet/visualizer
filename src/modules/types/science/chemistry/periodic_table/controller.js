@@ -59,6 +59,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
     Controller.prototype.variablesIn = ['template', 'hltemplate', 'value'];
 
+    Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        select: 'Select element(s)'
+    });
+
     Controller.prototype.configurationStructure = function () {
         var jpaths = this.module.model.getjPath();
 
