@@ -98,6 +98,9 @@ define([
     }
 
     var Module = function (definition) {
+        this.getConfiguration = this.getConfiguration.bind(this);
+        this.getConfigurationCheckbox = this.getConfigurationCheckbox.bind(this);
+
         this.definition = DataObject.recursiveTransform(definition);
         this.definition.configuration = this.definition.configuration || new DataObject();
 
