@@ -60,7 +60,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     Controller.prototype.variablesIn = ['template', 'hltemplate', 'value'];
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
-        select: 'Select element(s)'
+        select: 'Select element(s)',
+        setSelected: 'Set selected element(s)'
     });
 
     Controller.prototype.configurationStructure = function () {

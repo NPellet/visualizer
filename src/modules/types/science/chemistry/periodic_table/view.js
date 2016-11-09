@@ -454,24 +454,34 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         onActionReceive: {
             select(val) {
                 var elements = this.dom.find('.element').toArray();
+                this._selectElements(elements, val);
+            },
 
-                if (Array.isArray(val)) {
-                    for (var num = 0; num < val.length; num++) {
-                        var z = this.elements.findIndex((element) => element.Z === val[num]);
-                        if (z >= 0) {
-                            $(elements[z]).addClass('el-selected');
-                        }
-                    }
-                } else if (typeof val === 'function') {
-                    for (var elm = 0; elm < this.elements.length; elm++) {
-                        if (val(this.elements[elm])) {
-                            $(elements[elm]).addClass('el-selected');
-                        }
+            setSelected(val) {
+                var $elements = this.dom.find('.element');
+                this.unselectElements({}, $elements);
+                this._selectElements($elements.toArray(), val);
+            }
+        },
+
+        // helper function for selecting elements with actions
+        _selectElements(elements, val) {
+            if (Array.isArray(val)) {
+                for (var num = 0; num < val.length; num++) {
+                    var z = this.elements.findIndex((element) => element.Z === val[num]);
+                    if (z >= 0) {
+                        $(elements[z]).addClass('el-selected');
                     }
                 }
-
-                this.elementsSelected();
+            } else if (typeof val === 'function') {
+                for (var elm = 0; elm < this.elements.length; elm++) {
+                    if (val(this.elements[elm])) {
+                        $(elements[elm]).addClass('el-selected');
+                    }
+                }
             }
+
+            this.elementsSelected();
         },
 
         getZ($el) {
