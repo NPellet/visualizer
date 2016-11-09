@@ -1,3 +1,21 @@
+<a name="2.71.5"></a>
+## [2.71.5](https://github.com/NPellet/visualizer/compare/v2.71.4...v2.71.5) (2016-11-09)
+
+
+### Bug Fixes
+
+* **nmr_spin:** fix update of config on system size modification ([09eafcd](https://github.com/NPellet/visualizer/commit/09eafcd))
+* **typerenderer:** fix colorbar renderer ([2fcc2d3](https://github.com/NPellet/visualizer/commit/2fcc2d3))
+
+
+### Features
+
+* Add elecconfig type renderer ([5c201d3](https://github.com/NPellet/visualizer/commit/5c201d3))
+* **module:** add resurrectValue option to getConfiguration ([e879e6f](https://github.com/NPellet/visualizer/commit/e879e6f))
+* **periodic_table:** select elements using action ([#988](https://github.com/NPellet/visualizer/issues/988)) ([a23ab99](https://github.com/NPellet/visualizer/commit/a23ab99))
+
+
+
 <a name="2.71.4"></a>
 ## [2.71.4](https://github.com/NPellet/visualizer/compare/v2.71.3...v2.71.4) (2016-11-03)
 
