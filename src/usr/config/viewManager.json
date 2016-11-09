@@ -1,0 +1,45 @@
+{
+    "lockView": false,
+    "usrDir": "usr",
+    "debugLevel": -1,
+    "modules": {
+        "folders": [
+            "modules/types"
+        ]
+    },
+    "header": {
+        "height": "30px",
+        "elements": [
+            {
+                "type": "roc-views",
+                "label": "View manager",
+                "url": "https://mydb.cheminfo.org",
+                "database": "visualizer"
+            },
+            {
+                "type": "copydata",
+                "label": "Copy data"
+            },
+            {
+                "type": "pastedata",
+                "label": "Paste data"
+            },
+            {
+                "type": "copyview",
+                "label": "Copy view"
+            },
+            {
+                "type": "pasteview",
+                "label": "Paste view"
+            },
+            {
+                "type": "blankview",
+                "label": "Blank view"
+            },
+            {
+                "type": "feedback",
+                "label": "Feedback"
+            }
+        ]
+    }
+}
