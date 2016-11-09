@@ -106,7 +106,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                         prefs: {
                             type: 'checkbox',
                             title: 'Options',
-                            'default': ['oldlook','nozoom','useopenchemlib'],
+                            'default': ['oldlook', 'nozoom', 'useopenchemlib'],
                             options: {
                                 noxbutton: 'Hide X button',
                                 rbutton: 'Show R button',
