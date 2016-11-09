@@ -58,7 +58,8 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         } else {
             stopPositions = options.stopPositions;
         }
-        var linearg = getGradientXY(options.axis.orientation);
+        var orientation = getOrientation(options);
+        var linearg = getGradientXY(orientation);
         var gradientWidth, totalWidth = options.width, gradientHeight, totalHeight = options.height;
         if (options.axis) {
             gradientHeight = totalHeight - margin;
@@ -105,14 +106,14 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
 
         var x = d3.scale.linear()
             .domain(options.domain);
-        if (!options.axis.tickValues) {
+        if (!options.axis || !options.axis.tickValues) {
             x = x.nice();
         }
-        x.range([0, (options.axis.orientation === 'bottom' || options.axis.orientation === 'top' ? gradientWidth : gradientHeight)]);
-        if (options.axis && options.axis.orientation) {
+        x.range([0, (orientation === 'bottom' || orientation === 'top' ? gradientWidth : gradientHeight)]);
+        if (hasAxis(options)) {
             var axis = d3.svg.axis()
                 .scale(x)
-                .orient(options.axis.orientation)
+                .orient(orientation)
                 .tickSize(6);
             if (options.axis.ticks) {
                 axis.ticks(options.axis.ticks);
@@ -125,9 +126,9 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
                 .attr('class', 'key')
                 .attr('transform', function () {
                     var tx = 0, ty = 0;
-                    if (options.axis.orientation === 'bottom') {
+                    if (orientation === 'bottom') {
                         ty += gradientHeight;
-                    } else if (options.axis.orientation === 'right') {
+                    } else if (orientation === 'right') {
                         tx += gradientWidth;
                     }
                     return 'translate(' + tx + ',' + ty + ')';
@@ -150,10 +151,14 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
 
     function getTx(options) {
         var tx = 0;
-        if (options.axis.orientation === 'bottom' || options.axis.orientation === 'top') {
+        var orientation = getOrientation(options);
+        if (!hasAxis(options)) {
+            return tx;
+        }
+        if (orientation === 'bottom' || orientation === 'top') {
             tx += margin / 2;
         }
-        if (options.axis.orientation === 'left') {
+        if (orientation === 'left') {
             tx += margin;
         }
         return tx;
@@ -161,13 +166,25 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
 
     function getTy(options) {
         var ty = 0;
-        if (options.axis.orientation === 'left' || options.axis.orientation === 'right') {
+        if (!hasAxis(options)) {
+            return ty;
+        }
+        var orientation = getOrientation(options);
+        if (orientation === 'left' || orientation === 'right') {
             ty += margin / 2;
         }
-        if (options.axis.orientation === 'top') {
+        if (orientation === 'top') {
             ty += margin;
         }
         return ty;
+    }
+
+    function getOrientation(options) {
+        return options.orientation || options.axis && options.axis.orientation || 'top';
+    }
+
+    function hasAxis(options) {
+        return !!options.axis;
     }
 
     return exports;
