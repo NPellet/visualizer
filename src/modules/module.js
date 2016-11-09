@@ -1065,7 +1065,7 @@ define([
             that._onReady = Promise.all([that.viewReady, that.controllerReady]);
         },
 
-        getConfiguration(aliasName, fallbackValue) {
+        getConfiguration(aliasName, fallbackValue, resurrectValue = true) {
             var cfgEl = this.definition.configuration;
             var alias = this.controller.configAliases[aliasName];
             var toReturn;
@@ -1087,7 +1087,7 @@ define([
             if (toReturn == undefined)
                 toReturn = fallbackValue;
 
-            return Datas.resurrect(toReturn);
+            return resurrectValue ? Datas.resurrect(toReturn) : toReturn;
         },
 
         getConfigurationCheckbox: function (aliasName, optionName) {
