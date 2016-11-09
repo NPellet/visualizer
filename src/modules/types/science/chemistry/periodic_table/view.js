@@ -459,16 +459,18 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                     for (var num = 0; num < val.length; num++) {
                         var z = this.elements.findIndex((element) => element.Z === val[num]);
                         if (z >= 0) {
-                            $(elements[z]).toggleClass('el-selected');
+                            $(elements[z]).addClass('el-selected');
                         }
                     }
                 } else if (typeof val === 'function') {
                     for (var elm = 0; elm < this.elements.length; elm++) {
                         if (val(this.elements[elm])) {
-                            $(elements[elm]).toggleClass('el-selected');
+                            $(elements[elm]).addClass('el-selected');
                         }
                     }
                 }
+
+                this.elementsSelected();
             }
         },
 
