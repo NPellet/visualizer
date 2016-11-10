@@ -17,7 +17,7 @@ require.config({
     paths: {
         ace: 'components/ace/src',
         async: 'components/async/dist/async',
-        babel: 'components/babel-standalone/babel',
+        babel: 'components/babel-standalone/babel.min',
         bluebird: 'components/bluebird/js/browser/bluebird.core',
         bowser: 'components/bowser/bowser',
         chroma: 'components/chroma-js/chroma.min',

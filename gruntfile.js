@@ -74,16 +74,17 @@ module.exports = function (grunt) {
         },
         pkg: grunt.file.readJSON('package.json'),
         babel: {
-            options: {
-                presets: ['es2015', 'es2016', 'es2017']
-            },
-            build: {
+            transpile: {
+                options: {
+                    presets: ['es2015', 'es2016', 'es2017']
+                },
                 files: [
                     {
                         expand: true,     // Enable dynamic expansion.
                         cwd: './build/',      // Src matches are relative to this path.
                         src: [
                             'init.js',
+                            'version.js',
                             'modules/**/*.js',
                             '!modules/**/lib/**/*.js',
                             'src/**/*.js',
@@ -93,6 +94,33 @@ module.exports = function (grunt) {
                             'lib/twigjs/*.js'
                         ], // Actual pattern(s) to match.
                         dest: './build/',   // Destination path prefix.
+                        //overwrite: true,
+                        ext: '.js'   // Dest filepaths will have this extension.
+                    }
+                ]
+            },
+            minify: {
+                options: {
+                    sourceMap: false, // takes too much resources
+                    comments: false,
+                    presets: ['babili']
+                },
+                files: [
+                    {
+                        expand: true,     // Enable dynamic expansion.
+                        cwd: './build2/',      // Src matches are relative to this path.
+                        src: [
+                            'init.js',
+                            'modules/**/*.js',
+                            '!modules/**/lib/**/*.js',
+                            'src/**/*.js',
+                            '!lib/**/*',
+                            'lib/forms/**/*.js',
+                            'lib/twigjs/*.js',
+                            'lib/chemistry/*.js',
+                            'lib/loadingplot/*.js'
+                        ], // Actual pattern(s) to match.
+                        dest: './build2/',   // Destination path prefix.
                         //overwrite: true,
                         ext: '.js'   // Dest filepaths will have this extension.
                     }
@@ -135,7 +163,7 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: './src/components/',
                         src: [
-                            './d3/d3.min.js',
+                            './d3/d3*',
                             ['./fancytree/dist/jquery.fancytree*.js', './fancytree/dist/skin-lion/*'],
                             ['./jqgrid_edit/js/*.js', './jqgrid_edit/js/i18n/grid.locale-en.js', './jqgrid_edit/css/*.css'],
                             './jquery/dist/*',
@@ -145,24 +173,24 @@ module.exports = function (grunt) {
                             ['./ckeditor/skins/**', './ckeditor/ckeditor.js', './ckeditor/styles.js', './ckeditor/contents.css', './ckeditor/adapters/jquery.js', './ckeditor/lang/en.js', './ckeditor/plugins/**', './ckeditor/config.js'],
                             './farbtastic/src/farbtastic.js',
                             './jquery.threedubmedia/event.drag/jquery.event.drag.js',
-                            './sprintf/dist/sprintf.min.js',
+                            './sprintf/dist/**',
                             './requirejs/require.js',
-                            './x2js/xml2json.min.js',
+                            './x2js/xml2json*',
                             ['./leaflet/dist/**', './leaflet-omnivore/leaflet-omnivore.min.js'],
                             './jsoneditor/dist/**',
                             './jit/Jit/**/*',
-                            './ui-contextmenu/jquery.ui-contextmenu.min.js',
-                            './papa-parse/papaparse.min.js',
+                            './ui-contextmenu/jquery.ui-contextmenu*',
+                            './papa-parse/papaparse*',
                             ['./font-awesome/css/font-awesome.min.css', './font-awesome/fonts/*'],
                             './colors/css/colors.min.css',
-                            './pouchdb/dist/pouchdb.min.js',
+                            './pouchdb/dist/**',
                             './uri.js/src/*.js',
                             './onde/src/*',
                             ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
                             './superagent/superagent.js',
                             './modernizr/modernizr.js',
-                            './lodash/dist/lodash.min.js',
-                            './bowser/bowser.min.js',
+                            './lodash/dist/**',
+                            './bowser/bowser*',
                             './jquery-cookie/jquery.cookie.js',
                             './chemcalc/lib.js',
                             './jsgraph/dist/**',
@@ -174,10 +202,10 @@ module.exports = function (grunt) {
                             './ml/dist/*',
                             './jquery-tmpl/**',
                             './setImmediate/setImmediate.js',
-                            './chroma-js/chroma.min.js',
+                            './chroma-js/chroma*',
                             './async/dist/**',
                             './jsnmr/dist/**',
-                            './loglevel/dist/loglevel.min.js',
+                            './loglevel/dist/**',
                             './marked/lib/marked.js',
                             './highlight.js/build/highlight.pack.js',
                             './openchemlib/dist/*.js',
@@ -193,14 +221,14 @@ module.exports = function (grunt) {
                             './notifyjs/dist/**',
                             './web-animations-js/*.js',
                             './web-animations-js/*.js.map',
-                            './moment/min/moment.min.js',
+                            './moment/moment*',
                             './moment-duration-format/lib/moment-duration-format.js',
                             './smart-array-filter/dist/*',
-                            './numeral/min/numeral.min.js',
+                            './numeral/numeral*',
                             './flag-icon-css/css/flag-icon.min.css',
                             './flag-icon-css/flags/**',
                             './jquery-qrcode/jquery.qrcode.min.js',
-                            './mathjs/dist/math.min.js',
+                            './mathjs/dist/**',
                             './nmr-simulation/**',
                             './katex/dist/**',
                             './babel-standalone/**',
@@ -572,9 +600,10 @@ module.exports = function (grunt) {
         'copy:build',
         'copy:buildLib',
         'css:modules',
-        'babel:build',
+        'babel:transpile',
         'requirejs',
         'uglify:build',
+//        'babel:minify', // too slow
         'clean:build',
         'rename:afterBuild',
         'buildTime:unset'
