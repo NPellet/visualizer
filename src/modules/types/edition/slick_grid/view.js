@@ -1,6 +1,7 @@
 'use strict';
 
 define([
+    'jquery',
     'modules/default/defaultview',
     'src/util/debug',
     'lodash',
@@ -12,7 +13,7 @@ define([
     'slickgrid',
     'src/util/sandbox',
     'src/data/structures'
-], function (Default, Debug, _, Util, UI, Color, API, Renderer, Slick, Sandbox, structures) {
+], function ($, Default, Debug, _, Util, UI, Color, API, Renderer, Slick, Sandbox, structures) {
 
     function View() {
     }
@@ -686,7 +687,8 @@ define([
                 row.isAction = true;
                 return row;
             });
-            this.idPropertyName = this.module.getConfiguration('idProperty') || '_sgid';
+            this.idPropertyName = this.module.getConfiguration('idProperty') || Symbol('_sgid');
+            this.autoIdProperty = !this.module.getConfiguration('idProperty');
             if (this.module.getConfiguration('filterType') === 'pref') {
                 this._setScript(this.module.getConfiguration('filterRow'));
             }
@@ -1548,15 +1550,10 @@ define([
         },
 
         setNextUniqId: function (item, force) {
-            var autoId = !(this.module.getConfiguration('idProperty'));
-            if (autoId && (item[this.idPropertyName] === undefined || force)) {
-                Object.defineProperty(item, this.idPropertyName, {
-                    value: 'id_' + ++uniqueID,
-                    writable: true,
-                    configurable: false,
-                    enumerable: false
-                });
-            } else if (!autoId && !item[this.idPropertyName]) {
+            if (item[this.idPropertyName]) return;
+            if (this.autoIdProperty && (item[this.idPropertyName] === undefined || force)) {
+                item[this.idPropertyName] = ++uniqueID;
+            } else if (!this.autoIdProperty && !item[this.idPropertyName]) {
                 throw new Error(`An element of slick grid input does not define it's id property "${this.idPropertyName}"`);
             }
         },
