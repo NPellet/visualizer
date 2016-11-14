@@ -292,7 +292,7 @@ define([
                 return this.graph.getYAxis(index);
             }
 
-            var cfg = this.cfg;
+            var cfg = this.module.getConfiguration;
 
             var yAxis;
             for (var i = this.numberOfYAxes; i <= index; i++) {
