@@ -1,3 +1,13 @@
+<a name="2.71.6"></a>
+## [2.71.6](https://github.com/NPellet/visualizer/compare/v2.71.5...v2.71.6) (2016-11-14)
+
+
+### Features
+
+* **uploadUi:** enable column sorting ([fbc2a08](https://github.com/NPellet/visualizer/commit/fbc2a08)), closes [#989](https://github.com/NPellet/visualizer/issues/989)
+
+
+
 <a name="2.71.5"></a>
 ## [2.71.5](https://github.com/NPellet/visualizer/compare/v2.71.4...v2.71.5) (2016-11-09)
 
