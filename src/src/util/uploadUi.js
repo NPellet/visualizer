@@ -64,7 +64,7 @@ define([
                         enableTextSelectionOnCells: true,
                         enableColumnReorder: true,
                         forceFitColumns: true,
-                        multiColumnSort: true,
+                        multiColumnSort: false,
                         asyncEditorLoading: true,
                         asyncEditorLoadDelay: 30,
                         enableAsyncPostRender: true,
@@ -77,20 +77,20 @@ define([
                             id: 'name',
                             name: 'name',
                             field: 'name',
-                            sortable: false
+                            sortable: true
                         },
                         {
                             id: 'contentType',
                             name: 'contentType',
                             field: 'contentType',
                             editor: Slick.Editors.Text,
-                            sortable: false
+                            sortable: true
                         },
                         {
                             id: 'size',
                             name: 'size',
                             field: 'size',
-                            sortable: false
+                            sortable: true
                         },
                         {
                             id: 'toDelete',
@@ -98,7 +98,8 @@ define([
                             field: 'toDelete',
                             width: 40,
                             editor: Slick.Editors.Checkbox,
-                            formatter: Slick.Formatters.Checkmark
+                            formatter: Slick.Formatters.Checkmark,
+                            sortable: true
                         }
 
                     ];
@@ -149,7 +150,12 @@ define([
                         open: function () {
                             $dialog.append($slick);
                             $dialog.append($deleteAll);
-                            grid = new Slick.Grid($slick, data, columns, slickOptions);
+                            var slickData = new Slick.Data.DataView();
+                            slickData.beginUpdate();
+                            slickData.setItems(data, 'name');
+                            slickData.endUpdate();
+                            grid = new Slick.Grid($slick, slickData, columns, slickOptions);
+                            setGridEvents(grid, slickData);
                         },
                         closeOnEscape: true,
                         width: 700,
@@ -253,6 +259,26 @@ define([
                     });
                 });
             });
+    }
+
+    function setGridEvents(grid, data) {
+        function comparer(val1, val2) {
+            if (val1 < val2) {
+                return -1;
+            } else if (val2 < val1) {
+                return 1;
+            }
+            return 0;
+        }
+
+        grid.onSort.subscribe(function (e, args) {
+            data.sort(comparer, args.sortAsc, function (item) {
+                return item[args.sortCol.field];
+            });
+
+            grid.invalidateAllRows();
+            grid.render();
+        });
     }
 
     function downloadFormatter(row, cell, value, coldef, dataContext) {
