@@ -1,3 +1,13 @@
+<a name="2.71.7"></a>
+## [2.71.7](https://github.com/NPellet/visualizer/compare/v2.71.6...v2.71.7) (2016-11-14)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** fix undefined variable ([b273c6d](https://github.com/NPellet/visualizer/commit/b273c6d))
+
+
+
 <a name="2.71.6"></a>
 ## [2.71.6](https://github.com/NPellet/visualizer/compare/v2.71.5...v2.71.6) (2016-11-14)
 
