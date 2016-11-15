@@ -478,6 +478,14 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     module.setChildSync(['configuration', 'groups', 'actionCols', 0], []);
                 }
             }, 'slick_grid');
+        },
+        '2.71.8-1', function (view) {
+            eachModule(view, function (module) {
+                const asyncAwait = module.getChildSync(['configuration', 'groups', 'group', 0, 'asyncAwait']);
+                if (!asyncAwait) {
+                    module.setChildSync(['configuration', 'groups', 'group', 0, 'asyncAwait'], [[]]);
+                }
+            }, 'code_executor');
         }
 //  Add new migration functions here
 //  Do not forget to `npm run prerelease` before creating your migration script

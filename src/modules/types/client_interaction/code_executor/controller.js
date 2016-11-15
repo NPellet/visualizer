@@ -79,7 +79,7 @@ define([
                             options: {
                                 top: 'Top-level await'
                             },
-                            default: []
+                            default: ['top']
                         },
                         script: {
                             type: 'jscode',
