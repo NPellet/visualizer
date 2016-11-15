@@ -9,8 +9,10 @@ define([
     'lodash',
     'src/util/debug',
     'src/util/api',
-    'src/util/sandbox'
-], function (Default, Util, $, onde, Button, _, Debug, API, Sandbox) {
+    'src/util/sandbox',
+    'js-yaml'
+], function (Default, Util, $, onde, Button, _, Debug, API, Sandbox, Yaml) {
+    console.log('Yaml', Yaml);
 
     function View() {
         this._id = Util.getNextUniqueId();

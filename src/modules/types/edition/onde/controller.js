@@ -1,6 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash', 'src/util/debug'], function (Default, Schema, _, Debug) {
+define([
+    'modules/default/defaultcontroller',
+    'lib/json-schema/schema',
+    'lodash',
+    'src/util/debug',
+    'js-yaml']
+    , function (Default, Schema, _, Debug, Yaml) {
 
     function Controller() {
     }
@@ -116,8 +122,8 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash',
                         },
                         schema: {
                             type: 'jscode',
-                            mode: 'json',
-                            title: 'JSON schema',
+                            mode: 'yaml',
+                            title: 'YAML schema',
                             'default': '{}',
                             displayTarget: ['c']
                         },
@@ -213,7 +219,7 @@ define(['modules/default/defaultcontroller', 'lib/json-schema/schema', 'lodash',
             if (schemaSource === 'variable')
                 intSchema = this.inputSchema;
             else
-                intSchema = JSON.parse(this.module.getConfiguration('schema'));
+                intSchema = Yaml.safeLoad(this.module.getConfiguration('schema'));
             $.extend(true, schema, intSchema);
         }
         if (_.isEmpty(schema)) return;
