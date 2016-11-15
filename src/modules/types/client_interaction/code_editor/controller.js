@@ -60,6 +60,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/ac
                                 {title: 'Text', key: 'text'},
                                 {title: 'Javascript', key: 'javascript'},
                                 {title: 'JSON', key: 'json'},
+                                {title: 'YAML', key: 'yaml'},
                                 {title: 'HTML', key: 'html'},
                                 {title: 'XML', key: 'xml'},
                                 {title: 'Markdown', key: 'markdown'}
