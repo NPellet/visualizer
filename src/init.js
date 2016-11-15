@@ -15,6 +15,7 @@
 require.config({
     waitSeconds: 0,
     paths: {
+        'js-yaml': 'components/js-yaml/dist/js-yaml.min',
         ace: 'components/ace/src',
         async: 'components/async/dist/async',
         babel: 'components/babel-standalone/babel.min',
