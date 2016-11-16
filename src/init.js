@@ -15,7 +15,6 @@
 require.config({
     waitSeconds: 0,
     paths: {
-        'js-yaml': 'components/js-yaml/dist/js-yaml.min',
         ace: 'components/ace/src',
         async: 'components/async/dist/async',
         babel: 'components/babel-standalone/babel.min',
@@ -43,6 +42,7 @@ require.config({
         jsoneditor: 'components/jsoneditor/dist/jsoneditor-minimalist.min',
         'json-chart': 'components/json-chart/dist/json-chart.min',
         jszip: 'components/jszip/dist/jszip.min',
+        'js-yaml': 'components/js-yaml/dist/js-yaml.min',
         katex: 'components/katex/dist/katex.min',
         lodash: 'components/lodash/dist/lodash',
         loglevel: 'components/loglevel/dist/loglevel',
