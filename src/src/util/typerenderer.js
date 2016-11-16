@@ -669,7 +669,7 @@ define([
             return renderingPromise;
         },
         addType(name, renderer) {
-            functions[name] = renderer;
+            functions[name.toLowerCase()] = renderer;
         }
     };
 
