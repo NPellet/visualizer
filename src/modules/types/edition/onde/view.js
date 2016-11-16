@@ -10,10 +10,7 @@ define([
     'src/util/debug',
     'src/util/api',
     'src/util/sandbox',
-    'js-yaml'
-], function (Default, Util, $, onde, Button, _, Debug, API, Sandbox, Yaml) {
-    console.log('Yaml', Yaml);
-
+], function (Default, Util, $, onde, Button, _, Debug, API, Sandbox) {
     function View() {
         this._id = Util.getNextUniqueId();
     }
