@@ -232,7 +232,8 @@ module.exports = function (grunt) {
                             './nmr-simulation/**',
                             './katex/dist/**',
                             './babel-standalone/**',
-                            './fetch/fetch.js'
+                            './fetch/fetch.js',
+                            './js-yaml/dist/**'
                         ],
                         dest: './build/components/'
                     },
