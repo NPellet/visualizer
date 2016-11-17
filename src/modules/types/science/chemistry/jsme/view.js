@@ -138,6 +138,9 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
             },
             smiles: function (moduleValue) {
                 var that = this;
+                this._currentValue = moduleValue;
+                this._currentType = 'smiles';
+
                 require(['openchemlib/openchemlib-core'], function (OCL) {
                     var smiles = String(moduleValue.get());
                     var mol = OCL.Molecule.fromSmiles(smiles);

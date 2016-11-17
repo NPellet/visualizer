@@ -210,10 +210,14 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
             currentValue &&
             this.module.getConfigurationCheckbox('outputResult', 'yes')) {
 
+            console.log(this.module.view._currentType, smiles);
+
             if (this.module.view._currentType === 'mol') {
                 currentValue.setValue(mol, true);
             } else if (this.module.view._currentType === 'jme') {
                 currentValue.setValue(jme, true);
+            } else if (this.module.view._currentType === 'smiles') {
+                currentValue.setValue(smiles, true);
             }
             this.module.model.dataTriggerChange(currentValue);
         }
