@@ -678,7 +678,7 @@ define([
 
             this.hiddenColumns = undefined;
             this.slick = {};
-            this.colConfig = (this.module.getConfiguration('cols') || []).filter(function (row) {
+            this.colConfig = (this.module.getConfiguration('cols', [], false)).filter(function (row) {
                 return row.name;
             });
             this.actionColConfig = (this.module.getConfiguration('actionCols') || []).filter(function (row) {
