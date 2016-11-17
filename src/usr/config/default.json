@@ -50,6 +50,10 @@
     {
       "file": "usr/filters/markdown",
       "name": "Markdown to HTML"
+    },
+    {
+      "file": "usr/filters/yaml2json",
+      "name": "Yaml to JSON"
     }
   ],
   "modules": {
