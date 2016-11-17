@@ -1,3 +1,22 @@
+<a name="2.72.0"></a>
+# [2.72.0](https://github.com/NPellet/visualizer/compare/v2.71.7...v2.72.0) (2016-11-17)
+
+
+### Bug Fixes
+
+* **slickgrid:** save column width on resize ([63d594a](https://github.com/NPellet/visualizer/commit/63d594a)), closes [#992](https://github.com/NPellet/visualizer/issues/992)
+* **typerenderer:** lowercase name in addType ([3f58cca](https://github.com/NPellet/visualizer/commit/3f58cca))
+
+
+### Features
+
+* **code_editor:** add yaml to list of supported formats ([b3aafbd](https://github.com/NPellet/visualizer/commit/b3aafbd))
+* **code_executor:** enable top-level await from now on ([e51a431](https://github.com/NPellet/visualizer/commit/e51a431)), closes [#990](https://github.com/NPellet/visualizer/issues/990)
+* **onde:** allow yaml in schema ([f04790c](https://github.com/NPellet/visualizer/commit/f04790c))
+* **ui:** allow twig template in form ([1fa3cdf](https://github.com/NPellet/visualizer/commit/1fa3cdf)), closes [#993](https://github.com/NPellet/visualizer/issues/993)
+
+
+
 <a name="2.71.7"></a>
 ## [2.71.7](https://github.com/NPellet/visualizer/compare/v2.71.6...v2.71.7) (2016-11-14)
 
