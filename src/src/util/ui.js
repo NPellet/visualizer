@@ -16,9 +16,10 @@ define([
     'forms/button',
     'src/util/couchshare',
     'src/util/Form',
+    'lib/twigjs/twig',
     'notifyjs',
     'jquery-ui/widgets/dialog'
-], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer, Form) {
+], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer, Form, Twig) {
     // On load add the style for the progress notification
     $.notify.addStyle('inprogress', {
         html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(24, 'black').css('vertical-align', 'middle').wrap('<div/>').parent().html()}</div>`,
@@ -104,6 +105,15 @@ define([
 
     exports.form = function (div, inputObject, opts) {
         opts = opts || {};
+
+        if (opts.twig) {
+            var template = Twig.twig({
+                data: DataObject.resurrect(div)
+            });
+            var render = template.renderAsync(DataObject.resurrect(opts.twig));
+            render.render();
+            div = render.html;
+        }
 
         return new Promise(function (resolve) {
             const done = () => {
