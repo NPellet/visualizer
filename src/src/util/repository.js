@@ -50,12 +50,11 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     };
 
 
-    var Repository = function (options) {
+    function Repository(options) {
 
         this._killers = {};
         this._value = [];
         this.options = options || {doNotSave: false};
-        var i;
 
         this.on('change', function (sourcekeys, value, senderId) {
 
@@ -63,7 +62,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
             this._keys = this._keys || [];
             sourcekeys = Array.isArray(sourcekeys) ? sourcekeys : [sourcekeys];
 
-            for (i = 0; i < sourcekeys.length; i++) {
+            for (var i = 0; i < sourcekeys.length; i++) {
                 if (this._keys[sourcekeys[i]] == undefined)
                     continue;
                 for (var j = 0; j < this._keys[sourcekeys[i]].length; j++)
@@ -89,7 +88,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
                 }
             }
         });
-    };
+    }
 
     $.extend(Repository.prototype, Event.prototype);
 
