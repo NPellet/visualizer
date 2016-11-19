@@ -43,7 +43,7 @@
     "jquery": "2.2.1",
     "jquery-cookie": "1.4.1",
     "jquery-mousewheel": "3.1.13",
-    "jquery-qrcode": "cheminfo/jquery-qrcode#1170d085ffb9e8c5de5290041902923ceca3c9e7",
+    "jquery-qrcode": "cheminfo/jquery-qrcode#2e5735952789bb67e1bd1203fd72d4435cfa565d",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
     "jquery-ui": "1.12.1",
     "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
