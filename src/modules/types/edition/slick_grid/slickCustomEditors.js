@@ -685,28 +685,26 @@ define([
         }
         var $wrapper = $(this.args.container);
         this.initOptions = this.initOptions || {};
-        function onClick(e) {
-            if (e.target !== that.$input[0]) {
-                that.args.cancelChanges();
-            }
-        }
-
-        $wrapper.off('click', onClick);
-        $wrapper.on('click', onClick);
 
 
         this.$input = $(`<select>${htmlOptions}</select>`);
 
-
         this.$input
             .appendTo($wrapper)
+            .focus()
             .on('change', function () {
                 that.args.commitChanges('next');
             })
             .on('blur', function () {
                 that.args.cancelChanges();
+            })
+            .focusout(function () {
+                // Shouldn't do this if auto-edit
+                if (!that.args.grid.module.view.slick.options.autoEdit)
+                    that.args.commitChanges('next');
+                else
+                    that.args.commitChanges('none');
             });
-        this.$input.click();
     }
 
 
