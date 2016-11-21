@@ -1,3 +1,20 @@
+<a name="2.73.0"></a>
+# [2.73.0](https://github.com/NPellet/visualizer/compare/v2.72.0...v2.73.0) (2016-11-21)
+
+
+### Bug Fixes
+
+* **jsme:** don't pass DataStrings to jsme ([e487457](https://github.com/NPellet/visualizer/commit/e487457))
+* **slick_grid:** fixed select editor ([7872905](https://github.com/NPellet/visualizer/commit/7872905)), closes [#982](https://github.com/NPellet/visualizer/issues/982)
+
+
+### Features
+
+* **core:** add yaml2json filter ([6512ddf](https://github.com/NPellet/visualizer/commit/6512ddf))
+* **jsme:** add action for jsme options ([7e5b200](https://github.com/NPellet/visualizer/commit/7e5b200))
+
+
+
 <a name="2.72.0"></a>
 # [2.72.0](https://github.com/NPellet/visualizer/compare/v2.71.7...v2.72.0) (2016-11-17)
 
