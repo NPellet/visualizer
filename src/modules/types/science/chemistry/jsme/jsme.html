@@ -33,6 +33,12 @@
 //			jsmeApplet.repaint();
     };
 
+    window.setOptions = function (options) {
+        def.done(function () {
+            jsmeApplet.options(options);
+        });
+    };
+
     window.clear = function () {
         jsmeApplet.reset();
     };
@@ -168,6 +174,11 @@
                 break;
             case 'setSize':
                 setSize(message.message.width, message.message.height);
+                break;
+            case 'setOptions':
+                if(message.message && message.message.prefs) {
+                    setOptions(message.message.prefs);
+                }
                 break;
             default:
                 console.error('Message type not handled: ', message.type);

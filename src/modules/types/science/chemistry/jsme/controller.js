@@ -92,6 +92,10 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         }
     };
 
+    Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        setOptions: 'Set JSME options'
+    });
+
 
     Controller.prototype.variablesIn = ['mol', 'jme', 'smiles'];
 

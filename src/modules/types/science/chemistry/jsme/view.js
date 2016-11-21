@@ -77,6 +77,13 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
 
         },
 
+        setJSMEOptions: function (options) {
+            options = Object.assign({}, options, {
+                prefs: options.prefs ? options.prefs.map(d => String(d)).join() : undefined
+            });
+            this.postMessage('setOptions', options);
+        },
+
         getPrefs: function () {
             return this.module.getConfiguration('prefs').join();
         },
@@ -147,6 +154,12 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
                     that.postMessage('setMolFile', mol.toMolfile());
                     that._initHighlight(moduleValue);
                 });
+            }
+        },
+
+        onActionReceive: {
+            setOptions: function (val) {
+                this.setJSMEOptions(val);
             }
         },
 
