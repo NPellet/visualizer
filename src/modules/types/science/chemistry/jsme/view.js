@@ -125,7 +125,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
                 this._currentType = 'mol';
                 if (!moduleValue.get()) return;
 
-                this.postMessage('setMolFile', moduleValue.get());
+                this.postMessage('setMolFile', String(moduleValue.get()));
                 this._initHighlight(moduleValue);
             },
             jme: function (moduleValue) {
@@ -133,7 +133,7 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
                 this._currentType = 'jme';
                 if (!moduleValue.get()) return;
 
-                this.postMessage('setJmeFile', moduleValue.get());
+                this.postMessage('setJmeFile', String(moduleValue.get()));
                 this._initHighlight(moduleValue);
             },
             smiles: function (moduleValue) {
