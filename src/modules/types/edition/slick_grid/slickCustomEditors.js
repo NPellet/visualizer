@@ -465,14 +465,19 @@ define([
         var that = this;
         var $wrapper = this.args.container;
         this.initOptions = this.initOptions || {};
+        var editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
         if (this.initOptions.textarea) {
-            $wrapper = $('<div>').appendTo(this.args.container);
+            $('<div>').appendTo(this.args.container);
             this.$input = $('<textarea  class="editor-text" rows="10" cols="60" style="z-index:10000; position: relative;"/>');
         } else {
-            this.$input = $('<INPUT type="text" class="editor-text" />');
+            this.$input = $('<input type="text" class="editor-text" />');
+            if (editorOptions) {
+                this.$input.attr('list', 'choices');
+            }
         }
         this.$input
             .appendTo(this.args.container)
+            .after(`<datalist id="choices">${editorOptions}</datalist>`)
             .bind('keydown.nav', function (e) {
                 if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
                     e.stopImmediatePropagation();
@@ -647,7 +652,6 @@ define([
     }
 
     function SimpleLongTextEditor(args) {
-        var that = this;
         this.args = args;
         this.initOptions = {
             textarea: true
@@ -672,17 +676,8 @@ define([
 
     // ========== SELECT ===================
     function selectInit() {
-        var that = this;
         var options = this.args.column.colDef.editorOptions;
-        options = options || '';
-        options = options.split(';').map(opt => opt.split(':'));
-        var htmlOptions = '';
-
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].length >= 1) {
-                htmlOptions += `<option value="${options[i][0]}">${options[i][1] || options[i][0]}</option>`;
-            }
-        }
+        var htmlOptions = getEditorOptions(options);
         var $wrapper = $(this.args.container);
         this.initOptions = this.initOptions || {};
 
@@ -692,18 +687,18 @@ define([
         this.$input
             .appendTo($wrapper)
             .focus()
-            .on('change', function () {
-                that.args.commitChanges('next');
+            .on('change', () => {
+                this.args.commitChanges('next');
             })
-            .on('blur', function () {
-                that.args.cancelChanges();
+            .on('blur', () => {
+                this.args.cancelChanges();
             })
-            .focusout(function () {
+            .focusout(() => {
                 // Shouldn't do this if auto-edit
-                if (!that.args.grid.module.view.slick.options.autoEdit)
-                    that.args.commitChanges('next');
+                if (!this.args.grid.module.view.slick.options.autoEdit)
+                    this.args.commitChanges('next');
                 else
-                    that.args.commitChanges('none');
+                    this.args.commitChanges('none');
             });
     }
 
@@ -725,6 +720,15 @@ define([
         };
 
         this.init();
+    }
+
+    function getEditorOptions(editorOptions) {
+        if (!editorOptions) {
+            editorOptions = [];
+        } else {
+            editorOptions = editorOptions.split(';').map(o => o.split(':'));
+        }
+        return editorOptions.map(o => `<option value="${o[0]}">${o[1] || o[0]}</option>`).join('');
     }
 
 });
