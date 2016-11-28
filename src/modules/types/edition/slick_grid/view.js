@@ -1797,7 +1797,7 @@ define([
             };
         }
 
-        match = query.match(/^([<>=]{1,2})([0-9.]+)$/);
+        match = query.match(/^([<>=]{1,2})([0-9.-]+)$/);
         if (match) {
             if (match[1] === '<') {
                 return function (val) {
@@ -1822,7 +1822,7 @@ define([
             }
         }
 
-        match = query.match(/^([0-9.]+)\.\.([0-9.]*)$/);
+        match = query.match(/^([0-9.-]+)\.\.([0-9.-]*)$/);
         if (match) {
             return function (val) {
                 return val >= match[1] && val <= match[2];
