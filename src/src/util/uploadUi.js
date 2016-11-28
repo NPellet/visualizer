@@ -50,9 +50,8 @@ define([
         if (data && mode && modes[mode]) {
             data = modes[mode](data, options);
         }
-        var slickData = new Slick.Data.DataView();
         data = data || [];
-        slickData.setItems(data, 'name');
+        var slickData;
         return cssLoaded
             .then(function () {
                 return new Promise(function (resolve) {
@@ -123,7 +122,7 @@ define([
                         data.forEach(function (d) {
                             if (d.name !== 'view.json' || d.name === 'data.json' || d.name === 'meta.json') d.toDelete = toSet;
                         });
-                        grid.invalidate();
+                        grid.invalidateAllRows();
                         grid.render();
                     });
                     var grid;
@@ -150,7 +149,7 @@ define([
                         open: function () {
                             $dialog.append($slick);
                             $dialog.append($deleteAll);
-                            var slickData = new Slick.Data.DataView();
+                            slickData = new Slick.Data.DataView();
                             slickData.beginUpdate();
                             slickData.setItems(data, 'name');
                             slickData.endUpdate();
@@ -186,14 +185,15 @@ define([
                     function addFile(file, name) {
                         name = name || '';
                         var filePath = prefix + (name === '' ? file.name : name + '/' + file.name);
-                        var exists = _.find(data, function (v) {
+                        var exists = _.find(slickData.getItems(), function (v) {
                             return v.name === filePath;
                         });
                         if (exists) {
                             exists.file = file;
                             exists.color = 'orange';
+                            exists.size = file.size || exists.size;
                         } else {
-                            data.push({
+                            slickData.addItem({
                                 name: filePath,
                                 file: file,
                                 contentType: file.type || mimeTypes.lookup(filePath) || 'application/octet-stream',
@@ -252,9 +252,8 @@ define([
                             prom.push(traverseEntries(entry, entry.name));
                         }
                         Promise.all(prom).then(function () {
-                            grid.updateRowCount();
+                            grid.invalidateAllRows();
                             grid.render();
-                            grid.autosizeColumns();
                         });
                     });
                 });
