@@ -139,6 +139,10 @@
     text-align: center;
     width: 100%;
 }
+
+.periodic-table .element-data p {
+    padding: 1px;
+}
 .periodic-table .element-data .Z {
     text-align: left;
 }
