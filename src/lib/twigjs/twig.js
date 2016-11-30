@@ -76,6 +76,18 @@ define([
         }
     });
 
+    Object.getOwnPropertyNames(String.prototype).forEach(function(method) {
+        if(typeof String.prototype[method] === 'function') {
+            Twig.extendFilter(stringMethod(method), function () {
+                return String.prototype[method].apply(arguments[0], Array.from(arguments).slice(1));
+            });
+        }
+    });
+
+    function stringMethod(method) {
+        return 'str' + method.substring(0,1).toUpperCase() + method.substring(1);
+    }
+
     return Twig;
 
 });
