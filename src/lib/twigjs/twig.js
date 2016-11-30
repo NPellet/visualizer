@@ -70,7 +70,7 @@ define([
     // Add filters for mathematical functions
     Object.getOwnPropertyNames(Math).forEach(function(method) {
         if(typeof Math[method] === 'function') {
-            Twig.extendFilter(method, function() {
+            Twig.extendFilter('math_' + method, function() {
                 return Math[method].apply(null, arguments);
             });
         }
