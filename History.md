@@ -1,3 +1,33 @@
+<a name="2.74.0"></a>
+# [2.74.0](https://github.com/NPellet/visualizer/compare/v2.73.0...v2.74.0) (2016-12-02)
+
+
+### Bug Fixes
+
+* **couchdbAttachments:** update slick grid on new/existing attachment ([3358d36](https://github.com/NPellet/visualizer/commit/3358d36)), closes [#1000](https://github.com/NPellet/visualizer/issues/1000)
+* **periodic-table:** add small padding to element-data ([10b22e3](https://github.com/NPellet/visualizer/commit/10b22e3))
+* **slick_grid:** fix range search ([f42f488](https://github.com/NPellet/visualizer/commit/f42f488)), closes [#1002](https://github.com/NPellet/visualizer/issues/1002)
+* **slickgrid:** highlight selected line when colored ([fab615a](https://github.com/NPellet/visualizer/commit/fab615a)), closes [#1008](https://github.com/NPellet/visualizer/issues/1008)
+
+
+### Features
+
+* **slick_grid:** autocomplete options for text editor ([132f709](https://github.com/NPellet/visualizer/commit/132f709)), closes [#998](https://github.com/NPellet/visualizer/issues/998)
+* **Twig:** add String prototype's method as filters ([9944198](https://github.com/NPellet/visualizer/commit/9944198))
+* **util:** add hexToBase64 and base64ToHex ([7f61860](https://github.com/NPellet/visualizer/commit/7f61860))
+
+
+### twig
+
+* **fix:** use prefix for math filters ([ec2ad11](https://github.com/NPellet/visualizer/commit/ec2ad11))
+
+
+### BREAKING CHANGES
+
+* fix: The math filters now have the math_ prefix
+
+
+
 <a name="2.73.0"></a>
 # [2.73.0](https://github.com/NPellet/visualizer/compare/v2.72.0...v2.73.0) (2016-11-21)
 
