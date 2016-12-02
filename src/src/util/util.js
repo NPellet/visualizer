@@ -544,7 +544,7 @@ define([
             if (tmp.length === 1) tmp = '0' + tmp;
             hex[hex.length] = tmp;
         }
-        return hex.join(' ');
+        return hex.join('');
     };
 
     exports.contentTypeToType = function (contentType) {
