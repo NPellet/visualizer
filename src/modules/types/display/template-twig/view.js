@@ -59,6 +59,9 @@ define([
             this.resolveReady();
             this.render(() => {
                 this.resetForm();
+                if(this.module.getConfiguration('template')) {
+                    this.submit();
+                }
             });
         },
 
