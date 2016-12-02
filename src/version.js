@@ -21,6 +21,14 @@ define(['lib/semver/semver'], function (semver) {
         throw new Error('Version number is invalid: ' + version);
     }
 
+    let isModernBrowser;
+    try {
+        eval('(async function() {})()');
+        isModernBrowser = true;
+    } catch (e) {
+        isModernBrowser = false;
+    }
+
     let buildTime = null;
     let head = false;
     if (BUILD_TIME) {
@@ -37,13 +45,10 @@ define(['lib/semver/semver'], function (semver) {
             buildTime = date.toLocaleDateString();
         }
     } else {
-        // HEAD check
-        try {
-            eval('(async function() {})()');
-        } catch (e) {
+        head = true;
+        if (!isModernBrowser) {
             alert('To use the unbuilt HEAD of the visualizer, you need a browser that supports async/await features (like Chrome 55+).\nIf you are not on HEAD, please report a bug on GitHub.');
         }
-        head = true;
     }
 
     return {
@@ -56,7 +61,8 @@ define(['lib/semver/semver'], function (semver) {
         version: version,
         buildTime: buildTime,
         isBuild: buildTime != null,
-        head: head
+        head: head,
+        isModernBrowser: isModernBrowser
     };
 
 });

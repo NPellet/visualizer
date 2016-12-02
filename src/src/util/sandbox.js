@@ -1,6 +1,8 @@
 'use strict';
 
-define(['babel'], function (babel) {
+define(['version', 'babel'], function (Version, babel) {
+
+    const shouldUseBabel = !Version.isModernBrowser;
 
     function Sandbox() {
         this.contextData = [];
@@ -9,8 +11,8 @@ define(['babel'], function (babel) {
     }
 
     Sandbox.prototype.setContext = function (context) {
-        var ctxString = '';
-        var ctxData = [];
+        let ctxString = '';
+        let ctxData = [];
         Object.keys(context).forEach(function (key, i) {
             ctxString += 'var ' + key + ' = __ctx__[' + i + ']; ';
             ctxData.push(context[key]);
@@ -24,7 +26,9 @@ define(['babel'], function (babel) {
             script += '//# sourceURL=' + sourceURL + '@' + this.scriptID++;
         }
         script = this.contextString + script;
-        script = babel.transform(script, {presets: ['es2015', 'es2016', 'es2017']}).code;
+        if (shouldUseBabel) {
+            script = babel.transform(script, {presets: ['es2015', 'es2016', 'es2017']}).code;
+        }
         return safeEval(script, this.contextData.slice());
     };
 
