@@ -1248,11 +1248,15 @@ define([
                     var item = that.grid.getDataItem(i);
                     if (item && item.__group !== true) {
                         var color = item.getChildSync(colorjPath);
+                        var node = that.grid.getCellNode(i, 0);
                         if (color) {
-                            for (var j = 0; j < cols.length; j++) {
-                                var node = that.grid.getCellNode(i, j);
-                                $(node).css('background-color', color.get());
-                            }
+                            $(node).parent().css('background-color', color.get()).addClass('has-color');
+                            // for (var j = 0; j < cols.length; j++) {
+                            //     var node = that.grid.getCellNode(i, j);
+                            //     $(node).css('background-color', color.get());
+                            // }
+                        } else {
+                            $(node).parent().css('background-color', '').removeClass('has-color');
                         }
                     }
                 }
