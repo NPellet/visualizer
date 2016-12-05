@@ -1,3 +1,14 @@
+<a name="2.74.1"></a>
+## [2.74.1](https://github.com/NPellet/visualizer/compare/v2.74.0...v2.74.1) (2016-12-05)
+
+
+### Bug Fixes
+
+* **Form:** resurrect DataObjects when setting dom attributes ([b2e90a0](https://github.com/NPellet/visualizer/commit/b2e90a0))
+* **twig:** never empty dom ([25f6f97](https://github.com/NPellet/visualizer/commit/25f6f97))
+
+
+
 <a name="2.74.0"></a>
 # [2.74.0](https://github.com/NPellet/visualizer/compare/v2.73.0...v2.74.0) (2016-12-02)
 
