@@ -97,7 +97,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             var transform = getTransform(el, 'backward');
             switch (el.type) {
                 case 'checkbox':
-                    el.checked = value;
+                    el.checked = DataObject.resurrect(value);
                     break;
 
                 case 'radio':
@@ -170,5 +170,5 @@ function getTransform(dom, type) {
 }
 
 function identity(input) {
-    return input;
+    return DataObject.resurrect(input);
 }
