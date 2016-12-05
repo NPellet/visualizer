@@ -113,14 +113,15 @@ define([
         blank: {
             value: function () {
                 this.renderPromise = this.renderPromise.then(() => {
+                    this.dom.hide();
                     this.getForm();
-                    this.dom.empty();
                 }).catch(e => {
                     Debug.warn('Error');
                 });
             },
             tpl: function () {
                 this.renderPromise = this.renderPromise.then(() => {
+                    this.dom.hide();
                     this.getForm();
                     this.template = Twig.twig({
                         data: ''
@@ -186,6 +187,8 @@ define([
                     if (cb) cb();
                     that.setStyle();
                     that.module.controller.onRendered(that.dom.html());
+                    // Render succeeded, we show the dom
+                    that.dom.show();
                 }).catch(e => {
                     Debug.warn('Error rendering twig template', e);
                 });
