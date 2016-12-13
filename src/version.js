@@ -23,6 +23,7 @@ define(['lib/semver/semver'], function (semver) {
 
     let isModernBrowser;
     try {
+        // eslint-disable-next-line no-eval
         eval('(async function() {})()');
         isModernBrowser = true;
     } catch (e) {
@@ -47,6 +48,7 @@ define(['lib/semver/semver'], function (semver) {
     } else {
         head = true;
         if (!isModernBrowser) {
+            // eslint-disable-next-line no-alert
             alert('To use the unbuilt HEAD of the visualizer, you need a browser that supports async/await features (like Chrome 55+).\nIf you are not on HEAD, please report a bug on GitHub.');
         }
     }

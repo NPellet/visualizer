@@ -65,7 +65,7 @@ define(['jquery'], function ($) {
             };
 
             req.onerror = function (e) {
-                def.reject();
+                def.reject(e);
             };
 
             return def;
@@ -111,8 +111,8 @@ define(['jquery'], function ($) {
                 }
             };
 
-            req.onerror = function () {
-
+            req.onerror = function (e) {
+                def.reject(e);
             };
 
             return def;

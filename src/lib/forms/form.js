@@ -10,7 +10,7 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
     Form.prototype = new Section();
     $.extend(Form.prototype, {
 
-        init: function (options) {
+        init: function (options = {}) {
 
             var self = this;
 

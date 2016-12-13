@@ -17,6 +17,7 @@ define([
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     function noop() {
+        // empty
     }
 
     var regQuote = /"/g,
@@ -25,7 +26,7 @@ define([
     const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
 
     function makejPathFunction(jpath) {
-// comment
+
         if (!jpath) {
             return noop;
         }
@@ -48,7 +49,7 @@ define([
         }
 
         var functionEvaled = noop;
-        eval('functionEvaled = function( el ) { if (el && ' + ifString + ') return ' + ifElement + '["' + splitted[l].replace(regQuote, '\\"') + '"]' + '; };');
+        eval(`functionEvaled = function( el ) { if (el && ${ifString}) return ${ifElement}['${splitted[l].replace(regQuote, '\\"')}']; };`);
         return functionEvaled;
 
     }
@@ -289,8 +290,7 @@ define([
     /**
      * No-op function
      */
-    exports.noop = function noop() {
-    };
+    exports.noop = noop;
 
     let uniqueid = 0;
     /**

@@ -574,12 +574,9 @@ define([
                 allLayers[key] = key;
             });
 
-            var form = new Form({});
+            var form = new Form();
 
-            form.init({
-                onValueChanged: function (value) {
-                }
-            });
+            form.init();
 
             var structure = {
                 sections: {
