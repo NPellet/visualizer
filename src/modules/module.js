@@ -437,148 +437,59 @@ define([
             this.getDomWrapper().show();
         },
 
-        doConfig: function (sectionToOpen) {
-            var that = this;
-            var div = ui.dialog({
-                autoPosition: true,
-                noHeader: true,
-                width: '80%'
-            });
+        getConfigForm() {
+            const that = this;
 
-            var references = $.extend({}, this.controller.defaultReferences, this.controller.references);
-            var events = $.extend({}, this.controller.defaultEvents, this.controller.events);
-            var i, l, keys;
+            const references = Object.assign({}, this.controller.defaultReferences, this.controller.references);
+            const events = Object.assign({}, this.controller.defaultEvents, this.controller.events);
+            const actionsIn = Object.assign({}, this.controller.defaultActionsIn, this.controller.actionsIn);
 
-            // Filters
-            var filter = API.getAllFilters(),
-                allFilters;
+            const filters = makeFilters(API.getAllFilters());
 
-            function makeFilters(arraySource) {
-                if (!arraySource) {
-                    return;
-                }
+            const autoCompleteVariables = Util.stringsToAutocomplete(Variables.getNames());
+            const autoCompleteActions = Util.stringsToAutocomplete(API.getRepositoryActions().getKeys());
 
-                var target = [];
-                if (Array.isArray(arraySource)) {
-                    for (var i = 0; i < arraySource.length; i++) {
+            const varsInList = this.controller.variablesIn
+                .filter(variable => references[variable])
+                .map(variable => ({
+                    key: variable,
+                    title: references[variable].label
+                }));
 
-                        target.push({
-                            key: arraySource[i].file || '',
-                            title: arraySource[i].name,
-                            children: makeFilters(arraySource[i].children)
-                        });
-                    }
-                }
-                return target;
-            }
+            const alljpaths = {};
+            Object.keys(references).forEach(ref => alljpaths[ref] = this.model.getjPath(ref));
 
-            allFilters = makeFilters(filter);
-
-            // AUTOCOMPLETE VARIABLES
-            var autoCompleteVariables = [];
-            keys = Variables.getNames();
-            for (i = 0; i < keys.length; i++) {
-                autoCompleteVariables.push({title: keys[i], label: keys[i]});
-            }
-
-            // AUTOCOMPLETE ACTIONS
-            var autoCompleteActions = [];
-            keys = API.getRepositoryActions().getKeys();
-            for (i = 0; i < keys.length; i++) {
-                autoCompleteActions.push({title: keys[i], label: keys[i]});
-            }
-
-            // Receive configuration
-            var varsIn = that.controller.variablesIn;
-            var varsInList = [];
-            for (i = 0, l = varsIn.length; i < l; i++) {
-                if (!references[varsIn[i]]) {
-                    continue;
-                }
-
-                varsInList.push({
-                    key: varsIn[i],
-                    title: references[varsIn[i]].label
-                });
-            }
-
-            // Send configuration
-            var alljpaths = [];
-            for (i in references) {
-                alljpaths[i] = that.model.getjPath(i);
-            }
-
-            function makeReferences(event, type) {
-                if (!events[event]) {
-                    return {};
-                }
-
-                var referenceList;
-                switch (type) {
-                    case 'event':
-                        referenceList = events[event].refVariable || [];
-                        break;
-
-                    case 'action':
-                        referenceList = events[event].refAction || [];
-                        break;
-                }
-
-                var list = [];
-                for (var i = 0; i < referenceList.length; i++) {
-                    list.push({
-                        key: referenceList[i],
-                        title: references[referenceList [i]].label
-                    });
-                }
-
-                return list;
-            }
-
-            // VARIABLES OUT
-            // ACTIONS OUT
-            var eventsVariables = [];
-            var eventsActions = [];
-
-            for (i in events) {
-                // If this event can send a variable
-                if (events[i].refVariable) {
+            const eventsVariables = [];
+            const eventsActions = [];
+            for (const event in events) {
+                if (events[event].refVariable) {
                     eventsVariables.push({
-                        title: events[i].label,
-                        key: i
+                        key: event,
+                        title: events[event].label
                     });
                 }
-
-                // If this event can send an action
-                if (events[i].refAction) {
+                if (events[event].refAction) {
                     eventsActions.push({
-                        title: events[i].label,
-                        key: i
+                        key: event,
+                        title: events[event].label
                     });
                 }
             }
 
-            // ACTIONS IN
-            var actionsIn = $.extend({}, this.controller.defaultActionsIn, this.controller.actionsIn);
-            var actionsInList = [];
-
-            for (i in actionsIn) {
+            const actionsInList = [];
+            for (const action in actionsIn) {
                 actionsInList.push({
-                    title: actionsIn[i],
-                    key: i
+                    key: action,
+                    title: actionsIn[action]
                 });
             }
 
-            var allLayers = {};
-            that.eachLayer(function (layer, key) {
+            const allLayers = {};
+            this.eachLayer(function (layer, key) {
                 allLayers[key] = key;
             });
 
-            var form = new Form();
-
-            form.init();
-
-            var structure = {
+            const structure = {
                 sections: {
                     module_infos: {
                         options: {
@@ -728,9 +639,9 @@ define([
                 }
             };
 
-            var specificStructure = that.controller.configurationStructure();
+            const specificStructure = this.controller.configurationStructure();
             if (specificStructure) {
-                structure.sections.module_specific_config = $.extend(specificStructure, {
+                structure.sections.module_specific_config = Object.assign(specificStructure, {
                     options: {
                         title: 'Module configuration',
                         icon: 'page_white_wrench'
@@ -764,7 +675,7 @@ define([
                                 filter: {
                                     type: 'combo',
                                     title: 'Filter variable',
-                                    options: allFilters
+                                    options: filters
                                 }
                             }
                         }
@@ -804,7 +715,7 @@ define([
                                 filter: {
                                     type: 'combo',
                                     title: 'Filter variable',
-                                    options: allFilters
+                                    options: filters
                                 },
                                 name: {
                                     type: 'text',
@@ -884,9 +795,11 @@ define([
                 };
             }
 
+            const form = new Form();
+            form.init();
             form.setStructure(structure);
 
-            form.onStructureLoaded().done(function () {
+            form.onStructureLoaded().then(function () {
                 if (form.getSection('vars_out')) {
                     form.getSection('vars_out').getGroup('group').getField('event').options.onChange = function (fieldElement) {
                         if (!fieldElement.groupElement) {
@@ -939,28 +852,28 @@ define([
                     };
                 }
 
-                var moduleInfosHtml =
-                        '<table class="moduleInformation">' +
-                        '<tr><td>Module name</td><td>' + that.controller.moduleInformation.name + '</td></tr>' +
-                        '<tr><td></td><td><small>' + that.controller.moduleInformation.description + '</small></td></tr>' +
-                        '<tr><td>Module author</td><td>' + that.controller.moduleInformation.author + '</td></tr>' +
-                        '<tr><td>Creation date</td><td>' + that.controller.moduleInformation.date + '</td></tr>' +
-                        '<tr><td>Released under</td><td>' + that.controller.moduleInformation.license + '</td></tr>' +
-                        '</table>'
-                    ;
+                const moduleInfosHtml =
+                    '<table class="moduleInformation">' +
+                    '<tr><td>Module name</td><td>' + that.controller.moduleInformation.name + '</td></tr>' +
+                    '<tr><td></td><td><small>' + that.controller.moduleInformation.description + '</small></td></tr>' +
+                    '<tr><td>Module author</td><td>' + that.controller.moduleInformation.author + '</td></tr>' +
+                    '<tr><td>Creation date</td><td>' + that.controller.moduleInformation.date + '</td></tr>' +
+                    '<tr><td>Released under</td><td>' + that.controller.moduleInformation.license + '</td></tr>' +
+                    '</table>';
 
-                var allLayers = [];
-                var allLayerDisplay = [];
+                const allLayers = [];
+                const allLayerDisplay = [];
 
+                let commonToolbar, customToolbar;
                 if (that.definition.toolbar) {
-                    var commonToolbar = that.definition.toolbar.common;
-                    var customToolbar = that.definition.toolbar.custom;
+                    commonToolbar = that.definition.toolbar.common;
+                    customToolbar = that.definition.toolbar.custom;
                 }
 
+                let customCss;
                 if (that.definition.css) {
-                    var customCss = that.definition.css;
+                    customCss = that.definition.css;
                 }
-
 
                 that.eachLayer(function (layer, name) {
                     if (layer.display) {
@@ -975,7 +888,7 @@ define([
                     });
                 });
 
-                var fill = {
+                form.fill({
                     sections: {
                         module_config: [{
                             groups: {
@@ -993,65 +906,50 @@ define([
                         actions_in: [{groups: {group: [that.actions_in()]}}],
                         actions_out: [{groups: {group: [that.actions_out()]}}]
                     }
-                };
-                form.fill(fill);
+                });
             });
 
-            form.addButton('Cancel', {color: 'blue'}, function () {
+            return form;
+
+            function makeReferences(event, type) {
+                if (!events[event]) {
+                    return [];
+                }
+
+                let referenceList;
+                switch (type) {
+                    case 'event':
+                        referenceList = events[event].refVariable || [];
+                        break;
+                    case 'action':
+                        referenceList = events[event].refAction || [];
+                        break;
+                }
+
+                return referenceList.map(ref => ({
+                    key: ref,
+                    title: references[ref].label
+                }));
+            }
+        },
+
+        doConfig(sectionToOpen = 2) {
+            const div = ui.dialog({
+                autoPosition: true,
+                noHeader: true,
+                width: '80%'
+            });
+            const form = this.getConfigForm();
+            form.addButton('Cancel', {color: 'blue'}, () => div.dialog('close'));
+            form.addButton('Save', {color: 'green'}, () => {
+                savePreferences(this, form);
                 div.dialog('close');
             });
-
-            form.addButton('Save', {color: 'green'}, function () {
-                var value = form.getValue().sections;
-                if (that.controller.onBeforeSave) {
-                    that.controller.onBeforeSave(value);
-                }
-                that.definition.layers = that.definition.layers || {};
-                var l = value.module_config[0].sections.layer[0].groups.group;
-                var allDisplay = value.module_config[0].groups.layerDisplay[0].displayOn[0];
-                for (var i = 0, ll = l.length; i < ll; i++) {
-                    that.definition.layers[l[i].layerName[0]].display = allDisplay.indexOf(l[i].layerName[0]) > -1;
-                    that.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
-                    that.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
-                    that.definition.layers[l[i].layerName[0]].wrapper = l[i].modulewrapper[0].indexOf('display') > -1;
-                }
-
-                that.definition.toolbar = {};
-                that.definition.toolbar.custom = value.module_config[0].groups.customToolbar;
-                that.definition.toolbar.common = value.module_config[0].groups.commonToolbar;
-
-                that.definition.css = value.module_config[0].groups.customCss;
-
-                if (value.vars_out) {
-                    that.setSendVars(value.vars_out[0].groups.group[0]);
-                }
-
-                if (value.vars_in) {
-                    that.setSourceVars(value.vars_in[0].groups.group[0]);
-                }
-
-                if (value.actions_in) {
-                    that.setActionsIn(value.actions_in[0].groups.group[0]);
-                }
-
-                if (value.actions_out) {
-                    that.setActionsOut(value.actions_out[0].groups.group[0]);
-                }
-
-                if (value.module_specific_config) {
-                    that.definition.configuration = value.module_specific_config[0];
-                }
-
-                that.reload();
-                div.dialog('close');
-            });
-
-            form.onLoaded().done(function () {
-                div.html(form.makeDom(1, sectionToOpen || 2));
+            form.onLoaded().then(() => {
+                div.html(form.makeDom(1, sectionToOpen));
                 form.inDom();
             });
         },
-
 
         resetReady: function () {
             var that = this;
@@ -1361,6 +1259,50 @@ define([
         }
     };
 
+    function savePreferences(self, form) {
+        const value = form.getValue().sections;
+        if (self.controller.onBeforeSave) {
+            self.controller.onBeforeSave(value);
+        }
+        self.definition.layers = self.definition.layers || {};
+        const l = value.module_config[0].sections.layer[0].groups.group;
+        const allDisplay = value.module_config[0].groups.layerDisplay[0].displayOn[0];
+        for (var i = 0; i < l.length; i++) {
+            self.definition.layers[l[i].layerName[0]].display = allDisplay.indexOf(l[i].layerName[0]) > -1;
+            self.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
+            self.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
+            self.definition.layers[l[i].layerName[0]].wrapper = l[i].modulewrapper[0].indexOf('display') > -1;
+        }
+
+        self.definition.toolbar = {};
+        self.definition.toolbar.custom = value.module_config[0].groups.customToolbar;
+        self.definition.toolbar.common = value.module_config[0].groups.commonToolbar;
+
+        self.definition.css = value.module_config[0].groups.customCss;
+
+        if (value.vars_out) {
+            self.setSendVars(value.vars_out[0].groups.group[0]);
+        }
+
+        if (value.vars_in) {
+            self.setSourceVars(value.vars_in[0].groups.group[0]);
+        }
+
+        if (value.actions_in) {
+            self.setActionsIn(value.actions_in[0].groups.group[0]);
+        }
+
+        if (value.actions_out) {
+            self.setActionsOut(value.actions_out[0].groups.group[0]);
+        }
+
+        if (value.module_specific_config) {
+            self.definition.configuration = value.module_specific_config[0];
+        }
+
+        self.reload();
+    }
+
     function getExampleFromAlias(element, alias) {
         var l = alias.length,
             name;
@@ -1433,6 +1375,17 @@ define([
                 Debug.error('Unknow field type: ' + field.type);
                 return field.default || '';
         }
+    }
+
+    function makeFilters(arraySource) {
+        if (Array.isArray(arraySource)) {
+            return arraySource.map(value => ({
+                key: value.file || '',
+                title: value.name,
+                children: makeFilters(value.children)
+            }));
+        }
+        return [];
     }
 
     return Module;

@@ -587,6 +587,10 @@ define([
         return hash;
     };
 
+    exports.stringsToAutocomplete = function (arr) {
+        return arr.map(str => ({title: str, label: str}));
+    };
+
     return exports;
 
 });
