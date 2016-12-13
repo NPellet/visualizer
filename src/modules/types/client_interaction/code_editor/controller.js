@@ -1,6 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/aceHelper'], function (Default, Structure, aceHelper) {
+define([
+    'jquery',
+    'modules/default/defaultcontroller',
+    'src/data/structures',
+    'src/util/aceHelper'
+], function ($, Default, Structure, aceHelper) {
 
     function Controller() {
     }
@@ -107,7 +112,7 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/ac
                             options: {
                                 store: 'Store value in the preferences on change'
                             },
-                            default: ['store']
+                            default: []
                         },
                         debouncing: {
                             title: 'Debouncing',
@@ -142,8 +147,10 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/ac
         debouncing: ['groups', 'group', 0, 'debouncing', 0]
     });
 
-    Controller.prototype.onEditorChanged = function (value) {
-        if (this.module.getConfigurationCheckbox('variable', 'modify') && DataObject.getType(this.module.view._data) === 'string') {
+    Controller.prototype.onEditorChanged = function (value, preventInputChange) {
+        if (!preventInputChange &&
+            this.module.getConfigurationCheckbox('variable', 'modify') &&
+            DataObject.getType(this.module.view._data) === 'string') {
             this.module.view._data.setValue(value, true);
             this.module.model.dataTriggerChange(this.module.view._data);
         }
@@ -165,9 +172,9 @@ define(['modules/default/defaultcontroller', 'src/data/structures', 'src/util/ac
         this.sendActionFromEvent('onButtonClick', 'jsonValue', json);
 
         var typedValue = this.getTypedValue(value);
-        if (typedValue !== null)
+        if (typedValue !== null) {
             this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
-        //this.sendAction()
+        }
     };
 
     Controller.prototype.getTypedValue = function (val) {

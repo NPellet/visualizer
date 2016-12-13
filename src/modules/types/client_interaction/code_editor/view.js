@@ -1,10 +1,18 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery', 'lodash', 'src/util/aceHelper'], function (Default, Util, ace, Context, $, _, aceHelper) {
+define([
+    'jquery',
+    'lodash',
+    'modules/default/defaultview',
+    'src/util/util',
+    'ace/ace',
+    'src/util/context',
+    'src/util/aceHelper'
+], function ($, _, Default, Util, ace, Context, aceHelper) {
 
     function View() {
         this._id = Util.getNextUniqueId();
-        this._code = null;
+        this._code = '';
         this._data = null;
     }
 
@@ -22,9 +30,11 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
 
             var debouncing = this.module.getConfiguration('debouncing');
             if (debouncing > 0) {
-                this.editorChangedDebounced = _.debounce(this.editorChanged, debouncing);
+                this.editorChangedDebounced = _.debounce(this.editorChanged.bind(this, false), debouncing);
+            } else if (debouncing === -1) {
+                this.editorChangedDebounced = this.editorChanged.bind(this, true);
             } else {
-                this.editorChangedDebounced = this.editorChanged;
+                this.editorChangedDebounced = this.editorChanged.bind(this, false);
             }
 
             this.module.getDomContent().html(table);
@@ -32,11 +42,11 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         },
         inDom() {
             var initVal = String(this.module.getConfiguration('script') || '');
-            this.setCode(initVal);
+            this.setCode(initVal, false, true);
 
             if (this.module.getConfigurationCheckbox('iseditable', 'editable')) {
                 this.editable = true;
-                $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%').appendTo(this.editorCell);
+                $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%').appendTo(this.editorCell);
                 this.editor = ace.edit(this._id);
                 var mode = './mode/' + this.module.getConfiguration('mode');
 
@@ -44,7 +54,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 this.editor.$blockScrolling = Infinity;
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
-                this.editor.getSession().on('change', () => this.editorChangedDebounced());
+                this.editor.getSession().on('change', this.editorChangedDebounced);
             }
 
             if (this.module.getConfigurationCheckbox('hasButton', 'button')) {
@@ -61,7 +71,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
         blank: {
             data() {
                 this._data = null;
-                this.setCode('');
+                this.setCode('', false, true);
                 if (this.editable) {
                     this.editor.setValue('');
                 }
@@ -71,7 +81,7 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             data(value) {
                 this._data = value;
                 var val = String(value.get());
-                this.setCode(val);
+                this.setCode(val, false, true);
                 if (this.editable) {
                     var currentVal = this.editor.getValue();
                     if (val === currentVal) {
@@ -83,15 +93,15 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
                 }
             }
         },
-        editorChanged() {
-            this.setCode(this.editor.getValue());
+        editorChanged(noTrigger) {
+            this.setCode(this.editor.getValue(), noTrigger, false);
         },
         onResize() {
             if (this.editor) {
                 this.editor.resize();
             }
         },
-        setCode(value) {
+        setCode(value, noTrigger, preventInputChange) {
             var currentValue = this._code;
             if (currentValue === value) {
                 return;
@@ -100,7 +110,9 @@ define(['modules/default/defaultview', 'src/util/util', 'ace/ace', 'src/util/con
             if (this.module.getConfigurationCheckbox('storeOnChange', 'store') && this.module.definition.configuration.groups) {
                 this.module.definition.configuration.groups.group[0].script[0] = value;
             }
-            this.module.controller.onEditorChanged(value);
+            if (!noTrigger) {
+                this.module.controller.onEditorChanged(value, preventInputChange);
+            }
         },
         getCode() {
             return this._code;
