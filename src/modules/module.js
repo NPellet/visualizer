@@ -97,20 +97,26 @@ define([
         );
     }
 
-    var Module = function (definition) {
+    function Module(definition) {
         this.getConfiguration = this.getConfiguration.bind(this);
         this.getConfigurationCheckbox = this.getConfigurationCheckbox.bind(this);
 
         this.definition = DataObject.recursiveTransform(definition);
         this.definition.configuration = this.definition.configuration || new DataObject();
-
         this.definition.layers = this.definition.layers || new DataObject(); // View on which layers ?
 
-        this.ready = init(this);
+        this.ready = init(this).then(() => {
+            if (Object.keys(this.definition.configuration).length === 0) {
+                const form = this.getConfigForm();
+                return Promise.resolve(form.onLoaded().then(() => {
+                    savePreferences(this, form, true);
+                }));
+            }
+        });
         this.ready.catch(function (err) {
             Debug.error('Caught error in module initialization.', err);
         });
-    };
+    }
 
     Module.prototype = {
         buildDom: function () {
@@ -1259,7 +1265,7 @@ define([
         }
     };
 
-    function savePreferences(self, form) {
+    function savePreferences(self, form, noReload) {
         const value = form.getValue().sections;
         if (self.controller.onBeforeSave) {
             self.controller.onBeforeSave(value);
@@ -1300,7 +1306,9 @@ define([
             self.definition.configuration = value.module_specific_config[0];
         }
 
-        self.reload();
+        if (!noReload) {
+            self.reload();
+        }
     }
 
     function getExampleFromAlias(element, alias) {
