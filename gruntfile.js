@@ -76,7 +76,17 @@ module.exports = function (grunt) {
         babel: {
             transpile: {
                 options: {
-                    presets: ['es2015', 'es2016', 'es2017']
+                    presets: [['env', {
+                        targets: {
+                            browsers: [
+                                // also change this in src/util/sandbox!
+                                'chrome >= 51',
+                                'ie >= 11',
+                                'last 2 firefox versions',
+                                'last 2 edge versions'
+                            ]
+                        }
+                    }]]
                 },
                 files: [
                     {
