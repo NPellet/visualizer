@@ -119,7 +119,7 @@ define([
     }
 
     Module.prototype = {
-        buildDom: function () {
+        buildDom() {
             var html = '';
             html += '<div class="ci-module-wrapper ci-module-displaywrapper ci-module-';
             html += this.controller.moduleInformation.cssClass;
@@ -152,7 +152,7 @@ define([
             return html;
         },
 
-        setCustomStyle: function () {
+        setCustomStyle() {
             var css = this.definition.css;
             if (!css) return;
             css = css[0];
@@ -163,7 +163,7 @@ define([
             this.dom.find('.ci-module-content').css(style);
         },
 
-        drawToolbar: function () {
+        drawToolbar() {
             var isLocked = API.isViewLocked();
             var $ul = this.dom.find('.ci-module-header-toolbar ul');
             var toolbar = this.controller.getToolbar();
@@ -182,7 +182,7 @@ define([
             $ul.html(html);
         },
 
-        bindToolbar: function () {
+        bindToolbar() {
             var that = this;
             this.dom.find('.ci-module-header-toolbar ul').on('click', 'li', function (event) {
                 var toolbar = that.controller.getToolbar();
@@ -194,7 +194,7 @@ define([
             });
         },
 
-        onReady: function () {
+        onReady() {
             return this._onReady;
         },
 
@@ -219,7 +219,7 @@ define([
         /*
          * Returns the DOM object which corresponds to the module's content
          */
-        getDomContent: function () {
+        getDomContent() {
             if (typeof this.domContent !== 'undefined')
                 return this.domContent;
             throw 'The module has not been loaded yet';
@@ -228,7 +228,7 @@ define([
         /*
          * Returns the DOM object which corresponds to the module's wrapper
          */
-        getDomWrapper: function () {
+        getDomWrapper() {
             if (typeof this.domWrapper !== 'undefined') {
                 return this.domWrapper;
             }
@@ -238,7 +238,7 @@ define([
         /*
          * Returns the DOM object which corresponds to the module's view
          */
-        getDomView: function () {
+        getDomView() {
             if (typeof this.view.getDom == 'function') {
                 return this.view.getDom();
             }
@@ -248,7 +248,7 @@ define([
         /*
          * Returns the DOM object which corresponds to the module's header
          */
-        getDomHeader: function () {
+        getDomHeader() {
             if (typeof this.domHeader !== 'undefined') {
                 return this.domHeader;
             }
@@ -258,7 +258,7 @@ define([
         /*
          * Returns all accepted types defined in the controller
          */
-        getAcceptedTypes: function (rel) {
+        getAcceptedTypes(rel) {
             var accept = this.controller.references;
             if (accept) {
                 return accept[rel];
@@ -267,7 +267,7 @@ define([
         },
 
 
-        getDataFromRel: function (rel) {
+        getDataFromRel(rel) {
             if (!this.model || !this.model.data) {
                 return;
             }
@@ -278,12 +278,12 @@ define([
             return false;
         },
 
-        getVariableFromRel: function (rel) {
+        getVariableFromRel(rel) {
             var name = this.getNameFromRel(rel);
             return API.getVar(name);
         },
 
-        getNameFromRel: function (rel) {
+        getNameFromRel(rel) {
             var vars = this.vars_in();
             for (var i = 0; i < vars.length; i++) {
                 if (vars[i].rel == rel) {
@@ -293,11 +293,11 @@ define([
             return false;
         },
 
-        getData: function () {
+        getData() {
             return this.model.data;
         },
 
-        getDataRelFromName: function (name) {
+        getDataRelFromName(name) {
             var vars = this.vars_in();
             var rels = [];
             for (var i = 0; i < vars.length; i++) {
@@ -308,7 +308,7 @@ define([
             return rels;
         },
 
-        getActionRelFromName: function (name) {
+        getActionRelFromName(name) {
             var vars = this.actions_in();
             for (var i = 0; i < vars.length; i++) {
                 if (vars[i].name == name) {
@@ -318,7 +318,7 @@ define([
             return false;
         },
 
-        inDom: function () {
+        inDom() {
             this.drawToolbar();
             this.setCustomStyle();
             this.view.inDom();
@@ -352,11 +352,11 @@ define([
             }
         },
 
-        enableFullscreen: function () {
+        enableFullscreen() {
             Fullscreen.requestFullscreen(this);
         },
 
-        toggleLayer: function (newLayerShown, layerOut) {
+        toggleLayer(newLayerShown, layerOut) {
             var layer;
             if ((layer = this.getLayer(newLayerShown))) {
                 if (!layer.display) {
@@ -381,13 +381,13 @@ define([
             }
         },
 
-        eachLayer: function (callback) {
+        eachLayer(callback) {
             for (var i in this.definition.layers) {
                 callback(this.definition.layers[i], i);
             }
         },
 
-        setLayers: function (layers, blankLayer, modify_layer, blank, activeLayer) {
+        setLayers(layers, blankLayer, modify_layer, blank, activeLayer) {
             this.definition.layers = this.definition.layers || new DataObject();
 
             if (modify_layer) {
@@ -424,22 +424,22 @@ define([
             }
         },
 
-        getActiveLayerName: function () {
+        getActiveLayerName() {
             return this.activeLayerName;
         },
 
-        getLayer: function (layerName) {
+        getLayer(layerName) {
             if (!layerName) {
                 return false;
             }
             return this.definition.layers[layerName];
         },
 
-        hide: function () {
+        hide() {
             this.getDomWrapper().hide();
         },
 
-        show: function () {
+        show() {
             this.getDomWrapper().show();
         },
 
@@ -957,7 +957,7 @@ define([
             });
         },
 
-        resetReady: function () {
+        resetReady() {
             var that = this;
             that.viewReady = new Promise(function (res) {
                 that._resolveView = res;
@@ -994,7 +994,7 @@ define([
             return resurrectValue ? Datas.resurrect(toReturn) : toReturn;
         },
 
-        getConfigurationCheckbox: function (aliasName, optionName) {
+        getConfigurationCheckbox(aliasName, optionName) {
             var conf = this.getConfiguration(aliasName);
             if (!Array.isArray(conf)) {
                 return false;
@@ -1003,7 +1003,7 @@ define([
             return conf.indexOf(optionName) > -1;
         },
 
-        _getConfigurationDefault: function (alias, aliasName) {
+        _getConfigurationDefault(alias, aliasName) {
 
             this._cfgStructure = this._cfgStructure || this.controller.configurationStructure();
 
@@ -1031,7 +1031,7 @@ define([
             return this._doConfigurationFunction(cfgEl.default, aliasName);
         },
 
-        _doConfigurationFunction: function (element, aliasName) {
+        _doConfigurationFunction(element, aliasName) {
             if (this.controller.configFunctions[aliasName]) {
                 try {
                     return this.controller.configFunctions[aliasName](element);
@@ -1045,7 +1045,7 @@ define([
         /*
          * Returns the data for the module's model
          */
-        getValue: function () {
+        getValue() {
             if (typeof this.model.getValue == 'function')
                 return this.model.getValue();
         },
@@ -1053,7 +1053,7 @@ define([
         /*
          * Returns the current position of the module
          */
-        getPosition: function (activeLayer) {
+        getPosition(activeLayer) {
             var layer = this.getLayer(activeLayer);
             return layer.position;
         },
@@ -1061,45 +1061,45 @@ define([
         /*
          * Returns the current size of the module
          */
-        getSize: function (activeLayer) {
+        getSize(activeLayer) {
             var layer = this.getLayer(activeLayer);
             return layer.size;
         },
 
-        getWidthPx: function () {
+        getWidthPx() {
             return this.getDomContent().innerWidth();
         },
 
-        getHeightPx: function () {
+        getHeightPx() {
             return this.getDomContent().innerHeight();
         },
 
-        getId: function () {
+        getId() {
             return DataObject.resurrect(this.definition.id);
         },
 
-        setId: function (id) {
+        setId(id) {
             this.definition.set('id', id);
         },
 
 
-        setSourceVars: function (vars) {
+        setSourceVars(vars) {
             this.definition.set('vars_in', vars, true);
         },
 
-        setSendVars: function (vars) {
+        setSendVars(vars) {
             this.definition.set('vars_out', vars, true);
         },
 
-        setActionsIn: function (vars) {
+        setActionsIn(vars) {
             this.definition.set('actions_in', vars, true);
         },
 
-        setActionsOut: function (vars) {
+        setActionsOut(vars) {
             this.definition.set('actions_out', vars, true);
         },
 
-        vars_in: function () {
+        vars_in() {
             // Backward compatibility
             if (!this.definition.vars_in && this.definition.dataSource) {
                 this.definition.vars_in = this.definition.dataSource;
@@ -1111,7 +1111,7 @@ define([
             });
         },
 
-        vars_out: function () {
+        vars_out() {
             // Backward compatibility
             if (!this.definition.vars_out && this.definition.dataSend) {
                 this.definition.vars_out = this.definition.dataSend;
@@ -1121,7 +1121,7 @@ define([
         },
 
 
-        actions_in: function () {
+        actions_in() {
             // Backward compatibility
             if (!this.definition.actions_in && this.definition.actionsIn) {
                 this.definition.actions_in = this.definition.actionsIn;
@@ -1131,7 +1131,7 @@ define([
         },
 
 
-        actions_out: function () {
+        actions_out() {
             // Backward compatibility
             if (!this.definition.actions_out && this.definition.actionsOut) {
                 this.definition.actions_out = this.definition.actionsOut;
@@ -1140,15 +1140,15 @@ define([
             return this.definition.actions_out = this.definition.actions_out || new DataArray();
         },
 
-        getDefinition: function () {
+        getDefinition() {
             return this.definition;
         },
 
-        getTitle: function () {
+        getTitle() {
             return this.definition.title;
         },
 
-        setTitle: function (title) {
+        setTitle(title) {
             this.definition.set('title', title);
             this.domHeader.find('.ci-module-header-title').text(title);
         },
@@ -1165,7 +1165,7 @@ define([
             }
         },
 
-        printView: function () {
+        printView() {
             var content = this.controller.print();
             var openWindow = window.open('', '', '');
             openWindow.document.write(content);
@@ -1173,11 +1173,11 @@ define([
             openWindow.focus();
         },
 
-        setBackgroundColor: function (color) {
+        setBackgroundColor(color) {
             this.domContent.get(0).style.backgroundColor = 'rgba(' + color.join(',') + ')';
         },
 
-        setDisplayWrapper: function (bln) {
+        setDisplayWrapper(bln) {
             this.getDomWrapper()[(bln === true || bln == undefined) ? 'addClass' : 'removeClass']('ci-module-displaywrapper');
             try {
                 this.getDomWrapper().resizable((bln === true || bln == undefined) ? 'enable' : 'disable');
@@ -1186,28 +1186,29 @@ define([
             }
         },
 
-        blankVariable: function (variableName) {
-            var rels = this.getDataRelFromName(variableName);
-            for (var i = 0; i < rels.length; i++) {
+        blankVariable(variableName) {
+            const rels = this.getDataRelFromName(variableName);
+            for (let i = 0; i < rels.length; i++) {
                 if (this.view.blank[rels[i]]) {
                     this.view.blank[rels[i]].call(this.view, variableName);
                 } else {
-                    Util.warnOnce('missing-blank-' + this.controller.moduleInformation.name + '_' + rels[i],
-                        'Module ' + this.controller.moduleInformation.name + ': no blank method defined for rel ' + rels[i]);
+                    Util.warnOnce(`missing-blank-${this.controller.moduleInformation.name}_${rels[i]}`,
+                        `Module ${this.controller.moduleInformation.name}: no blank method defined for rel ${rels[i]}`);
                 }
             }
+            return null;
         },
 
-        startLoading: function (variableName) {
-            var rels = this.getDataRelFromName(variableName);
-            for (var i = 0; i < rels.length; i++) {
+        startLoading(variableName) {
+            const rels = this.getDataRelFromName(variableName);
+            for (let i = 0; i < rels.length; i++) {
                 this.view.startLoading(rels[i]);
             }
         },
 
-        endLoading: function (variableName) {
-            var rels = this.getDataRelFromName(variableName);
-            for (var i = 0; i < rels.length; i++) {
+        endLoading(variableName) {
+            const rels = this.getDataRelFromName(variableName);
+            for (let i = 0; i < rels.length; i++) {
                 this.view.endLoading(rels[i]);
             }
         },
@@ -1225,7 +1226,7 @@ define([
             });
         },
 
-        reload: function () {
+        reload() {
             if (this.view.unload) {
                 this.view.unload();
             }
@@ -1240,7 +1241,7 @@ define([
             this.updateAllView();
         },
 
-        getConfigExample: function () {
+        getConfigExample() {
             var aliases = this.controller.configAliases,
                 definition = this.controller.configurationStructure();
 
@@ -1254,7 +1255,7 @@ define([
             return result;
         },
 
-        exportConfigExample: function () {
+        exportConfigExample() {
             var that = this;
             ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
                 title: 'Config example',
