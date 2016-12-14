@@ -1,23 +1,19 @@
 'use strict';
 
-define(['jquery', 'src/util/ui', 'src/header/components/default', './../../util/couchshare', 'forms/button', 'src/util/util'], function ($, ui, Default, Sharer, Button, Util) {
+define(['src/header/components/default', './../../util/couchshare', 'src/util/util'], function (Default, Sharer, Util) {
 
     function Element() {
     }
 
-    var shareOptions = {
+    const shareOptions = {
         couchUrl: 'https://visualizer.epfl.ch',
         database: 'x',
         tinyUrl: 'https://visualizer.epfl.ch/tiny'
     };
 
     Util.inherits(Element, Default, {
-
-        initImpl: function () {
-        },
-
-        _onClick: function () {
-            ui.feedback(this.options, shareOptions);
+        _onClick() {
+            Sharer.feedback(this.options, shareOptions);
         }
     });
 

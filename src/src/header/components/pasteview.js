@@ -1,16 +1,14 @@
 'use strict';
 
-define(['jquery', 'src/util/ui', 'src/header/components/default', 'src/util/versioning', 'forms/button', 'src/util/util'], function ($, ui, Default, Versioning, Button, Util) {
+define(['src/header/components/default', 'src/util/versioning', 'src/util/util'], function (Default, Versioning, Util) {
 
     function Element() {
     }
 
     Util.inherits(Element, Default, {
-
-        _onClick: function () {
-            ui.pasteView();
+        _onClick() {
+            Versioning.pasteView();
         }
-
     });
 
     return Element;
