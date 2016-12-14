@@ -37,19 +37,13 @@ define([
         yHeight: 10
     };
 
-    function sizeToGrid(size, xWidth, yHeight) {
-        return {
-            width: Math.round(size.width / xWidth),
-            height: Math.round(size.height / yHeight)
-        };
-    }
-
     const infoCss = {
         position: 'absolute',
-        fontSize: '20pt'
+        fontSize: '16pt'
     };
     const widthInfo = $('<span>').css(infoCss);
     const heightInfo = $('<span>').css(infoCss);
+    const positionInfo = $('<span>').css(infoCss).css({top: -2, left: 4});
 
     function checkDimensions(extend) {
         var modules = ModuleFactory.getModules();
@@ -96,15 +90,11 @@ define([
     }
 
     function addModule(module) {
-
         module.setLayers(definition.getChildSync(['layers'], true), true, false, false, getActiveLayer());
 
         module.ready.then(function () {
-
             module.getDomWrapper().appendTo(jqdom);
-
             setModuleSize(module);
-
             if (!Versioning.isViewLocked()) {
                 Context.listen(module.getDomWrapper().get(0), [
 
@@ -131,7 +121,6 @@ define([
                             moveModule(module, shiftX, shiftY);
                         }],
 
-
                     ['<li name="duplicate"><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>',
                         function () {
                             duplicateModule(module);
@@ -154,20 +143,20 @@ define([
                 // Insert jQuery UI resizable and draggable
                 module.getDomWrapper().resizable({
                     grid: [definition.xWidth, definition.yHeight],
-                    start: function () {
+                    start() {
                         Util.maskIframes();
                         module.resizing = true;
-                        showModuleDimensions(module, module.getSize(getActiveLayer()));
                     },
-                    stop: function () {
+                    stop() {
                         Util.unmaskIframes();
+                        hideModuleDimensions();
                         moduleResize(module);
                         module.resizing = false;
-                        hideModuleDimensions();
                         checkDimensions(false);
                     },
                     resize(event, ui) {
                         showModuleDimensions(module, ui.size);
+                        checkDimensions(true);
                     },
                     containment: 'parent'
 
@@ -176,22 +165,22 @@ define([
                     grid: [definition.xWidth, definition.yHeight],
                     containment: 'parent',
                     handle: '.ci-module-header',
-                    start: function () {
+                    start() {
                         Util.maskIframes();
                         checkDimensions(true);
                         module.moving = true;
                     },
-                    stop: function () {
-                        var position = $(this).position();
+                    stop() {
+                        const position = $(this).position();
                         Util.unmaskIframes();
-
-                        module.getPosition(getActiveLayer()).set('left', position.left / definition.xWidth);
-                        module.getPosition(getActiveLayer()).set('top', position.top / definition.yHeight);
-
+                        hideModulePosition();
+                        module.getPosition(getActiveLayer()).set('left', Math.round(position.left / definition.xWidth));
+                        module.getPosition(getActiveLayer()).set('top', Math.round(position.top / definition.yHeight));
                         module.moving = false;
                         checkDimensions(true);
                     },
-                    drag: function () {
+                    drag(event, ui) {
+                        showModulePosition(module, ui.position);
                         checkDimensions(true);
                     }
 
@@ -237,23 +226,36 @@ define([
     }
 
     function showModuleDimensions(module, size) {
-        const gridSize = sizeToGrid(size, definition.xWidth, definition.yHeight);
+        const width = Math.round(size.width);
+        const height = Math.round(size.height);
         const domWrapper = module.getDomWrapper();
         domWrapper.append(widthInfo);
         widthInfo.css({
             top: size.height,
             left: size.width / 2
-        }).text(String(gridSize.width));
+        }).text(String(width));
         domWrapper.append(heightInfo);
         heightInfo.css({
             top: size.height / 2,
             left: size.width + 4
-        }).text(String(gridSize.height));
+        }).text(String(height));
     }
 
     function hideModuleDimensions() {
         widthInfo.remove();
         heightInfo.remove();
+    }
+
+    function showModulePosition(module, position) {
+        const left = Math.round(position.left / definition.xWidth);
+        const top = Math.round(position.top / definition.yHeight);
+        const domWrapper = module.getDomWrapper();
+        domWrapper.append(positionInfo);
+        positionInfo.text(`${left} / ${top}`);
+    }
+
+    function hideModulePosition() {
+        positionInfo.remove();
     }
 
     function moduleResize(module) {
