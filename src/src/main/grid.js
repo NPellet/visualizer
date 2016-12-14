@@ -939,19 +939,19 @@ define([
                             var utilkey = $(event.target.parentNode).data('utilkey');
                             switch (utilkey) {
                                 case 'copyview':
-                                    ui.copyview();
+                                    Versioning.copyView();
                                     break;
                                 case 'blankview':
                                     Versioning.blankView();
                                     break;
                                 case 'copydata':
-                                    ui.copyData();
+                                    Versioning.copyData();
                                     break;
                                 case 'pasteview':
-                                    ui.pasteView();
+                                    Versioning.pasteView();
                                     break;
                                 case 'pastedata':
-                                    ui.pasteData();
+                                    Versioning.pasteData();
                                     break;
                                 case 'feedback':
                                     ui.feedback();

@@ -1,6 +1,11 @@
 'use strict';
 
-define(['src/util/util', 'src/util/localdb'], function (Util, db) {
+define([
+    'jquery',
+    'src/util/util',
+    'src/util/localdb',
+    'src/util/ui'
+], function ($, Util, db, UI) {
 
     var DataViewHandler = function (dirUrl, defaultBranch, defaultUrl) {
 
@@ -407,10 +412,12 @@ define(['src/util/util', 'src/util/localdb'], function (Util, db) {
                             dataType: 'text',
                             success: onSuccess,
                             error: function (e) {
+                                UI.showNotification(`Loading ${that.type} failed`);
                                 def.reject(e);
                             }
                         });
                     } else {
+                        UI.showNotification(`Loading ${that.type} failed`);
                         def.reject(e);
                     }
                 },

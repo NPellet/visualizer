@@ -11,15 +11,13 @@ define([
     'lodash',
     'jquery',
     'src/util/typerenderer',
-    'src/util/versioning',
     'slickgrid',
     'forms/button',
-    'src/util/couchshare',
     'src/util/Form',
     'lib/twigjs/twig',
     'notifyjs',
     'jquery-ui/widgets/dialog'
-], function (Util, Debug, _, $, Renderer, Versioning, Slick, Button, Sharer, Form, Twig) {
+], function (Util, Debug, _, $, Renderer, Slick, Button, Form, Twig) {
     // On load add the style for the progress notification
     $.notify.addStyle('inprogress', {
         html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(24, 'black').css('vertical-align', 'middle').wrap('<div/>').parent().html()}</div>`,
@@ -463,133 +461,6 @@ define([
         if (success) exports.showNotification('Copy success', 'success');
         else exports.showNotification('Copy failure', 'error');
         txtarea.remove();
-    };
-
-    exports.copyview = function () {
-        var str = Versioning.getViewJSON('  ');
-        var strlen = str.length;
-        var txtarea = $('<textarea/>').text(str).css({
-            width: '100%',
-            height: '95%'
-        });
-        exports.dialog(txtarea, {
-            width: '80%',
-            height: $('#ci-visualizer').height() * 0.7
-        });
-
-        var txtdom = txtarea.get(0);
-
-        txtdom.selectionStart = 0;
-        txtdom.selectionEnd = strlen;
-        txtdom.focus();
-    };
-
-    exports.copyData = function () {
-        var str = Versioning.getDataJSON('  ');
-        var strlen = str.length;
-        var txtarea = $('<textarea/>').text(str).css({
-            width: '100%',
-            height: '200px'
-        });
-        exports.dialog(txtarea, {width: '80%'});
-        var txtdom = txtarea.get(0);
-
-        txtdom.selectionStart = 0;
-        txtdom.selectionEnd = strlen;
-        txtdom.focus();
-    };
-
-    exports.pasteData = function () {
-        var txtarea = $('<textarea></textarea>').css({
-                width: '100%',
-                height: '200px'
-            }),
-            val, keys,
-            btn = new Button('Paste', function () {
-
-                try {
-                    val = JSON.parse(txtarea.val());
-                    keys = Object.keys(val);
-                    for (var i = 0, ii = keys.length; i < ii; i++) {
-                        if (keys[i].charAt(0) === '_')
-                            delete val[keys[i]];
-                    }
-                    Versioning.setDataJSON(val);
-                } catch (_) {
-                    // do nothing
-                }
-
-                div.dialog('close');
-            });
-
-        var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
-    };
-
-    exports.pasteView = function () {
-        var txtarea = $('<textarea></textarea>').css({
-                width: '100%',
-                height: '200px'
-            }),
-            val, keys,
-            btn = new Button('Paste', function () {
-
-                try {
-                    val = JSON.parse(txtarea.val());
-                    keys = Object.keys(val);
-                    for (var i = 0, ii = keys.length; i < ii; i++) {
-                        if (keys[i].charAt(0) === '_')
-                            delete val[keys[i]];
-                    }
-                    Versioning.setViewJSON(val);
-                } catch (_) {
-                    // do nothing
-                }
-
-                div.dialog('close');
-            });
-
-        var div = exports.dialog(txtarea, {width: '80%'}).append(btn.render());
-    };
-
-    exports.feedback = function (options, shareOptions) {
-        options = options || {};
-        shareOptions = shareOptions || {};
-        shareOptions = _.defaults(shareOptions, {
-            couchUrl: 'http://visualizer.epfl.ch',
-            database: 'x',
-            tinyUrl: 'http://visualizer.epfl.ch/tiny'
-        });
-
-        if (!options.disabled) {
-            Sharer.share(shareOptions).then(function (tinyUrl) {
-                var description = '\n\nTestcase: ' + tinyUrl + ' ([Original URL](' + document.location.href + '))';
-                var url = 'https://github.com/NPellet/visualizer/issues/new?body=' + encodeURIComponent(description);
-                var win = window.open(url, '_blank');
-                win.focus();
-            }).catch(error => {
-                exports.showNotification('Error with Feedback, maybe pop-up was blocked', 'error');
-            });
-        }
-    };
-
-    exports.couchShare = function (options, dialogOptions) {
-        var uniqid = Util.getNextUniqueId();
-        var dialog = $('<div>').html('<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>').append(
-            new Button('Share', function () {
-                var that = this;
-                if (!options.disabled) {
-                    Sharer.share(options).then(function (tinyUrl) {
-                        $('#' + uniqid).val(tinyUrl).focus().select();
-                        that.disable();
-                    }, function () {
-                        $('#' + uniqid).val('error');
-                    });
-                }
-            }, {color: 'blue'}).render()
-        ).append(
-            $('<input type="text" id="' + uniqid + '" />').css('width', '400px')
-        );
-        exports.dialog(dialog, dialogOptions);
     };
 
     exports.showNotification = function () {

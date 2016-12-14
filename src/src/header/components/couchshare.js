@@ -1,6 +1,10 @@
 'use strict';
 
-define(['src/util/ui', 'src/header/components/default', 'src/util/util'], function (ui, Default, Util) {
+define([
+    'src/util/couchshare',
+    'src/header/components/default',
+    'src/util/util'
+], function (couchshare, Default, Util) {
 
     function Element() {
     }
@@ -14,7 +18,7 @@ define(['src/util/ui', 'src/header/components/default', 'src/util/util'], functi
             };
         },
         _onClick: function () {
-            ui.couchShare(this.options, this.dialogOptions);
+            couchshare.couchShare(this.options, this.dialogOptions);
         }
     });
     return Element;

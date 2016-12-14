@@ -7,12 +7,11 @@ define([
     'moment',
     'numeral',
     'sprintf',
-    './api',
     './util',
     './typerenderer/chart'
-], function (require, $, _, moment, numeral, sprintf, API, Util, chartRenderer) {
+], function (require, $, _, moment, numeral, sprintf, Util, chartRenderer) {
 
-    const asyncRequire = API.require;
+    const asyncRequire = Util.require;
 
     const functions = {};
 

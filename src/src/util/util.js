@@ -591,6 +591,20 @@ define([
         return arr.map(str => ({title: str, label: str}));
     };
 
+    exports.require = function asyncRequire(libs) {
+        let onlyOne = false;
+        if (typeof libs === 'string') {
+            libs = [libs];
+            onlyOne = true;
+        }
+        return new Promise((resolve, reject) => {
+            require(libs, function (...result) {
+                if (onlyOne) resolve(result[0]);
+                else resolve(result);
+            }, reject);
+        });
+    };
+
     return exports;
 
 });

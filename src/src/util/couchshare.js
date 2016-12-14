@@ -1,6 +1,14 @@
 'use strict';
 
-define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning) {
+define([
+    'jquery',
+    'lodash',
+    'forms/button',
+    './util',
+    './ui',
+    './versioning',
+    'lib/couchdb/jquery.couch'
+], function ($, _, Button, Util, UI, Versioning) {
 
     function share(options) {
         return new Promise(function (resolve, reject) {
@@ -59,8 +67,51 @@ define(['src/util/versioning', 'lib/couchdb/jquery.couch'], function (Versioning
         return result;
     }
 
+    function feedback(options, shareOptions) {
+        options = options || {};
+        shareOptions = shareOptions || {};
+        shareOptions = _.defaults(shareOptions, {
+            couchUrl: 'http://visualizer.epfl.ch',
+            database: 'x',
+            tinyUrl: 'http://visualizer.epfl.ch/tiny'
+        });
+
+        if (!options.disabled) {
+            share(shareOptions).then(function (tinyUrl) {
+                var description = '\n\nTestcase: ' + tinyUrl + ' ([Original URL](' + document.location.href + '))';
+                var url = 'https://github.com/NPellet/visualizer/issues/new?body=' + encodeURIComponent(description);
+                var win = window.open(url, '_blank');
+                win.focus();
+            }).catch(error => {
+                UI.showNotification('Error with Feedback, maybe pop-up was blocked', 'error');
+            });
+        }
+    }
+
+    function couchShare(options, dialogOptions) {
+        var uniqid = Util.getNextUniqueId();
+        var dialog = $('<div>').html('<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>').append(
+            new Button('Share', function () {
+                var that = this;
+                if (!options.disabled) {
+                    share(options).then(function (tinyUrl) {
+                        $('#' + uniqid).val(tinyUrl).focus().select();
+                        that.disable();
+                    }, function () {
+                        $('#' + uniqid).val('error');
+                    });
+                }
+            }, {color: 'blue'}).render()
+        ).append(
+            $('<input type="text" id="' + uniqid + '" />').css('width', '400px')
+        );
+        UI.dialog(dialog, dialogOptions);
+    }
+
     return {
-        share: share
+        share,
+        couchShare,
+        feedback
     };
 
 });

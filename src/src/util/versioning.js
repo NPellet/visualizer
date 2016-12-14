@@ -1,12 +1,15 @@
 'use strict';
 
 define([
+    'jquery',
     './cache',
     './versionhandler',
     './debug',
+    './ui',
+    'forms/button',
     'src/main/variables',
     'version'
-], function (Cache, VersionHandler, Debug, Variables, Version) {
+], function ($, Cache, VersionHandler, Debug, UI, Button, Variables, Version) {
 
     var version = Version.version;
     var originalVersion = 'none';
@@ -130,7 +133,23 @@ define([
         data.triggerChange();
     }
 
-    return {
+    function getView() {
+        return view;
+    }
+
+    function getViewJSON(tab) {
+        return JSON.stringify(view, null, tab);
+    }
+
+    function getData() {
+        return data;
+    }
+
+    function getDataJSON(tab) {
+        return JSON.stringify(data, null, tab);
+    }
+
+    const exports = {
 
         get version() {
             return String(version);
@@ -140,25 +159,17 @@ define([
             return String(originalVersion);
         },
 
-        setView: setView,
+        setView,
+        setData,
+        getView,
+        getViewJSON,
+        getData,
+        getDataJSON,
 
-        setData: setData,
-
-        getView: function () {
-            return view;
-        },
-
-        getViewJSON: function (tab) {
-            return JSON.stringify(view, null, tab);
-        },
-
-        getData: function () {
-            return data;
-        },
-
-        getDataJSON: function (tab) {
-            return JSON.stringify(data, null, tab);
-        },
+        copyView,
+        pasteView,
+        copyData,
+        pasteData,
 
         getViewHandler: function () {
             return viewHandler;
@@ -227,5 +238,93 @@ define([
         lastLoaded: lastLoaded
 
     };
+
+    function copyView() {
+        var str = getViewJSON('  ');
+        var strlen = str.length;
+        var txtarea = $('<textarea/>').text(str).css({
+            width: '100%',
+            height: '95%'
+        });
+        UI.dialog(txtarea, {
+            width: '80%',
+            height: $('#ci-visualizer').height() * 0.7
+        });
+
+        var txtdom = txtarea.get(0);
+
+        txtdom.selectionStart = 0;
+        txtdom.selectionEnd = strlen;
+        txtdom.focus();
+    }
+
+    function copyData() {
+        var str = getDataJSON('  ');
+        var strlen = str.length;
+        var txtarea = $('<textarea/>').text(str).css({
+            width: '100%',
+            height: '200px'
+        });
+        UI.dialog(txtarea, {width: '80%'});
+        var txtdom = txtarea.get(0);
+
+        txtdom.selectionStart = 0;
+        txtdom.selectionEnd = strlen;
+        txtdom.focus();
+    }
+
+    function pasteView() {
+        var txtarea = $('<textarea></textarea>').css({
+                width: '100%',
+                height: '200px'
+            }),
+            val, keys,
+            btn = new Button('Paste', function () {
+
+                try {
+                    val = JSON.parse(txtarea.val());
+                    keys = Object.keys(val);
+                    for (var i = 0, ii = keys.length; i < ii; i++) {
+                        if (keys[i].charAt(0) === '_')
+                            delete val[keys[i]];
+                    }
+                    exports.setViewJSON(val);
+                } catch (_) {
+                    // do nothing
+                }
+
+                div.dialog('close');
+            });
+
+        var div = UI.dialog(txtarea, {width: '80%'}).append(btn.render());
+    }
+
+    function pasteData() {
+        var txtarea = $('<textarea></textarea>').css({
+                width: '100%',
+                height: '200px'
+            }),
+            val, keys,
+            btn = new Button('Paste', function () {
+
+                try {
+                    val = JSON.parse(txtarea.val());
+                    keys = Object.keys(val);
+                    for (var i = 0, ii = keys.length; i < ii; i++) {
+                        if (keys[i].charAt(0) === '_')
+                            delete val[keys[i]];
+                    }
+                    exports.setDataJSON(val);
+                } catch (_) {
+                    // do nothing
+                }
+
+                div.dialog('close');
+            });
+
+        var div = UI.dialog(txtarea, {width: '80%'}).append(btn.render());
+    }
+
+    return exports;
 
 });
