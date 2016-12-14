@@ -464,7 +464,7 @@ define([
     };
 
     exports.showNotification = function () {
-        var args = arguments;
+        var args = Array.from(arguments);
         args[1] = args[1] || 'error';
         if (args[1] && (typeof args[1] === 'string')) {
             args[1] = {
