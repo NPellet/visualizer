@@ -2,9 +2,8 @@
 define([
     'jquery',
     'src/util/config',
-    'src/util/versioning',
     'jquery-ui/widgets/menu'
-], function ($, Config, Versioning) {
+], function ($, Config) {
 
     var contextMenu;
 
@@ -20,17 +19,16 @@ define([
                     onBeforeShow(contextMenu);
                 }
 
-                for (var i = 0, l = elements.length; i < l; i++) {
+                for (let i = 0; i < elements.length; i++) {
                     (function (element, callbackClick, callbackOpen) {
                         if (Config.contextMenu().indexOf('all') === -1 && Config.contextMenu().indexOf(element.attr('name') || 'undefined') === -1) return;
                         if ((callbackOpen && callbackOpen(e, element)) || !callbackOpen) {
                             contextMenu.append(element);
                         }
 
-                        element.bind('click', function (e2) {
-
+                        element.on('click mouseup', function (e2) {
+                            if (e2.button === 2) return;
                             if (callbackClick) {
-
                                 callbackClick.call(this, e, e2);
                             }
                         });
