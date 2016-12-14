@@ -26,15 +26,30 @@ define([
              Version,
              Config) {
 
-    var definition, jqdom, moduleMove, isInit = false;
+    var definition, jqdom, moduleMove;
+    var isInit = false;
     var activeLayer = 'Default layer';
     var layersUl, layersLi;
     var utilUl, utilLi;
 
-    var defaults = {
+    const defaults = {
         xWidth: 10,
         yHeight: 10
     };
+
+    function sizeToGrid(size, xWidth, yHeight) {
+        return {
+            width: Math.round(size.width / xWidth),
+            height: Math.round(size.height / yHeight)
+        };
+    }
+
+    const infoCss = {
+        position: 'absolute',
+        fontSize: '20pt'
+    };
+    const widthInfo = $('<span>').css(infoCss);
+    const heightInfo = $('<span>').css(infoCss);
 
     function checkDimensions(extend) {
         var modules = ModuleFactory.getModules();
@@ -54,15 +69,13 @@ define([
     }
 
     function addModuleFromJSON(json) {
-
-        var module = ModuleFactory.newModule(json);
+        const module = ModuleFactory.newModule(json);
         addModule(module);
         return module;
     }
 
     function duplicateModule(module) {
-
-        var def = DataObject.recursiveTransform(JSON.parse(JSON.stringify(module.definition)));
+        const def = DataObject.recursiveTransform(JSON.parse(JSON.stringify(module.definition)));
 
         def.layers[getActiveLayer()].position.left += 2;
         def.layers[getActiveLayer()].position.top += 2;
@@ -71,18 +84,14 @@ define([
     }
 
     function setModuleSize(module) {
-
-        var modulePos = module.getPosition(getActiveLayer()),
-            moduleSize = module.getSize(getActiveLayer());
-
+        const modulePos = module.getPosition(getActiveLayer());
+        const moduleSize = module.getSize(getActiveLayer());
 
         module.getDomWrapper().css({
-
             top: Math.round(modulePos.top) * definition.yHeight,
             left: Math.round(modulePos.left) * definition.xWidth,
             width: Math.round(moduleSize.width) * definition.xWidth,
             height: Math.round(moduleSize.height) * definition.yHeight
-
         });
     }
 
@@ -148,12 +157,17 @@ define([
                     start: function () {
                         Util.maskIframes();
                         module.resizing = true;
+                        showModuleDimensions(module, module.getSize(getActiveLayer()));
                     },
                     stop: function () {
                         Util.unmaskIframes();
                         moduleResize(module);
                         module.resizing = false;
+                        hideModuleDimensions();
                         checkDimensions(false);
+                    },
+                    resize(event, ui) {
+                        showModuleDimensions(module, ui.size);
                     },
                     containment: 'parent'
 
@@ -222,12 +236,31 @@ define([
         });
     }
 
+    function showModuleDimensions(module, size) {
+        const gridSize = sizeToGrid(size, definition.xWidth, definition.yHeight);
+        const domWrapper = module.getDomWrapper();
+        domWrapper.append(widthInfo);
+        widthInfo.css({
+            top: size.height,
+            left: size.width / 2
+        }).text(String(gridSize.width));
+        domWrapper.append(heightInfo);
+        heightInfo.css({
+            top: size.height / 2,
+            left: size.width + 4
+        }).text(String(gridSize.height));
+    }
+
+    function hideModuleDimensions() {
+        widthInfo.remove();
+        heightInfo.remove();
+    }
 
     function moduleResize(module) {
         var wrapper = module.getDomWrapper();
 
-        module.getSize(getActiveLayer()).set('width', wrapper.width() / definition.xWidth);
-        module.getSize(getActiveLayer()).set('height', wrapper.height() / definition.yHeight);
+        module.getSize(getActiveLayer()).set('width', Math.round(wrapper.width() / definition.xWidth));
+        module.getSize(getActiveLayer()).set('height', Math.round(wrapper.height() / definition.yHeight));
 
         var containerHeight = wrapper.height() - (module.getDomHeader().is(':visible') ? module.getDomHeader().outerHeight(true) : 0);
 
