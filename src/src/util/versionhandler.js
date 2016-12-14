@@ -412,12 +412,12 @@ define([
                             dataType: 'text',
                             success: onSuccess,
                             error: function (e) {
-                                UI.showNotification(`Loading ${that.type} failed`);
+                                UI.showNotification(`Loading ${that.type} failed: ${e.statusText}`);
                                 def.reject(e);
                             }
                         });
                     } else {
-                        UI.showNotification(`Loading ${that.type} failed`);
+                        UI.showNotification(`Loading ${that.type} failed: ${e.statusText}`);
                         def.reject(e);
                     }
                 },
