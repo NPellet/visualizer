@@ -6,14 +6,15 @@ define([
     'lib/twigjs/twig',
     'src/util/debug',
     'lodash',
-    'src/util/Form'
-], function ($, Default, Twig, Debug, _, Form) {
+    'src/util/Form',
+    'src/util/util'
+], function ($, Default, Twig, Debug, _, Form, Util) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
+        init() {
             var configTemplate = this.module.getConfiguration('template');
             this.hasTemplate = new Promise((resolve) => {
                 this._resolveTemplate = resolve;
@@ -54,7 +55,7 @@ define([
                 });
             });
         },
-        inDom: function () {
+        inDom() {
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
             this.render(() => {
@@ -102,7 +103,7 @@ define([
             return this.currentForm = this.form.getData(false);
         },
 
-        submit: function (type) {
+        submit(type) {
             var out = this.getForm();
             if (type === 'submit') {
                 this.module.controller.onFormSubmitted(out);
@@ -111,15 +112,16 @@ define([
             }
         },
         blank: {
-            value: function () {
+            value() {
                 this.renderPromise = this.renderPromise.then(() => {
                     this.dom.hide();
                     this.getForm();
                 }).catch(e => {
                     Debug.warn('Error');
                 });
+                return null;
             },
-            tpl: function () {
+            tpl() {
                 this.renderPromise = this.renderPromise.then(() => {
                     this.dom.hide();
                     this.getForm();
@@ -127,16 +129,13 @@ define([
                         data: ''
                     });
                 });
-
+                return null;
             },
-            form: function () {
-            },
-
-            style: function () {
-            }
+            form: Util.noop,
+            style: Util.noop
         },
         update: {
-            value: function (value, name) {
+            value(value, name) {
                 /*
                  Convert special DataObjects
                  (twig does some check depending on the filter used
@@ -145,9 +144,9 @@ define([
                 this._values[name] = DataObject.resurrect(value.get());
                 this.rerender();
             },
-            tpl: function (value) {
+            tpl(value) {
                 var tpl = value.get().toString();
-                this.renderPromise.then(() => {
+                return this.renderPromise.then(() => {
                     this.template = Twig.twig({
                         data: tpl
                     });
@@ -160,27 +159,27 @@ define([
                 });
             },
 
-            form: function (value) {
+            form(value) {
                 this.formObject = value;
                 // fill form should execute when the template exists
                 // It doesn't make sense otherwise
-                this.hasTemplate.then(() => this.fillForm());
+                return this.hasTemplate.then(() => this.fillForm());
             },
 
-            style: function (value) {
+            style(value) {
                 this.styleObject = value.resurrect();
                 this.rerender();
             }
         },
 
-        fillForm: function () {
+        fillForm() {
             this.form.setData(this.formObject);
             this.submit();
         },
 
-        render: function (cb) {
+        render(cb) {
             var that = this;
-            this.renderPromise = this.renderPromise.then(() => {
+            return this.renderPromise = this.renderPromise.then(() => {
                 var render = this.template.renderAsync(this._values);
                 this.dom.html(render.html);
                 return render.render().then(function () {
@@ -193,7 +192,6 @@ define([
                     Debug.warn('Error rendering twig template', e);
                 });
             });
-            return this.renderPromise;
         }
     });
 
