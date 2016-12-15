@@ -187,7 +187,7 @@ define([
                 }).trigger('resize');
             }
 
-            module.getDomWrapper().bind('mouseover', function () {
+            module.getDomWrapper().on('mouseover', function () {
 
                 if (module.resizing || module.moving)
                     return;
@@ -196,7 +196,7 @@ define([
                     moduleResize(module);
                 }
 
-            }).bind('mouseout', function () {
+            }).on('mouseout', function () {
 
                 if (module.resizing || module.moving)
                     return;
@@ -207,7 +207,7 @@ define([
                 }
             });
 
-            module.getDomWrapper().find('.ui-resizable-handle').bind('mousedown', function () {
+            module.getDomWrapper().find('.ui-resizable-handle').on('mousedown', function () {
                 checkDimensions(true);
             });
 
@@ -312,9 +312,9 @@ define([
 
 
             $(document)
-                .unbind('mousedown', mouseDownHandler)
-                .unbind('mousemove', mouseMoveHandler)
-                .unbind('mouseup', mouseUpHandler);
+                .off('mousedown', mouseDownHandler)
+                .off('mousemove', mouseMoveHandler)
+                .off('mouseup', mouseUpHandler);
 
             jqdom.css('cursor', 'default');
         };
@@ -360,9 +360,9 @@ define([
         };
 
         $(document)
-            .bind('mousedown', mouseDownHandler)
-            .bind('mousemove', mouseMoveHandler)
-            .bind('mouseup', mouseUpHandler);
+            .on('mousedown', mouseDownHandler)
+            .on('mousemove', mouseMoveHandler)
+            .on('mouseup', mouseUpHandler);
 
         jqdom.css('cursor', 'crosshair');
     }
@@ -469,14 +469,14 @@ define([
             Util.unmaskIframes();
             moduleMove = null;
             $(document)
-                .unbind('click', clickHandler)
-                .unbind('mousemove', mouseMoveHandler);
+                .off('click', clickHandler)
+                .off('mousemove', mouseMoveHandler);
 
         };
 
         $(document)
-            .bind('click', clickHandler)
-            .bind('mousemove', mouseMoveHandler);
+            .on('click', clickHandler)
+            .on('mousemove', mouseMoveHandler);
     }
 
     var eachModules = function (callback) {
@@ -862,7 +862,8 @@ define([
 
                         $(contextDom).append($li);
 
-                        $li.bind('click', function (event) {
+                        $li.on('mouseup', function (event) {
+                            event.stopPropagation();
                             var module = $(event.target);
                             if (module.prop('tagName') === 'A') {
                                 module = module.parent();
@@ -900,7 +901,8 @@ define([
 
                         $(contextDom).append(layersLi);
 
-                        layersLi.bind('click', function (event) {
+                        layersLi.on('mouseup', function (event) {
+                            event.stopPropagation();
                             var target = $(event.target);
                             if (target.prop('tagName') === 'A') {
                                 target = target.parent();
@@ -935,7 +937,7 @@ define([
                         utilUl.append($('<li data-util="feedback"><a><span/>Send Feedback</a></li>').data('utilkey', 'feedback'));
                         $(contextDom).append(utilLi);
 
-                        utilLi.bind('click', function (event) {
+                        utilLi.on('mouseup', function (event) {
                             var utilkey = $(event.target.parentNode).data('utilkey');
                             switch (utilkey) {
                                 case 'copyview':

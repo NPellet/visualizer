@@ -26,7 +26,7 @@ define([
                             contextMenu.append(element);
                         }
 
-                        element.on('click mouseup', function (e2) {
+                        element.on('mouseup', function (e2) {
                             if (e2.button === 2) return;
                             if (callbackClick) {
                                 callbackClick.call(this, e, e2);
@@ -76,9 +76,7 @@ define([
 
                 contextMenu = $menu;
 
-                var clickHandler = function () {
-
-                    //e.preventDefault();
+                function clickHandler() {
                     if (contextMenu) {
                         if (contextMenu.hasClass('ui-menu')) {
                             contextMenu.menu('destroy');
@@ -90,22 +88,7 @@ define([
                     $(document).unbind('click', clickHandler);
                 };
 
-                var rightClickHandler = function () {
-
-                    //e.preventDefault();
-                    if (contextMenu) {
-                        if (contextMenu.hasClass('ui-menu')) {
-                            contextMenu.menu('destroy');
-                        }
-                        contextMenu.remove();
-                    }
-
-                    contextMenu = null;
-                };
-
                 $(document).bind('click', clickHandler);
-                //		return false;
-
             }, true);
 
 
