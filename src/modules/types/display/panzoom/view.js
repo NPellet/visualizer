@@ -112,6 +112,7 @@ define([
         },
 
         doSvg: function (varname, value, options, updateHighlights) {
+            options = options || {};
             options.isSvg = true;
             return this.doImage(varname, value, options, updateHighlights);
         },
@@ -720,7 +721,11 @@ define([
 
         doAllImages: function () {
             for (var i = 0; i < this.images.length; i++) {
-                this.doImage(this.images[i].name);
+                if (this.images[i].type === 'svg') {
+                    this.doSvg(this.images[i].name);
+                } else {
+                    this.doImage(this.images[i].name);
+                }
             }
         },
 
