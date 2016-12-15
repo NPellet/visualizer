@@ -21,6 +21,7 @@ require.config({
         babel: 'components/babel-standalone/babel.min',
         bluebird: 'components/bluebird/js/browser/bluebird.core',
         bowser: 'components/bowser/bowser',
+        canvg: 'components/canvg/dist/canvg.bundle',
         chroma: 'components/chroma-js/chroma.min',
         ckeditor: 'components/ckeditor/ckeditor',
         countryData: 'browserified/country-data/index',
@@ -83,6 +84,9 @@ require.config({
         BiojsDasProteinFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
     },
     shim: {
+        canvg: {
+            exports: 'canvg'
+        },
         katex: {
             exports: 'katex'
         },

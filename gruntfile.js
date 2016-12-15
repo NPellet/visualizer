@@ -243,7 +243,8 @@ module.exports = function (grunt) {
                             './katex/dist/**',
                             './babel-standalone/**',
                             './fetch/fetch.js',
-                            './js-yaml/dist/**'
+                            './js-yaml/dist/**',
+                            './canvg/dist/**'
                         ],
                         dest: './build/components/'
                     },
