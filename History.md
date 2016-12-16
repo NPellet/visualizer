@@ -1,3 +1,29 @@
+<a name="2.75.0"></a>
+# [2.75.0](https://github.com/NPellet/visualizer/compare/v2.74.1...v2.75.0) (2016-12-16)
+
+
+### Bug Fixes
+
+* **code_editor:** do not trigger change to input on input or init ([3fc8ed5](https://github.com/NPellet/visualizer/commit/3fc8ed5))
+* **contextmenu:** handle mouseup event ([6ac55df](https://github.com/NPellet/visualizer/commit/6ac55df))
+* **core:** don't load jsgraph and d3 unless it's necessary ([f14c9fb](https://github.com/NPellet/visualizer/commit/f14c9fb))
+* **grid:** don't switch to active layer ([b743744](https://github.com/NPellet/visualizer/commit/b743744))
+* **header:** fix copy/paste headers after regression ([d9d4e3d](https://github.com/NPellet/visualizer/commit/d9d4e3d))
+* **module:** correct order of module toolbar elements ([2b3701d](https://github.com/NPellet/visualizer/commit/2b3701d))
+* **module:** explicitly don't handle blank promises ([702ff39](https://github.com/NPellet/visualizer/commit/702ff39))
+* **panzoom:** fix onresize for svg ([bce8bd7](https://github.com/NPellet/visualizer/commit/bce8bd7)), closes [#1012](https://github.com/NPellet/visualizer/issues/1012)
+* **periodic_table:** fix layout for lanthanoids and actinoids ([068ada5](https://github.com/NPellet/visualizer/commit/068ada5))
+* **ui:** correctly pass arguments in showNotification ([bb1b990](https://github.com/NPellet/visualizer/commit/bb1b990))
+
+
+### Features
+
+* **grid:** show module's dimensions while resizing ([227a6c8](https://github.com/NPellet/visualizer/commit/227a6c8))
+* **grid:** show module's position while moving ([5e210d6](https://github.com/NPellet/visualizer/commit/5e210d6))
+* show an error message when view or data loading fails ([ea56bad](https://github.com/NPellet/visualizer/commit/ea56bad))
+
+
+
 <a name="2.74.1"></a>
 ## [2.74.1](https://github.com/NPellet/visualizer/compare/v2.74.0...v2.74.1) (2016-12-05)
 
