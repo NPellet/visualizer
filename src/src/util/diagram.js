@@ -6,9 +6,8 @@ define([
     'src/util/debug',
     'lodash',
     'jquery',
-    'modules/modulefactory',
-    'd3'
-], function (Util, ui, Debug, _, $, ModuleFactory, d3) {
+    'modules/modulefactory'
+], function (Util, ui, Debug, _, $, ModuleFactory) {
 
     function Rectangle(arg1) {
         var fail;
@@ -218,7 +217,7 @@ define([
 
 
     exports.showVariableDiagram = function () {
-        Util.loadCss('src/util/diagram.css').then(function () {
+        Promise.all([Util.require('d3'), Util.loadCss('src/util/diagram.css')]).then(function ([d3]) {
             var type = 'rect'; // Use circ or rect
             var links = getLinks();
             var nodes = getNodes(links);

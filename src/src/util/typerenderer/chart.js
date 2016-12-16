@@ -1,6 +1,12 @@
 'use strict';
 
-define(['jsgraph'], function (Graph) {
+define(['../util'], function (Util) {
+
+    let Graph;
+
+    async function loadJsgraph() {
+        Graph = await Util.require('jsgraph');
+    }
 
     const defaultOptions = {
         close: {
@@ -148,6 +154,9 @@ define(['jsgraph'], function (Graph) {
         serie.setLineStyle(defaultStyle.lineStyle);
     }
 
-    return {toscreen: renderChart};
+    return {
+        init: loadJsgraph,
+        toscreen: renderChart
+    };
 
 });
