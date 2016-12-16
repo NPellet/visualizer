@@ -81,12 +81,12 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 const varValue = variable.getValue();
 
                 if (!varName || !this.sourceMap || !this.sourceMap[varName] || !this.module.controller.references[this.sourceMap[varName].rel]) {
-                    return;
+                    return null;
                 }
 
                 let data = this.buildData(varValue, this.module.controller.references[this.sourceMap[varName].rel].type);
                 if (!data) {
-                    return;
+                    return null;
                 }
 
                 const vars = this.module.vars_in();
