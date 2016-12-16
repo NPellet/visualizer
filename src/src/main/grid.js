@@ -771,6 +771,7 @@ define([
                 layer = layer2;
             }
 
+            if (getActiveLayer() === layer.name) return;
             activeLayer = layer.name;
 
             eachModules(function (moduleInstance) {
