@@ -86,7 +86,7 @@ define([
 
                     contextMenu = null;
                     $(document).unbind('click', clickHandler);
-                };
+                }
 
                 $(document).bind('click', clickHandler);
             }, true);
