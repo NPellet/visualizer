@@ -161,8 +161,8 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
             this.currentPromise = new Promise((resolve, reject) => {
                 this.rejectCurrentPromise = reject;
 
-                var _resolve = resolve,
-                    _reject = reject;
+                const _resolve = resolve;
+                const _reject = reject;
 
                 data.trace(this._jpath).then(value => {
                     if (callback) {
@@ -181,10 +181,12 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                         this._setValue(value);
                         _resolve(value);
                     }
-
+                    return null;
                 }, err => {
                     _reject(err);
                 });
+
+                return null;
             });
             var prom = this.currentPromise.catch(err => {
                 if (
