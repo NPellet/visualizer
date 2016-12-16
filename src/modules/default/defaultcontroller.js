@@ -94,6 +94,8 @@ define([
                 });
             }
 
+            const customB = [];
+            const customE = [];
             if (custom) {
                 for (let i = 0; i < custom.length; i++) {
                     let el = {
@@ -105,14 +107,14 @@ define([
                         }
                     };
                     if (custom[i].position === 'begin') {
-                        toolbar.unshift(el);
+                        customB.push(el);
                     } else {
-                        toolbar.push(el);
+                        customE.push(el);
                     }
                 }
             }
 
-            return toolbar;
+            return customB.concat(toolbar, customE);
         },
 
         inDom: Util.noop,
