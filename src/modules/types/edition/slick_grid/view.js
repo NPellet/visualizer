@@ -1251,10 +1251,6 @@ define([
                         var node = that.grid.getCellNode(i, 0);
                         if (color) {
                             $(node).parent().css('background-color', color.get()).addClass('has-color');
-                            // for (var j = 0; j < cols.length; j++) {
-                            //     var node = that.grid.getCellNode(i, j);
-                            //     $(node).css('background-color', color.get());
-                            // }
                         } else {
                             $(node).parent().css('background-color', '').removeClass('has-color');
                         }
