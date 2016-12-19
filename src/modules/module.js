@@ -358,6 +358,7 @@ define([
 
         toggleLayer(newLayerShown, layerOut) {
             var layer;
+            this.activeLayerName = newLayerShown;
             if ((layer = this.getLayer(newLayerShown))) {
                 if (!layer.display) {
                     this.hide();
@@ -370,8 +371,6 @@ define([
                 this.setDisplayWrapper(layer.wrapper);
 
                 this.setBackgroundColor(layer.bgColor || [255, 255, 255, 1]);
-
-                this.activeLayerName = newLayerShown;
 
                 var Grid = require('src/main/grid');
                 Grid.setModuleSize(this);
