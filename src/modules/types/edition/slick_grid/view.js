@@ -18,6 +18,7 @@ define([
     function View() {
     }
 
+    var symbolSgid = Symbol('_sgid');
 
     var cssPromises = [];
     cssPromises.push(Util.loadCss('components/slickgrid/slick.grid.css'));
@@ -687,7 +688,7 @@ define([
                 row.isAction = true;
                 return row;
             });
-            this.idPropertyName = this.module.getConfiguration('idProperty') || Symbol('_sgid');
+            this.idPropertyName = this.module.getConfiguration('idProperty') || symbolSgid;
             this.autoIdProperty = !this.module.getConfiguration('idProperty');
             if (this.module.getConfiguration('filterType') === 'pref') {
                 this._setScript(this.module.getConfiguration('filterRow'));
