@@ -374,20 +374,6 @@ module.exports = function (grunt) {
             }
         },
 
-        ftp: {                                            // Task
-            options: {                                    // Options
-                host: 'cheminfo.epfl.ch',
-                user: 'npellet',
-                pass: 'pass77'
-            },
-            upload: {                                    // Target
-                files: {
-                    // Dictionary of files
-                    '/usr/local/www/sites/cheminfo.epfl.ch/site/firmenich/build/': 'build/**/*.*'                // remote destination : source
-                }
-            }
-        },
-
         jsdoc: {
             build: {
                 src: ['src/src/util/*'],
@@ -406,11 +392,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-rename');
-    grunt.loadNpmTasks('grunt-ftp');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-browserify');
-
-    grunt.registerTask('upload', ['ftp']);
 
     grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function () {
         var options;
