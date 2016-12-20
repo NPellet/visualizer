@@ -135,33 +135,6 @@ module.exports = function (grunt) {
                 ]
             }
         },
-        uglify: {
-            options: {
-                screwIE8: true
-            },
-            build: {
-                files: [
-                    {
-                        expand: true,     // Enable dynamic expansion.
-                        cwd: './build2/',      // Src matches are relative to this path.
-                        src: [
-                            'init.js',
-                            'modules/**/*.js',
-                            '!modules/**/lib/**/*.js',
-                            'src/**/*.js',
-                            '!lib/**/*',
-                            'lib/forms/**/*.js',
-                            'lib/twigjs/*.js',
-                            'lib/chemistry/*.js',
-                            'lib/loadingplot/*.js'
-                        ], // Actual pattern(s) to match.
-                        dest: './build2/',   // Destination path prefix.
-                        //overwrite: true,
-                        ext: '.js'   // Dest filepaths will have this extension.
-                    }
-                ]
-            }
-        },
         copy: {
 
             buildLib: {
@@ -427,9 +400,7 @@ module.exports = function (grunt) {
         }
     });
 
-    // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -612,8 +583,7 @@ module.exports = function (grunt) {
         'css:modules',
         'babel:transpile',
         'requirejs',
-        'uglify:build',
-//        'babel:minify', // too slow
+        'babel:minify',
         'clean:build',
         'rename:afterBuild',
         'buildTime:unset'
