@@ -372,17 +372,6 @@ module.exports = function (grunt) {
                     ]
                 }
             }
-        },
-
-        jsdoc: {
-            build: {
-                src: ['src/src/util/*'],
-                options: {
-                    destination: 'doc',
-                    template: 'node_modules/ink-docstrap/template',
-                    configure: 'doc.conf.json'
-                }
-            }
         }
     });
 
@@ -392,7 +381,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-rename');
-    grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function () {
