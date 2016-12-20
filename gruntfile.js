@@ -79,9 +79,7 @@ module.exports = function (grunt) {
                     presets: [['env', {
                         targets: {
                             browsers: [
-                                // also change this in src/util/sandbox!
                                 'chrome >= 51',
-                                'ie >= 11',
                                 'last 2 firefox versions',
                                 'last 2 edge versions'
                             ]

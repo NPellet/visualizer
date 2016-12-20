@@ -1,15 +1,11 @@
 'use strict';
 
 (function () {
-    var iereg = /MSIE (\d+)/;
-    var isIE = iereg.exec(navigator.userAgent);
-    if (isIE) {
-        var ieversion = parseInt(isIE[1]);
-        if (ieversion <= 8) {
-            // eslint-disable-next-line no-alert
-            alert('This application does not support IE' + ieversion + '.\nPlease upgrade your system to have IE11+ or use an alternate browser (Google Chrome, Firefox).');
-            throw new Error('IE' + ieversion + ' not supported');
-        }
+    try {
+        eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
+    } catch (e) {
+        // eslint-disable-next-line no-alert
+        alert('Your browser is not supported by this application.\nPlease upgrade to a more modern browser like Microsoft Edge, Google Chrome or Firefox.');
     }
 })();
 
