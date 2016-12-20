@@ -2761,10 +2761,6 @@ grunt-rename@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/grunt-rename/-/grunt-rename-0.1.4.tgz#73d26af1da4d223cb63465cb3506167daf0894c2"
 
-grunt-text-replace@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/grunt-text-replace/-/grunt-text-replace-0.4.0.tgz#db9d9ce59e2fe49da277e9dbc195c3e11cfb16c2"
-
 grunt@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/grunt/-/grunt-1.0.1.tgz#e8778764e944b18f32bb0f10b9078475c9dfb56b"
