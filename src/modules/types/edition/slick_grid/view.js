@@ -1792,7 +1792,7 @@ define([
             };
         }
 
-        match = query.match(/^\/(.*)\/(i?)/);
+        match = query.match(/^\/(.+)\/(i?)/);
         if (match) {
             return function (val) {
                 return String(val).match(new RegExp(match[1], match[2] || undefined));
