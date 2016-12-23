@@ -1145,7 +1145,9 @@ define([
                                 var c = that.grid.getColumns()[that.grid.getColumnIndex(columnId)];
                                 var jpath = _.clone(DataObject.resurrect(c.jpath));
                                 jpath.unshift(idx);
-                                if (!that.module.data.getChildSync(jpath) || !that.columnFilterFunctions[columnId](that.module.data.getChildSync(jpath).get())) {
+                                var val = that.module.data.getChildSync(jpath);
+                                if (val && val.get) val = val.get();
+                                if (!that.columnFilterFunctions[columnId](val)) {
                                     return false;
                                 }
                             } catch (e) {
@@ -1242,7 +1244,6 @@ define([
             var that = this;
             if (!that.lastViewport) return;
             var colorjPath = that.module.getConfiguration('colorjPath');
-            var cols = that.grid.getColumns();
             if (colorjPath && colorjPath.length > 0) {
                 that._makeDataObjects();
                 for (var i = that.lastViewport.top; i <= that.lastViewport.bottom; i++) {
@@ -1786,7 +1787,7 @@ define([
         if (match) {
             return function (val) {
                 match = match.toLowerCase();
-                val = val.toString().toLowerCase();
+                val = String(val).toLowerCase();
                 return val.match(match[1]);
             };
         }
@@ -1794,7 +1795,7 @@ define([
         match = query.match(/^\/(.*)\/(i?)/);
         if (match) {
             return function (val) {
-                return val.toString().match(new RegExp(match[1], match[2] || undefined));
+                return String(val).match(new RegExp(match[1], match[2] || undefined));
             };
         }
 
@@ -1831,7 +1832,7 @@ define([
         }
 
         return function (val) {
-            return val.toString().toLowerCase().match(query.toLowerCase());
+            return String(val).toLowerCase().match(query.toLowerCase());
         };
     }
 
