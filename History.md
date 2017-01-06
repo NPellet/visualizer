@@ -1,3 +1,21 @@
+<a name="2.76.0"></a>
+# [2.76.0](https://github.com/NPellet/visualizer/compare/v2.75.0...v2.76.0) (2017-01-06)
+
+
+### Bug Fixes
+
+* **core:** fix bug in layer initialization ([35aa4f8](https://github.com/NPellet/visualizer/commit/35aa4f8)), closes [#1009](https://github.com/NPellet/visualizer/issues/1009)
+* **slick_grid:** in search // is not a valid reg expression ([4fb9b3a](https://github.com/NPellet/visualizer/commit/4fb9b3a))
+* **slick_grid:** use only one symbol for sgid ([75cea73](https://github.com/NPellet/visualizer/commit/75cea73))
+* **twig:** show dom before async rendering is done ([ad544d6](https://github.com/NPellet/visualizer/commit/ad544d6)), closes [#1018](https://github.com/NPellet/visualizer/issues/1018)
+
+
+### Features
+
+* **slick_grid:** treat all values as strings when searching ([a9fbcc1](https://github.com/NPellet/visualizer/commit/a9fbcc1))
+
+
+
 <a name="2.75.0"></a>
 # [2.75.0](https://github.com/NPellet/visualizer/compare/v2.74.1...v2.75.0) (2016-12-16)
 
