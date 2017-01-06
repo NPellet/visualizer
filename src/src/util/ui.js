@@ -92,7 +92,7 @@ define([
             var options = {
                 buttons: {},
                 close: function () {
-                    resolve();
+                    resolve(null);
                     dialog.dialog('destroy');
                 }
             };
@@ -134,7 +134,7 @@ define([
             var options = {
                 close: function () {
                     form.unbind();
-                    resolve();
+                    resolve(null);
                     dialog.dialog('destroy');
                 }
             };
@@ -317,7 +317,7 @@ define([
                     noWrap: true,
                     buttons: buttons,
                     close: function () {
-                        resolve();
+                        resolve(null);
                     },
                     resize: function () {
                         grid.resizeCanvas();
