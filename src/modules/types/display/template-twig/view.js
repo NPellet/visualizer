@@ -159,7 +159,8 @@ define([
                 });
             },
 
-            form(value) {
+            form(value, name) {
+                this.formName = name;
                 this.formObject = value;
                 // fill form should execute when the template exists
                 // It doesn't make sense otherwise
@@ -180,6 +181,9 @@ define([
         render(cb) {
             var that = this;
             return this.renderPromise = this.renderPromise.then(() => {
+                if (this.formName) {
+                    this._values[this.formName] = this.formObject;
+                }
                 var render = this.template.renderAsync(this._values);
                 this.dom.html(render.html);
                 const renderProm = render.render().then(function () {
