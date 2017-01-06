@@ -247,7 +247,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                         backgroundColor: {
                             type: 'spectrum',
                             title: 'Background Color',
-                            default: [255, 255, 255, 1]
+                            default: [255, 255, 255, 0]
                         },
                         color: {
                             type: 'spectrum',
