@@ -182,15 +182,16 @@ define([
             return this.renderPromise = this.renderPromise.then(() => {
                 var render = this.template.renderAsync(this._values);
                 this.dom.html(render.html);
-                return render.render().then(function () {
+                const renderProm = render.render().then(function () {
                     if (cb) cb();
                     that.setStyle();
                     that.module.controller.onRendered(that.dom.html());
-                    // Render succeeded, we show the dom
-                    that.dom.show();
                 }).catch(e => {
                     Debug.warn('Error rendering twig template', e);
                 });
+
+                this.dom.show();
+                return renderProm;
             });
         }
     });
