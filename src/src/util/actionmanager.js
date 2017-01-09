@@ -1,70 +1,49 @@
 'use strict';
 
-define(['require'], function (require) {
+define(['./versioning', './api', './sandbox'], function (Versioning, API, Sandbox) {
 
-    var Versioning;
-    require(['src/util/versioning'], function (Vers) {
-        Versioning = Vers;
-    });
+    const evalSandbox = new Sandbox();
+    evalSandbox.setContext({API});
 
-
-    var API;
-    require(['src/util/api'], function (A) {
-        API = A;
-    });
-
-
-    /* RELATED TO SCRIPTING 	*/
-    var evaluatedScripts;
+    let evaluatedScripts;
 
     function doScripts() {
-
-        var data = getActionScripts();
+        const data = getActionScripts();
 
         if (!data || evaluatedScripts) {
             return;
         }
 
-        var evaled = {},
-            i = 0,
-            l = data.length;
+        const evaled = {};
 
-        for (; i < l; i++) {
-
-            eval('evaled[ [ data[ i ].groups.action[ 0 ].name[ 0 ] ] ] = function(value) { ' + data[i].groups.action[0].script[0] + ' }');
+        for (let i = 0; i < data.length; i++) {
+            const action = data[i].groups.action[0];
+            evaled[action.name[0]] = evalSandbox.run(`(function(value) { ${action.script[0]} })`);
         }
 
         evaluatedScripts = evaled;
     }
 
     function getActionScripts() {
-
         return Versioning.getView().actionscripts || [];
     }
 
     function setActionScripts(form) {
-
         evaluatedScripts = undefined;
         Versioning.getView().actionscripts = form; // Keeps track of the scripts in the view
         doScripts(form);
     }
 
 
-    /* Action files */
-
-    var actionsFiles;
+    let actionsFiles;
 
     function setActionFiles(form) {
-
         Versioning.getView().actionfiles = form;
         doFiles();
     }
 
     function doFiles() {
-        var files = Versioning.getView().actionfiles;
-        var fileName,
-            fileMode,
-            actionName;
+        const files = Versioning.getView().actionfiles;
 
         actionsFiles = {};
 
@@ -72,146 +51,120 @@ define(['require'], function (require) {
             return;
         }
 
-        for (var i = 0, l = files[0].groups.action[0].length; i < l; i++) {
-
+        for (let i = 0, l = files[0].groups.action[0].length; i < l; i++) {
             actionsFiles[files[0].groups.action[0][i].name] = actionsFiles[files[0].groups.action[0][i].name] || [];
             actionsFiles[files[0].groups.action[0][i].name].push({
                 file: files[0].groups.action[0][i].file,
                 mode: files[0].groups.action[0][i].mode
             });
         }
-
-
     }
 
     function executeActionFile(file, value) {
-
         switch (file.mode) {
-
-            case 'amd':
-
+            case 'amd': {
                 require([file.file], function (File) {
                     File(value);
                 });
-
                 break;
-
-            case 'worker':
-
-                var worker = new Worker(file.file);
+            }
+            case 'worker': {
+                const worker = new Worker(file.file);
 
                 worker.postMessage({method: 'actionValue', value: value});
 
                 worker.onmessage = function (event) {
-                    // Do something. We need to invent an API here.
-
                     if (!event.data.method) {
                         return;
                     }
 
                     switch (event.data.method) {
-
-                        case 'getVar':
+                        case 'getVar': {
                             if (!Array.isArray(event.data.variables)) {
                                 return;
                             }
 
-                            var variables = {},
-                                i = 0,
-                                l = event.data.variables.length;
-
-                            for (; i < l; i++) {
-                                variables[event.data.variables[i]] = API.getVar(event.data.variables[i]);
+                            const variables = {};
+                            const varArray = event.data.variables;
+                            for (let i = 0; i < varArray.length; i++) {
+                                variables[varArray[i]] = API.getVar(varArray[i]);
                             }
 
                             worker.postMessage({
                                 method: 'getVar',
                                 variables: variables
                             });
-
                             break;
-
-                        case 'setVar':
-
+                        }
+                        case 'setVar': {
                             if (!event.data.variables) {
                                 return;
                             }
 
-                            for (var i in event.data.variables) {
+                            for (const i in event.data.variables) {
                                 API.setVar(i, event.data.variables[i]);
                             }
-
                             break;
-
-
-                        case 'terminate':
+                        }
+                        case 'terminate': {
                             worker.terminate();
                             break;
-
-                        case 'sendAction':
-
+                        }
+                        case 'sendAction': {
                             if (!event.data.actionName) {
                                 return;
                             }
 
                             API.doAction(event.data.actionName, event.data.actionValue);
-
                             break;
-
-                        case 'highlight':
-
+                        }
+                        case 'highlight': {
                             if (!event.data.highlightId) {
                                 return;
                             }
 
                             API.highlightId(event.data.highlightId, event.data.highlightValue || false);
-
                             break;
+                        }
                     }
                 };
 
                 break;
+            }
         }
     }
 
-
     return {
-
-        setScriptsFromForm: function (form) {
+        setScriptsFromForm(form) {
             setActionScripts(form);
         },
 
-        setFilesFromForm: function (form) {
+        setFilesFromForm(form) {
             setActionFiles(form);
         },
 
-        viewHasChanged: function (view) {
+        viewHasChanged(view) {
             setActionScripts(view.actionscripts);
             doFiles();
         },
 
-        getScriptsForm: function () {
+        getScriptsForm() {
             return Versioning.getView().actionscripts || [];
         },
 
-        getFilesForm: function () {
+        getFilesForm() {
             return Versioning.getView().actionfiles || [];
         },
 
-        execute: function (actionName, actionValue) {
-
-            if (evaluatedScripts[actionName]) {
+        execute(actionName, actionValue) {
+            if (evaluatedScripts && evaluatedScripts[actionName]) {
                 setImmediate(function () {
                     evaluatedScripts[actionName](actionValue);
                 });
             }
 
-            if (actionsFiles[actionName]) {
-
-                var i = 0,
-                    l = actionsFiles[actionName].length;
-
-                for (; i < l; i++) {
+            if (actionsFiles && actionsFiles[actionName]) {
+                for (let i = 0; i < actionsFiles[actionName].length; i++) {
                     executeActionFile(actionsFiles[actionName][i], actionValue);
                 }
             }
