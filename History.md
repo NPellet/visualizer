@@ -1,3 +1,20 @@
+<a name="2.76.1"></a>
+## [2.76.1](https://github.com/NPellet/visualizer/compare/v2.76.0...v2.76.1) (2017-01-10)
+
+
+### Bug Fixes
+
+* **build:** use working version of babili ([c9e1e4e](https://github.com/NPellet/visualizer/commit/c9e1e4e))
+* **module:** clone DOM instead of stringify for print feature ([d0bc225](https://github.com/NPellet/visualizer/commit/d0bc225))
+* **module:** open browser's print dialog ([f87e635](https://github.com/NPellet/visualizer/commit/f87e635))
+
+
+### Features
+
+* **twig:** make form object a twig variable ([9a1a2e5](https://github.com/NPellet/visualizer/commit/9a1a2e5))
+
+
+
 <a name="2.76.0"></a>
 # [2.76.0](https://github.com/NPellet/visualizer/compare/v2.75.0...v2.76.0) (2017-01-06)
 
