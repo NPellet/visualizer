@@ -1170,6 +1170,7 @@ define([
             openWindow.document.body.appendChild(domContent);
             openWindow.document.close();
             openWindow.focus();
+            openWindow.print();
         },
 
         setBackgroundColor(color) {
