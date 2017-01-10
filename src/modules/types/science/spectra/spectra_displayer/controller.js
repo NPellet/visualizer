@@ -672,7 +672,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     };
 
     Controller.prototype.print = function () {
-        return this.module.view.getSVGString();
+        return this.module.view.getSVGElement().cloneNode(true);
     };
 
     Controller.prototype.exportSVG = function (svgStr) {

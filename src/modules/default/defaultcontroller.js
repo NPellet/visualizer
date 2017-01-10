@@ -225,7 +225,7 @@ define([
                 $($canvasCopy[index]).after(img);
                 $($canvasCopy[index]).remove();
             });
-            return $domCopy[0].innerHTML;
+            return $domCopy[0];
         },
 
         configurationStructure: Util.noop,

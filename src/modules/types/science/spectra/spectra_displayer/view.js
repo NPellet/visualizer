@@ -926,16 +926,14 @@ define([
             },
 
             selectSerie(serieName) {
-                var s = this.graph.getSerie(serieName.valueOf());
-
+                const s = this.graph.getSerie(serieName.valueOf());
                 if (s) {
                     s.select('selected');
                 }
             },
 
             unselectSerie(serieName) {
-                var s = this.graph.getSerie(serieName.valueOf());
-
+                const s = this.graph.getSerie(serieName.valueOf());
                 if (s) {
                     s.unselect();
                 }
@@ -951,17 +949,22 @@ define([
         },
 
         doSVGExport() {
-            var svgStr = this.getSVGString();
+            const svgStr = this.getSVGString();
             if (svgStr) {
                 this.module.controller.exportSVG(svgStr);
             }
         },
 
+        getSVGElement() {
+            const svg = this.dom.find('svg');
+            return svg[0];
+        },
+
         getSVGString() {
-            var svg = this.dom.find('svg');
-            if (svg.length === 0) return;
-            var serializer = new XMLSerializer();
-            return svgDoctype + serializer.serializeToString(svg[0]);
+            const serializer = new XMLSerializer();
+            const svgElement = this.getSVGElement();
+            if (!svgElement) return;
+            return svgDoctype + serializer.serializeToString(svgElement);
         },
 
         normalize(array, varname) {

@@ -1165,9 +1165,9 @@ define([
         },
 
         printView() {
-            var content = this.controller.print();
-            var openWindow = window.open('', '', '');
-            openWindow.document.write(content);
+            const domContent = this.controller.print();
+            const openWindow = window.open('', '', '');
+            openWindow.document.body.appendChild(domContent);
             openWindow.document.close();
             openWindow.focus();
         },
