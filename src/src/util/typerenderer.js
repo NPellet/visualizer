@@ -245,7 +245,7 @@ define([
             if (!isMol) {
                 mol = OCL.Molecule.fromIDCode(idcode, coordinates);
             }
-            $element.html(mol.toSVG($element.width(), $element.height() - 5, null, options));
+            $element.html(mol.toSVG(options.width || $element.width(), options.height || $element.height() - 5, null, options));
         }
     }
 
