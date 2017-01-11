@@ -332,6 +332,8 @@ define([
 
     exports.require = Util.require;
 
+    ActionManager.setAPI(exports);
+
     return exports;
 
 });

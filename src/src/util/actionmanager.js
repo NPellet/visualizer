@@ -1,10 +1,8 @@
 'use strict';
 
-define(['./versioning', './api', './sandbox'], function (Versioning, API, Sandbox) {
+define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
 
-    const evalSandbox = new Sandbox();
-    evalSandbox.setContext({API});
-
+    let API;
     let evaluatedScripts;
 
     function doScripts() {
@@ -14,6 +12,8 @@ define(['./versioning', './api', './sandbox'], function (Versioning, API, Sandbo
             return;
         }
 
+        const evalSandbox = new Sandbox();
+        evalSandbox.setContext({API});
         const evaled = {};
 
         for (let i = 0; i < data.length; i++) {
@@ -168,6 +168,10 @@ define(['./versioning', './api', './sandbox'], function (Versioning, API, Sandbo
                     executeActionFile(actionsFiles[actionName][i], actionValue);
                 }
             }
+        },
+
+        setAPI(value) {
+            API = value;
         }
     };
 
