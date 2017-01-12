@@ -221,6 +221,14 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: './node_modules',
+                        src: [
+                            './katex/dist/**',
+                        ],
+                        dest: './build/node_modules/'
+                    },
+                    {
+                        expand: true,
                         cwd: './src/browserified',
                         src: ['**'],
                         dest: './build/browserified'
