@@ -17,7 +17,7 @@ define([
 
     functions.latex = {};
     functions.latex.init = async function () {
-        const css = Util.loadCss('components/katex/dist/katex.min.css');
+        const css = Util.loadCss('node_modules/katex/dist/katex.min.css');
         functions.latex.katex = await asyncRequire('katex');
         await css;
     };

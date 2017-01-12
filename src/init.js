@@ -41,7 +41,7 @@ require.config({
         'json-chart': 'components/json-chart/dist/json-chart.min',
         jszip: 'components/jszip/dist/jszip.min',
         'js-yaml': 'components/js-yaml/dist/js-yaml.min',
-        katex: 'components/katex/dist/katex.min',
+        katex: 'node_modules/katex/dist/katex.min',
         lodash: 'components/lodash/dist/lodash',
         loglevel: 'components/loglevel/dist/loglevel',
         'markdown-js': 'components/markdown-js/lib/markdown',

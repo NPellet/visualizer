@@ -67,6 +67,7 @@
   "private": true,
   "dependencies": {
     "country-data": "0.0.31",
+    "katex": "^0.7.0",
     "mime-types": "^2.1.10",
     "superagent": "^3.0.0",
     "twig": "^0.10.0"
