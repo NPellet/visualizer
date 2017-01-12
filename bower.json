@@ -33,7 +33,7 @@
     "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
     "fancytree": "2.20.0",
     "farbtastic": "2.0.0-alpha.1",
-    "fetch": "^2.0.0",
+    "fetch": "2.0.1",
     "file-saver.js": "1.20150507.2",
     "flag-icon-css": "2.8.0",
     "font-awesome": "4.7.0",
