@@ -207,21 +207,27 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
     Controller.prototype.onChange = function (mol, molV3, smiles, jme, svg, action) {
         var currentValue = this.module.view._currentValue;
 
+        // check Github History when drag / drop and paste will be another action name
+
         if (action != null &&
-            action != 'readRXNFile' &&
-            action != 'readMolFile' &&
+           // action != 'readRXNFile' && // if we don't comment those lines we can not paste molfile or drop molfiles and ahve in-place modification !!!
+           // action != 'readMolFile' &&
             action != 'reset' &&
             currentValue &&
             this.module.getConfigurationCheckbox('outputResult', 'yes')) {
-
             if (this.module.view._currentType === 'mol') {
-                currentValue.setValue(mol, true);
+                // need to check the 4th line, if same number bonds and atoms we do nothing
+                if (currentValue.value.split(/\r\n|\r|\n/)[3].substring(0,6)!=mol.split(/\r\n|\r|\n/)[3].substring(0,6)) {
+                    currentValue.setValue(mol, true);
+                    this.module.model.dataTriggerChange(currentValue);
+                }
             } else if (this.module.view._currentType === 'jme') {
                 currentValue.setValue(jme, true);
+                this.module.model.dataTriggerChange(currentValue);
             } else if (this.module.view._currentType === 'smiles') {
                 currentValue.setValue(smiles, true);
+                this.module.model.dataTriggerChange(currentValue);
             }
-            this.module.model.dataTriggerChange(currentValue);
         }
 
         // we loaded an external file
