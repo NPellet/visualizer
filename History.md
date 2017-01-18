@@ -1,3 +1,13 @@
+<a name="2.76.2"></a>
+## [2.76.2](https://github.com/NPellet/visualizer/compare/v2.76.1...v2.76.2) (2017-01-18)
+
+
+### Bug Fixes
+
+* **actionmanager:** remove circular reference with API ([c90e425](https://github.com/NPellet/visualizer/commit/c90e425))
+
+
+
 <a name="2.76.1"></a>
 ## [2.76.1](https://github.com/NPellet/visualizer/compare/v2.76.0...v2.76.1) (2017-01-10)
 
