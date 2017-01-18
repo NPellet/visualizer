@@ -217,7 +217,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
             this.module.getConfigurationCheckbox('outputResult', 'yes')) {
             if (this.module.view._currentType === 'mol') {
                 // need to check the 4th line, if same number bonds and atoms we do nothing
-                if (currentValue.value.split(/\r\n|\r|\n/)[3].substring(0,6)!=mol.split(/\r\n|\r|\n/)[3].substring(0,6)) {
+                if (currentValue.value.split(/\r\n|\r|\n/)[3].substring(0, 6) != mol.split(/\r\n|\r|\n/)[3].substring(0, 6)) {
                     currentValue.setValue(mol, true);
                     this.module.model.dataTriggerChange(currentValue);
                 }
