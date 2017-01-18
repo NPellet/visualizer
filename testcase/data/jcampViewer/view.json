@@ -1,5 +1,5 @@
 {
-	"version": "2.56.1-0",
+	"version": "2.76.2-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -28,6 +28,11 @@
 							],
 							"filterRow": [
 								null
+							],
+							"highlightLine": [
+								[
+									"Yes"
+								]
 							]
 						}
 					],
@@ -91,6 +96,14 @@
 						"jcamp"
 					],
 					"name": "jcamp"
+				},
+				{
+					"event": "onSelect",
+					"rel": "row",
+					"jpath": [
+						"jcamp"
+					],
+					"name": "clicked"
 				}
 			],
 			"toolbar": {
@@ -113,7 +126,17 @@
 						]
 					}
 				]
-			}
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
 		},
 		{
 			"url": "modules/types/science/spectra/spectra_displayer/",
@@ -141,7 +164,7 @@
 											"both"
 										],
 										"legend": [
-											"left"
+											"bottom"
 										],
 										"legendOptions": [
 											[
@@ -255,7 +278,8 @@
 											"normalize": "none",
 											"optimizeSlots": [],
 											"degrade": 0,
-											"monotoneous": []
+											"monotoneous": [],
+											"tracking": []
 										}
 									]
 								]
@@ -333,7 +357,17 @@
 						]
 					}
 				]
-			}
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
 		},
 		{
 			"url": "modules/types/client_interaction/button_action/",
