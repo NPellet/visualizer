@@ -627,7 +627,7 @@ define([
             ctx.grid.scrollRowToTop(ctx.lastViewport.top);
         }
 
-        if (Array.isArray(ctx.lastSelectedRows)) {
+        if (!ctx.module.getConfigurationCheckbox('slickCheck', 'forgetLastSelected') && Array.isArray(ctx.lastSelectedRows)) {
             ctx.grid.setSelectedRows(ctx.lastSelectedRows);
         }
         if (!_.isUndefined(ctx.lastActiveRow) && !ctx.module.getConfigurationCheckbox('slickCheck', 'forgetLastActive')) {

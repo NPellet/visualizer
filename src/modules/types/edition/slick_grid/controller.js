@@ -45,6 +45,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 filterColumns: 'Enable search header',
                                 keepSelected: 'Keep selected elements when filtering',
                                 backToTop: 'Don\'t remember scroll position',
+                                forgetLastSelected: 'Don\'t remember last selected rows',
                                 forgetLastActive: 'Don\'t remember last active cell',
                                 highlightScroll: 'Scroll to highlighted line',
                                 collapseGroup: 'Collapse groups on start',
