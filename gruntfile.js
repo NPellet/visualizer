@@ -76,6 +76,7 @@ module.exports = function (grunt) {
         babel: {
             transpile: {
                 options: {
+                    plugins: [__dirname + '/strict-plugin.js'],
                     presets: [['env', {
                         targets: {
                             browsers: [
