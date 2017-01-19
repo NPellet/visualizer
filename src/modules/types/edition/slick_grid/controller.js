@@ -430,6 +430,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         selectRow: 'Mimic row click',
         selectRows: 'Set selected rows',
         addRow: 'Add new row(s)',
+        appendRow: 'Append new row(s)',
+        prependRow: 'Prepend new row(s)',
         showColumn: 'Show a column',
         hideColumn: 'Hide a column',
         rerender: 'Rerender the grid'

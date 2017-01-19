@@ -1661,6 +1661,23 @@ define([
         },
 
         onActionReceive: {
+            appendRow: function (items) {
+                this.onActionReceive.addRow.call(this, items);
+            },
+            prependRow: function (items) {
+                if (this.slick.data) {
+                    if (!Array.isArray(items)) {
+                        items = [items];
+                    }
+                    for (let i = 0; i < items.length; i++) {
+                        let item = items[i];
+                        item = DataObject.resurrect(item);
+                        this.setNextUniqId(item, true);
+                        this.slick.data.insertItem(0, item);
+                        this._newRow(item);
+                    }
+                }
+            },
             addRow: function (items) {
                 if (this.slick.data) {
                     if (!Array.isArray(items)) {
