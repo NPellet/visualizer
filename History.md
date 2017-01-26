@@ -1,3 +1,14 @@
+<a name="2.76.3"></a>
+## [2.76.3](https://github.com/NPellet/visualizer/compare/v2.76.2...v2.76.3) (2017-01-26)
+
+
+### Features
+
+* **slick_grid:** add option not to remember selected lines ([4c02d17](https://github.com/NPellet/visualizer/commit/4c02d17))
+* **slick_grid:** append or prepend rows ([33817a3](https://github.com/NPellet/visualizer/commit/33817a3))
+
+
+
 <a name="2.76.2"></a>
 ## [2.76.2](https://github.com/NPellet/visualizer/compare/v2.76.1...v2.76.2) (2017-01-18)
 
