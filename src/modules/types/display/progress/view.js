@@ -6,7 +6,7 @@
 define([
     'modules/default/defaultview',
     'src/util/color',
-    'jquery-ui/widgets/progressbar'
+    'jquery-ui/ui/widgets/progressbar'
 ], function (Default, Color) {
 
     function View() {

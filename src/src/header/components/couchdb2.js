@@ -17,7 +17,7 @@ define([
     'lib/couchdb/jquery.couch',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
-    'jquery-ui/widgets/autocomplete'
+    'jquery-ui/ui/widgets/autocomplete'
 ], function ($, _, API, ui, Default, Versioning, Button, Util, Form, CouchdbAttachments, uploadUi, Debug, fileSaver) {
 
     function CouchDBManager() {

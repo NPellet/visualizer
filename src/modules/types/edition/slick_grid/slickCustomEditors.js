@@ -11,7 +11,7 @@ define([
     'lodash',
     'components/spectrum/spectrum',
     'jquery',
-    'jquery-ui/widgets/datepicker'
+    'jquery-ui/ui/widgets/datepicker'
 ], function (Util, _) {
     Util.loadCss('./components/spectrum/spectrum.css');
 

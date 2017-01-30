@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/widgets/slider'], function ($) {
+define(['jquery', 'jquery-ui/ui/widgets/slider'], function ($) {
 
     var FieldConstructor = function () {
     };

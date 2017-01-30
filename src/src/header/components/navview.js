@@ -8,7 +8,7 @@ define([
     'src/util/util',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
-    'jquery-ui/widgets/dialog'
+    'jquery-ui/ui/widgets/dialog'
 ], function ($, Default, Versioning, Button, Util) {
 
     function Element() {

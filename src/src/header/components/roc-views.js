@@ -14,8 +14,8 @@ define([
     'src/util/uploadUi',
     'fancytree',
     'components/ui-contextmenu/jquery.ui-contextmenu.min',
-    'jquery-ui/widgets/accordion',
-    'jquery-ui/widgets/tooltip'
+    'jquery-ui/ui/widgets/accordion',
+    'jquery-ui/ui/widgets/tooltip'
 ], function ($,
              _,
              superagent,

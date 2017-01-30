@@ -16,7 +16,7 @@ define([
     'src/util/Form',
     'lib/twigjs/twig',
     'notifyjs',
-    'jquery-ui/widgets/dialog'
+    'jquery-ui/ui/widgets/dialog'
 ], function (Util, Debug, _, $, Renderer, Slick, Button, Form, Twig) {
     // On load add the style for the progress notification
     $.notify.addStyle('inprogress', {

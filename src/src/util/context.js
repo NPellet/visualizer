@@ -2,7 +2,7 @@
 define([
     'jquery',
     'src/util/config',
-    'jquery-ui/widgets/menu'
+    'jquery-ui/ui/widgets/menu'
 ], function ($, Config) {
 
     var contextMenu;
