@@ -171,11 +171,6 @@ require.config({
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'
         ],
         BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
-    },
-    map: {
-        'components/ui-contextmenu/jquery.ui-contextmenu.min': {
-            'jquery-ui/menu': 'jquery-ui/ui/widgets/menu'
-        }
     }
 });
 
