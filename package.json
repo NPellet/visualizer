@@ -67,6 +67,7 @@
   },
   "private": true,
   "dependencies": {
+    "bio-parsers": "^4.1.6",
     "country-data": "0.0.31",
     "katex": "^0.7.0",
     "mime-types": "^2.1.10",

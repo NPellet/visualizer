@@ -15,6 +15,7 @@ require.config({
         ace: 'components/ace/src',
         async: 'components/async/dist/async',
         babel: 'components/babel-standalone/babel.min',
+        bioParsers: 'browserified/bioParsers/index',
         bluebird: 'components/bluebird/js/browser/bluebird.core',
         bowser: 'components/bowser/bowser',
         canvg: 'components/canvg/dist/canvg.bundle',

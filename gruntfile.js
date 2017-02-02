@@ -70,6 +70,16 @@ module.exports = function (grunt) {
                         standalone: 'Twig'
                     }
                 }
+            },
+            bioParsers: {
+                files: {
+                    'src/browserified/bioParsers/index.js': ['./node_modules/bio-parsers/parsers/index.js']
+                },
+                options: {
+                    browserifyOptions: {
+                        standalone: 'bioParsers'
+                    }
+                }
             }
         },
         pkg: grunt.file.readJSON('package.json'),
