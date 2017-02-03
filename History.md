@@ -1,3 +1,8 @@
+<a name="2.77.0"></a>
+# [2.77.0](https://github.com/NPellet/visualizer/compare/v2.76.3...v2.77.0) (2017-02-03)
+
+
+
 <a name="2.76.3"></a>
 ## [2.76.3](https://github.com/NPellet/visualizer/compare/v2.76.2...v2.76.3) (2017-01-26)
 
