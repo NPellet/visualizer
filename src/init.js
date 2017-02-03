@@ -13,6 +13,7 @@ require.config({
     waitSeconds: 0,
     paths: {
         ace: 'components/ace/src',
+        angularplasmid: 'node_modules/angularplasmid/dist/angularplasmid.complete.min',
         async: 'components/async/dist/async',
         babel: 'components/babel-standalone/babel.min',
         bioParsers: 'browserified/bioParsers/index',

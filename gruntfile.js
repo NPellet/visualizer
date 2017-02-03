@@ -235,6 +235,7 @@ module.exports = function (grunt) {
                         cwd: './node_modules',
                         src: [
                             './katex/dist/**',
+                            './angularplasmid/dist/**'
                         ],
                         dest: './build/node_modules/'
                     },
