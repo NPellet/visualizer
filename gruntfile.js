@@ -90,7 +90,7 @@ module.exports = function (grunt) {
                     presets: [['env', {
                         targets: {
                             browsers: [
-                                'chrome >= 51',
+                                'chrome >= 54',
                                 'last 2 firefox versions',
                                 'last 2 edge versions'
                             ]
