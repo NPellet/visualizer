@@ -387,7 +387,10 @@ module.exports = function (grunt) {
                     useStrict: true,
                     modules: [
                         {
-                            name: 'init'
+                            name: 'init',
+                            exclude: [
+                                'babel'
+                            ]
                         }
                     ]
                 }
