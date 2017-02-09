@@ -13,7 +13,6 @@ define([
     'modules/modulefactory',
     'src/util/viewmigration',
     'src/util/actionmanager',
-    'src/util/pouchtovar',
     'src/util/debug',
     'src/util/browser',
     'src/util/util',
@@ -37,7 +36,6 @@ define([
     ModuleFactory,
     Migration,
     ActionManager,
-    PouchDBUtil,
     Debug,
     browser,
     Util,
@@ -81,7 +79,6 @@ define([
 
         view.variables = view.variables || new DataArray();
         view.aliases = view.aliases || new DataArray();
-        view.pouchvariables = view.pouchvariables || new DataArray();
         view.configuration = view.configuration || new DataObject();
         view.configuration.title = view.configuration.title || 'No title';
 
@@ -139,7 +136,6 @@ define([
         Promise.all([
             loadCustomFilters(),
             loadMainVariables(),
-            loadPouchVariables(),
             configureRequirejs(),
             loadCustomModules()
         ]).then(doInitScript).then(function () {
@@ -318,48 +314,6 @@ define([
                 API.stopLoading('Fetching remote variables');
             });
         }
-
-        function loadPouchVariables() {
-            API.loading('Fetching local variables');
-            var pouching = [], pouchVariable;
-            for (var i = 0, l = view.pouchvariables.length; i < l; i++) {
-                pouchVariable = view.pouchvariables[i];
-                if (pouchVariable.dbname && pouchVariable.varname) {
-                    (function (k) {
-
-                        pouching.push(PouchDBUtil.pouchToVar(view.pouchvariables[k].dbname, view.pouchvariables[k].id, function (el) {
-
-                            el.linkToParent(data, view.pouchvariables[k].varname);
-                            API.setVariable(view.pouchvariables[k].varname, false, [view.pouchvariables[k].varname]);
-
-                        }));
-
-                    })(i);
-                }
-            }
-
-            // Pouch DB replication
-            PouchDBUtil.abortReplications();
-            if (view.couch_replication) {
-                var couchData = view.couch_replication[0].groups.couch[0];
-                for (var i = 0, l = couchData.length; i < l; i++) {
-                    if (couchData[i].couchurl) {
-                        PouchDBUtil.replicate(couchData[i].pouchname, couchData[i].couchurl, {
-                            direction: couchData[i].direction,
-                            continuous: couchData[i].continuous ? couchData[i].continuous.length : true
-                        });
-                    }
-                }
-            }
-
-            return Promise.all(pouching).then(function () {
-                API.stopLoading('Fetching local variables');
-            }, function (err) {
-                Debug.error('Unable to fetch local variables', err);
-            });
-
-        }
-
     }
 
     function configureEntryPoint() {
@@ -429,28 +383,6 @@ define([
                                     timeout: {
                                         type: 'text',
                                         title: 'Timeout'
-                                    }
-                                }
-                            },
-                            pouchvars: {
-                                options: {
-                                    type: 'table',
-                                    title: 'PouchDB variables',
-                                    multiple: true
-                                },
-                                fields: {
-                                    varname: {
-                                        type: 'text',
-                                        multiple: false,
-                                        title: 'Variable name'
-                                    },
-                                    dbname: {
-                                        type: 'text',
-                                        title: 'DB name'
-                                    },
-                                    id: {
-                                        type: 'text',
-                                        title: 'ID'
                                     }
                                 }
                             },
@@ -648,45 +580,6 @@ define([
                                 }
                             }
                         }
-                    },
-                    couch_replication: {
-                        options: {
-                            title: 'Couch replication',
-                            icon: 'scripts'
-                        },
-                        groups: {
-                            couch: {
-                                options: {
-                                    type: 'table',
-                                    multiple: true
-                                },
-                                fields: {
-                                    pouchname: {
-                                        type: 'text',
-                                        title: 'Pouch DB name'
-                                    },
-                                    couchurl: {
-                                        type: 'text',
-                                        title: 'Couch URL'
-                                    },
-                                    direction: {
-                                        type: 'combo',
-                                        title: 'Direction',
-                                        options: [{key: 'PtoC', title: 'Pouch -> Couch'}, {
-                                            key: 'CtoP',
-                                            title: 'Couch -> Pouch'
-                                        }, {key: 'both', title: 'Both ways'}],
-                                        'default': 'both'
-                                    },
-                                    continuous: {
-                                        type: 'checkbox',
-                                        title: 'Continuous replication',
-                                        options: {continuous: 'Continuous'}
-                                    }
-
-                                }
-                            }
-                        }
                     }
                 }
             });
@@ -697,7 +590,6 @@ define([
                         cfg: [{
                             groups: {
                                 tablevars: [view.variables],
-                                pouchvars: [view.pouchvariables],
                                 aliases: [view.aliases]
                             }
                         }],
@@ -709,7 +601,6 @@ define([
                         init_script: view.init_script,
                         custom_filters: view.custom_filters,
                         actionfiles: ActionManager.getFilesForm(),
-                        couch_replication: view.couch_replication,
                         requirejs: view.requirejs
                     }
                 });
@@ -730,14 +621,9 @@ define([
 
                 view.variables = data;
                 view.aliases = new DataArray(value.sections.cfg[0].groups.aliases[0], true);
-                view.couch_replication = value.sections.couch_replication;
                 view.init_script = value.sections.init_script;
                 view.custom_filters = value.sections.custom_filters;
                 view.requirejs = value.sections.requirejs;
-
-                // PouchDB variables
-                data = new DataArray(value.sections.cfg[0].groups.pouchvars[0]);
-                view.pouchvariables = data;
 
                 _check(true);
 

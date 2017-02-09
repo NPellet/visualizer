@@ -486,6 +486,19 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                     module.setChildSync(['configuration', 'groups', 'group', 0, 'asyncAwait'], [[]]);
                 }
             }, 'code_executor');
+        },
+        '2.77.1-1', function (view) {
+            // Removed pouchtovar and CouchDB sync functionality
+            if (view.pouchvariables) {
+                delete view.pouchvariables;
+            }
+            if (view.couch_replication) {
+                delete view.couch_replication;
+            }
+            // Old thing we forgot to remove
+            if (view.crons) {
+                delete view.crons;
+            }
         }
 //  Add new migration functions here
 //  Do not forget to `npm run prerelease` before creating your migration script
