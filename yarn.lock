@@ -1960,7 +1960,7 @@ doctrine@^1.1.0, doctrine@^1.2.2:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
-documentation@^4.0.0-beta16:
+documentation@^4.0.0-beta.18:
   version "4.0.0-beta9"
   resolved "https://registry.yarnpkg.com/documentation/-/documentation-4.0.0-beta9.tgz#8221b25286ce9563c7c9bb7710241255ccd2ee79"
   dependencies:
