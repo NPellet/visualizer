@@ -1,3 +1,13 @@
+<a name="2.77.1"></a>
+## [2.77.1](https://github.com/NPellet/visualizer/compare/v2.77.0...v2.77.1) (2017-02-10)
+
+
+### Bug Fixes
+
+* exclude babel from minified code ([2907c7d](https://github.com/NPellet/visualizer/commit/2907c7d))
+
+
+
 <a name="2.77.0"></a>
 # [2.77.0](https://github.com/NPellet/visualizer/compare/v2.76.3...v2.77.0) (2017-02-03)
 
