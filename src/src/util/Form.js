@@ -13,7 +13,7 @@ const dataTransform = {
 
 const defaultOptions = {
     keepFormValueIfDataUndefined: true // if true keep inputs for which the jpath is not found as they are
-                                   // if false will set the input to a default value (default value depends on type of input)
+    // if false will set the input to a default value (default value depends on type of input)
 };
 
 define(['jquery', 'src/util/debug'], function ($, Debug) {
@@ -121,8 +121,10 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                         this.checked = true;
                     });
                     break;
+                case 'select-one':
+                    if (!transform(value)) return;
+                    // fallthrough
                 default:
-                    // $(el).attr('value', value);
                     el.value = transform(value);
                     break;
             }
