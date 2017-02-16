@@ -4623,9 +4623,9 @@ subarg@^1.0.0:
   dependencies:
     minimist "^1.1.0"
 
-superagent@^3.0.0:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.4.2.tgz#aa9a00f21720e230a6e7e9d7f07e0ab84509b833"
+superagent@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.4.3.tgz#556648e95636f49173708b7002faaf3088bcea7f"
   dependencies:
     component-emitter "^1.2.0"
     cookiejar "^2.0.6"
