@@ -11,9 +11,15 @@ const dataTransform = {
     }
 };
 
+const defaultOptions = {
+    keepFormValueIfDataUndefined: true // if true keep inputs for which the jpath is not found as they are
+                                   // if false will set the input to a default value (default value depends on type of input)
+};
+
 define(['jquery', 'src/util/debug'], function ($, Debug) {
     class Form {
-        constructor(dom) {
+        constructor(dom, options) {
+            this.options = Object.assign({}, defaultOptions, options);
             this.dom = $(dom);
             this.bind();
             this.changeCb = null;
@@ -30,7 +36,8 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     value,
                     type,
                     transform: getTransform(this, 'forward'),
-                    dom: this};
+                    dom: this
+                };
             }).toArray().filter(o => {
                 if (!o.name) return false;
                 return (o.type !== 'radio' || o.dom.checked);
@@ -86,14 +93,19 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             var form = this.get();
             for (let i = 0; i < form.length; i++) {
                 var fillWith = data.getChildSync(form[i].name.split('.'));
-                fillWith = fillWith || null;
                 this._setElement(form[i].dom, fillWith);
             }
             this.data = data;
         }
 
         _setElement(el, value) {
-            if (value === null) return;
+            if (value == null) {
+                if (this.options.keepFormValueIfDataUndefined) {
+                    return;
+                } else {
+                    value = getDefaultByType(el.type);
+                }
+            }
             var transform = getTransform(el, 'backward');
             switch (el.type) {
                 case 'checkbox':
@@ -171,4 +183,15 @@ function getTransform(dom, type) {
 
 function identity(input) {
     return DataObject.resurrect(input);
+}
+
+function getDefaultByType(type) {
+    switch (type) {
+        case 'checkbox':
+            return false;
+        case 'radio':
+            return false;
+        default:
+            return '';
+    }
 }

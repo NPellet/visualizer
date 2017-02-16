@@ -37,7 +37,10 @@ define([
 
 
             if (this.form) this.form.unbind();
-            this.form = new Form(this.dom);
+            this.form = new Form(this.dom, {
+                keepFormValueIfDataUndefined: this.module.getConfigurationCheckbox('formOptions', 'keepFormValueIfDataUndefined')
+            });
+
             this.form.onChange(submit);
             this.form.onSubmit(() => {
                 submit('submit');
