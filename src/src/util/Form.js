@@ -30,7 +30,8 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     value,
                     type,
                     transform: getTransform(this, 'forward'),
-                    dom: this};
+                    dom: this
+                };
             }).toArray().filter(o => {
                 if (!o.name) return false;
                 return (o.type !== 'radio' || o.dom.checked);
@@ -86,14 +87,13 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             var form = this.get();
             for (let i = 0; i < form.length; i++) {
                 var fillWith = data.getChildSync(form[i].name.split('.'));
-                fillWith = fillWith || null;
                 this._setElement(form[i].dom, fillWith);
             }
             this.data = data;
         }
 
         _setElement(el, value) {
-            if (value === null) return;
+            if (value == null) return;
             var transform = getTransform(el, 'backward');
             switch (el.type) {
                 case 'checkbox':
