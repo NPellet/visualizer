@@ -1,3 +1,19 @@
+<a name="2.78.0"></a>
+# [2.78.0](https://github.com/NPellet/visualizer/compare/v2.77.1...v2.78.0) (2017-02-16)
+
+
+### Bug Fixes
+
+* **Form:** form was not filled with falsy values ([6fcb565](https://github.com/NPellet/visualizer/commit/6fcb565))
+* **twig:** don't set empty values in select elements ([61bed03](https://github.com/NPellet/visualizer/commit/61bed03))
+
+
+### Features
+
+* **twig:** add keepFormValueIfDataUndefined option ([c2f587b](https://github.com/NPellet/visualizer/commit/c2f587b))
+
+
+
 <a name="2.77.1"></a>
 ## [2.77.1](https://github.com/NPellet/visualizer/compare/v2.77.0...v2.77.1) (2017-02-10)
 
