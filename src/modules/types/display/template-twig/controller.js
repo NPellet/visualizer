@@ -88,6 +88,14 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                             type: 'float',
                             title: 'Debouncing',
                             default: 0
+                        },
+                        formOptions: {
+                            type: 'checkbox',
+                            title: 'Form options',
+                            options: {
+                                keepFormValueIfDataUndefined: 'Keep form value if data undefined'
+                            },
+                            default: ['keepFormValueIfDataUndefined']
                         }
                     }
                 }
@@ -99,7 +107,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         template: ['groups', 'group', 0, 'template', 0],
         selectable: ['groups', 'group', 0, 'selectable', 0],
         modifyInForm: ['groups', 'group', 0, 'modifyInForm', 0],
-        debouncing: ['groups', 'group', 0, 'debouncing', 0]
+        debouncing: ['groups', 'group', 0, 'debouncing', 0],
+        formOptions: ['groups', 'group', 0, 'formOptions', 0]
     };
 
     Controller.prototype.onRendered = function (renderedHtml) {
