@@ -85,7 +85,9 @@ define([
             top: Math.round(modulePos.top) * definition.yHeight,
             left: Math.round(modulePos.left) * definition.xWidth,
             width: Math.round(moduleSize.width) * definition.xWidth,
-            height: Math.round(moduleSize.height) * definition.yHeight
+            height: Math.round(moduleSize.height) * definition.yHeight,
+            position: 'absolute' // This is here to avoid a bug in Firefox where the position from CSS is not set until the element is visible
+                                 // jquery-ui/draggable sets the position to relative in this case.
         });
     }
 
