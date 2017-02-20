@@ -204,57 +204,54 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
     /*
      * We receive an event from JSME
      */
-    Controller.prototype.onChange = function (mol, molV3, smiles, jme, svg, action) {
+    Controller.prototype.onChange = function (message) {
+        var action=message.action;
         var currentValue = this.module.view._currentValue;
 
         // check Github History when drag / drop and paste will be another action name
 
-        if (action != null &&
-           // action != 'readRXNFile' && // if we don't comment those lines we can not paste molfile or drop molfiles and ahve in-place modification !!!
-           // action != 'readMolFile' &&
-            action != 'reset' &&
+        if (
+            action != null &&
+            ((action != 'readRXNFile' && action != 'readMolFile') || message.origin !== 'GUI') &&
+            action !== 'reset' &&
             currentValue &&
-            this.module.getConfigurationCheckbox('outputResult', 'yes')) {
-            var change = (action != 'readRXNFile' && action != 'readMolFile');
-
+            this.module.getConfigurationCheckbox('outputResult', 'yes')
+        ) {
             if (this.module.view._currentType === 'mol') {
                 // need to check the 4th line, if same number bonds and atoms we do nothing
-                var current = currentValue.get();
-                if (change || (!current || current.split(/\r\n|\r|\n/)[3].substring(0, 6) != mol.split(/\r\n|\r|\n/)[3].substring(0, 6))) {
-                    currentValue.setValue(mol, true);
-                    this.module.model.dataTriggerChange(currentValue);
-                }
+                currentValue.setValue(message.mol, true);
+                this.module.model.dataTriggerChange(currentValue);
             } else if (this.module.view._currentType === 'jme') {
-                currentValue.setValue(jme, true);
+                currentValue.setValue(message.jme, true);
                 this.module.model.dataTriggerChange(currentValue);
             } else if (this.module.view._currentType === 'smiles') {
-                currentValue.setValue(smiles, true);
+                currentValue.setValue(message.smiles, true);
                 this.module.model.dataTriggerChange(currentValue);
             }
         }
 
         // we loaded an external file
-        if (action === 'readMolFile' && smiles !== '') {
-            this.sendActionFromEvent('onMolfileLoaded', 'mol', mol);
+        if (action === 'readMolFile' && message.smiles !== '') {
+            this.sendActionFromEvent('onMolfileLoaded', 'mol', message.mol);
         }
 
         // Always create smiles because smiles is not a possible input variable
-        this.createDataFromEvent('onStructureChange', 'smiles', smiles);
+        this.createDataFromEvent('onStructureChange', 'smiles', message.smiles);
         this.createDataFromEvent('onStructureChange', 'svg', {
             type: 'svg',
-            value: svg
+            value: message.svg
         });
         this.createDataFromEvent('onStructureChange', 'mol', {
             type: 'mol2d',
-            value: mol
+            value: message.mol
         });
         this.createDataFromEvent('onStructureChange', 'molV3', {
             type: 'mol2d',
-            value: molV3
+            value: message.molV3
         });
         this.createDataFromEvent('onStructureChange', 'jme', {
             type: 'jme',
-            value: jme
+            value: message.jme
         });
 
     };
