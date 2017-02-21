@@ -205,7 +205,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
      * We receive an event from JSME
      */
     Controller.prototype.onChange = function (message) {
-        var action=message.action;
+        var action = message.action;
         var currentValue = this.module.view._currentValue;
 
         // check Github History when drag / drop and paste will be another action name
