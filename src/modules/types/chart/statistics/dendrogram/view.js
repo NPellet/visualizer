@@ -123,6 +123,7 @@ define([
             maybePutOption(options, '$color', getConf('jpathColor'));
             maybePutOption(options, '$dim', getConf('jpathSize'));
             maybePutOption(options, '$type', getConf('jpathShape'));
+            maybePutOption(options, 'label', getConf('jpathLabel'));
             return options;
         },
 

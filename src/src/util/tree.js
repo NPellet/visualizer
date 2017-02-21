@@ -1,6 +1,6 @@
 'use strict';
 
-define([], function () {
+define(['src/main/datas'], function (Data) {
     var uniqueID = 0;
 
     function annotateTree(tree, data, options) {
@@ -26,7 +26,7 @@ define([], function () {
                 node.data.data = element;
                 for (let i = 0; i < keys.length; ++i) {
                     var value = element.getChildSync(options[keys[i]]);
-                    if (value) {
+                    if (value && Data.isSpecialNativeObject(value)) {
                         node.data[keys[i]] = DataObject.resurrect(value.get());
                     }
                 }

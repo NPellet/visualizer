@@ -124,6 +124,13 @@ define([
                             type: 'color',
                             title: 'Default node color'
                         },
+                        jpathLabel: {
+                            type: 'combo',
+                            title: 'Label jpath',
+                            options: dataJPath,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
                         labelSize: {
                             type: 'text',
                             title: 'Default label size'
@@ -166,7 +173,8 @@ define([
         edgeWidth: ['groups', 'group', 0, 'edgeWidth', 0],
         edgeColor: ['groups', 'group', 0, 'edgeColor', 0],
         strokeWidth: ['groups', 'group', 0, 'strokeWidth', 0],
-        strokeColor: ['groups', 'group', 0, 'strokeColor', 0]
+        strokeColor: ['groups', 'group', 0, 'strokeColor', 0],
+        jpathLabel: ['groups', 'group', 0, 'jpathLabel', 0],
     };
 
     return Controller;
