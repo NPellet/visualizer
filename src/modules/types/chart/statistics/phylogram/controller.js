@@ -95,6 +95,36 @@ define(['modules/default/defaultcontroller',
                             options: dataJPath,
                             extractValue: Util.jpathToArray,
                             insertValue: Util.jpathToString
+                        },
+                        d3check: {
+                            type: 'checkbox',
+                            title: 'd3 options',
+                            options: {
+                                skipLabels: 'Skip labels'
+                            },
+                            default: ['skipLabels']
+                        },
+                        jpathLabel: {
+                            type: 'combo',
+                            title: 'Label jpath',
+                            options: dataJPath,
+                            extractValue: Util.jpathToArray,
+                            insertValue: Util.jpathToString
+                        },
+                        labelSize: {
+                            type: 'text',
+                            title: 'Label font size',
+                            default: '10px'
+                        },
+                        labelDx: {
+                            type: 'float',
+                            title: 'Label dx',
+                            default: -30
+                        },
+                        labelDy: {
+                            type: 'float',
+                            title: 'Label dy',
+                            default: 4
                         }
                     }
                 }
@@ -104,7 +134,12 @@ define(['modules/default/defaultcontroller',
 
     Controller.prototype.configAliases = {
         branchWidth: ['groups', 'group', 0, 'branchWidth', 0],
-        jpathColor: ['groups', 'group', 0, 'jpathColor', 0]
+        jpathColor: ['groups', 'group', 0, 'jpathColor', 0],
+        jpathLabel: ['groups', 'group', 0, 'jpathLabel', 0],
+        d3check: ['groups', 'group', 0, 'd3check', 0],
+        labelSize: ['groups', 'group', 0, 'labelSize', 0],
+        labelDx: ['groups', 'group', 0, 'labelDx', 0],
+        labelDy: ['groups', 'group', 0, 'labelDy', 0]
     };
 
     Controller.prototype.events = {

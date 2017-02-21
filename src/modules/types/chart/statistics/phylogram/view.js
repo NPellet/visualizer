@@ -74,6 +74,7 @@ define([
             var options = {};
             var getConf = this.module.getConfiguration;
             maybePutOption(options, '$color', getConf('jpathColor'));
+            maybePutOption(options, 'label', getConf('jpathLabel'));
             return options;
         },
 
@@ -94,7 +95,10 @@ define([
                 width: that.width,
                 skipBranchLengthScaling: skipBranchLengthScaling,
                 skipTicks: false,
-                skipLabels: true,
+                skipLabels: this.module.getConfigurationCheckbox('d3check', 'skipLabels'),
+                labelDx: this.module.getConfiguration('labelDx'),
+                labelDy: this.module.getConfiguration('labelDy'),
+                labelSize: this.module.getConfiguration('labelSize'),
                 children: function (node) {
                     return node.children;
                 },

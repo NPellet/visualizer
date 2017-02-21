@@ -287,25 +287,24 @@ if (!d3) { throw "d3 wasn't included!"}
 			.on("mouseout",function(data){if(options.callbackMouseOutLeaf)options.callbackMouseOutLeaf(data);})
 
     d3.phylogram.styleTreeNodes(vis)
-
     if (!options.skipLabels) {
       vis.selectAll('g.inner.node')
         .append("svg:text")
-          .attr("dx", -6)
-          .attr("dy", -6)
+          .attr("dx", -8)
+          .attr("dy", -8)
           .attr("text-anchor", 'end')
-          .attr('font-size', '8px')
-          .attr('fill', '#ccc')
-          .text(function(d) { return d.length; });
+          .attr('font-size', '9px')
+          .attr('fill', '#999')
+          .text(function(d) { return d.distance; });
 
       vis.selectAll('g.leaf.node').append("svg:text")
-        .attr("dx", 8)
-        .attr("dy", 3)
+        .attr("dx", options.labelDx || 30)
+        .attr("dy", options.labelDy || 10)
         .attr("text-anchor", "start")
         .attr('font-family', 'Helvetica Neue, Helvetica, sans-serif')
-        .attr('font-size', '10px')
+        .attr('font-size', options.labelSize || '10px')
         .attr('fill', 'black')
-        .text(function(d) { if(d.data) return d.data.label ; /*return d.name + ' ('+d.length+')';*/ });
+        .text(function(d) {if(d.data) return d.data.label ; /*return d.name + ' ('+d.length+')';*/ });
     }
 
     return {tree: tree, vis: vis}
