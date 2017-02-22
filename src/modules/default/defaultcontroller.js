@@ -265,7 +265,8 @@ define([
         variablesIn: [],
 
         defaultActionsIn: {
-            _editPreferences: 'Edit preferences'
+            _editPreferences: 'Edit preferences',
+            _print: 'Print module content'
         },
         actionsIn: {},
 
