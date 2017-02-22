@@ -87,9 +87,7 @@ define([
             var that = this;
 
             this.dom.empty();
-            var skipBranchLengthScaling = true;
-            if (dataD.children && dataD.children.length > 0)
-                skipBranchLengthScaling = (dataD.children[0].length === undefined);
+            var skipBranchLengthScaling = this.module.getConfigurationCheckbox('d3check', 'skipBranchLengthScaling');
             d3.phylogram.build(this.selectorId, dataD, {
                 height: that.height,
                 width: that.width,

@@ -100,9 +100,10 @@ define(['modules/default/defaultcontroller',
                             type: 'checkbox',
                             title: 'd3 options',
                             options: {
-                                skipLabels: 'Skip labels'
+                                skipLabels: 'Skip labels',
+                                skipBranchLengthScaling: 'Skip branch scaling'
                             },
-                            default: ['skipLabels']
+                            default: ['skipLabels', 'skipBranchLengthScaling']
                         },
                         jpathLabel: {
                             type: 'combo',

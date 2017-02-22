@@ -189,16 +189,16 @@ if (!d3) { throw "d3 wasn't included!"}
         }
       }
     };
+
+    const rootDist = nodes[0].distance;
+      var yscale = d3.scale.linear()
+          .domain([0, rootDist])
+          .range([0, w]);
     visitPreOrder(nodes[0], function(node) {
-      node.rootDist = (node.parent ? node.parent.rootDist : 0) + (node.length || 0)
+        node.rootDist = rootDist - node.distance;
+        node.y = yscale(node.rootDist);
     });
-    var rootDists = nodes.map(function(n) { return n.rootDist; });
-    var yscale = d3.scale.linear()
-      .domain([0, d3.max(rootDists)])
-      .range([0, w]);
-    visitPreOrder(nodes[0], function(node) {
-      node.y = yscale(node.rootDist)
-    });
+
     return yscale
   }
 
