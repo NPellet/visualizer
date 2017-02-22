@@ -1171,6 +1171,7 @@ define([
             openWindow.document.close();
             openWindow.focus();
             openWindow.print();
+            openWindow.close();
         },
 
         setBackgroundColor(color) {
