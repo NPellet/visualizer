@@ -189,7 +189,7 @@ module.exports = function (grunt) {
                             './jsme/**',
                             './jsmol/**',
                             './jcampconverter/dist/*',
-                            './jsbarcode/*.js',
+                            './jsbarcode/dist/*.js',
                             './slickgrid/**',
                             './ml/dist/*',
                             './jquery-tmpl/**',
