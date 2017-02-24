@@ -1798,8 +1798,15 @@ define([
     }
 
     function getColumnFilterFunction(query) {
+        function pad(n, width, z) {
+            z = z || '0';
+            n = n + '';
+            return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        }
+
         var match;
 
+        // Force string matcher
         match = query.match(/^"(.*)"$/);
         if (match) {
             return function (val) {
@@ -1809,6 +1816,7 @@ define([
             };
         }
 
+        // Regular expression matcher
         match = query.match(/^\/(.+)\/(i?)/);
         if (match) {
             return function (val) {
@@ -1816,6 +1824,49 @@ define([
             };
         }
 
+        // Date matcher
+        match = query.match(/^([<>=]{1,2})([0-9]+)-([0-9\-:]*)$/);
+        if (match) {
+            match = query.match(/^([<>=]{0,2})([0-9]+)-([0-9]*)-?([0-9]*)/);
+            let year = parseInt(match[2]);
+            let month = parseInt(match[3]);
+            let day = parseInt(match[4]);
+            if (Number.isNaN(month)) month = 1;
+            if (Number.isNaN(day)) day = 1;
+            const date = new Date();
+            date.setUTCFullYear(year);
+            date.setUTCMonth(month - 1);
+            date.setUTCDate(day);
+            date.setUTCHours(0);
+            date.setUTCMinutes(0);
+            date.setUTCSeconds(0);
+            date.setUTCMilliseconds(0);
+            if (match[1] === '<') {
+                return function (val) {
+                    const valDate = new Date(val);
+                    return valDate < date;
+                };
+            } else if (match[1] === '>') {
+                return function (val) {
+                    const valDate = new Date(val);
+                    return valDate > date;
+                };
+            } else if (match[1] === '<=') {
+                return function (val) {
+                    const valDate = new Date(val);
+                    return valDate <= date;
+                };
+            } else if (match[1] === '>=') {
+                return function (val) {
+                    const valDate = new Date(val);
+                    return valDate >= date;
+                };
+            } else {
+                throw new Error('Invalid date operator');
+            }
+        }
+
+        //
         match = query.match(/^([<>=]{1,2})([0-9.-]+)$/);
         if (match) {
             if (match[1] === '<') {
