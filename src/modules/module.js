@@ -1164,9 +1164,13 @@ define([
             }
         },
 
-        printView() {
+        printView(options) {
             const domContent = this.controller.print();
-            const openWindow = window.open('', '', '');
+            if (options && options.window) {
+                var openWindow=options.window;
+            } else {
+                var openWindow = window.open('', '', '');
+            }
             openWindow.document.body.appendChild(domContent);
             openWindow.document.close();
             openWindow.focus();

@@ -54,8 +54,8 @@ define(['src/util/util'], function (Util) {
                 this.module.reload();
 
             },
-            _print() {
-                this.module.printView();
+            _print(values) {
+                this.module.printView(values);
             }
         },
 
