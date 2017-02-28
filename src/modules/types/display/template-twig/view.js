@@ -15,6 +15,7 @@ define([
 
     $.extend(true, View.prototype, Default, {
         init() {
+            this._changedJpaths = new Set();
             var configTemplate = this.module.getConfiguration('template');
             this.hasTemplate = new Promise((resolve) => {
                 this._resolveTemplate = resolve;
@@ -28,23 +29,23 @@ define([
                 'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'initial' : 'none'
             });
 
+
             var debouncing = this.module.getConfiguration('debouncing');
             if (debouncing) {
-                var submit = _.debounce(this.submit, debouncing).bind(this);
+                var submitChange = _.debounce(this.submitChange, debouncing).bind(this);
             } else {
-                submit = this.submit.bind(this);
+                submitChange = this.submitChange.bind(this);
             }
 
+            var submit = this.submit.bind(this);
 
             if (this.form) this.form.unbind();
             this.form = new Form(this.dom, {
                 keepFormValueIfDataUndefined: this.module.getConfigurationCheckbox('formOptions', 'keepFormValueIfDataUndefined')
             });
 
-            this.form.onChange(submit);
-            this.form.onSubmit(() => {
-                submit('submit');
-            });
+            this.form.onChange(submitChange);
+            this.form.onSubmit(submit);
 
             this._values = new DataObject();
 
@@ -106,13 +107,35 @@ define([
             return this.currentForm = this.form.getData(false);
         },
 
-        submit(type) {
-            var out = this.getForm();
-            if (type === 'submit') {
-                this.module.controller.onFormSubmitted(out);
-            } else {
-                this.module.controller.onFormChanged(out);
+        submitChange(event) {
+            const toSend = {
+                data: this.getForm()
+            };
+
+            if (this._lastChanged) {
+                toSend.previousData = this._lastChanged;
             }
+            this._lastChanged = toSend.data;
+            toSend.jpath = event.target.name && event.target.name.split('.');
+            if (event.target.name) {
+                this._changedJpaths.add(event.target.name);
+            }
+
+            this.module.controller.onFormChanged(toSend);
+        },
+
+        submit() {
+            const toSend = {
+                data: this.getForm(),
+                jpaths: Array.from(this._changedJpaths).map(j => j.split('.'))
+            };
+
+            this._changedJpaths.clear();
+            if (this._lastSubmit) {
+                toSend.previousData = this._lastSubmit;
+            }
+            this._lastSubmit = toSend.data;
+            this.module.controller.onFormSubmitted(toSend);
         },
         blank: {
             value() {
