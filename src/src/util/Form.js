@@ -154,14 +154,14 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
     function onChange(ctx) {
         return function (e) {
-            if (ctx.changeCb) ctx.changeCb();
+            if (ctx.changeCb) ctx.changeCb(e);
         };
     }
 
     function onSubmit(ctx) {
         return function (e) {
             e.preventDefault();
-            if (ctx.submitCb) ctx.submitCb();
+            if (ctx.submitCb) ctx.submitCb(e);
         };
     }
 

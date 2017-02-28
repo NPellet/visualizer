@@ -29,7 +29,10 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
             type: 'string'
         },
         form: {
-            label: 'form object'
+            label: 'Form object'
+        },
+        formFull: {
+            label: 'Form object with meta informations'
         },
         style: {
             label: 'Style object'
@@ -44,13 +47,13 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         },
         onFormChanged: {
             label: 'Form changed',
-            refVariable: ['form'],
-            refAction: ['form']
+            refVariable: ['form', 'formFull'],
+            refAction: ['form', 'formFull']
         },
         onFormSubmitted: {
             label: 'Form submitted',
-            refVariable: ['form'],
-            refAction: ['form']
+            refVariable: ['form', 'formFull'],
+            refAction: ['form', 'formFull']
         }
     };
 
@@ -118,21 +121,23 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         }, 0);
     };
 
-    Controller.prototype.onFormChanged = function (out) {
-        this._doForm('onFormChanged', out);
+    Controller.prototype.onFormChanged = function (event) {
+        this._doForm('onFormChanged', event);
     };
 
-    Controller.prototype.onFormSubmitted = function (out) {
-        this._doForm('onFormSubmitted', out);
+    Controller.prototype.onFormSubmitted = function (event) {
+        this._doForm('onFormSubmitted', event);
     };
 
 
-    Controller.prototype._doForm = function (event, out) {
-        this.createDataFromEvent(event, 'form', out);
-        this.sendActionFromEvent(event, 'form', out);
+    Controller.prototype._doForm = function (name, data) {
+        this.createDataFromEvent(name, 'form', data.data);
+        this.sendActionFromEvent(name, 'form', data.data);
+        this.createDataFromEvent(name, 'formFull', data);
+        this.sendActionFromEvent(name, 'formFull', data);
 
         if (this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
-            this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(out)), this.module.getId());
+            this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(data.data)), this.module.getId());
         }
     };
 
