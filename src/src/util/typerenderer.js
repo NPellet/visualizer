@@ -215,6 +215,7 @@ define([
             ghs[i] = require.toUrl('./typerenderer/svg/' + i + '.svg');
         }
 
+        $element.html('');
 
         if (val) {
             val = val.replace(/^\s+|\s+$/g, '');
@@ -229,7 +230,7 @@ define([
                 $img.css({
                     height: '100%'
                 });
-                $element.html($img);
+                $element.append($img);
             }
 
 
