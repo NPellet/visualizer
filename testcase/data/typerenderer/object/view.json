@@ -1,5 +1,5 @@
 {
-  "version": "2.56.1-0",
+  "version": "2.78.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -31,17 +31,19 @@
               "displayValue": [
                 []
               ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
               "output": [
                 "new"
               ],
               "storedObject": [
-                "[{\"a\":1,\"b\":{\"type\":\"object\",\"value\":{\"test\":1234},\"_options\":{\"twig\":\"line <br><b>{{test}}</b><br> efg\"}}},{\"a\":2,\"b\":{}},{\"a\":3,\"b\":{\"type\":\"latex\",\"value\":\"c = \\\\pm\\\\sqrt{a^2 + b^2}\"}}]"
-              ],
-              "searchBox": [
-                null
-              ],
-              "sendButton": [
-                null
+                "[{\"a\":1,\"b\":{\"type\":\"object\",\"value\":{\"test\":1234},\"_options\":{\"twig\":\"line <br><b>{{test}}</b><br> efg\"}}},{\"a\":2,\"b\":{}},{\"a\":3,\"b\":{\"type\":\"latex\",\"value\":\"c = \\\\pm\\\\sqrt{a^2 + b^2}\"}},{\"a\":4,\"b\":{\"type\":\"ghs\",\"value\":\"1 2 3 4\"}}]"
               ]
             }
           ]
@@ -54,8 +56,8 @@
             "top": 0
           },
           "size": {
-            "width": 44.9666666,
-            "height": 34.9666666
+            "width": 45,
+            "height": 35
           },
           "zIndex": 0,
           "display": true,
@@ -84,10 +86,23 @@
           "rel": "output",
           "jpath": [],
           "name": "test"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "3",
+            "b"
+          ],
+          "name": "ghs"
         }
       ],
       "title": "",
-      "actions_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -108,7 +123,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -180,12 +205,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 47,
+            "left": 46,
             "top": 0
           },
           "size": {
-            "width": 72.9666666,
-            "height": 34.9666666
+            "width": 73,
+            "height": 48
           },
           "zIndex": 0,
           "display": true,
@@ -299,6 +324,9 @@
               ],
               "preformatted": [
                 []
+              ],
+              "debounce": [
+                null
               ]
             }
           ]
@@ -311,8 +339,8 @@
             "top": 36
           },
           "size": {
-            "width": 44.9666666,
-            "height": 11.9666666
+            "width": 45,
+            "height": 12
           },
           "zIndex": 0,
           "display": true,
@@ -328,7 +356,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
@@ -362,6 +390,140 @@
           }
         ]
       }
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 49
+          },
+          "size": {
+            "width": 119,
+            "height": 23
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "ghs"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
@@ -372,9 +534,6 @@
     }
   ],
   "aliases": [
-    {}
-  ],
-  "pouchvariables": [
     {}
   ],
   "configuration": {
@@ -393,21 +552,6 @@
               null
             ]
           }
-        ]
-      }
-    }
-  ],
-  "couch_replication": [
-    {
-      "sections": {},
-      "groups": {
-        "couch": [
-          [
-            {
-              "direction": "both",
-              "continuous": []
-            }
-          ]
         ]
       }
     }
