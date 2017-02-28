@@ -1167,7 +1167,7 @@ define([
         printView(options) {
             const domContent = this.controller.print();
             if (options && options.window) {
-                var openWindow=options.window;
+                var openWindow = options.window;
             } else {
                 var openWindow = window.open('', '', '');
             }

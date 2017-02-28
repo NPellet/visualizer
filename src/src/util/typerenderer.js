@@ -210,7 +210,7 @@ define([
 
     functions.ghs = {};
     functions.ghs.toscreen = function ($element, val) {
-        var height=$element.height();
+        var height = $element.height();
 
         var ghs = {};
         for (var i = 1; i <= 9; i++) {
@@ -222,7 +222,7 @@ define([
         if (val) {
             val = val.replace(/^\s+|\s+$/g, '');
             if (!Array.isArray(val)) {
-                val = val.split(/[\r\n\t,; ]+/)
+                val = val.split(/[\r\n\t,; ]+/);
             }
             for (var ghsValue of val) {
                 var $img = $('<img>');
@@ -230,7 +230,7 @@ define([
                     src: ghs[ghsValue]
                 });
                 $img.css({
-                    height: height-5
+                    height: height - 5
                 });
                 $element.append($img);
             }
