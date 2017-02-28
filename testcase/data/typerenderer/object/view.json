@@ -43,7 +43,7 @@
                 "new"
               ],
               "storedObject": [
-                "[{\"a\":1,\"b\":{\"type\":\"object\",\"value\":{\"test\":1234},\"_options\":{\"twig\":\"line <br><b>{{test}}</b><br> efg\"}}},{\"a\":2,\"b\":{}},{\"a\":3,\"b\":{\"type\":\"latex\",\"value\":\"c = \\\\pm\\\\sqrt{a^2 + b^2}\"}},{\"a\":4,\"b\":{\"type\":\"ghs\",\"value\":\"1 2 3 4\"}}]"
+                "[{\"a\":1,\"b\":{\"type\":\"object\",\"value\":{\"test\":1234},\"_options\":{\"twig\":\"line <br><b>{{test}}</b><br> efg\"}}},{\"a\":2,\"b\":{}},{\"a\":3,\"b\":{\"type\":\"latex\",\"value\":\"c = \\\\pm\\\\sqrt{a^2 + b^2}\"}},{\"a\":4,\"b\":{\"type\":\"ghs\",\"value\":\"1 2 3 4\"}},{\"a\":5,\"b\":{\"type\":\"ghs\",\"value\":\"5 6 7 8 9\"}}]"
               ]
             }
           ]
@@ -165,26 +165,75 @@
               "slick.rowHeight": [
                 "100"
               ],
+              "slick.headerRowHeight": [
+                30
+              ],
               "slick.selectionModel": [
                 "row"
+              ],
+              "idProperty": [
+                ""
               ],
               "filterType": [
                 "pref"
               ],
               "filterRow": [
                 "// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940"
+              ],
+              "customJpaths": [
+                ""
               ]
             }
           ],
           "cols": [
             [
               {
-                "jpath": [],
+                "name": "a",
+                "jpath": [
+                  "a"
+                ],
                 "editor": "none",
+                "forceType": "",
                 "formatter": "typerenderer",
                 "visibility": "both",
                 "rendererOptions": "",
+                "editorOptions": "",
+                "width": 60,
                 "hideColumn": []
+              },
+              {
+                "name": "b",
+                "jpath": [
+                  "b"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 671,
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
               }
             ]
           ],
@@ -199,6 +248,19 @@
             [
               {}
             ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
           ]
         }
       },
@@ -239,7 +301,12 @@
       "title": "",
       "vars_out": [
         {
-          "jpath": []
+          "event": "onSelect",
+          "rel": "row",
+          "jpath": [
+            "b"
+          ],
+          "name": "oneObject"
         }
       ],
       "actions_out": [
@@ -267,7 +334,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/display/single_value/",
@@ -480,7 +557,7 @@
       "vars_in": [
         {
           "rel": "value",
-          "name": "ghs"
+          "name": "oneObject"
         }
       ],
       "actions_in": [

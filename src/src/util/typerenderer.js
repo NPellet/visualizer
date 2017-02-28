@@ -210,6 +210,8 @@ define([
 
     functions.ghs = {};
     functions.ghs.toscreen = function ($element, val) {
+        var height=$element.height();
+
         var ghs = {};
         for (var i = 1; i <= 9; i++) {
             ghs[i] = require.toUrl('./typerenderer/svg/' + i + '.svg');
@@ -225,27 +227,14 @@ define([
             for (var ghsValue of val) {
                 var $img = $('<img>');
                 $img.attr({
-                    src: ghs[ghsValue],
+                    src: ghs[ghsValue]
                 });
                 $img.css({
-                    height: '100%'
+                    height: height-5
                 });
                 $element.append($img);
             }
-
-
-            /*
-
-             dom[0].setAttribute('viewBox', viewbox.join(' '));
-             dom.removeAttr('id');
-             dom.attr('width', '100%');
-             dom.attr('height', '100%');
-             dom.css('display', 'block');
-             $element.html(dom);
-             */
-
         }
-
     };
 
     functions.doi = {};
