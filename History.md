@@ -1,3 +1,25 @@
+<a name="2.79.0"></a>
+# [2.79.0](https://github.com/NPellet/visualizer/compare/v2.78.1...v2.79.0) (2017-02-28)
+
+
+### Bug Fixes
+
+* **build:** copy appropriate jsbarcode files ([52b2ae9](https://github.com/NPellet/visualizer/commit/52b2ae9))
+* **components:** fix loading of jsbarcode library ([17ea45e](https://github.com/NPellet/visualizer/commit/17ea45e)), closes [#1036](https://github.com/NPellet/visualizer/issues/1036)
+* **typerendere:** ghs don't append elements ([7cc61a5](https://github.com/NPellet/visualizer/commit/7cc61a5))
+* **typerenderer:** fix leading dots ([7a62b02](https://github.com/NPellet/visualizer/commit/7a62b02))
+
+
+### Features
+
+* **dendrogram:** add label jpath option ([6aebf6b](https://github.com/NPellet/visualizer/commit/6aebf6b))
+* **phylogram:** add label options ([2a01b92](https://github.com/NPellet/visualizer/commit/2a01b92))
+* **phylogram:** scale branch width ([b9539bc](https://github.com/NPellet/visualizer/commit/b9539bc))
+* **slick_grid:** add date filter ([63b82e7](https://github.com/NPellet/visualizer/commit/63b82e7)), closes [#1034](https://github.com/NPellet/visualizer/issues/1034)
+* **twig:** add form metadata to change and submit events ([664e99c](https://github.com/NPellet/visualizer/commit/664e99c))
+
+
+
 <a name="2.78.1"></a>
 ## [2.78.1](https://github.com/NPellet/visualizer/compare/v2.78.0...v2.78.1) (2017-02-18)
 
