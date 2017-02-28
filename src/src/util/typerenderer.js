@@ -210,22 +210,24 @@ define([
 
     functions.ghs = {};
     functions.ghs.toscreen = function ($element, val) {
-        var ghs={};
-        for (var i=1; i<=9; i++) {
-            ghs[i]=require.toUrl('./typerenderer/svg/'+i+'.svg');
+        var ghs = {};
+        for (var i = 1; i <= 9; i++) {
+            ghs[i] = require.toUrl('./typerenderer/svg/' + i + '.svg');
         }
 
 
         if (val) {
-            val=val.replace(/^\s+|\s+$/g,'');
-            if (! Array.isArray(val)) {
-                val=val.split(/[\r\n\t,; ]+/)
+            val = val.replace(/^\s+|\s+$/g, '');
+            if (!Array.isArray(val)) {
+                val = val.split(/[\r\n\t,; ]+/)
             }
             for (var ghsValue of val) {
                 var $img = $('<img>');
                 $img.attr({
                     src: ghs[ghsValue],
-                    height: 50
+                });
+                $img.css({
+                    height: '100%'
                 });
                 $element.append($img);
             }
@@ -233,13 +235,13 @@ define([
 
             /*
 
-            dom[0].setAttribute('viewBox', viewbox.join(' '));
-            dom.removeAttr('id');
-            dom.attr('width', '100%');
-            dom.attr('height', '100%');
-            dom.css('display', 'block');
-            $element.html(dom);
-            */
+             dom[0].setAttribute('viewBox', viewbox.join(' '));
+             dom.removeAttr('id');
+             dom.attr('width', '100%');
+             dom.attr('height', '100%');
+             dom.css('display', 'block');
+             $element.html(dom);
+             */
 
         }
 
