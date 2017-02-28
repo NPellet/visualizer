@@ -229,7 +229,7 @@ define([
                 $img.css({
                     height: '100%'
                 });
-                $element.append($img);
+                $element.html($img);
             }
 
 
