@@ -61,16 +61,6 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             return out;
         }
 
-        set(form) {
-            if (!form || !this.dom) return;
-            for (let i = 0; i < form.length; i++) {
-                var $el = this.dom.find(`input[name="${form[i].name}"]`);
-                var el = $el[0];
-                if (!el) continue;
-                this._setElement(el, form[i].value);
-            }
-        }
-
         getData(merge) {
             var f = this.get();
             var obj;
@@ -90,18 +80,23 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         setData(data) {
             if (!data) return;
             data = DataObject.check(data, true);
+            const changedNames = new Set();
             var form = this.get();
             for (let i = 0; i < form.length; i++) {
-                var fillWith = data.getChildSync(form[i].name.split('.'));
-                this._setElement(form[i].dom, fillWith);
+                const jpath = form[i].name.split('.');
+                var fillWith = data.getChildSync(jpath);
+                const changed = this._setElement(form[i].dom, fillWith);
+                if (changed) changedNames.add(form[i].name);
             }
             this.data = data;
+            // Return set of changed names
+            return Array.from(changedNames);
         }
 
         _setElement(el, value) {
             if (value == null) {
                 if (this.options.keepFormValueIfDataUndefined) {
-                    return;
+                    return false;
                 } else {
                     value = getDefaultByType(el.type);
                 }
@@ -123,11 +118,12 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     break;
                 case 'select-one':
                     if (!transform(value)) return;
-                    // fallthrough
+                // fallthrough
                 default:
                     el.value = transform(value);
                     break;
             }
+            return true;
         }
 
         onChange(cb) {

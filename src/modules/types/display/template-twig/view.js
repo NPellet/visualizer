@@ -65,7 +65,7 @@ define([
             this.render(() => {
                 this.resetForm();
                 if (this.module.getConfiguration('template')) {
-                    this.submit();
+                    // this.submit();
                 }
             });
         },
@@ -108,6 +108,7 @@ define([
         },
 
         submitChange(event) {
+            event = event || {target: {}};
             const toSend = {
                 data: this.getForm()
             };
@@ -181,7 +182,7 @@ define([
                 }).then(() => this._resolveTemplate()).catch(e => {
                     Debug.info('Problem with template: ' + e);
                 }).then(() => {
-                    this.submit();
+                    this.submitChange();
                 });
             },
 
@@ -200,8 +201,9 @@ define([
         },
 
         fillForm() {
-            this.form.setData(this.formObject);
-            this.submit();
+            const changed = this.form.setData(this.formObject);
+            changed.forEach(c => this._changedJpaths.add(c));
+            this.submitChange();
         },
 
         render(cb) {
