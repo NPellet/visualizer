@@ -1,3 +1,13 @@
+<a name="2.79.1"></a>
+## [2.79.1](https://github.com/NPellet/visualizer/compare/v2.79.0...v2.79.1) (2017-03-01)
+
+
+### Bug Fixes
+
+* **twig:** Submit event should only be called on user action ([2aee4da](https://github.com/NPellet/visualizer/commit/2aee4da))
+
+
+
 <a name="2.79.0"></a>
 # [2.79.0](https://github.com/NPellet/visualizer/compare/v2.78.1...v2.79.0) (2017-02-28)
 
