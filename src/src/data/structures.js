@@ -36,6 +36,8 @@ define(function () {
         'regexp': 'string',
         'regex': 'string',
         'gradient': 'object',
+        'barcode': 'string',
+        'qrcode': 'string',
         'colorBar': {
             'type': 'array',
             'elements': {
