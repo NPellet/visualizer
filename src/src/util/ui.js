@@ -379,7 +379,7 @@ define([
                 $dialog.html(html);
             }
 
-            var options = Object.assign({}, {
+            options = Object.assign({}, {
                 modal: true,
                 buttons: {},
                 close: function () {
