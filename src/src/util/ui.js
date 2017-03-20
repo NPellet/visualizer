@@ -367,7 +367,7 @@ define([
 
     };
 
-    exports.confirm = function (html, okLabel, cancelLabel) {
+    exports.confirm = function (html, okLabel, cancelLabel, options) {
         if (_.isUndefined(okLabel)) okLabel = 'Ok';
         if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
         return new Promise(function (resolve) {
@@ -379,14 +379,15 @@ define([
                 $dialog.html(html);
             }
 
-            var options = {
+            var options = Object.assign({}, {
                 modal: true,
                 buttons: {},
                 close: function () {
                     resolve(false);
                 },
                 width: 400
-            };
+            }, options);
+           
 
             if (okLabel !== null && okLabel !== '') options.buttons[okLabel] = function () {
                 resolve(true);
