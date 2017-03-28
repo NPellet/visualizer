@@ -326,8 +326,8 @@ define([
                     break;
                 case 'osm':
                 default:
-                    tileLayer.template = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-                    tileLayer.parameters.attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+                    tileLayer.template = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                    tileLayer.parameters.attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
                     break;
             }
             return L.tileLayer(tileLayer.template, tileLayer.parameters);
