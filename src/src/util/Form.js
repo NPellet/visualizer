@@ -71,7 +71,13 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             }
 
             for (let i = 0; i < f.length; i++) {
-                obj.setChildSync(f[i].name.split('.'), f[i].value);
+                const jpath = f[i].name.split('.').map(el => {
+                    if (el.match(/^\d+$/)) {
+                        return Number.parseInt(el);
+                    }
+                    return el;
+                });
+                obj.setChildSync(jpath, f[i].value);
             }
 
             return obj.resurrect();
