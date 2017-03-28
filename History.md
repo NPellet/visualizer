@@ -1,3 +1,19 @@
+<a name="2.80.0"></a>
+# [2.80.0](https://github.com/NPellet/visualizer/compare/v2.79.1...v2.80.0) (2017-03-28)
+
+
+### Features
+
+* Add copy / paste for JSME ([bcae869](https://github.com/NPellet/visualizer/commit/bcae869))
+* **Form:** interpret numbers in jpath as intent to set array ([bb54e92](https://github.com/NPellet/visualizer/commit/bb54e92))
+
+
+### BREAKING CHANGES
+
+* Form: forms that have numbers in their jpaths will create a different structure
+
+
+
 <a name="2.79.1"></a>
 ## [2.79.1](https://github.com/NPellet/visualizer/compare/v2.79.0...v2.79.1) (2017-03-01)
 
