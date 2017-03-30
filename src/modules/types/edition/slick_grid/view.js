@@ -1660,6 +1660,35 @@ define([
             }
         },
 
+        getRowIndexes: function (rows) {
+            var data = this.module.data.get();
+            var srows, items;
+            if (typeof rows === 'function') {
+                items = data.filter(rows);
+            } else if (rows === 'all') {
+                srows = new Array(this.slick.data.getLength());
+                for (var i = 0; i < srows.length; i++) {
+                    srows[i] = i;
+                }
+            } else if (Array.isArray(rows) && (!rows.length || rows.length && (typeof rows[0] === 'number' || rows[0] instanceof DataNumber))) {
+                srows = rows;
+            } else if (Array.isArray(rows)) {
+                items = rows.map(this._findItem.bind(this));
+            } else if (typeof rows === 'number' || rows instanceof DataNumber) {
+                srows = [rows];
+            } else if (rows) {
+                items = [this._findItem(rows)];
+            } else {
+                srows = [];
+            }
+            if (items) {
+                srows = items.map(i => {
+                    return this.slick.data.getRowById(i[this.idPropertyName]);
+                });
+            }
+            return srows;
+        },
+
         onActionReceive: {
             appendRow: function (items) {
                 this.onActionReceive.addRow.call(this, items);
@@ -1729,34 +1758,24 @@ define([
             },
 
             selectRows: function (rows) {
-                var data = this.module.data.get();
-                var srows, items;
-                if (typeof rows === 'function') {
-                    items = data.filter(rows);
-                } else if (rows === 'all') {
-                    srows = new Array(this.slick.data.getLength());
-                    for (var i = 0; i < srows.length; i++) {
-                        srows[i] = i;
-                    }
-                } else if (Array.isArray(rows) && (!rows.length || rows.length && (typeof rows[0] === 'number' || rows[0] instanceof DataNumber))) {
-                    srows = rows;
-                } else if (Array.isArray(rows)) {
-                    items = rows.map(this._findItem.bind(this));
-                } else if (typeof rows === 'number' || rows instanceof DataNumber) {
-                    srows = [rows];
-                } else if (rows) {
-                    items = [this._findItem(rows)];
-                } else {
-                    srows = [];
+                const nrows = this.getRowIndexes(rows);
+                if (nrows) {
+                    this.grid.setSelectedRows(nrows);
                 }
-                if (items) {
-                    srows = items.map(i => {
-                        return this.slick.data.getRowById(i[this.idPropertyName]);
-                    });
-                }
-                if (srows) {
-                    this.grid.setSelectedRows(srows);
-                }
+            },
+
+            unselectRows: function (rows) {
+                const srows = this.getRowIndexes(rows);
+                const crows = this.grid.getSelectedRows();
+                const nrows = _.difference(crows, srows);
+                this.grid.setSelectedRows(nrows);
+            },
+
+            selectRowsAdd: function (rows) {
+                const srows = this.getRowIndexes(rows) || [];
+                const crows = this.grid.getSelectedRows();
+                const nrows = _.uniq(_.concat(srows, crows));
+                this.grid.setSelectedRows(nrows);
             },
 
             showColumn: function (column) {
