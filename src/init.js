@@ -44,7 +44,7 @@ require.config({
         jszip: 'components/jszip/dist/jszip.min',
         'js-yaml': 'components/js-yaml/dist/js-yaml.min',
         katex: 'node_modules/katex/dist/katex.min',
-        lodash: 'components/lodash/dist/lodash',
+        lodash: 'components/lodash/dist/lodash.min',
         loglevel: 'components/loglevel/dist/loglevel',
         'markdown-js': 'components/markdown-js/lib/markdown',
         marked: 'components/marked/lib/marked',
