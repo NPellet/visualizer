@@ -1,3 +1,13 @@
+<a name="2.80.1"></a>
+## [2.80.1](https://github.com/NPellet/visualizer/compare/v2.80.0...v2.80.1) (2017-03-30)
+
+
+### Features
+
+* **slick_grid:** selectRowsAdd and unselectRows actions in ([11cfcaf](https://github.com/NPellet/visualizer/commit/11cfcaf))
+
+
+
 <a name="2.80.0"></a>
 # [2.80.0](https://github.com/NPellet/visualizer/compare/v2.79.1...v2.80.0) (2017-03-28)
 
