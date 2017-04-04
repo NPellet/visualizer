@@ -121,8 +121,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         }, 0);
     };
 
-    Controller.prototype.onFormChanged = function (event) {
-        this._doForm('onFormChanged', event);
+    Controller.prototype.onFormChanged = function (event, noChange) {
+        this._doForm('onFormChanged', event, noChange);
     };
 
     Controller.prototype.onFormSubmitted = function (event) {
@@ -130,13 +130,13 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     };
 
 
-    Controller.prototype._doForm = function (name, data) {
+    Controller.prototype._doForm = function (name, data, noChange) {
         this.createDataFromEvent(name, 'form', data.data);
         this.sendActionFromEvent(name, 'form', data.data);
         this.createDataFromEvent(name, 'formFull', data);
         this.sendActionFromEvent(name, 'formFull', data);
 
-        if (this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
+        if (!noChange && this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
             this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(data.data)), this.module.getId());
         }
     };

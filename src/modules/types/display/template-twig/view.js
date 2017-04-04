@@ -107,7 +107,7 @@ define([
             return this.currentForm = this.form.getData(false);
         },
 
-        submitChange(event) {
+        submitChange(event, noChange) {
             event = event || {target: {}};
             const toSend = {
                 data: this.getForm()
@@ -122,7 +122,7 @@ define([
                 this._changedJpaths.add(event.target.name);
             }
 
-            this.module.controller.onFormChanged(toSend);
+            this.module.controller.onFormChanged(toSend, noChange);
         },
 
         submit() {
@@ -191,7 +191,7 @@ define([
                 this.formObject = value;
                 // fill form should execute when the template exists
                 // It doesn't make sense otherwise
-                return this.hasTemplate.then(() => this.fillForm());
+                return this.hasTemplate.then(() => this.fillForm(true));
             },
 
             style(value) {
@@ -200,10 +200,10 @@ define([
             }
         },
 
-        fillForm() {
+        fillForm(noChange) {
             const changed = this.form.setData(this.formObject);
             changed.forEach(c => this._changedJpaths.add(c));
-            this.submitChange();
+            this.submitChange(null, noChange);
         },
 
         render(cb) {
