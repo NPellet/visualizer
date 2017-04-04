@@ -93,13 +93,15 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
                     },
 
                     fields: {
-                        focusOnHighlight: {
-                            type: 'checkbox',
-                            title: 'Focus on highlight',
-                            options: {
-                                yes: 'Yes'
-                            },
-                            default: []
+                        highlightStrategy: {
+                            type: 'combo',
+                            title: 'Highlight behavior',
+                            options: [
+                                {title: 'No highlights', key: 'none'},
+                                {title: 'Pan to center', key: 'pan'},
+                                {title: 'Pan to center and zoom', key: 'panzoom'}
+                            ],
+                            default: 'none'
                         },
                         transformThrottling: {
                             type: 'float',
@@ -179,7 +181,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
 
     Controller.prototype.configAliases = {
         img: ['groups', 'img', 0],
-        focusOnHighlight: ['groups', 'group', 0, 'focusOnHighlight', 0],
+        highlightStrategy: ['groups', 'group', 0, 'highlightStrategy', 0],
         transformThrottling: ['groups', 'group', 0, 'transformThrottling', 0]
     };
 

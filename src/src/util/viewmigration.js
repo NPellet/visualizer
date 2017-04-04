@@ -499,6 +499,16 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             if (view.crons) {
                 delete view.crons;
             }
+        },
+        '2.80.3-1', function (view) {
+            eachModule(view, function (module) {
+                if (String(module.getChildSync(['configuration', 'groups', 'group', 0, 'focusOnHighlight', 0, 0])) === 'yes') {
+                    module.configuration.groups.group[0].highlightStrategy = ['panzoom'];
+                }
+                if (module.getChildSync(['configuration', 'groups', 'group', 0, 'focusOnHighlight'])) {
+                    delete module.configuration.groups.group[0].focusOnHighlight;
+                }
+            }, 'panzoom');
         }
 //  Add new migration functions here
 //  Do not forget to `npm run prerelease` before creating your migration script

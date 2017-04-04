@@ -15,6 +15,7 @@ define([
     var focusR = 0.5;
 
     function View() {
+        this.lastTransform = [1, 0, 0, 1, 0, 0];
     }
 
     $.extend(true, View.prototype, Default, {
@@ -396,15 +397,21 @@ define([
                 this.highlightImage = this._createHighlight(this._highlighted);
             }
             this.doImage('__highlight__').then(function () {
-                if (that.module.getConfigurationCheckbox('focusOnHighlight', 'yes') && senderId !== that.module.getId()) {
+                const highlightStrategy = that.module.getConfiguration('highlightStrategy');
+                if (highlightStrategy !== 'none' && senderId !== that.module.getId()) {
                     var w = that.highlightImage.canvas.width;
                     var h = that.highlightImage.canvas.height;
                     var x = that.highlightImage.shiftx;
                     var y = that.highlightImage.shifty;
                     x = Math.max(x - focusR * w, 0);
                     y = Math.max(y - focusR * h, 0);
-                    var z = Math.min(that.himg.width / w * focusR, that.himg.height / h * focusR);
-                    z = Math.max(1, z);
+                    var z;
+                    if (highlightStrategy === 'panzoom') {
+                        z = Math.min(that.himg.width / w * focusR, that.himg.height / h * focusR);
+                        z = Math.max(1, z);
+                    } else {
+                        z = that.lastTransform[0];
+                    }
                     var transform = [z, 0, 0, z, -z * that.himg.f * x, -z * that.himg.f * y];
                     that.setTransform(transform, true);
                 }
