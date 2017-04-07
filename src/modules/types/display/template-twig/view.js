@@ -62,12 +62,7 @@ define([
         inDom() {
             this.module.getDomContent().html(this.dom);
             this.resolveReady();
-            this.render(() => {
-                this.resetForm();
-                if (this.module.getConfiguration('template')) {
-                    // this.submit();
-                }
-            });
+            this.rerender();
         },
 
         rerender() {
