@@ -61,7 +61,6 @@ define([
     };
 
     exports.enterValue = function (opts) {
-        opts = opts || {};
         const defaultOptions = {
             description: '',
             label: 'Enter a value',
@@ -89,20 +88,22 @@ define([
                 resolve(value);
                 dialog.dialog('destroy');
             };
-            var options = {
-                buttons: {},
+
+            const dialogOptions = Object.assign({}, opts.dialog, {
+                buttons: {
+                    [opts.buttonLabel]: done
+                },
                 close: function () {
                     resolve(null);
                     dialog.dialog('destroy');
                 }
-            };
-            options.buttons[opts.buttonLabel] = done;
-            var dialog = exports.dialog(div, options);
+            });
+            var dialog = exports.dialog(div, dialogOptions);
         });
     };
 
     exports.form = function (div, inputObject, opts) {
-        opts = opts || {};
+        opts = Object.assign({}, opts);
 
         if (opts.twig) {
             var template = Twig.twig({
@@ -130,29 +131,24 @@ define([
 
             form.onSubmit(done);
 
-
-            var options = {
+            const dialogOptions = Object.assign({buttons: {}}, opts.dialog, {
                 close: function () {
                     form.unbind();
                     resolve(null);
                     dialog.dialog('destroy');
                 }
-            };
+            });
+
+
             if (opts.buttonLabel) {
-                options.buttons = {
-                    [opts.buttonLabel]: done
-                };
+                dialogOptions.buttons[opts.buttonLabel] = done;
             }
-            var dialog = exports.dialog(div, options);
+            var dialog = exports.dialog(div, dialogOptions);
         });
     };
 
     exports.choose = function (list, options) {
-        options = options || {};
-        options = _.defaults(options, {
-            slick: {}
-        });
-
+        options = Object.assign({slick: {}}, options);
         var readyToAddItems;
 
         // Slick Rendering
@@ -313,7 +309,7 @@ define([
                     };
                 }
 
-                exports.dialog($dialog, {
+                const dialogOptions = Object.assign({}, options.dialog, {
                     noWrap: true,
                     buttons: buttons,
                     close: function () {
@@ -354,6 +350,8 @@ define([
                     width: 700,
                     height: 500
                 });
+
+                exports.dialog($dialog, dialogOptions);
             });
         }).then(function (result) {
             if (options.returnRow) {
@@ -367,7 +365,7 @@ define([
 
     };
 
-    exports.confirm = function (html, okLabel, cancelLabel, options) {
+    exports.confirm = function (html, okLabel, cancelLabel, dialogOptions) {
         if (_.isUndefined(okLabel)) okLabel = 'Ok';
         if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
         return new Promise(function (resolve) {
@@ -379,27 +377,28 @@ define([
                 $dialog.html(html);
             }
 
-            options = Object.assign({}, {
+            dialogOptions = Object.assign({
                 modal: true,
-                buttons: {},
+                width: 400
+            }, dialogOptions, {
                 close: function () {
                     resolve(false);
                 },
-                width: 400
-            }, options);
-           
+                buttons: {}
+            });
 
-            if (okLabel !== null && okLabel !== '') options.buttons[okLabel] = function () {
+
+            if (okLabel !== null && okLabel !== '') dialogOptions.buttons[okLabel] = function () {
                 resolve(true);
                 $(this).dialog('close');
             };
 
-            if (cancelLabel !== null && cancelLabel !== '') options.buttons[cancelLabel] = function () {
+            if (cancelLabel !== null && cancelLabel !== '') dialogOptions.buttons[cancelLabel] = function () {
                 resolve(false);
                 $(this).dialog('close');
             };
 
-            $dialog.dialog(options);
+            $dialog.dialog(dialogOptions);
         });
     };
 
