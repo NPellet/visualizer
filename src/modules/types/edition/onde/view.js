@@ -54,19 +54,18 @@ define([
 
             const debouncing = this.module.getConfiguration('debouncing', -1);
             if (debouncing > -1) {
-                let cb = (e) => {
-                    if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
+                let cb = () => {
                     this.exportForm();
                 };
                 if (debouncing > 0) {
                     cb = _.debounce(cb, debouncing);
                 }
-                this.dom.on('keyup change', cb);
+
+                registerCallback(this.dom, cb);
             }
 
             if (this.filter) {
-                this.dom.on('keyup change', (e) => {
-                    if (e.type === 'change' && (e.target.type === 'text' || e.target.type === 'textarea')) return;
+                registerCallback(this.dom, e => {
                     this._doFilter(e);
                 });
             }
@@ -184,3 +183,12 @@ define([
     return View;
 
 });
+
+function registerCallback(dom, cb) {
+    // The problem with change on text inputs is that it fires when
+    // the input is blurred
+    // https://developer.mozilla.org/en-US/docs/Web/Events/input
+    dom.on('input', cb);
+    dom.on('change', '[type="checkbox"]', cb);
+    dom.on('change', '[type="radio"]', cb);
+}
