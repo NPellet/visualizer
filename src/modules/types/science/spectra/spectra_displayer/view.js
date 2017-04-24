@@ -147,6 +147,7 @@ define([
                         options.onMouseMoveData = (event, result) => {
                             this.module.model.trackData = result;
                             this.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
+                            this.module.controller.sendActionFromEvent('onTrackMouse', 'mouseEvent', event);
                             this.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
                         };
                     }
@@ -164,9 +165,10 @@ define([
                     this.graph = graph;
 
                     if (useMouseTracking) {
-                        graph.on('click', () => {
+                        graph.on('click', (e) => {
                             if (this.module.model.trackData) {
                                 this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
+                                this.module.controller.sendActionFromEvent('onTrackClick', 'mouseEvent', e[3]);
                                 this.module.controller.createDataFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
                             }
                         });
