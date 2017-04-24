@@ -62,7 +62,7 @@
     "lodash": "^4.17.1",
     "mkpath": "^1.0.0",
     "semver": "^5.1.0",
-    "tempfile": "^1.1.1",
+    "tempfile": "^2.0.0",
     "walk": "^2.3.4"
   },
   "private": true,
