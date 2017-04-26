@@ -34,7 +34,8 @@ define(['modules/default/defaultcontroller',
     Controller.prototype.events = {
         onRead: {
             label: 'The data has been read',
-            refVariable: ['data', 'dataarray']
+            refVariable: ['data', 'dataarray'],
+            refAction: ['data', 'dataarray']
         }
     };
 
@@ -368,8 +369,7 @@ define(['modules/default/defaultcontroller',
         }
 
         $.when.apply(window, defs).done(function () {
-            that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
-            that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
+            that.flushData();
         });
     };
 
@@ -380,9 +380,17 @@ define(['modules/default/defaultcontroller',
         this.fileRead(result, meta);
 
         meta.def.done(function () {
-            that.createDataFromEvent('onRead', 'data', that.module.model.tmpVars);
-            that.createDataFromEvent('onRead', 'dataarray', that.module.model.tmpVarsArray);
+            that.flushData();
         });
+    };
+
+    Controller.prototype.flushData = function () {
+        this.createDataFromEvent('onRead', 'data', this.module.model.tmpVars);
+        this.sendActionFromEvent('onRead', 'data', this.module.model.tmpVars);
+        this.createDataFromEvent('onRead', 'dataarray', this.module.model.tmpVarsArray);
+        this.sendActionFromEvent('onRead', 'dataarray', this.module.model.tmpVarsArray);
+        this.module.model.tmpVars = new DataObject();
+        this.module.model.tmpVarsArray = new DataObject();
     };
 
     Controller.prototype.treatMultipleString = function (items, meta) {
