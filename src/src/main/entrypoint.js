@@ -49,7 +49,7 @@ define([
 
     var RepositoryData = new Repository(),
         RepositoryHighlight = new Repository(),
-        RepositoryActions = new Repository();
+        RepositoryActions = new Repository({doNotSave: true});
 
     API.setRepositoryData(RepositoryData);
     API.setRepositoryHighlights(RepositoryHighlight);
