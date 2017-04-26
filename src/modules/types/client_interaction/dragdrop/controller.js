@@ -1,14 +1,17 @@
 'use strict';
 
-define(['modules/default/defaultcontroller',
+define([
+    'jquery',
+    'modules/default/defaultcontroller',
     'src/util/api', 'src/util/versioning',
     'src/data/structures', 'src/util/debug',
     'src/util/util',
     'src/util/ui',
     'src/util/mimeTypes'
-], function (Default, API, Versioning, Structure, Debug, Util, ui, mimeTypes) {
+], function ($, Default, API, Versioning, Structure, Debug, Util, ui, mimeTypes) {
 
     function Controller() {
+        this.flushData = this.flushData.bind(this);
     }
 
     $.extend(true, Controller.prototype, Default);
@@ -40,9 +43,7 @@ define(['modules/default/defaultcontroller',
     };
 
     Controller.prototype.configurationStructure = function () {
-
-        var typeList = Util.getStructuresComboOptions();
-
+        const typeList = Util.getStructuresComboOptions();
         return {
             groups: {
                 group: {
@@ -222,7 +223,6 @@ define(['modules/default/defaultcontroller',
 
         var fileCfg = this.module.getConfiguration('vars');
         if (fileCfg) {
-
             var enhancedFileCfg = [];
             for (i = 0, ii = fileCfg.length; i < ii; i++) {
                 cfgEl = fileCfg[i];
@@ -238,7 +238,6 @@ define(['modules/default/defaultcontroller',
                 }
             }
             this.fileCfg = enhancedFileCfg;
-
         }
 
         var stringCfg = this.module.getConfiguration('string');
@@ -319,7 +318,6 @@ define(['modules/default/defaultcontroller',
         this.module.model.tmpVars = new DataObject();
         this.module.model.tmpVarsArray = new DataObject();
 
-        var that = this;
         var defs = [];
 
         var cfg = this.fileCfg;
@@ -368,20 +366,15 @@ define(['modules/default/defaultcontroller',
             }
         }
 
-        $.when.apply(window, defs).done(function () {
-            that.flushData();
-        });
+        $.when.apply(window, defs).done(this.flushData);
     };
 
     Controller.prototype.openPhoto = function (result) {
-        var that = this;
         var meta = this.checkPhotoMetadata(this.photoCfg);
         meta.def = $.Deferred();
         this.fileRead(result, meta);
 
-        meta.def.done(function () {
-            that.flushData();
-        });
+        meta.def.done(this.flushData);
     };
 
     Controller.prototype.flushData = function () {
@@ -419,7 +412,6 @@ define(['modules/default/defaultcontroller',
     };
 
     Controller.prototype.treatString = function (item, meta) {
-        var that = this;
         var description = getDescription(meta.cfg);
         item.getAsString(str => {
             if (this.module.getConfigurationCheckbox('askFilename', 'yes')) {
@@ -439,7 +431,7 @@ define(['modules/default/defaultcontroller',
                         return;
                     }
                     Object.assign(meta, m);
-                    that.parseString(str, meta);
+                    this.parseString(str, meta);
                 });
             } else {
                 var m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'));
@@ -448,7 +440,7 @@ define(['modules/default/defaultcontroller',
                     return;
                 }
                 Object.assign(meta, m);
-                that.parseString(str, meta);
+                this.parseString(str, meta);
             }
         });
     };
@@ -509,53 +501,45 @@ define(['modules/default/defaultcontroller',
 
     Controller.prototype.fileRead = function (result, meta) {
         switch (meta.cfg.filetype) {
-            case 'text':
+            case 'text': {
                 this.parseString(result, meta);
                 break;
-
-            case 'base64':
-                var b64idx = result.indexOf(';base64,');
+            }
+            case 'base64': {
+                const b64idx = result.indexOf(';base64,');
                 this.tmpVar(result.substr(b64idx + 8), meta);
                 break;
-
+            }
             case 'url':
-            case 'buffer':
+            case 'buffer': {
                 this.tmpVar(result, meta);
                 break;
-
-            /*case 'binary':
-             reader.readAsBinaryString(file);
-             break;*/
+            }
         }
     };
 
     Controller.prototype.read = function (file, meta) {
-        var that = this;
         var reader = new FileReader();
-        reader.onload = function (e) {
-            that.fileRead(e.target.result, meta);
+        reader.onload = (e) => {
+            this.fileRead(e.target.result, meta);
         };
-        reader.onerror = function (e) {
+        reader.onerror = (e) => {
             Debug.error(e);
         };
-
         switch (meta.cfg.filetype) {
-            case 'text':
+            case 'text': {
                 reader.readAsText(file);
                 break;
-
+            }
             case 'base64':
-            case 'url':
+            case 'url': {
                 reader.readAsDataURL(file);
                 break;
-
-            case 'buffer':
+            }
+            case 'buffer': {
                 reader.readAsArrayBuffer(file);
                 break;
-
-            /*case 'binary':
-             reader.readAsBinaryString(file);
-             break;*/
+            }
         }
     };
 
