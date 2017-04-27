@@ -216,7 +216,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             //default Legend. Better in a twig.
             that.innerLegend = $('<div class="inner-legend"></div>');
             that.defaultLegend.append(that.innerLegend);
-            that.innerLegend.append(`<ul class="color-serie">
+            that.colorSerie = $(`<ul class="color-serie hidden">
                 <li class="alkali">Alkali metals</li>
                 <li class="alkaline">Alkalin earth metals</li>
                 <li class="transition">Transition metals</li>
@@ -228,6 +228,7 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 <li class="halogen">Halogens</li>
                 <li class="noble">Noble gases</li>
                 </ul>`);
+            that.innerLegend.append(that.colorSerie);
 
             var $elements = that.$elements = that.dom.find('.element');
 
@@ -240,9 +241,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 <tr><td class="solid">S</td><td>Solid</td><td class="liquid">L</td><td>Liquid</td></tr>
                 <tr><td class="gas"">G</td><td>Gas</td><td class="unknown">U</td><td>Unknown</td></tr>
                 </tbody></table>`);
+                that.stateOfMatter.append('<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>');
             }
 
-            that.stateOfMatter.append('<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>');
 
             if (that.foreground.mode === 'state') {
                 that.defaultLegend.append(`<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`);
@@ -295,9 +296,14 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
             var showDefaultLegend = _.debounce(() => {
                 $('.element-zoom').delay(50000).empty().unbind();
                 that.defaultLegend.removeClass('hidden');
+                if (this.module.getConfigurationCheckbox('display', 'families')) {
+                    that.colorSerie.removeClass('hidden');
+                }
                 elementZoom.addClass('hidden');
                 elementDatas.addClass('hidden');
             }, 150);
+
+            showDefaultLegend();
 
             $elements.mouseenter(function () {
                 var $el = $(this);

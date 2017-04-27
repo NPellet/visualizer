@@ -257,6 +257,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
                                 yes: 'Yes'
                             },
                             default: ['yes']
+                        },
+                        display: {
+                            type: 'checkbox',
+                            title: 'Display options',
+                            options: {
+                                families: 'Show families'
+                            },
+                            default: ['families']
                         }
                     }
                 },
@@ -279,7 +287,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
         foreground: ['groups', 'foreground', 0, 'mode', 0],
         background: ['groups', 'background', 0, 'mode', 0],
         foregroundStep: ['groups', 'foreground', 0, 'step', 0],
-        backgroundStep: ['groups', 'background', 0, 'step', 0]
+        backgroundStep: ['groups', 'background', 0, 'step', 0],
+        display: ['groups', 'group', 0, 'display', 0]
     };
 
     ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'FixedColor', 'Label', 'Unit', 'Mode', 'Jpath', 'NoValueColor', 'ShowSlider'].forEach(val => {

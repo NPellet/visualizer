@@ -209,6 +209,7 @@
 .periodic-table .stateOfMatter {
     flex:auto;
     margin-left: 1em;
+    min-width: 200px;
 }
 .periodic-table .stateOfMatter dt{
     float:left;
