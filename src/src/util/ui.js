@@ -288,11 +288,19 @@ define([
                         $dialog.dialog('close');
                         return;
                     }
+
                     if (len === 1 && options.autoSelect) {
                         var id = data.mapRowsToIds([0])[0];
                         resolve(id);
                         $dialog.dialog('close');
                     }
+                    data.sort(function (a, b) {
+                        if (a.order === undefined || b.order === undefined) {
+                            return 0;
+                        } else {
+                            return a.order - b.order;
+                        }
+                    });
                 });
 
                 if (options.noConfirmation) {
