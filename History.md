@@ -1,3 +1,26 @@
+<a name="2.80.3"></a>
+## [2.80.3](https://github.com/NPellet/visualizer/compare/v2.80.2...v2.80.3) (2017-04-28)
+
+
+### Bug Fixes
+
+* **onde:** keyup should not trigger a new output ([0082baa](https://github.com/NPellet/visualizer/commit/0082baa)), closes [#1033](https://github.com/NPellet/visualizer/issues/1033)
+* **twig:** don't trigger form change when form received ([71a6a89](https://github.com/NPellet/visualizer/commit/71a6a89)), closes [#1044](https://github.com/NPellet/visualizer/issues/1044)
+* do not save data in actions repository ([db95eaf](https://github.com/NPellet/visualizer/commit/db95eaf))
+* update OCL to 5.2.1 ([41ebd99](https://github.com/NPellet/visualizer/commit/41ebd99))
+
+
+### Features
+
+* **dragdrop:** do not keep dropped data in memory and add output actions ([f7ee0cb](https://github.com/NPellet/visualizer/commit/f7ee0cb))
+* **panzoom:** allow 2 highlight modes ([37f9c50](https://github.com/NPellet/visualizer/commit/37f9c50)), closes [#1042](https://github.com/NPellet/visualizer/issues/1042)
+* **periodic:** options for not displaying families ([417fa9c](https://github.com/NPellet/visualizer/commit/417fa9c))
+* **spectra_displayer:** add jQuery event to mouse tracking output actions ([5bac243](https://github.com/NPellet/visualizer/commit/5bac243))
+* **ui:** allow custom dialog options ([87ecac4](https://github.com/NPellet/visualizer/commit/87ecac4))
+* **ui:** ui.choose can order elements ([5fa66e3](https://github.com/NPellet/visualizer/commit/5fa66e3))
+
+
+
 <a name="2.80.2"></a>
 ## [2.80.2](https://github.com/NPellet/visualizer/compare/v2.80.1...v2.80.2) (2017-03-30)
 
