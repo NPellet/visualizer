@@ -213,12 +213,12 @@ define([
                     if (cb) cb();
                     that.setStyle();
                     that.module.controller.onRendered(that.dom.html());
-                }).catch(e => {
-                    Debug.warn('Error rendering twig template', e);
                 });
 
                 this.dom.show();
                 return renderProm;
+            }).catch(e => {
+                Debug.warn('Error rendering twig template', e);
             });
         }
     });
