@@ -1,12 +1,18 @@
 'use strict';
 
-define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], function (Default, Graph, Color, chroma) {
+define([
+    'jquery',
+    'modules/default/defaultview',
+    'jsgraph',
+    'src/util/color',
+    'chroma'
+], function ($, Default, Graph, Color, chroma) {
 
     function View() {
     }
 
     $.extend(true, View.prototype, Default, {
-        init: function () {
+        init() {
             this.dom = document.createElement('div');
             this.dom.style.height = '100%';
             this.dom.style.width = '100%';
@@ -15,7 +21,8 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
             this.series = {};
             this.datasetInfo = {};
         },
-        inDom: function () {
+
+        inDom() {
             var axisOptions = {
                 primaryGrid: false,
                 secondaryGrid: false
@@ -65,11 +72,12 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
 
             this.resolveReady();
         },
+
         blank: {
-            model: function () {
+            model() {
                 this.graph.removeShapes();
             },
-            dataset: function (name) {
+            dataset(name) {
                 if (this.series[name]) {
                     this.series[name].kill();
                     delete this.series[name];
@@ -79,8 +87,9 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
                 }
             }
         },
+
         update: {
-            model: function (value) {
+            model(value) {
                 if (String(value.get('name')) !== 'SOM') {
                     return;
                 }
@@ -109,7 +118,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
                         }
                     }
                 }
-                var getColor = colorGenerator(cfg('bgType'), cfg('bgSpace'), cfg('bgColor1'), cfg('bgColor2'), field1, field2, field3);
+                const getColor = colorGenerator(cfg('bgType'), cfg('bgSpace'), cfg('bgColor1'), cfg('bgColor2'), field1, field2, field3);
 
                 // Set size of axes to fit the grid
                 graph.getXAxis().forceMin(0).forceMax(x);
@@ -118,16 +127,14 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
                 for (i = 0; i < x; i++) {
                     for (var j = 0; j < y; j++) {
                         var shape = graph.newShape('rect', {
-                            pos: {
+                            position: [{
                                 x: i,
                                 y: j
                             },
-                            pos2: {
+                            {
                                 x: i + 1,
                                 y: j + 1
-                            },
-                            // locked: true,
-                            // selectable: false,
+                            }],
                             fillColor: getColor(data[i][j]),
                             layer: 1,
                             info: data[i][j]
@@ -139,7 +146,7 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
 
                 this.redraw();
             },
-            dataset: function (value, name) {
+            dataset(value, name) {
                 var i, getColor;
                 var config = this.module.getConfiguration('datasets'),
                     theConfig;
@@ -207,14 +214,16 @@ define(['modules/default/defaultview', 'jsgraph', 'src/util/color', 'chroma'], f
                 this.redraw();
             }
         },
-        onResize: function (width, height) {
+
+        onResize(width, height) {
             if (!this.graph) {
                 return;
             }
             this.graph.resize(width, height);
             this.redraw();
         },
-        redraw: function () {
+
+        redraw() {
             this.graph.redraw();
             this.graph.autoscaleAxes();
             this.graph.drawSeries();

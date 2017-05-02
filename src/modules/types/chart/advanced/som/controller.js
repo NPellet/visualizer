@@ -1,6 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/util'], function (Default, Traversing, Util) {
+define([
+    'jquery',
+    'modules/default/defaultcontroller',
+    'src/util/datatraversing',
+    'src/util/util'
+], function ($, Default, Traversing, Util) {
 
     function Controller() {
     }
@@ -42,10 +47,6 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
             label: 'Hover a cell',
             refVariable: ['elementList', 'cellInfo']
         },
-        /*onCellClick: {
-         label: 'Click a cell',
-         refVariable: ['element']
-         }*/
         onElementHover: {
             label: 'Hover a dataset element',
             refVariable: ['element', 'coords']
@@ -60,15 +61,15 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     Controller.prototype.onCellHover = function (cell) {
-        var x = cell.pos.x,
-            y = cell.pos.y;
-        var datasets = this.module.model.getAllDataFromRel('dataset');
+        const x = cell.position[0].x;
+        const y = cell.position[0].y;
+        const datasets = this.module.model.getAllDataFromRel('dataset');
 
-        var result = {};
-        for (var i in datasets) {
-            var dataset = datasets[i].getChildSync(['data', 0]);
+        const result = {};
+        for (const i in datasets) {
+            const dataset = datasets[i].getChildSync(['data', 0]);
             result[i] = [];
-            for (var j = 0, jj = dataset.x.length; j < jj; j++) {
+            for (let j = 0, jj = dataset.x.length; j < jj; j++) {
                 if (Math.floor(dataset.x[j]) === x && Math.floor(dataset.y[j]) === y) {
                     result[i].push(dataset.info[j]);
                 }
@@ -84,18 +85,16 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     };
 
     Controller.prototype.configurationStructure = function () {
-        var i, ii;
-
-        var modelOptions = [];
-        var model = this.module.getDataFromRel('model');
+        const modelOptions = [];
+        const model = this.module.getDataFromRel('model');
         if (model) {
-            var fields = model.options.fields;
-            if (fields | 0) {
-                for (i = 0; i < fields; i++) {
+            const fields = model.options.fields;
+            if (fields|0) {
+                for (let i = 0; i < fields; i++) {
                     modelOptions.push({key: i, title: i});
                 }
             } else {
-                for (i = 0, ii = fields.length; i < ii; i++) {
+                for (let i = 0, ii = fields.length; i < ii; i++) {
                     modelOptions.push({
                         key: fields[i].name,
                         title: fields[i].name
@@ -104,18 +103,18 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
             }
         }
 
-        var datasetList = [];
-        var datasets = this.module.model.getAllDataFromRel('dataset');
+        const datasetList = [];
+        const datasets = this.module.model.getAllDataFromRel('dataset');
         if (datasets) {
-            for (i in datasets) {
+            for (const i in datasets) {
                 datasetList.push({key: i, title: i});
             }
         }
 
-        var datasetOptions = [];
-        var dataset = this.module.getDataFromRel('dataset');
+        const datasetOptions = [];
+        const dataset = this.module.getDataFromRel('dataset');
         if (dataset) {
-            var el = dataset.getChildSync(['data', '0', 'info', '0']);
+            const el = dataset.getChildSync(['data', '0', 'info', '0']);
             Traversing.getJPathsFromElement(el, datasetOptions);
         }
 
@@ -142,9 +141,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                             key: 'inter',
                                             title: 'RGB interpolation'
                                         }
-                                        //{ key: 'derive', title: 'Derivative'}
                                     ],
-                                    'default': 'fixed',
+                                    default: 'fixed',
                                     displaySource: {
                                         inter: 'i0',
                                         fixed: 'f0',
@@ -161,40 +159,40 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                         {key: 'lab', title: 'CIELab'},
                                         {key: 'lch', title: 'CIELCH'}
                                     ],
-                                    'default': 'rgb',
+                                    default: 'rgb',
                                     displayTarget: ['r0']
                                 },
                                 color1: {
                                     type: 'spectrum',
                                     title: 'Color',
-                                    'default': [255, 255, 255, 1],
+                                    default: [255, 255, 255, 1],
                                     displayTarget: ['i0', 'r0', 'f0']
                                 },
                                 color2: {
                                     type: 'spectrum',
                                     title: 'Color 2',
-                                    'default': [0, 0, 0, 1],
+                                    default: [0, 0, 0, 1],
                                     displayTarget: ['i0', 'r0']
                                 },
                                 field1: {
                                     type: 'combo',
                                     title: 'Field for color 1',
                                     options: modelOptions,
-                                    'default': modelOptions[0] ? modelOptions[0].key : '',
+                                    default: modelOptions[0] ? modelOptions[0].key : '',
                                     displayTarget: ['r0', 'i0']
                                 },
                                 field2: {
                                     type: 'combo',
                                     title: 'Field for color 2',
                                     options: modelOptions,
-                                    'default': modelOptions[1] ? modelOptions[1].key : '',
+                                    default: modelOptions[1] ? modelOptions[1].key : '',
                                     displayTarget: ['i0']
                                 },
                                 field3: {
                                     type: 'combo',
                                     title: 'Field for color 3',
                                     options: modelOptions,
-                                    'default': modelOptions[2] ? modelOptions[2].key : '',
+                                    default: modelOptions[2] ? modelOptions[2].key : '',
                                     displayTarget: ['i0']
                                 }
                             }
