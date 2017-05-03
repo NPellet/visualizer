@@ -123,9 +123,21 @@ define([
 
 const nuclLookup = {
     A: ['A'],
-    T: ['T'],
+    T: ['T', 'U'],
+    U: ['U', 'T'],
     G: ['G'],
-    C: ['C']
+    C: ['C'],
+    W: ['A', 'T', 'U'],
+    S: ['G', 'C'],
+    M: ['A', 'C'],
+    K: ['G', 'T', 'U'],
+    R: ['A', 'G'],
+    Y: ['C', 'T', 'U'],
+    B: ['C', 'G', 'T', 'U'],
+    D: ['A', 'G', 'T', 'U'],
+    H: ['A', 'C', 'T', 'U'],
+    V: ['A', 'C', 'G'],
+    N: ['A', 'C', 'G', 'T', 'U']
 };
 
 function nuclMatch(nucl1, nucl2) {
