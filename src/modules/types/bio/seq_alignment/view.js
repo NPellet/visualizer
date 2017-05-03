@@ -1,5 +1,45 @@
 'use strict';
 
+const colorSchemas = {
+    match: {
+        init: function () {
+            const seqs = this.opt.seqs;
+            // you have here access to the conservation or the sequence object
+            const max = seqs.reduce((prev, current) => current.length > prev ? current.length : prev, 0);
+            this.cons = new Array(max);
+            for (let i = 0; i < max; i++) {
+                let matchType = 'match';
+                for (let j = 1; j < seqs.length; j++) {
+                    if (seqs[j][i] !== '-') {
+                        if (!nuclMatch(seqs[0][i], seqs[j][i])) {
+                            matchType = 'mismatch';
+                            break;
+                        }
+                    } else {
+                        matchType = 'gap';
+                        break;
+                    }
+                }
+                this.cons[i] = matchType;
+            }
+            // this.cons = this.opt.conservation();
+        },
+
+        run: function (letter, opts) {
+            switch (this.cons[opts.pos]) {
+                case 'match':
+                    return 'green';
+                case 'gap':
+                    return 'orange';
+                case 'mismatch':
+                    return 'red';
+                default:
+                    return 'white';
+            }
+        }
+    }
+};
+
 define([
     'modules/default/defaultview',
     'src/util/util',
@@ -14,10 +54,10 @@ define([
         init: function () {
             if (!this.dom) {
                 this._id = Util.getNextUniqueId();
-                this.dom = $(' <div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
+                this.dom = $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%');
                 this.module.getDomContent().html(this.dom);
-                this.resolveReady();
             }
+            this.resolveReady();
         },
 
         update: {
@@ -35,8 +75,9 @@ define([
 
         render: function () {
             if (!this.sequences) return;
-
+            this.clear();
             var opts = {};
+
             opts.el = this.dom[0];
             opts.vis = {conserv: false, overviewbox: false};
             opts.zoomer = {alignmentHeight: 405, labelWidth: 110, labelFontsize: '13px', labelIdLength: 50};
@@ -44,10 +85,22 @@ define([
             // opts.columns = {
             //     hidden: [1, 2]
             // };
-            this.clear();
 
-            var m = new msa.msa(opts);
-            m.render();
+            try {
+                var m = new msa.msa(opts);
+                const schema = this.module.getConfiguration('colorSchema');
+                if (colorSchemas[schema]) {
+                    m.g.colorscheme.addDynScheme('dyn', colorSchemas[schema]);
+                    m.g.colorscheme.set('scheme', 'dyn');
+                }
+
+                m.render();
+
+            } catch (e) {
+                this.clear();
+            }
+
+
         },
 
         onResize: function () {
@@ -67,3 +120,19 @@ define([
     return View;
 
 });
+
+const nuclLookup = {
+    A: ['A'],
+    T: ['T'],
+    G: ['G'],
+    C: ['C']
+};
+
+function nuclMatch(nucl1, nucl2) {
+    if (nucl1 === nucl2) return true;
+    nucl1 = nuclLookup[nucl1];
+    nucl2 = nuclLookup[nucl2];
+    if (!nucl1 || !nucl2) return false;
+    return nucl1.some(n1 => nucl2.find(n2 => n1 === n2));
+}
+
