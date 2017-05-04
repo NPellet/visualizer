@@ -317,8 +317,14 @@ define([
                     };
                 }
 
-                const dialogOptions = Object.assign({}, options.dialog, {
+                const defaultDialogOptions = {
+                    width: 700,
+                    height: 500
+                };
+
+                const dialogOptions = Object.assign({}, defaultDialogOptions, options.dialog, {
                     noWrap: true,
+                    closeOnEscape: false,
                     buttons: buttons,
                     close: function () {
                         resolve(null);
@@ -353,10 +359,7 @@ define([
                             grid
                         });
                         updateHeader();
-                    },
-                    closeOnEscape: false,
-                    width: 700,
-                    height: 500
+                    }
                 });
 
                 exports.dialog($dialog, dialogOptions);
