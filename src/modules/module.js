@@ -1175,10 +1175,10 @@ define([
             openWindow.document.close();
             openWindow.focus();
             // need async to be able to render some twig rendertype
-            window.setTimeout( function() {
+            window.setTimeout(function () {
                 openWindow.print();
                 openWindow.close();
-            },100);
+            }, 100);
         },
 
         setBackgroundColor(color) {
