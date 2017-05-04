@@ -1,3 +1,28 @@
+<a name="2.81.0"></a>
+# [2.81.0](https://github.com/NPellet/visualizer/compare/v2.80.3...v2.81.0) (2017-05-04)
+
+
+* remove Roc util library ([4ef6b84](https://github.com/NPellet/visualizer/commit/4ef6b84))
+
+
+### Bug Fixes
+
+* **som:** use new jsgraph API for annotations ([cf2812c](https://github.com/NPellet/visualizer/commit/cf2812c)), closes [#1048](https://github.com/NPellet/visualizer/issues/1048)
+* **twig:** make sure the render promise is always fulfilled ([56bbd63](https://github.com/NPellet/visualizer/commit/56bbd63)), closes [#1047](https://github.com/NPellet/visualizer/issues/1047)
+* **ui:** ui.choose don't enforce dialog width and height ([fdce615](https://github.com/NPellet/visualizer/commit/fdce615))
+
+
+### Features
+
+* **seq_alignment:** color schema option ([518587d](https://github.com/NPellet/visualizer/commit/518587d))
+
+
+### BREAKING CHANGES
+
+* Roc now should be required from visualizer-helper
+
+
+
 <a name="2.80.3"></a>
 ## [2.80.3](https://github.com/NPellet/visualizer/compare/v2.80.2...v2.80.3) (2017-04-28)
 
