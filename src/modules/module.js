@@ -1174,8 +1174,11 @@ define([
             openWindow.document.body.appendChild(domContent);
             openWindow.document.close();
             openWindow.focus();
-            openWindow.print();
-            openWindow.close();
+            // need async to be able to render some twig rendertype
+            window.setTimeout( function() {
+                openWindow.print();
+                openWindow.close();
+            },100);
         },
 
         setBackgroundColor(color) {
