@@ -1,3 +1,13 @@
+<a name="2.81.1"></a>
+## [2.81.1](https://github.com/NPellet/visualizer/compare/v2.81.0...v2.81.1) (2017-05-09)
+
+
+### Bug Fixes
+
+* **jsme:** Was generating a trigger change when the molecule enters the module ([82a091e](https://github.com/NPellet/visualizer/commit/82a091e))
+
+
+
 <a name="2.81.0"></a>
 # [2.81.0](https://github.com/NPellet/visualizer/compare/v2.80.3...v2.81.0) (2017-05-04)
 
