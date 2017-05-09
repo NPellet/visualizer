@@ -210,15 +210,18 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
 
         // check Github History when drag / drop and paste will be another action name
 
+
+        console.log(action, message.origin);
+
         if (
             action != null &&
-            ((action != 'readRXNFile' && action != 'readMolFile') || message.origin !== 'GUI') &&
+            ((action !== 'readRXNFile' && action !== 'readMolFile') || message.origin === 'GUI') &&
             action !== 'reset' &&
             currentValue &&
             this.module.getConfigurationCheckbox('outputResult', 'yes')
         ) {
+            // console.log('TRIGGER molecule change');
             if (this.module.view._currentType === 'mol') {
-                // need to check the 4th line, if same number bonds and atoms we do nothing
                 currentValue.setValue(message.mol, true);
                 this.module.model.dataTriggerChange(currentValue);
             } else if (this.module.view._currentType === 'jme') {
