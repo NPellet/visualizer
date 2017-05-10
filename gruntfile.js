@@ -91,7 +91,7 @@ module.exports = function (grunt) {
                         targets: {
                             browsers: [
                                 'chrome >= 54',
-                                'last 2 firefox versions',
+                                'firefox >= 45',
                                 'last 2 edge versions'
                             ]
                         }
