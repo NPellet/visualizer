@@ -698,6 +698,10 @@ define([
         },
         addType(name, renderer) {
             functions[name.toLowerCase()] = renderer;
+        },
+
+        hasType(name) {
+            return !!functions[name.toLowerCase()];
         }
     };
 
