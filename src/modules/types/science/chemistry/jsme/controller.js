@@ -209,10 +209,6 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         var currentValue = this.module.view._currentValue;
 
         // check Github History when drag / drop and paste will be another action name
-
-
-        console.log(action, message.origin);
-
         if (
             action != null &&
             ((action !== 'readRXNFile' && action !== 'readMolFile') || message.origin === 'GUI') &&
@@ -220,7 +216,6 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
             currentValue &&
             this.module.getConfigurationCheckbox('outputResult', 'yes')
         ) {
-            // console.log('TRIGGER molecule change');
             if (this.module.view._currentType === 'mol') {
                 currentValue.setValue(message.mol, true);
                 this.module.model.dataTriggerChange(currentValue);
