@@ -1274,6 +1274,15 @@ define([
         //    this.cell           Content of the cell associated to event
         //    this.previous       Content of the cell associated to the event before it was edited
         //    this.column         Description of the column associated to event
+        //    this.renderOptions  Can be used to dynamically set rendering options
+
+        // this.renderOptions     applicable to action columns only
+        //    icon                icon to render, e.g. fa-trash
+        //    disabled            disable rendering
+        //    action              The action to send when cell is clicked
+        //    backgroundColor     Background color of the cell
+        //    color               Foreground color of the cell
+        //    clickMode           'text': only content is clickable. 'background': whole cell is clickable
 
         // Row description
         //    row.id              The id of the row
@@ -1288,6 +1297,7 @@ define([
         //    rowsSelected        A new selection of rows has been made
         //    newRow              A new row has been commited to the input array
         //    scriptChanged       The filter script changed
+        //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering options
         _setScript: function (script) {
             this.filterScript = script || '';
             this.hasFilter = this._hasFilter();
