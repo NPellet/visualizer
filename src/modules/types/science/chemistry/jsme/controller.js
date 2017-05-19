@@ -211,7 +211,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
         // check Github History when drag / drop and paste will be another action name
         if (
             action != null &&
-            ((action !== 'readRXNFile' && action !== 'readMolFile') || message.origin === 'GUI') &&
+            ((action !== 'readRXNFile' && action !== 'readMolFile') || message.origin === 'GUI' || message.origin === 'PASTE') &&
             action !== 'reset' &&
             currentValue &&
             this.module.getConfigurationCheckbox('outputResult', 'yes')
