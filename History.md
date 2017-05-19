@@ -1,3 +1,13 @@
+<a name="2.81.3"></a>
+## [2.81.3](https://github.com/NPellet/visualizer/compare/v2.81.2...v2.81.3) (2017-05-19)
+
+
+### Bug Fixes
+
+* **jsme:** Create an event when pasting a molfile ([242f8ec](https://github.com/NPellet/visualizer/commit/242f8ec))
+
+
+
 <a name="2.81.2"></a>
 ## [2.81.2](https://github.com/NPellet/visualizer/compare/v2.81.1...v2.81.2) (2017-05-10)
 
