@@ -68,7 +68,7 @@
   "private": true,
   "dependencies": {
     "angularplasmid": "^1.0.5",
-    "bio-parsers": "^4.1.6",
+    "bio-parsers": "^4.2.1",
     "country-data": "0.0.31",
     "katex": "^0.7.0",
     "mime-types": "^2.1.10",
