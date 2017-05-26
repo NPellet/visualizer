@@ -179,7 +179,8 @@ define([
                 var data = value.getChildSync(['data', '0']);
                 var l = data.x.length;
                 var theData = new Array(l * 2);
-                var colors = new Array(l), color;
+                var colors = new Array(l),
+                    color;
                 for (i = 0; i < l; i++) {
                     theData[i * 2] = data.x[i];
                     theData[i * 2 + 1] = data.y[i];

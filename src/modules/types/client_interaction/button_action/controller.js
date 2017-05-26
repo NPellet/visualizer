@@ -56,7 +56,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         toggle: {
                             type: 'combo',
                             title: 'Button type',
-                            'default': 'toggle',
+                            default: 'toggle',
                             options: [
                                 {key: 'click', title: 'Click'},
                                 {key: 'toggle', title: 'Toggle'}
@@ -69,20 +69,20 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         label: {
                             type: 'text',
                             title: 'Button label',
-                            'default': 'Action',
+                            default: 'Action',
                             displayTarget: ['c']
 
                         },
                         onLabel: {
                             type: 'text',
                             title: 'Button label (on)',
-                            'default': 'Toggle action off',
+                            default: 'Toggle action off',
                             displayTarget: ['t']
                         },
                         offLabel: {
                             type: 'text',
                             title: 'Button label (off)',
-                            'default': 'Toggle action on',
+                            default: 'Toggle action on',
                             displayTarget: ['t']
                         },
                         title: {
@@ -93,13 +93,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         onColor: {
                             type: 'spectrum',
                             title: 'Color (on)',
-                            'default': [0, 0, 0, 1],
+                            default: [0, 0, 0, 1],
                             displayTarget: ['t']
                         },
                         offColor: {
                             type: 'spectrum',
                             title: 'Color (off)',
-                            'default': [0, 0, 0, 1],
+                            default: [0, 0, 0, 1],
                             displayTarget: ['t']
                         },
                         startState: {
@@ -120,7 +120,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'checkbox',
                             title: 'Ask for confirmation',
                             options: {yes: 'Yes'},
-                            'default': [],
+                            default: [],
                             displaySource: {yes: 'y'}
                         },
                         confirmText: {
@@ -131,14 +131,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         },
                         okLabel: {
                             type: 'text',
-                            'default': 'Ok',
+                            default: 'Ok',
                             title: 'Ok label',
                             displayTarget: ['y']
                         },
                         cancelLabel: {
                             type: 'text',
                             title: 'Cancel label',
-                            'default': 'Cancel',
+                            default: 'Cancel',
                             displayTarget: ['y']
                         },
                         content: {

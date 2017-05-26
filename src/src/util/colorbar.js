@@ -60,7 +60,10 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         }
         var orientation = getOrientation(options);
         var linearg = getGradientXY(orientation);
-        var gradientWidth, totalWidth = options.width, gradientHeight, totalHeight = options.height;
+        var gradientWidth,
+            totalWidth = options.width,
+            gradientHeight,
+            totalHeight = options.height;
         if (options.axis) {
             gradientHeight = totalHeight - margin;
             gradientWidth = totalWidth - margin;
@@ -125,7 +128,8 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
             g.append('g')
                 .attr('class', 'key')
                 .attr('transform', function () {
-                    var tx = 0, ty = 0;
+                    var tx = 0,
+                        ty = 0;
                     if (orientation === 'bottom') {
                         ty += gradientHeight;
                     } else if (orientation === 'right') {

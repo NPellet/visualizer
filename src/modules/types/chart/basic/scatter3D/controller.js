@@ -123,12 +123,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Grids',
                             options: {
-                                'xy': 'XY Main',
-                                'yz': 'YZ Main',
-                                'xz': 'XZ Main',
-                                'xysec': 'XY Secondary',
-                                'yzsec': 'YZ Secondary',
-                                'xzsec': 'XZ Secondary'
+                                xy: 'XY Main',
+                                yz: 'YZ Main',
+                                xz: 'XZ Main',
+                                xysec: 'XY Secondary',
+                                yzsec: 'YZ Secondary',
+                                xzsec: 'XZ Secondary'
                             },
                             default: ['xy', 'yz', 'xz']
                         },
@@ -161,7 +161,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Projections',
                             options: {
-                                'show': 'Show'
+                                show: 'Show'
                             },
                             default: ['show']
                         },
@@ -170,12 +170,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Ticks',
                             options: {
-                                'x': 'Show X tick',
-                                'y': 'Show Y tick',
-                                'z': 'Show Z tick',
-                                'xlab': 'Show X tick label',
-                                'ylab': 'Show Y tick label',
-                                'zlab': 'Show Z tick label'
+                                x: 'Show X tick',
+                                y: 'Show Y tick',
+                                z: 'Show Z tick',
+                                xlab: 'Show X tick label',
+                                ylab: 'Show Y tick label',
+                                zlab: 'Show Z tick label'
                             },
                             default: ['x', 'y', 'z', 'xlab', 'ylab', 'zlab']
                         },

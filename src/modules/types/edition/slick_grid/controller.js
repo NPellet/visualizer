@@ -104,7 +104,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 {key: 'row', title: 'Row Selection Model'},
                                 {key: 'cell', title: 'Cell Selection Model'}
                             ],
-                            'default': 'row'
+                            default: 'row'
                         },
                         idProperty: {
                             type: 'text',
@@ -384,25 +384,25 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     };
 
     Controller.prototype.configAliases = {
-        'colorjPath': ['groups', 'group', 0, 'colorjpath', 0],
-        'slickCheck': ['groups', 'group', 0, 'slickCheck', 0],
+        colorjPath: ['groups', 'group', 0, 'colorjpath', 0],
+        slickCheck: ['groups', 'group', 0, 'slickCheck', 0],
         'slick.rowHeight': ['groups', 'group', 0, 'slick.rowHeight', 0],
         'slick.headerRowHeight': ['groups', 'group', 0, 'slick.headerRowHeight', 0],
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],
         'slick.defaultColumnWidth': ['groups', 'group', 0, 'slick.defaultColumnWidth', 0],
-        'idProperty': ['groups', 'group', 0, 'idProperty', 0],
-        'filterType': ['groups', 'group', 0, 'filterType', 0],
-        'filterRow': ['groups', 'group', 0, 'filterRow', 0],
-        'cols': ['groups', 'cols', 0],
-        'actionCols': ['groups', 'actionCols', 0],
-        'groupings': ['groups', 'groupings', 0],
-        'actionOutButtons': ['groups', 'actionOutButtons', 0],
-        'toolbar': ['groups', 'group', 0, 'toolbar', 0],
-        'autoColumns': ['groups', 'group', 0, 'autoColumns', 0],
-        'customJpaths': ['groups', 'group', 0, 'customJpaths', 0],
-        'saveInView': ['groups', 'data', 0, 'saveInView', 0],
-        'data': ['groups', 'data', 0, 'data', 0],
-        'varname': ['groups', 'data', 0, 'varname', 0]
+        idProperty: ['groups', 'group', 0, 'idProperty', 0],
+        filterType: ['groups', 'group', 0, 'filterType', 0],
+        filterRow: ['groups', 'group', 0, 'filterRow', 0],
+        cols: ['groups', 'cols', 0],
+        actionCols: ['groups', 'actionCols', 0],
+        groupings: ['groups', 'groupings', 0],
+        actionOutButtons: ['groups', 'actionOutButtons', 0],
+        toolbar: ['groups', 'group', 0, 'toolbar', 0],
+        autoColumns: ['groups', 'group', 0, 'autoColumns', 0],
+        customJpaths: ['groups', 'group', 0, 'customJpaths', 0],
+        saveInView: ['groups', 'data', 0, 'saveInView', 0],
+        data: ['groups', 'data', 0, 'data', 0],
+        varname: ['groups', 'data', 0, 'varname', 0]
     };
 
     Controller.prototype.references = {

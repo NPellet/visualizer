@@ -109,7 +109,7 @@ define([
                         systemSize: {
                             type: 'combo',
                             title: 'Spin system',
-                            'default': '2',
+                            default: '2',
                             options: [
                                 {key: '2', title: 'AB'},
                                 {key: '3', title: 'ABC'},
@@ -121,23 +121,23 @@ define([
                         button: {
                             type: 'checkbox',
                             title: 'Process button',
-                            'default': 'button',
+                            default: 'button',
                             options: {button: ''}
                         },
                         buttonlabel: {
                             type: 'text',
-                            'default': 'Calculate',
+                            default: 'Calculate',
                             title: 'Button text'
                         },
                         buttonlabel_exec: {
                             type: 'text',
-                            'default': 'Calculating',
+                            default: 'Calculating',
                             title: 'Button text (executing)'
                         },
                         onloadanalysis: {
                             type: 'checkbox',
                             title: 'Make one process on load',
-                            'default': 'onload',
+                            default: 'onload',
                             options: {onload: ''}
                         }
                     }

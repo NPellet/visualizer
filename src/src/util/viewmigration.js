@@ -464,8 +464,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             eachModule(view, function (module) {
                 if (!module.toolbar) {
                     module.toolbar = {
-                        'custom': [[{'title': '', 'icon': '', 'action': '', 'position': 'begin'}]],
-                        'common': [{'toolbar': [['Open Preferences']]}]
+                        custom: [[{title: '', icon: '', action: '', position: 'begin'}]],
+                        common: [{toolbar: [['Open Preferences']]}]
                     };
                 }
             });
@@ -554,8 +554,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             } else if (!Array.isArray(moduleNames)) {
                 moduleNames = [''];
             }
-            var i = 0, ii = view.modules.length, module, url;
-            var j, jj = moduleNames.length;
+            var i = 0,
+                ii = view.modules.length,
+                module, url;
+            var j,
+                jj = moduleNames.length;
             for (; i < ii; i++) {
                 module = view.modules[i];
 

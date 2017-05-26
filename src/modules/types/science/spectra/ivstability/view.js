@@ -170,11 +170,11 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
         },
 
         update: {
-            'plotdata': function (moduleValue) {
+            plotdata: function (moduleValue) {
 
             },
 
-            'serieSet': function (moduleValue, name) {
+            serieSet: function (moduleValue, name) {
 
             }
         },
@@ -201,7 +201,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
                 height: 30,
                 backgroundColor: color,
                 float: 'left',
-                'position': 'relative',
+                position: 'relative',
                 marginTop: '0px',
                 marginBottom: '10px'
             });
@@ -246,7 +246,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
 
             var clearDom = $('<div />').css({
-                'clear': 'both'
+                clear: 'both'
             });
 
             div.append(square).append(nameDom).append(descriptionDom).append(clearDom);

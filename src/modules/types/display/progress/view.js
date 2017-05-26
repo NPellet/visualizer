@@ -68,7 +68,7 @@ define([
                 this.curr += +value;
                 this.render();
             },
-            'set': function (value) {
+            set: function (value) {
                 this.onActionReceive.inc.call(this, +value - this.curr);
             },
             total: function (value) {

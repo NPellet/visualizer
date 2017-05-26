@@ -412,7 +412,8 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         },
 
         _getGradientFunction(type, value) {
-            var width = this.defaultLegend.width(), height = 51;
+            var width = this.defaultLegend.width(),
+                height = 51;
             var options = {
                 stops: [this[type].mincolor, this[type].neutralcolor, this[type].maxcolor],
                 stopPositions: [this[type].min, value, this[type].max],

@@ -68,9 +68,9 @@ define([
                 top = e.clientY;
                 left = e.clientX;
                 var $menu = $('<ul class="ci-contextmenu"></ul>').css({
-                    'position': 'fixed',
-                    'left': left,
-                    'top': top,
+                    position: 'fixed',
+                    left: left,
+                    top: top,
                     'z-index': 10000
                 }).appendTo($('body'));
 

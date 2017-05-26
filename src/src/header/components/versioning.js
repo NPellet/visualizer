@@ -54,14 +54,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'forms
 
                         FormFactory.newform(div, {
                             sections: {
-                                'cfg': {
+                                cfg: {
                                     config: {
                                         multiple: false,
                                         title: 'Branch name'
                                     },
 
                                     groups: {
-                                        'general': {
+                                        general: {
                                             config: {
                                                 type: 'list'
                                             },

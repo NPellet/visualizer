@@ -17,7 +17,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.references = {
-        'function': {
+        function: {
             label: 'Mathematical function with x and y parameters',
             type: 'string'
         }
@@ -33,29 +33,29 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         type: 'list'
                     },
                     fields: {
-                        'function': {
+                        function: {
                             type: 'text',
-                            'default': 'sin(sqrt(0.01*x^2  + 0.01*y^2))*10',
+                            default: 'sin(sqrt(0.01*x^2  + 0.01*y^2))*10',
                             title: 'Mathematical function'
                         },
                         xMin: {
                             type: 'float',
-                            'default': -100,
+                            default: -100,
                             title: 'Min X'
                         },
                         xMax: {
                             type: 'float',
-                            'default': 100,
+                            default: 100,
                             title: 'Max X'
                         },
                         yMin: {
                             type: 'float',
-                            'default': -100,
+                            default: -100,
                             title: 'Min Y'
                         },
                         yMax: {
                             type: 'float',
-                            'default': 100,
+                            default: 100,
                             title: 'Max Y'
                         },
                         zMin: {
@@ -68,7 +68,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         },
                         segments: {
                             type: 'float',
-                            'default': 100,
+                            default: 100,
                             title: 'Number segments'
                         }
                     }
@@ -78,7 +78,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configAliases = {
-        'function': ['groups', 'group', 0, 'function', 0],
+        function: ['groups', 'group', 0, 'function', 0],
         xMin: ['groups', 'group', 0, 'xMin', 0],
         xMax: ['groups', 'group', 0, 'xMax', 0],
         yMin: ['groups', 'group', 0, 'yMin', 0],

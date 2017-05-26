@@ -25,7 +25,7 @@ define([
         inDom: function () {
             this.dom = ui.getSafeElement('div').attr({
                 id: this._id,
-                'class': 'parcoords'
+                class: 'parcoords'
             });
 
             var that = this;
@@ -174,7 +174,8 @@ define([
                 };
             }
 
-            var value = this._value, vl = value.length;
+            var value = this._value,
+                vl = value.length;
 
             API.killHighlight(this.module.getId());
             this._highlighted = [];
@@ -222,7 +223,8 @@ define([
             this._data = newValue;
         },
         getColumns: function () {
-            var totalConfig = [], i;
+            var totalConfig = [],
+                i;
             var objConfig = {};
             var config = this.jpathConfig;
             if (config) {

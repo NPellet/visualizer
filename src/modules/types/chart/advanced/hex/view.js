@@ -620,7 +620,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         var r = new Array(data.length);
         for (var i = 0; i < data.length; i++) {
             if (!checkCubic(data[i])) continue;
-            var col = data[i][0], z = data[i][2];
+            var col = data[i][0],
+                z = data[i][2];
             var row = z + (col + (col & 1)) / 2;
             r[i] = [col, row];
         }
@@ -632,7 +633,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         var r = new Array(data.length);
         for (var i = 0; i < data.length; i++) {
             if (!checkCubic(data[i])) continue;
-            var row = data[i][2], x = data[i][0];
+            var row = data[i][2],
+                x = data[i][0];
             var col = x + (row + (row & 1)) / 2;
             r[i] = [col, row];
         }
@@ -643,7 +645,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         var r = new Array(data.length);
         for (var i = 0; i < data.length; i++) {
             if (!checkCubic(data[i])) continue;
-            var row = data[i][2], x = data[i][0];
+            var row = data[i][2],
+                x = data[i][0];
             var col = x + (row - (row & 1)) / 2;
             r[i] = [col, row];
         }
@@ -654,7 +657,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         var r = new Array(data.length);
         for (var i = 0; i < data.length; i++) {
             if (!checkCubic(data[i])) continue;
-            var col = data[i][0], z = data[i][2];
+            var col = data[i][0],
+                z = data[i][2];
             var row = z + (col - (col & 1)) / 2;
             r[i] = [col, row];
         }

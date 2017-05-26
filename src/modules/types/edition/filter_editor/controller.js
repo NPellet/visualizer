@@ -43,7 +43,7 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
                         script: {
                             type: 'jscode',
                             title: 'Code',
-                            'default': '//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\nresolve(value);'
+                            default: '//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\nresolve(value);'
                         }
                     }
                 },

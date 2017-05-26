@@ -328,8 +328,8 @@ define([
             button: null,
             action: null,
             defined: 0,
-            'set': setter,
-            'get': function (name) {
+            set: setter,
+            get: function (name) {
                 var variable = this.variables[name];
                 if (variable) {
                     return variable.get();
@@ -363,8 +363,8 @@ define([
             getDefined() {
                 return context.defined;
             },
-            'set': setter,
-            'get': function (name) {
+            set: setter,
+            get: function (name) {
                 return context.get(name);
             },
             sendAction,

@@ -60,7 +60,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         expand: {
                             type: 'combo',
                             title: 'Auto-expand children',
-                            'default': 'none',
+                            default: 'none',
                             options: [
                                 {
                                     title: 'None',

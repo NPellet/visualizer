@@ -52,18 +52,18 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
                             type: 'jscode',
                             title: 'Template',
                             mode: 'html',
-                            'default': ''
+                            default: ''
                         },
                         schema: {
                             type: 'jscode',
                             title: 'Schema',
                             mode: 'json',
-                            'default': '{}'
+                            default: '{}'
                         },
                         button_text: {
                             type: 'text',
                             title: 'Text of the save button',
-                            'default': 'Save'
+                            default: 'Save'
                         }
                     }
                 }

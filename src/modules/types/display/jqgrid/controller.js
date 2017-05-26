@@ -80,7 +80,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         nblines: {
                             type: 'float',
                             title: 'Lines per page',
-                            'default': 20
+                            default: 20
                         },
                         toggle: {
                             type: 'combo',
@@ -104,7 +104,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Highlight on hover',
                             options: {
-                                'Yes': 'Yes'
+                                Yes: 'Yes'
                             },
                             default: ['Yes']
                         }
@@ -134,7 +134,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         editable: {
                             type: 'combo',
                             title: 'Editable',
-                            'default': 'none',
+                            default: 'none',
                             options: [
                                 {key: 'none', title: 'No'},
                                 {key: 'text', title: 'Text'},

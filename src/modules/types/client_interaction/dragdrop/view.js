@@ -47,7 +47,7 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
             });
             var defaultMessage = this.module.getConfiguration('label');
             this.messages = {
-                'default': defaultMessage,
+                default: defaultMessage,
                 drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
                 hover: this.module.getConfiguration('hoverlabel') || defaultMessage
             };

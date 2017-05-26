@@ -119,7 +119,8 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
             if (i === 0) {
                 // add current object's properties to the model
                 if (typeof child.info === 'object') {
-                    var keys = Object.keys(child.info), key;
+                    var keys = Object.keys(child.info),
+                        key;
                     for (var j = 0; j < keys.length; j++) {
                         key = keys[j];
                         if (!objectModel.hasOwnProperty(key)) {

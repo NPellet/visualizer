@@ -72,7 +72,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configurationStructure = function () {
-        var data = this.module.getDataFromRel('loading'), opts = [];
+        var data = this.module.getDataFromRel('loading'),
+            opts = [];
         if (data && data.value)
             for (var i = 0; i < data.value.series.length; i++)
                 opts.push({

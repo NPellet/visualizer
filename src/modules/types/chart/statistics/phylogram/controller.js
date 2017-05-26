@@ -50,7 +50,7 @@ define(['modules/default/defaultcontroller',
     };
 
     Controller.prototype.sendTreeFromEvent = function (data, name) {
-        var element = new DataObject({'type': 'tree', value: data}, true);
+        var element = new DataObject({type: 'tree', value: data}, true);
         this.sendActionFromEvent(name, 'tree', element);
         this.createDataFromEvent(name, 'tree', element);
         this.createDataFromEvent(name, 'list', function () {
@@ -86,7 +86,7 @@ define(['modules/default/defaultcontroller',
                     fields: {
                         branchWidth: {
                             type: 'text',
-                            'default': 4,
+                            default: 4,
                             title: 'Branch width'
                         },
                         jpathColor: {

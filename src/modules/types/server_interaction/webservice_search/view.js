@@ -138,7 +138,8 @@ define([
 
                 case 'combo':
                     var opts = (spec.fieldoptions || '').split(';'),
-                        opt, html = '';
+                        opt,
+                        html = '';
                     html += '<option ' + (spec.defaultvalue == '' ? 'selected="selected" ' : '') + 'value=""></option>';
                     for (var i = 0, l = opts.length; i < l; i++) {
                         opt = opts[i].split(':');

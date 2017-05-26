@@ -3,7 +3,8 @@
 // LRU
 define(['jquery', 'src/util/debug'], function ($, Debug) {
     var indexedDB, IDBTransaction, IDBKeyRange;
-    var db, dbname = 'cilru';
+    var db,
+        dbname = 'cilru';
 
     function createStoreDB(store, limit) {
         var storeName = store;

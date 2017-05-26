@@ -23,7 +23,8 @@ define([
         lastLoaded = {
             view: {},
             data: {}
-        }, urlType = 'Search';
+        },
+        urlType = 'Search';
 
 
     viewHandler.version = version;

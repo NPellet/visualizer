@@ -156,10 +156,10 @@ define([
                     },
                     fields: {
                         highcontrast: {
-                            'default': 'true',
+                            default: 'true',
                             type: 'checkbox',
                             title: 'Contrast',
-                            options: {'true': 'Take data min/max as boundaries'}
+                            options: {true: 'Take data min/max as boundaries'}
                         },
                         color: {
                             type: 'color',

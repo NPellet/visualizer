@@ -76,13 +76,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'checkbox',
                             title: 'Is Editable',
                             options: {isEditable: 'Yes'},
-                            'default': []
+                            default: []
                         },
                         sanitize: {
                             type: 'checkbox',
                             title: 'Sanitize',
                             options: {doSanitize: 'yes'},
-                            'default': []
+                            default: []
                         },
                         saveSvg: {
                             type: 'checkbox',

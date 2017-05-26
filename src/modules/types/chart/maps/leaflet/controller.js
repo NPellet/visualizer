@@ -104,7 +104,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                                 {title: 'OpenStreetMap', key: 'osm'},
                                 {title: 'HikeBike', key: 'hb'}
                             ],
-                            'default': 'osm'
+                            default: 'osm'
                         },
                         mapcenter: {
                             type: 'text',
@@ -116,7 +116,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                             min: 0,
                             max: 19,
                             step: 1,
-                            'default': '10'
+                            default: '10'
                         },
                         autofit: {
                             type: 'combo',
@@ -126,7 +126,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                                 {title: 'Fit around everything', key: 'all'},
                                 {title: 'Fit around current variable', key: 'var'}
                             ],
-                            'default': 'nofit'
+                            default: 'nofit'
                         }
                     }
                 },
@@ -150,17 +150,17 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
                                 {title: 'Circle', key: 'circle'},
                                 {title: 'Image', key: 'image'}
                             ],
-                            'default': 'image'
+                            default: 'image'
                         },
                         markercolor: {
                             type: 'color',
                             title: 'Default marker color',
-                            'default': 'rgba(0,51,255,0.5)'
+                            default: 'rgba(0,51,255,0.5)'
                         },
                         markersize: {
                             type: 'text',
                             title: 'Default marker size',
-                            'default': '30'
+                            default: '30'
                         }
                     }
                 }

@@ -110,7 +110,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                         prefs: {
                             type: 'checkbox',
                             title: 'Options',
-                            'default': ['oldlook', 'nozoom', 'useopenchemlib'],
+                            default: ['oldlook', 'nozoom', 'useopenchemlib'],
                             options: {
                                 noxbutton: 'Hide X button',
                                 rbutton: 'Show R button',
@@ -164,7 +164,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 {title: '18pt', key: '18'},
                                 {title: '24pt', key: '24'}
                             ],
-                            'default': 14
+                            default: 14
                         },
                         bondwidth: {
                             type: 'combo',
@@ -174,7 +174,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 {title: '1.5px', key: '1.5'},
                                 {title: '2px', key: '2'}
                             ],
-                            'default': 1
+                            default: 1
                         },
                         highlightColor: {
                             type: 'combo',
@@ -187,7 +187,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                                 {title: 'blue', key: '5'},
                                 {title: 'purple', key: '6'}
                             ],
-                            'default': '3'
+                            default: '3'
                         },
                         outputResult: {
                             type: 'checkbox',

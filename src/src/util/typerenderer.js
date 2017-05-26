@@ -479,10 +479,13 @@ define([
         var div = $('<div></div>');
         var gradient = 'linear-gradient(to right';
 
-        var total = 0, i = 0, l = value.length;
+        var total = 0,
+            i = 0,
+            l = value.length;
         for (; i < l; total += value[i++][0]);
 
-        var start = 0, end, color;
+        var start = 0,
+            end, color;
         for (i = 0; i < l; i++) {
             end = start + value[i][0] / total * 100;
             color = value[i][1];
@@ -548,7 +551,7 @@ define([
 
         if (!isNaN(value[0])) {
             value = value.map(function (value) {
-                return {'size': value};
+                return {size: value};
             });
         }
 
@@ -567,8 +570,8 @@ define([
             var element = value[i];
             var span = $('<td></td>').css({
                 minHeight: '1px',
-                'width': (100 * element.size / totalSize) + '%',
-                'border': 'none',
+                width: (100 * element.size / totalSize) + '%',
+                border: 'none',
                 overflow: 'hidden',
                 'max-width': (100 * element.size / totalSize) + '%',
                 'white-space': 'nowrap',

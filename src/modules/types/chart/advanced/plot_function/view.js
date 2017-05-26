@@ -69,7 +69,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
 
 
         blank: {
-            'function': function () {
+            function: function () {
                 this.clearScene();
             }
         },
@@ -139,7 +139,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
 
 
         update: {
-            'function': function (data) {
+            function: function (data) {
                 this.zFunctionText = data.get();
                 this.createGraph();
                 this.onResize();
@@ -158,7 +158,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'threejs', 's
 
 
         setCamera: function () {
-            var VIEW_ANGLE = 45, ASPECT = this.width / this.height, NEAR = 0.1, FAR = 20000;
+            var VIEW_ANGLE = 45,
+                ASPECT = this.width / this.height,
+                NEAR = 0.1,
+                FAR = 20000;
             this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
             this.camera.position.set(2 * this.xMax, 0.5 * this.yMax, 4 * this.zMax);
             this.camera.up = new THREE.Vector3(0, 0, 1);

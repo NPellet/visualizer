@@ -2227,9 +2227,9 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint-config-cheminfo@^1.4.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-cheminfo/-/eslint-config-cheminfo-1.7.0.tgz#a930dc069be9dbf3bb41ddc530a1d3720597882a"
+eslint-config-cheminfo@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-cheminfo/-/eslint-config-cheminfo-1.8.0.tgz#7f5c15889c240425643a8f8159c881937b2cdd82"
 
 eslint-plugin-no-only-tests@^1.1.0:
   version "1.1.0"

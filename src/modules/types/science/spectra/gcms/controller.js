@@ -224,7 +224,7 @@ define([
                         continuous: {
                             type: 'checkbox',
                             title: 'MS Continuous',
-                            options: {'continuous': 'Continuous'}
+                            options: {continuous: 'Continuous'}
                         },
                         gcsize: {
                             type: 'text',

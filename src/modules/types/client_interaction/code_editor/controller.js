@@ -47,7 +47,9 @@ define([
     Controller.prototype.variablesIn = ['data'];
 
     Controller.prototype.configurationStructure = function () {
-        var types = Structure._getList(), l = types.length, typeList = new Array(l);
+        var types = Structure._getList(),
+            l = types.length,
+            typeList = new Array(l);
         for (var i = 0; i < l; i++) {
             typeList[i] = {key: types[i], title: types[i]};
         }
@@ -70,7 +72,7 @@ define([
                                 {title: 'XML', key: 'xml'},
                                 {title: 'Markdown', key: 'markdown'}
                             ],
-                            'default': 'text'
+                            default: 'text'
                         },
                         outputType: {
                             type: 'combo',
@@ -80,11 +82,11 @@ define([
                         btnvalue: {
                             type: 'text',
                             title: 'Button text',
-                            'default': 'Send script'
+                            default: 'Send script'
                         },
                         iseditable: {
                             title: 'Display editor',
-                            'default': ['editable'],
+                            default: ['editable'],
                             type: 'checkbox',
                             options: {
                                 editable: 'Show the code editor'
@@ -92,7 +94,7 @@ define([
                         },
                         hasButton: {
                             title: 'Display button',
-                            'default': ['button'],
+                            default: ['button'],
                             type: 'checkbox',
                             options: {
                                 button: 'Show the button'

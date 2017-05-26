@@ -5,7 +5,7 @@ require.config({
         svgsanitize: 'lib/svg-edit/sanitize'
     },
     shim: {
-        'svgsanitize': ['lib/svg-edit/svgedit', 'lib/svg-edit/browser', 'lib/svg-edit/svgutils'],
+        svgsanitize: ['lib/svg-edit/svgedit', 'lib/svg-edit/browser', 'lib/svg-edit/svgutils'],
         'lib/svg-edit/svgutils': ['lib/svg-edit/browser', 'lib/svg-edit/svgtransformlist', 'lib/svg-edit/units'],
         'lib/svg-edit/svgtransformlist': ['lib/svg-edit/browser']
     }

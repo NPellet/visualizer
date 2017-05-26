@@ -92,7 +92,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Point',
                             //default: false,
-                            options: {'point': 'Show Point Area'},
+                            options: {point: 'Show Point Area'},
                             displayTarget: ['r']
                         },
                         lineshape: {
@@ -107,7 +107,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                         line: {
                             type: 'checkbox',
                             title: 'Line',
-                            options: {'line': 'Hide Line Area'},
+                            options: {line: 'Hide Line Area'},
                             displayTarget: ['r']
                         },
                         showlegend: {
@@ -119,8 +119,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             ],
                             displayTarget: ['r'],
                             displaySource: {
-                                'true': 't',
-                                'false': 'f'
+                                true: 't',
+                                false: 'f'
                             }
                         },
                         legendmarker: {

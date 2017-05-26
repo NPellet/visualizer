@@ -199,7 +199,8 @@ define([
         },
 
         getClosest: function (haystack, needle) {
-            var closest = false, newClosest;
+            var closest = false,
+                newClosest;
             for (var i = 0; i < haystack.length; i++)
                 if (!closest || (haystack[i] - needle < 0 && needle - haystack[i] < needle - closest))
                     closest = haystack[i];

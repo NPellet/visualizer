@@ -47,7 +47,7 @@
     "conventional-changelog": "^1.1.0",
     "documentation": "^4.0.0-rc.1",
     "eslint": "^3.17.1",
-    "eslint-config-cheminfo": "^1.4.0",
+    "eslint-config-cheminfo": "^1.8.0",
     "eslint-plugin-no-only-tests": "^1.1.0",
     "extend": "^3.0.1",
     "grunt": "^1.0.1",

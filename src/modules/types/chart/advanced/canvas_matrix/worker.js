@@ -57,7 +57,8 @@ function generate(indexX, indexY, buffer, nbValX) {
         endX = startX + squareLoading,
         endY = startY + squareLoading;
 
-    var x = startX, y = startY;
+    var x = startX,
+        y = startY;
 
     var bufferData = buffer.data;
 
@@ -88,7 +89,9 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
     var squareWidth = nbValX * pxPerCell;
 
 
-    var i = 0, j = 0, pixelNum;
+    var i = 0,
+        j = 0,
+        pixelNum;
     while (j < pxPerCell) {
         while (i < pxPerCell) {
             count++;

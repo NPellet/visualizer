@@ -74,7 +74,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                                 hide: 'Prevent highlight of hidden lines',
                                 brush: 'Export selection only on brush end'
                             },
-                            'default': ['reorder']
+                            default: ['reorder']
                         },
                         brushMode: {
                             type: 'combo',
@@ -86,13 +86,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                                 {key: '2D-strums', title: '2D strums'},
                                 {key: 'angular', title: 'Angular'}
                             ],
-                            'default': '1D-axes-multi',
+                            default: '1D-axes-multi',
                             displaySource: {
                                 None: 'n',
                                 '1D-axes': 'y',
                                 '1D-axes-multi': 'y',
                                 '2D-strums': 'y',
-                                'angular': 'y'
+                                angular: 'y'
                             }
                         },
                         predicate: {
@@ -102,7 +102,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                                 {key: 'and', title: 'AND'},
                                 {key: 'or', title: 'OR'}
                             ],
-                            'default': 'and',
+                            default: 'and',
                             displayTarget: ['y']
                         }
                     }
@@ -138,7 +138,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     };
 
     Controller.prototype.onBrushSelection = function (value) {
-        var toSend = value, l = value.length;
+        var toSend = value,
+            l = value.length;
         var original = this.module.view._value;
         var flags = new Array(original.length);
 
