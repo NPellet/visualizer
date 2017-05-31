@@ -168,11 +168,12 @@ define([
 
         makeMenu: function (level) {
 
-            var toOpen = this.structure, that = this;
+            var toOpen = this.structure,
+                that = this;
             var i = 0;
             // Want to display the top level (server/local)
             if (level == 1) {
-                toOpen = {'server': 'Server', 'local': 'Local Database'};
+                toOpen = {server: 'Server', local: 'Local Database'};
             } else if (level == 2) { // (head/stored)
                 toOpen = this.getBranches();
             } else if (level == 3) { // Display all month + years

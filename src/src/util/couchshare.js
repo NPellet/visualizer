@@ -31,12 +31,12 @@ define([
                 _id: docid,
                 _attachments: {
                     'view.json': {
-                        'content_type': 'application/json',
-                        'data': encodedView
+                        content_type: 'application/json',
+                        data: encodedView
                     },
                     'data.json': {
-                        'content_type': 'application/json',
-                        'data': encodedData
+                        content_type: 'application/json',
+                        data: encodedData
                     }
                 },
                 version: view.version,

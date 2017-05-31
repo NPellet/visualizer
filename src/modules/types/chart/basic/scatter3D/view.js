@@ -101,20 +101,20 @@ define([
 
     var baseURL = require.toUrl('modules/types/chart/basic/scatter3D') + '/';
     var shapeImages = {
-        'sphere': baseURL + 'img/ball.png',
-        'spheret': baseURL + 'img/ballt.png',
-        'tetrahedron': baseURL + 'img/tetrahedron2.png',
-        'tetrahedront': baseURL + 'img/tetrahedron2t.png',
-        'cone': baseURL + 'img/cone.png',
-        'conet': baseURL + 'img/conet.png',
-        'cube': baseURL + 'img/cube.png',
-        'cubet': baseURL + 'img/cubet.png',
-        'pyramid': baseURL + 'img/pyramid.png',
-        'pyramidt': baseURL + 'img/pyramidt.png',
-        'cylinder': baseURL + 'img/cylinder.png',
-        'cylindert': baseURL + 'img/cylindert.png',
-        'cuboid': baseURL + 'img/cuboid.png',
-        'cuboidt': baseURL + 'img/cuboidt.png'
+        sphere: baseURL + 'img/ball.png',
+        spheret: baseURL + 'img/ballt.png',
+        tetrahedron: baseURL + 'img/tetrahedron2.png',
+        tetrahedront: baseURL + 'img/tetrahedron2t.png',
+        cone: baseURL + 'img/cone.png',
+        conet: baseURL + 'img/conet.png',
+        cube: baseURL + 'img/cube.png',
+        cubet: baseURL + 'img/cubet.png',
+        pyramid: baseURL + 'img/pyramid.png',
+        pyramidt: baseURL + 'img/pyramidt.png',
+        cylinder: baseURL + 'img/cylinder.png',
+        cylindert: baseURL + 'img/cylindert.png',
+        cuboid: baseURL + 'img/cuboid.png',
+        cuboidt: baseURL + 'img/cuboidt.png'
     };
 
 
@@ -1637,7 +1637,7 @@ define([
                 }
             },
 
-            'boolArray': function (moduleValue) {
+            boolArray: function (moduleValue) {
                 if (!this._data || !this._mainParticleObjects) {
                     return;
                 }

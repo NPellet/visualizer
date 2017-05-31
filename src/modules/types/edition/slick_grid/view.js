@@ -645,7 +645,8 @@ define([
     $.extend(true, View.prototype, Default, {
 
         init: function () {
-            var that = this, varname;
+            var that = this,
+                varname;
             this.columnFilters = {};
             this.columnFilterFunctions = {};
             this.searchFilter = undefined;
@@ -1629,7 +1630,8 @@ define([
                     data = this.slick.data.getItems();
                 }
                 var txt = '';
-                var line = [], i, j;
+                var line = [],
+                    i, j;
                 for (i = 0; i < cols.length; i++) {
                     if (cols[i].jpath) // ignore special columns
                         line.push(cols[i].name || '');

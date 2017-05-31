@@ -109,7 +109,7 @@ require.config({
         msa: {
             exports: 'msa'
         },
-        'x2js': {
+        x2js: {
             exports: 'X2JS'
         },
         'components/jit/Jit/jit': {
@@ -125,8 +125,8 @@ require.config({
             exports: 'Parser'
         },
         'jquery-cookie': 'jquery',
-        'select2': ['jquery'],
-        'jsbarcode': ['jquery'],
+        select2: ['jquery'],
+        jsbarcode: ['jquery'],
         'lib/threejs/TrackballControls': ['threejs'],
         jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
         'lib/couchdb/jquery.couch': ['jquery'],

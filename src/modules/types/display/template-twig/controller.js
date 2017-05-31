@@ -78,7 +78,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                             type: 'jscode',
                             title: 'Template',
                             mode: 'html',
-                            'default': ''
+                            default: ''
                         },
                         modifyInForm: {
                             type: 'checkbox',

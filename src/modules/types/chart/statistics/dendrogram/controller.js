@@ -90,7 +90,7 @@ define([
                         nodeType: {
                             type: 'combo',
                             title: 'Node Type',
-                            'default': 'circle',
+                            default: 'circle',
                             options: [
                                 {title: 'Circle', key: 'circle'},
                                 {title: 'Triangle', key: 'triangle'},

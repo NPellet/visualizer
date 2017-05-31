@@ -55,7 +55,8 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
 
     Controller.prototype.doVariables = function () {
 
-        var cfg = this.module.getConfiguration('cronInfos'), variable, time, url, datatype;
+        var cfg = this.module.getConfiguration('cronInfos'),
+            variable, time, url, datatype;
 
         if (!cfg)
             return;

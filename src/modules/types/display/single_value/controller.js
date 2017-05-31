@@ -50,7 +50,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                         maxEntries: {
                             type: 'float',
                             title: 'Max entries',
-                            'default': 1,
+                            default: 1,
                             displayTarget: ['a']
                         },
                         editable: {
@@ -143,7 +143,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                                 pre: 'Display as preformatted text',
                                 selectable: 'Make text selectable'
                             },
-                            'default': []
+                            default: []
                         }
                     }
                 }

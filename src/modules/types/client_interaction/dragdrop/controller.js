@@ -54,7 +54,7 @@ define([
                         label: {
                             type: 'text',
                             title: 'Text displayed by default',
-                            'default': 'Drop your file here'
+                            default: 'Drop your file here'
                         },
                         dragoverlabel: {
                             type: 'text',
@@ -97,12 +97,12 @@ define([
                                 {title: 'File extension', key: 'ext'},
                                 {title: 'Mime-type', key: 'mime'}
                             ],
-                            'default': 'ext'
+                            default: 'ext'
                         },
                         extension: {
                             type: 'text',
                             title: 'Filter',
-                            'default': '*'
+                            default: '*'
                         },
                         filetype: {
                             type: 'combo',
@@ -114,13 +114,13 @@ define([
                                 {title: 'Array buffer', key: 'buffer'}
                                 /*{title: 'Binary string', key: 'binary'}*/
                             ],
-                            'default': 'text'
+                            default: 'text'
                         },
                         type: {
                             type: 'combo',
                             title: 'Force type',
                             options: typeList,
-                            'default': ''
+                            default: ''
                         },
                         mime: {
                             type: 'text',
@@ -129,7 +129,7 @@ define([
                         variable: {
                             type: 'text',
                             title: 'Temporary variable',
-                            'default': 'file'
+                            default: 'file'
                         }
                     }
                 },
@@ -161,18 +161,18 @@ define([
                                 {title: 'File extension', key: 'ext'},
                                 {title: 'Mime-type', key: 'mime'}
                             ],
-                            'default': 'ext'
+                            default: 'ext'
                         },
                         extension: {
                             type: 'text',
                             title: 'Filter',
-                            'default': '*'
+                            default: '*'
                         },
                         type: {
                             type: 'combo',
                             title: 'Force type',
                             options: typeList,
-                            'default': ''
+                            default: ''
                         },
                         mime: {
                             type: 'text',
@@ -181,7 +181,7 @@ define([
                         variable: {
                             type: 'text',
                             title: 'Temporary variable',
-                            'default': 'str'
+                            default: 'str'
                         }
                     }
                 },
@@ -196,7 +196,7 @@ define([
                         variable: {
                             type: 'text',
                             title: 'Temporary variable',
-                            'default': 'photo'
+                            default: 'photo'
                         }
                     }
                 }

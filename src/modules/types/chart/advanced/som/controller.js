@@ -227,7 +227,7 @@ define([
                                         },
                                         {key: 'jpath', title: 'Color jpath'}
                                     ],
-                                    'default': 'fixed',
+                                    default: 'fixed',
                                     displaySource: {
                                         inter: 'i0',
                                         fixed: 'f0',
@@ -245,19 +245,19 @@ define([
                                         {key: 'lab', title: 'CIELab'},
                                         {key: 'lch', title: 'CIELCH'}
                                     ],
-                                    'default': 'rgb',
+                                    default: 'rgb',
                                     displayTarget: ['r0']
                                 },
                                 color1: {
                                     type: 'spectrum',
                                     title: 'Color',
-                                    'default': [255, 0, 0, 1],
+                                    default: [255, 0, 0, 1],
                                     displayTarget: ['i0', 'r0', 'f0']
                                 },
                                 color2: {
                                     type: 'spectrum',
                                     title: 'Color 2',
-                                    'default': [0, 0, 0, 1],
+                                    default: [0, 0, 0, 1],
                                     displayTarget: ['i0', 'r0']
                                 },
                                 jpath1: {

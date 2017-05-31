@@ -44,7 +44,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                         fontfamily: {
                             type: 'combo',
                             title: 'Font-family',
-                            'default': 'Post_IT',
+                            default: 'Post_IT',
                             options: standardFonts
                         },
 
@@ -52,7 +52,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                             type: 'checkbox',
                             title: 'Is Editable',
                             options: {isEditable: 'Yes'},
-                            'default': ['isEditable']
+                            default: ['isEditable']
                         }
                     }
                 }

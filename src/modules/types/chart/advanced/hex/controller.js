@@ -43,7 +43,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 {key: 'evenq', title: 'Even-q'},
                                 {key: 'oddr', title: 'Odd-r'}
                             ],
-                            'default': 'combinatorial',
+                            default: 'combinatorial',
                             displaySource: {
                                 combinatorial: 'comb'
                             }

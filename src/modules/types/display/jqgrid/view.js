@@ -164,7 +164,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                 rowattr: function () {
 
                     if (arguments[1]._backgroundColor) {
-                        return {'style': 'background-color: ' + arguments[1]._backgroundColor};
+                        return {style: 'background-color: ' + arguments[1]._backgroundColor};
                     }
                 },
 

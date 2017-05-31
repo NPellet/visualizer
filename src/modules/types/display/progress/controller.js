@@ -27,7 +27,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.actionsIn = {
         inc: 'Increment current progress',
-        'set': 'Set current progress',
+        set: 'Set current progress',
         total: 'Change total progress'
     };
 
@@ -42,12 +42,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         tpl: {
                             type: 'text',
                             title: 'Progress template',
-                            'default': ':current / :total'
+                            default: ':current / :total'
                         },
                         barcolor: {
                             type: 'spectrum',
                             title: 'Bar color',
-                            'default': [204, 204, 204, 1] // #CCC (default of jquery-ui)
+                            default: [204, 204, 204, 1] // #CCC (default of jquery-ui)
                         }
                     }
                 }

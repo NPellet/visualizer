@@ -239,15 +239,15 @@ define([
             }).css({
                 color: 'blue',
                 'text-decoration': 'underline',
-                'cursor': 'pointer'
+                cursor: 'pointer'
             })));
             dom.append(logout);
 
             var tableRow = $('<tr>').appendTo($('<table>').appendTo(dom));
             var treeCSS = {
                 'overflow-y': 'auto',
-                'height': '200px',
-                'width': '300px'
+                height: '200px',
+                width: '300px'
             };
 
             var dataCol = $('<td valign="top">').appendTo(tableRow);
@@ -315,7 +315,9 @@ define([
             if (data.targetType !== 'title' && data.targetType !== 'icon')
                 return;
 
-            var node = data.node, divContent = '', last;
+            var node = data.node,
+                divContent = '',
+                last;
             var typeL = type.toLowerCase();
 
             if (node.folder) {

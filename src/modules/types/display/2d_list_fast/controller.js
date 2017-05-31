@@ -64,7 +64,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                     fields: {
                         colnumber: {
                             type: 'text',
-                            'default': 5,
+                            default: 5,
                             title: 'Number of columns'
                         },
                         valjPath: {

@@ -208,7 +208,8 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
                 return;
             }
 
-            var children = [], len, i;
+            var children = [],
+                len, i;
 
             if (structure.elements) {
 

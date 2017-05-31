@@ -32,7 +32,7 @@ define([
     var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
     var loadingHtml = $('<div>', {id: 'ci-loading'})
         .append(loadingSVG)
-        .append($('<div>', {id: 'ci-loading-message', 'class': 'ci-loading-subtitle'}));
+        .append($('<div>', {id: 'ci-loading-message', class: 'ci-loading-subtitle'}));
     var loading = {};
     var loadingNumber = 0;
 

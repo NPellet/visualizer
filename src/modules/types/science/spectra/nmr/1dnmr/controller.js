@@ -57,17 +57,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'combo',
                             title: 'Variable',
                             options: vars,
-                            'default': ''
+                            default: ''
                         },
                         color: {
                             type: 'spectrum',
                             title: 'Color',
-                            'default': [0, 0, 0, 1]
+                            default: [0, 0, 0, 1]
                         },
                         width: {
                             type: 'float',
                             title: 'Width (px)',
-                            'default': 1
+                            default: 1
                         }
                     }
                 }

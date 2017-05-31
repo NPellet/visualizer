@@ -71,12 +71,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
                         max: {
                             type: 'text',
                             title: 'Maximum hits',
-                            'default': '50'
+                            default: '50'
                         },
                         disableMessage: {
                             type: 'text',
                             title: 'Disable message',
-                            'default': 'Click to enable search'
+                            default: 'Click to enable search'
                         }
                     }
                 }

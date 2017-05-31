@@ -49,7 +49,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     };
 
     Controller.prototype.configAliases = {
-        'colorSchema': ['groups', 'group', 0, 'colorSchema', 0]
+        colorSchema: ['groups', 'group', 0, 'colorSchema', 0]
     };
     return Controller;
 

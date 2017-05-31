@@ -40,7 +40,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         sliceOffset: {
                             type: 'text',
                             title: 'Slice offset',
-                            'default': 1
+                            default: 1
                         },
                         updateHeights: {
                             type: 'checkbox',

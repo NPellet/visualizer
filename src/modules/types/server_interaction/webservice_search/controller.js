@@ -77,7 +77,7 @@ define([
                                 {key: 'DELETE', title: 'DELETE'},
                                 {key: 'HEAD', title: 'HEAD'}
                             ],
-                            'default': 'POST'
+                            default: 'POST'
                         },
                         dataType: {
                             type: 'combo',
@@ -86,7 +86,7 @@ define([
                                 {key: 'json', title: 'JSON'},
                                 {key: 'form', title: 'Form data'}
                             ],
-                            'default': 'form'
+                            default: 'form'
                         },
                         withCredentials: {
                             type: 'checkbox',
@@ -123,12 +123,12 @@ define([
                         debounce: {
                             type: 'float',
                             title: 'Request debouncing',
-                            'default': 0
+                            default: 0
                         },
                         resultfilter: {
                             type: 'jscode',
                             title: 'Result data filter',
-                            'default': 'return data;'
+                            default: 'return data;'
                         },
                         askConfirm: {
                             type: 'checkbox',
@@ -183,7 +183,7 @@ define([
                                 {key: 'query', title: 'Query string'},
                                 {key: 'data', title: 'Post data'}
                             ],
-                            'default': 'url'
+                            default: 'url'
                         },
                         label: {
                             type: 'text',
@@ -203,7 +203,7 @@ define([
                                 {key: 'combo', title: 'Combo'},
                                 {key: 'checkbox', title: 'Checkbox'}
                             ],
-                            'default': 'text'
+                            default: 'text'
                         },
                         fieldoptions: {
                             type: 'text',
@@ -238,7 +238,7 @@ define([
                                         {key: 'data', title: 'Post data'},
                                         {key: 'header', title: 'Header'}
                                     ],
-                                    'default': 'data'
+                                    default: 'data'
                                 },
                                 variable: {
                                     type: 'text',
@@ -251,7 +251,7 @@ define([
                                         {key: 'none', title: 'None'},
                                         {key: 'value', title: 'Only value'}
                                     ],
-                                    'default': 'none'
+                                    default: 'none'
                                 }
                             }
                         }

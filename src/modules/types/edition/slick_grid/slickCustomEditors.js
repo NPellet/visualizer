@@ -29,7 +29,7 @@ define([
     (function ($) {
         // register namespace
         $.extend(true, window, {
-            'Slick': {
+            Slick: {
                 CustomEditors: {
                     TextValue: TextValueEditor,
                     NumberValue: NumberValueEditor,
@@ -420,7 +420,8 @@ define([
     }
 
     function defaultApplyValue(item, state, type) {
-        var isNew = _.isEmpty(item), newState;
+        var isNew = _.isEmpty(item),
+            newState;
         DataObject.check(item, true);
         if (type) {
             newState = {

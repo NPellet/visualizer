@@ -54,7 +54,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                         step: {
                             type: 'float',
                             title: 'Step',
-                            'default': 1
+                            default: 1
                         }
                     }
                 }

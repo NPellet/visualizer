@@ -127,12 +127,14 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                     target = new DataArray(),
                     flags = new DataArray();
 
-                var keys = Object.keys(this.variables), val;
+                var keys = Object.keys(this.variables),
+                    val;
                 if (keys.length === 0 || Object.keys(cfg).length === 0) {
                     return;
                 }
 
-                var max = this.maxhits, count = 0;
+                var max = this.maxhits,
+                    count = 0;
                 for (var key in keys) {
                     val = this.variables[keys[key]];
                     l = val.length;
@@ -153,7 +155,8 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         _makeOp: function (op, val, options) {
 
             val = 'cfg[ "' + val + '" ]';
-            var numPrefix = '', numSuffix = '';
+            var numPrefix = '',
+                numSuffix = '';
             if (options.number) {
                 numPrefix = 'parseFloat(';
                 numSuffix = ')';

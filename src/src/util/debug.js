@@ -18,11 +18,11 @@ define(['loglevel'], function (log) {
 
     var levelMapping = {
         '-1': 'silent',
-        '0': 'error',
-        '1': 'warn',
-        '2': 'info',
-        '3': 'debug',
-        '4': 'trace'
+        0: 'error',
+        1: 'warn',
+        2: 'info',
+        3: 'debug',
+        4: 'trace'
     };
 
     var debugLevel = Levels.TRACE;

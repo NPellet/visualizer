@@ -62,7 +62,8 @@ define([
             return;
         }
 
-        var i = 0, stylesheet, ii, cssRule;
+        var i = 0,
+            stylesheet, ii, cssRule;
 
         for (; i < document.styleSheets.length; i++) {
             stylesheet = document.styleSheets[i];
@@ -523,7 +524,8 @@ define([
     exports.getStructuresComboOptions = function () {
         var typeList = [];
         typeList.push({key: '', title: 'none'});
-        var types = structures._getList(), l = types.length;
+        var types = structures._getList(),
+            l = types.length;
         for (var i = 0; i < l; i++) {
             typeList.push({key: types[i], title: types[i]});
         }
@@ -577,7 +579,9 @@ define([
     };
 
     exports.hashCode = function (str) {
-        var hash = 0, i, chr, len = str.length;
+        var hash = 0,
+            i, chr,
+            len = str.length;
         if (len === 0) return hash;
         for (i = 0; i < len; i++) {
             chr = str.charCodeAt(i);

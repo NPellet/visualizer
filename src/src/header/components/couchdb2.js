@@ -285,8 +285,8 @@ define([
                 doc.keywords = val.keywords.value;
             }
             doc._attachments['meta.json'] = {
-                'content_type': 'application/json',
-                'data': btoa(unescape(encodeURIComponent(JSON.stringify(val))))
+                content_type: 'application/json',
+                data: btoa(unescape(encodeURIComponent(JSON.stringify(val))))
             };
             that.database.saveDoc(doc, {
                 success: function (data) {
@@ -313,8 +313,8 @@ define([
             var doc = node.data.doc;
             var content = Versioning['get' + type + 'JSON']();
             doc._attachments[type.toLowerCase() + '.json'] = {
-                'content_type': 'application/json',
-                'data': btoa(unescape(encodeURIComponent(content)))
+                content_type: 'application/json',
+                data: btoa(unescape(encodeURIComponent(content)))
             };
 
             return Promise.resolve(that.database.saveDoc(doc, {
@@ -363,8 +363,8 @@ define([
                 doc = child.data.doc;
 
                 doc._attachments[type.toLowerCase() + '.json'] = {
-                    'content_type': 'application/json',
-                    'data': btoa(unescape(encodeURIComponent(content)))
+                    content_type: 'application/json',
+                    data: btoa(unescape(encodeURIComponent(content)))
                 };
 
                 return Promise.resolve(that.database.saveDoc(doc, {
@@ -381,7 +381,8 @@ define([
             } else {
                 // The doc is new so we need to save the whole document
                 // With a new uuid
-                var flavors = {}, flav = [];
+                var flavors = {},
+                    flav = [];
                 if (last.key) {
                     flav = last.node.key.split(':');
                     flav.shift();
@@ -394,8 +395,8 @@ define([
                     _attachments: {}
                 };
                 doc._attachments[type.toLowerCase() + '.json'] = {
-                    'content_type': 'application/json',
-                    'data': btoa(unescape(encodeURIComponent(content)))
+                    content_type: 'application/json',
+                    data: btoa(unescape(encodeURIComponent(content)))
                 };
                 this.database.saveDoc(doc, {
                     success: function (data) {
@@ -556,7 +557,7 @@ define([
                         .css({
                             color: 'blue',
                             'text-decoration': 'underline',
-                            'cursor': 'pointer'
+                            cursor: 'pointer'
                         })));
             dom.append(logout);
 
@@ -600,8 +601,8 @@ define([
 
             var treeCSS = {
                 'overflow-y': 'auto',
-                'height': '200px',
-                'width': '300px'
+                height: '200px',
+                width: '300px'
             };
             var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
             this.makePublicButton = new Button('Make Public', function () {
@@ -998,9 +999,11 @@ define([
         },
         clickNode: function (event, data) {
             var folder;
-            var node = folder = data.node, last;
+            var node = folder = data.node,
+                last;
 
-            var index = node.key.indexOf(':'), keyWithoutFlavor;
+            var index = node.key.indexOf(':'),
+                keyWithoutFlavor;
             if (index >= 0)
                 keyWithoutFlavor = node.key.substring(index + 1);
             else
@@ -1205,7 +1208,7 @@ define([
                 } else if (action === 'rename') {
                     ui.dialog('New name : <input type="text" id="' + this.cssId('newname') + '" value="' + node.title + '" />', {
                         buttons: {
-                            'Save': function () {
+                            Save: function () {
                                 var dialog = $(this);
                                 var doc = node.data.doc;
                                 var name = that.getFormContent('newname');
@@ -1237,7 +1240,7 @@ define([
                                     include_docs: false
                                 });
                             },
-                            'Cancel': function () {
+                            Cancel: function () {
                                 $(this).dialog('destroy');
                             }
                         }
@@ -1246,7 +1249,7 @@ define([
                     var div = $('<div>').html('Flavor :');
                     ui.dialog(div, {
                         buttons: {
-                            'Save': function () {
+                            Save: function () {
                                 var dialog = $(this);
                                 var doc = node.data.doc;
                                 var flavor = that.getFormContent('newflavorname');
@@ -1277,7 +1280,7 @@ define([
                                     });
                                 }
                             },
-                            'Cancel': function () {
+                            Cancel: function () {
                                 $(this).dialog('destroy');
                             }
                         },
@@ -1325,7 +1328,8 @@ define([
 
     function getStructure(data) {
         var flavors = data.value.flavors;
-        var structure = {}, current = structure;
+        var structure = {},
+            current = structure;
         for (var i = 0; i < flavors.length - 1; i++) {
             current = current[flavors[i]] = {__folder: true};
         }
@@ -1391,7 +1395,8 @@ define([
 
     function comparePaths(path1, paths) {
         var joinedPath1 = path1.join(':');
-        var i = 0, l = paths.length;
+        var i = 0,
+            l = paths.length;
         for (; i < l; i++) {
             var path2 = paths[i].value.flavors.join(':');
             if (joinedPath1 === path2)

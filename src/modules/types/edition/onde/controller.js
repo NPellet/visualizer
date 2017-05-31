@@ -64,7 +64,7 @@ define([
                         hasButton: {
                             type: 'checkbox',
                             title: 'Export options',
-                            'default': ['show'],
+                            default: ['show'],
                             options: {
                                 show: 'Show button',
                                 onload: 'Export data on load'
@@ -73,12 +73,12 @@ define([
                         button_text: {
                             type: 'text',
                             title: 'Text of the export button',
-                            'default': 'Export'
+                            default: 'Export'
                         },
                         debouncing: {
                             type: 'float',
                             title: 'Debouncing',
-                            'default': -1
+                            default: -1
                         },
                         output: {
                             type: 'combo',
@@ -90,7 +90,7 @@ define([
                                 },
                                 {title: 'New object', key: 'new'}
                             ],
-                            'default': 'new'
+                            default: 'new'
                         },
                         mode: {
                             type: 'combo',
@@ -100,7 +100,7 @@ define([
                                 {title: 'Schema', key: 'schema'},
                                 {title: 'Both', key: 'both'}
                             ],
-                            'default': 'object',
+                            default: 'object',
                             displaySource: {
                                 object: 'o',
                                 schema: 's',
@@ -118,13 +118,13 @@ define([
                             displaySource: {
                                 config: 'c'
                             },
-                            'default': 'config'
+                            default: 'config'
                         },
                         schema: {
                             type: 'jscode',
                             mode: 'yaml',
                             title: 'YAML schema',
-                            'default': '{}',
+                            default: '{}',
                             displayTarget: ['c']
                         },
                         onchangeFilter: {

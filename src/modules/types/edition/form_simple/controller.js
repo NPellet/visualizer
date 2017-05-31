@@ -86,13 +86,13 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src
                                 buttonLabel: {
                                     type: 'text',
                                     title: 'Button label',
-                                    'default': 'OK',
+                                    default: 'OK',
                                     displayTarget: ['btn', 'both']
                                 },
                                 debounce: {
                                     type: 'float',
                                     title: 'Debounce',
-                                    'default': 0,
+                                    default: 0,
                                     displayTarget: ['change', 'both']
                                 }
                             }
@@ -138,7 +138,7 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src
                                     type: 'jscode',
                                     title: 'HTML template',
                                     mode: 'html',
-                                    'default': '<span class="form-dyn" data-form-content="field:name:label"></span>\n<div class="form-dyn" data-form-content="field:name:dom"></div>'
+                                    default: '<span class="form-dyn" data-form-content="field:name:label"></span>\n<div class="form-dyn" data-form-content="field:name:dom"></div>'
                                 }
                             }
                         }

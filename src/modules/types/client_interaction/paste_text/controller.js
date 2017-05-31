@@ -41,7 +41,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                             type: 'jscode',
                             title: 'Value',
                             mode: 'text',
-                            'default': ''
+                            default: ''
                         },
                         type: {
                             type: 'combo',
@@ -52,7 +52,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 {title: 'XML', key: 'xml'},
                                 {title: 'CSV', key: 'csv'}
                             ],
-                            'default': 'text'
+                            default: 'text'
                         }
                     }
                 }

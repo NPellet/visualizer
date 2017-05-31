@@ -375,7 +375,8 @@ define([
         var modules = ModuleFactory.getModules(),
             dom = module.dom,
             myZIndex = module.definition.zindex || 1,
-            count = 0, i;
+            count = 0,
+            i;
         for (i in modules) {
             modules[i].definition.zindex = modules[i].definition.zindex || 1;
             if (modules[i].definition.zindex >= myZIndex)
@@ -392,7 +393,8 @@ define([
         var modules = ModuleFactory.getModules(),
             dom = module.dom,
             myZIndex = module.definition.zindex || 1,
-            count = 0, i;
+            count = 0,
+            i;
 
         for (i in modules) {
             modules[i].definition.zindex = modules[i].definition.zindex || 1;
@@ -542,7 +544,7 @@ define([
                                     type: 'checkbox',
                                     title: 'Blank layer?',
                                     options: {
-                                        'blank': ' yes / no'
+                                        blank: ' yes / no'
                                     }
                                 }
                             }

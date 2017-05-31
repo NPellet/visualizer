@@ -38,7 +38,8 @@ define(['jquery'], function ($) {
 
                 process = false;
                 db = e.target.result;
-                var def1 = $.Deferred(), def2 = $.Deferred();
+                var def1 = $.Deferred(),
+                    def2 = $.Deferred();
                 if (db.objectStoreNames.contains('localview')) {
                     db.deleteObjectStore('localview');
                 }
@@ -48,7 +49,8 @@ define(['jquery'], function ($) {
                 }
 
 
-                var def3 = $.Deferred(), def4 = $.Deferred();
+                var def3 = $.Deferred(),
+                    def4 = $.Deferred();
                 var req1 = db.createObjectStore('localdata', {keyPath: 'readURL'});
                 var req2 = db.createObjectStore('localview', {keyPath: 'readURL'});
 
@@ -73,7 +75,8 @@ define(['jquery'], function ($) {
 
         getAll: function (type, key, branch) {
 
-            var def = $.Deferred(), that = this;
+            var def = $.Deferred(),
+                that = this;
             type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
 
             var trans = db.transaction([type], 'readwrite');
@@ -146,7 +149,8 @@ define(['jquery'], function ($) {
 
         storeToHead: function (type, key, branch, obj) {
 
-            var def = $.Deferred(), that = this;
+            var def = $.Deferred(),
+                that = this;
             type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
             var trans = db.transaction(type, 'readwrite');
             var store = trans.objectStore(type);

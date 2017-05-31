@@ -78,8 +78,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                                 }
                             ],
                             displaySource: {
-                                'Bars': 'b',
-                                'Lines': 'l',
+                                Bars: 'b',
+                                Lines: 'l',
                                 'Lines With Steps': 'ls'
 
                             }
@@ -88,7 +88,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             title: 'Stack',
                             default: false,
-                            options: {'stack': 'Stacking the series together'}
+                            options: {stack: 'Stacking the series together'}
                         },
                         barWidth: {
                             type: 'combo',
@@ -109,7 +109,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                             type: 'checkbox',
                             default: false,
                             title: 'Fill',
-                            options: {'fill': 'Filling under lines'},
+                            options: {fill: 'Filling under lines'},
                             displayTarget: ['l', 'ls']
                         },
                         xLabel: {

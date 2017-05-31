@@ -69,7 +69,8 @@ define([
     };
 
     Rectangle.prototype.intersection = function (point) {
-        var that = this, points;
+        var that = this,
+            points;
 
         if (point.x !== this.centerx) {
             var a = (point.y - this.centery) / (point.x - this.centerx);
@@ -117,7 +118,10 @@ define([
 
     function getLinks() {
         // targets are vars_in, sources are vars_out
-        var sources = [], targets = [], links = [], i, j;
+        var sources = [],
+            targets = [],
+            links = [],
+            i, j;
         var modules = ModuleFactory.getModules();
         for (i = 0; i < modules.length; i++) {
             var module = modules[i].definition;
@@ -198,13 +202,15 @@ define([
     }
 
     function getNodes(links) {
-        var width = 1400, height = 900;
+        var width = 1400,
+            height = 900;
         var nodes = {};
         links.forEach(function (link) {
             link.source = nodes[link.source.id] || (nodes[link.source.id] = {info: link.source});
             link.target = nodes[link.target.id] || (nodes[link.target.id] = {info: link.target});
         });
-        var n = Object.keys(nodes).length, i = 0;
+        var n = Object.keys(nodes).length,
+            i = 0;
         for (var key in nodes) {
             //nodes[key].x = i*width/n + (Math.random()-0.5) * i/n/10 * width;
             //nodes[key].y = i*height/n + (Math.random()-0.5) *i/n/10 * height;

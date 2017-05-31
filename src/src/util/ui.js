@@ -216,7 +216,9 @@ define([
             asyncPostRender: typeRenderer
         };
 
-        var grid, data, lastClickedId, buttons, arr, columns, sources, failedSources = 0, $header;
+        var grid, data, lastClickedId, buttons, arr, columns, sources,
+            failedSources = 0,
+            $header;
         var fromArray = Array.isArray(list);
 
         if (!options.asynchronous) {

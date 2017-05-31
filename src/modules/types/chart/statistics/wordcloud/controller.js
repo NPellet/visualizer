@@ -51,7 +51,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                                 {key: 'archimedean', title: 'Archimedean'},
                                 {key: 'rectangular', title: 'Rectangular'}
                             ],
-                            'default': 'archimedean'
+                            default: 'archimedean'
                         },
                         scale: {
                             type: 'combo',
@@ -61,12 +61,12 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                                 {key: 'sqrt', title: '√n'},
                                 {key: 'linear', title: 'n'}
                             ],
-                            'default': 'log'
+                            default: 'log'
                         },
                         orientation: {
                             type: 'float',
                             title: 'Orientation',
-                            'default': 5
+                            default: 5
                         },
                         oneWordPerLine: {
                             type: 'checkbox',
@@ -74,7 +74,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             options: {
                                 oneWordPerLine: 'One Word Per Line'
                             },
-                            'default': ['oneWordPerLine']
+                            default: ['oneWordPerLine']
                         },
                         fromTo: {
                             type: 'slider',
@@ -83,7 +83,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                             min: -180,
                             max: 180,
                             step: 1,
-                            'default': [-60, 60]
+                            default: [-60, 60]
                         }
                     }
                 }

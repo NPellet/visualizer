@@ -1000,7 +1000,7 @@ define([
                 }), {
                     width: '400px',
                     buttons: {
-                        'Save': () => {
+                        Save: () => {
                             dialog.dialog('close');
                             this.showHide(true);
                             theView.data.view.saveView(this.getCurrentView())
