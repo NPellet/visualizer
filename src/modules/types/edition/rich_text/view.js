@@ -107,6 +107,7 @@ define([
 
         onActionReceive: {
             insertHtml: function (html) {
+                debugger;
                 this.instance.insertHtml(html, 'unfiltered_html');
             },
             insertText: function (text) {
