@@ -27,7 +27,7 @@
     "bluebird": "3.4.7",
     "bowser": "1.0.0",
     "chroma-js": "1.1.1",
-    "ckeditor": "4.6.1",
+    "ckeditor": "4.7.0",
     "colors": "3.0.0",
     "d3": "3.5.17",
     "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
