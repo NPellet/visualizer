@@ -77,6 +77,10 @@ define([
                     options.allowedContent = true;
                 }
                 this.instance = CKEDITOR.inline(this._id, options);
+                this.instance.on('afterInsertHtml', () => {
+                    var focusManager = new CKEDITOR.focusManager(this.instance);
+                    focusManager.focus();
+                })
                 this.instance.on('change', function () {
                     that.valueChanged(that.instance.getData());
                     if (that.module.getConfigurationCheckbox('autoHeight', 'yes')) {
@@ -107,7 +111,6 @@ define([
 
         onActionReceive: {
             insertHtml: function (html) {
-                debugger;
                 this.instance.insertHtml(html, 'unfiltered_html');
             },
             insertText: function (text) {
