@@ -77,6 +77,9 @@ define([
                     options.allowedContent = true;
                 }
                 this.instance = CKEDITOR.inline(this._id, options);
+                this.instance.on('afterInsertHtml', () => {
+                    this.instance.unlockSelection();
+                });
                 this.instance.on('change', function () {
                     that.valueChanged(that.instance.getData());
                     if (that.module.getConfigurationCheckbox('autoHeight', 'yes')) {
@@ -107,6 +110,8 @@ define([
 
         onActionReceive: {
             insertHtml: function (html) {
+                debugger;
+                this.instance.lockSelection();
                 this.instance.insertHtml(html, 'unfiltered_html');
             },
             insertText: function (text) {
