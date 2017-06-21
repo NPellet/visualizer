@@ -78,9 +78,6 @@ define([
                 }
                 this.instance = CKEDITOR.inline(this._id, options);
 
-                this.instance.on('selectionChange', (event) => {
-                    console.log('select change', event);
-                });
                 this.instance.on('change', function () {
                     that.valueChanged(that.instance.getData());
                     if (that.module.getConfigurationCheckbox('autoHeight', 'yes')) {
@@ -114,7 +111,9 @@ define([
                 this.instance.insertHtml(html, 'unfiltered_html');
             },
             insertText: function (text) {
-                this.instance.insertText(text);
+                setImmediate(() => {
+                    this.instance.insertText(text);
+                });
             }
         },
 

@@ -741,8 +741,6 @@ define([
                             $a.addClass('icon-clickable');
                             if ($a.length) {
                                 $a[0].onclick = function (event) {
-                                    event.preventDefault();
-                                    event.stopPropagation();
                                     API.doAction(context.renderOptions.action, dataContext);
                                 };
                             }

@@ -59,8 +59,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 2,
-            "top": 10
+            "left": 0,
+            "top": 0
           },
           "size": {
             "width": 67,
@@ -80,7 +80,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 1,
       "vars_in": [
         {
           "rel": "html",
@@ -134,7 +134,7 @@
           ]
         }
       ],
-      "richtext": "<p>aaaaaaaaaaaaaaaaaaaaaaaaa</p>\n",
+      "richtext": "<p>abcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd</p>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n<p>abcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd</p>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n<p>abcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjfl<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjfl</p>\n\n<p><br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjflabcddddd<br />\nskldjfhlaskdjfl</p>\n",
       "title": ""
     },
     {
@@ -159,7 +159,7 @@
                 ]
               ],
               "script": [
-                "API.doAction('html', 'a');\n\n\n"
+                "\n\nAPI.doAction('html', 'abcddddd<br>skldjfhlaskdjfl');\n\n\n"
               ]
             }
           ],
@@ -182,8 +182,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 74,
-            "top": 8
+            "left": 68,
+            "top": 0
           },
           "size": {
             "width": 60,
@@ -203,12 +203,15 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 2,
       "vars_in": [
         {}
       ],
       "actions_in": [
-        {}
+        {
+          "rel": "execute",
+          "name": "click"
+        }
       ],
       "vars_out": [
         {
@@ -216,6 +219,203 @@
         }
       ],
       "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "editable"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "name": "⎀",
+                "tooltip": "insert",
+                "icon": "⎀",
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "action": "click",
+                "position": "end",
+                "clickMode": "text",
+                "isAction": true
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 68,
+            "top": 49
+          },
+          "size": {
+            "width": 39,
+            "height": 23
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "event": "onSelect",
+          "rel": "row",
+          "jpath": [],
+          "name": "click"
+        }
+      ],
+      "vars_out": [
         {
           "jpath": []
         }
@@ -298,7 +498,7 @@
         "general": [
           {
             "script": [
-              "API.createData('test','');"
+              "API.createData('test','');\nAPI.createData('table', [{a:1},{a:2}])"
             ]
           }
         ]
