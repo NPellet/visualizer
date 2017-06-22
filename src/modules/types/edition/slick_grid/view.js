@@ -1335,7 +1335,7 @@ define([
                     return that.slick;
                 },
                 getData: function () {
-                    return that.module.data.get();
+                    return that.module.data && that.module.data.get();
                 },
                 rerender: function (rows) {
                     that.rerender(rows);
