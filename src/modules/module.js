@@ -1178,7 +1178,7 @@ define([
             window.setTimeout(function () {
                 openWindow.print();
                 openWindow.close();
-            }, 100);
+            }, options.delay || 100);
         },
 
         setBackgroundColor(color) {

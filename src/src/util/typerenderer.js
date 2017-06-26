@@ -187,7 +187,7 @@ define([
             $img.css(options.css);
         }
         if (options.style) {
-            $img.attr('style',options.style);
+            $img.attr('style', options.style);
         }
         element.html($img);
     };
