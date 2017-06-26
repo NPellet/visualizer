@@ -389,7 +389,8 @@ module.exports = function (grunt) {
                         {
                             name: 'init',
                             exclude: [
-                                'babel'
+                                'babel',
+                                'lodash'
                             ]
                         }
                     ]
