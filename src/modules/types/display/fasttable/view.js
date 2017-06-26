@@ -194,7 +194,7 @@ define([
 
                 this.selected = [];
 
-//	 			moduleValue = moduleValue.get();
+                //	 			moduleValue = moduleValue.get();
 
                 this.elements = moduleValue;
 

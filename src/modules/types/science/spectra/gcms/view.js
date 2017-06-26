@@ -8,11 +8,11 @@ define([
     'jcampconverter',
     'src/util/color'
 ], function ($,
-             Default,
-             Traversing,
-             GCMS,
-             Converter,
-             Color) {
+        Default,
+        Traversing,
+        GCMS,
+        Converter,
+        Color) {
 
     function View() {
     }

@@ -338,13 +338,13 @@ define([
             // need to deal with charge in parenthesis
             value = value.replace(/\(([0-9+-]+)\)/g, function (match) {
                 var number = match.replace(/[^0-9]/g, '') * 1;
-                var charge = match.replace(/[\(\)0-9]/g, '');
+                var charge = match.replace(/[()0-9]/g, '');
                 return charge.repeat(number);
             });
 
             value = value.replace(/([+-])([0-9]+)/g, function (match) {
                 var number = match.replace(/[^0-9]/g, '') * 1;
-                var charge = match.replace(/[\(\)0-9]/g, '');
+                var charge = match.replace(/[()0-9]/g, '');
                 return charge.repeat(number);
             });
 

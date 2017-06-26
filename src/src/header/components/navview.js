@@ -94,7 +94,7 @@ define([
         },
 
         getDir: function (path) {
-            return path.replace(new RegExp(/\/[^\/]+$/), '/');
+            return path.replace(new RegExp(/\/[^/]+$/), '/');
         },
 
         load: function (name) {
@@ -235,7 +235,7 @@ define([
 
         rename: function () {
             var that = this;
-            var reg = new RegExp(/(^.*)\/([^\/]+$)/);
+            var reg = new RegExp(/(^.*)\/([^/]+$)/);
 
             var m = reg.exec(this.activeNode.data.path);
             if (!m.length === 3) {

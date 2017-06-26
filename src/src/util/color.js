@@ -31,7 +31,7 @@ define(function () {
 
     exports.rgb2hex = function rgb2hex(r, g, b) {
         if (arguments.length === 1) {
-            var x = r.match(/rgba?\(([^\(]*)\)/, 'i');
+            var x = r.match(/rgba?\(([^(]*)\)/, 'i');
             if (!x) return null;
             var rgb = x[1].split(',');
             if (rgb.length >= 3) {

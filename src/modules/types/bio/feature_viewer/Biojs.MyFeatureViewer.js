@@ -67,9 +67,9 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
          *
          */
         exportFeaturesToImage: function () {
-//        if (typeof FlashCanvas != 'undefined') {
-//            FlashCanvas.initElement(canvas);
-//        }
+            //        if (typeof FlashCanvas != 'undefined') {
+            //            FlashCanvas.initElement(canvas);
+            //        }
             var config = this.opt.json.configuration;
             var dataURL = '';
             if (jQuery.browser.msie) { //canvas does not work (not even with IE 9)

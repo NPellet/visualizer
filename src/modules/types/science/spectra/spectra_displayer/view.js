@@ -680,7 +680,7 @@ define([
                 this.redraw(false, varname);
             },
 
-// in fact it is a Y array ...
+            // in fact it is a Y array ...
             xArray(moduleValue, varname) {
                 var val = moduleValue.get();
                 this.series[varname] = this.series[varname] || [];

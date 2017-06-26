@@ -17,16 +17,16 @@ define([
     'jquery-ui/ui/widgets/accordion',
     'jquery-ui/ui/widgets/tooltip'
 ], function ($,
-             _,
-             superagent,
-             Default,
-             Util,
-             UI,
-             Debug,
-             RocView,
-             Versioning,
-             CouchdbAttachments,
-             uploadUi) {
+        _,
+        superagent,
+        Default,
+        Util,
+        UI,
+        Debug,
+        RocView,
+        Versioning,
+        CouchdbAttachments,
+        uploadUi) {
 
     var UPLOAD_LIMIT = 50 * 1024 * 1024;
     var fakeLink = {
@@ -572,7 +572,7 @@ define([
 
         selectLoadedNode() {
             const viewUrl = Versioning.lastLoaded.view.url;
-            const reg = /\/([^\/]+)\/view\.json/;
+            const reg = /\/([^/]+)\/view\.json/;
             const m = reg.exec(viewUrl);
             if (m) {
                 const loadNode = (node) => {

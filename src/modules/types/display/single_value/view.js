@@ -9,11 +9,11 @@ define([
     'sprintf',
     'lodash'
 ], function (Default,
-             Util,
-             API,
-             Renderer,
-             Color,
-             sprintf, _) {
+        Util,
+        API,
+        Renderer,
+        Color,
+        sprintf, _) {
 
     function View() {
     }

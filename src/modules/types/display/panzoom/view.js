@@ -831,7 +831,7 @@ define([
         }
     });
 
-// Unused for now but don't erase
+    // Unused for now but don't erase
     function applyTransform(v, t) {
         var r = new Array(2);
         r[0] = v[0] * (+t[0]) + v[1] * (+t[1]) + (+t[4]);

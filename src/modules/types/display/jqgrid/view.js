@@ -26,7 +26,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
             this.dom = $('<div class="ci-displaylist-list"></div>');
             this.domTable = $('<table />').attr('id', this.uniqId).css({width: '100%'});
 
-            this.dataSize = 0;    // we remember the last arraySize
+            this.dataSize = 0; // we remember the last arraySize
             this.currentPage = 1; // we remember the last selected page
 
             this.dom.on('mouseover', 'tr.jqgrow', function (e) {
@@ -175,7 +175,7 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
                     }
 
                     that.module.model.dataSetChild(
-                        that.elements[rowId.replace(that.uniqId, '')],  // source
+                        that.elements[rowId.replace(that.uniqId, '')], // source
                         colModel[colNum]._jpath,	// jpath
                         value // value
                     );

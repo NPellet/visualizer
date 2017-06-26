@@ -41,7 +41,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     //	var obs1 = new Observable();
     //	var obs2 = new Observable();
     //	obs1.pull(obs2);
-//	obs2.set('varName', 'varVal'); // ==> obs1.set('varName', 'varVal')
+    //	obs2.set('varName', 'varVal'); // ==> obs1.set('varName', 'varVal')
     Observable.prototype.pull = function () {
         var mySet = this._proxiedSet();
         $.each(arguments, function (i, trgt) {

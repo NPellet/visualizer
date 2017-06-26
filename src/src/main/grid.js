@@ -14,17 +14,17 @@ define([
     'version',
     'src/util/config'
 ], function ($,
-             ui,
-             Util,
-             diagram,
-             ModuleFactory,
-             Context,
-             Versioning,
-             Form,
-             Variables,
-             Debug,
-             Version,
-             Config) {
+        ui,
+        Util,
+        diagram,
+        ModuleFactory,
+        Context,
+        Versioning,
+        Form,
+        Variables,
+        Debug,
+        Version,
+        Config) {
 
     var definition, jqdom, moduleMove;
     var isInit = false;
@@ -87,8 +87,8 @@ define([
             width: Math.round(moduleSize.width) * definition.xWidth,
             height: Math.round(moduleSize.height) * definition.yHeight,
             position: 'absolute' // We have to explicitly set the position in JS to avoid problems when the visualizer is in a display:none iframe.
-                                 // jquery-ui/draggable forces the position to relative in this case because styles are not computed until the element is visible.
-                                 // Refs: https://bugzilla.mozilla.org/show_bug.cgi?id=548397 and https://github.com/whatwg/html/issues/1813
+            // jquery-ui/draggable forces the position to relative in this case because styles are not computed until the element is visible.
+            // Refs: https://bugzilla.mozilla.org/show_bug.cgi?id=548397 and https://github.com/whatwg/html/issues/1813
         });
     }
 

@@ -3,7 +3,7 @@
 define(function () {
 
     var structures = {
-//        'object': 'object', // Removed ! Object should by dynamic.
+        //        'object': 'object', // Removed ! Object should by dynamic.
         latex: 'string',
         mol2d: 'string',
         molfile2D: 'string',

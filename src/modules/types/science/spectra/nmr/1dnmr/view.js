@@ -31,12 +31,12 @@ define([
         },
 
         onResize: function () {
-           // this.nmr.resize1DTo(this.width, this.height);
+            // this.nmr.resize1DTo(this.width, this.height);
         },
 
         blank: {
             jcamp: function (varname) {
-         //       this.nmr.removeSerieX(varname);
+                //       this.nmr.removeSerieX(varname);
             }
         },
 

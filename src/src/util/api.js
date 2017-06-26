@@ -16,16 +16,16 @@ define([
     'lodash',
     'src/main/grid'
 ], function (
-    Cache,
-    Traversing,
-    ActionManager,
-    Util,
-    Versioning,
-    Config,
-    Variables,
-    Data,
-    _
-) {
+        Cache,
+        Traversing,
+        ActionManager,
+        Util,
+        Versioning,
+        Config,
+        Variables,
+        Data,
+        _
+    ) {
 
     var variableFilters;
 

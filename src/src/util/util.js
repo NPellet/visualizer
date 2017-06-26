@@ -69,7 +69,7 @@ define([
             stylesheet = document.styleSheets[i];
             ii = 0;
             cssRule = false;
-            do {                                             // For each rule in stylesheet
+            do { // For each rule in stylesheet
                 cssRule = stylesheet.cssRules ? stylesheet.cssRules[ii] : (stylesheet.rules ? stylesheet.rules[ii] : null);
                 if (!cssRule || !cssRule.selectorText) {
                     ii++;
@@ -179,9 +179,9 @@ define([
         getCssVendorPrefix: function () {
             var styles = window.getComputedStyle(document.documentElement, '');
             var pre = (Array.prototype.slice
-                    .call(styles)
-                    .join('')
-                    .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+                .call(styles)
+                .join('')
+                .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
             )[1];
             return '-' + pre + '-';
         },
@@ -426,7 +426,7 @@ define([
 
     exports.moduleIdFromUrl = function (url) {
 
-        var reg = /([^\/]+)(\/)?$/;
+        var reg = /([^/]+)(\/)?$/;
         var res = url.match(reg);
         return res[1];
     };
@@ -487,7 +487,7 @@ define([
         }
     };
 
-    const isEmail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+    const isEmail = /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
     exports.isEmail = function (str) {
         return isEmail.test(str);
     };

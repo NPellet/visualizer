@@ -38,7 +38,7 @@ define([
                     if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which == 83) {
                         event.preventDefault();
                         var viewUrl = Versioning.lastLoaded.view.url;
-                        var reg = /\/([^\/]+)\/view\.json$/;
+                        var reg = /\/([^/]+)\/view\.json$/;
                         var m = reg.exec(viewUrl);
                         var loadedDocId = m[1];
                         var nodes = [];
@@ -1183,7 +1183,7 @@ define([
                         node = node.parent;
 
                     delete node.data.doc.flavors[this.flavor]; // Delete current flavor
-                    if ($.isEmptyObject(node.data.doc.flavors)) {  // No more flavors, delete document
+                    if ($.isEmptyObject(node.data.doc.flavors)) { // No more flavors, delete document
                         node.data.doc._deleted = true;
                         this.database.saveDoc(node.data.doc, {
                             success: function () {

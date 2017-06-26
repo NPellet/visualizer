@@ -258,12 +258,12 @@ define([
 
             dataCol.append('<p id="' + this.cssId('datadiv') + '">&nbsp;</p>');
             dataCol.append($('<p>').append('<input type="text" id="' + this.cssId('data') + '"/>')
-                    .append(new Button('Save', function () {
-                        that.save('Data', that.getFormContent('data'));
-                    }, {color: 'red'}).render())
-                    .append(new Button('Mkdir', function () {
-                        that.mkdir('Data', that.getFormContent('data'));
-                    }, {color: 'blue'}).render())
+                .append(new Button('Save', function () {
+                    that.save('Data', that.getFormContent('data'));
+                }, {color: 'red'}).render())
+                .append(new Button('Mkdir', function () {
+                    that.mkdir('Data', that.getFormContent('data'));
+                }, {color: 'blue'}).render())
             );
             this.lastDataFolder = {name: this.username + ':data', node: null};
 
@@ -275,12 +275,12 @@ define([
 
             viewCol.append('<p id="' + this.cssId('viewdiv') + '">&nbsp;</p>');
             viewCol.append($('<p>').append('<input type="text" id="' + this.cssId('view') + '"/>')
-                    .append(new Button('Save', function () {
-                        that.save('View', that.getFormContent('view'));
-                    }, {color: 'red'}).render())
-                    .append(new Button('Mkdir', function () {
-                        that.mkdir('View', that.getFormContent('view'));
-                    }, {color: 'blue'}).render())
+                .append(new Button('Save', function () {
+                    that.save('View', that.getFormContent('view'));
+                }, {color: 'red'}).render())
+                .append(new Button('Mkdir', function () {
+                    that.mkdir('View', that.getFormContent('view'));
+                }, {color: 'blue'}).render())
             );
             this.lastViewFolder = {name: this.username + ':view', node: null};
 

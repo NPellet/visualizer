@@ -43,7 +43,7 @@ define([
                 if (!viewUrl) {
                     throw new Error('couchdb attachments initialization failed: No view url');
                 }
-                this.docUrl = viewUrl.replace(/\/[^\/]+$/, '');
+                this.docUrl = viewUrl.replace(/\/[^/]+$/, '');
             } else {
                 this.docUrl = url;
             }

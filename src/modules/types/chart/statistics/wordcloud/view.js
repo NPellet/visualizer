@@ -156,9 +156,9 @@ define(['modules/default/defaultview', 'src/util/util', 'src/util/ui', 'lib/d3/d
                     .on('end', draw);
             } else {
                 that.layout
-                .rotate(function (d) { return ~~(Math.random() * count) * from - to; })
-                .size([w, h])
-                .on('end', draw);
+                    .rotate(function (d) { return ~~(Math.random() * count) * from - to; })
+                    .size([w, h])
+                    .on('end', draw);
                 that.layout.stop().start();
             }
 

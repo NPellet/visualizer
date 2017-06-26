@@ -510,11 +510,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 }
             }, 'panzoom');
         }
-//  Add new migration functions here
-//  Do not forget to `npm run prerelease` before creating your migration script
-//      'x.y.z', function (view) {
-//          // Do something to the view
-//      }
+        //  Add new migration functions here
+        //  Do not forget to `npm run prerelease` before creating your migration script
+        //      'x.y.z', function (view) {
+        //          // Do something to the view
+        //      }
 
     ];
 
