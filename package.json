@@ -41,8 +41,8 @@
   },
   "devDependencies": {
     "add-stream": "^1.0.0",
-    "babel-preset-babili": "^0.1.2",
-    "babel-preset-env": "^1.5.1",
+    "babel-preset-babili": "0.0.12",
+    "babel-preset-env": "^1.5.2",
     "bower": "^1.7.9",
     "conventional-changelog": "^1.1.0",
     "documentation": "^4.0.0-rc.1",
