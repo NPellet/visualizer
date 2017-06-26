@@ -1,3 +1,18 @@
+<a name="2.82.0"></a>
+# [2.82.0](https://github.com/NPellet/visualizer/compare/v2.81.3...v2.82.0) (2017-06-26)
+
+
+### Bug Fixes
+
+* **slick_grid:** init new sandbox before data initialization threw error ([3ca2783](https://github.com/NPellet/visualizer/commit/3ca2783))
+
+
+### Features
+
+* **typerenderer:** Add "style" option to img renderer that accepts a string ([5d85d19](https://github.com/NPellet/visualizer/commit/5d85d19))
+
+
+
 <a name="2.81.3"></a>
 ## [2.81.3](https://github.com/NPellet/visualizer/compare/v2.81.2...v2.81.3) (2017-05-19)
 
