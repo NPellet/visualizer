@@ -16,7 +16,7 @@ const defaultOptions = {
     // if false will set the input to a default value (default value depends on type of input)
 };
 
-define(['jquery', 'src/util/debug'], function ($, Debug) {
+define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
     class Form {
         constructor(dom, options) {
             this.options = Object.assign({}, defaultOptions, options);
@@ -26,10 +26,14 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             this.submitCb = null;
         }
 
+        // maps each dom input elements to a plain object
+        // object props: name, value, type, dom (input's DOM element object), transform
+        // Values are transformed
         get() {
             if (!this.dom) return;
-            var inputs = this.dom.find('input,textarea,select');
-            var out = inputs.map(function () {
+            const inputs = this.dom.find('input,textarea,select');
+            let radios = [];
+            const out = inputs.map(function () {
                 const {name, value, type} = this;
                 return {
                     name,
@@ -40,8 +44,24 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                 };
             }).toArray().filter(o => {
                 if (!o.name) return false;
-                return (o.type !== 'radio' || o.dom.checked);
+                // Radio buttons need special treatment
+                if (o.type === 'radio') {
+                    radios.push(o);
+                    return false;
+                }
+                return true;
             });
+
+            const groupedRadios = _.groupBy(radios, radio => radio.name);
+            for (let name in groupedRadios) {
+                const radios = groupedRadios[name].filter(radio => radio.name);
+                const radio = radios.find(radio => radio.dom.checked);
+                if (radio) {
+                    out.push(radio);
+                } else if (radios.length) {
+                    out.push(radios[0]);
+                }
+            }
 
             out.forEach(o => {
                 switch (o.type) {
@@ -61,6 +81,9 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             return out;
         }
 
+
+        // Returns a DataObject with the form data
+        // if merge is true it edits the previous data object
         getData(merge) {
             var f = this.get();
             var obj;
@@ -83,6 +106,8 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             return obj.resurrect();
         }
 
+        // Set the data and modify the form accordingly, overriding pre-existing values
+        // Parts of the form for which the corresponding data is undefined can optionally set
         setData(data) {
             if (!data) return;
             data = DataObject.check(data, true);
@@ -99,6 +124,8 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             return Array.from(changedNames);
         }
 
+        // Fill the given dom element with the given value
+        // Transforms values back
         _setElement(el, value) {
             if (value == null) {
                 if (this.options.keepFormValueIfDataUndefined) {
@@ -118,7 +145,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
                     this.dom.find(`input[name="${name}"]`).each(function () {
                         this.checked = false;
                     });
-                    this.dom.find(`input[value="${value}"]`).each(function () {
+                    this.dom.find(`input[value="${transform(value)}"]`).each(function () {
                         this.checked = true;
                     });
                     break;
@@ -168,34 +195,35 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
     }
 
 
+    function getTransform(dom, type) {
+        if (type !== 'forward' && type !== 'backward') throw new TypeError('Type should be "forward" or "backward"');
+        const transform = dom.getAttribute('data-transform');
+        let transformFn;
+        if (transform) {
+            if (!dataTransform[transform]) {
+                Debug.warn(`util/Form: invalid attribute value for data-transform: ${transform} (transform not found)`);
+            } else {
+                transformFn = dataTransform[transform][type];
+            }
+        }
+        return transformFn || identity;
+    }
+
+    function identity(input) {
+        return DataObject.resurrect(input);
+    }
+
+    function getDefaultByType(type) {
+        switch (type) {
+            case 'checkbox':
+                return false;
+            case 'radio':
+                return false;
+            default:
+                return '';
+        }
+    }
+
     return Form;
 });
 
-function getTransform(dom, type) {
-    if (type !== 'forward' && type !== 'backward') throw new TypeError('Type should be "forward" or "backward"');
-    var transform = dom.getAttribute('data-transform');
-    var transformFn;
-    if (transform) {
-        if (!dataTransform[transform]) {
-            Debug.warn(`util/Form: invalid attribute value for data-transform: ${transform} (transform not found)`);
-        } else {
-            transformFn = dataTransform[transform][type];
-        }
-    }
-    return transformFn || identity;
-}
-
-function identity(input) {
-    return DataObject.resurrect(input);
-}
-
-function getDefaultByType(type) {
-    switch (type) {
-        case 'checkbox':
-            return false;
-        case 'radio':
-            return false;
-        default:
-            return '';
-    }
-}
