@@ -100,6 +100,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
                     }
                     return el;
                 });
+                if (f[i].type === 'radio' && !f[i].dom.checked) continue;
                 obj.setChildSync(jpath, f[i].value);
             }
 
@@ -145,7 +146,8 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
                     this.dom.find(`input[name="${name}"]`).each(function () {
                         this.checked = false;
                     });
-                    this.dom.find(`input[value="${transform(value)}"]`).each(function () {
+                    this.dom.find(`input[name="${name}"][value="${transform(value)}"]`).each(function () {
+                        console.log(this);
                         this.checked = true;
                     });
                     break;
