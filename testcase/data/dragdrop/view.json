@@ -1,230 +1,269 @@
 {
-	"name": "mzasso",
-	"version": "2.2.3",
+	"version": "2.82.1-0",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
 	"modules": [
 		{
 			"url": "modules/types/client_interaction/dragdrop/",
-			"title": "",
-			"displayWrapper": true,
-			"position": {
-				"left": 44,
-				"top": 1
-			},
-			"size": {
-				"width": 47.039999997615816,
-				"height": 20.039999997615816
-			},
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
 							"label": [
-								"Drop a file here<br>or paste your jcamp data"
+								"Drop your file here"
+							],
+							"dragoverlabel": [
+								null
+							],
+							"hoverlabel": [
+								null
+							],
+							"getusermedia": [
+								[]
+							],
+							"capture": [
+								"none"
 							]
 						}
 					],
 					"vars": [
 						[
 							{
-								"extension": "jdx",
-								"filetype": "text",
-								"type": "jcamp",
-								"variable": "jcamp1"
+								"filter": "ext",
+								"extension": "*",
+								"filetype": "base64",
+								"type": "",
+								"variable": "file"
 							}
 						]
+					],
+					"string_general": [
+						{
+							"askFilename": [
+								[]
+							]
+						}
 					],
 					"string": [
 						[
 							{
-								"type": "jcamp",
-								"variable": "jcamp2"
+								"filter": "ext",
+								"extension": "*",
+								"type": "",
+								"variable": "str"
+							}
+						]
+					],
+					"photo": [
+						[
+							{
+								"variable": "photo"
 							}
 						]
 					]
 				}
 			},
-			"id": 1,
-			"vars_in": [],
-			"actions_in": [],
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 39,
+						"height": 18
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 3,
 			"vars_out": [
 				{
 					"event": "onRead",
 					"rel": "data",
-					"jpath": "element.jcamp1",
-					"name": "jcampDrop"
-				},
-				{
-					"event": "onRead",
-					"rel": "data",
-					"jpath": "element.jcamp2",
-					"name": "jcampPaste"
+					"jpath": [],
+					"name": "data"
 				}
 			],
-			"actions_out": {},
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"vars_in": [],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
 		},
 		{
-			"url": "modules/types/science/spectra/spectra_displayer/",
-			"title": "Spectra",
-			"displayWrapper": true,
-			"position": {
-				"left": 4,
-				"top": 23.000001907348633
-			},
-			"size": {
-				"width": 128.0399999976158,
-				"height": 44.039999997615816
-			},
+			"url": "modules/types/edition/object_editor/",
 			"configuration": {
 				"sections": {},
 				"groups": {
 					"group": [
 						{
-							"graphurl": [
-								""
+							"editable": [
+								"view"
 							],
-							"flip": [
+							"expanded": [
 								[]
 							],
-							"displayAxis": [
+							"storeObject": [
+								[]
+							],
+							"displayValue": [
+								[]
+							],
+							"searchBox": [
 								[
-									"y",
-									"x"
+									"search"
 								]
 							],
-							"grids": [
+							"sendButton": [
 								[]
 							],
-							"xLabel": [
-								""
+							"output": [
+								"new"
 							],
-							"yTopSpacing": [
-								0
-							],
-							"yBottomSpacing": [
-								0
-							],
-							"xLeftSpacing": [
-								0
-							],
-							"xRightSpacing": [
-								0
-							],
-							"yLabel": [
-								""
-							],
-							"minX": [
-								""
-							],
-							"maxX": [
-								""
-							],
-							"minY": [
-								""
-							],
-							"maxY": [
-								""
-							],
-							"zoom": [
-								"x"
-							],
-							"shiftxtozero": [
-								[]
-							],
-							"xastime": [
-								[]
-							],
-							"wheelAction": [
-								"zoomY"
-							],
-							"fullOut": [
-								"both"
+							"storedObject": [
+								"{}"
 							]
 						}
-					],
-					"plotinfos": [
-						[
-							{
-								"variable": "jcampDrop",
-								"plotcolor": [
-									1,
-									1,
-									255,
-									1
-								],
-								"strokewidth": "1",
-								"plotcontinuous": [
-									"continuous"
-								],
-								"peakpicking": [],
-								"markers": [],
-								"normalize": "none",
-								"optimizeSlots": []
-							},
-							{
-								"variable": "jcampPaste",
-								"plotcolor": [
-									255,
-									0,
-									3,
-									1
-								],
-								"strokewidth": "1",
-								"plotcontinuous": [
-									"continuous",
-									"continuous"
-								],
-								"peakpicking": [],
-								"markers": [],
-								"normalize": "none",
-								"optimizeSlots": []
-							}
-						]
 					]
 				}
 			},
-			"id": 2,
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 59,
+						"top": 0
+					},
+					"size": {
+						"width": 48,
+						"height": 43
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 4,
 			"vars_in": [
 				{
-					"rel": "jcamp",
-					"name": "jcampDrop"
-				},
-				{
-					"rel": "jcamp",
-					"name": "jcampPaste"
+					"rel": "value",
+					"name": "data"
 				}
 			],
 			"actions_in": [
 				{}
 			],
 			"vars_out": [
-				{}
+				{
+					"jpath": []
+				}
 			],
 			"actions_out": [
-				{}
+				{
+					"jpath": []
+				}
 			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
 		}
 	],
-	"variables": [
-		{
-			"varname": "name",
-			"jpath": "element.name"
-		}
-	],
-	"pouchvariables": [],
+	"variables": [],
+	"aliases": [],
 	"configuration": {
-		"title": "Drag and drop / paste data"
+		"title": "No title"
 	}
 }
