@@ -156,11 +156,11 @@
 							"execOnLoad": [
 								[]
 							],
-							"script": [
-								"console.log(\"Received action\")\nconsole.log(getAction())"
-							],
 							"asyncAwait": [
 								[]
+							],
+							"script": [
+								"console.log(\"Received action\")\nconsole.log(getAction())"
 							]
 						}
 					],
@@ -173,7 +173,8 @@
 						[
 							{
 								"name": "button1",
-								"label": "Execute"
+								"label": "Execute",
+								"hide": []
 							}
 						]
 					]
@@ -186,7 +187,7 @@
 						"top": 0
 					},
 					"size": {
-						"width": 49,
+						"width": 29,
 						"height": 41
 					},
 					"zIndex": 0,
@@ -205,15 +206,16 @@
 			},
 			"id": 2,
 			"vars_in": [
-				{
-					"rel": "inputValue",
-					"name": ""
-				}
+				{}
 			],
 			"actions_in": [
 				{
 					"rel": "execute",
 					"name": "loaded"
+				},
+				{
+					"rel": "execute",
+					"name": "atomClicked"
 				}
 			],
 			"title": "",
@@ -222,7 +224,11 @@
 					"jpath": []
 				}
 			],
-			"actions_out": [],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
 			"toolbar": {
 				"custom": [
 					[
@@ -291,7 +297,7 @@
 								0
 							],
 							"script": [
-								"CC(C)c1ccc(CCl)cc1\nJME 2017-03-21 Fri May 19 14:08:41 GMT+200 2017\n\n 11 11  0  0  0  0  0  0  0  0999 V2000\n    2.4248    3.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4248    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6373    1.4000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.8498    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.8498    3.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6373    4.2000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2125    1.4000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2125    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.0621    4.2000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.2745    3.5000    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  2  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  2  0  0  0  0\n  6  1  1  0  0  0  0\n  2  7  1  0  0  0  0\n  7  8  1  0  0  0  0\n  7  9  1  0  0  0  0\n  5 10  1  0  0  0  0\n 10 11  1  0  0  0  0\nM  END\n"
+								"\nJME 2017-06-18 Fri Jun 30 14:36:59 GMT+200 2017\n\n  0  0  0  0  0  0  0  0  0  0999 V2000\nM  END\n"
 							]
 						}
 					],
@@ -422,7 +428,7 @@
 								0
 							],
 							"script": [
-								"CC(C)c1ccc(CCl)cc1\nJME 2017-03-21 Fri May 19 14:08:41 GMT+200 2017\n\n  0  0  0  0  0  0  0  0  0  0999 V3000\nM  V30 BEGIN CTAB\nM  V30 COUNTS 11 11 0 0 0\nM  V30 BEGIN ATOM\nM  V30 1 C 2.4248 3.5000 0.0000 0\nM  V30 2 C 2.4248 2.1000 0.0000 0\nM  V30 3 C 3.6373 1.4000 0.0000 0\nM  V30 4 C 4.8498 2.1000 0.0000 0\nM  V30 5 C 4.8498 3.5000 0.0000 0\nM  V30 6 C 3.6373 4.2000 0.0000 0\nM  V30 7 C 1.2125 1.4000 0.0000 0\nM  V30 8 C 0.0000 2.1000 0.0000 0\nM  V30 9 C 1.2125 0.0000 0.0000 0\nM  V30 10 C 6.0621 4.2000 0.0000 0\nM  V30 11 Cl 7.2745 3.5000 0.0000 0\nM  V30 END ATOM\nM  V30 BEGIN BOND\nM  V30 1 2 1 2\nM  V30 2 1 2 3\nM  V30 3 2 3 4\nM  V30 4 1 4 5\nM  V30 5 2 5 6\nM  V30 6 1 6 1\nM  V30 7 1 2 7\nM  V30 8 1 7 8\nM  V30 9 1 7 9\nM  V30 10 1 5 10\nM  V30 11 1 10 11\nM  V30 END BOND\nM  V30 END CTAB\nM  END\n"
+								"\nJME 2017-06-18 Fri Jun 30 14:36:59 GMT+200 2017\n\n  0  0  0  0  0  0  0  0  0  0999 V3000\nM  V30 BEGIN CTAB\nM  V30 COUNTS 0 0 0 0 0\nM  V30 BEGIN ATOM\nM  V30 END ATOM\nM  V30 BEGIN BOND\nM  V30 END BOND\nM  V30 END CTAB\nM  END\n"
 							]
 						}
 					],
@@ -553,7 +559,7 @@
 								0
 							],
 							"script": [
-								"11 11 C 11.19 -7.36 C 11.19 -8.76 C 12.40 -9.46 C 13.62 -8.76 C 13.62 -7.36 C 12.40 -6.66 C 9.98 -9.46 C 8.77 -8.76 C 9.98 -10.86 C 14.83 -6.66 Cl 16.04 -7.36 1 2 2 2 3 1 3 4 2 4 5 1 5 6 2 6 1 1 2 7 1 7 8 1 7 9 1 5 10 1 10 11 1"
+								""
 							]
 						}
 					],
@@ -712,12 +718,12 @@
 			"layers": {
 				"Default layer": {
 					"position": {
-						"left": 123,
-						"top": 42
+						"left": 122,
+						"top": 56
 					},
 					"size": {
 						"width": 41,
-						"height": 39
+						"height": 25
 					},
 					"zIndex": 0,
 					"display": true,
@@ -1240,6 +1246,236 @@
 				}
 			],
 			"title": ""
+		},
+		{
+			"url": "modules/types/edition/object_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								"view"
+							],
+							"expanded": [
+								[]
+							],
+							"storeObject": [
+								[
+									"expand"
+								]
+							],
+							"displayValue": [
+								[]
+							],
+							"searchBox": [
+								[
+									"search"
+								]
+							],
+							"sendButton": [
+								[]
+							],
+							"output": [
+								"new"
+							],
+							"storedObject": [
+								"{\"type\":\"mol2d\",\"value\":\"CCc1ccccc1\\nActelion Java MolfileCreator 1.0\\n\\n 18 18  0  0  0  0  0  0  0  0999 V2000\\n    2.4249    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    2.4249    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2124    2.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2124    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.6373    2.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    4.8497    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.0312    0.3500   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2124    3.5000   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n   -0.6062    2.4500   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n   -0.6062    0.3500   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2124   -0.7000   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    4.1273    3.6487   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.1473    3.6487   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    5.6984    1.6100   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    4.3597    1.2513   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n    5.3397    2.9487   -0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\\n  1  2  1  0  0  0  0\\n  2  3  2  0  0  0  0\\n  3  4  1  0  0  0  0\\n  4  5  2  0  0  0  0\\n  5  6  1  0  0  0  0\\n  6  1  2  0  0  0  0\\n  2  7  1  0  0  0  0\\n  7  8  1  0  0  0  0\\n  1  9  1  0  0  0  0\\n  3 10  1  0  0  0  0\\n  4 11  1  0  0  0  0\\n  5 12  1  0  0  0  0\\n  6 13  1  0  0  0  0\\n  7 14  1  1  0  0  0\\n  7 15  1  0  0  0  0\\n  8 16  1  0  0  0  0\\n  8 17  1  0  0  0  0\\n  8 18  1  0  0  0  0\\nM  END\\n\",\"_highlight\":[\"daD@`@fTieZXBB@AD@UHPGBj@\",\"daD@`@fTjUZxHH@A~dHCaU@\",\"daD@`@f\\\\dRTIT@E@@b@JdHCaU@\",\"daD@`@fTiWRh@J@AD@UHPGBj@\",\"daD@`@fTimVz`@@AD@UHPGBj@\",\"daD@`@fTeeVz`@@AD@UHPGBj@\",\"did@`@fTfYUn`HH@GzP`HeT\",\"did@`@f\\\\bbRaih@J@A~dHBIU@\",\"did@`@fTfUvf`@h@GzP`HeT\",\"did@`@fTf[Waj@@bJ@_iB@bUP\",\"did@`@fTeYWaj@@@GzP`HeT\"],\"_atoms\":{\"daD@`@fTieZXBB@AD@UHPGBj@\":[0,2],\"daD@`@fTjUZxHH@A~dHCaU@\":[1],\"daD@`@f\\\\dRTIT@E@@b@JdHCaU@\":[3,5],\"daD@`@fTiWRh@J@AD@UHPGBj@\":[4],\"daD@`@fTimVz`@@AD@UHPGBj@\":[6],\"daD@`@fTeeVz`@@AD@UHPGBj@\":[7],\"did@`@fTfYUn`HH@GzP`HeT\":[8,9],\"did@`@f\\\\bbRaih@J@A~dHBIU@\":[10,12],\"did@`@fTfUvf`@h@GzP`HeT\":[11],\"did@`@fTf[Waj@@bJ@_iB@bUP\":[13,14],\"did@`@fTeYWaj@@@GzP`HeT\":[15,16,17]}}"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 120,
+						"top": 1
+					},
+					"size": {
+						"width": 30,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 10,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onObjectChange",
+					"rel": "output",
+					"jpath": [],
+					"name": "ethylbenzene"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
+		},
+		{
+			"url": "modules/types/science/chemistry/jsme/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook",
+									"nozoom",
+									"useopenchemlib",
+									"depict"
+								]
+							],
+							"defaultaction": [
+								null
+							],
+							"labelsize": [
+								14
+							],
+							"bondwidth": [
+								1
+							],
+							"highlightColor": [
+								"3"
+							],
+							"outputResult": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 123,
+						"top": 22
+					},
+					"size": {
+						"width": 41,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 11,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "ethylbenzene"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"event": "onAtomClicked",
+					"rel": "atom",
+					"jpath": [],
+					"name": "atomClicked"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
 		}
 	],
 	"variables": [
@@ -1271,7 +1507,7 @@
 	"configuration": {
 		"title": "No title"
 	},
-	"version": "2.81.3-0",
+	"version": "2.82.3-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
