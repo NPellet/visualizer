@@ -1,3 +1,14 @@
+<a name="2.82.2"></a>
+## [2.82.2](https://github.com/NPellet/visualizer/compare/v2.82.1...v2.82.2) (2017-06-30)
+
+
+### Bug Fixes
+
+* **Form:** for radio buttons fix form<->data mapping ([64736d1](https://github.com/NPellet/visualizer/commit/64736d1)), closes [#1054](https://github.com/NPellet/visualizer/issues/1054)
+* **Form:** radios need special treatment ([0a83cd5](https://github.com/NPellet/visualizer/commit/0a83cd5)), closes [#1054](https://github.com/NPellet/visualizer/issues/1054)
+
+
+
 <a name="2.82.1"></a>
 ## [2.82.1](https://github.com/NPellet/visualizer/compare/v2.82.0...v2.82.1) (2017-06-26)
 
