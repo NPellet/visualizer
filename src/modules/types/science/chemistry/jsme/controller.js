@@ -256,22 +256,22 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
 
     Controller.prototype.getHighlights = function (atom) {
         var atoms = this.module.view._currentValue._atoms;
-        var highlights=[];
+        var highlights = [];
         for (var key of Object.keys(atoms)) {
             if (atoms[key].includes(atom)) {
                 highlights.push(key);
             }
         }
         return highlights;
-    }
+    };
 
     Controller.prototype.onAtomClick = function (atom) {
-        atom.highlights=this.getHighlights(atom.atom-1);
+        atom.highlights = this.getHighlights(atom.atom - 1);
         this.sendActionFromEvent('onAtomClicked', 'atom', atom);
     };
 
     Controller.prototype.onAtomHover = function (atom) {
-        atom.highlights=this.getHighlights(atom.atom-1);
+        atom.highlights = this.getHighlights(atom.atom - 1);
         this.sendActionFromEvent('onAtomHover', 'atom', atom);
     };
 
