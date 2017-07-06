@@ -23,7 +23,7 @@
         var $sendStats = noop;
         var $moduleName, $moduleBase;
 
-        // Start GWT code 
+        // Start GWT code
 
 var cggl = {};
 var jl = {};
@@ -1761,7 +1761,7 @@ function safeClose(resource, mainException){
       }
       mainException.addSuppressed(e);
     }
-     else 
+     else
       throw toJs($e0);
   }
   return mainException;
@@ -3800,7 +3800,7 @@ jl.getCharset = function getCharset(charsetName){
       e = $e0;
       throw toJs(new ji.UnsupportedEncodingException(charsetName));
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -4181,7 +4181,7 @@ ji2.checkArgument = function checkArgument(expression, errorMessage){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4203,7 +4203,7 @@ ji2.checkArraySize = function checkArraySize(size_0){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4225,7 +4225,7 @@ ji2.checkArrayType = function checkArrayType(expression){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4247,7 +4247,7 @@ ji2.checkArrayType_0 = function checkArrayType_0(expression, errorMessage){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4385,7 +4385,7 @@ ji2.checkElement = function checkElement(expression){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4407,7 +4407,7 @@ ji2.checkElementIndex = function checkElementIndex(index_0, size_0){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4429,7 +4429,7 @@ ji2.checkNotNull_0 = function checkNotNull_0(reference){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4452,7 +4452,7 @@ ji2.checkNotNull_1 = function checkNotNull_1(reference, errorMessage){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4474,7 +4474,7 @@ ji2.checkPositionIndex = function checkPositionIndex(index_0, size_0){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4496,7 +4496,7 @@ ji2.checkPositionIndexes = function checkPositionIndexes(start_0, end, size_0){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4518,7 +4518,7 @@ ji2.checkState = function checkState(expression){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4540,7 +4540,7 @@ ji2.checkState_0 = function checkState_0(expression, errorMessage){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -4562,7 +4562,7 @@ ji2.checkType = function checkType(expression){
         e = $e0;
         throw toJs(new jl.AssertionError_5(e));
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -5285,7 +5285,7 @@ _.mpCalcNextBondOffset = function mpCalcNextBondOffset(atm1, atm2, side, nextBon
   nextBondOffset.y_0 = 0;
   if (side > 0)
     angleDiff = 2.617993878;
-  else 
+  else
     angleDiff = 3.665191429;
   theBondAngle = this.mMol.getBondAngle_0(atm1, atm2);
   for (i = 0; i < this.mMol.getConnAtoms_0(atm1); i++) {
@@ -5293,7 +5293,7 @@ _.mpCalcNextBondOffset = function mpCalcNextBondOffset(atm1, atm2, side, nextBon
     bondAngle = theBondAngle;
     if (this.mMol.getBondAtom_0(0, bnd) == atm1)
       remoteAtm = this.mMol.getBondAtom_0(1, bnd);
-    else 
+    else
       remoteAtm = this.mMol.getBondAtom_0(0, bnd);
     if (remoteAtm == atm2)
       continue;
@@ -5338,7 +5338,7 @@ _.mpCalcPiBondOffset = function mpCalcPiBondOffset(dx, dy, piBondOffset){
   if (dx == 0) {
     if (dy < 0)
       piBondOffset.x_0 = this.mpBondSpacing;
-    else 
+    else
       piBondOffset.x_0 = -this.mpBondSpacing;
     piBondOffset.y_0 = 0;
     return;
@@ -5405,7 +5405,7 @@ _.mpDBFromNonLabelToLabel = function mpDBFromNonLabelToLabel(theLine, bnd, inver
     this.mpHandleLine(aLine, atm1, atm2);
     if (this.mMol.getBondType_0(bnd) == 64)
       this.mpHandleDashedLine(bLine, atm1, atm2);
-    else 
+    else
       this.mpHandleLine(bLine, atm1, atm2);
   }
    else {
@@ -5810,10 +5810,10 @@ _.mpDrawAtom = function mpDrawAtom(atom){
   if (this.mMol.getConnAtoms_0(atom) == 0) {
     if (this.mMol.isElectronegative_0(atom))
       hindrance[3] -= 0.2;
-    else 
+    else
       hindrance[1] -= 0.2;
   }
-   else 
+   else
     hindrance[1] -= 0.1;
   if (jsNotEquals(propStr, null) || jsNotEquals(mapStr, null))
     hindrance[1] += 10;
@@ -6029,7 +6029,7 @@ _.mpDrawBond = function mpDrawBond(bnd){
         this.drawLine(aLine, atom1, atom2);
         if (bondOrder == 2)
           this.drawLine(bLine, atom1, atom2);
-        else 
+        else
           this.drawDashedLine(bLine, atom1, atom2);
       }
        else if ((this.mAtomLabelDisplayed[atom2] || this.mMol.getAtomPi_0(atom2) == 2) && bondOrder == 2) {
@@ -6080,7 +6080,7 @@ _.mpDrawBond = function mpDrawBond(bnd){
         this.mpHandleLine(aLine, atom1, atom2);
         if (bondOrder == 2)
           this.mpHandleLine(bLine, atom1, atom2);
-        else 
+        else
           this.mpHandleDashedLine(bLine, atom1, atom2);
       }
 
@@ -6143,7 +6143,7 @@ _.mpDrawBondQueryFeatures = function mpDrawBondQueryFeatures(){
       if (d != 0) {
         if (dx > 0)
           this.mpDrawString(x_0 + hw * dy / d, y_0 - hh * dx / d, label_0, true);
-        else 
+        else
           this.mpDrawString(x_0 - hw * dy / d, y_0 + hh * dx / d, label_0, true);
       }
     }
@@ -6188,7 +6188,7 @@ _.mpGetAngleESRScore = function mpGetAngleESRScore(angleList, index_0, meanAngle
   score = index_0 == 0?2 * 3.141592653589793 + angleList[0] - angleList[angleList.length - 1]:angleList[index_0] - angleList[index_0 - 1];
   if (meanAngle > -3.141592653589793 * 2 / 3 && meanAngle < 3.141592653589793 / 3)
     score -= 2 * jl.cos_1(meanAngle + 3.141592653589793 / 6);
-  else 
+  else
     score -= 0.5 * jl.cos_1(meanAngle + 3.141592653589793 / 6);
   return score;
 }
@@ -6346,11 +6346,11 @@ _.mpPreferredSide = function mpPreferredSide(bnd){
       value_0 = 20;
     else if (isInRing[i])
       value_0 = 17;
-    else 
+    else
       value_0 = 16;
     if (angle[i] > bondAngle[0] && angle[i] < bondAngle[1])
       side -= value_0;
-    else 
+    else
       side += value_0;
   }
   return changed?-side:side;
@@ -6935,7 +6935,7 @@ _.addObviousAtomCharges = function addObviousAtomCharges(ringSet){
             if (atom == leakAtom) {
               if (ringSize == 5)
                 this.checkAtomTypeLeak5(atom, true);
-              else 
+              else
                 this.checkAtomTypeLeak7(atom, true);
               this.protectAtom(atom);
             }
@@ -8222,7 +8222,7 @@ _.canCalcBINAPParity3D = function canCalcBINAPParity3D(halfParity1, halfParity2)
     return 3;
   if (torsion < 0)
     return 1;
-  else 
+  else
     return 2;
 }
 ;
@@ -8331,7 +8331,7 @@ _.canCalcImplicitAbnormalValence = function canCalcImplicitAbnormalValence(atom)
   if (implicitHigherValence != newImplicitHigherValence) {
     if (explicitAbnormalValence != -1 && explicitAbnormalValence > implicitHigherValence)
       valence = narrow_byte(explicitAbnormalValence);
-    else 
+    else
       valence = narrow_byte(implicitHigherValence);
   }
    else if (explicitAbnormalValence != -1) {
@@ -8955,14 +8955,14 @@ _.canInitializeRanking = function canInitializeRanking(){
     this.mCanBase[atom2].init_0(atom2);
     if ((this.mMol.getAtomQueryFeatures_0(atom2) & 1) != 0 || jsNotEquals(this.mMol.getAtomList_0(atom2), null))
       this.mCanBase[atom2].add_0(8, 6);
-    else 
+    else
       this.mCanBase[atom2].add_0(8, fromInt_0(this.mMol.getAtomicNo_0(atom2)));
     this.mCanBase[atom2].add_0(8, fromInt_0(this.mMol.getAtomMass_0(atom2)));
     this.mCanBase[atom2].add_0(2, fromInt_0(this.mMol.getAtomPi_0(atom2)));
     this.mCanBase[atom2].add_0(4, fromInt_0(this.mMol.getConnAtoms_0(atom2) + this.mMol.getMetalBondedConnAtoms_0(atom2)));
     if ((this.mMol.getAtomQueryFeatures_0(atom2) & 1) != 0)
       this.mCanBase[atom2].add_0(4, 8);
-    else 
+    else
       this.mCanBase[atom2].add_0(4, fromInt_0(8 + this.mMol.getAtomCharge_0(atom2)));
     this.mCanBase[atom2].add_0(5, fromInt_0(jl.min_4(31, this.mMol.getAtomRingSize_0(atom2))));
     this.mCanBase[atom2].add_0(4, fromInt_0(this.canCalcImplicitAbnormalValence(atom2) + 1));
@@ -9386,12 +9386,12 @@ _.cipCalcEZParity = function cipCalcEZParity(bond){
         this.mEZCIPParity[bond] = 3;
         return;
       }
-       else 
+       else
         throw toJs($e0);
     }
     if (this.mEZParity[bond] == 1 ^ invertedOrder)
       this.mEZCIPParity[bond] = 1;
-    else 
+    else
       this.mEZCIPParity[bond] = 2;
   }
 }
@@ -9422,7 +9422,7 @@ _.cipCalcTHParity = function cipCalcTHParity(atom){
           this.mTHCIPParity[atom] = 3;
           return;
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -9437,7 +9437,7 @@ _.cipCalcTHParity = function cipCalcTHParity(atom){
           this.mTHCIPParity[atom] = 3;
           return;
         }
-         else 
+         else
           throw toJs($e1);
       }
       for (i = 1; i < cipConnAtom.length; i++)
@@ -9447,7 +9447,7 @@ _.cipCalcTHParity = function cipCalcTHParity(atom){
     }
     if (this.mTHParity[atom] == 1 ^ invertedOrder)
       this.mTHCIPParity[atom] = 1;
-    else 
+    else
       this.mTHCIPParity[atom] = 2;
   }
 }
@@ -9941,7 +9941,7 @@ _.encodeMapping = function encodeMapping(){
       maxMapNo = this.mMol.getAtomMapNo_0(atom0);
     if (this.mMol.isAutoMappedAtom_0(atom0))
       autoMappingFound = true;
-    else 
+    else
       manualMappingFound = true;
   }
   if (maxMapNo == 0) {
@@ -11671,7 +11671,7 @@ carc2.CanonizerMesoHelper$ESRGroupFragmentMatrix = function CanonizerMesoHelper$
   for (group0 = 0; group0 < this.mGroupCount; group0++) {
     if (this.mMatrix[group0][this$0.mMesoFragmentAtom.length])
       this.mGroupDependence[group0] = -1;
-    else 
+    else
       this.mGroupDependence[group0] = -2;
   }
   for (fragment2 = 0; fragment2 < this$0.mMesoFragmentAtom.length; fragment2++) {
@@ -11680,7 +11680,7 @@ carc2.CanonizerMesoHelper$ESRGroupFragmentMatrix = function CanonizerMesoHelper$
         if (this.mMatrix[group][fragment2] && this.mGroupDependence[group] != fragment2) {
           if (this.mGroupDependence[group] == -2)
             this.mGroupDependence[group] = fragment2;
-          else 
+          else
             this.mGroupDependence[group] = -3;
         }
       }
@@ -11965,7 +11965,7 @@ carc2.getAverageBondLength = function getAverageBondLength(r){
   }
   if (rn > 0)
     return t / rn;
-  else 
+  else
     return 0;
 }
 ;
@@ -12000,7 +12000,7 @@ carc2.getBoundingRect_1 = function getBoundingRect_1(mols){
     if (isNotNull(t)) {
       if (isNull(r))
         r = t;
-      else 
+      else
         r = r.createUnion(carc2.getBoundingRect_0(mols[i]));
     }
   }
@@ -12951,7 +12951,7 @@ _.getValue = function getValue(){
       if (this.mMol.isStereoBond_1(connBond, this.mCentralAxialAtom)) {
         if (this.mMol.getConnAtom_0(this.mCentralAxialAtom, i) == this.mHighConn)
           this.mValue = this.mMol.getBondType_0(connBond) == 17?3:1;
-        else 
+        else
           this.mValue = this.mMol.getBondType_0(connBond) == 17?1:3;
         return this.mValue;
       }
@@ -13030,11 +13030,11 @@ carc2.getAngle = function getAngle(x1, y1, x2, y2){
     if (ydiff < 0) {
       if (xdiff < 0)
         angle -= 3.141592653589793;
-      else 
+      else
         angle += 3.141592653589793;
     }
   }
-   else 
+   else
     angle = xdiff > 0?3.141592653589793 / 2:-3.141592653589793 / 2;
   return angle;
 }
@@ -13307,7 +13307,7 @@ _.addRingToBond_0 = function addRingToBond(bond, ringSize, aromatic){
   for (i = 0; i < angles; i++) {
     if (angle[i] > bondAngle[0] && angle[i] < bondAngle[1])
       side--;
-    else 
+    else
       side++;
   }
   atomNo = side > 0?1 - atomNo:atomNo;
@@ -13325,7 +13325,7 @@ _.addSubstituent_0 = function addSubstituent(substituent, connectionAtom){
   for (atom = 0; atom < substituent.mAllAtoms; atom++) {
     if (substituent.getAtomicNo_0(atom) != 0)
       atomMap[atom] = substituent.copyAtom_0(this, atom, esrGroupCountAND, esrGroupCountOR);
-    else 
+    else
       atomMap[atom] = connectionAtom;
   }
   for (bond = 0; bond < substituent.mAllBonds; bond++) {
@@ -13504,13 +13504,13 @@ _.copyAtom_0 = function copyAtom(destMol, sourceAtom, esrGroupOffsetAND, esrGrou
   if (esrType == 1) {
     if (esrGroupOffsetAND == -1)
       esrGroup = destMol.renumberESRGroups_0(esrType);
-    else 
+    else
       esrGroup = jl.min_4(32, esrGroupOffsetAND + this.getAtomESRGroup_0(sourceAtom));
   }
    else if (esrType == 2) {
     if (esrGroupOffsetOR == -1)
       esrGroup = destMol.renumberESRGroups_0(esrType);
-    else 
+    else
       esrGroup = jl.min_4(32, esrGroupOffsetOR + this.getAtomESRGroup_0(sourceAtom));
   }
   destMol.mAtomicNo[destAtom] = this.mAtomicNo[sourceAtom];
@@ -13557,13 +13557,13 @@ _.copyBond_0 = function copyBond(destMol, sourceBond, esrGroupOffsetAND, esrGrou
   if (esrType == 1) {
     if (esrGroupOffsetAND == -1)
       esrGroup = destMol.renumberESRGroups_0(esrType);
-    else 
+    else
       esrGroup = jl.min_4(32, esrGroupOffsetAND + this.getBondESRGroup_0(sourceBond));
   }
   if (esrType == 2) {
     if (esrGroupOffsetOR == -1)
       esrGroup = destMol.renumberESRGroups_0(esrType);
-    else 
+    else
       esrGroup = jl.min_4(32, esrGroupOffsetOR + this.getBondESRGroup_0(sourceBond));
   }
   destMol.mBondAtom[0][destBond] = destAtom1;
@@ -13644,7 +13644,7 @@ _.deleteAtomOrBond_0 = function deleteAtomOrBond(x_0, y_0){
   if (atom != -1) {
     if ((this.mAtomFlags[atom] & 512) != 0)
       this.deleteSelectedAtoms_0();
-    else 
+    else
       this.deleteAtom_0(atom);
     this.mValidHelperArrays = 0;
     return true;
@@ -13653,7 +13653,7 @@ _.deleteAtomOrBond_0 = function deleteAtomOrBond(x_0, y_0){
   if (bnd != -1) {
     if ((this.mAtomFlags[this.mBondAtom[0][bnd]] & this.mAtomFlags[this.mBondAtom[1][bnd]] & 512) != 0)
       this.deleteSelectedAtoms_0();
-    else 
+    else
       this.deleteBondAndSurrounding_0(bnd);
     this.mValidHelperArrays = 0;
     return true;
@@ -13832,7 +13832,7 @@ _.getAtomCustomLabelBytes = function getAtomCustomLabelBytes(atom){
 _.getAtomESRGroup_0 = function getAtomESRGroup(atom){
   if (this.getAtomESRType_0(atom) != 1 && this.getAtomESRType_0(atom) != 2)
     return -1;
-  else 
+  else
     return (this.mAtomFlags[atom] & 65011712) >> 21;
 }
 ;
@@ -13963,7 +13963,7 @@ _.getBondCIPParity_0 = function getBondCIPParity(bond){
 _.getBondESRGroup_0 = function getBondESRGroup(bond){
   if (this.getBondESRType_0(bond) != 1 && this.getBondESRType_0(bond) != 2)
     return -1;
-  else 
+  else
     return (this.mBondFlags[bond] & 126976) >> 12;
 }
 ;
@@ -14051,19 +14051,19 @@ _.getElectronValenceCorrection_0 = function getElectronValenceCorrection(atom, o
   else if (this.mAtomicNo[atom] == 15 || this.mAtomicNo[atom] == 33) {
     if (occupiedValence - correction - charge <= 3)
       correction += charge;
-    else 
+    else
       correction -= charge;
   }
    else if (this.mAtomicNo[atom] == 16 || this.mAtomicNo[atom] == 34 || this.mAtomicNo[atom] == 52) {
     if (occupiedValence - correction - charge <= 4)
       correction += charge;
-    else 
+    else
       correction -= jl.abs_2(charge);
   }
    else if (this.mAtomicNo[atom] == 17 || this.mAtomicNo[atom] == 35 || this.mAtomicNo[atom] == 53) {
     if (occupiedValence - correction - charge <= 5)
       correction += charge;
-    else 
+    else
       correction -= jl.abs_2(charge);
   }
    else {
@@ -14137,7 +14137,7 @@ _.incrementBondOrder = function incrementBondOrder(bond){
   if (this.mBondType[bond] == 26) {
     if (maxBondOrder == 3)
       this.mBondType[bond] = 4;
-    else 
+    else
       this.mBondType[bond] = startBond;
     this.mValidHelperArrays = 0;
     return true;
@@ -14537,7 +14537,7 @@ _.setAtomColor_0 = function setAtomColor(atom, color_0){
 _.setAtomConfigurationUnknown_0 = function setAtomConfigurationUnknown(atom, u){
   if (u)
     this.mAtomFlags[atom] |= 67108864;
-  else 
+  else
     this.mAtomFlags[atom] &= ~67108864;
   this.mValidHelperArrays &= 3;
 }
@@ -14648,7 +14648,7 @@ _.setAtomMapNo_0 = function setAtomMapNo(atom, mapNo, autoMapped){
 _.setAtomMarker_0 = function setAtomMarker(atom, s){
   if (s)
     this.mAtomFlags[atom] |= 262144;
-  else 
+  else
     this.mAtomFlags[atom] &= ~262144;
 }
 ;
@@ -14667,7 +14667,7 @@ _.setAtomParity_0 = function setAtomParity(atom, parity, isPseudo){
 _.setAtomQueryFeature_0 = function setAtomQueryFeature(atom, feature, value_0){
   if (value_0)
     this.mAtomQueryFeatures[atom] |= feature;
-  else 
+  else
     this.mAtomQueryFeatures[atom] &= ~feature;
   this.mValidHelperArrays = 0;
   this.mIsFragment = true;
@@ -14682,7 +14682,7 @@ _.setAtomRadical_0 = function setAtomRadical(atom, radical){
 _.setAtomSelection_0 = function setAtomSelection(atom, s){
   if (s)
     this.mAtomFlags[atom] |= 512;
-  else 
+  else
     this.mAtomFlags[atom] &= ~512;
 }
 ;
@@ -14730,7 +14730,7 @@ _.setBondAtom_0 = function setBondAtom(no, bond, atom){
 _.setBondBackgroundHiliting_0 = function setBondBackgroundHiliting(bond, s){
   if (s)
     this.mBondFlags[bond] |= 131072;
-  else 
+  else
     this.mBondFlags[bond] &= ~131072;
 }
 ;
@@ -14769,7 +14769,7 @@ _.setBondESR_0 = function setBondESR(bond, type_0, group){
 _.setBondForegroundHiliting_0 = function setBondForegroundHiliting(bond, s){
   if (s)
     this.mBondFlags[bond] |= 262144;
-  else 
+  else
     this.mBondFlags[bond] &= ~262144;
 }
 ;
@@ -14792,7 +14792,7 @@ _.setBondParityUnknownOrNone_0 = function setBondParityUnknownOrNone(bond){
 _.setBondQueryFeature_0 = function setBondQueryFeature(bond, feature, value_0){
   if (value_0)
     this.mBondQueryFeatures[bond] |= feature;
-  else 
+  else
     this.mBondQueryFeatures[bond] &= ~feature;
   this.mValidHelperArrays = 0;
   this.mIsFragment = true;
@@ -15375,7 +15375,7 @@ _.canonizeCharge_0 = function canonizeCharge(allowUnbalancedCharge){
         atom1 = this.mBondAtom[1][bond];
         atom2 = this.mBondAtom[0][bond];
       }
-       else 
+       else
         continue;
       if (this.isMetalAtom_0(atom1) || this.isMetalAtom_0(atom2))
         continue;
@@ -15385,7 +15385,7 @@ _.canonizeCharge_0 = function canonizeCharge(allowUnbalancedCharge){
       this.mAtomCharge[atom2] += 1;
       if (bondOrder == 1)
         this.mBondType[bond] = 2;
-      else 
+      else
         this.mBondType[bond] = 4;
       this.mValidHelperArrays = 0;
     }
@@ -15776,7 +15776,7 @@ _.getAtomPreferredStereoBond_0 = function getAtomPreferredStereoBond(atom){
   this.ensureHelperArrays_0(3);
   if (this.mPi[atom] == 2 && this.mConnAtoms[atom] == 2)
     return this.preferredAlleneStereoBond(atom);
-  else 
+  else
     return this.preferredTHStereoBond(atom);
 }
 ;
@@ -16366,7 +16366,7 @@ _.getSubstituent_0 = function getSubstituent(coreAtom, firstAtom, isMemberAtom, 
   graphAtom = initUnidimensionalArray(cggl.I_classLit, {7:1, 4:1, 1:1}, 5, this.mAllAtoms, 15, 1);
   if (jsEquals(isMemberAtom, null))
     isMemberAtom = initUnidimensionalArray(cggl.Z_classLit, {15:1, 4:1, 1:1}, 5, this.mAllAtoms, 16, 1);
-  else 
+  else
     ju.fill_2(isMemberAtom, false);
   graphAtom[0] = coreAtom;
   graphAtom[1] = firstAtom;
@@ -16444,7 +16444,7 @@ _.getZNeighbour_0 = function getZNeighbour(connAtom, bond){
       if (conn != atom2) {
         if (conn == connAtom)
           found = true;
-        else 
+        else
           other1 = conn;
       }
     }
@@ -16483,7 +16483,7 @@ _.handleHydrogens = function handleHydrogens(){
   var atom, atom1, atom2, bond, bond0, isHydrogenBond, isSimpleHydrogen, lastNonHAtom, lastNonHBond, temp, tempInt;
   isSimpleHydrogen = this.findSimpleHydrogens();
   lastNonHAtom = this.mAllAtoms;
-  do 
+  do
     lastNonHAtom--;
   while (lastNonHAtom >= 0 && isSimpleHydrogen[lastNonHAtom]);
   for (atom = 0; atom < lastNonHAtom; atom++) {
@@ -16492,7 +16492,7 @@ _.handleHydrogens = function handleHydrogens(){
       temp = isSimpleHydrogen[atom];
       isSimpleHydrogen[atom] = isSimpleHydrogen[lastNonHAtom];
       isSimpleHydrogen[lastNonHAtom] = temp;
-      do 
+      do
         lastNonHAtom--;
       while (isSimpleHydrogen[lastNonHAtom]);
     }
@@ -16510,7 +16510,7 @@ _.handleHydrogens = function handleHydrogens(){
       isHydrogenBond[bond0] = true;
   }
   lastNonHBond = this.mAllBonds;
-  do 
+  do
     lastNonHBond--;
   while (lastNonHBond >= 0 && isHydrogenBond[lastNonHBond]);
   for (bond = 0; bond < lastNonHBond; bond++) {
@@ -16525,7 +16525,7 @@ _.handleHydrogens = function handleHydrogens(){
       this.mBondType[bond] = this.mBondType[lastNonHBond];
       this.mBondType[lastNonHBond] = tempInt;
       isHydrogenBond[bond] = false;
-      do 
+      do
         lastNonHBond--;
       while (isHydrogenBond[lastNonHBond]);
     }
@@ -16965,7 +16965,7 @@ _.setAlleneStereoBondFromParity = function setAlleneStereoBondFromParity(atom){
   }
   if (angleDif < 0 ^ this.getAtomParity_0(atom) == 1 ^ highPriorityAtom == preferredAtom)
     this.mBondType[preferredBond] = 17;
-  else 
+  else
     this.mBondType[preferredBond] = 9;
 }
 ;
@@ -17032,7 +17032,7 @@ _.setStereoBondFromAtomParity_0 = function setStereoBondFromAtomParity(atom){
       this.mBondType[this.mConnBond[atom][i3]] = 1;
       if (preferredBond == -1)
         preferredBond = connBond;
-      else 
+      else
         preferredBond = -2;
     }
   }
@@ -17154,7 +17154,7 @@ _.setStereoBondFromBondParity_0 = function setStereoBondFromBondParity(bond){
   }
   if (angleDif < 0 ^ this.getBondParity_0(bond) == 2 ^ highPriorityAtom == preferredAtom)
     this.mBondType[preferredBond] = 17;
-  else 
+  else
     this.mBondType[preferredBond] = 9;
 }
 ;
@@ -17204,7 +17204,7 @@ _.stripSmallFragments_0 = function stripSmallFragments(considerMetalBonds){
     if (instanceOf($e0, 14)) {
       e = $e0;
     }
-     else 
+     else
       throw toJs($e0);
   }
   return atomMap;
@@ -17423,7 +17423,7 @@ _.parse_0 = function parse_0(mol, idcode){
   index_0 = jl.indexOf_I_I__devirtual$(idcode, 32);
   if (index_0 > 0 && index_0 < jl.length__I__devirtual$_0(idcode) - 1)
     this.parse_2(mol, jl.getBytes___B__devirtual$(jl.substring_II_Ljava_lang_String___devirtual$(idcode, 0, index_0)), jl.getBytes___B__devirtual$(jl.substring_I_Ljava_lang_String___devirtual$(idcode, index_0 + 1)));
-  else 
+  else
     this.parse_2(mol, jl.getBytes___B__devirtual$(idcode), null);
 }
 ;
@@ -17979,7 +17979,7 @@ _.parse_2 = function parse_2(mol, idcode, coordinates){
         coordinates = null;
         coordsAre3D = false;
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -18005,7 +18005,7 @@ _.parse_2 = function parse_2(mol, idcode, coordinates){
         e.printStackTrace();
         (jl.$clinit_System() , jl.out_0).println('2D-coordinate creation failed:' + e.toString_0() + ' ' + jl.$create_7(idcode));
       }
-       else 
+       else
         throw toJs($e1);
     }
   }
@@ -18446,7 +18446,7 @@ carc2.MolfileCreator_1 = function MolfileCreator_1(mol, scale, builder){
       this.mBuilder.append_6('  0');
     else if (valence == 0)
       this.mBuilder.append_6(' 15');
-    else 
+    else
       this.appendThreeDigitInt(valence);
     this.mBuilder.append_6('  0  0  0');
     this.appendThreeDigitInt(mol.getAtomMapNo_0(atom4));
@@ -18504,7 +18504,7 @@ carc2.MolfileCreator_1 = function MolfileCreator_1(mol, scale, builder){
         order = 6;
       else if (bondType == (2 | 8))
         order = 7;
-      else 
+      else
         order = 8;
     }
     ringState = mol.getBondQueryFeatures_0(bond) & 96;
@@ -18533,7 +18533,7 @@ carc2.MolfileCreator_1 = function MolfileCreator_1(mol, scale, builder){
           this.mBuilder.append_6('  -');
           charge = -charge;
         }
-         else 
+         else
           this.mBuilder.append_6('   ');
         this.mBuilder.append_2(narrow_char(48 + charge));
       }
@@ -18657,7 +18657,7 @@ carc2.MolfileCreator_1 = function MolfileCreator_1(mol, scale, builder){
           this.appendThreeDigitInt(atom + 1);
           if ((substitution & 4096) != 0)
             this.mBuilder.append_6('   ' + (mol.getAllConnAtoms_0(atom) + 1));
-          else 
+          else
             this.mBuilder.append_6('  -2');
         }
       }
@@ -18692,7 +18692,7 @@ _.appendThreeDigitInt = function appendThreeDigitInt(data_0){
     if (theChar == 0) {
       if (i == 2 || digitFound)
         this.mBuilder.append_2(48);
-      else 
+      else
         this.mBuilder.append_2(32);
     }
      else {
@@ -19125,7 +19125,7 @@ _.interpretV3CollectionLine = function interpretV3CollectionLine(line){
       if (jl.equals_Ljava_lang_Object__Z__devirtual$_2(objectType, 'ATOMS'))
         for (i0 = 0; i0 < list.length; i0++)
           this.mMol.setAtomESR_0(this.getUsedAtomIndex(list[i0]), 0, -1);
-      else 
+      else
         for (i = 0; i < list.length; i++)
           this.mMol.setBondESR_0(this.getUsedBondIndex(list[i]), 0, -1);
     }
@@ -19134,7 +19134,7 @@ _.interpretV3CollectionLine = function interpretV3CollectionLine(line){
       if (jl.equals_Ljava_lang_Object__Z__devirtual$_2(objectType, 'ATOMS'))
         for (i0 = 0; i0 < list.length; i0++)
           this.mMol.setAtomESR_0(this.getUsedAtomIndex(list[i0]), 1, group - 1);
-      else 
+      else
         for (i = 0; i < list.length; i++)
           this.mMol.setBondESR_0(this.getUsedBondIndex(list[i]), 1, group - 1);
     }
@@ -19143,7 +19143,7 @@ _.interpretV3CollectionLine = function interpretV3CollectionLine(line){
       if (jl.equals_Ljava_lang_Object__Z__devirtual$_2(objectType, 'ATOMS'))
         for (i0 = 0; i0 < list.length; i0++)
           this.mMol.setAtomESR_0(this.getUsedAtomIndex(list[i0]), 2, group - 1);
-      else 
+      else
         for (i = 0; i < list.length; i++)
           this.mMol.setBondESR_0(this.getUsedBondIndex(list[i]), 2, group - 1);
     }
@@ -19323,7 +19323,7 @@ _.readMoleculeFromBuffer = function readMoleculeFromBuffer(reader){
         this.TRACE('Warning [readMoleculeFromBuffer]: Unable to interpret counts line\n');
         return false;
       }
-       else 
+       else
         throw toJs($e0);
     }
     if (version == 3) {
@@ -19551,7 +19551,7 @@ _.readMoleculeFromBuffer = function readMoleculeFromBuffer(reader){
       (jl.$clinit_System() , jl.err).println('error reading molfile ' + e);
       return false;
     }
-     else 
+     else
       throw toJs($e1);
   }
   if (this.mDeduceMissingCharges) {
@@ -20102,7 +20102,7 @@ _.getLogP = function getLogP(){
       e.printStackTrace();
       return -999;
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -21187,7 +21187,7 @@ _.getAtomQueryDefaults = function getAtomQueryDefaults(mol, atom){
   if (!mol.isFragment_0()) {
     if (mol.isAromaticAtom_1(atom))
       queryDefaults |= 2;
-    else 
+    else
       queryDefaults |= 4;
     ringBonds = mol.getAtomRingBondCount_0(atom);
     if (ringBonds == 0)
@@ -21196,7 +21196,7 @@ _.getAtomQueryDefaults = function getAtomQueryDefaults(mol, atom){
       queryDefaults |= 8 | 32 | 64;
     else if (ringBonds == 3)
       queryDefaults |= 8 | 16 | 64;
-    else 
+    else
       queryDefaults |= 8 | 16 | 32;
     charge = mol.getAtomCharge_0(atom);
     if (charge == 0)
@@ -21294,7 +21294,7 @@ _.getBondQueryDefaults = function getBondQueryDefaults(mol, bond){
   queryDefaults = 0;
   if (mol.isDelocalizedBond_0(bond) || mol.getBondType_0(bond) == 64)
     queryDefaults |= 8;
-  else 
+  else
     switch (mol.getBondOrder_0(bond)) {
       case 0:
         queryDefaults |= 32;
@@ -21427,7 +21427,7 @@ _.listsOverlap = function listsOverlap(list1, list2){
       return true;
     if (atomicNo1 < atomicNo2)
       i1++;
-    else 
+    else
       i2++;
   }
   return false;
@@ -21596,7 +21596,7 @@ _.tryAddCandidate = function tryAddCandidate(current, highest, i, fragmentAtomUs
       fragmentBondUsed[candidateBond] = true;
       if (fragmentAtomUsed[candidate])
         this.mFragmentGraphIsRingClosure[highest] = true;
-      else 
+      else
         fragmentAtomUsed[candidate] = true;
     }
   }
@@ -21828,7 +21828,7 @@ _.setFragment_2 = function setFragment_1(fragment, index_0){
   this.mFragment = fragment;
   if (jsEquals(index_0, null))
     this.mFragmentIndex = this.createIndex_0(fragment);
-  else 
+  else
     this.mFragmentIndex = index_0;
 }
 ;
@@ -21837,7 +21837,7 @@ _.setMolecule_1 = function setMolecule_0(molecule, index_0){
   this.mMolecule = molecule;
   if (jsEquals(index_0, null))
     this.mMoleculeIndex = this.createIndex_0(molecule);
-  else 
+  else
     this.mMoleculeIndex = index_0;
 }
 ;
@@ -22122,7 +22122,7 @@ _.visitMolAtom = function visitMolAtom(molAtom, molBond){
   if (atomCharge != 0) {
     if (atomCharge > 0)
       this.mSmiAtomStr[currentSmiAtom] += '+';
-    else 
+    else
       this.mSmiAtomStr[currentSmiAtom] += '-';
     if (jl.abs_2(atomCharge) > 1)
       this.mSmiAtomStr[currentSmiAtom] += '' + jl.toString_32(jl.abs_2(atomCharge));
@@ -22298,7 +22298,7 @@ _.correctValenceExceededNitrogen = function correctValenceExceededNitrogen(){
         if (this.mMol.getBondOrder_0(connBond) > 1 && this.mMol.isElectronegative_0(connAtom)) {
           if (this.mMol.getBondType_0(connBond) == 4)
             this.mMol.setBondType_0(connBond, 2);
-          else 
+          else
             this.mMol.setBondType_0(connBond, 1);
           this.mMol.setAtomCharge_0(atom, this.mMol.getAtomCharge_0(atom) + 1);
           this.mMol.setAtomCharge_0(connAtom, this.mMol.getAtomCharge_0(connAtom) - 1);
@@ -22498,7 +22498,7 @@ _.parse_5 = function parse_6(mol, smiles, createCoordinates, readStereoFeatures)
               atomicNo = 35;
               position++;
             }
-             else 
+             else
               atomicNo = 5;
             break;
           case 67:
@@ -22506,7 +22506,7 @@ _.parse_5 = function parse_6(mol, smiles, createCoordinates, readStereoFeatures)
               atomicNo = 17;
               position++;
             }
-             else 
+             else
               atomicNo = 6;
             break;
           case 70:
@@ -23299,13 +23299,13 @@ _.stripStereoInformation_0 = function stripStereoInformation(){
     this.mAtomFlags[atom] &= ~66584576;
     if ((this.mAtomFlags[atom] & 3) != 0)
       this.mAtomFlags[atom] |= 67108864;
-    else 
+    else
       this.mAtomFlags[atom] &= ~67108864;
   }
   for (bond = 0; bond < this.mAllBonds; bond++)
     if ((this.mBondFlags[bond] & 3) != 0 && this.getBondOrder_0(bond) == 2)
       this.mBondType[bond] = 26;
-    else 
+    else
       this.mBondType[bond] &= ~24;
   this.mValidHelperArrays &= ~252;
 }
@@ -23794,7 +23794,7 @@ carcc.getNumberOfHydrogens = function getNumberOfHydrogens(molecule){
   for (iAtom = 0; iAtom < molecule.getAllAtoms_0(); iAtom++) {
     if (molecule.getAtomicNo_0(iAtom) == 1)
       nbHydrogens++;
-    else 
+    else
       nbHydrogens += molecule.getAllHydrogens_0(iAtom);
   }
   return nbHydrogens;
@@ -23872,7 +23872,7 @@ _.addRingFragment = function addRingFragment(ringAtom, ringBond){
   }
   if (ringSize < 8)
     this.createRegularRingFragment(f);
-  else 
+  else
     this.createLargeRingFragment(f, ringAtom, ringBond);
   this.mFragmentList.add(f);
 }
@@ -24700,7 +24700,7 @@ _.joinOverlappingFragments = function joinOverlappingFragments(){
           handlePreferred = commonAtoms == 1 && this.getConnAtoms_1(f1, commonAtom) == 1 && this.getConnAtoms_1(f2, commonAtom) == 1?0:1;
           if (maxF1Priority > maxF2Priority)
             joinPriority = (handlePreferred << 24) + (maxF1Priority << 16) + (maxF2Priority << 8) + commonAtoms;
-          else 
+          else
             joinPriority = (handlePreferred << 24) + (maxF2Priority << 16) + (maxF1Priority << 8) + commonAtoms;
           if (maxJoinPriority < joinPriority) {
             maxJoinPriority = joinPriority;
@@ -24731,7 +24731,7 @@ _.joinOverlappingFragments = function joinOverlappingFragments(){
       this.mFragmentList.remove(maxFragment1);
     else if (maxCommonAtoms == maxFragment2.size_1())
       this.mFragmentList.remove(maxFragment2);
-    else 
+    else
       this.joinFragments(maxFragment1, maxFragment2, maxCommonAtoms);
   }
 }
@@ -24794,7 +24794,7 @@ _.locateCoreFragment = function locateCoreFragment(){
     if (this.mMol.isMarkedAtom_0(atom0)) {
       if (this.mMol.getAllConnAtomsPlusMetalBonds_0(atom0) == 0)
         this.mMol.setAtomMarker_0(atom0, false);
-      else 
+      else
         this.mAtomHandled[atom0] = true;
     }
   }
@@ -24865,7 +24865,7 @@ _.locateFlipBonds = function locateFlipBonds(bondFlipPriority, atomSymRank){
     if (!oneBondEndIsSymmetric) {
       if ((this.mMode & 4) != 0 && this.mMol.isMarkedAtom_0(atom1) && this.mMol.isMarkedAtom_0(atom2))
         bondFlipPriority[bond] = 1;
-      else 
+      else
         bondFlipPriority[bond] = 2;
     }
   }
@@ -25509,11 +25509,11 @@ carcc2.getAngle_0 = function getAngle_0(x1, y1, x2, y2){
     if (ydif < 0) {
       if (xdif < 0)
         angle -= 3.141592653589793;
-      else 
+      else
         angle += 3.141592653589793;
     }
   }
-   else 
+   else
     angle = xdif > 0?3.141592653589793 / 2:-3.141592653589793 / 2;
   return angle;
 }
@@ -25762,7 +25762,7 @@ _.flipOneSide = function flipOneSide(bond){
         if (this.mMol.isMarkedAtom_0(this.mGlobalAtom[i0])) {
           if (isOnSide[this.mGlobalAtom[i0]])
             coreOnSide = true;
-          else 
+          else
             coreOffSide = true;
         }
       }
@@ -26000,7 +26000,7 @@ _.close_0 = function close_0(){
       if (instanceOf($e0, 73)) {
         ioe = $e0;
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -26032,7 +26032,7 @@ _.getMolecule_0 = function getMolecule_0(){
       if (instanceOf($e0, 14)) {
         e = $e0;
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -26064,7 +26064,7 @@ _.updateIDCodeAndCoords = function updateIDCodeAndCoords(){
         this.mIDCode = null;
         this.mCoords = null;
       }
-       else 
+       else
         throw toJs($e0);
     }
     this.mIDCodeUpToDate = true;
@@ -26122,7 +26122,7 @@ _.advanceToNext = function advanceToNext(){
         this.mMolfileBuffer.setLength(0);
         return false;
       }
-       else 
+       else
         throw toJs($e0);
     }
     if (!molfileComplete) {
@@ -26200,7 +26200,7 @@ _.extractAllFieldNames = function extractAllFieldNames(recordsToInspect){
           this.mNoOfRecords = records;
         break;
       }
-       else 
+       else
         throw toJs($e0);
     }
     if (jsEquals(line, null)) {
@@ -26224,7 +26224,7 @@ _.extractAllFieldNames = function extractAllFieldNames(recordsToInspect){
     if (instanceOf($e1, 73)) {
       e = $e1;
     }
-     else 
+     else
       throw toJs($e1);
   }
   this.mFieldName = fieldNameList.toArray_1();
@@ -26365,7 +26365,7 @@ _.assessCLogP = function assessCLogP(mol){
       if (instanceOf($e0, 14)) {
         e = $e0;
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -26390,7 +26390,7 @@ _.getDetail_0 = function getDetail(mol){
         typeCount = castTo(countMap.get(new jl.Long(atomType)), 50);
         if (isNull(typeCount))
           countMap.put(new jl.Long(atomType), new jl.Integer(1));
-        else 
+        else
           countMap.put(new jl.Long(atomType), new jl.Integer(typeCount.intValue() + 1));
       }
        catch ($e0) {
@@ -26399,7 +26399,7 @@ _.getDetail_0 = function getDetail(mol){
           e = $e0;
           errorCount++;
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -26409,7 +26409,7 @@ _.getDetail_0 = function getDetail(mol){
       type_0 = castTo(type$iterator.next_3(), 68);
       if (carcp.sSortedTypeList.contains_2(type_0))
         detail.add_3(countMap.get(type_0) + ' * ' + formatter.format_1(carcp.INCREMENT[carcp.sSortedTypeList.getIndex_0(type_0)]) + ' AtomType: 0x' + toHexString_0(type_0.longValue()), 2);
-      else 
+      else
         detail.add_3('Warning: For atom type 0x' + toHexString_0(type_0.longValue()) + ' (' + countMap.get(type_0) + ' times found) is no increment available.', 2);
     }
   }
@@ -26467,7 +26467,7 @@ carcp.DruglikenessPredictor = function DruglikenessPredictor(){
           e = $e0;
           (jl.$clinit_System() , jl.out_0).println('Unable to initialize DruglikenessPredictor');
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -26725,7 +26725,7 @@ _.getPolarAtomType = function getPolarAtomType(mol, atom){
               return 19;
             }
           }
-           else 
+           else
             return 22;
         }
          else if (mol.getAtomCharge_0(atom) == 1) {
@@ -26735,7 +26735,7 @@ _.getPolarAtomType = function getPolarAtomType(mol, atom){
                 return mol.getAtomCharge_0(mol.getConnAtom_0(atom, i)) < 0?21:24;
             return 23;
           }
-           else 
+           else
             return 25;
         }
       }
@@ -26747,7 +26747,7 @@ _.getPolarAtomType = function getPolarAtomType(mol, atom){
                 case 0:
                   if (mol.getAtomRingSize_0(atom) == 3)
                     return 5;
-                  else 
+                  else
                     return 0;
                 case 1:
                   return 1;
@@ -26761,7 +26761,7 @@ _.getPolarAtomType = function getPolarAtomType(mol, atom){
                 case 0:
                   if (mol.getAtomRingSize_0(atom) == 3)
                     return 7;
-                  else 
+                  else
                     return 6;
                 case 1:
                   return 8;
@@ -26783,7 +26783,7 @@ _.getPolarAtomType = function getPolarAtomType(mol, atom){
                 case 2:
                   if (mol.getConnBondOrder_0(atom, 0) == 2)
                     return this.hasNegativeNeighbour_0(mol, atom)?4:carcp.cTPSAIncrement.length + 1;
-                  else 
+                  else
                     return 12;
               }
 
@@ -26851,7 +26851,7 @@ _.getPolarAtomType = function getPolarAtomType(mol, atom){
         if (mol.isAromaticAtom_1(atom)) {
           if (mol.getConnAtoms_0(atom) == 2)
             return 37;
-          else 
+          else
             return 38;
         }
          else {
@@ -26927,7 +26927,7 @@ _.assessSolubility = function assessSolubility(mol){
       if (instanceOf($e0, 14)) {
         e = $e0;
       }
-       else 
+       else
         throw toJs($e0);
     }
     for (i = 0; i < carcp.cIncrement.length; i++) {
@@ -26959,7 +26959,7 @@ _.getDetail_0 = function getDetail_2(mol){
         if (instanceOf($e0, 14)) {
           e = $e0;
         }
-         else 
+         else
           throw toJs($e0);
       }
       for (i0 = 0; i0 < carcp.cIncrement.length; i0++) {
@@ -27019,7 +27019,7 @@ carcp.ToxicityPredictor = function ToxicityPredictor(){
           e = $e0;
           (jl.$clinit_System() , jl.out_0).println('Error ToxicityPredictor::initialize() ' + e);
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -27110,7 +27110,7 @@ _.readAndSortIDCodeFile = function readAndSortIDCodeFile(file){
       idcode = theReader.readLine();
       if (jsNotEquals(idcode, null))
         molecules.addString(idcode);
-      else 
+      else
         break;
     }
      catch ($e0) {
@@ -27119,7 +27119,7 @@ _.readAndSortIDCodeFile = function readAndSortIDCodeFile(file){
         e = $e0;
         break;
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -27136,7 +27136,7 @@ _.readIDCodeFile = function readIDCodeFile(file){
       idcode = theReader.readLine();
       if (jsNotEquals(idcode, null))
         fragments.add(idcode);
-      else 
+      else
         break;
     }
      catch ($e0) {
@@ -27145,7 +27145,7 @@ _.readIDCodeFile = function readIDCodeFile(file){
         e = $e0;
         break;
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -28292,7 +28292,7 @@ _.onDrop = function onDrop(event_0){
       e = $e0;
       carggv.console_0('Cannot drop molecule: ' + e);
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -28866,7 +28866,7 @@ _.getMode = function getMode(){
 _.getMolFile_0 = function getMolFile(v3){
   if (v3)
     return (new carc2.MolfileV3Creator(this.mMol)).getMolfile();
-  else 
+  else
     return (new carc2.MolfileCreator(this.mMol)).getMolfile();
 }
 ;
@@ -29198,7 +29198,7 @@ _.setMolFile_0 = function setMolFile(molFile){
       e = $e0;
       e.printStackTrace();
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -29237,7 +29237,7 @@ _.setReaction = function setReaction(rxn){
       e = $e0;
       (jl.$clinit_System() , jl.out_0).println('WARNING:' + e);
     }
-     else 
+     else
       throw toJs($e0);
   }
   this.mMode = 1 | 4;
@@ -29286,7 +29286,7 @@ _.setSmiles_0 = function setSmiles(smiles){
       e = $e0;
       e.printStackTrace();
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -29836,7 +29836,7 @@ _.setDisplayMode = function setDisplayMode_2(displayMode){
 _.createDepictor_1 = function createDepictor_1(stereoMolecule, mUseGraphics2D, cfg){
   if (mUseGraphics2D)
     return new carggv.GWTDepictor(stereoMolecule);
-  else 
+  else
     return new carggv.GWTDepictor(stereoMolecule);
 }
 ;
@@ -30435,7 +30435,7 @@ cargge.StructureEditor_1 = function StructureEditor_1(id_0, useSVG, scale){
     toolBarWidth = this.getToolbarWidth();
     if (useSVG)
       this.toolBar = new cargge.SVGToolBarImpl(this.model, scale);
-    else 
+    else
       this.toolBar = new cargge.ToolBarImpl(this.model);
     toolBarElement = castToJso(this.toolBar.createElement_2(this.container, toolBarWidth, height - cargge.TEXTHEIGHT - 5));
     if (!jl.booleanValue__Z__devirtual$(this.viewOnly))
@@ -30578,7 +30578,7 @@ _.createMolecule_0 = function createMolecule_0(idcode, fragment){
     elements = jl.split_Ljava_lang_String___Ljava_lang_String___devirtual$(idcode, ' ');
     if (jsEquals(elements, null) || elements.length == 1)
       p.parse_0(mol, idcode);
-    else 
+    else
       p.parse_1(mol, elements[0], elements[1]);
     mol.setStereoBondsFromParity_0();
   }
@@ -30756,7 +30756,7 @@ _.onPasteString = function onPasteString(s){
       e = $e0;
       carggv.console_0('Parse exception ' + e);
     }
-     else 
+     else
       throw toJs($e0);
   }
   return false;
@@ -30766,7 +30766,7 @@ _.setAtomHightlightCallback = function setAtomHightlightCallback(atomHightlightC
   if (isNotNull(atomHightlightCallback)) {
     this.model.registerAtomHighlightCallback(new cargge.StructureEditor$2(this, atomHightlightCallback));
   }
-   else 
+   else
     this.model.registerAtomHighlightCallback(null);
 }
 ;
@@ -30774,7 +30774,7 @@ _.setBondHightlightCallback = function setBondHightlightCallback(bondHightlightC
   if (isNotNull(bondHightlightCallback)) {
     this.model.registerBondHighlightCallback(new cargge.StructureEditor$3(this, bondHightlightCallback));
   }
-   else 
+   else
     this.model.registerBondHighlightCallback(null);
 }
 ;
@@ -30817,7 +30817,7 @@ _.setIDCode = function setIDCode(idCode){
       if (parts.length > 1) {
         p.parse_1(mol, parts[0], parts[1]);
       }
-       else 
+       else
         p.parse_0(mol, idCode);
       this.model.setValue(mol, true);
     }
@@ -30828,7 +30828,7 @@ _.setIDCode = function setIDCode(idCode){
       e = $e0;
       carggv.println('error setting idcode data ' + e);
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -34131,7 +34131,7 @@ _.handleOK = function handleOK(){
           ignored = $e0;
           ok = false;
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -34148,7 +34148,7 @@ _.handleOK = function handleOK(){
           ignored = $e1;
           ok = false;
         }
-         else 
+         else
           throw toJs($e1);
       }
     }
@@ -34399,7 +34399,7 @@ _.createAtomList = function createAtomList(){
       label_0 = jl.substring_II_Ljava_lang_String___devirtual$(listString, 0, delimiterIndex);
       if (delimiterIndex == jl.length__I__devirtual$_0(listString) - 1)
         listString = '';
-      else 
+      else
         listString = jl.substring_I_Ljava_lang_String___devirtual$(listString, delimiterIndex + 1);
     }
     atomicNo = carc2.getAtomicNoFromLabel(label_0);
@@ -34443,7 +34443,7 @@ _.setInitialStates = function setInitialStates(){
     this.mCBAny.setValue_1(jl.valueOf_16(true));
     this.mLabelAtomList.setText('excluded atoms:');
   }
-   else 
+   else
     this.mLabelAtomList.setText('allowed atoms:');
   this.mTFAtomList.setText(this.mMol.getAtomListString_0(this.mAtom));
   if ((queryFeatures & 2) != 0)
@@ -34582,7 +34582,7 @@ _.setQueryFeatures_0 = function setQueryFeatures_0(atom, atomList){
     queryFeatures |= 1;
     this.mMol.setAtomList_1(atom, atomList, true);
   }
-   else 
+   else
     this.mMol.setAtomList_1(atom, atomList, false);
   if (!this.mMol.isAromaticAtom_1(atom)) {
     if (this.mChoiceArom.getSelectedIndex() == 1)
@@ -34807,7 +34807,7 @@ _.$init_151 = function $init_151(){
 _.onValueChange = function onValueChange(event_0){
   if (jl.booleanValue__Z__devirtual$(castToBoolean(event_0.getValue_1())))
     this.this$01.mLabelAtomList.setText('excluded atoms:');
-  else 
+  else
     this.this$01.mLabelAtomList.setText('allowed atoms:');
 }
 ;
@@ -35121,7 +35121,7 @@ _.onClick = function onClick_4(event_0){
       this.this$01.mComboBoxMaxAtoms.setSelectedIndex(0);
     else if (maxAtoms < minAtoms + itemCount)
       this.this$01.mComboBoxMaxAtoms.setSelectedIndex(maxAtoms - minAtoms);
-    else 
+    else
       this.this$01.mComboBoxMaxAtoms.setSelectedIndex(itemCount - 1);
     this.this$01.mFirstSpanItem = minAtoms;
   }
@@ -36020,7 +36020,7 @@ carggv.renderMolecule = function renderMolecule(idCode, width_0, height){
       if (parts.length > 1) {
         p.parse_1(mol, parts[0], parts[1]);
       }
-       else 
+       else
         p.parse_0(mol, idCode);
       can = new carc2.Canonizer(mol);
       n = can.getIDCode_0();
@@ -36038,7 +36038,7 @@ carggv.renderMolecule = function renderMolecule(idCode, width_0, height){
       e = $e0;
       carggv.println('error setting idcode data ' + e);
     }
-     else 
+     else
       throw toJs($e0);
   }
   return null;
@@ -36105,7 +36105,7 @@ carggv.drawMolecule_0 = function drawMolecule_0(ctx, idcode, width_0, height, di
     elements = jl.split_Ljava_lang_String___Ljava_lang_String___devirtual$(idcode, ' ');
     if (jsEquals(elements, null) || elements.length == 1)
       parser.parse_0(mol, idcode);
-    else 
+    else
       parser.parse_1(mol, elements[0], elements[1]);
     carggv.drawMolecule(ctx, mol, width_0, height, displayMode, atomText);
   }
@@ -38849,7 +38849,7 @@ _.onMouseUp_0 = function onMouseUp_10(evt){
     charge = mol.getAtomCharge_0(theAtom);
     if (this.plus)
       charge++;
-    else 
+    else
       charge--;
     mol.setAtomCharge_0(theAtom, charge);
     return true;
@@ -41695,7 +41695,7 @@ _.onLoadImpl_1 = function onLoadImpl_1(fragment){
           t = $e0;
           reportUncaughtException(t);
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -41929,7 +41929,7 @@ _.loadTerminated = function loadTerminated_0(reason){
           e = $e0;
           lastException = e;
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -42052,7 +42052,7 @@ cggcci.entry0 = function entry0(jsFunction, thisObj, args){
           reportUncaughtException_0(t);
           return cggcci.undefined_0();
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -42305,7 +42305,7 @@ _.tryInstall = function tryInstall(code_0){
       }
       this.onLoadError(new cggcci.AsyncFragmentLoader$HttpInstallFailure(this.url_0, textIntro, e), false);
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -42405,7 +42405,7 @@ cggcci.runScheduledTasks = function runScheduledTasks(tasks, rescheduled){
         e = $e0;
         reportUncaughtException(e);
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -47945,7 +47945,7 @@ _.fireEvent = function fireEvent_0(event_0){
       e = $e0;
       throw toJs(new cgges.UmbrellaException_0(e.getCauses()));
     }
-     else 
+     else
       throw toJs($e0);
   }
    finally {
@@ -48068,7 +48068,7 @@ _.doFire = function doFire(event_0, source){
           }
           causes.add(e);
         }
-         else 
+         else
           throw toJs($e0);
       }
     }
@@ -53492,7 +53492,7 @@ cggucu.tryCommand = function tryCommand(hasWidgets, c){
         }
         caught.add(e);
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
@@ -56044,7 +56044,7 @@ _.getValue_1 = function getValue_7(){
       e = $e0;
       return null;
     }
-     else 
+     else
       throw toJs($e0);
   }
 }
@@ -56836,7 +56836,7 @@ ja.RGBtoHSV = function RGBtoHSV(r, g, b, hsbvals){
     hue = (g - b) / delta;
   else if (g == max_0)
     hue = 2 + (b - r) / delta;
-  else 
+  else
     hue = 4 + (r - g) / delta;
   hue *= 60;
   if (hue < 0)
@@ -57701,7 +57701,7 @@ _.close_0 = function close_3(){
       e = $e0;
       thrown = e;
     }
-     else 
+     else
       throw toJs($e0);
   }
   try {
@@ -57715,7 +57715,7 @@ _.close_0 = function close_3(){
         thrown = e;
       }
     }
-     else 
+     else
       throw toJs($e1);
   }
   if (isNotNull(thrown)) {
@@ -64761,7 +64761,7 @@ jus.lambda$0_0 = function lambda$0_0(throwables_0, runnable_1){
         e = $e0;
         throwables_0.add(e);
       }
-       else 
+       else
         throw toJs($e0);
     }
   }
