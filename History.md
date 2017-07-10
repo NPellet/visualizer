@@ -1,3 +1,13 @@
+<a name="2.82.3"></a>
+## [2.82.3](https://github.com/NPellet/visualizer/compare/v2.82.2...v2.82.3) (2017-07-02)
+
+
+### Features
+
+* **JSME:** Add highlights information in atom action out ([b824608](https://github.com/NPellet/visualizer/commit/b824608))
+
+
+
 <a name="2.82.2"></a>
 ## [2.82.2](https://github.com/NPellet/visualizer/compare/v2.82.1...v2.82.2) (2017-06-30)
 
