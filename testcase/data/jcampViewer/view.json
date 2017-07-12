@@ -1,5 +1,5 @@
 {
-	"version": "2.76.2-0",
+	"version": "2.82.4-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -173,7 +173,9 @@
 											]
 										],
 										"mouseTracking": [
-											[]
+											[
+												"track"
+											]
 										],
 										"selectScatter": [
 											[]
@@ -329,7 +331,10 @@
 			"title": "Untitled",
 			"vars_out": [
 				{
-					"jpath": []
+					"event": "onTrackClick",
+					"rel": "trackData",
+					"jpath": [],
+					"name": "track"
 				}
 			],
 			"actions_out": [
@@ -740,6 +745,125 @@
 					}
 				]
 			}
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"\nvar track=get('track');\n\nconsole.log(window.event);\nconsole.log(track);\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 120,
+						"top": 1
+					},
+					"size": {
+						"width": 41,
+						"height": 53
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "inputValue",
+					"name": "track"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
 		}
 	],
 	"variables": [
@@ -750,7 +874,6 @@
 			]
 		}
 	],
-	"pouchvariables": [],
 	"configuration": {
 		"title": "JCAMP viewer"
 	},
