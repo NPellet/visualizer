@@ -1,3 +1,13 @@
+<a name="2.82.4"></a>
+## [2.82.4](https://github.com/NPellet/visualizer/compare/v2.82.3...v2.82.4) (2017-07-13)
+
+
+### Features
+
+* **slick_grid:** allow to specify column in mimic click action ([1e1432e](https://github.com/NPellet/visualizer/commit/1e1432e))
+
+
+
 <a name="2.82.3"></a>
 ## [2.82.3](https://github.com/NPellet/visualizer/compare/v2.82.2...v2.82.3) (2017-07-02)
 
