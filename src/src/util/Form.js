@@ -147,7 +147,6 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
                         this.checked = false;
                     });
                     this.dom.find(`input[name="${name}"][value="${transform(value)}"]`).each(function () {
-                        console.log(this);
                         this.checked = true;
                     });
                     break;
