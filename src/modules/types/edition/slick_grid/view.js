@@ -1298,7 +1298,8 @@ define([
         //    rowsSelected        A new selection of rows has been made
         //    newRow              A new row has been commited to the input array
         //    scriptChanged       The filter script changed
-        //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering options
+        //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering
+        // options
         _setScript: function (script) {
             this.filterScript = script || '';
             this.hasFilter = this._hasFilter();
@@ -1437,14 +1438,14 @@ define([
                 if (!itemInfo) continue;
                 var item = itemInfo.item;
                 if (_.some(
-                    that._highlighted,
-                    function (k) {
-                        var hl = item._highlight;
-                        if (!Array.isArray(hl)) {
-                            hl = [hl];
-                        }
-                        return hl.indexOf(k) > -1;
-                    })
+                        that._highlighted,
+                        function (k) {
+                            var hl = item._highlight;
+                            if (!Array.isArray(hl)) {
+                                hl = [hl];
+                            }
+                            return hl.indexOf(k) > -1;
+                        })
                 ) {
                     tmp[i] = that.baseCellCssStyle;
                 }
@@ -1753,17 +1754,29 @@ define([
                 }
             },
 
-            selectRow: function (row) {
-                var item = this._findItem(row);
-
+            // TODO: This should be renamed to mimicClickRow
+            // Don't forget to write the migration script
+            selectRow: function (cell) {
+                if (typeof cell === 'number') {
+                    cell = {
+                        row: cell
+                    };
+                }
+                var item = this._findItem(cell.row);
                 if (item && item[this.idPropertyName]) {
                     var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
                     var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
                     item = this.slick.data.getItem();
+                    var column = cell.column;
+                    if (typeof column !== 'number') {
+                        // Find column by id
+                        column = this.slick.columns.findIndex(col => col.id === column);
+                        if (column === -1) column = 0;
+                    }
                     this.module.controller.onClick(dataIdx, item);
                     if (!_.isUndefined(gridRow)) {
                         this.grid.scrollRowToTop(gridRow);
-                        this.grid.setActiveCell(gridRow, 0);
+                        this.grid.setActiveCell(gridRow, column || 0);
                     }
 
                 }
