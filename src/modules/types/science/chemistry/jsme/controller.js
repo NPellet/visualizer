@@ -255,7 +255,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
     };
 
     Controller.prototype.getHighlights = function (atom) {
-        if (!  this.module.view._currentValue) return;
+        if (!this.module.view._currentValue) return;
         var atoms = this.module.view._currentValue._atoms;
         var highlights = [];
         for (var key of Object.keys(atoms)) {
