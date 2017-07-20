@@ -1,5 +1,5 @@
 {
-	"version": "2.82.4-0",
+	"version": "2.82.5-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -339,7 +339,10 @@
 			],
 			"actions_out": [
 				{
-					"jpath": []
+					"event": "onTrackClick",
+					"rel": "mouseEvent",
+					"jpath": [],
+					"name": "event"
 				}
 			],
 			"toolbar": {
@@ -796,7 +799,126 @@
 					},
 					"size": {
 						"width": 41,
-						"height": 53
+						"height": 24
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "inputValue",
+					"name": "track"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"console.log(this.action);\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 120,
+						"top": 30
+					},
+					"size": {
+						"width": 41,
+						"height": 34
 					},
 					"zIndex": 0,
 					"display": true,
@@ -814,13 +936,13 @@
 			},
 			"id": 7,
 			"vars_in": [
-				{
-					"rel": "inputValue",
-					"name": "track"
-				}
+				{}
 			],
 			"actions_in": [
-				{}
+				{
+					"rel": "execute",
+					"name": "event"
+				}
 			],
 			"vars_out": [
 				{
