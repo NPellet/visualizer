@@ -20,10 +20,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
         // A GC can have more than 1 serie
         this.gcData = null;
+        this.gcTimes = null;
         this.gcSerie = null;
         this.msSerieMouseTrack = null;
 
         this.gcDataRO = null;
+        this.gcTimesRO = null;
         this.gcSerieRO = null;
         this.msSerieMouseTrackRO = null;
 
@@ -471,18 +473,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
 
             for (i = indexMin; i <= indexMax; i++) {
-
-                for (j = 0, l = that.msData[i].length; j < l; j += 2) {
-
-                    floor = Math.floor(that.msData[i][j] + 0.3);
-
+                for (j = 0, l = that.msData[i][0].length; j < l; j++) {
+                    floor = Math.floor(that.msData[i][0][j] + 0.3);
                     if (obj[floor]) {
-
-                        obj[floor] += that.msData[i][j + 1];
-
+                        obj[floor] += that.msData[i][1][j];
                     } else {
-
-                        obj[floor] = that.msData[i][j + 1];
+                        obj[floor] = that.msData[i][1][j];
                         allMs.push(floor);
                     }
                 }
@@ -652,6 +648,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.gcSerie.kill();
             this.gcSerie = null;
             this.gcData = null;
+            this.gcTimes = null;
 
             if (this.msSerieMouseTrack) {
                 this.msSerieMouseTrack.kill(true);
@@ -665,6 +662,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.gcSerieRO.kill();
             this.gcSerieRO = null;
             this.gcDataRO = null;
+            this.gcTimesRO = null;
 
             if (this.msSerieMouseTrackRO) {
                 this.msSerieMouseTrackRO.kill(true);
@@ -673,7 +671,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         },
 
         setGC: function (chromatogram) {
-            var serie;
             var that = this;
 
             if (!this.gcGraph) {
@@ -682,25 +679,30 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.blank();
 
-            for (var i in chromatogram) {
-                serie = this.gcGraph.newSerie('gc', {
-                    useSlots: false,
-                    lineColor: this.options.mainColor
-                }).autoAxis().setData(chromatogram[i]).XIsMonotoneous();
-                serie.setLineWidth(1, 'selected');
-                this.gcGraph.selectSerie(serie);
+            for (var serieName in chromatogram.series) {
+                if (serieName !== 'ms') {
+                    var serie = this.gcGraph.newSerie('gc', {
+                        useSlots: false,
+                        lineColor: this.options.mainColor
+                    }).autoAxis().setData({
+                        x: chromatogram.times,
+                        y: chromatogram.series[serieName].data
+                    }).XIsMonotoneous();
+                    serie.setLineWidth(1, 'selected');
+                    this.gcGraph.selectSerie(serie);
 
-                var axis = this.gcGraph.getBottomAxis();
-                var from = axis.getCurrentMin();
-                var to = axis.getCurrentMax();
+                    var axis = this.gcGraph.getBottomAxis();
+                    var from = axis.getCurrentMin();
+                    var to = axis.getCurrentMax();
 
-                this.trigger('onZoomGC', [from, to]);
+                    this.trigger('onZoomGC', [from, to]);
 
+                    this.gcData = chromatogram.series[serieName].data;
+                    this.gcTimes = chromatogram.times;
+                    this.gcSerie = serie;
 
-                this.gcData = chromatogram[i];
-                this.gcSerie = serie;
-
-                break;
+                    break;
+                }
             }
 
             this.aucs.map(function (auc) {
@@ -718,24 +720,30 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.gcGraph.drawSeries();
         },
 
-        setGCRO(gc) {
+        setGCRO(chromatogram) {
             if (!this.gcGraph) {
                 return;
             }
 
             this.blankRO();
 
-            for (var i in gc) {
-                var serie = this.gcGraph.newSerie('gcro', {
-                    useSlots: false,
-                    selectable: false,
-                    lineColor: this.options.roColor
-                }).autoAxis().setData(gc[i]).XIsMonotoneous();
+            for (var serieName in chromatogram.series) {
+                if (serieName !== 'ms') {
+                    var serie = this.gcGraph.newSerie('gcro', {
+                        useSlots: false,
+                        selectable: false,
+                        lineColor: this.options.roColor
+                    }).autoAxis().setData({
+                        x: chromatogram.times,
+                        y: chromatogram.series[serieName].data
+                    }).XIsMonotoneous();
 
-                this.gcDataRO = gc[i];
-                this.gcSerieRO = serie;
+                    this.gcDataRO = chromatogram.series[serieName].data;
+                    this.gcTimesRO = chromatogram.times;
+                    this.gcSerieRO = serie;
 
-                break;
+                    break;
+                }
             }
 
             this.gcGraph.autoscaleAxes();
@@ -746,13 +754,13 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         setMS: function (ms) {
             var minX = Infinity;
             var maxX = -Infinity;
-            for (var i = 0; i < ms.length; i++) {
-                for (var j = 0; j < ms[i].length; j += 2) {
-                    if (ms[i][j] > maxX) {
-                        maxX = ms[i][j];
+            for (var t = 0; t < ms.length; t++) {
+                for (var m = 0; m < ms[t][0].length; m++) {
+                    if (ms[t][0][m] > maxX) {
+                        maxX = ms[t][0][m];
                     }
-                    if (ms[i][j] < minX) {
-                        minX = ms[i][j];
+                    if (ms[t][0][m] < minX) {
+                        minX = ms[t][0][m];
                     }
                 }
             }
@@ -805,7 +813,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                     .autoAxis();
             }
 
-            var xVal = this.gcData ? this.gcData[x * 2] : this.gcDataRO[x * 2];
+            var xVal = this.gcTimes ? this.gcTimes[x] : this.gcTimesRO[x];
 
             var trackData = this.trackingLineGC.getProperties();
             trackData.position[0].x = xVal;
@@ -818,11 +826,17 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
 
             if (ms) {
-                this.msSerieMouseTrack.setData(ms);
+                this.msSerieMouseTrack.setData({
+                    x: ms[0],
+                    y: ms[1]
+                });
             }
 
             if (msro) {
-                this.msSerieMouseTrackRO.setData(msro);
+                this.msSerieMouseTrackRO.setData({
+                    x: msro[0],
+                    y: msro[1]
+                });
             }
 
             if (this.firstMsSerie) {
@@ -843,36 +857,5 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         }
     };
 
-    function parseToGCMS(chromatogram) {
-        var series = {};
-        var ms = [];
-        var serie;
-        for (serie in chromatogram.series) {
-            if ((serie !== 'ms') && (chromatogram.series[serie].dimension === 1)) {
-                series[serie] = [];
-            }
-        }
-
-        for (var i = 0; i < chromatogram.times.length; i++) {
-            for (serie in series) {
-                series[serie].push(chromatogram.times[i]);
-                series[serie].push(chromatogram.series[serie].data[i]);
-            }
-
-            var merge = [];
-            for (var m = 0; m < chromatogram.series.ms.data[i][0].length; m++) {
-                merge.push(chromatogram.series.ms.data[i][0][m]);
-                merge.push(chromatogram.series.ms.data[i][1][m]);
-            }
-            ms.push(merge);
-        }
-
-        return {
-            gc: series,
-            ms: ms
-        };
-    }
-
-    return {GCMS, parseToGCMS};
-
+    return GCMS;
 });

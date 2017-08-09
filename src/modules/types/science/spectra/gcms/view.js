@@ -45,7 +45,7 @@ define([
             var aucColor = getConfig('auccolor');
             var autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)');
 
-            this.gcmsInstance = new GCMS.GCMS(this.div1, this.div2, {
+            this.gcmsInstance = new GCMS(this.div1, this.div2, {
                 gcSize: this.module.getConfiguration('gcsize'),
                 mainColor: getConfig('maincolor'),
                 roColor: getConfig('rocolor'),
@@ -97,14 +97,13 @@ define([
                 moduleValue = String(moduleValue.get());
                 Converter.convert(moduleValue, {chromatogram: true}, true).then((jcamp) => {
                     if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
-                        var gcms = GCMS.parseToGCMS(jcamp.chromatogram);
-                        this.gcmsInstance.setGC(gcms.gc);
-                        this.gcmsInstance.setMS(gcms.ms);
+                        this.gcmsInstance.setGC(jcamp.chromatogram);
+                        this.gcmsInstance.setMS(jcamp.chromatogram.series.ms.data);
 
-                        this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', gcms.gc);
-                        this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', gcms.ms);
+                        this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.chromatogram.series.ms.data);
+                        this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.chromatogram);
 
-                        this.jcamp = gcms;
+                        this.jcamp = jcamp.chromatogram;
                     }
                 });
             },
@@ -113,9 +112,8 @@ define([
                 moduleValue = String(moduleValue.get());
                 Converter.convert(moduleValue, {chromatogram: true}, true).then((jcamp) => {
                     if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
-                        var gcms = GCMS.parseToGCMS(jcamp.chromatogram);
-                        this.gcmsInstance.setGCRO(gcms.gc);
-                        this.gcmsInstance.setMSRO(gcms.ms);
+                        this.gcmsInstance.setGCRO(jcamp.chromatogram);
+                        this.gcmsInstance.setMSRO(jcamp.chromatogram.series.ms.data);
                     }
                 });
             },
