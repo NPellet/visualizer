@@ -1,5 +1,5 @@
 {
-	"version": "2.61.1-0",
+	"version": "2.82.5-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -162,8 +162,8 @@
 						"top": 0
 					},
 					"size": {
-						"width": 223,
-						"height": 125
+						"width": 113,
+						"height": 76
 					},
 					"zIndex": 0,
 					"display": true,
@@ -245,9 +245,6 @@
 			]
 		}
 	],
-	"pouchvariables": [
-		{}
-	],
 	"configuration": {
 		"title": "2D spectra Demo"
 	},
@@ -264,24 +261,6 @@
 							null
 						]
 					}
-				]
-			}
-		}
-	],
-	"crons": [
-		{}
-	],
-	"couch_replication": [
-		{
-			"sections": {},
-			"groups": {
-				"couch": [
-					[
-						{
-							"direction": "both",
-							"continuous": []
-						}
-					]
 				]
 			}
 		}
