@@ -7,15 +7,9 @@ define([
     'lib/gcms/gcms',
     'jcampconverter',
     'src/util/color'
-], function ($,
-        Default,
-        Traversing,
-        GCMS,
-        Converter,
-        Color) {
+], function ($, Default, Traversing, GCMS, Converter, Color) {
 
-    function View() {
-    }
+    function View() {}
 
     $.extend(true, View.prototype, Default, {
 
@@ -51,7 +45,7 @@ define([
             var aucColor = getConfig('auccolor');
             var autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)');
 
-            this.gcmsInstance = new GCMS(this.div1, this.div2, {
+            this.gcmsInstance = new GCMS.GCMS(this.div1, this.div2, {
                 gcSize: this.module.getConfiguration('gcsize'),
                 mainColor: getConfig('maincolor'),
                 roColor: getConfig('rocolor'),
@@ -101,25 +95,27 @@ define([
         update: {
             jcamp: function (moduleValue) {
                 moduleValue = String(moduleValue.get());
-                Converter.convert(moduleValue, true).then((jcamp) => {
-                    if (jcamp.gcms) {
-                        this.gcmsInstance.setGC(jcamp.gcms.gc);
-                        this.gcmsInstance.setMS(jcamp.gcms.ms);
+                Converter.convert(moduleValue, {chromatogram: true}, true).then((jcamp) => {
+                    if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
+                        var gcms = GCMS.parseToGCMS(jcamp.chromatogram);
+                        this.gcmsInstance.setGC(gcms.gc);
+                        this.gcmsInstance.setMS(gcms.ms);
 
-                        this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.gcms.ms);
-                        this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.gcms.gc);
+                        this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', gcms.gc);
+                        this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', gcms.ms);
 
-                        this.jcamp = jcamp;
+                        this.jcamp = gcms;
                     }
                 });
             },
 
             jcampRO: function (moduleValue) {
                 moduleValue = String(moduleValue.get());
-                Converter.convert(moduleValue, true).then((jcamp) => {
-                    if (jcamp.gcms) {
-                        this.gcmsInstance.setGCRO(jcamp.gcms.gc);
-                        this.gcmsInstance.setMSRO(jcamp.gcms.ms);
+                Converter.convert(moduleValue, {chromatogram: true}, true).then((jcamp) => {
+                    if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
+                        var gcms = GCMS.parseToGCMS(jcamp.chromatogram);
+                        this.gcmsInstance.setGCRO(gcms.gc);
+                        this.gcmsInstance.setMSRO(gcms.ms);
                     }
                 });
             },

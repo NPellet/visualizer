@@ -98,9 +98,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 },
 
                 onAnnotationUnselect: function (annot) {
-
                     that.killMsFromAUC();
-
                 },
                 onMouseMoveData: function (e, val) {
                     if (that.lockTrackingLine) {
@@ -302,7 +300,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.gcGraph.on('click', function (e) {
                 e = e[3];
-                if (e.target.nodeName == 'path' || e.target.nodeName == 'text') {
+                if (e.target.nodeName === 'path' || e.target.nodeName === 'text') {
                     return;
                 }
 
@@ -334,7 +332,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.gcGraph.on('shapeSelect', function (shape) {
                 var data = shape.getProperties();
-                if (data.type == 'areaundercurve') {
+                if (data.type === 'areaundercurve') {
                     that.trigger('AUCSelected', data);
                 }
             });
@@ -468,7 +466,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             var floor;
             var finalMs = [];
 
-            if (indexMax == indexMin) {
+            if (indexMax === indexMin) {
                 return;
             }
 
@@ -497,8 +495,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 finalMs.push(Math.round(obj[allMs[i]] / Math.abs(indexMax - indexMin)));
             }
 
+            var buffer;
             if (this.options.onlyOneMS) {
-                var buffer = that;
+                buffer = that;
 
                 if (this.extMS) {
                     this.extMS.kill(true);
@@ -506,11 +505,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 }
 
             } else {
-                var buffer = shape;
+                buffer = shape;
             }
 
             if (!buffer.msFromAucSerie) {
-
                 buffer.msFromAucSerie = this
                     .msGraph
                     .newSerie('fromAUC', {
@@ -674,9 +672,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             }
         },
 
-        setGC: function (gc) {
-            var serie,
-                that = this;
+        setGC: function (chromatogram) {
+            var serie;
+            var that = this;
 
             if (!this.gcGraph) {
                 return;
@@ -684,12 +682,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
             this.blank();
 
-            for (var i in gc) {
-
+            for (var i in chromatogram) {
                 serie = this.gcGraph.newSerie('gc', {
                     useSlots: false,
                     lineColor: this.options.mainColor
-                }).autoAxis().setData(gc[i]).XIsMonotoneous();
+                }).autoAxis().setData(chromatogram[i]).XIsMonotoneous();
                 serie.setLineWidth(1, 'selected');
                 this.gcGraph.selectSerie(serie);
 
@@ -700,7 +697,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                 this.trigger('onZoomGC', [from, to]);
 
 
-                this.gcData = gc[i];
+                this.gcData = chromatogram[i];
                 this.gcSerie = serie;
 
                 break;
@@ -846,6 +843,36 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         }
     };
 
-    return GCMS;
+    function parseToGCMS(chromatogram) {
+        var series = {};
+        var ms = [];
+        var serie;
+        for (serie in chromatogram.series) {
+            if ((serie !== 'ms') && (chromatogram.series[serie].dimension === 1)) {
+                series[serie] = [];
+            }
+        }
+
+        for (var i = 0; i < chromatogram.times.length; i++) {
+            for (serie in series) {
+                series[serie].push(chromatogram.times[i]);
+                series[serie].push(chromatogram.series[serie].data[i]);
+            }
+
+            var merge = [];
+            for (var m = 0; m < chromatogram.series.ms.data[i][0].length; m++) {
+                merge.push(chromatogram.series.ms.data[i][0][m]);
+                merge.push(chromatogram.series.ms.data[i][1][m]);
+            }
+            ms.push(merge);
+        }
+
+        return {
+            gc: series,
+            ms: ms
+        };
+    }
+
+    return {GCMS, parseToGCMS};
 
 });

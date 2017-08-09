@@ -45,7 +45,7 @@
     "babel-preset-env": "^1.6.0",
     "bower": "^1.7.9",
     "conventional-changelog": "^1.1.0",
-    "documentation": "^4.0.0-rc.1",
+    "documentation": "^4.0.0",
     "eslint": "^4.3.0",
     "eslint-config-cheminfo": "^1.8.0",
     "eslint-plugin-no-only-tests": "^2.0.0",
