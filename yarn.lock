@@ -3615,7 +3615,7 @@ just-compare@^1.1.19:
   version "1.1.21"
   resolved "https://registry.yarnpkg.com/just-compare/-/just-compare-1.1.21.tgz#e69cc106c68ac50aeb99cafe5f436d44d76f27af"
 
-katex@^0.7.0:
+katex@^0.7.0, katex@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/katex/-/katex-0.7.1.tgz#06bb5298efad05e1e7228035ba8e1591f3061b8f"
   dependencies:
@@ -4079,6 +4079,12 @@ nanomatch@^1.2.0:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+
+node-jsgraph@2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/node-jsgraph/-/node-jsgraph-2.0.9.tgz#c09733671fd43f68ff084a6728ffbab2970b2408"
+  dependencies:
+    katex "^0.7.1"
 
 node-pre-gyp@^0.6.36:
   version "0.6.36"

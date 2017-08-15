@@ -591,6 +591,8 @@ define([
                     var serieLabel = aData.label || serieName;
 
                     var valFinal = [];
+                    var valFinalX = [];
+                    var valFinalY = [];
 
                     switch (String(aData.type)) {
                         case 'zone':
@@ -607,10 +609,11 @@ define([
                         default:
                             if (aData.y) {
                                 for (var j = 0, l = aData.y.length; j < l; j++) {
-                                    valFinal.push(aData.x ? aData.x[j] : j);
-                                    valFinal.push(aData.y[j]);
+                                    valFinalX.push(aData.x ? aData.x[j] : j);
+                                    valFinalY.push(aData.y[j]);
                                 }
                             }
+
                             break;
                     }
 
@@ -622,10 +625,18 @@ define([
                     }
                     var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), serieType);
 
-                    serie.setLabel(serieLabel);
+console.log( valFinalX, valFinalY, serieType );
 
-                    this.normalize(valFinal, varname);
-                    serie.setData(valFinal);
+                    serie.setLabel(serieLabel);
+//                    this.normalize(valFinal, varname);
+
+                    if( serieType == 'line' || serieType == undefined ) { // jsGraph 2.0
+                        var wave = Graph.newWaveform( );
+                        wave.setData( valFinalY, valFinalX );    
+                        serie.setWaveform( wave );
+                    } else {
+                        serie.setData( valFinal );
+                    }
 
                     if (hasColor) {
                         let colors = aData.color;
@@ -661,6 +672,7 @@ define([
             },
 
             xyArray(moduleValue, varname) {
+                return;
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -672,8 +684,13 @@ define([
 
                 var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val));
 
-                this.normalize(val, varname);
-                serie.setData(val);
+//                this.normalize(val, varname);
+            
+                var wave = Graph.newWaveform();
+                wave.setData(val[ 1 ], val[ 0 ]);
+                serie.setWaveform( wave );
+
+
                 this.setSerieParameters(serie, varname);
 
                 this.series[varname].push(serie);
@@ -682,6 +699,8 @@ define([
 
             // in fact it is a Y array ...
             xArray(moduleValue, varname) {
+return;
+                // Use wave.rescaleX( offset, shift );
                 var val = moduleValue.get();
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
@@ -689,15 +708,15 @@ define([
                 var minX = this.module.getConfiguration('minX', 0);
                 var maxX = this.module.getConfiguration('maxX', val.length - 1);
                 var step = (maxX - minX) / (val.length - 1);
-                var val2 = [];
+                var valX = [], valY = [];
                 for (var i = 0, l = val.length; i < l; i++) {
-                    val2.push(minX + step * i);
-                    val2.push(val[i]);
+                    valX.push(minX + step * i);
+                    valY.push(val[i]);
                 }
 
                 var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val2));
 
-                this.normalize(val2, varname);
+//                this.normalize(val2, varname);
 
                 serie.setData(val2);
                 this.setSerieParameters(serie, varname);
