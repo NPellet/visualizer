@@ -538,17 +538,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                     options: {slots: ''},
                                     default: []
                                 },
-                                degrade: {
+                                /*degrade: {
                                     type: 'float',
                                     title: 'Degrade serie (px/pt)',
                                     default: 0
                                 },
-                                monotoneous: {
-                                    type: 'checkbox',
-                                    title: 'X is monotoneous',
-                                    options: {yes: ''},
-                                    default: []
-                                },
+                                */
                                 tracking: {
                                     type: 'checkbox',
                                     title: 'Display tracking info',

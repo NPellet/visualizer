@@ -492,9 +492,6 @@ define([
                             }]);
                         }
 
-                        if (plotinfos[i].monotoneous && plotinfos[i].monotoneous[0]) {
-                            serie.XIsMonotoneous();
-                        }
 
                         if (plotinfos[i].degrade) {
                             serie.degrade(plotinfos[i].degrade);
