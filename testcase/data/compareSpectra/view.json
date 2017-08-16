@@ -1,5 +1,5 @@
 {
-  "version": "2.53.5-0",
+  "version": "2.82.5-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -122,8 +122,13 @@
               "execOnLoad": [
                 []
               ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
-                "var molfile = API.getData('molfile');\nif (!molfile) return;\n\nsuperagent\n    .post('https://script.epfl.ch/script/Service/20160510/vDpGux3hsy')\n    .type('form')\n    .send({molfile: String(molfile.get())})\n    .then(result => {\n        API.createData('jcamp' + this.button, result.body.jcamp);\n    });\n"
+                "var molfile = API.getData('molfile');\nif (!molfile) return;\n\nvar result = await superagent\n    .post('https://script.epfl.ch/script/Service/20160510/vDpGux3hsy')\n    .type('form')\n    .send({molfile: String(molfile.get())});\n    \n    \nAPI.createData('jcamp' + this.button, result.body.jcamp);\n"
               ]
             }
           ],
@@ -139,15 +144,18 @@
             [
               {
                 "name": "1",
-                "label": "Simulate 1"
+                "label": "Simulate 1",
+                "hide": []
               },
               {
                 "name": "2",
-                "label": "Simulate 2"
+                "label": "Simulate 2",
+                "hide": []
               },
               {
                 "name": "3",
-                "label": "Simulate 3"
+                "label": "Simulate 3",
+                "hide": []
               }
             ]
           ]
@@ -160,8 +168,8 @@
             "top": 0
           },
           "size": {
-            "width": 61,
-            "height": 48
+            "width": 67,
+            "height": 24
           },
           "zIndex": 0,
           "display": true,
@@ -190,7 +198,11 @@
           "jpath": []
         }
       ],
-      "actions_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -211,7 +223,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/science/spectra/spectra_displayer/",
@@ -240,6 +262,12 @@
                     ],
                     "legend": [
                       "bottom"
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
                     ],
                     "mouseTracking": [
                       []
@@ -331,6 +359,8 @@
                   [
                     {
                       "variable": "jcamp1",
+                      "axis": "0",
+                      "adaptTo": "none",
                       "plotcolor": [
                         255,
                         1,
@@ -347,10 +377,13 @@
                       "normalize": "none",
                       "optimizeSlots": [],
                       "degrade": 0,
-                      "monotoneous": []
+                      "monotoneous": [],
+                      "tracking": []
                     },
                     {
                       "variable": "jcamp2",
+                      "axis": "0",
+                      "adaptTo": "none",
                       "plotcolor": [
                         1,
                         1,
@@ -367,10 +400,13 @@
                       "normalize": "none",
                       "optimizeSlots": [],
                       "degrade": 0,
-                      "monotoneous": []
+                      "monotoneous": [],
+                      "tracking": []
                     },
                     {
                       "variable": "jcamp3",
+                      "axis": "0",
+                      "adaptTo": "none",
                       "plotcolor": [
                         1,
                         255,
@@ -387,7 +423,8 @@
                       "normalize": "none",
                       "optimizeSlots": [],
                       "degrade": 0,
-                      "monotoneous": []
+                      "monotoneous": [],
+                      "tracking": []
                     }
                   ]
                 ]
@@ -400,16 +437,16 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 115,
-            "top": 0
+            "left": 53,
+            "top": 25
           },
           "size": {
             "width": 67,
-            "height": 48
+            "height": 30
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "superposition without optimisation",
           "bgColor": [
             255,
             255,
@@ -439,7 +476,7 @@
       "actions_in": [
         {}
       ],
-      "title": "",
+      "title": "superposition without optimisation",
       "actions_out": [
         {
           "jpath": []
@@ -470,12 +507,317 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "x"
+                    ],
+                    "wheelAction": [
+                      "zoomY"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      "bottom"
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      [
+                        "yes"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display",
+                        "flip"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      []
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "jcamp1",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        255,
+                        1,
+                        16,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [
+                        "slots"
+                      ],
+                      "degrade": 0,
+                      "monotoneous": [
+                        "yes"
+                      ],
+                      "tracking": []
+                    },
+                    {
+                      "variable": "jcamp2",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [
+                        "slots"
+                      ],
+                      "degrade": 0,
+                      "monotoneous": [
+                        "yes"
+                      ],
+                      "tracking": []
+                    },
+                    {
+                      "variable": "jcamp3",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        255,
+                        1,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [
+                        "slots"
+                      ],
+                      "degrade": 0,
+                      "monotoneous": [
+                        "yes"
+                      ],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 53,
+            "top": 56
+          },
+          "size": {
+            "width": 67,
+            "height": 30
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "superposition with X monotonous and slots",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "jcamp1"
+        },
+        {
+          "rel": "jcamp",
+          "name": "jcamp2"
+        },
+        {
+          "rel": "jcamp",
+          "name": "jcamp3"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "superposition with X monotonous and slots",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     }
   ],
   "variables": [],
   "aliases": [],
-  "pouchvariables": [],
   "configuration": {
     "title": "No title"
   }
