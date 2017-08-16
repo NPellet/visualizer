@@ -1,5 +1,5 @@
 {
-  "version": "2.82.4",
+  "version": "2.82.5-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -1428,7 +1428,7 @@
                     {
                       "variable": "ms1",
                       "axis": "0",
-                      "adaptTo": "0",
+                      "adaptTo": "none",
                       "plotcolor": [
                         255,
                         1,
@@ -1444,14 +1444,12 @@
                       "markerSize": 2,
                       "normalize": "max100",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
                       "tracking": []
                     },
                     {
                       "variable": "ms2",
                       "axis": "1",
-                      "adaptTo": "1",
+                      "adaptTo": "none",
                       "plotcolor": [
                         1,
                         1,
@@ -1467,8 +1465,6 @@
                       "markerSize": 2,
                       "normalize": "max100",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
                       "tracking": []
                     }
                   ]
