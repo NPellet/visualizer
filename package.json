@@ -14,7 +14,7 @@
     "publish-doc": "npm run build-doc && git add docs && git commit -m \"doc: rebuild docs\" && git push origin master",
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
-    "install-components": "bower install --quiet --config.interactive=false",
+    "install-components": "bower install",
     "install-browserified": "grunt browserify",
     "postinstall": "npm run install-components && npm run install-browserified",
     "prerelease": "grunt bump:prerelease",
