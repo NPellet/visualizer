@@ -413,7 +413,7 @@ define([
                         }
 
                         if (plotinfos[i].markers[0]) {
-                            options.markersIndependant = true;
+                            options.markersIndependent = false;
                         }
 
                         options.lineToZero = continuous == 'discrete';
@@ -623,16 +623,22 @@ define([
                         hasColor = true;
                         serieType = 'line.color';
                     }
-                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), serieType);
 
-console.log( valFinalX, valFinalY, serieType );
+                    let serieOptions = this.getSerieOptions(varname, aData._highlight, [ valFinalX, valFinalY ] );
+                    var serie = this.graph.newSerie(serieName, serieOptions, serieType);
 
                     serie.setLabel(serieLabel);
 //                    this.normalize(valFinal, varname);
 
-                    if( serieType == 'line' || serieType == undefined ) { // jsGraph 2.0
+                    if( serieType == 'line' || serieType == undefined || serieType == "scatter" ) { // jsGraph 2.0
                         var wave = Graph.newWaveform( );
                         wave.setData( valFinalY, valFinalX );    
+                        this.normalize( wave, varname);
+
+                        if( serieOptions.useSlots ) {
+                            wave.aggregate();
+                        }
+
                         serie.setWaveform( wave );
                     } else {
                         serie.setData( valFinal );
@@ -672,7 +678,7 @@ console.log( valFinalX, valFinalY, serieType );
             },
 
             xyArray(moduleValue, varname) {
-                return;
+                
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -680,17 +686,28 @@ console.log( valFinalX, valFinalY, serieType );
                     return;
                 }
 
-                var val = moduleValue.get();
+                let val = moduleValue.get(),
+                    serieOptions = this.getSerieOptions(varname, null, val),
+                    serie = this.graph.newSerie( varname, serieOptions );
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val));
+                let valX = [], 
+                    valY = [],           
+                    wave = Graph.newWaveform();
 
-//                this.normalize(val, varname);
-            
-                var wave = Graph.newWaveform();
-                wave.setData(val[ 1 ], val[ 0 ]);
+                for( var i = 0, l = val.length; i < l; i += 2 ) {
+                    valX.push( val[ i ] );
+                    valY.push( val[ i + 1 ] );
+                }
+
+                wave.setData( valY, valX );
+
+                this.normalize( wave , varname);
+
+                if( serieOptions.useSlots ) {
+                    wave.aggregate();
+                }
+                
                 serie.setWaveform( wave );
-
-
                 this.setSerieParameters(serie, varname);
 
                 this.series[varname].push(serie);
@@ -699,7 +716,7 @@ console.log( valFinalX, valFinalY, serieType );
 
             // in fact it is a Y array ...
             xArray(moduleValue, varname) {
-return;
+
                 // Use wave.rescaleX( offset, shift );
                 var val = moduleValue.get();
                 this.series[varname] = this.series[varname] || [];
@@ -708,17 +725,27 @@ return;
                 var minX = this.module.getConfiguration('minX', 0);
                 var maxX = this.module.getConfiguration('maxX', val.length - 1);
                 var step = (maxX - minX) / (val.length - 1);
-                var valX = [], valY = [];
-                for (var i = 0, l = val.length; i < l; i++) {
-                    valX.push(minX + step * i);
-                    valY.push(val[i]);
+                
+                var waveform = Graph.newWaveform();
+                waveform.setData( val );
+                waveform.rescaleX( minX, ( maxX - minX ) / ( val.length - 1 ) );
+
+
+
+                let serieOptions = this.getSerieOptions(varname, null, [ null, [ val ] ] );
+                var serie = this.graph.newSerie(varname, serieOptions );
+
+                
+                this.normalize( waveform, varname );
+
+                if( serieOptions.useSlots ) {
+                    waveform.aggregate();
                 }
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val2));
-
+                serie.setWaveform( waveform );
 //                this.normalize(val2, varname);
 
-                serie.setData(val2);
+
                 this.setSerieParameters(serie, varname);
                 this.series[varname].push(serie);
                 this.redraw(false, varname);
@@ -799,11 +826,26 @@ return;
                         spectra = spectra.spectra;
                         for (var i = 0, l = spectra.length; i < l; i++) {
                             var data = spectra[i].data[spectra[i].data.length - 1];
+                                
+                            let dataX = [], dataY = [];
+                            for( var i = 0; i < data.length; i += 2 ) {
+                                dataX.push( data[ i ] );
+                                dataY.push( data[ i + 1 ] );
+                            }
 
-                            serie = that.graph.newSerie(varname, that.getSerieOptions(varname, null, data));
 
-                            that.normalize(data, varname);
-                            serie.setData(data);
+                            let serieOptions = that.getSerieOptions(varname, null, data);
+                            serie = that.graph.newSerie(varname, serieOptions );
+
+                            var waveform = Graph.newWaveform();
+                            waveform.setData( dataY, dataX );
+                            that.normalize( waveform, varname );
+                            if( serieOptions.useSlots ) {
+                                waveform.aggregate();
+                            }
+
+                            serie.setWaveform( waveform );
+
                             that.setSerieParameters(serie, varname);
                             that.series[varname].push(serie);
                             break;
@@ -988,7 +1030,7 @@ return;
             return svgDoctype + serializer.serializeToString(svgElement);
         },
 
-        normalize(array, varname) {
+        normalize( waveform, varname) {
             var plotinfos = this.module.getConfiguration('plotinfos');
             var maxValue, minValue, total, ratio, i, l;
 
@@ -1001,69 +1043,8 @@ return;
             }
             if (!normalize) return;
 
-            if (Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
-                if (normalize == 'max1' || normalize == 'max100') {
-                    var factor = 1;
-                    if (normalize == 'max100') factor = 100;
-                    maxValue = -Infinity;
-                    for (i = 0; i < array.length; i++) {
-                        if (array[i][1] > maxValue) maxValue = array[i][1];
-                    }
-                    for (i = 0; i < array.length; i++) {
-                        array[i][1] /= maxValue / factor;
-                    }
-                } else if (normalize == 'sum1') {
-                    total = 0;
-                    for (i = 0; i < array.length; i++) {
-                        total += array[i][1];
-                    }
-                    for (i = 0; i < array.length; i++) {
-                        array[i][1] /= total;
-                    }
-                } else if (normalize == 'max1min0') {
-                    maxValue = -Infinity;
-                    minValue = Infinity;
-                    for (i = 0; i < array.length; i++) {
-                        if (array[i][1] > maxValue) maxValue = array[i][1];
-                        if (array[i][1] < minValue) minValue = array[i][1];
-                    }
-                    ratio = 1 / (maxValue - minValue);
-                    for (i = 0; i < array.length; i++) {
-                        array[i][1] = (array[i][1] - minValue) * ratio;
-                    }
-                }
-            } else { // Normalize from [x1,y1,x2,y2]
-                if (normalize == 'max1' || normalize == 'max100') {
-                    var factor = 1;
-                    if (normalize == 'max100') factor = 100;
-                    maxValue = -Infinity;
-                    for (i = 1; i < array.length; i = i + 2) {
-                        if (array[i] > maxValue) maxValue = array[i];
-                    }
-                    for (i = 1; i < array.length; i = i + 2) {
-                        array[i] /= maxValue / factor;
-                    }
-                } else if (normalize == 'sum1') {
-                    total = 0;
-                    for (i = 1; i < array.length; i = i + 2) {
-                        total += array[i];
-                    }
-                    for (i = 1; i < array.length; i = i + 2) {
-                        array[i] /= total;
-                    }
-                } else if (normalize == 'max1min0') {
-                    maxValue = -Infinity;
-                    minValue = Infinity;
-                    for (i = 1; i < array.length; i = i + 2) {
-                        if (array[i] > maxValue) maxValue = array[i];
-                        if (array[i] < minValue) minValue = array[i];
-                    }
-                    ratio = 1 / (maxValue - minValue);
-                    for (i = 1; i < array.length; i = i + 2) {
-                        array[i] = (array[i] - minValue) * ratio;
-                    }
-                }
-            }
+            waveform.normalize( normalize )
+
         }
     });
 
