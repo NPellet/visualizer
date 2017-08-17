@@ -1345,7 +1345,9 @@
                       []
                     ],
                     "independantYZoom": [
-                      []
+                      [
+                        "yes"
+                      ]
                     ]
                   }
                 ]
@@ -1443,7 +1445,9 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "max100",
-                      "optimizeSlots": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     },
                     {
@@ -1464,7 +1468,9 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "max100",
-                      "optimizeSlots": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     }
                   ]
