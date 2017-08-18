@@ -10,7 +10,7 @@ define([
     'src/util/color',
     'src/util/debug'
 ], function ($, Default, Graph, JSONChart, DataTraversing, API, Color, Debug) {
-
+console.log( Graph );
     const defaultScatterStyle = {
         shape: 'circle',
         cx: 0,
@@ -646,9 +646,9 @@ define([
                         if (!Array.isArray(colors)) {
                             throw new Error('Serie colors must be an array');
                         }
-                        if (!Array.isArray(colors[0])) {
+                   /*     if (!Array.isArray(colors[0])) {
                             colors = [colors];
-                        }
+                        }*/
                         serie.setColors(colors);
                     }
 
