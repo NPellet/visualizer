@@ -980,14 +980,14 @@
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "discrete",
-                      "peakpicking": [],
+                      "peakpicking": [
+                        "picking"
+                      ],
                       "markers": [],
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "max100",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
                       "tracking": []
                     }
                   ]
@@ -1010,7 +1010,7 @@
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "With peak picking",
           "bgColor": [
             255,
             255,
@@ -1073,7 +1073,7 @@
           ]
         }
       ],
-      "title": ""
+      "title": "With peak picking"
     },
     {
       "url": "modules/types/science/spectra/spectra_displayer/",
