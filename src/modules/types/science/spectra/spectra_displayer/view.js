@@ -10,7 +10,7 @@ define([
     'src/util/color',
     'src/util/debug'
 ], function ($, Default, Graph, JSONChart, DataTraversing, API, Color, Debug) {
-console.log( Graph );
+
     const defaultScatterStyle = {
         shape: 'circle',
         cx: 0,
@@ -101,6 +101,8 @@ console.log( Graph );
                             mode: 'gradualXY'
                         }
                     });
+
+                    options.plugins.peakPicking = {};
 
                     var zoom = cfg('zoom');
                     if (zoom && zoom !== 'none') {
@@ -395,13 +397,14 @@ console.log( Graph );
         },
 
         getSerieOptions(varname, highlight, data) {
-            var plotinfos = this.module.getConfiguration('plotinfos');
+
+            let plotinfos = this.module.getConfiguration('plotinfos'),
+                others = {},
+                options = {
+                    trackMouse: true
+                };
 
             highlight = highlight || [];
-
-            var options = {
-                trackMouse: true
-            };
 
             if (plotinfos) {
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
@@ -417,17 +420,9 @@ console.log( Graph );
                         }
 
                         options.lineToZero = continuous == 'discrete';
-                        options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
                         options.strokeWidth = parseInt(plotinfos[i].strokewidth);
 
-                        var pp = plotinfos[i].peakpicking[0];
-                        if (pp) {
-                            if (options.lineToZero) {
-                                options.autoPeakPicking = true;
-                            } else {
-                                options.autoPeakPicking = 'continuous';
-                            }
-                        }
+                        others.peakPicking = true;
                     }
                 }
             }
@@ -448,7 +443,7 @@ console.log( Graph );
                 this.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
-            return options;
+            return { options: options, others: others };
 
         },
 
@@ -622,7 +617,11 @@ console.log( Graph );
                     }
 
                     let serieOptions = this.getSerieOptions(varname, aData._highlight, [ valFinalX, valFinalY ] );
-                    var serie = this.graph.newSerie(serieName, serieOptions, serieType);
+                    var serie = this.graph.newSerie(serieName, serieOptions.options, serieType);
+
+                    if( serieOptions.others.peakPicking ) {
+                        this.graph.getPlugin('peakPicking').setSerie( serie );
+                    }
 
                     serie.setLabel(serieLabel);
 //                    this.normalize(valFinal, varname);
@@ -685,7 +684,11 @@ console.log( Graph );
 
                 let val = moduleValue.get(),
                     serieOptions = this.getSerieOptions(varname, null, val),
-                    serie = this.graph.newSerie( varname, serieOptions );
+                    serie = this.graph.newSerie( varname, serieOptions.options );
+
+                if( serieOptions.others.peakPicking ) {
+                    this.graph.getPlugin('peakPicking').setSerie( serie );
+                }
 
                 let valX = [], 
                     valY = [],           
@@ -730,7 +733,13 @@ console.log( Graph );
 
 
                 let serieOptions = this.getSerieOptions(varname, null, [ null, [ val ] ] );
-                var serie = this.graph.newSerie(varname, serieOptions );
+                var serie = this.graph.newSerie(varname, serieOptions.options );
+
+
+                if( serieOptions.others.peakPicking ) {
+                    this.graph.getPlugin('peakPicking').setSerie( serie );
+                }
+
 
                 
                 this.normalize( waveform, varname );
@@ -814,7 +823,7 @@ console.log( Graph );
                     that.series[varname] = [];
 
                     if (spectra.contourLines) {
-                        serie = that.graph.newSerie(varname, that.getSerieOptions(varname), 'contour');
+                        serie = that.graph.newSerie(varname, that.getSerieOptions(varname).options, 'contour');
 
                         serie.setData(spectra.contourLines);
                         that.setSerieParameters(serie, varname);
@@ -832,7 +841,13 @@ console.log( Graph );
 
 
                             let serieOptions = that.getSerieOptions(varname, null, data);
-                            serie = that.graph.newSerie(varname, serieOptions );
+                            serie = that.graph.newSerie(varname, serieOptions.options );
+
+
+                            if( serieOptions.others.peakPicking ) {
+                                this.graph.getPlugin('peakPicking').setSerie( serie );
+                            }
+
 
                             var waveform = Graph.newWaveform();
                             waveform.setData( dataY, dataX );
@@ -867,7 +882,7 @@ console.log( Graph );
 
                         var opts = this.getSerieOptions(varname, null, data[i].data);
 
-                        var serie = this.graph.newSerie(data[i].name, opts);
+                        var serie = this.graph.newSerie(data[i].name, opts.options );
 
 
                         serie.autoAxis();
