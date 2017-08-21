@@ -628,7 +628,7 @@ define([
 
                     if( serieType == 'line' || serieType == undefined || serieType == "scatter" ) { // jsGraph 2.0
                         var wave = Graph.newWaveform( );
-                        wave.setData( valFinalY, valFinalX );    
+                        wave.setData( valFinalY, valFinalX );
                         this.normalize( wave, varname);
 
                         if( serieOptions.useSlots ) {
@@ -674,7 +674,7 @@ define([
             },
 
             xyArray(moduleValue, varname) {
-                
+
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -690,8 +690,8 @@ define([
                     this.graph.getPlugin('peakPicking').setSerie( serie );
                 }
 
-                let valX = [], 
-                    valY = [],           
+                let valX = [],
+                    valY = [],
                     wave = Graph.newWaveform();
 
                 for( var i = 0, l = val.length; i < l; i += 2 ) {
@@ -706,7 +706,7 @@ define([
                 if( serieOptions.useSlots ) {
                     wave.aggregate();
                 }
-                
+
                 serie.setWaveform( wave );
                 this.setSerieParameters(serie, varname);
 
@@ -725,7 +725,7 @@ define([
                 var minX = this.module.getConfiguration('minX', 0);
                 var maxX = this.module.getConfiguration('maxX', val.length - 1);
                 var step = (maxX - minX) / (val.length - 1);
-                
+
                 var waveform = Graph.newWaveform();
                 waveform.setData( val );
                 waveform.rescaleX( minX, ( maxX - minX ) / ( val.length - 1 ) );
@@ -741,7 +741,7 @@ define([
                 }
 
 
-                
+
                 this.normalize( waveform, varname );
 
                 if( serieOptions.useSlots ) {
@@ -832,7 +832,7 @@ define([
                         spectra = spectra.spectra;
                         for (var i = 0, l = spectra.length; i < l; i++) {
                             var data = spectra[i].data[spectra[i].data.length - 1];
-                                
+
                             let dataX = [], dataY = [];
                             for( var i = 0; i < data.length; i += 2 ) {
                                 dataX.push( data[ i ] );
@@ -845,7 +845,7 @@ define([
 
 
                             if( serieOptions.others.peakPicking ) {
-                                this.graph.getPlugin('peakPicking').setSerie( serie );
+                                that.graph.getPlugin('peakPicking').setSerie( serie );
                             }
 
 
