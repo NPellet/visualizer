@@ -375,14 +375,14 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "none",
-                      "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     },
                     {
                       "variable": "jcamp2",
-                      "axis": "0",
+                      "axis": "1",
                       "adaptTo": "none",
                       "plotcolor": [
                         1,
@@ -398,14 +398,14 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "none",
-                      "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     },
                     {
                       "variable": "jcamp3",
-                      "axis": "0",
+                      "axis": "2",
                       "adaptTo": "none",
                       "plotcolor": [
                         1,
@@ -421,9 +421,9 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "none",
-                      "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     }
                   ]
