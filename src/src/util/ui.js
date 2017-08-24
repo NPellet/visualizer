@@ -66,7 +66,8 @@ define([
             label: 'Enter a value',
             buttonLabel: 'Submit',
             validationMessage: 'What you entered is not valid',
-            value: ''
+            value: '',
+            validation: () => true
         };
 
         opts = Object.assign({}, defaultOptions, opts);
@@ -79,11 +80,9 @@ define([
             });
             const done = () => {
                 var value = input.val();
-                if (opts.validation && typeof opts.validation === 'function') {
-                    if (!opts.validation(value)) {
-                        exports.showNotification(opts.validationMessage, 'error');
-                        return;
-                    }
+                if (!opts.validation(value)) {
+                    exports.showNotification(opts.validationMessage, 'error');
+                    return;
                 }
                 resolve(value);
                 dialog.dialog('destroy');
