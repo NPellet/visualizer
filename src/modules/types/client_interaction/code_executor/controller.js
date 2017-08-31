@@ -341,7 +341,8 @@ define([
             clear,
             unset,
             showButton,
-            hideButton
+            hideButton,
+            moduleTriggerChange: executor.controller.module.model.dataTriggerChange.bind(executor.controller.module.model)
         };
 
         var ctx = {
