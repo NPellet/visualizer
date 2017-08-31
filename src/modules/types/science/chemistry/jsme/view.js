@@ -60,8 +60,8 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
             views[id] = this;
 
             this.dom = ui.getSafeElement('iframe').attr({
-                'allowfullscreen': true,
-                'src': require.toUrl('./jsme.html')
+                allowfullscreen: true,
+                src: require.toUrl('./jsme.html')
             });
 
             this.module.getDomContent().html(this.dom);

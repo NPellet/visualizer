@@ -14,17 +14,17 @@ define([
     'version',
     'src/util/config'
 ], function ($,
-        ui,
-        Util,
-        diagram,
-        ModuleFactory,
-        Context,
-        Versioning,
-        Form,
-        Variables,
-        Debug,
-        Version,
-        Config) {
+    ui,
+    Util,
+    diagram,
+    ModuleFactory,
+    Context,
+    Versioning,
+    Form,
+    Variables,
+    Debug,
+    Version,
+    Config) {
 
     var definition, jqdom, moduleMove;
     var isInit = false;

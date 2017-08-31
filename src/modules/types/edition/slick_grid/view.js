@@ -1623,7 +1623,7 @@ define([
                 autoSelect: true,
                 noConfirmation: true
             }).then(selection => {
-                if(!selection) return;
+                if (!selection) return;
                 selection = String(selection);
                 if (selection === 'filtered') {
                     data = this.slick.data.getItems(true);

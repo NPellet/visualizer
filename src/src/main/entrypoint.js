@@ -24,26 +24,26 @@ define([
     'src/util/copyPasteManager',
     './forceLoad'
 ], function (
-        $,
-        _,
-        Header,
-        Repository,
-        Grid,
-        API,
-        Context,
-        Traversing,
-        Versioning,
-        ModuleFactory,
-        Migration,
-        ActionManager,
-        Debug,
-        browser,
-        Util,
-        UrlData,
-        ui,
-        Config,
-        Sandbox
-    ) {
+    $,
+    _,
+    Header,
+    Repository,
+    Grid,
+    API,
+    Context,
+    Traversing,
+    Versioning,
+    ModuleFactory,
+    Migration,
+    ActionManager,
+    Debug,
+    browser,
+    Util,
+    UrlData,
+    ui,
+    Config,
+    Sandbox
+) {
 
     var _viewLoaded, _dataLoaded, _modulesSet;
 

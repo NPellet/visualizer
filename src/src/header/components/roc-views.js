@@ -17,16 +17,16 @@ define([
     'jquery-ui/ui/widgets/accordion',
     'jquery-ui/ui/widgets/tooltip'
 ], function ($,
-        _,
-        superagent,
-        Default,
-        Util,
-        UI,
-        Debug,
-        RocView,
-        Versioning,
-        CouchdbAttachments,
-        uploadUi) {
+    _,
+    superagent,
+    Default,
+    Util,
+    UI,
+    Debug,
+    RocView,
+    Versioning,
+    CouchdbAttachments,
+    uploadUi) {
 
     var UPLOAD_LIMIT = 50 * 1024 * 1024;
     var fakeLink = {
