@@ -1,3 +1,18 @@
+<a name="2.83.0"></a>
+# [2.83.0](https://github.com/NPellet/visualizer/compare/v2.82.4...v2.83.0) (2017-08-31)
+
+
+### Bug Fixes
+
+* **jsme:** correct highlight bug if _atoms not defined ([d913a31](https://github.com/NPellet/visualizer/commit/d913a31))
+
+
+### Features
+
+* **code_executor:** add moduleTriggerChange to code executor api ([b0765b3](https://github.com/NPellet/visualizer/commit/b0765b3))
+
+
+
 <a name="2.82.4"></a>
 ## [2.82.4](https://github.com/NPellet/visualizer/compare/v2.82.3...v2.82.4) (2017-07-13)
 
