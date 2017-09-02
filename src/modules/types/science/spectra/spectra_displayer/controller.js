@@ -558,6 +558,27 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                             }
                         }
                     }
+                },
+                misc: {
+                    options: {
+                        title: 'Misc',
+                        multiple: false
+                    },
+                    groups: {
+                        misc: {
+                            options: {
+                                type: 'list',
+                                multiple: false
+                            },
+                            fields: {
+                                highlightOptions: {
+                                    type: 'text',
+                                    title: 'Highlight options',
+                                    default: '{}'
+                                }
+                            }
+                        }
+                    }
                 }
             }
         };
@@ -626,7 +647,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         ynbTicksPrimary: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'nbTicksPrimary', 0],
         FitYToAxisOnFromTo: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'fitToAxisOnFromTo', 0],
         // Variables
-        plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0]
+        plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0],
+        highlightOptions: ['sections', 'misc', 0, 'groups', 'misc', 0, 'highlightOptions', 0]
     };
 
     Controller.prototype.zoomChanged = function (axis, min, max) {

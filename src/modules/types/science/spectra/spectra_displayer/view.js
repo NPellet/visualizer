@@ -8,8 +8,9 @@ define([
     'src/util/datatraversing',
     'src/util/api',
     'src/util/color',
-    'src/util/debug'
-], function ($, Default, Graph, JSONChart, DataTraversing, API, Color, Debug) {
+    'src/util/debug',
+    'src/util/util'
+], function ($, Default, Graph, JSONChart, DataTraversing, API, Color, Debug, Util) {
 
     const defaultScatterStyle = {
         shape: 'circle',
@@ -48,6 +49,10 @@ define([
 
             this.deferreds = {};
             this.onchanges = {};
+            this.highlightOptions = Object.assign({
+                fill: 'black'
+            }, Util.evalOptions(this.module.getConfiguration('highlightOptions')));
+
         },
 
         inDom() {
@@ -717,9 +722,7 @@ define([
 
                     API.listenHighlight(annotation, onOff => {
                         if (onOff) {
-                            shape.highlight({
-                                fill: 'black'
-                            });
+                            shape.highlight(this.highlightOptions);
                         } else {
                             shape.unHighlight();
                         }
