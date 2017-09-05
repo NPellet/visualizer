@@ -1,3 +1,13 @@
+<a name="2.84.0"></a>
+# [2.84.0](https://github.com/NPellet/visualizer/compare/v2.83.0...v2.84.0) (2017-09-05)
+
+
+### Features
+
+* **spectra_displayer:** highlight options ([d0a10a1](https://github.com/NPellet/visualizer/commit/d0a10a1))
+
+
+
 <a name="2.83.0"></a>
 # [2.83.0](https://github.com/NPellet/visualizer/compare/v2.82.4...v2.83.0) (2017-08-31)
 
