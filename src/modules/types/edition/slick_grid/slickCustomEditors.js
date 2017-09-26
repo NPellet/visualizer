@@ -550,7 +550,7 @@ define([
     }
 
     function booleanApplyValue(item, state, type) {
-        state = !!state;
+        state = state === 'false' ? false : !!state
         defaultApplyValue.call(this, item, state, type);
     }
 
