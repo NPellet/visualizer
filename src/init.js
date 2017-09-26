@@ -143,6 +143,7 @@ require.config({
                 'components/slickgrid/plugins/slick.cellselectionmodel',
                 'components/slickgrid/plugins/slick.rowselectionmodel',
                 'components/slickgrid/plugins/slick.rowmovemanager',
+                'components/slickgrid/plugins/slick.cellexternalcopymanager',
                 'components/slickgrid/slick.editors',
                 'modules/types/edition/slick_grid/slickCustomEditors',
                 'modules/types/edition/slick_grid/slickCustomFormatters',

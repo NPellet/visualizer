@@ -182,6 +182,8 @@ define([
             ctx.grid.setSelectionModel(new Slick.CellSelectionModel());
         }
 
+        ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({readOnly: true}));
+
         if (ctx.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
             var moveRowsPlugin = new Slick.RowMoveManager({
                 cancelEditOnDrag: true
