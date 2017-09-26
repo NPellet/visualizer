@@ -182,7 +182,9 @@ define([
             ctx.grid.setSelectionModel(new Slick.CellSelectionModel());
         }
 
-        ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({readOnly: true}));
+        ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({
+            readOnlyMode: false
+        }));
 
         if (ctx.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
             var moveRowsPlugin = new Slick.RowMoveManager({
@@ -896,7 +898,11 @@ define([
                         dataType: getType([rowName]),
                         jpath: [rowName],
                         formatter: formatters.typerenderer,
-                        asyncPostRender: tp
+                        asyncPostRender: tp,
+                        colDef: {
+                            id: rowName,
+                            jpath: [rowName]
+                        }
                     })).value();
 
             }
