@@ -51,6 +51,10 @@ define([
     typeEditors.longtext = Slick.CustomEditors.LongText;
     typeEditors.select = Slick.CustomEditors.Select;
 
+    function isSpecialColumn(col) {
+        return !col.colDef;
+    }
+
     function doGrid(ctx) {
         ctx.$container.html('');
 
@@ -444,6 +448,12 @@ define([
             } else {
                 var column = ctx._getChangedColumn(args.cell);
             }
+
+            // When copy-pasting, it is possible this callback gets called
+            // on cells that are not editable or that should never be edited
+            // (like action columns)
+            if (isSpecialColumn(column)) return;
+
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
                 if (ctx.hasFilter) {
@@ -970,7 +980,7 @@ define([
 
         getInMainColumns: function () {
             return this.getSlickColumns().filter(function (col) {
-                if (!col.colDef) { // Special columns always in main
+                if (isSpecialColumn(col)) { // Special columns always in main
                     return true;
                 }
                 // Action columns always in main
@@ -980,7 +990,7 @@ define([
 
         getInPopupColumns: function () {
             return this.getAllSlickColumns().filter(function (col) {
-                if (!col.colDef) { // Special columns never in popup
+                if (isSpecialColumn(col)) { // Special columns never in popup
                     return false;
                 }
                 return col.colDef.visibility === 'popup' || col.colDef.visibility === 'both';
