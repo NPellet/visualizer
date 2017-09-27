@@ -102,6 +102,7 @@ define([
             };
 
             this.loadValue = function (item) {
+                DataObject.check(item, true);
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
                     defaultValue = defaultValue.value || '01/01/2000';
@@ -294,6 +295,7 @@ define([
             };
 
             this.loadValue = function (item) {
+                DataObject.check(item, true);
                 defaultValue = item.getChildSync(args.column.jpath);
                 if (defaultValue) {
                     defaultValue = String(defaultValue.get()) || '#000000';
@@ -448,6 +450,7 @@ define([
     }
 
     function defaultLoadValue(item) {
+        DataObject.check(item, true);
         this.defaultValue = item.getChildSync(this.args.column.jpath);
         this.defaultValue = this.defaultValue ? this.defaultValue.get() || '' : '';
         this.$input.val(this.defaultValue);
@@ -489,10 +492,17 @@ define([
             .select()
             .focusout(function () {
                 // Shouldn't do this if auto-edit
-                if (!that.args.grid.module.view.slick.options.autoEdit)
-                    that.args.commitChanges('next');
-                else
-                    that.args.commitChanges('none');
+                if (!that.args.grid.module.view.slick.options.autoEdit) {
+                    if (that.args.commitChanges) {
+                        that.args.commitChanges('next');
+                    }
+                }
+                else {
+                    if (that.args.commitChanges) {
+                        that.args.commitChanges('none');
+                    }
+                }
+
             });
     }
 
@@ -526,6 +536,7 @@ define([
     }
 
     function booleanLoadValue(item) {
+        DataObject.check(item, true);
         this.defaultValue = item.getChildSync(this.args.column.jpath);
         if (this.defaultValue) {
             var val = this.defaultValue = this.defaultValue.get();
