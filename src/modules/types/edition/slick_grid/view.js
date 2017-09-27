@@ -187,7 +187,15 @@ define([
         }
 
         ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({
-            readOnlyMode: false
+            readOnlyMode: false,
+            newRowCreator: function (nb) {
+                console.log('creator');
+                const rows = [];
+                for (let i = 0; i < nb; i++) {
+                    rows.push({});
+                }
+                ctx.onActionReceive.addRow.call(ctx, rows);
+            }
         }));
 
         if (ctx.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
@@ -349,9 +357,10 @@ define([
 
 
         ctx.grid.onAddNewRow.subscribe(function (e, args) {
-            var data = ctx.module.data.get();
-            var newRow = data[data.length - 1];
-            ctx._newRow(newRow, args);
+            const item = args.item;
+            ctx.setNextUniqId(item, true);
+            ctx.slick.data.addItem(item);
+            ctx._newRow(item, args);
         });
 
         ctx.grid.onRenderCompleted.subscribe(function () {

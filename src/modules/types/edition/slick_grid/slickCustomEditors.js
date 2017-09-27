@@ -15,17 +15,6 @@ define([
 ], function (Util, _) {
     Util.loadCss('./components/spectrum/spectrum.css');
 
-    function setItemId(newItem, grid) {
-        if (!newItem[grid.module.view.idPropertyName]) {
-            Object.defineProperty(newItem, grid.module.view.idPropertyName, {
-                value: 'id_' + grid.module.view.getNextIncrementalId(),
-                enumerable: false,
-                writable: false,
-                configurable: false
-            });
-        }
-    }
-
     (function ($) {
         // register namespace
         $.extend(true, window, {
@@ -422,8 +411,7 @@ define([
     }
 
     function defaultApplyValue(item, state, type) {
-        var isNew = _.isEmpty(item),
-            newState;
+        var newState;
         DataObject.check(item, true);
         if (type) {
             newState = {
@@ -433,16 +421,7 @@ define([
         } else {
             newState = state;
         }
-
-
-        if (isNew) {
-            setItemId(item, this.args.grid);
-            item.setChildSync(this.args.column.jpath, newState);
-            this.args.grid.module.view.slick.data.addItem(item);
-            return newState;
-        } else {
-            this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
-        }
+        this.args.grid.module.model.dataSetChildSync(item, this.args.column.jpath, newState);
     }
 
     function defaultSerializeValue() {
@@ -496,8 +475,7 @@ define([
                     if (that.args.commitChanges) {
                         that.args.commitChanges('next');
                     }
-                }
-                else {
+                } else {
                     if (that.args.commitChanges) {
                         that.args.commitChanges('none');
                     }
@@ -561,7 +539,7 @@ define([
     }
 
     function booleanApplyValue(item, state, type) {
-        state = state === 'false' ? false : !!state
+        state = state === 'false' ? false : !!state;
         defaultApplyValue.call(this, item, state, type);
     }
 
