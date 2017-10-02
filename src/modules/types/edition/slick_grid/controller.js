@@ -53,6 +53,25 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             },
                             default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll']
                         },
+                        copyPaste: {
+                            type: 'checkbox',
+                            title: 'Allow copy paste',
+                            options: {active: 'Yes'},
+                            displaySource: {
+                                active: 'cp'
+                            },
+                            default: []
+                        },
+                        copyPasteOptions: {
+                            type: 'checkbox',
+                            title: 'Copy paste options',
+                            options: {
+                                readOnly: 'Read only',
+                                newRows: 'Paste to new rows when overflowing'
+                            },
+                            displayTarget: ['cp'],
+                            default: ['newRows']
+                        },
                         autoColumns: {
                             type: 'checkbox',
                             title: 'Auto Columns',
@@ -386,6 +405,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     Controller.prototype.configAliases = {
         colorjPath: ['groups', 'group', 0, 'colorjpath', 0],
         slickCheck: ['groups', 'group', 0, 'slickCheck', 0],
+        copyPasteOptions: ['groups', 'group', 0, 'copyPasteOptions', 0],
+        copyPaste: ['groups', 'group', 0, 'copyPaste', 0],
         'slick.rowHeight': ['groups', 'group', 0, 'slick.rowHeight', 0],
         'slick.headerRowHeight': ['groups', 'group', 0, 'slick.headerRowHeight', 0],
         'slick.selectionModel': ['groups', 'group', 0, 'slick.selectionModel', 0],

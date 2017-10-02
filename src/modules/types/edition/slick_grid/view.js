@@ -186,31 +186,35 @@ define([
             ctx.grid.setSelectionModel(new Slick.CellSelectionModel());
         }
 
-        ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({
-            readOnlyMode: false,
-            newRowCreator: function (nb) {
-                const rows = [];
-                for (let i = 0; i < nb; i++) {
-                    rows.push({});
+        if (ctx.module.getConfigurationCheckbox('copyPaste', 'active')) {
+            ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({
+                readOnlyMode: ctx.module.getConfigurationCheckbox('copyPasteOptions', 'readOnly'),
+                newRowCreator: function (nb) {
+                    if (!ctx.module.getConfigurationCheckbox('copyPasteOptions', 'newRows')) return;
+                    const rows = [];
+                    for (let i = 0; i < nb; i++) {
+                        rows.push({});
+                    }
+                    ctx.onActionReceive.addRow.call(ctx, rows);
+                },
+                dataItemColumnValueExtractor: function (item, colDef) {
+                    if (colDef.CpEditor) {
+                        var editorArgs = {
+                            container: $('<p>'), // a dummy container
+                            column: colDef,
+                            position: {top: 0, left: 0}, // a dummy position required by some editors
+                            grid: ctx.grid
+                        };
+                        var editor = new colDef.CpEditor(editorArgs);
+                        editor.loadValue(item);
+                        var retVal = editor.serializeValue();
+                        editor.destroy();
+                        return retVal;
+                    }
                 }
-                ctx.onActionReceive.addRow.call(ctx, rows);
-            },
-            dataItemColumnValueExtractor: function (item, colDef) {
-                if (colDef.CpEditor) {
-                    var editorArgs = {
-                        container: $('<p>'), // a dummy container
-                        column: colDef,
-                        position: {top: 0, left: 0}, // a dummy position required by some editors
-                        grid: ctx.grid
-                    };
-                    var editor = new colDef.CpEditor(editorArgs);
-                    editor.loadValue(item);
-                    var retVal = editor.serializeValue();
-                    editor.destroy();
-                    return retVal;
-                }
-            }
-        }));
+            }));
+        }
+
 
         if (ctx.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
             var moveRowsPlugin = new Slick.RowMoveManager({
