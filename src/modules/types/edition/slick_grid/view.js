@@ -189,12 +189,26 @@ define([
         ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({
             readOnlyMode: false,
             newRowCreator: function (nb) {
-                console.log('creator');
                 const rows = [];
                 for (let i = 0; i < nb; i++) {
                     rows.push({});
                 }
                 ctx.onActionReceive.addRow.call(ctx, rows);
+            },
+            dataItemColumnValueExtractor: function (item, colDef) {
+                if (colDef.CpEditor) {
+                    var editorArgs = {
+                        container: $('<p>'), // a dummy container
+                        column: colDef,
+                        position: {top: 0, left: 0}, // a dummy position required by some editors
+                        grid: ctx.grid
+                    };
+                    var editor = new colDef.CpEditor(editorArgs);
+                    editor.loadValue(item);
+                    var retVal = editor.serializeValue();
+                    editor.destroy();
+                    return retVal;
+                }
             }
         }));
 
@@ -853,7 +867,7 @@ define([
                     return row.name;
                 })
                 .map(function (row) {
-                    var editor, type;
+                    var editor, CpEditor, type;
                     if (row.editor === 'auto' && that.module.data) {
                         if (!that.module.data.get().length) {
                             editor = Slick.CustomEditors.DataString;
@@ -862,10 +876,13 @@ define([
                             editor = row.forceType ? typeEditors[row.forceType] : getEditor(row.jpath);
                             type = getType(row.jpath);
                         }
+                        CpEditor = editor;
                     } else {
                         editor = typeEditors[row.editor];
+                        CpEditor = editor || getEditor(row.jpath);
                         type = getType(row.jpath);
                     }
+
 
                     var rendererOptions = Util.evalOptions(row.rendererOptions);
                     return {
@@ -881,6 +898,7 @@ define([
                         sortable: true,
                         defaultSortAsc: true,
                         editor: editor,
+                        CpEditor,
                         compositeEditor: (editor === Slick.CustomEditors.LongText) ? Slick.CustomEditors.SimpleLongText : undefined,
                         formatter: formatters[row.formatter],
                         asyncPostRender: (row.formatter === 'typerenderer') ? tp : undefined,
@@ -914,6 +932,7 @@ define([
                         focusable: true,
                         sortable: false,
                         editor: getEditor([rowName]),
+                        CpEditor: getEditor([rowName]),
                         dataType: getType([rowName]),
                         jpath: [rowName],
                         formatter: formatters.typerenderer,
