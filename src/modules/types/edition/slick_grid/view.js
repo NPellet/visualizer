@@ -874,6 +874,7 @@ define([
                             Debug.warn('Slick grid: using editor based on type when the input variable is empty. Cannot determine type');
                         } else {
                             editor = row.forceType ? typeEditors[row.forceType] : getEditor(row.jpath);
+                            editor = editor || getEditor(row.jpath);
                             type = getType(row.jpath);
                         }
                         CpEditor = editor;
