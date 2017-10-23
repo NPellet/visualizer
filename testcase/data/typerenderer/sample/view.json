@@ -1,0 +1,389 @@
+{
+  "version": "2.82.5-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"_id\":\"1315a6d895f431497538cb6d834feab5\",\"_rev\":\"204-f767a01ccda53b436c0e61bc83e056b1\",\"$type\":\"entry\",\"$id\":[\"ethylbenzene\",\"\"],\"$kind\":\"sample\",\"$owners\":[\"admin@cheminfo.org\",\"lpatiny@gmail.com\"],\"$content\":{\"general\":{\"description\":\"\",\"name\":[],\"mf\":\"C8H10\",\"molfile\":\"CCc1ccccc1\\nJME 2017-07-09 Fri Oct 20 16:22:17 GMT+200 2017\\n\\n  8  8  0  0  0  0  0  0  0  0999 V2000\\n    2.4250    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    2.4250    2.0999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2126    2.7999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    2.0999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2126    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2125    4.1999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    2.4249    4.8999    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n  1  2  1  0  0  0  0\\n  2  3  2  0  0  0  0\\n  3  4  1  0  0  0  0\\n  4  5  2  0  0  0  0\\n  5  6  1  0  0  0  0\\n  6  1  2  0  0  0  0\\n  3  7  1  0  0  0  0\\n  7  8  1  0  0  0  0\\nM  END\\n\",\"mw\":106.165295,\"title\":\"\",\"em\":106.0782503224,\"ocl\":{\"value\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!BmwvH__x@g~_{\\\\BbGt\"},\"keyword\":[],\"sequence\":\"AAAAAAAAAA\",\"kind\":\"\"},\"spectra\":{\"ir\":[{\"jcamp\":{\"filename\":\"spectra/ir/100-41-4-IR.jdx\"},\"peak\":[{\"wavelength\":1954.9320617040194,\"transmittance\":0.7454999999999999,\"kind\":\"w\"},{\"wavelength\":1880.9671500283853,\"transmittance\":0.7959999999999999,\"kind\":\"w\"},{\"wavelength\":1807.0022383527507,\"transmittance\":0.8005,\"kind\":\"w\"},{\"wavelength\":1613.5555462780144,\"transmittance\":0.33599999999999997,\"kind\":\"m\"},{\"wavelength\":1499.7633744693462,\"transmittance\":0.1218,\"kind\":\"S\"},{\"wavelength\":1454.246505745879,\"transmittance\":0.3324,\"kind\":\"m\"}]}],\"mass\":[{\"jcamp\":{\"filename\":\"spectra/mass/100-41-4-Mass.jdx\"}}],\"nmr\":[{\"dimension\":1,\"nucleus\":[\"1H\"],\"isFid\":false,\"isFt\":true,\"title\":\"ethylbenzene\",\"solvent\":\"DMSO\",\"pulse\":\"zg30\",\"experiment\":\"1d\",\"temperature\":298.0016,\"frequency\":400.082470657773,\"type\":\"NMR SPECTRUM\",\"date\":\"2013-08-20T15:50:44.000Z\",\"jcamp\":{\"filename\":\"spectra/nmr/h1_0.jdx\"},\"range\":[{\"from\":7.25629,\"to\":7.31871,\"integral\":2.05226,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"m\",\"kind\":\"\",\"remark\":\"\",\"delta\":7.28271}]},{\"from\":7.15091,\"to\":7.22304,\"integral\":2.88355,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"m\",\"kind\":\"\",\"remark\":\"\",\"delta\":7.20152}]},{\"from\":2.56504,\"to\":2.64283,\"integral\":2.07541,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"q\",\"kind\":\"\",\"remark\":\"\",\"j\":[{\"coupling\":7.65449122379232,\"multiplicity\":\"q\"}],\"delta\":2.60393}]},{\"from\":1.16673,\"to\":1.2144,\"integral\":2.98879,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"t\",\"kind\":\"\",\"remark\":\"\",\"j\":[{\"coupling\":7.654491223786863,\"multiplicity\":\"t\"}],\"delta\":1.19057}]}]},{\"dimension\":2,\"nucleus\":[\"1H\",\"1H\"],\"isFid\":false,\"isFt\":true,\"title\":\"ethylbenzene\",\"solvent\":\"DMSO\",\"pulse\":\"cosygpppqf\",\"experiment\":\"cosy\",\"temperature\":298.0012,\"frequency\":400.0819144864,\"type\":\"nD NMR SPECTRUM\",\"date\":\"2013-08-20T16:07:42.000Z\",\"jcamp\":{\"filename\":\"spectra/nmr/cosy_0.jdx\"},\"range\":[]},{\"dimension\":2,\"nucleus\":[\"13C\",\"1H\"],\"isFid\":false,\"isFt\":true,\"title\":\"ethylbenzene\",\"solvent\":\"DMSO\",\"pulse\":\"hsqcedetgpsisp2.3\",\"experiment\":\"hsqc\",\"temperature\":298.0009,\"frequency\":400.08188157624,\"type\":\"nD NMR SPECTRUM\",\"date\":\"2013-08-20T16:18:58.000Z\",\"jcamp\":{\"filename\":\"spectra/nmr/hsqc_0.jdx\"},\"range\":[]},{\"dimension\":2,\"nucleus\":[\"13C\",\"1H\"],\"isFid\":false,\"isFt\":true,\"title\":\"ethylbenzene\",\"solvent\":\"DMSO\",\"pulse\":\"hmbcgplpndqf\",\"experiment\":\"hmbc\",\"temperature\":298.0004,\"frequency\":400.0819144864,\"type\":\"nD NMR SPECTRUM\",\"date\":\"2013-08-20T16:25:18.000Z\",\"jcamp\":{\"filename\":\"spectra/nmr/hmbc_0.jdx\"},\"range\":[]}],\"raman\":[],\"chromatogram\":[{\"cdf\":{\"filename\":\"spectra/chromatogram/test.cdf\"}}],\"xray\":[]},\"physical\":{\"bp\":[{\"low\":136,\"high\":137,\"pressure\":760,\"doi\":\"\"}],\"density\":[{\"low\":0.866,\"high\":0.867,\"temperature\":0,\"doi\":\"\"}],\"mp\":[{\"low\":-95,\"high\":-94,\"doi\":\"\"}],\"nd\":[]},\"image\":[{\"image\":{\"filename\":\"image/PI-Ag_2-2_0010.tif\"}},{\"image\":{\"filename\":\"image/_MolecularEditor.jpg\"}}]},\"$lastModification\":\"admin@cheminfo.org\",\"$modificationDate\":1508511313905,\"$creationDate\":1497883915768,\"_attachments\":{\"spectra/mass/100-41-4-Mass.jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":2,\"digest\":\"md5-7v5k5UoAeF39XXDlxjD6xA==\",\"length\":832,\"stub\":true,\"name\":\"spectra/mass/100-41-4-Mass.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/mass/100-41-4-Mass.jdx\"},\"spectra/ir/100-41-4-IR.jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":4,\"digest\":\"md5-JlPWyfkDlV4k1NjjzOIgTQ==\",\"length\":19578,\"stub\":true,\"name\":\"spectra/ir/100-41-4-IR.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/ir/100-41-4-IR.jdx\"},\"spectra/nmr/h1_0.jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":6,\"digest\":\"md5-YXmYgQi9UtnEfAjrf1rz9g==\",\"length\":544934,\"stub\":true,\"name\":\"spectra/nmr/h1_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/h1_0.jdx\"},\"spectra/nmr/cosy_0.jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":8,\"digest\":\"md5-HDF0jbmbBnXxejVW2LETFQ==\",\"length\":3228923,\"stub\":true,\"name\":\"spectra/nmr/cosy_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/cosy_0.jdx\"},\"spectra/nmr/hsqc_0.jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":10,\"digest\":\"md5-Ry4oC5gaq/qZ/ZKR6vlrbA==\",\"length\":5488559,\"stub\":true,\"name\":\"spectra/nmr/hsqc_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/hsqc_0.jdx\"},\"spectra/nmr/hmbc_0.jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":12,\"digest\":\"md5-2h0JbfnPy0UY6OdApPM6/g==\",\"length\":9701227,\"stub\":true,\"name\":\"spectra/nmr/hmbc_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/hmbc_0.jdx\"},\"spectra/ir/1h (1).jdx\":{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":33,\"digest\":\"md5-4gJsQ3KkK/9mdo9+IYDa5Q==\",\"length\":175555,\"stub\":true,\"name\":\"spectra/ir/1h (1).jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/ir/1h%20(1).jdx\"},\"image/PI-Ag_2-2_0010.tif\":{\"content_type\":\"image/tiff\",\"revpos\":59,\"digest\":\"md5-j+z+Jbdc1YlKG/z9cQLVYw==\",\"length\":8391182,\"stub\":true,\"name\":\"image/PI-Ag_2-2_0010.tif\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/image/PI-Ag_2-2_0010.tif\"},\"image/_MolecularEditor.jpg\":{\"content_type\":\"image/jpeg\",\"revpos\":61,\"digest\":\"md5-ZNfT3/zaxIYck52pnYIMJQ==\",\"length\":4496,\"stub\":true,\"name\":\"image/_MolecularEditor.jpg\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/image/_MolecularEditor.jpg\"},\"spectra/chromatogram/test.cdf\":{\"content_type\":\"application/x-netcdf\",\"revpos\":89,\"digest\":\"md5-GBNiaUjXKFoLVXy354f+Ag==\",\"length\":14564080,\"stub\":true,\"name\":\"spectra/chromatogram/test.cdf\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/chromatogram/test.cdf\"}},\"attachmentList\":[{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":2,\"digest\":\"md5-7v5k5UoAeF39XXDlxjD6xA==\",\"length\":832,\"stub\":true,\"name\":\"spectra/mass/100-41-4-Mass.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/mass/100-41-4-Mass.jdx\"},{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":4,\"digest\":\"md5-JlPWyfkDlV4k1NjjzOIgTQ==\",\"length\":19578,\"stub\":true,\"name\":\"spectra/ir/100-41-4-IR.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/ir/100-41-4-IR.jdx\"},{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":6,\"digest\":\"md5-YXmYgQi9UtnEfAjrf1rz9g==\",\"length\":544934,\"stub\":true,\"name\":\"spectra/nmr/h1_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/h1_0.jdx\"},{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":8,\"digest\":\"md5-HDF0jbmbBnXxejVW2LETFQ==\",\"length\":3228923,\"stub\":true,\"name\":\"spectra/nmr/cosy_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/cosy_0.jdx\"},{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":10,\"digest\":\"md5-Ry4oC5gaq/qZ/ZKR6vlrbA==\",\"length\":5488559,\"stub\":true,\"name\":\"spectra/nmr/hsqc_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/hsqc_0.jdx\"},{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":12,\"digest\":\"md5-2h0JbfnPy0UY6OdApPM6/g==\",\"length\":9701227,\"stub\":true,\"name\":\"spectra/nmr/hmbc_0.jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/nmr/hmbc_0.jdx\"},{\"content_type\":\"chemical/x-jcamp-dx\",\"revpos\":33,\"digest\":\"md5-4gJsQ3KkK/9mdo9+IYDa5Q==\",\"length\":175555,\"stub\":true,\"name\":\"spectra/ir/1h (1).jdx\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/ir/1h%20(1).jdx\"},{\"content_type\":\"image/tiff\",\"revpos\":59,\"digest\":\"md5-j+z+Jbdc1YlKG/z9cQLVYw==\",\"length\":8391182,\"stub\":true,\"name\":\"image/PI-Ag_2-2_0010.tif\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/image/PI-Ag_2-2_0010.tif\"},{\"content_type\":\"image/jpeg\",\"revpos\":61,\"digest\":\"md5-ZNfT3/zaxIYck52pnYIMJQ==\",\"length\":4496,\"stub\":true,\"name\":\"image/_MolecularEditor.jpg\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/image/_MolecularEditor.jpg\"},{\"content_type\":\"application/x-netcdf\",\"revpos\":89,\"digest\":\"md5-GBNiaUjXKFoLVXy354f+Ag==\",\"length\":14564080,\"stub\":true,\"name\":\"spectra/chromatogram/test.cdf\",\"url\":\"https://mydb.cheminfo.org/db/eln/entry/1315a6d895f431497538cb6d834feab5/spectra/chromatogram/test.cdf\"}]}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 43,
+            "height": 73
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "sample"
+        },
+        {
+          "jpath": []
+        },
+        {
+          "jpath": []
+        },
+        {
+          "jpath": []
+        },
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": [
+                "html"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                []
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                [
+                  "store"
+                ]
+              ],
+              "debouncing": [
+                500
+              ],
+              "script": [
+                "<style>\n    #result, #result tbody  {\n        font-size: 12px;\n        font-family: Arial, Helvetica, sans-serif;\n    }\n    #result h1 {\n        font-size:20px;\n        text-align: center;\n    }\n    #result .number {\n        text-align: right;\n    }\n    #result .header {\n        font-size: 20px;\n        font-weight: bold;\n        width: 100%;\n    }\n    #result .headerCode {\n        font-size: 30px;\n    }\n    #result .reagents {\n        font-size: 10px;\n    }\n    \n    #result .reagents{\n         border-collapse: collapse;\n         border-width: 1px 0px 1px 0px;\n    }\n    \n    #result .reagents td, #result .samples td,\n    #result .reagents th, #result .samples th {\n        border-style: solid;\n        border-width: 1px 0px 1px 0px;\n        font-size: 10px;\n        vertical-align: center;\n        height: 20px;\n    }\n</style>\n\n{%set content=sample[\"$content\"] %}\n\n\n{% if content %}\n<div id='result'>\n \n    <table class=\"header\">\n      <tr>\n          <td class='headerCode'>\n              {{sample[\"$id\"][0]}}\n          </td>\n          <td class='headerCode'>\n              {{sample[\"$id\"][1]}}\n          </td>\n          <td align=\"right\">\n            {{rendertype(sample[\"$creationDate\"],{dateFormat:'YYYY-MM-DD'})}}<br>\n            {{rendertype(sample[\"$modificationDate\"],{dateFormat:'YYYY-MM-DD'})}}\n          </td>\n      </tr> \n    </table>\n    \n    \n    <h1>{{content.general.title}}</h1>\n   \n    {{content.general.description}}\n    \n    {{rendertype(content.general.molfile,{width:500, height:200},\"mol2d\")}}\n    \n    <table>\n        {% if content.general.mf %}\n            <tr>\n                <td>\n                    mf\n                </td>\n                <td>\n                    {{rendertype(content.general.mf,\"mf\")}}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.general.mw %}\n        <tr>\n            <td>\n                mw\n            </td>\n            <td>\n                {{rendertype(content.general.mw,{numeral:'0.0000'})}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                em\n            </td>\n            <td>\n                {{rendertype(content.general.em,{numeral:'0.0000'})}}\n            </td>\n        </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    bp (°C)\n                </td>\n                <td>\n                    {% for item in content.physical.bp %}\n                        {{item.low}}\n                        {% if item.high or item.high==0 %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.pressure and item.pressure!=760 %}\n                         ({{item.pressure}} torr)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.mp.length>0 %}\n            <tr>\n                <td>\n                    mp (°C)\n                </td>\n                <td>\n                    {% for item in content.physical.mp %}\n                        {{item.low}}\n                        {% if item.high or item.high==0 %}\n                         - {{item.high}}\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    density\n                </td>\n                <td>\n                    {% for item in content.physical.density %}\n                        {{item.low}}\n                        {% if item.high %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.temperature %}\n                         ({{item.temperature}} °C)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.nd.length>0 %}\n            <tr>\n                <td>\n                    nd\n                </td>\n                <td>\n                    {% for item in content.physical.nd %}\n                        {{item.low}}\n                        {% if item.high %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.temperature %}\n                         ({{item.temperature}} °C)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}       \n        \n        {% if content.spectra.ir.length>0 %}\n             <tr>\n                <td>\n                    IR\n                </td>\n                <td>\n                    {% for ir in content.spectra.ir %}\n                        {{ rendertype(ir, 'acsIR') }}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}  \n    </table>\n</div>\n{% endif %}"
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 109,
+            "top": 0
+          },
+          "size": {
+            "width": 79,
+            "height": 73
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "template"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/display/template-twig/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "selectable": [
+                [
+                  "yes"
+                ]
+              ],
+              "template": [
+                ""
+              ],
+              "modifyInForm": [
+                []
+              ],
+              "debouncing": [
+                0
+              ],
+              "formOptions": [
+                [
+                  "keepFormValueIfDataUndefined"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 44,
+            "top": 0
+          },
+          "size": {
+            "width": 64,
+            "height": 73
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "sample"
+        },
+        {
+          "rel": "tpl",
+          "name": "template"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}

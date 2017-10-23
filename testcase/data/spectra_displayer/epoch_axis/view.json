@@ -1,5 +1,5 @@
 {
-  "version": "2.73.1-0",
+  "version": "2.82.5-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -34,7 +34,7 @@
                 ]
               ],
               "script": [
-                "var start = Date.now() - (1000 * 60 * 60 * 24 * 60);\nvar end = Date.now();\n\nvar data = {\n    x: [],\n    y: []\n};\n\nfor (var i = start; i < end; i += (1000 * 60 * 30)) {\n    data.x.push(i);\n    data.y.push(Math.random());\n}\n\nAPI.createData('chart', data);\n"
+                "var start = Date.now() - (1000 * 60 * 60 * 24 * 60);\nvar end = Date.now();\n\nvar data = {\n    x: [],\n    y: []\n};\n\nfor (var i = start; i < end; i += (100 * 60 * 30)) {\n    data.x.push(i);\n    data.y.push(Math.random());\n}\n\nconsole.log(data.x.length);\n\nAPI.createData('chart', data);\n"
               ]
             }
           ],
@@ -145,7 +145,7 @@
                       "x"
                     ],
                     "wheelAction": [
-                      "none"
+                      "zoomY"
                     ],
                     "wheelbaseline": [
                       0
@@ -267,9 +267,9 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "none",
-                      "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     }
                   ]
@@ -360,7 +360,6 @@
   ],
   "variables": [],
   "aliases": [],
-  "pouchvariables": [],
   "configuration": {
     "title": "No title"
   }

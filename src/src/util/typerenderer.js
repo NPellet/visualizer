@@ -176,6 +176,26 @@ define([
         $element.html(number);
     };
 
+    functions.acsir = {}; // formatting IR spectra
+    functions.acsir.toscreen = function ($element, val, rootVal, options) {
+        var acsString="";
+        if (val && val.peak) {
+            acsString += 'IR (cm<sup>-1</sup>): ';
+            acsString += val.peak.map(a => Math.round(a.wavelength) + (a.kind ? '<i>' + a.kind + '</i>' : '')).join(', ');
+        }
+        $element.html(acsString);
+    };
+
+    functions.acsnmr = {}; // formatting NMR spectra
+    functions.acsnmr.toscreen = function (element, val, rootVal, options) {
+
+    };
+
+    functions.acsem = {};
+    functions.acsem.toscreen = function (element, val, rootVal, options) {
+
+    };
+
     functions.picture = {};
     functions.picture.toscreen = function (element, val, rootVal, options) {
         var $img = $('<img>');
