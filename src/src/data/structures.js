@@ -4,9 +4,6 @@ define(function () {
 
     var structures = {
         //        'object': 'object', // Removed ! Object should by dynamic.
-        acsIR: 'object',
-        acsNMR: 'object',
-        acsEM: 'object',
         latex: 'string',
         mol2d: 'string',
         molfile2D: 'string',
