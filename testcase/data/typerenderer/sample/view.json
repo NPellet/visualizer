@@ -56,8 +56,8 @@
             "top": 0
           },
           "size": {
-            "width": 43,
-            "height": 73
+            "width": 51,
+            "height": 39
           },
           "zIndex": 0,
           "display": true,
@@ -302,11 +302,11 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 44,
+            "left": 52,
             "top": 0
           },
           "size": {
-            "width": 64,
+            "width": 56,
             "height": 73
           },
           "zIndex": 0,
@@ -333,6 +333,127 @@
           "rel": "tpl",
           "name": "template"
         }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "TypeRenderer.addType('acsir', {\n    toscreen($element, val, rootVal, options) {\n        var acsString=\"\";\n        if (val && val.peak) {\n            acsString += 'IR (cm<sup>-1</sup>): ';\n            acsString += val.peak.map(a => Math.round(a.wavelength) + (a.kind ? '<i>' + a.kind + '</i>' : '')).join(', ');\n        }\n        $element.html(acsString);\n    }\n})\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "src/util/typerenderer",
+                "alias": "TypeRenderer"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 40
+          },
+          "size": {
+            "width": 51,
+            "height": 49
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {}
       ],
       "actions_in": [
         {}
