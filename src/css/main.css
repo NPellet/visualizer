@@ -41,7 +41,7 @@
     outline: none;
 }
 
-table#viewport, table#viewport td, #ci-module-grid, #ci-left > *, .ci-expand > *, .ci-module-header, .ci-module-header > *, .ci-module-content, .ci-module, .ci-module-wrapper {
+table#viewport, #ci-module-grid, #ci-left > *, .ci-expand > *, .ci-module-header, .ci-module-header > *, .ci-module-content, .ci-module, .ci-module-wrapper {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
