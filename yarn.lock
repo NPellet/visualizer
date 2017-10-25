@@ -482,6 +482,10 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-add-module-exports@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-add-module-exports/-/babel-plugin-add-module-exports-0.2.1.tgz#9ae9a1f4a8dc67f0cdec4f4aeda1e43a5ff65e25"
+
 babel-plugin-check-es2015-constants@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-check-es2015-constants/-/babel-plugin-check-es2015-constants-6.22.0.tgz#35157b101426fd2ffd3da3f75c7d1e91835bbf8a"
@@ -3696,12 +3700,6 @@ just-compare@^1.1.19:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/just-compare/-/just-compare-1.2.0.tgz#9d71a6957a1b1d7ca1b1c0b8591de09f77181714"
 
-katex@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/katex/-/katex-0.7.1.tgz#06bb5298efad05e1e7228035ba8e1591f3061b8f"
-  dependencies:
-    match-at "^0.1.0"
-
 katex@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/katex/-/katex-0.8.3.tgz#909d99864baf964c3ccae39c4a99a8e0fb9a1bd0"
@@ -4197,11 +4195,11 @@ next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
 
-node-jsgraph@2.0.10:
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/node-jsgraph/-/node-jsgraph-2.0.10.tgz#c02d52b9dc2d0f230ed196ec4daaf6fb206952b8"
+node-jsgraph@2.0.29:
+  version "2.0.29"
+  resolved "https://registry.yarnpkg.com/node-jsgraph/-/node-jsgraph-2.0.29.tgz#c1a16453be2cd8366e14f214b714684e334f6a41"
   dependencies:
-    katex "^0.7.1"
+    babel-plugin-add-module-exports "^0.2.1"
 
 node-pre-gyp@^0.6.36:
   version "0.6.38"

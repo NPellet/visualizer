@@ -1,0 +1,9038 @@
+{
+	"version": "2.84.1-0",
+	"grid": {
+		"layers": {
+			"Default layer": {
+				"name": "Default layer"
+			},
+			"Admin": {
+				"name": "Admin"
+			},
+			"Bioproduct": {
+				"name": "Bioproduct"
+			},
+			"Spectra": {
+				"name": "Spectra"
+			},
+			"Images": {
+				"name": "Images"
+			},
+			"Physical": {
+				"name": "Physical"
+			},
+			"Molecule": {
+				"name": "Molecule"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"modules": [
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"pref"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940"
+							],
+							"customJpaths": [
+								""
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": [
+									"name"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 172,
+								"hideColumn": []
+							},
+							{
+								"name": "Content type",
+								"jpath": [
+									"content_type"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 96,
+								"hideColumn": []
+							},
+							{
+								"name": "Size",
+								"jpath": [
+									"length"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "numeral: '0b'",
+								"editorOptions": "",
+								"width": 47,
+								"hideColumn": []
+							},
+							{
+								"name": "Download",
+								"jpath": [
+									"url"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 20,
+								"minWidth": "20",
+								"maxWidth": "20",
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "delete",
+								"tooltip": "Delete this attachment",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									1
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "deleteAttachment",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 42
+					},
+					"size": {
+						"width": 38,
+						"height": 34
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 60,
+						"top": 59
+					},
+					"size": {
+						"width": 58.0181818,
+						"height": 36.0181818
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 74,
+						"top": 7
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 28
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 28
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 75,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 34
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 75,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 34
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 1,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "attachments"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "Attachments",
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [],
+					"name": "file"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"configuration": {
+				"sections": {
+					"graph": [
+						{
+							"sections": {},
+							"groups": {
+								"graph": [
+									{
+										"url": [
+											""
+										],
+										"zoom": [
+											"x"
+										],
+										"wheelAction": [
+											"zoomY"
+										],
+										"wheelbaseline": [
+											0
+										],
+										"fullOut": [
+											"both"
+										],
+										"legend": [
+											null
+										],
+										"legendOptions": [
+											[
+												"isSerieHideable",
+												"isSerieSelectable"
+											]
+										],
+										"mouseTracking": [
+											[
+												"track"
+											]
+										],
+										"selectScatter": [
+											[]
+										],
+										"independantYZoom": [
+											[]
+										]
+									}
+								]
+							}
+						}
+					],
+					"axis": [
+						{
+							"sections": {},
+							"groups": {
+								"xAxis": [
+									{
+										"checkboxes": [
+											[
+												"display",
+												"flip",
+												"main"
+											]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											"0.05"
+										],
+										"afterSpacing": [
+											"0.05"
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"axismodification": [
+											"none"
+										]
+									}
+								],
+								"yAxis": [
+									{
+										"checkboxes": [
+											[
+												"display",
+												"main"
+											]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											"0.05"
+										],
+										"afterSpacing": [
+											"0.05"
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"fitToAxisOnFromTo": [
+											[]
+										]
+									}
+								]
+							}
+						}
+					],
+					"variables": [
+						{
+							"sections": {},
+							"groups": {
+								"variables": [
+									[
+										{
+											"variable": "jcamp",
+											"axis": "0",
+											"adaptTo": "none",
+											"plotcolor": [
+												1,
+												1,
+												255,
+												1
+											],
+											"strokewidth": "1",
+											"strokestyle": "1",
+											"plotcontinuous": "auto",
+											"peakpicking": [
+												"picking"
+											],
+											"markers": [],
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
+											"optimizeSlots": [],
+											"degrade": 0,
+											"monotoneous": [],
+											"tracking": []
+										}
+									]
+								]
+							}
+						}
+					],
+					"misc": [
+						{
+							"sections": {},
+							"groups": {
+								"misc": [
+									{
+										"highlightOptions": [
+											"{}"
+										]
+									}
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 74,
+						"top": 53
+					},
+					"size": {
+						"width": 77,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 118.99999780654908,
+						"top": 36.99999885559082
+					},
+					"size": {
+						"width": 34.0181818,
+						"height": 29.0181818
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 74,
+						"top": 53
+					},
+					"size": {
+						"width": 77,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 37
+					},
+					"size": {
+						"width": 74,
+						"height": 34
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 51
+					},
+					"size": {
+						"width": 77,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 74,
+						"top": 53
+					},
+					"size": {
+						"width": 77,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 74,
+						"top": 53
+					},
+					"size": {
+						"width": 77,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 2,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "jcamp"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "Jcamp previsualizsation",
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onTrackMouse",
+					"rel": "trackData",
+					"jpath": [],
+					"name": "tracking"
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Show fullscreen"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/display/template-twig/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"selectable": [
+								[
+									"yes"
+								]
+							],
+							"template": [
+								"<style>\n    \n    #result, #result tbody  {\n        font-size: 12px;\n        font-family: Arial, Helvetica, sans-serif;\n    }\n    #result h1 {\n        font-size:20px;\n    }\n    #result .number {\n        text-align: right;\n    }\n    #result .header {\n        font-size: 20px;\n        font-weight: bold;\n    }\n    #result .reagents {\n        font-size: 10px;\n    }\n    \n    #result .reagents{\n         border-collapse: collapse;\n         border-width: 1px 0px 1px 0px;\n    }\n    \n    #result .reagents td, #result .samples td,\n    #result .reagents th, #result .samples th {\n        border-style: solid;\n        border-width: 1px 0px 1px 0px;\n        font-size: 10px;\n        vertical-align: center;\n        height: 20px;\n    }\n</style>\n\n\n{{sample[\"$id\"][0]}}\n{{sample[\"$id\"][1]}}\n{{rendertype(sample[\"$creationDate\"],{dateFormat:'YYYY-MM-DD'})}}\n{{rendertype(sample[\"$modificationDate\"],{dateFormat:'YYYY-MM-DD'})}}\n\n{% if content %}\n\n    <h1>{{content.general.description}}</h1>\n    \n    <table class=\"header\">\n      <tr>\n          <td align=\"left\">\n              {{content.code}}\n          </td>\n          <td align=\"right\">\n              {{content.date}}\n          </td>\n      </tr> \n    </table>\n    \n    \n    {{rendertype(content.general.molfile,\"mol2d\")}}\n    \n    <table>\n        {% if content.general.mf %}\n            <tr>\n                <td>\n                    mf\n                </td>\n                <td>\n                    {{rendertype(content.general.mf,\"mf\")}}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.general.mw %}\n         <tr>\n            <td>\n                mw\n            </td>\n            <td>\n                {{content.general.mw}}\n            </td>\n        </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    bp (°C)\n                </td>\n                <td>\n                    {% for item in content.physical.bp %}\n                        {{item.low}}\n                        {% if item.high or item.high==0 %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.pressure and item.pressure!=760 %}\n                         ({{item.pressure}} torr)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.mp.length>0 %}\n            <tr>\n                <td>\n                    mp (°C)\n                </td>\n                <td>\n                    {% for item in content.physical.mp %}\n                        {{item.low}}\n                        {% if item.high or item.high==0 %}\n                         - {{item.high}}\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    density\n                </td>\n                <td>\n                    {% for item in content.physical.density %}\n                        {{item.low}}\n                        {% if item.high %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.temperature %}\n                         ({{item.temperature}} °C)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    nd\n                </td>\n                <td>\n                    {% for item in content.physical.nd %}\n                        {{item.low}}\n                        {% if item.high %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.temperature %}\n                         ({{item.temperature}} °C)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}       \n        \n    </table>\n\n{% endif %}"
+							],
+							"modifyInForm": [
+								[]
+							],
+							"debouncing": [
+								0
+							],
+							"formOptions": [
+								[
+									"keepFormValueIfDataUndefined"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 75,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 76
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 68,
+						"top": 0
+					},
+					"size": {
+						"width": 38.0181818,
+						"height": 27.0181818
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 42,
+						"top": 17
+					},
+					"size": {
+						"width": 26,
+						"height": 25
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 42,
+						"top": 17
+					},
+					"size": {
+						"width": 26,
+						"height": 25
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 42,
+						"top": 17
+					},
+					"size": {
+						"width": 26,
+						"height": 25
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 42,
+						"top": 17
+					},
+					"size": {
+						"width": 26,
+						"height": 25
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 42,
+						"top": 17
+					},
+					"size": {
+						"width": 26,
+						"height": 25
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 3,
+			"vars_in": [
+				{
+					"rel": "tpl",
+					"name": "twigTemplate"
+				},
+				{
+					"rel": "value",
+					"name": "sample"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Print"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"html"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[]
+							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								50
+							],
+							"script": [
+								"<style>\n    #result, #result tbody  {\n        font-size: 12px;\n        font-family: Arial, Helvetica, sans-serif;\n    }\n    #result h1 {\n        font-size:20px;\n        text-align: center;\n    }\n    #result .number {\n        text-align: right;\n    }\n    #result .header {\n        font-size: 20px;\n        font-weight: bold;\n        width: 100%;\n    }\n    #result .headerCode {\n        font-size: 30px;\n    } \n    #result .reagents {\n        font-size: 10px;\n    }\n       \n    #result .reagents{\n         border-collapse: collapse;\n         border-width: 1px 0px 1px 0px;\n    }\n    \n    #result .reagents td, #result .samples td,\n    #result .reagents th, #result .samples th {\n        border-style: solid;\n        border-width: 1px 0px 1px 0px;\n        font-size: 10px;\n        vertical-align: center;\n        height: 20px;\n    }\n</style>\n\n{%set content=sample[\"$content\"] %}\n\n\n{% if content %}\n<div id='result'>\n \n    <table class=\"header\">\n      <tr>\n          <td class='headerCode'>\n              {{sample[\"$id\"][0]}}\n          </td>\n          <td class='headerCode'>\n              {{sample[\"$id\"][1]}}\n          </td>\n          <td align=\"right\">\n            {{rendertype(sample[\"$creationDate\"],{dateFormat:'YYYY-MM-DD'})}}<br>\n            {{rendertype(sample[\"$modificationDate\"],{dateFormat:'YYYY-MM-DD'})}}\n          </td>\n      </tr> \n    </table>\n    \n    \n    <h1>{{content.general.title}}</h1>\n   \n    {{content.general.description}}\n    \n    {{rendertype(content.general.molfile,{width:500, height:200},\"mol2d\")}}\n    \n    <table>\n        {% if content.general.mf %}\n            <tr>\n                <td>\n                    mf\n                </td>\n                <td>\n                    {{rendertype(content.general.mf,\"mf\")}}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.general.mw %}\n        <tr>\n            <td>\n                mw\n            </td>\n            <td>\n                {{rendertype(content.general.mw,{numeral:'0.0000'})}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                em\n            </td>\n            <td>\n                {{rendertype(content.general.em,{numeral:'0.0000'})}}\n            </td>\n        </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    bp (°C)\n                </td>\n                <td>\n                    {% for item in content.physical.bp %}\n                        {{item.low}}\n                        {% if item.high or item.high==0 %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.pressure and item.pressure!=760 %}\n                         ({{item.pressure}} torr)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.mp.length>0 %}\n            <tr>\n                <td>\n                    mp (°C)\n                </td>\n                <td>\n                    {% for item in content.physical.mp %}\n                        {{item.low}}\n                        {% if item.high or item.high==0 %}\n                         - {{item.high}}\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.bp.length>0 %}\n            <tr>\n                <td>\n                    density\n                </td>\n                <td>\n                    {% for item in content.physical.density %}\n                        {{item.low}}\n                        {% if item.high %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.temperature %}\n                         ({{item.temperature}} °C)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        {% if content.physical.nd.length>0 %}\n            <tr>\n                <td>\n                    nd\n                </td>\n                <td>\n                    {% for item in content.physical.nd %}\n                        {{item.low}}\n                        {% if item.high %}\n                         - {{item.high}}\n                        {% endif %}\n                        {% if item.temperature %}\n                         ({{item.temperature}} °C)\n                        {% endif %}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}       \n        \n        {% if content.spectra.ir.length>0 %}\n             <tr>\n                <td>\n                    IR\n                </td>\n                <td>\n                    {% for ir in content.spectra.ir %}\n                        {{ rendertype(ir, 'acsIR') }}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}  \n        \n        {% if content.spectra.nmr.length>0 %}\n             <tr>\n                <td>\n                    NMR\n                </td>\n                <td>\n                    {% for nmr in content.spectra.nmr %}\n                        {{ rendertype(nmr, 'acsNMR') }}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}\n        \n        {% if content.spectra.mass.length>0 %}\n             <tr>\n                <td>\n                    MASS\n                </td>\n                <td>\n                    {% for mass in content.spectra.mass %}\n                        {{ rendertype(mass, 'acsEM') }}\n                    {% endfor %}\n                </td>\n            </tr>\n        {% endif %}  \n        \n    </table>\n</div>\n{% endif %}"
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 87,
+						"top": 0
+					},
+					"size": {
+						"width": 80,
+						"height": 47
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 4,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onEditorChange",
+					"rel": "data",
+					"jpath": [],
+					"name": "twigTemplate"
+				}
+			],
+			"title": "Sample twig template",
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/science/chemistry/jsme/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook",
+									"multipart"
+								]
+							],
+							"defaultaction": [
+								null
+							],
+							"labelsize": [
+								14
+							],
+							"bondwidth": [
+								1
+							],
+							"highlightColor": [
+								"3"
+							],
+							"outputResult": [
+								[
+									"yes"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 35
+					},
+					"size": {
+						"width": 36,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 41,
+						"top": 0
+					},
+					"size": {
+						"width": 35,
+						"height": 37
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 14
+					},
+					"size": {
+						"width": 36,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 14
+					},
+					"size": {
+						"width": 36,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 14
+					},
+					"size": {
+						"width": 36,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 35
+					},
+					"size": {
+						"width": 36,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 38
+					},
+					"size": {
+						"width": 37,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 5,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "editableMolfile"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "Download molfile",
+							"icon": "fa-download",
+							"action": "downloadMolfile",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								[
+									"yes"
+								]
+							],
+							"debounce": [
+								0
+							],
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								"18pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"rendererOptions": [
+								""
+							],
+							"forceType": [
+								""
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 118.99999780654908,
+						"top": 59.99999885559082
+					},
+					"size": {
+						"width": 20.0181818,
+						"height": 20.0181818
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 6,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "title"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "Title",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"buttons",
+									"editor"
+								]
+							],
+							"execOnLoad": [
+								[
+									"yes"
+								]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"\nif (! this.button) {\n    this.button='default';\n    this.getButton('save').setColor('green');\n}\n\nvar layers={\n    'default': {\n        layer:'Default layer',\n        info:'<h3>General overview of the sample</h3> Click on a button to change specific values'\n        },\n    'physical': {\n        layer:'Physical',\n        info:'<h3>Physical characteristics</h3> Enter here simple values like bp, mp, ...'\n    },\n    'admin': {\n        layer:'Admin',\n        info:'Admin'\n    },\n    'spectra': {\n        layer:'Spectra',\n        info:'<h3>Spectra</h3> '\n    },\n    'images': {\n        layer:'Images',\n        info:'<h3>Images</h3>'\n        \n    },\n    'molecule': {\n        layer:'Molecule',\n        info:'<h3>Molecule</h3>Information concernifng an organic molecule.'\n    },\n    'bioproduct': {\n        layer:'Bioproduct',\n        info:'<h3>Bioproducts</h3>Currently designed more for peptide and proteine sequence'\n    }\n}\n\nif (layers[this.button]) {\n    for (var key of Object.keys(layers)) {\n        this.enableButton(key);\n    }\n    API.switchToLayer(layers[this.button].layer)\n    this.disableButton(this.button);\n    API.createData('layerInfo',layers[this.button].info);\n} else {\n    switch (this.button) {\n        case 'save':\n            API.doAction('save');\n            break;\n        case 'help':\n            API.doAction('Help');\n            break;\n    }\n}\n\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "default",
+								"label": "Overview",
+								"hide": [],
+								"disable": [
+									"disable"
+								]
+							},
+							{
+								"name": "admin",
+								"label": "Admin",
+								"hide": [],
+								"disable": []
+							},
+							{
+								"name": "physical",
+								"label": "Physical",
+								"hide": [],
+								"disable": []
+							},
+							{
+								"name": "spectra",
+								"label": "Spectra",
+								"hide": [],
+								"disable": []
+							},
+							{
+								"name": "images",
+								"label": "Images",
+								"hide": [],
+								"disable": []
+							},
+							{
+								"name": "molecule",
+								"label": "Molecule",
+								"hide": [],
+								"disable": []
+							},
+							{
+								"name": "bioproduct",
+								"label": "Bioproduct",
+								"hide": [],
+								"disable": []
+							},
+							{
+								"name": "save",
+								"label": "Save data",
+								"hide": [],
+								"disable": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 86,
+						"height": 27
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								[
+									"yes"
+								]
+							],
+							"debounce": [
+								0
+							],
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								"12pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"rendererOptions": [
+								""
+							],
+							"forceType": [
+								"mf"
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[
+									"pre",
+									"selectable"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 37,
+						"top": 35
+					},
+					"size": {
+						"width": 37,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 67,
+						"top": 0
+					},
+					"size": {
+						"width": 13,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 75,
+						"top": 38
+					},
+					"size": {
+						"width": 74,
+						"height": 16
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 37,
+						"top": 21
+					},
+					"size": {
+						"width": 16,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 37,
+						"top": 21
+					},
+					"size": {
+						"width": 16,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 37,
+						"top": 35
+					},
+					"size": {
+						"width": 37,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 38,
+						"top": 38
+					},
+					"size": {
+						"width": 36,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mf"
+				},
+				{
+					"rel": "color",
+					"name": "mfBGColor"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "MF",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								[]
+							],
+							"debounce": [
+								0
+							],
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								"12pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"rendererOptions": [
+								"numeral:'#.000'"
+							],
+							"forceType": [
+								""
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[
+									"pre",
+									"selectable"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 37,
+						"top": 42
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 68,
+						"top": 8
+					},
+					"size": {
+						"width": 13,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 102,
+						"top": 55
+					},
+					"size": {
+						"width": 23,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 54,
+						"top": 21
+					},
+					"size": {
+						"width": 9,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 54,
+						"top": 21
+					},
+					"size": {
+						"width": 9,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 37,
+						"top": 42
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 38,
+						"top": 45
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 9,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "mw"
+				},
+				{
+					"rel": "color",
+					"name": "mfBGColor"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "mw",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[
+									"yes"
+								]
+							],
+							"asyncAwait": [
+								[]
+							],
+							"script": [
+								"var action=getAction() || {name:''};\nvar sample=API.cache('sample');\nconsole.log(\"Receive action: \",action);\nif (!sample) return;\n\nif(this.action) {\n    switch (action.name) {\n    default:\n        sample.handleAction(action);\n    }    \n} else if(this.variable) {\n    sample.handleDrop(this.variable, true);\n}\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 87,
+						"top": 48
+					},
+					"size": {
+						"width": 80,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Roc sample",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 10,
+			"vars_in": [
+				{
+					"rel": "inputValue",
+					"name": "droppedData"
+				}
+			],
+			"actions_in": [
+				{
+					"rel": "execute",
+					"name": "refresh"
+				},
+				{
+					"rel": "execute",
+					"name": "save"
+				},
+				{
+					"rel": "execute",
+					"name": "deleteAttachment"
+				},
+				{
+					"rel": "execute",
+					"name": "updateAttachments"
+				},
+				{
+					"rel": "execute",
+					"name": "unattach"
+				}
+			],
+			"title": "Roc sample",
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/dragdrop/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"label": [
+								"Drop/Paste your experimental data"
+							],
+							"dragoverlabel": [
+								""
+							],
+							"hoverlabel": [
+								null
+							],
+							"getusermedia": [
+								[]
+							],
+							"capture": [
+								"none"
+							]
+						}
+					],
+					"vars": [
+						[
+							{
+								"filter": "ext",
+								"extension": "*",
+								"filetype": "base64",
+								"type": "",
+								"variable": "file"
+							}
+						]
+					],
+					"string_general": [
+						{
+							"askFilename": [
+								[
+									"yes"
+								]
+							]
+						}
+					],
+					"string": [
+						[
+							{
+								"filter": "mime",
+								"extension": "text/plain",
+								"type": "",
+								"variable": "str"
+							}
+						]
+					],
+					"photo": [
+						[
+							{
+								"variable": "photo"
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 74,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 27,
+						"top": 0
+					},
+					"size": {
+						"width": 19,
+						"height": 11
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 74,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 9
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 9
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 74,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 74,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 11,
+			"title": "",
+			"vars_out": [
+				{
+					"event": "onRead",
+					"rel": "dataarray",
+					"jpath": [],
+					"name": "droppedData"
+				}
+			],
+			"vars_in": [],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable",
+									"enableAddRow",
+									"autoEdit"
+								]
+							],
+							"autoColumns": [
+								[
+									"remove"
+								]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"pref"
+							],
+							"filterRow": [
+								"if (this.event=='newRow') {\n    var emptyRow={\n        value:undefined,language:'en'\n    };\n    for (var key of Object.keys(emptyRow)) {\n        if (! this.row.item[key]) {\n            this.row.item[key]=emptyRow[key];\n        }\n    }\n}"
+							],
+							"customJpaths": [
+								"value,language,iupac"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Name",
+								"jpath": [
+									"value"
+								],
+								"editor": "string",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 285,
+								"hideColumn": []
+							},
+							{
+								"name": "Lang.",
+								"jpath": [
+									"language"
+								],
+								"editor": "string",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 49,
+								"hideColumn": []
+							},
+							{
+								"name": "IUPAC",
+								"jpath": [
+									"iupac"
+								],
+								"editor": "boolean",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 56,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"position": "end",
+								"clickMode": "text"
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 37,
+						"top": 49
+					},
+					"size": {
+						"width": 37,
+						"height": 24
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 55
+					},
+					"size": {
+						"width": 42,
+						"height": 19
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 37,
+						"top": 28
+					},
+					"size": {
+						"width": 36,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 37,
+						"top": 28
+					},
+					"size": {
+						"width": 36,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 37,
+						"top": 49
+					},
+					"size": {
+						"width": 37,
+						"height": 24
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 38,
+						"top": 52
+					},
+					"size": {
+						"width": 36,
+						"height": 24
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 12,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "name"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "IUPAC names and synonyms",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"var html=this.action.value.report;\n\nUI.dialog(html, {\n    title:'Report of analysis'\n});\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{
+								"lib": "src/util/ui",
+								"alias": "UI"
+							}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 59
+					},
+					"size": {
+						"width": 36,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 13,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{
+					"rel": "execute",
+					"name": "showReport"
+				}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Show report",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/display/template-twig/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"selectable": [
+								[]
+							],
+							"template": [
+								""
+							],
+							"modifyInForm": [
+								[
+									"yes"
+								]
+							],
+							"debouncing": [
+								500
+							],
+							"formOptions": [
+								[
+									"keepFormValueIfDataUndefined"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 114,
+						"top": 0
+					},
+					"size": {
+						"width": 55,
+						"height": 53
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 53
+					},
+					"size": {
+						"width": 73,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 53
+					},
+					"size": {
+						"width": 73,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 53
+					},
+					"size": {
+						"width": 73,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 75,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 76
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 114,
+						"top": 0
+					},
+					"size": {
+						"width": 55,
+						"height": 53
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 14,
+			"vars_in": [
+				{
+					"rel": "tpl",
+					"name": "chem.physical"
+				},
+				{
+					"rel": "form",
+					"name": "physical"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						"Sample physical characteristics"
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Sample physical characteristics",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"invar"
+							],
+							"filterRow": [
+								""
+							],
+							"customJpaths": [
+								"jcamp.dUrl,jcampFID.dUrl,jcamp.data,solvent"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Filename",
+								"jpath": [
+									"jcamp",
+									"filename"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "twig:'{{jcamp.filename}}{{pdf.filename}}{{file.filename}}'",
+								"editorOptions": "",
+								"width": 131,
+								"hideColumn": []
+							},
+							{
+								"name": "Nucleus",
+								"jpath": [
+									"nucleus"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 38,
+								"hideColumn": []
+							},
+							{
+								"name": "Dim",
+								"jpath": [
+									"dimension"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 30,
+								"hideColumn": []
+							},
+							{
+								"name": "Solvent",
+								"jpath": [
+									"solvent"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 30,
+								"hideColumn": []
+							},
+							{
+								"name": "Pulse",
+								"jpath": [
+									"pulse"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 30,
+								"hideColumn": []
+							},
+							{
+								"name": "jcamp",
+								"jpath": [
+									"jcamp",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 30,
+								"hideColumn": []
+							},
+							{
+								"name": "FID",
+								"jpath": [
+									"jcampFID",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 41,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "d",
+								"tooltip": "Delete nmr and linked attachment(s)",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "unattach",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							},
+							{
+								"name": "r",
+								"tooltip": "Show report",
+								"icon": "fa-window-restore",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "showReport",
+								"position": "end",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 113,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 113,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 75,
+						"top": 45
+					},
+					"size": {
+						"width": 47,
+						"height": 26
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 43,
+						"top": 27
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 113,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 113,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 15,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "nmr"
+				},
+				{
+					"rel": "script",
+					"name": "slickScript"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"jcamp",
+						"data"
+					],
+					"name": "jcamp"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "NMR",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"invar"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+							],
+							"customJpaths": [
+								"jcamp.dUrl,pdf.dUrl,file.dUrl,jcamp.data"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Filename",
+								"jpath": [
+									"jcamp",
+									"filename"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "twig:'{{jcamp.filename}}{{pdf.filename}}{{file.filename}}'",
+								"editorOptions": "",
+								"width": 183,
+								"hideColumn": []
+							},
+							{
+								"name": "jcamp",
+								"jpath": [
+									"jcamp",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 61,
+								"hideColumn": []
+							},
+							{
+								"name": "pdf",
+								"jpath": [
+									"pdf",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 35,
+								"hideColumn": []
+							},
+							{
+								"name": "file",
+								"jpath": [
+									"file",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 51,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "d",
+								"tooltip": "Delete attachment and linked metadata",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "unattach",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							},
+							{
+								"name": "r",
+								"tooltip": "Show report",
+								"icon": "fa-window-restore",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "showReport",
+								"position": "end",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 113,
+						"top": 15
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 113,
+						"top": 15
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 75,
+						"top": 15
+					},
+					"size": {
+						"width": 47,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 83,
+						"top": 32
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 113,
+						"top": 15
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 113,
+						"top": 15
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 16,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "ir"
+				},
+				{
+					"rel": "script",
+					"name": "slickScript"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"jcamp",
+						"data"
+					],
+					"name": "jcamp"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "IR",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"invar"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+							],
+							"customJpaths": [
+								"jcamp.dUrl,pdf.dUrl,file.dUrl,jcamp.data"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Filename",
+								"jpath": [],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "twig:'{{jcamp.filename}}{{pdf.filename}}{{file.filename}}'",
+								"editorOptions": "",
+								"width": 175,
+								"hideColumn": []
+							},
+							{
+								"name": "jcamp",
+								"jpath": [
+									"jcamp",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 56,
+								"hideColumn": []
+							},
+							{
+								"name": "pdf",
+								"jpath": [
+									"pdf",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 49,
+								"hideColumn": []
+							},
+							{
+								"name": "file",
+								"jpath": [
+									"file",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 50,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "d",
+								"tooltip": "Delete attachment and linked metadata",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "unattach",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							},
+							{
+								"name": "r",
+								"tooltip": "Show report",
+								"icon": "fa-window-restore",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "showReport",
+								"position": "end",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 113,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 113,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 75,
+						"top": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 16,
+						"top": 35
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 113,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 113,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 17,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "mass"
+				},
+				{
+					"rel": "script",
+					"name": "slickScript"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"jcamp",
+						"data"
+					],
+					"name": "jcamp"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "MS",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"invar"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+							],
+							"customJpaths": [
+								"pdb.dUrl,cif.dUrl,file.dUrl"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Filename",
+								"jpath": [],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "twig:'{{pdb.filename}} {{cif.filename}}'",
+								"editorOptions": "",
+								"width": 163,
+								"hideColumn": []
+							},
+							{
+								"name": "pdb",
+								"jpath": [
+									"pdb",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 45,
+								"hideColumn": []
+							},
+							{
+								"name": "cif",
+								"jpath": [
+									"cif",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 32,
+								"hideColumn": []
+							},
+							{
+								"name": "file",
+								"jpath": [
+									"file",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 40,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "d",
+								"tooltip": "Delete attachment and linked metadata",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "unattach",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							},
+							{
+								"name": "r",
+								"tooltip": "Show report",
+								"icon": "fa-window-restore",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "showReport",
+								"position": "end",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 152,
+						"top": 1
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 152,
+						"top": 0
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 123,
+						"top": 0
+					},
+					"size": {
+						"width": 36,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 126,
+						"top": 0
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 152,
+						"top": 1
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 152,
+						"top": 1
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 18,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "xray"
+				},
+				{
+					"rel": "script",
+					"name": "slickScript"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"jcamp",
+						"data"
+					],
+					"name": "jcamp"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Xray",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"invar"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+							],
+							"customJpaths": [
+								"image.dUrl,image.data"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Filename",
+								"jpath": [
+									"image",
+									"filename"
+								],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 191,
+								"hideColumn": []
+							},
+							{
+								"name": "Download",
+								"jpath": [
+									"image",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 89,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "d",
+								"tooltip": "Delete attachment and linked metadata",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "unattach",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							},
+							{
+								"name": "r",
+								"tooltip": "Show report",
+								"icon": "fa-window-restore",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "showReport",
+								"position": "end",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 152,
+						"top": 30
+					},
+					"size": {
+						"width": 33,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 152,
+						"top": 30
+					},
+					"size": {
+						"width": 33,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 152,
+						"top": 30
+					},
+					"size": {
+						"width": 33,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 75,
+						"top": 19
+					},
+					"size": {
+						"width": 48,
+						"height": 17
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 152,
+						"top": 30
+					},
+					"size": {
+						"width": 33,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 152,
+						"top": 30
+					},
+					"size": {
+						"width": 33,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 19,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "image"
+				},
+				{
+					"rel": "script",
+					"name": "slickScript"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"image",
+						"data"
+					],
+					"name": "selectedImage"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Images",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/rich_text/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"editable": [
+								[
+									"isEditable"
+								]
+							],
+							"debouncing": [
+								0
+							],
+							"modifyInVariable": [
+								[
+									"yes"
+								]
+							],
+							"storeInView": [
+								[]
+							],
+							"autoHeight": [
+								[]
+							],
+							"bgColor": [
+								[
+									255,
+									255,
+									255,
+									1
+								]
+							],
+							"postit": [
+								[]
+							],
+							"html": [
+								[
+									"yes"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 27
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 37,
+						"top": 41
+					},
+					"size": {
+						"width": 36,
+						"height": 11
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 37,
+						"top": 41
+					},
+					"size": {
+						"width": 36,
+						"height": 11
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 49
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 20,
+			"vars_in": [
+				{
+					"rel": "html",
+					"name": "description"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Show fullscreen"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"richtext": "<p>&nbsp;<strong>asdfasdfasdf</strong> asdas dasdfsad ff &nbsp;as dfsadf asdf&nbsp;</p>\n",
+			"title": "Free description",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/display/panzoom/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"highlightStrategy": [
+								"none"
+							],
+							"transformThrottling": [
+								0
+							]
+						}
+					],
+					"img": [
+						[
+							{
+								"variable": "",
+								"opacity": "1",
+								"order": "",
+								"rendering": "default",
+								"scaling": "max",
+								"rerender": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 152,
+						"top": 53
+					},
+					"size": {
+						"width": 33,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 152,
+						"top": 53
+					},
+					"size": {
+						"width": 33,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 152,
+						"top": 53
+					},
+					"size": {
+						"width": 33,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 37
+					},
+					"size": {
+						"width": 74,
+						"height": 41
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 152,
+						"top": 53
+					},
+					"size": {
+						"width": 33,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 152,
+						"top": 53
+					},
+					"size": {
+						"width": 33,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 21,
+			"vars_in": [
+				{
+					"rel": "image",
+					"name": "selectedImage"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Show fullscreen"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Image",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"javascript"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[
+									"button"
+								]
+							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								0
+							],
+							"script": [
+								"if(this.event === 'renderAction' && this.column.id === 'r') {\n    if(this.row.item.report) {\n        this.renderOptions.disabled = false;\n    } else {\n        this.renderOptions.disabled = true;\n    }\n}"
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 37,
+						"top": 59
+					},
+					"size": {
+						"width": 49,
+						"height": 19
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 22,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onEditorChange",
+					"rel": "data",
+					"jpath": [],
+					"name": "slickScript"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Slick script",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/display/template-twig/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"selectable": [
+								[]
+							],
+							"template": [
+								"<div style='font-size:1.5em'>\n{% for key, value in tracking %}\n    {{key}}: {{rendertype(value.trueX,{toPrecision:6})}} - {{rendertype(value.interpolatedY,{toPrecision:6})}}\n{% endfor %}\n</div>"
+							],
+							"modifyInForm": [
+								[]
+							],
+							"debouncing": [
+								0
+							],
+							"formOptions": [
+								[
+									"keepFormValueIfDataUndefined"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 23,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "tracking"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "",
+			"zindex": 1
+		},
+		{
+			"url": "modules/types/display/single_value/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"append": [
+								[]
+							],
+							"maxEntries": [
+								1
+							],
+							"editable": [
+								[]
+							],
+							"debounce": [
+								0
+							],
+							"defaultvalue": [
+								null
+							],
+							"font": [
+								null
+							],
+							"fontcolor": [
+								[
+									0,
+									0,
+									0,
+									1
+								]
+							],
+							"fontsize": [
+								"12pt"
+							],
+							"align": [
+								"center"
+							],
+							"valign": [
+								"middle"
+							],
+							"rendererOptions": [
+								"numeral:'#.0000'"
+							],
+							"forceType": [
+								""
+							],
+							"sprintf": [
+								null
+							],
+							"sprintfOrder": [
+								null
+							],
+							"preformatted": [
+								[
+									"pre",
+									"selectable"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 56,
+						"top": 42
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 49,
+						"top": 0
+					},
+					"size": {
+						"width": 13,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 126,
+						"top": 55
+					},
+					"size": {
+						"width": 23,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 64,
+						"top": 21
+					},
+					"size": {
+						"width": 9,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 64,
+						"top": 21
+					},
+					"size": {
+						"width": 9,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 56,
+						"top": 42
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 57,
+						"top": 45
+					},
+					"size": {
+						"width": 17,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 24,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "em"
+				},
+				{
+					"rel": "color",
+					"name": "mfBGColor"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"title": "em",
+			"vars_out": [],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"zindex": 2,
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable"
+								]
+							],
+							"autoColumns": [
+								[]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"invar"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+							],
+							"customJpaths": [
+								"cdf.dUrl,file.dUrl,jcamp.dUrl"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Filename",
+								"jpath": [],
+								"editor": "none",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "twig:'{{cdf.filename}} {{file.filename}}'",
+								"editorOptions": "",
+								"width": 163,
+								"hideColumn": []
+							},
+							{
+								"name": "cdf",
+								"jpath": [
+									"cdf",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 45,
+								"hideColumn": []
+							},
+							{
+								"name": "file",
+								"jpath": [
+									"file",
+									"dUrl"
+								],
+								"editor": "none",
+								"forceType": "downloadLink",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 40,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"name": "d",
+								"tooltip": "Delete attachment and linked metadata",
+								"icon": "fa-trash",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "unattach",
+								"position": "begin",
+								"clickMode": "text",
+								"isAction": true
+							},
+							{
+								"name": "r",
+								"tooltip": "Show report",
+								"icon": "fa-window-restore",
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"action": "showReport",
+								"position": "end",
+								"clickMode": "text",
+								"isAction": true
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 152,
+						"top": 15
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 152,
+						"top": 15
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 75,
+						"top": 30
+					},
+					"size": {
+						"width": 47,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 85,
+						"top": 48
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 152,
+						"top": 15
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 152,
+						"top": 15
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 25,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "chromatogram"
+				},
+				{
+					"rel": "script",
+					"name": "slickScript"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"event": "onRowActive",
+					"rel": "row",
+					"jpath": [
+						"jcamp",
+						"data"
+					],
+					"name": "jcamp"
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Chromatogram, GC-MS, LC-MS",
+			"zindex": 2
+		},
+		{
+			"url": "modules/types/edition/slick_grid/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"slickCheck": [
+								[
+									"enableCellNavigation",
+									"rowNumbering",
+									"forceFitColumns",
+									"highlightScroll",
+									"editable",
+									"enableAddRow"
+								]
+							],
+							"autoColumns": [
+								[
+									"remove"
+								]
+							],
+							"toolbar": [
+								[]
+							],
+							"colorjpath": [
+								[]
+							],
+							"slick.defaultColumnWidth": [
+								null
+							],
+							"slick.rowHeight": [
+								null
+							],
+							"slick.headerRowHeight": [
+								30
+							],
+							"slick.selectionModel": [
+								"row"
+							],
+							"idProperty": [
+								""
+							],
+							"filterType": [
+								"pref"
+							],
+							"filterRow": [
+								"// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+							],
+							"customJpaths": [
+								"kind,value"
+							]
+						}
+					],
+					"cols": [
+						[
+							{
+								"name": "Type",
+								"jpath": [
+									"kind"
+								],
+								"editor": "select",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": ";doi;final;paper",
+								"width": 102,
+								"hideColumn": []
+							},
+							{
+								"name": "Value",
+								"jpath": [
+									"value"
+								],
+								"editor": "string",
+								"forceType": "",
+								"formatter": "typerenderer",
+								"visibility": "both",
+								"rendererOptions": "",
+								"editorOptions": "",
+								"width": 168,
+								"hideColumn": []
+							}
+						]
+					],
+					"actionCols": [
+						[
+							{
+								"backgroundColor": [
+									255,
+									255,
+									255,
+									0
+								],
+								"color": [
+									0,
+									0,
+									0,
+									1
+								],
+								"position": "end",
+								"clickMode": "text"
+							}
+						]
+					],
+					"groupings": [
+						[
+							{
+								"getter": []
+							}
+						]
+					],
+					"actionOutButtons": [
+						[
+							{}
+						]
+					],
+					"data": [
+						{
+							"saveInView": [
+								[]
+							],
+							"varname": [
+								""
+							],
+							"data": [
+								"[]"
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 39,
+						"top": 42
+					},
+					"size": {
+						"width": 35,
+						"height": 34
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 44,
+						"top": 55
+					},
+					"size": {
+						"width": 30,
+						"height": 19
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Spectra": {
+					"position": {
+						"left": 74,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 74,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 75,
+						"top": 35
+					},
+					"size": {
+						"width": 38,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 75,
+						"top": 38
+					},
+					"size": {
+						"width": 38,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 26,
+			"vars_in": [
+				{
+					"rel": "list",
+					"name": "keyword"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Keywords"
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"text"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[]
+							],
+							"variable": [
+								[
+									"modify"
+								]
+							],
+							"storeOnChange": [
+								[]
+							],
+							"debouncing": [
+								0
+							],
+							"script": [
+								null
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 75,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 18
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Bioproduct"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 27,
+			"vars_in": [
+				{
+					"rel": "data",
+					"name": "sequence"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence"
+		},
+		{
+			"url": "modules/types/display/template-twig/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"selectable": [
+								[]
+							],
+							"template": [
+								""
+							],
+							"modifyInForm": [
+								[]
+							],
+							"debouncing": [
+								0
+							],
+							"formOptions": [
+								[
+									"keepFormValueIfDataUndefined"
+								]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 28
+					},
+					"size": {
+						"width": 86,
+						"height": 11
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Bioproduct"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Spectra"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Images"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Physical"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Molecule"
+				}
+			},
+			"id": 28,
+			"vars_in": [
+				{
+					"rel": "value",
+					"name": "sample"
+				},
+				{
+					"rel": "tpl",
+					"name": "headerTemplate"
+				},
+				{
+					"rel": "value",
+					"name": "layerInfo"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
+		},
+		{
+			"url": "modules/types/client_interaction/code_editor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"mode": [
+								"html"
+							],
+							"outputType": [
+								null
+							],
+							"btnvalue": [
+								"Send script"
+							],
+							"iseditable": [
+								[
+									"editable"
+								]
+							],
+							"hasButton": [
+								[
+									"button"
+								]
+							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								0
+							],
+							"script": [
+								"<style>\n    #sampleHeader, #sampleHeader tbody  {\n        font-size: 12px;\n        font-family: Arial, Helvetica, sans-serif;\n    }\n    #sampleHeader .header {\n        font-size: 16px;\n        width: 100%;\n    }\n    #sampleHeader td {\n        vertical-align: top;\n    }\n    #sampleHeader .headerCode {\n        font-size: 20px;\n    }\n\n</style>\n\n<div id='sampleHeader'>\n    <table class=\"header\">\n      <tr>\n          <td width='33%'>\n              <span class='headerField'>Product code:</span><br>\n              <span class='headerCode'>{{sample[\"$id\"][0]}}</span>\n          </td>\n          <td width='33%'>\n              <span class='headerField'>Batch code:</span><br>\n              <span class='headerCode'>{{sample[\"$id\"][1]}}</span>\n          </td>\n          <td  width='33%' align=\"right\">\n            Created on: {{rendertype(sample[\"$creationDate\"],{dateFormat:'YYYY-MM-DD'})}}<br>\n            Modified on: {{rendertype(sample[\"$modificationDate\"],{dateFormat:'YYYY-MM-DD'})}}\n          </td>\n      </tr>\n      <tr>\n            <td colspan=3>\n            {{layerInfo}}  \n            </td>\n      </tr>\n    </table>\n</div>\n\n{%set content=sample[\"$content\"] %}\n"
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 114,
+						"top": 48
+					},
+					"size": {
+						"width": 63,
+						"height": 35
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Admin": {
+					"position": {
+						"left": 0,
+						"top": 40
+					},
+					"size": {
+						"width": 86,
+						"height": 18
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Admin"
+				},
+				"Bioproduct": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Bioproduct"
+				},
+				"Spectra": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Spectra"
+				},
+				"Images": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Images"
+				},
+				"Physical": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Physical"
+				},
+				"Molecule": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Molecule"
+				}
+			},
+			"id": 29,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"event": "onEditorChange",
+					"rel": "data",
+					"jpath": [],
+					"name": "headerTemplate"
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Header twig template"
+		}
+	],
+	"variables": [
+		{
+			"varname": "reagentsCalculator",
+			"jpath": [
+				"reagentsCalculator"
+			]
+		},
+		{
+			"varname": "samplesCalculator",
+			"jpath": [
+				"samplesCalculator"
+			]
+		},
+		{
+			"varname": "reportTemplate",
+			"jpath": [
+				"reportTemplate"
+			]
+		},
+		{
+			"varname": "eln-procedure-snipets",
+			"jpath": [
+				"eln-procedure-snipets"
+			]
+		},
+		{
+			"varname": "reactions",
+			"jpath": [
+				"reactions"
+			]
+		},
+		{
+			"varname": "options",
+			"jpath": [
+				"options"
+			]
+		},
+		{
+			"varname": "samples",
+			"jpath": [
+				"samples"
+			]
+		},
+		{
+			"varname": "reactionSVG",
+			"jpath": [
+				"reactionSVG"
+			]
+		}
+	],
+	"aliases": [
+		{
+			"path": "https://www.lactame.com/github/cheminfo-js/visualizer-helper/5a07d6c568b4bdb053840f366e0e4614ac99a534/",
+			"alias": "vh"
+		},
+		{
+			"path": "https://77426d8f.ngrok.io/cheminfo-js/visualizer-helper/",
+			"alias": "vhxx"
+		}
+	],
+	"configuration": {
+		"title": "Sample"
+	},
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							"downloadMolfile"
+						],
+						"script": [
+							"require([\"file-saver\"],function(fileSaver) {\n    var spectrum=API.getData(\"molfile\").get();\n    var blob = new Blob([spectrum+\"\"], {type: \"chemical/x-mdl-molfile;charset=utf-8\"});\n    fileSaver( blob, \"structure.mol\");    \n})\n\n"
+						]
+					}
+				]
+			}
+		},
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							"RecordInfo"
+						],
+						"script": [
+							"require(['vh/rest-on-couch/showRecordInfo'], function(showRecordInfo) {\n    var sample=API.cache('sample').sample;\n    showRecordInfo(sample);\n})"
+						]
+					}
+				]
+			}
+		},
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							"Help"
+						],
+						"script": [
+							"var url='https://docs.google.com/document/d/1zERj0WzPMLLggyFsjwaUWmae4q4JgH40Stgxv8g3aYk/edit?usp=sharing';\n \nrequire(['src/util/ui'], function(UI) {\n    UI.dialog(\n        '<iframe width=\"100%\" height=\"100%\" src=\"'+url+'\"></iframe>',\n        {width:1000, height: 800}\n    );\n})\n\n\n"
+						]
+					}
+				]
+			}
+		}
+	],
+	"init_script": [
+		{
+			"sections": {},
+			"groups": {
+				"general": [
+					{
+						"script": [
+							"var Renderer = await API.require('vh/eln/acs/renderer');\nRenderer.add();\n\n\n\nvar printerFactory = await API.require('vh/eln/stock/printer/factory');\nvar printerHelper = await API.require('vh/eln/stock/printer/helper');\nprinterFactory(async function(printer) {\n    printerHelper.setup(printer, ['sample', 'location']);\n});\n\n\nvar Sample = await API.require('vh/eln/Sample');\n\nif (IframeBridge) {\n    IframeBridge.onMessage(onMessage);\n    IframeBridge.ready();\n    function onMessage(data) {\n        if(data.type === 'tab.data') {\n            var sample = new Sample(data.message.couchDB, data.message.uuid, {\n                track:true\n            });\n            API.cache('data', data.message);\n            API.cache('sample',sample);\n        }\n    }\n}\n\nrequire(['vh/eln/twig-templates/chem.physical'], function(template) {\n  API.createData('chem.physical', template);\n});\n"
+						]
+					}
+				]
+			}
+		}
+	],
+	"custom_filters": [
+		{
+			"sections": {
+				"modules": [
+					{
+						"sections": {},
+						"groups": {
+							"modules": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				],
+				"filtersLib": [
+					{
+						"sections": {},
+						"groups": {
+							"filters": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				],
+				"filters": [
+					{
+						"sections": {},
+						"groups": {
+							"filter": [
+								{
+									"name": [
+										null
+									],
+									"script": [
+										null
+									]
+								}
+							],
+							"libs": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				]
+			},
+			"groups": {}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
+}

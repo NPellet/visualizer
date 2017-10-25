@@ -129,6 +129,14 @@ define([
                                 hide: 'Yes'
                             },
                             default: []
+                        },
+                        disable: {
+                            type: 'checkbox',
+                            title: 'Disable on load',
+                            options: {
+                                disable: 'Yes'
+                            },
+                            default: []
                         }
                     }
                 }
@@ -262,6 +270,31 @@ define([
         this._changeButton(name, 'hide');
     };
 
+    Controller.prototype.disableButton = function (name) {
+        this._changeButtonProperty(name, 'disabledFromScript', true);
+        this._changeButton(name, 'disable');
+    };
+
+    Controller.prototype.enableButton = function (name) {
+        this._changeButtonProperty(name, 'disabledFromScript', false);
+        this._changeButton(name, 'enable');
+    };
+
+    Controller.prototype._changeButtonProperty = function (name, property, value) {
+        if (!this.module.view.buttons) return;
+        var button = this.module.view.buttons.find(b => b.name === name);
+        if (button) {
+            button[property]=value;
+        } else {
+            Debug.error(`button ${name} not found`);
+        }
+    };
+
+
+    Controller.prototype._getButton = function (name) {
+        return this.module.view.buttons.find(b => b.name === name);
+    };
+
     Controller.prototype._changeButton = function (name, type) {
         if (!this.module.view.buttons) return;
         var button = this.module.view.buttons.find(b => b.name === name);
@@ -321,6 +354,15 @@ define([
         var hideButton = function (name) {
             executor.controller.hideButton(name);
         };
+        var enableButton = function (name) {
+            executor.controller.enableButton(name);
+        };
+        var disableButton = function (name) {
+            executor.controller.disableButton(name);
+        };
+        var getButton = function(name) {
+            return executor.controller._getButton(name);
+        };
         var context = {
             variables: {},
             variable: null,
@@ -342,6 +384,9 @@ define([
             unset,
             showButton,
             hideButton,
+            enableButton,
+            disableButton,
+            getButton,
             moduleTriggerChange: executor.controller.module.model.dataTriggerChange.bind(executor.controller.module.model)
         };
 

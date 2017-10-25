@@ -93,7 +93,9 @@ define([
     };
 
     View.prototype.enableButtons = function () {
-        this.buttons.forEach(b => b.enable());
+        this.buttons.forEach(b => {
+            if (!b.disabledFromScript) b.enable();
+        });
     };
 
     View.prototype.onResize = function () {
