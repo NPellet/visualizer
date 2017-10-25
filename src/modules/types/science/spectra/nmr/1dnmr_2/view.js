@@ -73,9 +73,10 @@ define([
     View.prototype.update = {
 
         jcamp: (value, varname) => {
-
+            console.log('receiving');
+console.log( value );
             JcampConverter.convert( String( value ), options, true).then( ( converted ) => {
-
+console.log( converted );
                 this.setSerie( varname, converted );
                 this.render();
             });
