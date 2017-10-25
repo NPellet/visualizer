@@ -67,10 +67,10 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
                 switch (o.type) {
                     case 'number':
                     case 'range':
-                        if (o.value!=='' && o.value!==undefined) {
-                            o.value=Number(o.value);
+                        if (o.value !== '' && o.value !== undefined) {
+                            o.value = Number(o.value);
                         } else {
-                            o.value=undefined;
+                            o.value = undefined;
                         }
                         o.value = o.transform(o.value);
                         break;

@@ -28,7 +28,7 @@ define(['../util'], function (Util) {
        
         el.empty();
 
-        const graph = Graph.fromJSON( options.resurrect(), el.get( 0 ) );
+        const graph = Graph.fromJSON(options.resurrect(), el.get(0));
         graph.resize(Math.max(el.width() - 15, 20), Math.max(el.height() - 15, 20));
         graph.draw();
 
