@@ -36,7 +36,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     Controller.prototype.configurationStructure = function () {
 
         var currentCfg = this.module.definition.vars_in;
-
+        let vars = [];
+        
         if (currentCfg) {
             let i = 0,
                 l = currentCfg.length;

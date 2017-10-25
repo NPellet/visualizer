@@ -83,6 +83,13 @@ module.exports = function (grunt) {
             }
         },
         pkg: grunt.file.readJSON('package.json'),
+        react: {
+            nmr: {
+                files: {
+                    "./src/modules/types/science/spectra/nmr/1dnmr_2/view.js": "./src/modules/types/science/spectra/nmr/1dnmr_2/view.jsx"
+                }
+            }
+        },
         babel: {
             transpile: {
                 options: {
@@ -405,6 +412,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-rename');
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-react');
 
     grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function () {
         var options;
