@@ -1,5 +1,5 @@
 {
-	"version": "2.74.2-0",
+	"version": "2.82.5-0",
 	"modules": [
 		{
 			"url": "modules/types/client_interaction/code_editor/",
@@ -25,8 +25,31 @@
 							"hasButton": [
 								[]
 							],
+							"variable": [
+								[]
+							],
+							"storeOnChange": [
+								[
+									"store"
+								]
+							],
+							"debouncing": [
+								0
+							],
 							"script": [
-								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{test.str}}<br>\n    Number : {{test.num}}<br>\n    Boolean : {{test.bool}}<br>\n    Undefined element : {{test.und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{test.arr}}<br>\n    2D : {{test.arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in test.arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n<p>\n    <br><br>Type renderer : {{ rendertype(test.render) }}\n</p>\n</div>"
+								"<style>\n    .twigtest {\n        padding-left: 5px;\n        user-select: text;\n    }\n</style>\n\n<div class=\"twigtest\" id=\"htmlToCopy\">\n<table>\n    <tr>\n        <th>Head 1d</th><th>Head 2d</th>\n    </tr>\n    <tr>\n        <td>Can not be selected</td>\n    </tr>\n</table>\n<p>\n    Any text with primitive values...<br><br>\n    String : {{test.str}}<br>\n    Number : {{test.num}}<br>\n    Boolean : {{test.bool}}<br>\n    Undefined element : {{test.und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{test.arr}}<br>\n    2D : {{test.arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in test.arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n<p>\n    <br><br>Type renderer : {{ rendertype(test.render) }}\n</p>\n</div>"
+							]
+						}
+					],
+					"ace": [
+						{
+							"useSoftTabs": [
+								[
+									"yes"
+								]
+							],
+							"tabSize": [
+								4
 							]
 						}
 					]
@@ -97,7 +120,17 @@
 						]
 					}
 				]
-			}
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
 		},
 		{
 			"url": "modules/types/display/template-twig/",
@@ -106,8 +139,24 @@
 				"groups": {
 					"group": [
 						{
+							"selectable": [
+								[
+									"yes"
+								]
+							],
 							"template": [
-								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{test.str}}<br>\n    Number : {{test.num}}<br>\n    Boolean : {{test.bool}}<br>\n    Undefined element : {{test.und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{test.arr}}<br>\n    2D : {{test.arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in test.arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n<p>\n    <br><br>Type renderer : {{ rendertype(test.render) }}\n</p>\n</div>"
+								"<style>\n    .twigtest {\n        padding-left: 5px;\n    }\n</style>\n<div class=\"twigtest\" id=\"htmlToCopy\">\n<p>\n    Any text with primitive values...<br><br>\n    String : {{test.str}}<br>\n    Number : {{test.num}}<br>\n    Boolean : {{test.bool}}<br>\n    Undefined element : {{test.und}}\n</p>\n<p>\n    Arrays<br><br>\n    Simple : {{test.arr}}<br>\n    2D : {{test.arr2}}\n</p>\n<p>\n    Loop<br>\n    {% for val in test.arr %}\n    <br>Value {{val}}\n    {% endfor %}\n</p>\n<p>\n    <br><br>Type renderer : {{ rendertype(test.render) }}\n</p>\n</div>"
+							],
+							"modifyInForm": [
+								[]
+							],
+							"debouncing": [
+								0
+							],
+							"formOptions": [
+								[
+									"keepFormValueIfDataUndefined"
+								]
 							]
 						}
 					]
@@ -124,9 +173,19 @@
 					"name": "test"
 				}
 			],
-			"actions_in": [],
-			"vars_out": {},
-			"actions_out": {},
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
 			"layers": {
 				"Default layer": {
 					"position": {
@@ -174,7 +233,17 @@
 						]
 					}
 				]
-			}
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
 		},
 		{
 			"url": "modules/types/edition/object_editor/",
@@ -266,7 +335,6 @@
 		}
 	],
 	"variables": [],
-	"pouchvariables": [],
 	"configuration": {
 		"title": "Twig templates"
 	},
