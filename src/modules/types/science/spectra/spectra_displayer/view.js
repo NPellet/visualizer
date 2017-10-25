@@ -391,6 +391,7 @@ define([
             }
 
             this.graph.draw();
+            this.graph.updateLegend();
 
             var minX = this.xAxis.getCurrentMin();
             var maxX = this.xAxis.getCurrentMax();
@@ -628,12 +629,19 @@ define([
                         this.graph.getPlugin('peakPicking').setSerie( serie );
                     }
 
+                    if( ! serie ) {
+                        console.log( serieType );
+                        throw "The serie was not created !";
+                    }
                     serie.setLabel(serieLabel);
 //                    this.normalize(valFinal, varname);
 
-                    if( serieType == 'line' || serieType == undefined || serieType == "scatter" ) { // jsGraph 2.0
+                    if( serieType == 'line' || serieType == undefined || serieType == "scatter" || serieType == 'line.color' ) { // jsGraph 2.0
+                        
                         var wave = Graph.newWaveform( );
+                        
                         wave.setData( valFinalY, valFinalX );
+
                         this.normalize( wave, varname);
 
                         if( serieOptions.useSlots ) {
@@ -661,6 +669,7 @@ define([
                     }
 
                     serie.autoAxis();
+
                     if (String(aData.type) === 'scatter') {
                         serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), aData.style);
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {

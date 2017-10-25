@@ -72,7 +72,7 @@
     "country-data": "0.0.31",
     "katex": "^0.8.3",
     "mime-types": "^2.1.16",
-    "node-jsgraph": "2.0.10",
+    "node-jsgraph": "2.0.28",
     "superagent": "^3.6.0",
     "twig": "^1.10.5"
   }
