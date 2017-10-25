@@ -89,7 +89,7 @@
     "canvg": "^1.3.0"
   },
   "resolutions": {
-    "jsgraph": "2.0.24",
+    "jsgraph": "2.0.29",
     "jcampconverter": "2.8.0",
     "jquery": "2.2.1",
     "eventEmitter": "^5.1.0"
