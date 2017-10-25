@@ -616,13 +616,19 @@ define([
                     }
 
                     var serieType = aData.type;
+
+                    if( serieType == 'color' ) {
+                        serieType = 'line.color';
+                    }
                     var hasColor = false;
-                    if (!serieType && Array.isArray(aData.color)) {
+
+                    if( Array.isArray( aData.color ) ) {
                         hasColor = true;
                         serieType = 'line.color';
                     }
 
                     let serieOptions = this.getSerieOptions(varname, aData._highlight, [ valFinalX, valFinalY ] );
+
                     var serie = this.graph.newSerie(serieName, serieOptions.options, serieType);
 
                     if( serieOptions.others.peakPicking ) {
@@ -637,7 +643,10 @@ define([
 //                    this.normalize(valFinal, varname);
 
                     if( serieType == 'line' || serieType == undefined || serieType == "scatter" || serieType == 'line.color' ) { // jsGraph 2.0
+<<<<<<< Updated upstream
                         
+=======
+>>>>>>> Stashed changes
                         var wave = Graph.newWaveform( );
                         
                         wave.setData( valFinalY, valFinalX );
@@ -655,12 +664,10 @@ define([
 
                     if (hasColor) {
                         let colors = aData.color;
-                        if (!Array.isArray(colors)) {
+                        if ( ! Array.isArray( colors ) ) {
                             throw new Error('Serie colors must be an array');
                         }
-                   /*     if (!Array.isArray(colors[0])) {
-                            colors = [colors];
-                        }*/
+                   
                         serie.setColors(colors);
                     }
 
@@ -669,13 +676,22 @@ define([
                     }
 
                     serie.autoAxis();
+<<<<<<< Updated upstream
 
                     if (String(aData.type) === 'scatter') {
                         serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), aData.style);
+=======
+                    console.log( aData.type, aData );
+                    if( String( aData.type ) === 'scatter') {
+                        
+                        serie.setStyle( Object.assign({}, defaultScatterStyle, defaultStyle), aData.styles[ 0 ].styles);
+                        
+>>>>>>> Stashed changes
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
                             plugin.setSerie(serie);
                         }
+
                     } else {
                         var color = defaultStyle.lineColor || (data.length > 1 ? Color.getNextColorRGB(i, data.length) : null);
                         this.setSerieParameters(serie, varname, aData._highlight, color);
