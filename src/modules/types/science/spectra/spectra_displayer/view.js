@@ -449,7 +449,7 @@ define([
                 this.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
-            return { options: options, others: others };
+            return {options: options, others: others};
 
         },
 
@@ -617,54 +617,54 @@ define([
 
                     var serieType = aData.type;
 
-                    if( serieType == 'color' ) {
+                    if (serieType == 'color') {
                         serieType = 'line.color';
                     }
                     var hasColor = false;
 
-                    if( Array.isArray( aData.color ) ) {
+                    if (Array.isArray(aData.color)) {
                         hasColor = true;
                         serieType = 'line.color';
                     }
 
-                    let serieOptions = this.getSerieOptions(varname, aData._highlight, [ valFinalX, valFinalY ] );
+                    let serieOptions = this.getSerieOptions(varname, aData._highlight, [valFinalX, valFinalY]);
 
                     var serie = this.graph.newSerie(serieName, serieOptions.options, serieType);
 
-                    if( serieOptions.others.peakPicking ) {
-                        this.graph.getPlugin('peakPicking').setSerie( serie );
+                    if (serieOptions.others.peakPicking) {
+                        this.graph.getPlugin('peakPicking').setSerie(serie);
                     }
 
-                    if( ! serie ) {
-                        console.log( serieType );
-                        throw "The serie was not created !";
+                    if (!serie) {
+                        console.log(serieType);
+                        throw 'The serie was not created !';
                     }
                     serie.setLabel(serieLabel);
-//                    this.normalize(valFinal, varname);
+                    //                    this.normalize(valFinal, varname);
 
-                    if( serieType == 'line' || serieType == undefined || serieType == "scatter" || serieType == 'line.color' ) { // jsGraph 2.0
+                    if (serieType == 'line' || serieType == undefined || serieType == 'scatter' || serieType == 'line.color') { // jsGraph 2.0
 
-                        var wave = Graph.newWaveform( );
-                        
-                        wave.setData( valFinalY, valFinalX );
+                        var wave = Graph.newWaveform();
 
-                        this.normalize( wave, varname);
+                        wave.setData(valFinalY, valFinalX);
 
-                        if( serieOptions.useSlots ) {
+                        this.normalize(wave, varname);
+
+                        if (serieOptions.useSlots) {
                             wave.aggregate();
                         }
 
-                        serie.setWaveform( wave );
+                        serie.setWaveform(wave);
                     } else {
-                        serie.setData( valFinal );
+                        serie.setData(valFinal);
                     }
 
                     if (hasColor) {
                         let colors = aData.color;
-                        if ( ! Array.isArray( colors ) ) {
+                        if (!Array.isArray(colors)) {
                             throw new Error('Serie colors must be an array');
                         }
-                   
+
                         serie.setColors(colors);
                     }
 
@@ -674,11 +674,11 @@ define([
 
                     serie.autoAxis();
 
-                    console.log( aData.type, aData );
-                    if( String( aData.type ) === 'scatter') {
-                        
-                        serie.setStyle( Object.assign({}, defaultScatterStyle, defaultStyle), aData.styles[ 0 ].styles);
-                        
+                    console.log(aData.type, aData);
+                    if (String(aData.type) === 'scatter') {
+
+                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), aData.styles[ 0 ].styles);
+
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
                             plugin.setSerie(serie);
@@ -706,30 +706,30 @@ define([
 
                 let val = moduleValue.get(),
                     serieOptions = this.getSerieOptions(varname, null, val),
-                    serie = this.graph.newSerie( varname, serieOptions.options );
+                    serie = this.graph.newSerie(varname, serieOptions.options);
 
-                if( serieOptions.others.peakPicking ) {
-                    this.graph.getPlugin('peakPicking').setSerie( serie );
+                if (serieOptions.others.peakPicking) {
+                    this.graph.getPlugin('peakPicking').setSerie(serie);
                 }
 
                 let valX = [],
                     valY = [],
                     wave = Graph.newWaveform();
 
-                for( var i = 0, l = val.length; i < l; i += 2 ) {
-                    valX.push( val[ i ] );
-                    valY.push( val[ i + 1 ] );
+                for (var i = 0, l = val.length; i < l; i += 2) {
+                    valX.push(val[ i ]);
+                    valY.push(val[ i + 1 ]);
                 }
 
-                wave.setData( valY, valX );
+                wave.setData(valY, valX);
 
-                this.normalize( wave , varname);
+                this.normalize(wave, varname);
 
-                if( serieOptions.useSlots ) {
+                if (serieOptions.useSlots) {
                     wave.aggregate();
                 }
 
-                serie.setWaveform( wave );
+                serie.setWaveform(wave);
                 this.setSerieParameters(serie, varname);
 
                 this.series[varname].push(serie);
@@ -749,29 +749,27 @@ define([
                 var step = (maxX - minX) / (val.length - 1);
 
                 var waveform = Graph.newWaveform();
-                waveform.setData( val );
-                waveform.rescaleX( minX, ( maxX - minX ) / ( val.length - 1 ) );
+                waveform.setData(val);
+                waveform.rescaleX(minX, (maxX - minX) / (val.length - 1));
 
 
+                let serieOptions = this.getSerieOptions(varname, null, [null, [val]]);
+                var serie = this.graph.newSerie(varname, serieOptions.options);
 
-                let serieOptions = this.getSerieOptions(varname, null, [ null, [ val ] ] );
-                var serie = this.graph.newSerie(varname, serieOptions.options );
 
-
-                if( serieOptions.others.peakPicking ) {
-                    this.graph.getPlugin('peakPicking').setSerie( serie );
+                if (serieOptions.others.peakPicking) {
+                    this.graph.getPlugin('peakPicking').setSerie(serie);
                 }
 
 
+                this.normalize(waveform, varname);
 
-                this.normalize( waveform, varname );
-
-                if( serieOptions.useSlots ) {
+                if (serieOptions.useSlots) {
                     waveform.aggregate();
                 }
 
-                serie.setWaveform( waveform );
-//                this.normalize(val2, varname);
+                serie.setWaveform(waveform);
+                //                this.normalize(val2, varname);
 
 
                 this.setSerieParameters(serie, varname);
@@ -853,30 +851,31 @@ define([
                         for (var i = 0, l = spectra.length; i < l; i++) {
                             var data = spectra[i].data[spectra[i].data.length - 1];
 
-                            let dataX = [], dataY = [];
-                            for( var i = 0; i < data.length; i += 2 ) {
-                                dataX.push( data[ i ] );
-                                dataY.push( data[ i + 1 ] );
+                            let dataX = [],
+                                dataY = [];
+                            for (var i = 0; i < data.length; i += 2) {
+                                dataX.push(data[ i ]);
+                                dataY.push(data[ i + 1 ]);
                             }
 
 
                             let serieOptions = that.getSerieOptions(varname, null, data);
-                            serie = that.graph.newSerie(varname, serieOptions.options );
+                            serie = that.graph.newSerie(varname, serieOptions.options);
 
 
-                            if( serieOptions.others.peakPicking ) {
-                                that.graph.getPlugin('peakPicking').setSerie( serie );
+                            if (serieOptions.others.peakPicking) {
+                                that.graph.getPlugin('peakPicking').setSerie(serie);
                             }
 
 
                             var waveform = Graph.newWaveform();
-                            waveform.setData( dataY, dataX );
-                            that.normalize( waveform, varname );
-                            if( serieOptions.useSlots ) {
+                            waveform.setData(dataY, dataX);
+                            that.normalize(waveform, varname);
+                            if (serieOptions.useSlots) {
                                 waveform.aggregate();
                             }
 
-                            serie.setWaveform( waveform );
+                            serie.setWaveform(waveform);
 
                             that.setSerieParameters(serie, varname);
                             that.series[varname].push(serie);
@@ -902,7 +901,7 @@ define([
 
                         var opts = this.getSerieOptions(varname, null, data[i].data);
 
-                        var serie = this.graph.newSerie(data[i].name, opts.options );
+                        var serie = this.graph.newSerie(data[i].name, opts.options);
 
 
                         serie.autoAxis();
@@ -1062,7 +1061,7 @@ define([
             return svgDoctype + serializer.serializeToString(svgElement);
         },
 
-        normalize( waveform, varname) {
+        normalize(waveform, varname) {
             var plotinfos = this.module.getConfiguration('plotinfos');
             var maxValue, minValue, total, ratio, i, l;
 
@@ -1075,7 +1074,7 @@ define([
             }
             if (!normalize) return;
 
-            waveform.normalize( normalize )
+            waveform.normalize(normalize);
 
         }
     });
