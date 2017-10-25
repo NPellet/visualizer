@@ -284,7 +284,7 @@ define([
         if (!this.module.view.buttons) return;
         var button = this.module.view.buttons.find(b => b.name === name);
         if (button) {
-            button[property]=value;
+            button[property] = value;
         } else {
             Debug.error(`button ${name} not found`);
         }
@@ -360,7 +360,7 @@ define([
         var disableButton = function (name) {
             executor.controller.disableButton(name);
         };
-        var getButton = function(name) {
+        var getButton = function (name) {
             return executor.controller._getButton(name);
         };
         var context = {
