@@ -3,40 +3,26 @@
 define([
     'jquery',
     'modules/default/defaultview',
-    './app_1d',
-    'json-chart',
-    'src/util/datatraversing',
-    'src/util/api',
-    'src/util/color',
-    'src/util/debug',
-    'react',
-    'react-dom'
+    './app_1d'
+], function ($, Default, NMR1D ) {
 
-], function ( 
-    $, 
-    Default, 
-    NMRApp, 
-    JSONChart, 
-    DataTraversing, 
-    API, 
-    Color, 
-    Debug, 
-    React, 
-    ReactDOM ) {
 
-  
-    class View extends Default {
+    class View {
 
         constructor() {
-            super( ...arguments );
+            this.series = [];
+            this.serieChanged = this.serieChanged.bind( this );
         }
 
         init() {
 
         }
 
-        inDom() {
+        serieChanged() {
 
+        }
+
+        inDom() {
 
         }
 
@@ -46,30 +32,36 @@ define([
 
         render() {
 
-            let options = {
-                minThresholdPeakToPeak: 0.01,
-                toolbar: true,
-                legend: true
-            };
-
-            let serieChanged = () => {};
-
+            const molecule = this.molecule;
             ReactDOM.render(
-
-                React.createElement(NMRApp, 
-                    {
-                        width: 800,
-                        height: 600,
-                        options: options,
-                        molecule: this.molecule,
-                        series: [ this.serie ],
-                        onChanged: serieChanged
-                    }
-                ),
-                this.dom.get(0)
+              React.createElement(NMR1D, {width: "800", height: "600", options:  options, molecule:  molecule,  series:  this.series, onChanged:  this.serieChanged}),
+              document.getElementById('root')
             );
         }
+
+        setSerie( name, val ) {
+
+            const series = []; // React objects should be immutable. Let's create a new one
+
+            for( var i = 0; i < this.series.length; i ++ ) {
+
+                if( this.series[ i ].name !== name ) {
+
+                    series.push( this.series[ i ] );
+                }
+            }
+
+            series.push( { 
+                name: name,
+                shift: 0,
+                data: val,
+                color: "green"
+            } );
+        }
     };
+
+    Object.assign( View.prototype, Default );
+    
 
     View.prototype.blank = {
        
@@ -80,16 +72,21 @@ define([
 
     View.prototype.update = {
 
-        serie( moduleValue, varName ) {
+        jcamp: (value, varname) => {
 
-            this.serie = moduleValue.get();
+            JcampConverter.convert( String( value ), options, true).then( ( converted ) => {
+
+                this.setSerie( varname, converted );
+                this.render();
+            });
         },
 
-        molecule( moduleValue, varName ) {
+        molecule: (moduleValue, varname) => {
 
-            this.molecule = moduleValue.get();
         }
-    };
+    }
+
+    console.log( View );
 
     return View;
-} );
+});

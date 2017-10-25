@@ -79,7 +79,7 @@ define([
                     module.domHeader = module.dom.children().children('.ci-module-header');
                     module.domLoading = module.dom.children().children('.ci-module-loading');
                     module.domWrapper = module.dom;
-
+console.log( module.view );
                     module.view.setModule(module);
                     module.controller.setModule(module);
                     module.model.setModule(module);

@@ -643,10 +643,7 @@ define([
 //                    this.normalize(valFinal, varname);
 
                     if( serieType == 'line' || serieType == undefined || serieType == "scatter" || serieType == 'line.color' ) { // jsGraph 2.0
-<<<<<<< Updated upstream
-                        
-=======
->>>>>>> Stashed changes
+
                         var wave = Graph.newWaveform( );
                         
                         wave.setData( valFinalY, valFinalX );
@@ -676,17 +673,12 @@ define([
                     }
 
                     serie.autoAxis();
-<<<<<<< Updated upstream
 
-                    if (String(aData.type) === 'scatter') {
-                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), aData.style);
-=======
                     console.log( aData.type, aData );
                     if( String( aData.type ) === 'scatter') {
                         
                         serie.setStyle( Object.assign({}, defaultScatterStyle, defaultStyle), aData.styles[ 0 ].styles);
                         
->>>>>>> Stashed changes
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
                             plugin.setSerie(serie);

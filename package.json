@@ -57,6 +57,7 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-requirejs": "^1.0.0",
+    "grunt-react": "^0.12.3",
     "grunt-rename": "^0.1.4",
     "ink-docstrap": "^1.2.1",
     "lodash": "^4.17.1",
@@ -72,14 +73,8 @@
     "country-data": "0.0.31",
     "katex": "^0.8.3",
     "mime-types": "^2.1.16",
-<<<<<<< Updated upstream
     "node-jsgraph": "2.0.29",
     "superagent": "^3.6.0",
-=======
-    "node-jsgraph": "2.0.10",
-    "react": "^15.6.1",
-    "superagent": "^3.5.0",
->>>>>>> Stashed changes
     "twig": "^1.10.5"
   }
 }
