@@ -107,6 +107,8 @@ define([
                         }
                     });
 
+                    options.plugins.peakPicking = {};
+
                     var zoom = cfg('zoom');
                     if (zoom && zoom !== 'none') {
                         var zoomOptions = {};
@@ -400,13 +402,14 @@ define([
         },
 
         getSerieOptions(varname, highlight, data) {
-            var plotinfos = this.module.getConfiguration('plotinfos');
+
+            let plotinfos = this.module.getConfiguration('plotinfos'),
+                others = {},
+                options = {
+                    trackMouse: true
+                };
 
             highlight = highlight || [];
-
-            var options = {
-                trackMouse: true
-            };
 
             if (plotinfos) {
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
@@ -418,21 +421,13 @@ define([
                         }
 
                         if (plotinfos[i].markers[0]) {
-                            options.markersIndependant = true;
+                            options.markersIndependent = false;
                         }
 
                         options.lineToZero = continuous == 'discrete';
-                        options.useSlots = (plotinfos[i].optimizeSlots ? !!plotinfos[i].optimizeSlots[0] : false);
                         options.strokeWidth = parseInt(plotinfos[i].strokewidth);
 
-                        var pp = plotinfos[i].peakpicking[0];
-                        if (pp) {
-                            if (options.lineToZero) {
-                                options.autoPeakPicking = true;
-                            } else {
-                                options.autoPeakPicking = 'continuous';
-                            }
-                        }
+                        others.peakPicking = true;
                     }
                 }
             }
@@ -453,7 +448,7 @@ define([
                 this.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
-            return options;
+            return { options: options, others: others };
 
         },
 
@@ -497,9 +492,6 @@ define([
                             }]);
                         }
 
-                        if (plotinfos[i].monotoneous && plotinfos[i].monotoneous[0]) {
-                            serie.XIsMonotoneous();
-                        }
 
                         if (plotinfos[i].degrade) {
                             serie.degrade(plotinfos[i].degrade);
@@ -596,6 +588,8 @@ define([
                     var serieLabel = aData.label || serieName;
 
                     var valFinal = [];
+                    var valFinalX = [];
+                    var valFinalY = [];
 
                     switch (String(aData.type)) {
                         case 'zone':
@@ -612,10 +606,11 @@ define([
                         default:
                             if (aData.y) {
                                 for (var j = 0, l = aData.y.length; j < l; j++) {
-                                    valFinal.push(aData.x ? aData.x[j] : j);
-                                    valFinal.push(aData.y[j]);
+                                    valFinalX.push(aData.x ? aData.x[j] : j);
+                                    valFinalY.push(aData.y[j]);
                                 }
                             }
+
                             break;
                     }
 
@@ -625,21 +620,39 @@ define([
                         hasColor = true;
                         serieType = 'line.color';
                     }
-                    var serie = this.graph.newSerie(serieName, this.getSerieOptions(varname, aData._highlight, valFinal), serieType);
+
+                    let serieOptions = this.getSerieOptions(varname, aData._highlight, [ valFinalX, valFinalY ] );
+                    var serie = this.graph.newSerie(serieName, serieOptions.options, serieType);
+
+                    if( serieOptions.others.peakPicking ) {
+                        this.graph.getPlugin('peakPicking').setSerie( serie );
+                    }
 
                     serie.setLabel(serieLabel);
+//                    this.normalize(valFinal, varname);
 
-                    this.normalize(valFinal, varname);
-                    serie.setData(valFinal);
+                    if( serieType == 'line' || serieType == undefined || serieType == "scatter" ) { // jsGraph 2.0
+                        var wave = Graph.newWaveform( );
+                        wave.setData( valFinalY, valFinalX );
+                        this.normalize( wave, varname);
+
+                        if( serieOptions.useSlots ) {
+                            wave.aggregate();
+                        }
+
+                        serie.setWaveform( wave );
+                    } else {
+                        serie.setData( valFinal );
+                    }
 
                     if (hasColor) {
                         let colors = aData.color;
                         if (!Array.isArray(colors)) {
                             throw new Error('Serie colors must be an array');
                         }
-                        if (!Array.isArray(colors[0])) {
+                   /*     if (!Array.isArray(colors[0])) {
                             colors = [colors];
-                        }
+                        }*/
                         serie.setColors(colors);
                     }
 
@@ -666,6 +679,7 @@ define([
             },
 
             xyArray(moduleValue, varname) {
+
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
 
@@ -673,12 +687,32 @@ define([
                     return;
                 }
 
-                var val = moduleValue.get();
+                let val = moduleValue.get(),
+                    serieOptions = this.getSerieOptions(varname, null, val),
+                    serie = this.graph.newSerie( varname, serieOptions.options );
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val));
+                if( serieOptions.others.peakPicking ) {
+                    this.graph.getPlugin('peakPicking').setSerie( serie );
+                }
 
-                this.normalize(val, varname);
-                serie.setData(val);
+                let valX = [],
+                    valY = [],
+                    wave = Graph.newWaveform();
+
+                for( var i = 0, l = val.length; i < l; i += 2 ) {
+                    valX.push( val[ i ] );
+                    valY.push( val[ i + 1 ] );
+                }
+
+                wave.setData( valY, valX );
+
+                this.normalize( wave , varname);
+
+                if( serieOptions.useSlots ) {
+                    wave.aggregate();
+                }
+
+                serie.setWaveform( wave );
                 this.setSerieParameters(serie, varname);
 
                 this.series[varname].push(serie);
@@ -687,6 +721,8 @@ define([
 
             // in fact it is a Y array ...
             xArray(moduleValue, varname) {
+
+                // Use wave.rescaleX( offset, shift );
                 var val = moduleValue.get();
                 this.series[varname] = this.series[varname] || [];
                 this.removeSerie(varname);
@@ -694,17 +730,33 @@ define([
                 var minX = this.module.getConfiguration('minX', 0);
                 var maxX = this.module.getConfiguration('maxX', val.length - 1);
                 var step = (maxX - minX) / (val.length - 1);
-                var val2 = [];
-                for (var i = 0, l = val.length; i < l; i++) {
-                    val2.push(minX + step * i);
-                    val2.push(val[i]);
+
+                var waveform = Graph.newWaveform();
+                waveform.setData( val );
+                waveform.rescaleX( minX, ( maxX - minX ) / ( val.length - 1 ) );
+
+
+
+                let serieOptions = this.getSerieOptions(varname, null, [ null, [ val ] ] );
+                var serie = this.graph.newSerie(varname, serieOptions.options );
+
+
+                if( serieOptions.others.peakPicking ) {
+                    this.graph.getPlugin('peakPicking').setSerie( serie );
                 }
 
-                var serie = this.graph.newSerie(varname, this.getSerieOptions(varname, null, val2));
 
-                this.normalize(val2, varname);
 
-                serie.setData(val2);
+                this.normalize( waveform, varname );
+
+                if( serieOptions.useSlots ) {
+                    waveform.aggregate();
+                }
+
+                serie.setWaveform( waveform );
+//                this.normalize(val2, varname);
+
+
                 this.setSerieParameters(serie, varname);
                 this.series[varname].push(serie);
                 this.redraw(false, varname);
@@ -774,7 +826,7 @@ define([
                     that.series[varname] = [];
 
                     if (spectra.contourLines) {
-                        serie = that.graph.newSerie(varname, that.getSerieOptions(varname), 'contour');
+                        serie = that.graph.newSerie(varname, that.getSerieOptions(varname).options, 'contour');
 
                         serie.setData(spectra.contourLines);
                         that.setSerieParameters(serie, varname);
@@ -784,10 +836,31 @@ define([
                         for (var i = 0, l = spectra.length; i < l; i++) {
                             var data = spectra[i].data[spectra[i].data.length - 1];
 
-                            serie = that.graph.newSerie(varname, that.getSerieOptions(varname, null, data));
+                            let dataX = [], dataY = [];
+                            for( var i = 0; i < data.length; i += 2 ) {
+                                dataX.push( data[ i ] );
+                                dataY.push( data[ i + 1 ] );
+                            }
 
-                            that.normalize(data, varname);
-                            serie.setData(data);
+
+                            let serieOptions = that.getSerieOptions(varname, null, data);
+                            serie = that.graph.newSerie(varname, serieOptions.options );
+
+
+                            if( serieOptions.others.peakPicking ) {
+                                that.graph.getPlugin('peakPicking').setSerie( serie );
+                            }
+
+
+                            var waveform = Graph.newWaveform();
+                            waveform.setData( dataY, dataX );
+                            that.normalize( waveform, varname );
+                            if( serieOptions.useSlots ) {
+                                waveform.aggregate();
+                            }
+
+                            serie.setWaveform( waveform );
+
                             that.setSerieParameters(serie, varname);
                             that.series[varname].push(serie);
                             break;
@@ -812,7 +885,7 @@ define([
 
                         var opts = this.getSerieOptions(varname, null, data[i].data);
 
-                        var serie = this.graph.newSerie(data[i].name, opts);
+                        var serie = this.graph.newSerie(data[i].name, opts.options );
 
 
                         serie.autoAxis();
@@ -972,7 +1045,7 @@ define([
             return svgDoctype + serializer.serializeToString(svgElement);
         },
 
-        normalize(array, varname) {
+        normalize( waveform, varname) {
             var plotinfos = this.module.getConfiguration('plotinfos');
             var maxValue, minValue, total, ratio, i, l;
 
@@ -985,69 +1058,8 @@ define([
             }
             if (!normalize) return;
 
-            if (Array.isArray(array[0])) { // Normalize from [[x1,y1],[x2,y2]]
-                if (normalize == 'max1' || normalize == 'max100') {
-                    var factor = 1;
-                    if (normalize == 'max100') factor = 100;
-                    maxValue = -Infinity;
-                    for (i = 0; i < array.length; i++) {
-                        if (array[i][1] > maxValue) maxValue = array[i][1];
-                    }
-                    for (i = 0; i < array.length; i++) {
-                        array[i][1] /= maxValue / factor;
-                    }
-                } else if (normalize == 'sum1') {
-                    total = 0;
-                    for (i = 0; i < array.length; i++) {
-                        total += array[i][1];
-                    }
-                    for (i = 0; i < array.length; i++) {
-                        array[i][1] /= total;
-                    }
-                } else if (normalize == 'max1min0') {
-                    maxValue = -Infinity;
-                    minValue = Infinity;
-                    for (i = 0; i < array.length; i++) {
-                        if (array[i][1] > maxValue) maxValue = array[i][1];
-                        if (array[i][1] < minValue) minValue = array[i][1];
-                    }
-                    ratio = 1 / (maxValue - minValue);
-                    for (i = 0; i < array.length; i++) {
-                        array[i][1] = (array[i][1] - minValue) * ratio;
-                    }
-                }
-            } else { // Normalize from [x1,y1,x2,y2]
-                if (normalize == 'max1' || normalize == 'max100') {
-                    var factor = 1;
-                    if (normalize == 'max100') factor = 100;
-                    maxValue = -Infinity;
-                    for (i = 1; i < array.length; i = i + 2) {
-                        if (array[i] > maxValue) maxValue = array[i];
-                    }
-                    for (i = 1; i < array.length; i = i + 2) {
-                        array[i] /= maxValue / factor;
-                    }
-                } else if (normalize == 'sum1') {
-                    total = 0;
-                    for (i = 1; i < array.length; i = i + 2) {
-                        total += array[i];
-                    }
-                    for (i = 1; i < array.length; i = i + 2) {
-                        array[i] /= total;
-                    }
-                } else if (normalize == 'max1min0') {
-                    maxValue = -Infinity;
-                    minValue = Infinity;
-                    for (i = 1; i < array.length; i = i + 2) {
-                        if (array[i] > maxValue) maxValue = array[i];
-                        if (array[i] < minValue) minValue = array[i];
-                    }
-                    ratio = 1 / (maxValue - minValue);
-                    for (i = 1; i < array.length; i = i + 2) {
-                        array[i] = (array[i] - minValue) * ratio;
-                    }
-                }
-            }
+            waveform.normalize( normalize )
+
         }
     });
 

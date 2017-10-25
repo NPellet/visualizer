@@ -46,6 +46,9 @@ define([
             this.editor.getSession().setMode('./mode/javascript');
             this.editor.setValue(initVal, -1);
             this.editor.getSession().on('change', this.editorChanged.bind(this));
+            this.table.css({height: '100%'});
+        } else {
+            this.table.css({height: 'auto'});
         }
 
         if (this.module.getConfigurationCheckbox('display', 'buttons')) {

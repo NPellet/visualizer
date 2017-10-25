@@ -14,7 +14,7 @@
     "publish-doc": "npm run build-doc && git add docs && git commit -m \"doc: rebuild docs\" && git push origin master",
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
-    "install-components": "bower install --quiet --config.interactive=false",
+    "install-components": "bower install",
     "install-browserified": "grunt browserify",
     "postinstall": "npm run install-components && npm run install-browserified",
     "prerelease": "grunt bump:prerelease",
@@ -72,6 +72,7 @@
     "country-data": "0.0.31",
     "katex": "^0.8.3",
     "mime-types": "^2.1.16",
+    "node-jsgraph": "2.0.10",
     "superagent": "^3.6.0",
     "twig": "^1.10.5"
   }

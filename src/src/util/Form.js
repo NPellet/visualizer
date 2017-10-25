@@ -67,7 +67,12 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
                 switch (o.type) {
                     case 'number':
                     case 'range':
-                        o.value = o.transform(+o.value);
+                        if (o.value!=='' && o.value!==undefined) {
+                            o.value=Number(o.value);
+                        } else {
+                            o.value=undefined;
+                        }
+                        o.value = o.transform(o.value);
                         break;
                     case 'checkbox':
                         o.value = o.dom.checked;
@@ -92,7 +97,6 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
             } else {
                 obj = new DataObject();
             }
-
             for (let i = 0; i < f.length; i++) {
                 const jpath = f[i].name.split('.').map(el => {
                     if (el.match(/^\d+$/)) {
@@ -103,7 +107,6 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
                 if (f[i].type === 'radio' && !f[i].dom.checked) continue;
                 obj.setChildSync(jpath, f[i].value);
             }
-
             return obj.resurrect();
         }
 

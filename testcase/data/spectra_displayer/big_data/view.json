@@ -1,5 +1,5 @@
 {
-  "version": "2.82.4",
+  "version": "2.82.5-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -980,14 +980,14 @@
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "discrete",
-                      "peakpicking": [],
+                      "peakpicking": [
+                        "picking"
+                      ],
                       "markers": [],
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "max100",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
                       "tracking": []
                     }
                   ]
@@ -1010,7 +1010,7 @@
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "With peak picking",
           "bgColor": [
             255,
             255,
@@ -1073,7 +1073,7 @@
           ]
         }
       ],
-      "title": ""
+      "title": "With peak picking"
     },
     {
       "url": "modules/types/science/spectra/spectra_displayer/",
@@ -1345,7 +1345,9 @@
                       []
                     ],
                     "independantYZoom": [
-                      []
+                      [
+                        "yes"
+                      ]
                     ]
                   }
                 ]
@@ -1428,7 +1430,7 @@
                     {
                       "variable": "ms1",
                       "axis": "0",
-                      "adaptTo": "0",
+                      "adaptTo": "none",
                       "plotcolor": [
                         255,
                         1,
@@ -1443,15 +1445,15 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "max100",
-                      "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     },
                     {
                       "variable": "ms2",
                       "axis": "1",
-                      "adaptTo": "1",
+                      "adaptTo": "none",
                       "plotcolor": [
                         1,
                         1,
@@ -1466,9 +1468,9 @@
                       "markerShape": "1",
                       "markerSize": 2,
                       "normalize": "max100",
-                      "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
+                      "optimizeSlots": [
+                        "slots"
+                      ],
                       "tracking": []
                     }
                   ]
