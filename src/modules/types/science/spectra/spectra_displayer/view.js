@@ -674,10 +674,14 @@ define([
 
                     serie.autoAxis();
 
-                    console.log(aData.type, aData);
                     if (String(aData.type) === 'scatter') {
-
-                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), aData.styles[ 0 ].styles);
+                        
+                        let modifiers = [];
+                        if( aData.styles && aData.styles[ 0 ] ) {
+                            modifiers = aData.styles[ 0 ].style;
+                        }  
+                        
+                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers );
 
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
