@@ -518,11 +518,11 @@ define([
                             if (Array.isArray(high)) {
                                 for (var k = 0; k < high.length; k++) {
                                     if (high[k] == key) {
-                                        serie.toggleMarker([j, 0], !!value, true);
+                                        serie.toggleMarker( j , !!value, true);
                                     }
                                 }
                             } else if (high == key) {
-                                serie.toggleMarker([j, 0], !!value, true);
+                                serie.toggleMarker( j , !!value, true);
                             }
                         }
                     }
