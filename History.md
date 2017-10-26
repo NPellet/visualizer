@@ -1,3 +1,20 @@
+<a name="2.85.0"></a>
+# [2.85.0](https://github.com/NPellet/visualizer/compare/v2.84.0...v2.85.0) (2017-10-25)
+
+
+### Bug Fixes
+
+* **slickgrid:** edition when no column config specified ([d364356](https://github.com/NPellet/visualizer/commit/d364356))
+* **slickgrid:** ignore cell change events when special column (like action columns) ([e0ed153](https://github.com/NPellet/visualizer/commit/e0ed153))
+* **twig:** change twig form to deal with ranges and number = 0 ([bbb6e80](https://github.com/NPellet/visualizer/commit/bbb6e80))
+
+
+### Features
+
+* **slickgrid:** change background color when copying cells ([3100179](https://github.com/NPellet/visualizer/commit/3100179))
+
+
+
 <a name="2.84.0"></a>
 # [2.84.0](https://github.com/NPellet/visualizer/compare/v2.83.0...v2.84.0) (2017-09-05)
 

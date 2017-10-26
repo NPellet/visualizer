@@ -851,13 +851,22 @@ define([
                         for (var i = 0, l = spectra.length; i < l; i++) {
                             var data = spectra[i].data[spectra[i].data.length - 1];
 
-                            let dataX = [],
-                                dataY = [];
-                            for (var i = 0; i < data.length; i += 2) {
-                                dataX.push(data[ i ]);
-                                dataY.push(data[ i + 1 ]);
-                            }
+                            let dataX = [];
+                            let dataY = [];
 
+
+                            if (data.x && data.y) {
+                                dataX=data.x;
+                                dataY=data.y;
+                            } else  if (Array.isArray(data[0])) {
+                                dataX=data[0];
+                                dataY=data[1];
+                            } else {
+                                for (var i = 0; i < data.length; i += 2) {
+                                    dataX.push(data[ i ]);
+                                    dataY.push(data[ i + 1 ]);
+                                }
+                            }
 
                             let serieOptions = that.getSerieOptions(varname, null, data);
                             serie = that.graph.newSerie(varname, serieOptions.options);
