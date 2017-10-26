@@ -1,5 +1,5 @@
 {
-	"version": "2.82.5-0",
+	"version": "2.85.1-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -986,6 +986,370 @@
 				}
 			],
 			"title": ""
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"var jcamp=get('jcamp')+'';\n\nvar spectrum=JC.convert(jcamp);\n\n\nAPI.createData('parsed', spectrum);\n\n\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{
+								"lib": "https://www.lactame.com/lib/jcampconverter/2.9.0/jcampconverter.js",
+								"alias": "JC"
+							}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": [],
+								"disable": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 28
+					},
+					"size": {
+						"width": 31,
+						"height": 39
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{
+					"rel": "inputValue",
+					"name": "jcamp"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
+		},
+		{
+			"url": "modules/types/science/spectra/spectra_displayer/",
+			"configuration": {
+				"sections": {
+					"graph": [
+						{
+							"sections": {},
+							"groups": {
+								"graph": [
+									{
+										"url": [
+											""
+										],
+										"zoom": [
+											"none"
+										],
+										"wheelAction": [
+											"none"
+										],
+										"wheelbaseline": [
+											0
+										],
+										"fullOut": [
+											"both"
+										],
+										"legend": [
+											null
+										],
+										"legendOptions": [
+											[
+												"isSerieHideable",
+												"isSerieSelectable"
+											]
+										],
+										"mouseTracking": [
+											[]
+										],
+										"selectScatter": [
+											[]
+										],
+										"independantYZoom": [
+											[]
+										]
+									}
+								]
+							}
+						}
+					],
+					"axis": [
+						{
+							"sections": {},
+							"groups": {
+								"xAxis": [
+									{
+										"checkboxes": [
+											[
+												"display"
+											]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											"0"
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"axismodification": [
+											"none"
+										]
+									}
+								],
+								"yAxis": [
+									{
+										"checkboxes": [
+											[
+												"display"
+											]
+										],
+										"label": [
+											""
+										],
+										"beforeSpacing": [
+											"0"
+										],
+										"afterSpacing": [
+											0
+										],
+										"min": [
+											""
+										],
+										"max": [
+											""
+										],
+										"nbTicksPrimary": [
+											5
+										],
+										"fitToAxisOnFromTo": [
+											[]
+										]
+									}
+								]
+							}
+						}
+					],
+					"variables": [
+						{
+							"sections": {},
+							"groups": {
+								"variables": [
+									[
+										{
+											"variable": "",
+											"axis": "0",
+											"adaptTo": "none",
+											"plotcolor": [
+												1,
+												1,
+												255,
+												1
+											],
+											"strokewidth": "1",
+											"strokestyle": "1",
+											"plotcontinuous": "continuous",
+											"peakpicking": [],
+											"markers": [],
+											"markerShape": "1",
+											"markerSize": 2,
+											"normalize": "none",
+											"optimizeSlots": [],
+											"tracking": []
+										}
+									]
+								]
+							}
+						}
+					],
+					"misc": [
+						{
+							"sections": {},
+							"groups": {
+								"misc": [
+									{
+										"highlightOptions": [
+											"{}"
+										]
+									}
+								]
+							}
+						}
+					]
+				},
+				"groups": {}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 33,
+						"top": 67
+					},
+					"size": {
+						"width": 85,
+						"height": 27
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Display the parsed jcamp",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 9,
+			"vars_in": [
+				{
+					"rel": "jcamp",
+					"name": "parsed"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": "Display the parsed jcamp"
 		}
 	],
 	"variables": [
@@ -999,5 +1363,106 @@
 	"configuration": {
 		"title": "JCAMP viewer"
 	},
-	"aliases": []
+	"aliases": [
+		{
+			"path": "https://www.lactame.com/lib/jcampconverter/2.9.0/jcampconverter.js",
+			"alias": "JC"
+		}
+	],
+	"actionscripts": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					{
+						"name": [
+							null
+						],
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"init_script": [
+		{
+			"sections": {},
+			"groups": {
+				"general": [
+					{
+						"script": [
+							null
+						]
+					}
+				]
+			}
+		}
+	],
+	"custom_filters": [
+		{
+			"sections": {
+				"modules": [
+					{
+						"sections": {},
+						"groups": {
+							"modules": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				],
+				"filtersLib": [
+					{
+						"sections": {},
+						"groups": {
+							"filters": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				],
+				"filters": [
+					{
+						"sections": {},
+						"groups": {
+							"filter": [
+								{
+									"name": [
+										null
+									],
+									"script": [
+										null
+									]
+								}
+							],
+							"libs": [
+								[
+									{}
+								]
+							]
+						}
+					}
+				]
+			},
+			"groups": {}
+		}
+	],
+	"actionfiles": [
+		{
+			"sections": {},
+			"groups": {
+				"action": [
+					[
+						{}
+					]
+				]
+			}
+		}
+	]
 }

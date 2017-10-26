@@ -31,8 +31,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 59,
-            "top": 9
+            "left": 60,
+            "top": 0
           },
           "size": {
             "width": 38,
@@ -167,7 +167,7 @@
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "A jcamp",
           "bgColor": [
             255,
             255,
@@ -229,7 +229,550 @@
           ]
         }
       ],
-      "title": ""
+      "title": "A jcamp"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "[{\"from\":7.2814,\"to\":7.3782,\"integral\":4.17665,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"m\",\"kind\":\"\",\"remark\":\"\",\"delta\":7.34998}]},{\"from\":3.58016,\"to\":3.59557,\"integral\":2.0285,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"s\",\"kind\":\"\",\"remark\":\"\",\"delta\":3.58786}]},{\"from\":3.31322,\"to\":3.33229,\"integral\":2.02186,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"d\",\"kind\":\"\",\"remark\":\"\",\"j\":[{\"coupling\":2.347506009614335,\"multiplicity\":\"d\"}],\"delta\":3.32276}]},{\"from\":2.35363,\"to\":2.36683,\"integral\":3.04795,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"s\",\"kind\":\"\",\"remark\":\"\",\"delta\":2.36023}]},{\"from\":2.27736,\"to\":2.2979,\"integral\":0.72504,\"signal\":[{\"nbAtoms\":0,\"diaID\":[],\"multiplicity\":\"t\",\"kind\":\"\",\"remark\":\"\",\"j\":[{\"coupling\":2.347506009614335,\"multiplicity\":\"t\"}],\"delta\":2.28763}]}]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 40
+          },
+          "size": {
+            "width": 55,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Result of peak picking",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "ranges"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Result of peak picking"
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "From",
+                "jpath": [
+                  "from"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "To",
+                "jpath": [
+                  "to"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Integral",
+                "jpath": [
+                  "integral"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 56,
+            "top": 40
+          },
+          "size": {
+            "width": 31,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Ranges",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "ranges"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onRowActive",
+          "rel": "row",
+          "jpath": [
+            "signal"
+          ],
+          "name": "signals"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Ranges"
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 88,
+            "top": 40
+          },
+          "size": {
+            "width": 26,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Signals",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "signals"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Signals"
     }
   ],
   "variables": [
@@ -261,7 +804,7 @@
   "configuration": {
     "title": "1D NMR"
   },
-  "version": "2.84.1-0",
+  "version": "2.85.1-0",
   "grid": {
     "layers": {
       "Default layer": {
