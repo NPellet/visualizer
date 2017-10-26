@@ -73,6 +73,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Test": {
+					"position": {
+						"left": 0,
+						"top": 42,
+						"right": 0
+					},
+					"size": {
+						"width": 40,
+						"height": 35
+					},
+					"display": true,
+					"title": "Display the mol2d with strange style",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"title": "Display the mol2d with strange style",
@@ -149,6 +171,28 @@
 			"url": "modules/types/science/chemistry/jsme/",
 			"layers": {
 				"Default layer": {
+					"position": {
+						"left": 41,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 47,
+						"height": 41
+					},
+					"display": true,
+					"title": "Input mol2d, output molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Test": {
 					"position": {
 						"left": 41,
 						"top": 0,
@@ -255,6 +299,28 @@
 					"size": {
 						"width": 51,
 						"height": 41
+					},
+					"display": true,
+					"title": "Allow to reedit the molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Test": {
+					"position": {
+						"left": 89,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 40,
+						"height": 30
 					},
 					"display": true,
 					"title": "Allow to reedit the molfile",
@@ -393,6 +459,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Test": {
+					"position": {
+						"left": 89,
+						"top": 42,
+						"right": 0
+					},
+					"size": {
+						"width": 51,
+						"height": 35
+					},
+					"display": true,
+					"title": "Display the molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"title": "Display the molfile",
@@ -459,6 +547,28 @@
 			},
 			"layers": {
 				"Default layer": {
+					"position": {
+						"left": 41,
+						"top": 42
+					},
+					"size": {
+						"width": 47,
+						"height": 35
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Display the molfile and allow in-line editing",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Test": {
 					"position": {
 						"left": 41,
 						"top": 42
@@ -661,6 +771,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Test": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 40,
+						"height": 41
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 6,
@@ -720,6 +852,275 @@
 					]
 				}
 			]
+		},
+		{
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook"
+								]
+							],
+							"defaultaction": [
+								null
+							],
+							"labelsize": [
+								14
+							],
+							"bondwidth": [
+								1
+							],
+							"highlightColor": [
+								"3"
+							],
+							"outputResult": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"id": 7,
+			"vars_in": [
+				{
+					"rel": "mol",
+					"name": "molfile"
+				}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"url": "modules/types/science/chemistry/jsme/",
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 141,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 46,
+						"height": 41
+					},
+					"display": false,
+					"title": "Allow to reedit the molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Test": {
+					"position": {
+						"left": 141,
+						"top": 0,
+						"right": 0
+					},
+					"size": {
+						"width": 46,
+						"height": 41
+					},
+					"display": true,
+					"title": "Allow to reedit the molfile",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"title": "Allow to reedit the molfile",
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			]
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"API.switchToLayer('Test');\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": [],
+								"disable": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"Default layer": {
+					"position": {
+						"left": 143,
+						"top": 18
+					},
+					"size": {
+						"width": 31,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Test": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Test"
+				}
+			},
+			"id": 8,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
 		}
 	],
 	"variables": [
@@ -755,16 +1156,18 @@
 	"_saved": 1380886298789,
 	"_time": 1380886298789,
 	"_name": "Master",
-	"version": "2.71.5-0",
+	"version": "2.85.1-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
 				"name": "Default layer"
+			},
+			"Test": {
+				"name": "Test"
 			}
 		},
 		"xWidth": 10,
 		"yHeight": 10
 	},
-	"aliases": [],
-	"pouchvariables": []
+	"aliases": []
 }
