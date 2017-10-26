@@ -31,12 +31,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 59,
-            "top": 9
+            "left": 57,
+            "top": 0
           },
           "size": {
-            "width": 38,
-            "height": 25
+            "width": 78,
+            "height": 44
           },
           "zIndex": 0,
           "display": true,
@@ -55,7 +55,7 @@
       "id": 1,
       "vars_in": [
         {
-          "rel": "jcamp",
+          "rel": "jcampMaster",
           "name": "jcamp"
         }
       ],
@@ -189,6 +189,7 @@
       "vars_out": [
         {
           "event": "onEditorChange",
+          "rel": "data",
           "jpath": [],
           "name": "jcamp"
         }

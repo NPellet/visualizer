@@ -74,6 +74,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         },
 
         onVarChange(variable) {
+            
             return Promise.all([this.module.onReady(), variable.onReady()]).then(() => {
                 const varName = variable.getName();
                 this.module.blankVariable(varName);

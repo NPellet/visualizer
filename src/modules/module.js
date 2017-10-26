@@ -199,7 +199,9 @@ define([
         },
 
         async updateView(rel, varValue, varName) {
-            await this.view.update[rel].call(this.view, varValue, varName);
+            console.log('sdf');
+            this.view.update[rel] = this.view.update[rel].bind( this.view );
+            await this.view.update[rel](varValue, varName, this.view);
             this.controller.sendActionFromEvent('_onVarUpdated', '_varName', varName);
         },
 

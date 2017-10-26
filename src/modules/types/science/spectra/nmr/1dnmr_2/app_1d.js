@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -904,6 +914,8 @@ var Shape = function (_EventEmitter) {
 
       this.group = document.createElementNS(this.graph.ns, 'g');
 
+      this.group.setAttribute('clip-path', 'url(#_clipplot' + graph._creation + ')');
+
       this._selected = false;
       this.createDom();
 
@@ -1197,7 +1209,17 @@ var Shape = function (_EventEmitter) {
   }, {
     key: 'setSerie',
     value: function setSerie(serie) {
+
+      if (!serie) {
+        return;
+      }
+
       this.serie = serie;
+
+      if (!serie.getXAxis || !serie.getYAxis) {
+        console.error(serie);
+        throw "Serie does not implement the getXAxis or getYAxis method";
+      }
       this.xAxis = serie.getXAxis();
       this.yAxis = serie.getYAxis();
       return this;
@@ -4631,9 +4653,12 @@ var Graph = function (_EventEmitter) {
           axis = this.axis[axisvars[j]][i];
           xy = j < 2 ? 'x' : 'y';
 
-          if (!axis.isShown()) {
-            continue;
-          }
+          // 25.10.2017. Wait a second, this cannot be real. Even hidden axes must have min max values.
+          // The data can be displayed while the axis is hidden
+          // I assume this was added to cover another bug, but another approach must be chosen
+          if (!axis.isShown()) {}
+          //          continue;
+
 
           //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 
@@ -5147,7 +5172,7 @@ var Graph = function (_EventEmitter) {
           shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity || 1, i);
         }
       }
-
+      console.log(shapeData.serie, this.getSerie(shapeData.serie));
       if (shapeData.serie) {
         shape.setSerie(this.getSerie(shapeData.serie));
       }
@@ -6833,7 +6858,8 @@ function refreshDrawingZone(graph) {
 
     if (!axis.isShown()) {
       axis.hideGroup();
-      return;
+      // Don't return here. We need to go through the draw method as the axis must be assigned minPx and maxPx values.
+      // This is because some series can still be visible although the axis isn't.
     } else {
       axis.showGroup();
     }
@@ -6851,6 +6877,9 @@ function refreshDrawingZone(graph) {
     // Let's not draw dependant axes yet
     var drawn = !axis.linkedToAxis ? axis.draw() : 0;
 
+    if (!axis.isShown()) {
+      return;
+    }
     // Get axis position gives the extra shift that is common
     var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
     axis.setLevel(level);
@@ -7344,6 +7373,10 @@ function _handleMouseDown(graph, x, y, e) {
     return;
   }
 
+  if (graph.activePlugin) {
+    graph.activePlugin = false;
+  }
+
   checkMouseActions(graph, e, [graph, x, y, e], 'onMouseDown');
 }
 
@@ -7445,7 +7478,12 @@ function checkMouseActions(graph, e, parameters, methodName) {
           parameters.push(keyComb[i].options);
         }
 
-        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
+        // Lease the mouse action to the current action
+        // 25.10.2017: Except for mousewheel. See #111
+        if (e.type !== "wheel" && e.type !== "mousewheel") {
+          graph.activePlugin = keyComb[i].plugin;
+        }
+
         graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
         executed = true;
         continue;
@@ -10761,6 +10799,13 @@ var SerieLine = function (_Serie) {
 
       var data, xData;
 
+      try {
+        this.axisCheck();
+      } catch (e) {
+        console.warn(e);
+        return false;
+      }
+
       this.currentLineId = 0;
       this.counter = 0;
       this._drawn = true;
@@ -11032,6 +11077,15 @@ var SerieLine = function (_Serie) {
           continue;
         }
 
+        if (xpx2 != xpx2 || ypx2 != ypx2) {
+          // NaN checks
+          if (this.counter > 0) {
+
+            this._createLine();
+          }
+          continue;
+        }
+
         if (!_monotoneous) {
           pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
         } else {
@@ -11118,6 +11172,7 @@ var SerieLine = function (_Serie) {
                   }
                 }
               } else if (!pointOutside) {
+
                 this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
               } // else {
               // Norman:
@@ -11147,15 +11202,6 @@ var SerieLine = function (_Serie) {
 
             continue;
           }
-        }
-
-        if (xpx2 != xpx2 || ypx2 != ypx2) {
-          // NaN checks
-          if (this.counter > 0) {
-
-            this._createLine();
-          }
-          continue;
         }
 
         this._addPoint(xpx2, ypx2, x, y, i, false, true);
@@ -11242,70 +11288,6 @@ var SerieLine = function (_Serie) {
       }
       this.getMarkerDom(family);
       return this.markerCurrentFamily;
-    }
-  }, {
-    key: 'drawSlot',
-    value: function drawSlot(slotToUse, y) {
-
-      var k = 0;
-      var i = 0,
-          xpx,
-          ypx,
-          max;
-      var j;
-
-      if (this.isFlipped()) {
-
-        var dataPerSlot = this.slots[y] / (this.maxY - this.minY);
-
-        var slotInit = Math.floor((this.getYAxis().getCurrentMin() - this.minY) * dataPerSlot);
-        var slotFinal = Math.ceil((this.getYAxis().getCurrentMax() - this.minY) * dataPerSlot);
-      } else {
-
-        var dataPerSlot = this.slots[y] / (this.maxX - this.minX);
-
-        var slotInit = Math.floor((this.getXAxis().getCurrentMin() - this.minX) * dataPerSlot);
-        var slotFinal = Math.ceil((this.getXAxis().getCurrentMax() - this.minX) * dataPerSlot);
-      }
-
-      for (j = slotInit; j <= slotFinal; j++) {
-
-        if (!slotToUse[j]) {
-          continue;
-        }
-
-        if (this.isFlipped()) {
-
-          ypx = Math.floor(this.getY(slotToUse[j].x));
-          max = this.getX(slotToUse[j].max);
-
-          /*if ( this.options.autoPeakPicking ) {
-              allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-            }
-          * @memberof SerieLine
-          */
-          this._addPoint(this.getX(slotToUse[j].start), ypx, false, false, false, false, false);
-          this._addPoint(max, ypx, false, false, false, true, false);
-          this._addPoint(this.getX(slotToUse[j].min), ypx, false, false, false, false, false);
-          this._addPoint(this.getX(slotToUse[j].stop), ypx, false, false, false, true, false);
-
-          //    k++;
-        } else {
-
-          xpx = Math.floor(this.getX(slotToUse[j].x));
-          max = this.getY(slotToUse[j].max);
-
-          this._addPoint(xpx, this.getY(slotToUse[j].start), false, false, false, false, false);
-          this._addPoint(xpx, max, false, false, false, true, false);
-          this._addPoint(xpx, this.getY(slotToUse[j].min), false, false, false, false, false);
-          this._addPoint(xpx, this.getY(slotToUse[j].stop), false, false, false, true, false);
-
-          //this.counter ++;
-        }
-      }
-
-      this._createLine();
-      i++;
     }
   }, {
     key: 'setMarkerStyleTo',
@@ -13178,8 +13160,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _EventEmitter2 = __webpack_require__(11);
@@ -13276,197 +13256,12 @@ var Serie = function (_EventEmitter) {
         return this.setWaveform(data);
       }
 
-      function isArray(arr) {
-        var stringed = Object.prototype.toString.call(arr);
-        return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' || stringed === '[object Float64Array]' || stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
-      }
-
-      var z = 0,
-          x,
-          dx,
-          oneDimensional = oneDimensional || false,
-          type = type || 'float',
-          arr,
-          total = 0,
-          continuous;
-
-      // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
-      // We shouldn't need that for the lines
-      //this.empty();
-
-      this.minX = Number.MAX_SAFE_INTEGER;
-      this.maxX = Number.MIN_SAFE_INTEGER;
-      this.minY = Number.MAX_SAFE_INTEGER;
-      this.maxY = Number.MIN_SAFE_INTEGER;
-
-      var datas = [];
-
-      var isDataArray = isArray(data);
-
-      if (!isDataArray && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) == 'object') {
-        data = [data];
-      } else if (isDataArray && !isArray(data[0]) && _typeof(data[0]) !== 'object') {
-        // [100, 103, 102, 2143, ...]
-        data = [data];
-        oneDimensional = true;
-      } else if (isDataArray && isArray(data[0]) && data[0].length > 2) {
-        oneDimensional = true;
-      } else if (!isDataArray) {
-        util.throwError("Data is not an array");
-        return;
-      }
-
-      // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      var isData0Array = isArray(data[0]);
-
-      var isData00Array = isArray(data[0][0]);
-
-      if (isData0Array && !oneDimensional && !isData00Array) {
-        data = [data];
-      }
-      if (isData0Array) {
-
-        for (var i = 0, k = data.length; i < k; i++) {
-
-          arr = this._addData(type, !oneDimensional ? data.length * 2 : data.length);
-          datas.push(arr);
-          z = 0;
-
-          for (var j = 0, l = data[i].length; j < l; j++) {
-
-            if (!oneDimensional) {
-              arr[z] = [data[i][j][0], data[i][j][1]];
-              total++;
-              z++;
-            } else {
-              // 1D Array
-              arr[z] = [data[i][j], data[i][j + 1]];
-              z++;
-              total += j % 2 ? 1 : 0;
-            }
-          }
-        }
-      } else if (_typeof(data[0]) == 'object') {
-
-        if (data[0].x) {
-
-          for (var i = 0, l = data.length; i < l; i++) {
-
-            var arr = this._addData(type, data[i].x.length * 2);
-            datas.push(arr);
-
-            z = 0;
-            for (var j = 0, m = data[0].x.length; j < m; j++) {
-              // Several piece of data together
-              arr[z] = [data[i].x[j], data[i].y[j]];
-              total++;
-              z++;
-            }
-          }
-        } else {
-
-          this.mode = 'x_equally_separated';
-
-          var number = 0,
-              numbers = [],
-              k = 0,
-              o;
-
-          if (!data[0].y) {
-            console.log(data);
-            util.throwError("No y data");
-            return;
-          }
-
-          for (var i = 0, l = data.length; i < l; i++) {
-            // Several piece of data together
-            number += data[i].y.length;
-            continuous = i != 0 && (!data[i + 1] || data[i].x + data[i].dx * data[i].y.length == data[i + 1].x);
-            if (!continuous) {
-              datas.push(this._addData(type, number));
-              numbers.push(number);
-              number = 0;
-            }
-          }
-
-          this.xData = [];
-
-          number = 0;
-          k = 0;
-          z = 0;
-
-          for (var i = 0, l = data.length; i < l; i++) {
-            x = data[i].x;
-            dx = data[i].dx;
-
-            for (var j = 0; j < o; j++) {
-
-              datas[k][z] = [x + j * dx, data[i].y[j]];
-              z++;
-              total++;
-            }
-
-            number += data[i].y.length;
-
-            if (numbers[k] == number) {
-              k++;
-              number = 0;
-              z = 0;
-            }
-          }
-        }
-      }
-
-      // Determination of slots for low res spectrum
-      var w = (this.maxX - this.minX) / this.graph.getDrawingWidth(),
-          ws = [];
-
-      var min = this.graph.getDrawingWidth() * 4;
-      var max = total / 4;
-
-      var min = this.graph.getDrawingWidth();
-      var max = total;
-
-      // Temporary reduction
-      datas = datas.reduce(function (a, b, index) {
-        if (index > 0) {
-          a.push([NaN, NaN]);
-        }
-        //console.log( a, b );
-        return a.concat(b);
-      }, []);
-
-      var wave = new _waveform2.default();
-      wave.setData(datas);
-      this.setWaveform(wave);
-
-      return this;
+      throw "Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class.";
     }
   }, {
     key: '_addData',
     value: function _addData(type, howmany) {
-
       return [];
-      /*
-      switch ( type ) {
-        case 'int':
-          var size = howmany * 4; // 4 byte per number (32 bits)
-          break;
-        case 'float':
-          var size = howmany * 8; // 4 byte per number (64 bits)
-          break;
-      }
-       var arr = new ArrayBuffer( size );
-       switch ( type ) {
-        case 'int':
-          return new Int32Array( arr );
-          break;
-         default:
-        case 'float':
-          return new Float64Array( arr );
-          break;
-      }
-      */
     }
 
     /**
@@ -13477,7 +13272,7 @@ var Serie = function (_EventEmitter) {
   }, {
     key: 'clearData',
     value: function clearData() {
-      this.setData([]);
+      this.setData(new _waveform2.default());
       return this;
     }
 
@@ -13551,6 +13346,7 @@ var Serie = function (_EventEmitter) {
   }, {
     key: 'hide',
     value: function hide(hideShapes) {
+
       this.hidden = true;
       this.groupMain.setAttribute('display', 'none');
 
@@ -13649,6 +13445,23 @@ var Serie = function (_EventEmitter) {
       return !this.hidden;
     }
 
+    /**
+     * Checks that axes assigned to the serie have been defined and have proper values
+     * @memberof Serie
+     */
+
+  }, {
+    key: 'axisCheck',
+    value: function axisCheck() {
+
+      if (!this.getXAxis() || !this.getYAxis()) {
+        throw "No axis exist for this serie. Check that they were properly assigned";
+      }
+
+      if (isNaN(this.getXAxis().getCurrentMin()) || isNaN(this.getXAxis().getCurrentMax()) || isNaN(this.getYAxis().getCurrentMin()) || isNaN(this.getYAxis().getCurrentMax())) {
+        throw "Axis min and max values are not defined. Try autoscaling";
+      }
+    }
     /**
      * Returns the x position of a certain value in pixels position, based on the serie's axis
      * @memberof Serie
@@ -13804,6 +13617,8 @@ var Serie = function (_EventEmitter) {
           this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
         }
       }
+
+      this.graph.updateDataMinMaxAxes();
 
       return this;
     }
@@ -14964,11 +14779,23 @@ var Axis = function (_EventEmitter) {
     key: 'setMinValueData',
     value: function setMinValueData(min) {
       this.dataMin = min;
+
+      // 25.10.2017. This is to help in the case there's no autoscaling
+      if (isNaN(this.getCurrentMin())) {
+        this.setCurrentMin(this.dataMin);
+        this.cache();
+      }
     }
   }, {
     key: 'setMaxValueData',
     value: function setMaxValueData(max) {
       this.dataMax = max;
+
+      // 25.10.2017. This is to help in the case there's no autoscaling
+      if (isNaN(this.getCurrentMax())) {
+        this.setCurrentMax(this.dataMax);
+        this.cache();
+      }
     }
 
     /**
@@ -15086,6 +14913,12 @@ var Axis = function (_EventEmitter) {
     key: 'getNbTicksSecondary',
     value: function getNbTicksSecondary() {
       return this.options.nbTicksSecondary;
+    }
+  }, {
+    key: 'setNbTicksSecondary',
+    value: function setNbTicksSecondary(nb) {
+      this.options.nbTicksSecondary = nb;
+      return this;
     }
   }, {
     key: 'handleMouseMove',
@@ -15329,9 +15162,7 @@ var Axis = function (_EventEmitter) {
         this.currentAxisMin = undefined;
       }
 
-      this.cacheCurrentMin();
-      this.cacheCurrentMax();
-      this.cacheInterval();
+      this.cache();
 
       this._zoomed = false;
 
@@ -15421,6 +15252,13 @@ var Axis = function (_EventEmitter) {
     key: 'cacheInterval',
     value: function cacheInterval() {
       this.cachedInterval = this.cachedCurrentMax - this.cachedCurrentMin;
+    }
+  }, {
+    key: 'cache',
+    value: function cache() {
+      this.cacheCurrentMin();
+      this.cacheCurrentMax();
+      this.cacheInterval();
     }
 
     /**
@@ -15515,10 +15353,7 @@ var Axis = function (_EventEmitter) {
       var visible;
 
       //    this.drawInit();
-
-      this.cacheCurrentMax();
-      this.cacheCurrentMin();
-      this.cacheInterval();
+      this.cache();
 
       if (this.currentAxisMin == undefined || this.currentAxisMax == undefined) {
         this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
@@ -16166,7 +16001,6 @@ var Axis = function (_EventEmitter) {
 
       //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
       if (!this.options.logScale) {
-
         return (value - this.getCurrentMin()) / this.getCurrentInterval() * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
       } else {
         // 0 if value = min
@@ -21539,7 +21373,6 @@ var SerieZone = function (_Serie) {
             for (j = 0; j < waveform.getLength(); j += 1) {
               dataX = waveform.getX(j, true);
               dataY = waveform.getY(j, true);
-              console.log(dataX, dataY);
 
               // The y axis in screen coordinate is inverted vs cartesians
               if (dataY[j] < ymin) {
@@ -21606,6 +21439,8 @@ var SerieZone = function (_Serie) {
 
         if (line !== "") {
           this.lineZone.setAttribute('d', "M " + line + " z");
+        } else {
+          this.lineZone.setAttribute('d', "");
         }
         this.groupMain.appendChild(this.groupZones);
       }
@@ -27816,17 +27651,20 @@ var PluginMakeTracesDifferent = function (_Plugin) {
         options.endingColorHSL = Object.assign({}, options.startingColorHSL, options.endingColorHSL);
       }
 
-      series.map(function (serie, index) {
+      return series.map(function (serie, index) {
 
         if (!serie.setLineColor) {
           throw "The serie " + serie.getName() + " does not implement the method `startingColor`";
         }
 
-        serie.setLineColor(_this2.buildHSLString({
+        var colorString = _this2.buildHSLString({
           h: options.startingColorHSL.h + index / (seriesLength - 1) * (options.endingColorHSL.h - options.startingColorHSL.h),
           s: options.startingColorHSL.s + index / (seriesLength - 1) * (options.endingColorHSL.s - options.startingColorHSL.s),
           l: options.startingColorHSL.l + index / (seriesLength - 1) * (options.endingColorHSL.l - options.startingColorHSL.l)
-        }));
+        });
+
+        serie.setLineColor(colorString);
+        return colorString;
       });
     }
   }], [{
@@ -29795,7 +29633,7 @@ var PluginZoom = function (_Plugin) {
   }, {
     key: 'onMouseUp',
     value: function onMouseUp(graph, x, y, e, mute) {
-
+      console.log('inplugin');
       var self = this;
       this.removeZone();
 
@@ -31627,6 +31465,8 @@ var SerieContour = function (_SerieLine) {
 
     _this.negativeThreshold = 0;
     _this.positiveThreshold = 0;
+
+    _this.groupMain.setAttribute('clip-path', 'url(#_clipplot' + graph._creation + ')');
     return _this;
   }
 
@@ -34226,8 +34066,6 @@ var ShapeNMRIntegral = function (_Shape) {
         condition = false;
         incrementation = 1;
       }
-
-      console.log(index1, index2);
 
       for (; condition ? j >= index1 : j <= index2; j += incrementation) {
 
@@ -37552,3 +37390,4 @@ module.exports = __webpack_require__(42);
 
 /***/ })
 /******/ ]);
+});

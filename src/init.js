@@ -62,6 +62,8 @@ require.config({
         papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
+        'react': 'components/react/react.development',
+        'react-dom': 'components/react/react-dom.development',
         select2: 'components/select2/dist/js/select2.full',
         slickgrid: 'components/slickgrid/slick.grid',
         slickgrid_core: 'components/slickgrid/slick.core',

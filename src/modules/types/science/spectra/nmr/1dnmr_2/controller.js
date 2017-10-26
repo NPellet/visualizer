@@ -18,8 +18,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.references = {
         jcamp: {
-            label: 'Jcamp file',
-            type: ['jcamp']
+            label: 'Slave jcamp',
+            type: ['jcamp', 'string' ]
+        },
+        jcampMaster: {
+          label: 'Master jcamp',
+          type: ['jcamp', 'string' ]  
         },
         molecule: {
             label: 'Molecule in the SVG format',
@@ -31,13 +35,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['jcamp'];
+    Controller.prototype.variablesIn = ['jcamp', 'jcampMaster', 'molecule'];
 
     Controller.prototype.configurationStructure = function () {
 
         var currentCfg = this.module.definition.vars_in;
         let vars = [];
-        
+
         if (currentCfg) {
             let i = 0,
                 l = currentCfg.length;
