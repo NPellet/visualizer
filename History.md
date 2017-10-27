@@ -1,3 +1,13 @@
+<a name="2.85.1"></a>
+## [2.85.1](https://github.com/NPellet/visualizer/compare/v2.85.0...v2.85.1) (2017-10-27)
+
+
+### Bug Fixes
+
+* **build:** copy eventEmitter from components ([323edcb](https://github.com/NPellet/visualizer/commit/323edcb))
+
+
+
 <a name="2.85.0"></a>
 # [2.85.0](https://github.com/NPellet/visualizer/compare/v2.84.0...v2.85.0) (2017-10-25)
 
