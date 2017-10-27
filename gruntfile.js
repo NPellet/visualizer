@@ -233,7 +233,8 @@ module.exports = function (grunt) {
                             './babel-standalone/**',
                             './fetch/fetch.js',
                             './js-yaml/dist/**',
-                            './canvg/dist/**'
+                            './canvg/dist/**',
+                            './eventEmitter/*.js'
                         ],
                         dest: './build/components/'
                     },
