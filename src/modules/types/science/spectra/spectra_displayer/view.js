@@ -518,11 +518,11 @@ define([
                             if (Array.isArray(high)) {
                                 for (var k = 0; k < high.length; k++) {
                                     if (high[k] == key) {
-                                        serie.toggleMarker( j , !!value, true);
+                                        serie.toggleMarker(j, !!value, true);
                                     }
                                 }
                             } else if (high == key) {
-                                serie.toggleMarker( j , !!value, true);
+                                serie.toggleMarker(j, !!value, true);
                             }
                         }
                     }
@@ -677,11 +677,11 @@ define([
                     if (String(aData.type) === 'scatter') {
                         
                         let modifiers = [];
-                        if( aData.styles && aData.styles[ 0 ] ) {
+                        if (aData.styles && aData.styles[ 0 ]) {
                             modifiers = aData.styles[ 0 ].style;
-                        }  
+                        }
                         
-                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers );
+                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers);
 
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
@@ -860,11 +860,11 @@ define([
 
 
                             if (data.x && data.y) {
-                                dataX=data.x;
-                                dataY=data.y;
-                            } else  if (Array.isArray(data[0])) {
-                                dataX=data[0];
-                                dataY=data[1];
+                                dataX = data.x;
+                                dataY = data.y;
+                            } else if (Array.isArray(data[0])) {
+                                dataX = data[0];
+                                dataY = data[1];
                             } else {
                                 for (var i = 0; i < data.length; i += 2) {
                                     dataX.push(data[ i ]);
