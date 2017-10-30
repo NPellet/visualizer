@@ -1,5 +1,5 @@
 {
-	"version": "2.85.1-0",
+	"version": "2.85.2-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -28,6 +28,9 @@
 			},
 			"Bioproduct_768": {
 				"name": "Bioproduct_768"
+			},
+			"Default layer_1080": {
+				"name": "Default layer_1080"
 			}
 		},
 		"xWidth": 10,
@@ -387,6 +390,28 @@
 					},
 					"zIndex": 0,
 					"display": false,
+					"title": "Attachments",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 0,
+						"top": 42
+					},
+					"size": {
+						"width": 38,
+						"height": 55
+					},
+					"zIndex": 0,
+					"display": true,
 					"title": "Attachments",
 					"bgColor": [
 						255,
@@ -825,6 +850,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 74,
+						"top": 53
+					},
+					"size": {
+						"width": 77,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Jcamp previsualizsation",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 2,
@@ -1102,6 +1149,28 @@
 					},
 					"zIndex": 0,
 					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 75,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 97
+					},
+					"zIndex": 0,
+					"display": true,
 					"title": "",
 					"bgColor": [
 						255,
@@ -1424,6 +1493,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 97,
+						"top": 0
+					},
+					"size": {
+						"width": 42,
+						"height": 31
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 4,
@@ -1695,6 +1786,28 @@
 					"position": {
 						"left": 0,
 						"top": 14
+					},
+					"size": {
+						"width": 36,
+						"height": 38
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 0,
+						"top": 35
 					},
 					"size": {
 						"width": 36,
@@ -2027,6 +2140,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 0,
+						"top": 19
+					},
+					"size": {
+						"width": 74,
+						"height": 7
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Title",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 6,
@@ -2101,7 +2236,7 @@
 								]
 							],
 							"script": [
-								"\nif (! this.button) {\n    this.button='default';\n    this.getButton('save').setColor('green');\n}\n\nvar layers={\n    'default': {\n        layer:'Default layer',\n        info:'<h3>General overview of the sample</h3> Click on a button to change specific values'\n        },\n    'physical': {\n        layer:'Physical',\n        info:'<h3>Physical characteristics</h3> Enter here simple values like bp, mp, ...'\n    },\n    'admin': {\n        layer:'Admin',\n        info:'Admin'\n    },\n    'spectra': {\n        layer:'Spectra',\n        info:'<h3>Spectra</h3> '\n    },\n    'images': {\n        layer:'Images',\n        info:'<h3>Images</h3>'\n        \n    },\n    'molecule': {\n        layer:'Molecule',\n        info:'<h3>Molecule</h3>Information concernifng an organic molecule.'\n    },\n    'bioproduct': {\n        layer:'Bioproduct',\n        info:'<h3>Bioproducts</h3>Currently designed more for peptide and proteine sequence'\n    }\n}\n\nif (layers[this.button]) {\n    for (var key of Object.keys(layers)) {\n        this.enableButton(key);\n    }\n    API.switchToLayer(layers[this.button].layer)\n    this.disableButton(this.button);\n    API.createData('layerInfo',layers[this.button].info);\n} else {\n    switch (this.button) {\n        case 'save':\n            API.doAction('save');\n            break;\n        case 'help':\n            API.doAction('Help');\n            break;\n    }\n}\n\n"
+								"\nif (! this.button) {\n    this.button='default';\n    this.getButton('save').setColor('green');\n}\n\nvar layers={\n    'default': {\n        layer:'Default layer',\n        info:'<h3>General overview of the sample</h3> Click on a button to change specific values'\n        },\n    'physical': {\n        layer:'Physical',\n        info:'<h3>Physical characteristics</h3> Enter here simple values like bp, mp, ...'\n    },\n    'admin': {\n        layer:'Admin',\n        info:'Admin'\n    },\n    'spectra': {\n        layer:'Spectra',\n        info:'<h3>Spectra</h3> '\n    },\n    'images': {\n        layer:'Images',\n        info:'<h3>Images</h3>'\n        \n    },\n    'molecule': {\n        layer:'Molecule',\n        info:'<h3>Molecule</h3>Information concernifng an organic molecule.'\n    },\n    'bioproduct': {\n        layer:'Bioproduct',\n        info:'<h3>Bioproducts</h3>Currently designed more for peptide and proteine sequence'\n    }\n}\n\nif (layers[this.button]) {\n    for (var key of Object.keys(layers)) {\n        this.enableButton(key);\n    }\n    API.switchToLayer(layers[this.button].layer, {autoSize: true});\n    this.disableButton(this.button);\n    API.createData('layerInfo',layers[this.button].info);\n} else {\n    switch (this.button) {\n        case 'save':\n            API.doAction('save');\n            break;\n        case 'help':\n            API.doAction('Help');\n            break;\n    }\n}\n\n"
 							]
 						}
 					],
@@ -2344,6 +2479,28 @@
 					"name": "Default layer"
 				},
 				"Bioproduct_768": {
+					"position": {
+						"left": 0,
+						"top": 13
+					},
+					"size": {
+						"width": 74,
+						"height": 5
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
 					"position": {
 						"left": 0,
 						"top": 13
@@ -2679,6 +2836,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 37,
+						"top": 35
+					},
+					"size": {
+						"width": 37,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MF",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 8,
@@ -2995,6 +3174,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 37,
+						"top": 42
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "mw",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 9,
@@ -3269,6 +3470,28 @@
 					"name": "Default layer"
 				},
 				"Bioproduct_768": {
+					"position": {
+						"left": 0,
+						"top": 76
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
 					"position": {
 						"left": 0,
 						"top": 76
@@ -3605,6 +3828,28 @@
 					"name": "Default layer"
 				},
 				"Bioproduct_768": {
+					"position": {
+						"left": 74,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
 					"position": {
 						"left": 74,
 						"top": 0
@@ -4022,6 +4267,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 37,
+						"top": 49
+					},
+					"size": {
+						"width": 37,
+						"height": 24
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IUPAC names and synonyms",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 12,
@@ -4319,6 +4586,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 152,
+						"top": 36
+					},
+					"size": {
+						"width": 25,
+						"height": 30
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Show report",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 13,
@@ -4590,6 +4879,28 @@
 					"size": {
 						"width": 73,
 						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sample physical characteristics",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 114,
+						"top": 0
+					},
+					"size": {
+						"width": 55,
+						"height": 53
 					},
 					"zIndex": 0,
 					"display": false,
@@ -5088,6 +5399,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 113,
+						"top": 30
+					},
+					"size": {
+						"width": 38,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "NMR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 15,
@@ -5518,6 +5851,28 @@
 					"name": "Default layer"
 				},
 				"Bioproduct_768": {
+					"position": {
+						"left": 113,
+						"top": 15
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "IR",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
 					"position": {
 						"left": 113,
 						"top": 15
@@ -5985,6 +6340,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 113,
+						"top": 0
+					},
+					"size": {
+						"width": 38,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 17,
@@ -6432,6 +6809,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 152,
+						"top": 1
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Xray",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 18,
@@ -6852,6 +7251,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 152,
+						"top": 30
+					},
+					"size": {
+						"width": 33,
+						"height": 22
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Images",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 19,
@@ -7160,6 +7581,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 0,
+						"top": 27
+					},
+					"size": {
+						"width": 74,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Free description",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 20,
@@ -7424,6 +7867,28 @@
 					"name": "Default layer"
 				},
 				"Bioproduct_768": {
+					"position": {
+						"left": 152,
+						"top": 53
+					},
+					"size": {
+						"width": 33,
+						"height": 33
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Image",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
 					"position": {
 						"left": 152,
 						"top": 53
@@ -7754,6 +8219,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 153,
+						"top": 62
+					},
+					"size": {
+						"width": 41,
+						"height": 29
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Slick script",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 22,
@@ -8016,6 +8503,28 @@
 					"name": "Default layer"
 				},
 				"Bioproduct_768": {
+					"position": {
+						"left": 124,
+						"top": 56
+					},
+					"size": {
+						"width": 26,
+						"height": 10
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": false,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
 					"position": {
 						"left": 124,
 						"top": 56
@@ -8344,6 +8853,28 @@
 					},
 					"zIndex": 0,
 					"display": true,
+					"title": "em",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 56,
+						"top": 42
+					},
+					"size": {
+						"width": 18,
+						"height": 6
+					},
+					"zIndex": 0,
+					"display": false,
 					"title": "em",
 					"bgColor": [
 						255,
@@ -8776,6 +9307,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 152,
+						"top": 15
+					},
+					"size": {
+						"width": 33,
+						"height": 14
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Chromatogram, GC-MS, LC-MS",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 25,
@@ -9171,6 +9724,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Default layer"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 39,
+						"top": 42
+					},
+					"size": {
+						"width": 35,
+						"height": 55
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "Keywords",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 26,
@@ -9476,6 +10051,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Bioproduct"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Sequence : Enter here a 1 letter or 3 letters amino acid sequence",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 27,
@@ -9757,6 +10354,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Bioproduct"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 74,
+						"height": 12
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 28,
@@ -10072,6 +10691,28 @@
 					"wrapper": true,
 					"created": true,
 					"name": "Bioproduct"
+				},
+				"Default layer_1080": {
+					"position": {
+						"left": 114,
+						"top": 48
+					},
+					"size": {
+						"width": 63,
+						"height": 35
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "Header twig template",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
 				}
 			},
 			"id": 29,
@@ -10245,7 +10886,7 @@
 				"general": [
 					{
 						"script": [
-							"var Renderer = await API.require('vh/eln/acs/renderer');\nRenderer.add();\n\n\n\nvar printerFactory = await API.require('vh/eln/stock/printer/factory');\nvar printerHelper = await API.require('vh/eln/stock/printer/helper');\nprinterFactory(async function(printer) {\n    printerHelper.setup(printer, ['sample', 'location']);\n});\n\n\nvar Sample = await API.require('vh/eln/Sample');\n\nif (IframeBridge) {\n    IframeBridge.onMessage(onMessage);\n    IframeBridge.ready();\n    function onMessage(data) {\n        if(data.type === 'tab.data') {\n            var sample = new Sample(data.message.couchDB, data.message.uuid, {\n                track:true\n            });\n            API.cache('data', data.message);\n            API.cache('sample',sample);\n        }\n    }\n}\n\nrequire(['vh/eln/twig-templates/chem.physical'], function(template) {\n  API.createData('chem.physical', template);\n});\n"
+							""
 						]
 					}
 				]
