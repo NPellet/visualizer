@@ -303,8 +303,8 @@ define([
         return require('src/main/grid').getLayerNames();
     };
 
-    exports.switchToLayer = function (name) {
-        return require('src/main/grid').switchToLayer(name);
+    exports.switchToLayer = function (name, options) {
+        return require('src/main/grid').switchToLayer(name, options);
     };
 
     exports.getActiveLayerName = function () {

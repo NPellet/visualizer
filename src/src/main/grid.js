@@ -815,9 +815,9 @@ define([
         return Object.keys(definition.layers);
     }
 
-    function switchToLayer(layerId) {
+    function switchToLayer(layerId, options={}) {
 
-        var layerId = getBestLayerName(layerId);
+        if (options.auto) layerId = getBestLayerName(layerId);
 
         var layer = (!definition.layers[layerId]) ? (newLayer(false, layerId)) : definition.layers[layerId];
 
@@ -1084,9 +1084,9 @@ define([
             checkDimensions();
             switchToLayer(activeLayer);
         },
-        switchToLayer: function (name) {
-            if (definition.layers[name]) {
-                switchToLayer(name);
+        switchToLayer: function (name, options) {
+            if (definition.layers[name] || options.auto) {
+                switchToLayer(name, options);
             } else {
                 Debug.warn('Layer ' + name + ' is not defined');
             }
