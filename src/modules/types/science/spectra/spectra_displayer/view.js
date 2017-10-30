@@ -90,6 +90,8 @@ define([
                         ctrl: false
                     });
 
+                    var zoom = cfg('zoom');
+
                     let dezoomMode;
                     if (zoom === 'x') {
                         dezoomMode = 'gradualX';
@@ -118,7 +120,7 @@ define([
 
                     options.plugins.peakPicking = {};
 
-                    var zoom = cfg('zoom');
+                    
                     if (zoom && zoom !== 'none') {
                         var zoomOptions = {};
                         if (zoom === 'x') {
