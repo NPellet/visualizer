@@ -817,7 +817,7 @@ define([
 
     function switchToLayer(layerId, options={}) {
 
-        if (options.auto) layerId = getBestLayerName(layerId);
+        if (options.autoSize) layerId = getBestLayerName(layerId);
 
         var layer = (!definition.layers[layerId]) ? (newLayer(false, layerId)) : definition.layers[layerId];
 
@@ -1082,10 +1082,12 @@ define([
 
             $(jqdom).empty();
             checkDimensions();
-            switchToLayer(activeLayer);
+            switchToLayer(activeLayer, {autoSize: true});
         },
         switchToLayer: function (name, options) {
-            if (definition.layers[name] || options.auto) {
+            console.log(options);
+
+            if (definition.layers[name] || options.autoSize) {
                 switchToLayer(name, options);
             } else {
                 Debug.warn('Layer ' + name + ' is not defined');
