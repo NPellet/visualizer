@@ -111,6 +111,7 @@ module.exports = function (grunt) {
                         src: [
                             'init.js',
                             'version.js',
+                            'components/jsgraph/dist/jsgraph-es6.js',
                             'modules/**/*.js',
                             '!modules/**/lib/**/*.js',
                             'src/**/*.js',
@@ -137,6 +138,7 @@ module.exports = function (grunt) {
                         cwd: './build2/',      // Src matches are relative to this path.
                         src: [
                             'init.js',
+                            // 'components/jsgraph/dist/jsgraph-es6.js',
                             'modules/**/*.js',
                             '!modules/**/lib/**/*.js',
                             'src/**/*.js',
