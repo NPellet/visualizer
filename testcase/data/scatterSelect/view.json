@@ -32,7 +32,7 @@
                 []
               ],
               "script": [
-                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            styles: [null,{fill: 'green'},null,{fill: 'blue'}],\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nAPI.createData('chart', chart);\n"
+                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: {}\n            },\n            styles: { \n                unselected: [null,{fill: 'green'},null,{fill: 'blue'}],\n                selected: [{fill: 'yellow'},{fill: 'yellow'},null,{fill: 'yellow'}],\n            },\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nAPI.createData('chart', chart);\n"
               ]
             }
           ],
