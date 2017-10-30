@@ -264,6 +264,7 @@ define([
 
                     resolve(graph);
 
+                    graph.draw( true );
                 }
 
             });
@@ -807,6 +808,7 @@ define([
                 const annotations = value.get();
                 for (let i = 0; i < annotations.length; i++) {
                     let annotation = annotations[i];
+                    
                     let shape = this.graph.newShape(String(annotation.type), annotation);
                     this.annotations[varName][i] = shape;
 
