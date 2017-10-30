@@ -90,6 +90,15 @@ define([
                         ctrl: false
                     });
 
+                    let dezoomMode;
+                    if (zoom === 'x') {
+                        dezoomMode = 'gradualX';
+                    } else if (zoom === 'y') {
+                        dezoomMode = 'gradualY';
+                    } else {
+                        dezoomMode = 'gradualXY';
+                    }
+
                     options.plugins.zoom = {};
                     options.mouseActions.push({
                         plugin: 'zoom',
@@ -103,7 +112,7 @@ define([
                         type: 'dblclick',
                         shift: true,
                         options: {
-                            mode: 'gradualXY'
+                            mode: dezoomMode
                         }
                     });
 
