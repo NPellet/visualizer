@@ -443,8 +443,6 @@ define([
             }
 
             options.onMouseOverMarker = (index, infos, xy) => {
-
-
                 API.highlightId(highlight[index], 1);
                 this.module.controller.onMouseOverMarker(xy, infos);
             };
@@ -684,8 +682,10 @@ define([
                     if (String(aData.type) === 'scatter') {
                         
                         let modifiers = [];
-                        if (aData.styles && aData.styles[ 0 ]) {
-                            modifiers = aData.styles[ 0 ].style;
+                        if ( Array.isArray( aData.styles ) ) {
+                            modifiers = aData.styles;
+                        } else if( typeof aData.styles == 'object' ) {
+                            modifiers = aData.styles[ 'unselected' ];
                         }
                         
                         serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers);
