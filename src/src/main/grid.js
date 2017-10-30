@@ -32,6 +32,21 @@ define([
     var layersUl, layersLi;
     var utilUl, utilLi;
 
+    const SCREEN_RESOLUTIONS = [{
+        name: '1080',
+        width: 1920,
+        height: 1080
+    }, {
+        name: '768',
+        width: 1366,
+        height: 768
+    }, {
+        name: '1440',
+        width: 2560,
+        height: 1440
+    }];
+
+
     const defaults = {
         xWidth: 10,
         yHeight: 10
@@ -766,7 +781,43 @@ define([
         });
     }
 
-    function switchToLayer(layerId, noForm) {
+    function getBestLayerName(name) {
+        var resolutions = getBestResolutions();
+        var layerNames = getLayerNames();
+        for (var resolution of resolutions) {
+            for (var layerName of layerNames) {
+                if (layerName.match(new RegExp(name + '.' + resolution))) {
+                    return layerName;
+                }
+            }
+        }
+        return name;
+    }
+
+    // we will find the large resolution we could use
+    function getBestResolutions() {
+        var resolutions = JSON.parse(JSON.stringify(SCREEN_RESOLUTIONS));
+        var width = screen.width;
+        var height = screen.height;
+        for (var resolution of resolutions) {
+            resolution.error = width - resolution.width + height - resolution.height;
+        }
+        resolutions.sort((a, b) => {
+            if (a.error >= 0 && b.error >= 0) return a.error - b.error;
+            if (a.error >= 0) return -1;
+            if (b.error >= 0) return 1;
+            return b.error - a.error;
+        });
+        return resolutions.map(a => a.name);
+    }
+
+    function getLayerNames() {
+        return Object.keys(definition.layers);
+    }
+
+    function switchToLayer(layerId, options={}) {
+
+        if (options.auto) layerId = getBestLayerName(layerId);
 
         var layer = (!definition.layers[layerId]) ? (newLayer(false, layerId)) : definition.layers[layerId];
 
@@ -1033,16 +1084,14 @@ define([
             checkDimensions();
             switchToLayer(activeLayer);
         },
-        switchToLayer: function (name) {
-            if (definition.layers[name]) {
-                switchToLayer(name);
+        switchToLayer: function (name, options) {
+            if (definition.layers[name] || options.auto) {
+                switchToLayer(name, options);
             } else {
                 Debug.warn('Layer ' + name + ' is not defined');
             }
         },
-        getLayerNames: function () {
-            return Object.keys(definition.layers);
-        },
+        getLayerNames,
         getActiveLayerName: getActiveLayer,
         addModule: addModule,
         newModule: newModule,

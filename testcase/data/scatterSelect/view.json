@@ -1,5 +1,5 @@
 {
-  "version": "2.55.1-0",
+  "version": "2.85.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -28,8 +28,11 @@
                   "yes"
                 ]
               ],
+              "asyncAwait": [
+                []
+              ],
               "script": [
-                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            style: [null,{fill: 'green'},null,{fill: 'blue'}],\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nset('chart', {type:'chart', value: chart});"
+                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            style: [null,{fill: 'green'},null,{fill: 'blue'}],\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nAPI.createData('chart', chart);\n"
               ]
             }
           ],
@@ -42,7 +45,9 @@
             [
               {
                 "name": "button1",
-                "label": "Execute"
+                "label": "Execute",
+                "hide": [],
+                "disable": []
               }
             ]
           ]
@@ -82,15 +87,14 @@
       "title": "",
       "vars_out": [
         {
-          "event": "onScriptEnded",
-          "rel": "outputValue",
-          "jpath": [
-            "chart"
-          ],
-          "name": "chart"
+          "jpath": []
         }
       ],
-      "actions_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -111,7 +115,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/science/spectra/spectra_displayer/",
@@ -257,10 +271,23 @@
                       "markerSize": 5,
                       "normalize": "none",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": []
+                      "tracking": []
                     }
                   ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
                 ]
               }
             }
@@ -336,7 +363,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/edition/slick_grid/",
@@ -479,7 +516,6 @@
     }
   ],
   "aliases": [],
-  "pouchvariables": [],
   "configuration": {
     "title": "Scatter selection"
   }

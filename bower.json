@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.85.0",
+  "version": "2.85.1",
   "description": "Data visualization framework",
   "main": "src/init.js",
   "keywords": [
@@ -31,6 +31,7 @@
     "colors": "3.0.0",
     "d3": "3.5.17",
     "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
+    "eventEmitter": "^5.2.3",
     "fancytree": "2.20.0",
     "farbtastic": "2.0.0-alpha.1",
     "fetch": "2.0.1",
@@ -49,7 +50,7 @@
     "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
     "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jsbarcode": "3.5.7",
-    "jsgraph": "2.0.29",
+    "jsgraph": "2.0.31",
     "jsme": "99b9062c01226a5e778d1ebded279c60aae0ea16",
     "jsmol": "v1.1.0",
     "jsnmr": "v0.0.14",
@@ -89,7 +90,7 @@
     "canvg": "^1.3.0"
   },
   "resolutions": {
-    "jsgraph": "2.0.29",
+    "jsgraph": "2.0.31",
     "jcampconverter": "2.8.0",
     "jquery": "2.2.1",
     "eventEmitter": "^5.1.0"
