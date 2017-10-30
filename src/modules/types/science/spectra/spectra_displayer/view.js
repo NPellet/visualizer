@@ -587,6 +587,8 @@ define([
 
 
                     var defaultStyle = aData.defaultStyle || {};
+                    var defaultStyles = aData.defaultStyles || {};
+
                     var serieName = varname;
                     if (existingNames.has(serieName)) {
                         serieName += '-' + i;
@@ -683,14 +685,24 @@ define([
 
                     if (String(aData.type) === 'scatter') {
                         
-                        let modifiers = [];
+                        let modifiers = {};
                         if ( Array.isArray( aData.styles ) ) {
-                            modifiers = aData.styles;
-                        } else if( typeof aData.styles == 'object' ) {
-                            modifiers = aData.styles[ 'unselected' ];
-                        }
                         
-                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers);
+                            modifiers = { unselected: aData.styles };
+                        
+                        } else if( typeof aData.styles == 'object' ) {
+
+                            modifiers = aData.styles;
+                        }                        
+
+                        let keys = new Set( Object.keys( defaultStyles ).concat( Object.keys( modifiers ) ) );
+
+                        keys.forEach( ( styleName ) => {
+
+                            serie.setStyle(
+                                Object.assign( {}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {} ), modifiers[ styleName ] || [], styleName
+                            );
+                        } );
 
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
