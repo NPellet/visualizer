@@ -473,12 +473,20 @@ define([
             const stackVerticalSpacing = this.module.getConfiguration('stackVerticalSpacing');
             var foundInfo = false;
             if (plotinfos) {
+                const axes = new Set();
+                for (var plotinfo of plotinfos) {
+                    axes.add(plotinfo.axis ? Number(plotinfos[i].axis) : 0);
+                }
+                const minAxis = Math.min(...axes);
+                const nbAxes = axes.size || 1;
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
                         foundInfo = true;
-                        const axisIdx = plotinfos[i].axis ? Number(plotinfos[i].axis) : 0;
+                        const axisIdx = (plotinfos[i].axis ? Number(plotinfos[i].axis) : 0) - minAxis;
                         var axis = this.getYAxis(axisIdx);
-                        axis.setSpan(axisIdx * stackVerticalSpacing || 0, 1);
+                        const startSpan = axisIdx * stackVerticalSpacing || 0;
+                        const endSpan = 1 - (stackVerticalSpacing * (nbAxes - 1 - axisIdx));
+                        axis.setSpan(startSpan, endSpan);
                         serie.setYAxis(axis);
 
                         if (plotinfos[i].adaptTo && String(plotinfos[i].adaptTo) !== 'none') {
