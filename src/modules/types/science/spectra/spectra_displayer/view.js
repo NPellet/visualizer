@@ -684,10 +684,10 @@ define([
                     if (String(aData.type) === 'scatter') {
                         
                         let modifiers = [];
-                        if ( Array.isArray( aData.styles ) ) {
+                        if (Array.isArray(aData.styles)) {
                             modifiers = aData.styles;
-                        } else if( typeof aData.styles == 'object' ) {
-                            modifiers = aData.styles[ 'unselected' ];
+                        } else if (typeof aData.styles == 'object') {
+                            modifiers = aData.styles.unselected;
                         }
                         
                         serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers);

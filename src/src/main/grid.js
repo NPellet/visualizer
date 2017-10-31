@@ -815,7 +815,7 @@ define([
         return Object.keys(definition.layers);
     }
 
-    function switchToLayer(layerId, options={}) {
+    function switchToLayer(layerId, options = {}) {
 
         if (options.autoSize) layerId = getBestLayerName(layerId);
 
