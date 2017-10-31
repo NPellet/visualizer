@@ -475,7 +475,7 @@ define([
             if (plotinfos) {
                 const axes = new Set();
                 for (var plotinfo of plotinfos) {
-                    axes.add(plotinfo.axis ? Number(plotinfos[i].axis) : 0);
+                    axes.add(plotinfo.axis ? Number(plotinfo.axis) : 0);
                 }
                 const minAxis = Math.min(...axes);
                 const nbAxes = axes.size || 1;
