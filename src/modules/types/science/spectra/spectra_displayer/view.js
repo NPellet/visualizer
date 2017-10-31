@@ -264,6 +264,7 @@ define([
 
                     resolve(graph);
 
+                    graph.draw(true);
                 }
 
             });
@@ -463,15 +464,29 @@ define([
         setSerieParameters(serie, varname, highlight, forceColor) {
 
             serie.setXAxis(0);
+            serie.setOptions({
+                overflowY: this.module.getConfigurationCheckbox('overflow', 'overflowY'),
+                overflowX: this.module.getConfigurationCheckbox('overflow', 'overflowX')
+            });
 
             var plotinfos = this.module.getConfiguration('plotinfos');
-
+            const stackVerticalSpacing = this.module.getConfiguration('stackVerticalSpacing');
             var foundInfo = false;
             if (plotinfos) {
+                const axes = new Set();
+                for (var plotinfo of plotinfos) {
+                    axes.add(plotinfo.axis ? Number(plotinfo.axis) : 0);
+                }
+                const minAxis = Math.min(...axes);
+                const nbAxes = axes.size || 1;
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
                         foundInfo = true;
-                        var axis = this.getYAxis(plotinfos[i].axis ? Number(plotinfos[i].axis) : 0);
+                        const axisIdx = (plotinfos[i].axis ? Number(plotinfos[i].axis) : 0) - minAxis;
+                        var axis = this.getYAxis(axisIdx);
+                        const startSpan = axisIdx * stackVerticalSpacing || 0;
+                        const endSpan = 1 - (stackVerticalSpacing * (nbAxes - 1 - axisIdx));
+                        axis.setSpan(startSpan, endSpan);
                         serie.setYAxis(axis);
 
                         if (plotinfos[i].adaptTo && String(plotinfos[i].adaptTo) !== 'none') {
@@ -587,6 +602,8 @@ define([
 
 
                     var defaultStyle = aData.defaultStyle || {};
+                    var defaultStyles = aData.defaultStyles || {};
+
                     var serieName = varname;
                     if (existingNames.has(serieName)) {
                         serieName += '-' + i;
@@ -683,14 +700,32 @@ define([
 
                     if (String(aData.type) === 'scatter') {
                         
+<<<<<<< HEAD
                         let modifiers = [];
                         if (Array.isArray(aData.styles)) {
                             modifiers = aData.styles;
                         } else if (typeof aData.styles == 'object') {
                             modifiers = aData.styles.unselected;
-                        }
+=======
+                        let modifiers = {};
+                        if (Array.isArray(aData.styles)) {
                         
-                        serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle), modifiers);
+                            modifiers = {unselected: aData.styles};
+                        
+                        } else if (typeof aData.styles == 'object') {
+
+                            modifiers = aData.styles;
+>>>>>>> 820add482178ac668926c2a85b2e24d56e5d799c
+                        }
+
+                        let keys = new Set(Object.keys(defaultStyles).concat(Object.keys(modifiers)));
+
+                        keys.forEach((styleName) => {
+
+                            serie.setStyle(
+                                Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {}), modifiers[ styleName ] || [], styleName
+                            );
+                        });
 
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');
@@ -795,6 +830,7 @@ define([
                 const annotations = value.get();
                 for (let i = 0; i < annotations.length; i++) {
                     let annotation = annotations[i];
+                    
                     let shape = this.graph.newShape(String(annotation.type), annotation);
                     this.annotations[varName][i] = shape;
 
