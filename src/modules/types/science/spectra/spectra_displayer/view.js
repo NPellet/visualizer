@@ -712,7 +712,7 @@ define([
                         keys.forEach((styleName) => {
 
                             serie.setStyle(
-                                Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {}), modifiers[ styleName ] || [], styleName
+                                Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {}), modifiers[ styleName ] || [], styleName
                             );
                         });
 
