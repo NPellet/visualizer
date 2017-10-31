@@ -264,7 +264,7 @@ define([
 
                     resolve(graph);
 
-                    graph.draw( true );
+                    graph.draw(true);
                 }
 
             });
@@ -464,15 +464,21 @@ define([
         setSerieParameters(serie, varname, highlight, forceColor) {
 
             serie.setXAxis(0);
+            serie.setOptions({
+                overflowY: this.module.getConfigurationCheckbox('overflow', 'overflowY'),
+                overflowX: this.module.getConfigurationCheckbox('overflow', 'overflowX')
+            });
 
             var plotinfos = this.module.getConfiguration('plotinfos');
-
+            const stackVerticalSpacing = this.module.getConfiguration('stackVerticalSpacing');
             var foundInfo = false;
             if (plotinfos) {
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
                         foundInfo = true;
-                        var axis = this.getYAxis(plotinfos[i].axis ? Number(plotinfos[i].axis) : 0);
+                        const axisIdx = plotinfos[i].axis ? Number(plotinfos[i].axis) : 0;
+                        var axis = this.getYAxis(axisIdx);
+                        axis.setSpan(axisIdx * stackVerticalSpacing || 0, 1);
                         serie.setYAxis(axis);
 
                         if (plotinfos[i].adaptTo && String(plotinfos[i].adaptTo) !== 'none') {
@@ -687,23 +693,23 @@ define([
                     if (String(aData.type) === 'scatter') {
                         
                         let modifiers = {};
-                        if ( Array.isArray( aData.styles ) ) {
+                        if (Array.isArray(aData.styles)) {
                         
-                            modifiers = { unselected: aData.styles };
+                            modifiers = {unselected: aData.styles};
                         
-                        } else if( typeof aData.styles == 'object' ) {
+                        } else if (typeof aData.styles == 'object') {
 
                             modifiers = aData.styles;
-                        }                        
+                        }
 
-                        let keys = new Set( Object.keys( defaultStyles ).concat( Object.keys( modifiers ) ) );
+                        let keys = new Set(Object.keys(defaultStyles).concat(Object.keys(modifiers)));
 
-                        keys.forEach( ( styleName ) => {
+                        keys.forEach((styleName) => {
 
                             serie.setStyle(
-                                Object.assign( {}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {} ), modifiers[ styleName ] || [], styleName
+                                Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {}), modifiers[ styleName ] || [], styleName
                             );
-                        } );
+                        });
 
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');

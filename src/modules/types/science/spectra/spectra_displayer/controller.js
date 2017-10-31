@@ -424,6 +424,36 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                         }
                     }
                 },
+                series: {
+                    options: {
+                        title: 'Global serie parameters',
+                        multiple: false
+                    },
+                    groups: {
+                        series: {
+                            options: {
+                                type: 'list',
+                                multiple: false
+                            },
+                            fields: {
+                                overflow: {
+                                    type: 'checkbox',
+                                    title: 'Overflow',
+                                    options: {
+                                        overflowX: 'overflowX',
+                                        overflowY: 'overflowY'
+                                    },
+                                    default: []
+                                },
+                                stackVerticalSpacing: {
+                                    type: 'float',
+                                    title: 'Stack vertical spacing',
+                                    default: 0
+                                }
+                            }
+                        }
+                    }
+                },
                 variables: {
                     options: {
                         title: 'Variables',
@@ -641,6 +671,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         maxY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'max', 0],
         ynbTicksPrimary: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'nbTicksPrimary', 0],
         FitYToAxisOnFromTo: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'fitToAxisOnFromTo', 0],
+        // Serie parameters
+        overflow: ['sections', 'series', 0, 'groups', 'series', 0, 'overflow', 0],
+        stackVerticalSpacing: ['sections', 'series', 0, 'groups', 'series', 0, 'stackVerticalSpacing', 0],
+        stackHorizontalSpacing: ['sections', 'series', 0, 'groups', 'series', 0, 'stackHorizontalSpacing', 0],
         // Variables
         plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0],
         highlightOptions: ['sections', 'misc', 0, 'groups', 'misc', 0, 'highlightOptions', 0]
