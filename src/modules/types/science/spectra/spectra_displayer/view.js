@@ -700,22 +700,11 @@ define([
 
                     if (String(aData.type) === 'scatter') {
                         
-<<<<<<< HEAD
                         let modifiers = [];
                         if (Array.isArray(aData.styles)) {
                             modifiers = aData.styles;
                         } else if (typeof aData.styles == 'object') {
                             modifiers = aData.styles.unselected;
-=======
-                        let modifiers = {};
-                        if (Array.isArray(aData.styles)) {
-                        
-                            modifiers = {unselected: aData.styles};
-                        
-                        } else if (typeof aData.styles == 'object') {
-
-                            modifiers = aData.styles;
->>>>>>> 820add482178ac668926c2a85b2e24d56e5d799c
                         }
 
                         let keys = new Set(Object.keys(defaultStyles).concat(Object.keys(modifiers)));
