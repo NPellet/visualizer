@@ -1,3 +1,13 @@
+<a name="2.85.2"></a>
+## [2.85.2](https://github.com/NPellet/visualizer/compare/v2.85.1...v2.85.2) (2017-10-31)
+
+
+### Features
+
+* **spectra_displayer:** stack graph on top of each other ([7ccdfaf](https://github.com/NPellet/visualizer/commit/7ccdfaf))
+
+
+
 <a name="2.85.1"></a>
 ## [2.85.1](https://github.com/NPellet/visualizer/compare/v2.85.0...v2.85.1) (2017-10-27)
 
