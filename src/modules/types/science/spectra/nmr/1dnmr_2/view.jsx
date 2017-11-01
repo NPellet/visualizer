@@ -7,10 +7,11 @@ define([
     'react',
     'modules/default/defaultview',
     './app_1d',
-    'jcampconverter'
-], function ($, ReactDOM, React, Default, NMR1DModule, JcampConverter ) {
+    'jcampconverter',
+    'src/util/api'
+], function ($, ReactDOM, React, Default, NMR1DModule, JcampConverter, API ) {
 
-      class DefaultClass {};
+    class DefaultClass {};
     Object.assign( DefaultClass.prototype, Default );
 
     class View extends DefaultClass {
@@ -32,17 +33,17 @@ define([
         changed( newSeriesObject ) {
 
             let newIntegrals;
-//            this.module.controller.sendAction('mousetrack', val);
             newSeriesObject.map( ( serie ) => {
                 if( serie.name == 'master' ) {
                     newIntegrals = serie.integrals;
                     
-                    this.module.controller.createDataFromEvent('onIntegralsChanged', 'integrals', newIntegrals );
-                    this.module.controller.sendActionFromEvent('onIntegralsChanged', 'integrals', newIntegrals );
+                    this.module.model.dataTriggerChange( newIntegrals );
+
+
+                    //this.module.controller.createDataFromEvent('onIntegralsChanged', 'integrals', newIntegrals );
+                    //this.module.controller.sendActionFromEvent('onIntegralsChanged', 'integrals', newIntegrals );
                 }
             } );
-
-            
         }
 
         inDom() {
@@ -61,8 +62,7 @@ define([
             if( ! this.dom ) {
                 return;
             }
-
-            const molecule = this.molecule;             
+            
             const options = {
                 minThresholdPeakToPeak: 0.01,
                 toolbar: true,
@@ -79,10 +79,8 @@ define([
 
             } );
 
-            console.log( this.series );
-
             ReactDOM.render(
-              <NMR1D width={ this.width } height={ this.height } options={ options } molecule={ molecule } series={ this.series } onChanged={ this.changed }></NMR1D>,
+              <NMR1D width={ this.width } height={ this.height } options={ options } molecule={ this.moleculeSVG } series={ this.series } onChanged={ this.changed }></NMR1D>,
               this.dom
             );
         }
@@ -149,6 +147,37 @@ define([
                 this.render();
             });
         } 
+
+        async _update_molecule( molfile ) {
+
+            var OCLE = await API.require('https://www.lactame.com/lib/openchemlib-extended/2.5.0/openchemlib-extended.js');
+            
+            var molecule = OCLE.Molecule.fromMolfile( molfile );
+            var svg = molecule.toDiastereotopicSVG({
+                width: 400,
+                height: 300
+            });
+
+            //API.createData('svg', svg);
+            
+            molecule.addImplicitHydrogens();
+            var svgH=molecule.toDiastereotopicSVG({
+                width: 400,
+                height: 300
+            });
+            //API.createData('svgH', svgH);
+            
+
+            this.moleculeSVG = svg;
+            this.moleculeSVGH = svgH;
+        }   
+
+        _blank_molecule() {
+
+            this.moleculeSVG = null;
+            this.moleculeSVGH = null;
+        }
+
 
         _blank_jcampMaster( varname ) {
             

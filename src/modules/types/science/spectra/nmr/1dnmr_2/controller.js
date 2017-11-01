@@ -30,8 +30,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
           type: [ 'array' ]
         },
         molecule: {
-            label: 'Molecule in the SVG format',
-            type: ['string']
+            label: 'Molecule in the molfile format',
+            type: [ 'string' ]
         },
         plot: {
             label: 'The Plot object',
@@ -43,11 +43,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
 
     Controller.prototype.events = {
-        onIntegralsChanged: {
-            label: 'Integrals have changed',
-            refAction: [ 'integrals' ],
-            refVariable: [ 'integrals' ]
-        }
+        
     }
 
 

@@ -61,6 +61,10 @@
         {
           "rel": "integrals",
           "name": "ranges"
+        },
+        {
+          "rel": "molecule",
+          "name": "molfile"
         }
       ],
       "actions_in": [

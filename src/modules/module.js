@@ -199,7 +199,7 @@ define([
         },
 
         async updateView(rel, varValue, varName) {
-console.log( this.view[ '_update_' + rel ], this.view, rel );
+
             if( ! this.view.update[ rel ] && this.view[ '_update_' + rel ] ) {
                 await this.view[ '_update_' + rel ]( varValue, varName );
             } else {

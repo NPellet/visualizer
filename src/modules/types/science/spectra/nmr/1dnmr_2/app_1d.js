@@ -7356,9 +7356,12 @@ function _registerEvents(graph) {
 
     graph.emit("mouseUp", e);
     var coords = graph._getXY(e);
-    e.stopPropagation();
 
     _handleMouseUp(graph, coords.x, coords.y, e);
+  });
+
+  graph.wrapper.addEventListener('mouseup', function (e) {
+    e.stopPropagation();
   });
 
   graph.dom.addEventListener('dblclick', function (e) {
@@ -17932,50 +17935,6 @@ var Assignment = function () {
 			this.options.removeEnableOver = false;
 		}
 	}, {
-		key: 'mousedown',
-		value: function mousedown(event, type) {
-
-			if (event.shiftKey) {
-
-				this.graph.lockShapes();
-
-				this.binding = true;
-
-				if (type) {
-					// Graph element
-
-					this.currentTargetGraph = event.target;
-				} else {
-
-					this.currentTargetMolecule = event.target;
-				}
-
-				event.preventDefault();
-				event.stopPropagation();
-
-				var bb = event.target.getBBox();
-				var pos = event.target.getBoundingClientRect();
-
-				var x = pos.left,
-				    y = pos.top;
-
-				if (!type) {
-					y += bb.height / 2;
-					x += bb.width / 2;
-				}
-
-				this.bindingLine.setAttribute('display', 'block');
-				this.bindingLine.setAttribute('x1', x + window.scrollX);
-				this.bindingLine.setAttribute('x2', x + window.scrollX);
-				this.bindingLine.setAttribute('y1', y + window.scrollY);
-				this.bindingLine.setAttribute('y2', y + window.scrollY);
-				this.bindingLine.setAttribute('pointer-events', 'none');
-
-				// Look for targettable (bindable) elements of the other type and highlight them
-				this.highlight(!type, this.findTargettableElements(!type), 'binding');
-			}
-		}
-	}, {
 		key: 'highlight',
 		value: function highlight(type, targetEls, highlightType) {
 			var _iteratorNormalCompletion = true;
@@ -18071,6 +18030,52 @@ var Assignment = function () {
 		key: 'findTargettableElements',
 		value: function findTargettableElements(type) {
 			return this.getDom(type).querySelectorAll(this.getOptions(type).bindableFilter);
+		}
+	}, {
+		key: 'mousedown',
+		value: function mousedown(event, type) {
+
+			if (event.shiftKey) {
+
+				this.graph.lockShapes();
+
+				this.binding = true;
+
+				if (type) {
+					// Graph element
+
+					this.currentTargetGraph = event.target;
+				} else {
+
+					this.currentTargetMolecule = event.target;
+				}
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				var bb = event.target.getBBox();
+				var pos = event.target.getBoundingClientRect();
+
+				var pos2 = this.graph.getWrapper().getBoundingClientRect();
+
+				var x = pos.left - pos2.left,
+				    y = pos.top - pos2.top;
+
+				if (!type) {
+					y += bb.height / 2;
+					x += bb.width / 2;
+				}
+
+				this.bindingLine.setAttribute('display', 'block');
+				this.bindingLine.setAttribute('x1', x + window.scrollX);
+				this.bindingLine.setAttribute('x2', x + window.scrollX);
+				this.bindingLine.setAttribute('y1', y + window.scrollY);
+				this.bindingLine.setAttribute('y2', y + window.scrollY);
+				this.bindingLine.setAttribute('pointer-events', 'none');
+
+				// Look for targettable (bindable) elements of the other type and highlight them
+				this.highlight(!type, this.findTargettableElements(!type), 'binding');
+			}
 		}
 	}, {
 		key: 'mouseup',
@@ -35314,8 +35319,7 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 			handles: true,
 			labels: [{ text: "", anchor: "middle", backgroundColor: 'white', backgroundOpacity: 0.8, baseline: 'middle' }]
 
-		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });
-
+		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });console.log();
 		this.assignment = context.assignment;
 
 		this.annotation.addClass('integral');
@@ -35371,11 +35375,12 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 		this.annotation.setProp('labelHTMLData', { 'data-integral-id': props.id });
 		this.annotation.updateIntegralValue(props.labelRatio);
 
-		if (!this.assignment) {
-			throw "No assignment object. Cannot rename integral";
-		}
-
 		if (props.id !== this.props.id) {
+
+			if (!this.assignment) {
+				throw "No assignment object. Cannot rename integral";
+			}
+
 			this.assignment.renameAssignementElement(this.props.id, props.id);
 		}
 
@@ -35629,6 +35634,8 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				if (!el.key) {
 					el.key = Math.random();
 				}
+
+				console.log(el.id);
 
 				return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__["a" /* default */], {
 					id: el.id,
