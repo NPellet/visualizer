@@ -19,7 +19,7 @@ define([
         constructor() {
             super();
             this.series = [];
-            this.serieChanged = this.serieChanged.bind( this );
+            this.changed = this.changed.bind( this );
         }
 
         init() {
@@ -29,8 +29,20 @@ define([
             
         }
 
-        serieChanged() {
+        changed( newSeriesObject ) {
 
+            let newIntegrals;
+//            this.module.controller.sendAction('mousetrack', val);
+            newSeriesObject.map( ( serie ) => {
+                if( serie.name == 'master' ) {
+                    newIntegrals = serie.integrals;
+                    
+                    this.module.controller.createDataFromEvent('onIntegralsChanged', 'integrals', newIntegrals );
+                    this.module.controller.sendActionFromEvent('onIntegralsChanged', 'integrals', newIntegrals );
+                }
+            } );
+
+            
         }
 
         inDom() {
@@ -56,8 +68,21 @@ define([
                 toolbar: true,
                 legend: true
             };
+
+            this.series.map( serieObj => {
+
+                if( serieObj.name == 'master' ) {
+                    serieObj.integrals = this.integrals;
+                } else {
+                    serieObj.integrals = [];
+                }
+
+            } );
+
+            console.log( this.series );
+
             ReactDOM.render(
-              React.createElement(NMR1D, {width:  this.width, height:  this.height, options:  options, molecule:  molecule,  series:  this.series, onChanged:  this.serieChanged}),
+              React.createElement(NMR1D, {width:  this.width, height:  this.height, options:  options, molecule:  molecule,  series:  this.series, onChanged:  this.changed}),
               this.dom
             );
         }
@@ -102,41 +127,45 @@ define([
                 }
             }
         }
-    };
 
-    //Object.assign( View.prototype, Default );
-    
-    View.prototype.blank = {
-       
-        jcamp(varName) {
 
-            if( this && this.removeSerie ) {
-                this.removeSerie(varName);
-            }
+        _update_integrals( value ) {
+
+            this.integrals = value;
+            this.render();
         }
-    };
 
-    View.prototype.update = {
+        _update_jcampMaster( value, varname ) {
 
-        jcamp: (value, varname, view ) => {
-            // "this" doesn't seem to be referenced to the view...
-            console.log('in', this, view );
+            this._update_jcamp( value, 'master' );
+        } 
+
+
+        _update_jcamp( value, varname ) {
+
             JcampConverter.convert( String( value ), {}, true).then( ( converted ) => {
 
-                view.setSerie( varname, converted.spectra[ 0 ] );
-                view.render();
+                this.setSerie( varname, converted.spectra[ 0 ] );
+                this.render();
             });
-        },
+        } 
 
-        jcampMaster: (value, varname, view ) => {
-            // "this" doesn't seem to be referenced to the view...
-            view.update.jcamp( value, "master", view );
-        },
-
-        molecule: (moduleValue, varname) => {
-
+        _blank_jcampMaster( varname ) {
+            
+            this._blank_jcamp( 'master' );    
         }
-    }
+
+        _blank_jcamp( varname ) {
+        
+            if( this && this.removeSerie ) {
+                this.removeSerie(varname);
+            }
+        }
+
+        _blank_integrals() {
+            this.integrals = [];
+        }
+    };
 
     return View;
 });

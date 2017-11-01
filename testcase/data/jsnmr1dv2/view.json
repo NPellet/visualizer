@@ -31,12 +31,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 60,
+            "left": 101,
             "top": 0
           },
           "size": {
-            "width": 78,
-            "height": 44
+            "width": 63,
+            "height": 40
           },
           "zIndex": 0,
           "display": true,
@@ -57,6 +57,10 @@
         {
           "rel": "jcampMaster",
           "name": "jcamp"
+        },
+        {
+          "rel": "integrals",
+          "name": "ranges"
         }
       ],
       "actions_in": [
@@ -64,10 +68,20 @@
       ],
       "actions_out": [
         {
-          "jpath": []
+          "event": "onIntegralsChanged",
+          "rel": "integrals",
+          "jpath": [],
+          "name": "newIntegrals"
         }
       ],
-      "vars_out": [],
+      "vars_out": [
+        {
+          "event": "onIntegralsChanged",
+          "rel": "integrals",
+          "jpath": [],
+          "name": "ranges"
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -776,265 +790,6 @@
       "title": "Signals"
     },
     {
-      "url": "modules/types/science/spectra/spectra_displayer/",
-      "configuration": {
-        "sections": {
-          "graph": [
-            {
-              "sections": {},
-              "groups": {
-                "graph": [
-                  {
-                    "url": [
-                      ""
-                    ],
-                    "zoom": [
-                      "x"
-                    ],
-                    "wheelAction": [
-                      "zoomY"
-                    ],
-                    "wheelbaseline": [
-                      0
-                    ],
-                    "fullOut": [
-                      "both"
-                    ],
-                    "legend": [
-                      null
-                    ],
-                    "legendOptions": [
-                      [
-                        "isSerieHideable",
-                        "isSerieSelectable"
-                      ]
-                    ],
-                    "mouseTracking": [
-                      []
-                    ],
-                    "selectScatter": [
-                      []
-                    ],
-                    "independantYZoom": [
-                      []
-                    ]
-                  }
-                ]
-              }
-            }
-          ],
-          "axis": [
-            {
-              "sections": {},
-              "groups": {
-                "xAxis": [
-                  {
-                    "checkboxes": [
-                      [
-                        "display",
-                        "flip"
-                      ]
-                    ],
-                    "label": [
-                      ""
-                    ],
-                    "beforeSpacing": [
-                      "0"
-                    ],
-                    "afterSpacing": [
-                      0
-                    ],
-                    "min": [
-                      ""
-                    ],
-                    "max": [
-                      ""
-                    ],
-                    "nbTicksPrimary": [
-                      5
-                    ],
-                    "axismodification": [
-                      "none"
-                    ]
-                  }
-                ],
-                "yAxis": [
-                  {
-                    "checkboxes": [
-                      [
-                        "display"
-                      ]
-                    ],
-                    "label": [
-                      ""
-                    ],
-                    "beforeSpacing": [
-                      "0"
-                    ],
-                    "afterSpacing": [
-                      0
-                    ],
-                    "min": [
-                      ""
-                    ],
-                    "max": [
-                      ""
-                    ],
-                    "nbTicksPrimary": [
-                      5
-                    ],
-                    "fitToAxisOnFromTo": [
-                      []
-                    ]
-                  }
-                ]
-              }
-            }
-          ],
-          "series": [
-            {
-              "sections": {},
-              "groups": {
-                "series": [
-                  {
-                    "overflow": [
-                      []
-                    ],
-                    "stackVerticalSpacing": [
-                      0
-                    ]
-                  }
-                ]
-              }
-            }
-          ],
-          "variables": [
-            {
-              "sections": {},
-              "groups": {
-                "variables": [
-                  [
-                    {
-                      "variable": "",
-                      "axis": "0",
-                      "adaptTo": "none",
-                      "plotcolor": [
-                        1,
-                        1,
-                        255,
-                        1
-                      ],
-                      "strokewidth": "1",
-                      "strokestyle": "1",
-                      "plotcontinuous": "continuous",
-                      "peakpicking": [],
-                      "markers": [],
-                      "markerShape": "1",
-                      "markerSize": 2,
-                      "normalize": "none",
-                      "optimizeSlots": [],
-                      "tracking": []
-                    }
-                  ]
-                ]
-              }
-            }
-          ],
-          "misc": [
-            {
-              "sections": {},
-              "groups": {
-                "misc": [
-                  {
-                    "highlightOptions": [
-                      "{}"
-                    ]
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        "groups": {}
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 115,
-            "top": 0
-          },
-          "size": {
-            "width": 67,
-            "height": 41
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 6,
-      "vars_in": [
-        {
-          "rel": "jcamp",
-          "name": "jcamp"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
-        }
-      ],
-      "title": ""
-    },
-    {
       "url": "modules/types/client_interaction/code_editor/",
       "configuration": {
         "sections": {},
@@ -1112,7 +867,7 @@
           "name": "Default layer"
         }
       },
-      "id": 7,
+      "id": 6,
       "vars_in": [
         {}
       ],
@@ -1250,7 +1005,7 @@
           "name": "Default layer"
         }
       },
-      "id": 8,
+      "id": 7,
       "vars_in": [
         {
           "rel": "value",
@@ -1366,7 +1121,7 @@
           "name": "Default layer"
         }
       },
-      "id": 9,
+      "id": 8,
       "vars_in": [
         {
           "rel": "inputValue",
@@ -1504,7 +1259,7 @@
           "name": "Default layer"
         }
       },
-      "id": 10,
+      "id": 9,
       "vars_in": [
         {
           "rel": "value",
@@ -1638,7 +1393,7 @@
           "name": "Default layer"
         }
       },
-      "id": 11,
+      "id": 10,
       "vars_in": [
         {
           "rel": "value",

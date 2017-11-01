@@ -93,7 +93,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                 const vars = this.module.vars_in();
                 let proms = [];
                 for (let i = 0; i < vars.length; i++) {
-                    if (vars[i].name == varName && this.module.view.update[vars[i].rel] && varValue !== null) {
+                    if (vars[i].name == varName && ( this.module.view.update[vars[i].rel] || this.module.view[ '_update_' + vars[i].rel ] ) && varValue !== null) {
                         proms.push(new Promise((resolve, reject) => { // todo clean this mess
                             if (vars[i].filter) {
                                 require([vars[i].filter], function (filterFunction) {

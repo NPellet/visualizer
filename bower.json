@@ -90,11 +90,7 @@
     "canvg": "^1.3.0"
   },
   "resolutions": {
-<<<<<<< HEAD
-    "jsgraph": "2.0.40",
-=======
     "jsgraph": "2.0.44",
->>>>>>> 820add482178ac668926c2a85b2e24d56e5d799c
     "jcampconverter": "2.8.0",
     "jquery": "2.2.1",
     "eventEmitter": "^5.1.0"

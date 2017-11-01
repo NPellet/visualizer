@@ -25,6 +25,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
           label: 'Master jcamp',
           type: ['jcamp', 'string' ]  
         },
+        integrals: {
+          label: 'Integrals file',
+          type: [ 'array' ]
+        },
         molecule: {
             label: 'Molecule in the SVG format',
             type: ['string']
@@ -35,7 +39,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
         }
     };
 
-    Controller.prototype.variablesIn = ['jcamp', 'jcampMaster', 'molecule'];
+    Controller.prototype.variablesIn = ['jcamp', 'jcampMaster', 'molecule', 'integrals' ];
+
+
+    Controller.prototype.events = {
+        onIntegralsChanged: {
+            label: 'Integrals have changed',
+            refAction: [ 'integrals' ],
+            refVariable: [ 'integrals' ]
+        }
+    }
+
 
     Controller.prototype.configurationStructure = function () {
 

@@ -199,7 +199,13 @@ define([
         },
 
         async updateView(rel, varValue, varName) {
-            await this.view.update[rel].call(this.view, varValue, varName);
+console.log( this.view[ '_update_' + rel ], this.view, rel );
+            if( ! this.view.update[ rel ] && this.view[ '_update_' + rel ] ) {
+                await this.view[ '_update_' + rel ]( varValue, varName );
+            } else {
+                await this.view.update[rel].call(this.view, varValue, varName);
+            }
+
             this.controller.sendActionFromEvent('_onVarUpdated', '_varName', varName);
         },
 
@@ -1197,11 +1203,18 @@ define([
         blankVariable(variableName) {
             const rels = this.getDataRelFromName(variableName);
             for (let i = 0; i < rels.length; i++) {
-                if (this.view.blank[rels[i]]) {
-                    this.view.blank[rels[i]].call(this.view, variableName);
+
+                if( ! this.view.blank[ rels[ i ] ] && this.view[ '_blank_' + rels[ i ] ] ) {
+
+                    this.view[ '_blank_' + rels[ i ] ]( variableName );
+
                 } else {
-                    Util.warnOnce(`missing-blank-${this.controller.moduleInformation.name}_${rels[i]}`,
-                        `Module ${this.controller.moduleInformation.name}: no blank method defined for rel ${rels[i]}`);
+                    if (this.view.blank[rels[i]]) {
+                        this.view.blank[rels[i]].call(this.view, variableName);
+                    } else {
+                        Util.warnOnce(`missing-blank-${this.controller.moduleInformation.name}_${rels[i]}`,
+                            `Module ${this.controller.moduleInformation.name}: no blank method defined for rel ${rels[i]}`);
+                    }
                 }
             }
             return null;
