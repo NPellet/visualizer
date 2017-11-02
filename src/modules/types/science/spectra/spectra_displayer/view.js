@@ -262,9 +262,10 @@ define([
                         theLegend.setAutoPosition(legend);
                     }
 
+                    graph.draw(true);
                     resolve(graph);
 
-                    graph.draw(true);
+
                 }
 
             });
@@ -821,6 +822,11 @@ define([
                     let annotation = annotations[i];
                     
                     let shape = this.graph.newShape(String(annotation.type), annotation);
+
+                    if( ! shape ) {
+                        return;
+                    }
+
                     this.annotations[varName][i] = shape;
 
                     shape.autoAxes();
@@ -982,7 +988,9 @@ define([
             API.killHighlight(this.module.getId() + varName);
             if (this.annotations[varName]) {
                 for (var i = 0; i < this.annotations[varName].length; i++) {
-                    this.annotations[varName][i].kill();
+                    if( this.annotations[varName][i] ) {
+                        this.annotations[varName][i].kill();
+                    }
                 }
             }
             this.annotations[varName] = [];
