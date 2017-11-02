@@ -200,8 +200,8 @@ define([
 
         async updateView(rel, varValue, varName) {
 
-            if( ! this.view.update[ rel ] && this.view[ '_update_' + rel ] ) {
-                await this.view[ '_update_' + rel ]( varValue, varName );
+            if (!this.view.update[ rel ] && this.view[ '_update_' + rel ]) {
+                await this.view[ '_update_' + rel ](varValue, varName);
             } else {
                 await this.view.update[rel].call(this.view, varValue, varName);
             }
@@ -1204,9 +1204,9 @@ define([
             const rels = this.getDataRelFromName(variableName);
             for (let i = 0; i < rels.length; i++) {
 
-                if( ! this.view.blank[ rels[ i ] ] && this.view[ '_blank_' + rels[ i ] ] ) {
+                if (!this.view.blank[ rels[ i ] ] && this.view[ '_blank_' + rels[ i ] ]) {
 
-                    this.view[ '_blank_' + rels[ i ] ]( variableName );
+                    this.view[ '_blank_' + rels[ i ] ](variableName);
 
                 } else {
                     if (this.view.blank[rels[i]]) {

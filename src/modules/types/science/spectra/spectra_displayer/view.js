@@ -823,7 +823,7 @@ define([
                     
                     let shape = this.graph.newShape(String(annotation.type), annotation);
 
-                    if( ! shape ) {
+                    if (!shape) {
                         return;
                     }
 
@@ -988,7 +988,7 @@ define([
             API.killHighlight(this.module.getId() + varName);
             if (this.annotations[varName]) {
                 for (var i = 0; i < this.annotations[varName].length; i++) {
-                    if( this.annotations[varName][i] ) {
+                    if (this.annotations[varName][i]) {
                         this.annotations[varName][i].kill();
                     }
                 }
