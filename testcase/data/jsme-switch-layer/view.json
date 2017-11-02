@@ -1,0 +1,315 @@
+{
+	"version": "2.85.3-0",
+	"grid": {
+		"layers": {
+			"jsme": {
+				"name": "jsme"
+			},
+			"Default layer": {
+				"name": "Default layer"
+			}
+		},
+		"xWidth": 10,
+		"yHeight": 10
+	},
+	"modules": [
+		{
+			"url": "modules/types/science/chemistry/jsme/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"prefs": [
+								[
+									"oldlook",
+									"nozoom",
+									"useopenchemlib"
+								]
+							],
+							"defaultaction": [
+								null
+							],
+							"labelsize": [
+								14
+							],
+							"bondwidth": [
+								1
+							],
+							"highlightColor": [
+								"3"
+							],
+							"outputResult": [
+								[]
+							]
+						}
+					]
+				}
+			},
+			"layers": {
+				"jsme": {
+					"position": {
+						"left": 43,
+						"top": 9
+					},
+					"size": {
+						"width": 51,
+						"height": 50
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "jsme"
+				},
+				"Default layer": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Molecule"
+				}
+			},
+			"id": 30,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
+		},
+		{
+			"url": "modules/types/client_interaction/code_executor/",
+			"configuration": {
+				"sections": {},
+				"groups": {
+					"group": [
+						{
+							"display": [
+								[
+									"editor",
+									"buttons"
+								]
+							],
+							"execOnLoad": [
+								[]
+							],
+							"asyncAwait": [
+								[
+									"top"
+								]
+							],
+							"script": [
+								"API.switchToLayer('jsme');\n"
+							]
+						}
+					],
+					"libs": [
+						[
+							{}
+						]
+					],
+					"buttons": [
+						[
+							{
+								"name": "button1",
+								"label": "Execute",
+								"hide": [],
+								"disable": []
+							}
+						]
+					]
+				}
+			},
+			"layers": {
+				"jsme": {
+					"position": {
+						"left": 0,
+						"top": 0
+					},
+					"size": {
+						"width": 20,
+						"height": 20
+					},
+					"zIndex": 0,
+					"display": false,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "jsme"
+				},
+				"Default layer": {
+					"position": {
+						"left": 8,
+						"top": 15
+					},
+					"size": {
+						"width": 41,
+						"height": 37
+					},
+					"zIndex": 0,
+					"display": true,
+					"title": "",
+					"bgColor": [
+						255,
+						255,
+						255,
+						0
+					],
+					"wrapper": true,
+					"created": true,
+					"name": "Default layer"
+				}
+			},
+			"id": 31,
+			"vars_in": [
+				{}
+			],
+			"actions_in": [
+				{}
+			],
+			"vars_out": [
+				{
+					"jpath": []
+				}
+			],
+			"actions_out": [
+				{
+					"jpath": []
+				}
+			],
+			"toolbar": {
+				"custom": [
+					[
+						{
+							"title": "",
+							"icon": "",
+							"action": "",
+							"position": "begin"
+						}
+					]
+				],
+				"common": [
+					{
+						"toolbar": [
+							[
+								"Open Preferences"
+							]
+						]
+					}
+				]
+			},
+			"css": [
+				{
+					"fontSize": [
+						""
+					],
+					"fontFamily": [
+						""
+					]
+				}
+			],
+			"title": ""
+		}
+	],
+	"variables": [
+		{
+			"varname": "twigTemplate",
+			"jpath": [
+				"twigTemplate"
+			]
+		},
+		{
+			"varname": "slickScript",
+			"jpath": [
+				"slickScript"
+			]
+		},
+		{
+			"varname": "headerTemplate",
+			"jpath": [
+				"headerTemplate"
+			]
+		},
+		{
+			"varname": "layerInfo",
+			"jpath": [
+				"layerInfo"
+			]
+		}
+	],
+	"aliases": [],
+	"configuration": {
+		"title": "No title"
+	}
+}
