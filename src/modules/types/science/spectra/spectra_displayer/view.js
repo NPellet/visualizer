@@ -458,6 +458,10 @@ define([
                 this.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
+            options.overflowY = this.module.getConfigurationCheckbox('overflow', 'overflowY'),
+            options.overflowX = this.module.getConfigurationCheckbox('overflow', 'overflowX')
+
+
             return {options: options, others: others};
 
         },
@@ -465,10 +469,7 @@ define([
         setSerieParameters(serie, varname, highlight, forceColor) {
 
             serie.setXAxis(0);
-            serie.setOptions({
-                overflowY: this.module.getConfigurationCheckbox('overflow', 'overflowY'),
-                overflowX: this.module.getConfigurationCheckbox('overflow', 'overflowX')
-            });
+            
 
             var plotinfos = this.module.getConfiguration('plotinfos');
             const stackVerticalSpacing = this.module.getConfiguration('stackVerticalSpacing');
