@@ -120,7 +120,7 @@ define([
 
                     options.plugins.peakPicking = {};
 
-                    
+
                     if (zoom && zoom !== 'none') {
                         var zoomOptions = {};
                         if (zoom === 'x') {
@@ -458,8 +458,8 @@ define([
                 this.module.controller.onClickMarker(xy, infos, toggledOn);
             };
 
-            options.overflowY = this.module.getConfigurationCheckbox('overflow', 'overflowY'),
-            options.overflowX = this.module.getConfigurationCheckbox('overflow', 'overflowX')
+            options.overflowY = this.module.getConfigurationCheckbox('overflow', 'overflowY');
+            options.overflowX = this.module.getConfigurationCheckbox('overflow', 'overflowX');
 
 
             return {options: options, others: others};
@@ -469,7 +469,7 @@ define([
         setSerieParameters(serie, varname, highlight, forceColor) {
 
             serie.setXAxis(0);
-            
+
 
             var plotinfos = this.module.getConfiguration('plotinfos');
             const stackVerticalSpacing = this.module.getConfiguration('stackVerticalSpacing');
@@ -701,7 +701,7 @@ define([
                     serie.autoAxis();
 
                     if (String(aData.type) === 'scatter') {
-                        
+
                         let modifiers = [];
                         if (Array.isArray(aData.styles)) {
                             modifiers = aData.styles;
@@ -821,7 +821,7 @@ define([
                 const annotations = value.get();
                 for (let i = 0; i < annotations.length; i++) {
                     let annotation = annotations[i];
-                    
+
                     let shape = this.graph.newShape(String(annotation.type), annotation);
 
                     if (!shape) {
