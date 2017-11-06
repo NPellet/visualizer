@@ -781,8 +781,8 @@ define([
         });
     }
 
-    function getBestLayerName(name) {
-        var resolutions = getBestResolutions();
+    function getBestLayerName(name, options) {
+        var resolutions = getBestResolutions(options);
         var layerNames = getLayerNames();
         for (var resolution of resolutions) {
             for (var layerName of layerNames) {
@@ -795,13 +795,17 @@ define([
     }
 
     // we will find the large resolution we could use
-    function getBestResolutions() {
+    function getBestResolutions(options={}) {
+        var {
+            onlyLarger: true
+        } = options;
         var resolutions = JSON.parse(JSON.stringify(SCREEN_RESOLUTIONS));
         var width = screen.width;
         var height = screen.height;
         for (var resolution of resolutions) {
             resolution.error = width - resolution.width + height - resolution.height;
         }
+        if (onlyLarger) resolutions.filter( a => a.error > 0 );
         resolutions.sort((a, b) => {
             if (a.error >= 0 && b.error >= 0) return a.error - b.error;
             if (a.error >= 0) return -1;
@@ -817,7 +821,7 @@ define([
 
     function switchToLayer(layerId, options = {}) {
 
-        if (options.autoSize) layerId = getBestLayerName(layerId);
+        if (options.autoSize) layerId = getBestLayerName(layerId, options);
 
         var layer = (!definition.layers[layerId]) ? (newLayer(false, layerId)) : definition.layers[layerId];
 
@@ -1085,8 +1089,6 @@ define([
             switchToLayer(activeLayer, {autoSize: true});
         },
         switchToLayer: function (name, options) {
-            console.log(options);
-
             if (definition.layers[name] || options.autoSize) {
                 switchToLayer(name, options);
             } else {
