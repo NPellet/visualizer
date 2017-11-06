@@ -842,6 +842,9 @@ define([
 
             function getEditor(jpath) {
                 var editor;
+                if (!that.module.data || !that.module.data.length) {
+                    return undefined;
+                }
                 var obj = that.module.data.get(0).getChildSync(jpath);
                 if (obj instanceof DataString) {
                     editor = Slick.CustomEditors.TextValue;
