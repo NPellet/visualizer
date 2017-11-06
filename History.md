@@ -1,3 +1,13 @@
+<a name="2.85.5"></a>
+## [2.85.5](https://github.com/NPellet/visualizer/compare/v2.85.4...v2.85.5) (2017-11-06)
+
+
+### Bug Fixes
+
+* **slick_grid:** fix getEditor if no data is defined ([ee072fc](https://github.com/NPellet/visualizer/commit/ee072fc))
+
+
+
 <a name="2.85.4"></a>
 ## [2.85.4](https://github.com/NPellet/visualizer/compare/v2.85.3...v2.85.4) (2017-11-05)
 
