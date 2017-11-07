@@ -1,5 +1,5 @@
 {
-	"version": "2.85.2-0",
+	"version": "2.85.6-0",
 	"grid": {
 		"layers": {
 			"Default layer": {
@@ -210,7 +210,7 @@
 					},
 					"size": {
 						"width": 38,
-						"height": 34
+						"height": 11
 					},
 					"zIndex": 0,
 					"display": true,
@@ -968,8 +968,8 @@
 						"top": 0
 					},
 					"size": {
-						"width": 74,
-						"height": 76
+						"width": 52,
+						"height": 45
 					},
 					"zIndex": 0,
 					"display": true,
@@ -1950,7 +1950,7 @@
 					},
 					"size": {
 						"width": 74,
-						"height": 7
+						"height": 5
 					},
 					"zIndex": 0,
 					"display": true,
@@ -2236,7 +2236,7 @@
 								]
 							],
 							"script": [
-								"\nif (! this.button) {\n    this.button='default';\n    this.getButton('save').setColor('green');\n}\n\nvar layers={\n    'default': {\n        layer:'Default layer',\n        info:'<h3>General overview of the sample</h3> Click on a button to change specific values'\n        },\n    'physical': {\n        layer:'Physical',\n        info:'<h3>Physical characteristics</h3> Enter here simple values like bp, mp, ...'\n    },\n    'admin': {\n        layer:'Admin',\n        info:'Admin'\n    },\n    'spectra': {\n        layer:'Spectra',\n        info:'<h3>Spectra</h3> '\n    },\n    'images': {\n        layer:'Images',\n        info:'<h3>Images</h3>'\n        \n    },\n    'molecule': {\n        layer:'Molecule',\n        info:'<h3>Molecule</h3>Information concernifng an organic molecule.'\n    },\n    'bioproduct': {\n        layer:'Bioproduct',\n        info:'<h3>Bioproducts</h3>Currently designed more for peptide and proteine sequence'\n    }\n}\n\nif (layers[this.button]) {\n    for (var key of Object.keys(layers)) {\n        this.enableButton(key);\n    }\n    API.switchToLayer(layers[this.button].layer, {autoSize: true});\n    this.disableButton(this.button);\n    API.createData('layerInfo',layers[this.button].info);\n} else {\n    switch (this.button) {\n        case 'save':\n            API.doAction('save');\n            break;\n        case 'help':\n            API.doAction('Help');\n            break;\n    }\n}\n\n"
+								"\nif (! this.button) {\n    this.button='default';\n    this.getButton('save').setColor('green');\n}\n\nvar layers={\n    'default': {\n        layer:'Default layer',\n        info:'<h3>General overview of the sample</h3> Click on a button to change specific values'\n        },\n    'physical': {\n        layer:'Physical',\n        info:'<h3>Physical characteristics</h3> Enter here simple values like bp, mp, ...'\n    },\n    'admin': {\n        layer:'Admin',\n        info:'Admin'\n    },\n    'spectra': {\n        layer:'Spectra',\n        info:'<h3>Spectra</h3> '\n    },\n    'images': {\n        layer:'Images',\n        info:'<h3>Images</h3>'\n        \n    },\n    'molecule': {\n        layer:'Molecule',\n        info:'<h3>Molecule</h3>Information concernifng an organic molecule.'\n    },\n    'bioproduct': {\n        layer:'Bioproduct',\n        info:'<h3>Bioproducts</h3>Currently designed more for peptide and proteine sequence'\n    }\n}\n\nif (layers[this.button]) {\n    for (var key of Object.keys(layers)) {\n        this.enableButton(key);\n    }\n    API.switchToLayer(layers[this.button].layer, {autoSize: true, onlyLarger:true});\n    this.disableButton(this.button);\n    API.createData('layerInfo',layers[this.button].info);\n} else {\n    switch (this.button) {\n        case 'save':\n            API.doAction('save');\n            break;\n        case 'help':\n            API.doAction('Help');\n            break;\n    }\n}\n\n"
 							]
 						}
 					],
@@ -7387,7 +7387,7 @@
 				"Default layer": {
 					"position": {
 						"left": 0,
-						"top": 27
+						"top": 25
 					},
 					"size": {
 						"width": 74,
@@ -9534,7 +9534,7 @@
 					},
 					"size": {
 						"width": 35,
-						"height": 34
+						"height": 11
 					},
 					"zIndex": 0,
 					"display": true,

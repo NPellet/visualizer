@@ -795,17 +795,20 @@ define([
     }
 
     // we will find the large resolution we could use
-    function getBestResolutions(options={}) {
+    function getBestResolutions(options = {}) {
         var {
-            onlyLarger: true
+            onlyLarger = true
         } = options;
         var resolutions = JSON.parse(JSON.stringify(SCREEN_RESOLUTIONS));
         var width = screen.width;
         var height = screen.height;
+        console.log(width, height);
         for (var resolution of resolutions) {
             resolution.error = width - resolution.width + height - resolution.height;
         }
-        if (onlyLarger) resolutions.filter( a => a.error > 0 );
+        console.log(resolutions);
+        if (onlyLarger) resolutions = resolutions.filter(a => a.error >= 0);
+        console.log(resolutions);
         resolutions.sort((a, b) => {
             if (a.error >= 0 && b.error >= 0) return a.error - b.error;
             if (a.error >= 0) return -1;
