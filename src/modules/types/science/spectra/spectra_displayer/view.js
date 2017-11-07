@@ -706,7 +706,7 @@ define([
                         if (Array.isArray(aData.styles)) {
                             modifiers = aData.styles;
                         } else if (typeof aData.styles == 'object') {
-                            modifiers = aData.styles.unselected;
+                            modifiers = aData.styles;
                         }
 
                         let keys = new Set(Object.keys(defaultStyles).concat(Object.keys(modifiers)));
