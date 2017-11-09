@@ -1,3 +1,14 @@
+<a name="2.85.7"></a>
+## [2.85.7](https://github.com/NPellet/visualizer/compare/v2.85.6...v2.85.7) (2017-11-09)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** bug for color in scatter plot ([49f582e](https://github.com/NPellet/visualizer/commit/49f582e))
+* **spectra_displayer:** only enable peak picking if option is selected ([a2f2182](https://github.com/NPellet/visualizer/commit/a2f2182))
+
+
+
 <a name="2.85.6"></a>
 ## [2.85.6](https://github.com/NPellet/visualizer/compare/v2.85.5...v2.85.6) (2017-11-07)
 
