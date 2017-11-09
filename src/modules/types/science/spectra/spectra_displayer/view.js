@@ -441,7 +441,10 @@ define([
                         options.lineToZero = continuous == 'discrete';
                         options.strokeWidth = parseInt(plotinfos[i].strokewidth);
 
-                        others.peakPicking = true;
+                        var pp = plotinfos[i].peakpicking[0];
+                        if (pp) {
+                            others.peakPicking = true;
+                        }
                     }
                 }
             }
