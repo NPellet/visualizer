@@ -304,6 +304,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                                     options: [
                                         {key: 'zoomX', title: 'Zoom X'},
                                         {key: 'zoomY', title: 'Zoom Y'},
+                                        {key: 'zoomYMousePos', title: 'Zoom Y with baseline on mouse position'},
                                         {key: 'none', title: 'None'}
                                     ],
                                     default: 'none'

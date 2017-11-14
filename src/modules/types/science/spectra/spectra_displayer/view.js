@@ -140,11 +140,10 @@ define([
                             ctrl: false
                         });
                     }
-
                     var wheel = cfg('wheelAction');
                     if (wheel && wheel !== 'none') {
                         var wheelOptions = {
-                            baseline: cfg('wheelbaseline', 0)
+                            baseline: wheel == 'zoomYMousePos' ? 'mousePosition' : cfg('wheelbaseline', 0)
                         };
 
                         if (wheel === 'zoomX') {
