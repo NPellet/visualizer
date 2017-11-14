@@ -31,15 +31,37 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 101,
+            "left": 0,
             "top": 0
           },
           "size": {
-            "width": 63,
+            "width": 87,
             "height": 40
           },
           "zIndex": 0,
           "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
+            "left": 115,
+            "top": 0
+          },
+          "size": {
+            "width": 87,
+            "height": 40
+          },
+          "zIndex": 0,
+          "display": false,
           "title": "",
           "bgColor": [
             255,
@@ -180,7 +202,29 @@
             "top": 0
           },
           "size": {
-            "width": 55,
+            "width": 54,
+            "height": 39
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "A jcamp",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 54,
             "height": 39
           },
           "zIndex": 0,
@@ -292,6 +336,28 @@
       "layers": {
         "Default layer": {
           "position": {
+            "left": 129,
+            "top": 29
+          },
+          "size": {
+            "width": 55,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Result of peak picking",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
             "left": 0,
             "top": 40
           },
@@ -300,7 +366,7 @@
             "height": 25
           },
           "zIndex": 0,
-          "display": true,
+          "display": false,
           "title": "Result of peak picking",
           "bgColor": [
             255,
@@ -391,7 +457,9 @@
                 ]
               ],
               "autoColumns": [
-                []
+                [
+                  "remove"
+                ]
               ],
               "toolbar": [
                 []
@@ -518,6 +586,28 @@
       "layers": {
         "Default layer": {
           "position": {
+            "left": 0,
+            "top": 42
+          },
+          "size": {
+            "width": 31,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Ranges",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
             "left": 56,
             "top": 40
           },
@@ -526,7 +616,7 @@
             "height": 45
           },
           "zIndex": 0,
-          "display": true,
+          "display": false,
           "title": "Ranges",
           "bgColor": [
             255,
@@ -609,7 +699,8 @@
                   "enableCellNavigation",
                   "rowNumbering",
                   "forceFitColumns",
-                  "highlightScroll"
+                  "highlightScroll",
+                  "editable"
                 ]
               ],
               "copyPaste": [
@@ -719,6 +810,28 @@
       "layers": {
         "Default layer": {
           "position": {
+            "left": 33,
+            "top": 42
+          },
+          "size": {
+            "width": 26,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Signals",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
             "left": 88,
             "top": 40
           },
@@ -727,7 +840,7 @@
             "height": 45
           },
           "zIndex": 0,
-          "display": true,
+          "display": false,
           "title": "Signals",
           "bgColor": [
             255,
@@ -757,7 +870,12 @@
       ],
       "vars_out": [
         {
-          "jpath": []
+          "event": "onRowActive",
+          "rel": "row",
+          "jpath": [
+            "j"
+          ],
+          "name": "J"
         }
       ],
       "toolbar": {
@@ -849,6 +967,28 @@
       },
       "layers": {
         "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 66
+          },
+          "size": {
+            "width": 55,
+            "height": 26
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
           "position": {
             "left": 0,
             "top": 66
@@ -988,6 +1128,28 @@
       "layers": {
         "Default layer": {
           "position": {
+            "left": 100,
+            "top": 0
+          },
+          "size": {
+            "width": 30,
+            "height": 21
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Molfile depiction",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
             "left": 115,
             "top": 42
           },
@@ -996,7 +1158,7 @@
             "height": 21
           },
           "zIndex": 0,
-          "display": true,
+          "display": false,
           "title": "Molfile depiction",
           "bgColor": [
             255,
@@ -1103,6 +1265,28 @@
       },
       "layers": {
         "Default layer": {
+          "position": {
+            "left": 56,
+            "top": 0
+          },
+          "size": {
+            "width": 58,
+            "height": 39
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
           "position": {
             "left": 56,
             "top": 0
@@ -1243,7 +1427,7 @@
         "Default layer": {
           "position": {
             "left": 146,
-            "top": 42
+            "top": 64
           },
           "size": {
             "width": 31,
@@ -1251,6 +1435,28 @@
           },
           "zIndex": 0,
           "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
+            "left": 146,
+            "top": 64
+          },
+          "size": {
+            "width": 31,
+            "height": 27
+          },
+          "zIndex": 0,
+          "display": false,
           "title": "",
           "bgColor": [
             255,
@@ -1376,6 +1582,28 @@
       "layers": {
         "Default layer": {
           "position": {
+            "left": 131,
+            "top": 0
+          },
+          "size": {
+            "width": 30,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
             "left": 115,
             "top": 64
           },
@@ -1384,7 +1612,7 @@
             "height": 25
           },
           "zIndex": 0,
-          "display": true,
+          "display": false,
           "title": "",
           "bgColor": [
             255,
@@ -1445,6 +1673,224 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 60,
+            "top": 42
+          },
+          "size": {
+            "width": 25,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Coupling",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Data": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "Coupling",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Data"
+        }
+      },
+      "id": 11,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "J"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Coupling"
     }
   ],
   "variables": [
@@ -1476,11 +1922,14 @@
   "configuration": {
     "title": "1D NMR"
   },
-  "version": "2.85.3-0",
+  "version": "2.85.8-0",
   "grid": {
     "layers": {
       "Default layer": {
         "name": "Default layer"
+      },
+      "Data": {
+        "name": "Data"
       }
     },
     "xWidth": 10,
