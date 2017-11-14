@@ -145,6 +145,19 @@ define([
             }
         },
 
+        unsetVarFromEvent(event, rel) {
+            const varsOut = this.module.vars_out();
+            if (!varsOut) {
+                return;
+            }
+
+            for (let i = 0; i < varsOut.length; i++) {
+                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
+                    API.unsetVar(varsOut[i].name);
+                }
+            }
+        },
+
         createDataFromEvent(event, rel, data, callback) {
             const varsOut = this.module.vars_out();
             if (!varsOut) {

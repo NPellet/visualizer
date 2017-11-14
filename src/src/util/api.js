@@ -151,6 +151,12 @@ define([
     };
     exports.setVar = exports.setVariable;
 
+    exports.unsetVariable = function unsetVariable(name) {
+        exports.setVar(name, null, ['__trash__']);
+    };
+
+    exports.unsetVar = exports.unsetVariable;
+
     /**
      * Create new data and set a variable to it
      * @param {string} name - Name of the variable

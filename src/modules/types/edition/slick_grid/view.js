@@ -537,9 +537,9 @@ define([
             ctx.lastActiveCell = args.cell;
             ctx.lastActiveRow = args.row;
 
-            var columns = ctx.grid.getColumns();
             var itemInfo = ctx._getItemInfoFromRow(args.row);
             if (itemInfo) {
+                var columns = ctx.grid.getColumns();
                 if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
                     ctx.module.controller.onActive(itemInfo.idx, itemInfo.item);
                 }
@@ -1810,6 +1810,14 @@ define([
                 }
             },
 
+
+            unsetActiveRow: function () {
+                this.grid.setSelectedRows(this.grid.getSelectedRows().filter(idx => idx !== this.lastActiveRow));
+                this.grid.resetActiveCell();
+                this.module.controller.unselectRow();
+                return;
+            },
+            
             // TODO: This should be renamed to mimicClickRow
             // Don't forget to write the migration script
             selectRow: function (cell) {
