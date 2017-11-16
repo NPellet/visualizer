@@ -186,6 +186,10 @@ define([
                             if (this.module.model.trackData) {
                                 this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
                                 this.module.controller.sendActionFromEvent('onTrackClick', 'mouseEvent', e[3]);
+                                this.module.controller.sendActionFromEvent('onTrackClick', 'dataAndEvent', {
+                                    data: this.module.model.trackData,
+                                    event: e[3]
+                                });
                                 this.module.controller.createDataFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
                             }
                         });

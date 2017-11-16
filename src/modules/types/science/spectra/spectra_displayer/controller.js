@@ -58,6 +58,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
             label: 'jQuery mouse event',
             type: 'object'
         },
+        dataAndEvent: {
+            label: 'Mouse event and track data',
+            type: 'object'
+        },
         svgString: {
             label: 'SVG string',
             type: 'string'
@@ -111,7 +115,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         onTrackClick: {
             label: 'Mouse tracking (click)',
             refVariable: ['trackData'],
-            refAction: ['trackData', 'mouseEvent']
+            refAction: ['trackData', 'mouseEvent','dataAndEvent']
         },
         onAnnotationAdd: {
             label: 'Annotation added',
