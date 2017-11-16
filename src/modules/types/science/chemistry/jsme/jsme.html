@@ -29,8 +29,9 @@
     window.setSize = function (w, h) {
         var width = w + "px";
         var height = h + "px";
+        JSApplet.JSME.clearFontCache(); // solve the problem of hidden JSME that are displayed
         jsmeApplet.setSize(width, height);
-//			jsmeApplet.repaint();
+//		jsmeApplet.repaint();
     };
 
     window.setOptions = function (options) {
