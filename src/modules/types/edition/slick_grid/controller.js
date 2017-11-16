@@ -451,6 +451,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         selectRow: 'Mimic row click',
         selectRows: 'Set selected rows',
         unselectRows: 'Unselect rows from current selection',
+        scrollToRow: 'Scroll to row',
         unsetActiveRow: 'Unset active row',
         selectRowsAdd: 'Add selected rows to current selection',
         addRow: 'Add new row(s)',
@@ -527,8 +528,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     }, 250, {trailing: false});
 
     Controller.prototype.unselectRow = function () {
-        this.unsetVarFromEvent('onSelect', 'row');
-        this.unsetVarFromEvent('onRowActive', 'row');
+        this.createDataFromEvent('onSelect', 'row');
+        this.createDataFromEvent('onRowActive', 'row');
     };
 
     Controller.prototype.onDoubleClick = function (row, item) {
