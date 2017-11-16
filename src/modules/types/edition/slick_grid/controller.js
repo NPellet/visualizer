@@ -527,8 +527,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
     }, 250, {trailing: false});
 
     Controller.prototype.unselectRow = function () {
-        this.unsetVarFromEvent('onSelect', 'row');
-        this.unsetVarFromEvent('onRowActive', 'row');
+        this.createDataFromEvent('onSelect', 'row');
+        this.createDataFromEvent('onRowActive', 'row');
     };
 
     Controller.prototype.onDoubleClick = function (row, item) {
