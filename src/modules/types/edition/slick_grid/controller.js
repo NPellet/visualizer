@@ -451,6 +451,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
         selectRow: 'Mimic row click',
         selectRows: 'Set selected rows',
         unselectRows: 'Unselect rows from current selection',
+        scrollToRow: 'Scroll to row',
         unsetActiveRow: 'Unset active row',
         selectRowsAdd: 'Add selected rows to current selection',
         addRow: 'Add new row(s)',

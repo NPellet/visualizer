@@ -1818,8 +1818,7 @@ define([
                 return;
             },
             
-            // TODO: This should be renamed to mimicClickRow
-            // Don't forget to write the migration script
+            // "mimick click row"
             selectRow: function (cell) {
                 if (typeof cell === 'number') {
                     cell = {
@@ -1858,6 +1857,11 @@ define([
                 const crows = this.grid.getSelectedRows();
                 const nrows = _.difference(crows, srows);
                 this.grid.setSelectedRows(nrows);
+            },
+
+            scrollToRow: function (row) {
+                const [nrow] = this.getRowIndexes([row]);
+                this.grid.scrollRowToTop(nrow);
             },
 
             selectRowsAdd: function (rows) {
