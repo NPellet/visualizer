@@ -24,6 +24,9 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
         mol: {
             label: 'Molfile 2D'
         },
+        molV3: {
+            label: 'Molfile V3 2D'
+        },
         smiles: {
             label: 'Smiles'
         },
@@ -37,7 +40,7 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
     Controller.prototype.events = {
         onStructureChange: {
             label: 'Molecular structure has changed',
-            refVariable: ['mol', 'smiles', 'actid']
+            refVariable: ['mol', 'molV3', 'smiles', 'actid']
         }
     };
 
@@ -77,10 +80,15 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
             this.currentMol.coordinates = split[1];
             var mol = OCL.Molecule.fromIDCode(split[0], split[1]);
             var molfile = mol.toMolfile();
+            var molfileV3 = mol.toMolfileV3();
             var smiles = mol.toSmiles();
             this.createDataFromEvent('onStructureChange', 'mol', {
                 type: 'mol2d',
                 value: molfile
+            });
+            this.createDataFromEvent('onStructureChange', 'molV3', {
+                type: 'mol2d',
+                value: molfileV3
             });
             this.createDataFromEvent('onStructureChange', 'smiles', {
                 type: 'smiles',
