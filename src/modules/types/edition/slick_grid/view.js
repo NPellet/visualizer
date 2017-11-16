@@ -1860,7 +1860,7 @@ define([
             },
 
             scrollToRow: function (row) {
-                const [nrow] = this.getRowIndexes([row]);
+                const [nrow] = this.getRowIndexes(row);
                 this.grid.scrollRowToTop(nrow);
             },
 
