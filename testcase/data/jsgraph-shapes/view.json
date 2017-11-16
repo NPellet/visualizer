@@ -1,5 +1,5 @@
 {
-  "version": "2.85.3-0",
+  "version": "2.85.8-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -140,17 +140,20 @@
                     "legend": [
                       null
                     ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
                     "mouseTracking": [
                       []
                     ],
                     "selectScatter": [
                       []
                     ],
-                    "legendOptions": [
-                      null
-                    ],
                     "independantYZoom": [
-                      null
+                      []
                     ]
                   }
                 ]
@@ -224,6 +227,23 @@
               }
             }
           ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "variables": [
             {
               "sections": {},
@@ -232,6 +252,8 @@
                   [
                     {
                       "variable": "",
+                      "axis": "0",
+                      "adaptTo": "none",
                       "plotcolor": [
                         1,
                         1,
@@ -247,10 +269,23 @@
                       "markerSize": 2,
                       "normalize": "none",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": []
+                      "tracking": []
                     }
                   ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
                 ]
               }
             }
@@ -300,7 +335,16 @@
       ],
       "vars_out": [
         {
-          "jpath": []
+          "event": "onMouseOverShape",
+          "rel": "shapeInfos",
+          "jpath": [],
+          "name": "clickedShapeData"
+        },
+        {
+          "event": "onShapeClick",
+          "rel": "shapeInfos",
+          "jpath": [],
+          "name": "hoverShapeData"
         }
       ],
       "toolbar": {
@@ -323,7 +367,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/science/spectra/spectra_displayer/",
@@ -553,6 +607,234 @@
           ]
         }
       ]
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 93,
+            "top": 33
+          },
+          "size": {
+            "width": 46,
+            "height": 32
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Hover shape data",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "hoverShapeData"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Hover shape data"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 93,
+            "top": 0
+          },
+          "size": {
+            "width": 46,
+            "height": 32
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Clicked shape data",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "clickedShapeData"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Clicked shape data"
     }
   ],
   "variables": [],
