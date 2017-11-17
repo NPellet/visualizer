@@ -1,5 +1,5 @@
 {
-  "version": "2.85.8-0",
+  "version": "2.86.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -149,11 +149,6 @@
                     "wheelbaseline": [
                       0
                     ],
-                    "wheelbaselineMouse": [
-                      [
-                        "mousepos"
-                      ]
-                    ],
                     "fullOut": [
                       "both"
                     ],
@@ -167,7 +162,9 @@
                       ]
                     ],
                     "mouseTracking": [
-                      []
+                      [
+                        "track"
+                      ]
                     ],
                     "selectScatter": [
                       [
@@ -363,6 +360,12 @@
           "rel": "selectedData",
           "jpath": [],
           "name": "data"
+        },
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
         }
       ],
       "toolbar": {
@@ -726,6 +729,120 @@
         }
       ],
       "title": "Single value display"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 58,
+            "top": 63
+          },
+          "size": {
+            "width": 38,
+            "height": 19
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "track"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
