@@ -8,7 +8,7 @@
     "framework"
   ],
   "scripts": {
-    "build": "grunt build",
+    "build": "grunt build && grunt clean-images",
     "build-debug": "node --inspect --debug-brk ./node_modules/grunt-cli/bin/grunt build --clean-images",
     "build-doc": "documentation build src/src/** --github --output docs --format html --sort-order alpha",
     "publish-doc": "npm run build-doc && git add docs && git commit -m \"doc: rebuild docs\" && git push origin master",
