@@ -297,9 +297,9 @@ define([
                 });
 
                 graph.on('shapeClicked', shape => {
-                    console.log('shape clicked');
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeProperties', shape.getProperties());
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
+                    this.module.controller.sendActionFromEvent('onShapeClick', 'shapeInfos', shape.getData());
                 });
 
                 graph.on('shapeSelected', shape => {

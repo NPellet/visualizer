@@ -154,7 +154,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         },
         onShapeClick: {
             label: 'Shape is clicked',
-            refVariable: ['shapeInfos', 'shapeProperties']
+            refVariable: ['shapeInfos', 'shapeProperties'],
+            refAction: ['shapeInfos']
         },
         onSelectScatter: {
             label: 'Selection on a scatter plot',
