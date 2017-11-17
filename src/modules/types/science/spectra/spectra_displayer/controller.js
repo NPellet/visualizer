@@ -115,7 +115,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         onTrackClick: {
             label: 'Mouse tracking (click)',
             refVariable: ['trackData'],
-            refAction: ['trackData', 'mouseEvent','dataAndEvent']
+            refAction: ['trackData', 'mouseEvent', 'dataAndEvent']
         },
         onAnnotationAdd: {
             label: 'Annotation added',

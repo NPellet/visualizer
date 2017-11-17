@@ -192,7 +192,7 @@ define([
                     }
 
 
-                    var graph = new Graph(this.dom.get(0), options, { bottom: [ xOptions ] });
+                    var graph = new Graph(this.dom.get(0), options, {bottom: [xOptions]});
                     this.graph = graph;
 
     
@@ -244,8 +244,7 @@ define([
                     }
 
 
-
-                if (useMouseTracking) {
+                    if (useMouseTracking) {
                         graph.on('click', (e) => {
                             if (this.module.model.trackData) {
                                 this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
