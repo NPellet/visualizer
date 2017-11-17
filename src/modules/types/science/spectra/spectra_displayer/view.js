@@ -296,14 +296,16 @@ define([
                     this.module.model.dataTriggerChange(shape.getData());
                 });
 
-                graph.on('shapeSelected', shape => {
+                graph.on('shapeClicked', shape => {
+                    console.log('shape clicked');
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeProperties', shape.getProperties());
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
+                });
+
+                graph.on('shapeSelected', shape => {
                     this.module.controller.sendActionFromEvent('onShapeSelect', 'selectedShape', shape.getData());
                 });
                 graph.on('shapeUnselected', shape => {
-                    this.module.controller.createDataFromEvent('onShapeClick', 'shapeProperties', shape.getProperties());
-                    this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
                     this.module.controller.sendActionFromEvent('onShapeUnselect', 'shapeInfos', shape.getData());
                 });
 
