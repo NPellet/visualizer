@@ -1,5 +1,5 @@
 {
-  "version": "2.85.8-0",
+  "version": "2.86.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -335,13 +335,13 @@
       ],
       "vars_out": [
         {
-          "event": "onMouseOverShape",
+          "event": "onShapeClick",
           "rel": "shapeInfos",
           "jpath": [],
           "name": "clickedShapeData"
         },
         {
-          "event": "onShapeClick",
+          "event": "onMouseOverShape",
           "rel": "shapeInfos",
           "jpath": [],
           "name": "hoverShapeData"
