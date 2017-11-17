@@ -86,7 +86,7 @@ module.exports = function (grunt) {
         react: {
             nmr: {
                 files: {
-                    "./src/modules/types/science/spectra/nmr/1dnmr_2/view.js": "./src/modules/types/science/spectra/nmr/1dnmr_2/view.jsx"
+                    './src/modules/types/science/spectra/nmr/1dnmr_2/view.js': './src/modules/types/science/spectra/nmr/1dnmr_2/view.jsx'
                 }
             }
         },
@@ -106,8 +106,8 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        expand: true,     // Enable dynamic expansion.
-                        cwd: './build/',      // Src matches are relative to this path.
+                        expand: true, // Enable dynamic expansion.
+                        cwd: './build/', // Src matches are relative to this path.
                         src: [
                             'init.js',
                             'version.js',
@@ -120,9 +120,9 @@ module.exports = function (grunt) {
                             'lib/chemistry/*.js',
                             'lib/twigjs/*.js'
                         ], // Actual pattern(s) to match.
-                        dest: './build/',   // Destination path prefix.
+                        dest: './build/', // Destination path prefix.
                         //overwrite: true,
-                        ext: '.js'   // Dest filepaths will have this extension.
+                        ext: '.js' // Dest filepaths will have this extension.
                     }
                 ]
             },
@@ -134,8 +134,8 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        expand: true,     // Enable dynamic expansion.
-                        cwd: './build2/',      // Src matches are relative to this path.
+                        expand: true, // Enable dynamic expansion.
+                        cwd: './build2/', // Src matches are relative to this path.
                         src: [
                             'init.js',
                             //'components/jsgraph/dist/jsgraph-es6.js',
@@ -148,9 +148,9 @@ module.exports = function (grunt) {
                             'lib/chemistry/*.js',
                             'lib/loadingplot/*.js'
                         ], // Actual pattern(s) to match.
-                        dest: './build2/',   // Destination path prefix.
+                        dest: './build2/', // Destination path prefix.
                         //overwrite: true,
-                        ext: '.js'   // Dest filepaths will have this extension.
+                        ext: '.js' // Dest filepaths will have this extension.
                     }
                 ]
             }
@@ -463,18 +463,18 @@ module.exports = function (grunt) {
 
                     expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
                     if (_.some(expressions,
-                            function (exp) {
-                                return fileStats.name.match(exp);
-                            })
+                        function (exp) {
+                            return fileStats.name .match(exp);
+                        })
                     ) {
                         allimages.push(root + '/' + fileStats.name);
                     }
 
                     expressions = [/\.css$/, /\.js$/, /\.html$/];
                     if (_.some(expressions,
-                            function (exp) {
-                                return fileStats.name.match(exp);
-                            })) {
+                        function (exp) {
+                            return fileStats.name.match(exp);
+                        })) {
                         // File content
                         var content = fs.readFileSync(root + '/' + fileStats.name).toString();
 
@@ -514,8 +514,8 @@ module.exports = function (grunt) {
         var delcount = 0;
         _.keys(allimages).forEach(function (i) {
             if (!whiteset[allimages[i]] && !_.some(acceptedReg, function (reg) {
-                    return reg.test(allimages[i]);
-                })) {
+                return reg.test(allimages[i]);
+            })) {
                 fs.unlinkSync(allimages[i]);
                 delcount++;
             }
@@ -646,7 +646,7 @@ module.exports = function (grunt) {
                 i = 0,
                 l,
                 jsonStructure = {modules: [], folders: {}};
-//console.log( fileName );
+            //console.log( fileName );
             if (typeof fileName !== 'object') {
 
                 if (!fs.existsSync(fileName)) {
@@ -734,7 +734,7 @@ module.exports = function (grunt) {
         }
 
         if (cfg.modules) {
-            if (cfg.modules instanceof Array) {  // Backwards compatibility
+            if (cfg.modules instanceof Array) { // Backwards compatibility
                 for (var i = 0, l = cfg.modules.length; i < l; i++) {
                     if (typeof cfg.modules[i] == 'object') {
                         extend(true, modulesFinal, oldLoadFile(cfg.modules[i]));
