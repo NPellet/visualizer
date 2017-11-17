@@ -1,3 +1,13 @@
+<a name="2.86.0"></a>
+# [2.86.0](https://github.com/NPellet/visualizer/compare/v2.85.7...v2.86.0) (2017-11-17)
+
+
+### Features
+
+* **slick_grid:** unset active row action ([415e015](https://github.com/NPellet/visualizer/commit/415e015))
+
+
+
 <a name="2.85.7"></a>
 ## [2.85.7](https://github.com/NPellet/visualizer/compare/v2.85.6...v2.85.7) (2017-11-09)
 
