@@ -480,9 +480,9 @@ module.exports = function (grunt) {
 
                         // Search for icons specified using the forms library
                         if (fileStats.name.match(/\.js$/)) {
-                            var iconreg = /icon:\s*['"]([a-zA-Z_\-]+)['"]/g;
+                            var iconreg = /icon:\s*['"]([a-zA-Z_-]+)['"]/g;
                             findFormIcon(iconreg);
-                            iconreg = /setIcon\(['"]([a-zA-Z_\-]+)['"]/g;
+                            iconreg = /setIcon\(['"]([a-zA-Z_-]+)['"]/g;
                             findFormIcon(iconreg);
                         }
 
