@@ -178,35 +178,6 @@ define([
                         });
                     }
 
-                    var graph = new Graph(this.dom.get(0), options);
-                    this.graph = graph;
-
-                    if (useMouseTracking) {
-                        graph.on('click', (e) => {
-                            if (this.module.model.trackData) {
-                                this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
-                                this.module.controller.sendActionFromEvent('onTrackClick', 'mouseEvent', e[3]);
-                                this.module.controller.sendActionFromEvent('onTrackClick', 'dataAndEvent', {
-                                    data: this.module.model.trackData,
-                                    event: e[3]
-                                });
-                                this.module.controller.createDataFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
-                            }
-                        });
-                    }
-
-                    if (selectScatterPlugin) {
-                        var plugin = graph.getPlugin('selectScatter');
-                        plugin.on('selectionEnd', selectedIndices => {
-                            const serie = plugin.serie;
-                            var result = [];
-                            var info = serie.infos;
-                            if (info) {
-                                result = selectedIndices.map(index => info[index]);
-                            }
-                            this.module.controller.onScatterSelection(result);
-                        });
-                    }
 
                     var xOptions = {
                         nbTicksPrimary: cfg('xnbTicksPrimary', 5)
@@ -220,9 +191,16 @@ define([
                         xOptions.unitModification = 'time:min.sec';
                     }
 
-                    // Axes
+
+                    var graph = new Graph(this.dom.get(0), options, { bottom: [ xOptions ] });
+                    this.graph = graph;
+
+    
                     var xAxis = graph.getXAxis(0, xOptions);
                     this.xAxis = xAxis;
+
+                    // Axes
+                    
                     xAxis
                         .flip(cfg('flipX', false))
                         .setPrimaryGrid(cfg('vertGridMain', false))
@@ -265,10 +243,37 @@ define([
                         theLegend.setAutoPosition(legend);
                     }
 
+
+
+                if (useMouseTracking) {
+                        graph.on('click', (e) => {
+                            if (this.module.model.trackData) {
+                                this.module.controller.sendActionFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
+                                this.module.controller.sendActionFromEvent('onTrackClick', 'mouseEvent', e[3]);
+                                this.module.controller.sendActionFromEvent('onTrackClick', 'dataAndEvent', {
+                                    data: this.module.model.trackData,
+                                    event: e[3]
+                                });
+                                this.module.controller.createDataFromEvent('onTrackClick', 'trackData', this.module.model.trackData);
+                            }
+                        });
+                    }
+
+                    if (selectScatterPlugin) {
+                        var plugin = graph.getPlugin('selectScatter');
+                        plugin.on('selectionEnd', selectedIndices => {
+                            const serie = plugin.serie;
+                            var result = [];
+                            var info = serie.infos;
+                            if (info) {
+                                result = selectedIndices.map(index => info[index]);
+                            }
+                            this.module.controller.onScatterSelection(result);
+                        });
+                    }
+
                     graph.draw(true);
                     resolve(graph);
-
-
                 }
 
             });
@@ -827,7 +832,9 @@ define([
                 const annotations = value.get();
                 for (let i = 0; i < annotations.length; i++) {
                     let annotation = annotations[i];
+                    annotation.selectOnClick = true;
 
+                    
                     let shape = this.graph.newShape(String(annotation.type), annotation);
 
                     if (!shape) {
