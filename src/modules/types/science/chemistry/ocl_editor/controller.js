@@ -32,6 +32,9 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
         },
         actid: {
             label: 'OCL molecule ID'
+        },
+        actidOrGroup: {
+            label: 'OCL molecule ID. Distinguish racemic OR group.'
         }
     };
 
@@ -40,7 +43,7 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
     Controller.prototype.events = {
         onStructureChange: {
             label: 'Molecular structure has changed',
-            refVariable: ['mol', 'molV3', 'smiles', 'actid']
+            refVariable: ['mol', 'molV3', 'smiles', 'actid', 'actidOrGroup']
         }
     };
 
@@ -72,33 +75,36 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
         prefs: ['groups', 'group', 0, 'prefs', 0]
     };
 
-    Controller.prototype.onChange = function (actid) {
-        actid = actid || ' ';
-        var split = actid.split(' ');
-        if (split[0] !== this.currentMol.idcode || split[1] !== this.currentMol.coordinates) {
-            this.currentMol.idcode = split[0];
-            this.currentMol.coordinates = split[1];
-            var mol = OCL.Molecule.fromIDCode(split[0], split[1]);
-            var molfile = mol.toMolfile();
-            var molfileV3 = mol.toMolfileV3();
-            var smiles = mol.toSmiles();
-            this.createDataFromEvent('onStructureChange', 'mol', {
-                type: 'mol2d',
-                value: molfile
-            });
-            this.createDataFromEvent('onStructureChange', 'molV3', {
-                type: 'mol2d',
-                value: molfileV3
-            });
-            this.createDataFromEvent('onStructureChange', 'smiles', {
-                type: 'smiles',
-                value: smiles
-            });
+    Controller.prototype.onChange = function (idCode, molecule) {
+        var split = (idCode || ' ').split(' ');
+
+        var idCodeOr = molecule.getCanonizedIDCode(OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS);
+        var idCode = split[0];
+        var coordinates = split[1];
+        if (idCodeOr !== this.currentMol.idCodeOr || coordinates !== this.currentMol.coordinates) {
+            this.currentMol = {
+                coordinates,
+                idCode,
+                idCodeOr
+            };
+            var molfile = molecule.toMolfile();
+            var molfileV3 = molecule.toMolfileV3();
+            var smiles = molecule.toSmiles();
+            this.createDataFromEvent('onStructureChange', 'mol', molfile);
+            this.createDataFromEvent('onStructureChange', 'molV3', molfileV3);
+            this.createDataFromEvent('onStructureChange', 'smiles', smiles);
             this.createDataFromEvent('onStructureChange', 'actid', {
                 type: 'oclID',
                 value: split[0],
                 coordinates: split[1]
             });
+            this.createDataFromEvent('onStructureChange', 'actidOrGroup', {
+                type: 'oclID',
+                value: idCodeOr,
+                coordinates: coordinates
+            });
+            
+
             // inplace modification is disabled for now because of unexpected change events
             /*if (this.module.getConfigurationCheckbox('prefs', 'inPlace') &&
                 this.module.view._currentType) {
