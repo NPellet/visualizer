@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], function (Default, OCL) {
+define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'src/util/ui'], function (Default, OCL, ui) {
 
     function Controller() {
         this.currentMol = {
@@ -10,6 +10,26 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full'], fu
     }
 
     $.extend(true, Controller.prototype, Default);
+
+    Controller.prototype.getToolbar = function () {
+        var base = Default.getToolbar.call(this);
+        base.unshift({
+            onClick: function () {
+                var w = $(window).width();
+                var h = $(window).height();
+                var url = require.toUrl('modules/types/science/chemistry/ocl_editor/help/index.html');
+                ui.dialog(`<iframe src=${url} width="100%", height="100%"></iframe>`, {
+                    width: Math.max(w - 40, 0),
+                    height: Math.max(h - 70, 0),
+                    title: 'OpenChemLib editor Help'
+                });
+            },
+            title: 'Help',
+            cssClass: 'fa fa-question',
+            ifLocked: true
+        });
+        return base;
+    };
 
     Controller.prototype.moduleInformation = {
         name: 'OCL Molecule editor',
