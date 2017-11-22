@@ -18,7 +18,7 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'sr
                 var w = $(window).width();
                 var h = $(window).height();
                 var url = require.toUrl('modules/types/science/chemistry/ocl_editor/help/index.html');
-                ui.dialog(`<iframe src=${url} width="100%", height="100%"></iframe>`, {
+                ui.dialog(`<iframe src=${url} width="800", height="100%"></iframe>`, {
                     width: Math.max(w - 40, 0),
                     height: Math.max(h - 70, 0),
                     title: 'OpenChemLib editor Help'
