@@ -14,9 +14,9 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (Default, 
                 var w = $(window).width();
                 var h = $(window).height();
                 var url = require.toUrl('modules/types/science/chemistry/jsme/help/index.html');
-                ui.dialog(`<iframe src=${url} width="800", height="100%"></iframe>`, {
-                    width: Math.max(w - 40, 0),
-                    height: Math.max(h - 70, 0),
+                ui.dialog(`<iframe src=${url} width="100%", height="100%" frameBorder="0"></iframe>`, {
+                    width: Math.min(w - 40, 800),
+                    height: h - 70,
                     title: 'JSME Help'
                 });
             },
