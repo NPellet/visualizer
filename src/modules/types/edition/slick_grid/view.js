@@ -566,7 +566,7 @@ define([
         });
 
         ctx.grid.onSelectedRowsChanged.subscribe(function (e, args) {
-            ctx.lastSelectedRows = args.rows.slice().sort();
+            ctx.lastSelectedRows = args.rows.slice();
             var selectedItems = ctx._getItemsInfo(ctx.lastSelectedRows);
             if (ctx.hasFilter) {
                 ctx._runFilter({
@@ -575,9 +575,8 @@ define([
                 });
             }
             if (selectedItems.length) {
-                const last = args.rows[args.rows.length - 1];
-                const {idx, item} = ctx._getItemInfoFromRow(last);
-                ctx.module.controller.onLastSelectedRow(idx, item);
+                const last = ctx.lastSelectedRows[ctx.lastSelectedRows.length - 1];
+                ctx.module.controller.onLastSelectedRow(last.idx, last.item);
             } else {
                 ctx.module.controller.unselectLastRow();
             }
