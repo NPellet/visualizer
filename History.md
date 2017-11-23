@@ -1,3 +1,13 @@
+<a name="2.87.0"></a>
+# [2.87.0](https://github.com/NPellet/visualizer/compare/v2.86.3...v2.87.0) (2017-11-23)
+
+
+### Features
+
+* **slick_grid:** add last selected row event ([f0012af](https://github.com/NPellet/visualizer/commit/f0012af))
+
+
+
 <a name="2.86.3"></a>
 ## [2.86.3](https://github.com/NPellet/visualizer/compare/v2.86.2...v2.86.3) (2017-11-17)
 
