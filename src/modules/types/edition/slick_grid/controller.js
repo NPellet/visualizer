@@ -502,7 +502,22 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
             label: 'Rows selected',
             refVariable: ['rows'],
             refAction: ['rows']
+        },
+        onLastSelectedRow: {
+            label: 'Last selected row',
+            refVariable: ['row'],
+            refAction: ['row']
         }
+    };
+
+    Controller.prototype.onLastSelectedRow = function (row, item) {
+        this.setVarFromEvent('onLastSelectedRow', 'row', 'list', [row]);
+        this.sendActionFromEvent('onLastSelectedRow', 'row', item);
+    };
+
+    Controller.prototype.unselectLastRow = function () {
+        this.createDataFromEvent('onLastSelectedRow', 'row');
+        this.sendActionFromEvent('onRowActive', 'row', null);
     };
 
     Controller.prototype.onRowsSelected = function (items) {

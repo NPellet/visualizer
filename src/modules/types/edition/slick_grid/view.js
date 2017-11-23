@@ -574,6 +574,14 @@ define([
                     rows: selectedItems
                 });
             }
+            if (selectedItems.length) {
+                const last = args.rows[args.rows.length - 1];
+                const {idx, item} = ctx._getItemInfoFromRow(last);
+                ctx.module.controller.onLastSelectedRow(idx, item);
+            } else {
+                ctx.module.controller.unselectLastRow();
+            }
+            
             ctx.module.controller.onRowsSelected(_.map(selectedItems, 'item'));
         });
 
