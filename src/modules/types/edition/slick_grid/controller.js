@@ -448,7 +448,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
         hoverRow: 'Mimic row hover',
-        selectRow: 'Mimic row click',
+        selectRow: 'Mimic cell click',
         selectRows: 'Set selected rows',
         unselectRows: 'Unselect rows from current selection',
         scrollToRow: 'Scroll to row',
