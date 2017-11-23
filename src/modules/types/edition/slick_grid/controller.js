@@ -51,7 +51,7 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                                 collapseGroup: 'Collapse groups on start',
                                 ignoreMyHighlights: 'Ignore highlights from myself'
                             },
-                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll']
+                            default: ['enableCellNavigation', 'rowNumbering', 'forceFitColumns', 'highlightScroll', 'forgetLastActive']
                         },
                         copyPaste: {
                             type: 'checkbox',
