@@ -32,6 +32,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
                 if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                     prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
                 }
+                const buttonType = this.module.getConfiguration('toggle');
                 prom.then(function (ok) {
                     if (!ok) {
                         return;
