@@ -1,3 +1,13 @@
+<a name="2.87.1"></a>
+## [2.87.1](https://github.com/NPellet/visualizer/compare/v2.87.0...v2.87.1) (2017-11-27)
+
+
+### Features
+
+* **ui.form:** set clicked button label when returning ([375819b](https://github.com/NPellet/visualizer/commit/375819b))
+
+
+
 <a name="2.87.0"></a>
 # [2.87.0](https://github.com/NPellet/visualizer/compare/v2.86.3...v2.87.0) (2017-11-23)
 
