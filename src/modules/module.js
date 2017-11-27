@@ -1337,6 +1337,7 @@ define([
         var l = alias.length,
             name;
         for (var i = 0; i < l; i++) {
+            if (!element) break;
             name = alias[i];
             if (typeof name === 'string') {
                 element = element[name];
