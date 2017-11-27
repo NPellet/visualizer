@@ -461,15 +461,17 @@ module.exports = function (grunt) {
 
                     var expressions;
 
+                    // Find all images in all files and shove them into an array
                     expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
                     if (_.some(expressions,
                         function (exp) {
-                            return fileStats.name .match(exp);
+                            return fileStats.name.match(exp);
                         })
                     ) {
                         allimages.push(root + '/' + fileStats.name);
                     }
 
+                    // Find references to images in code
                     expressions = [/\.css$/, /\.js$/, /\.html$/];
                     if (_.some(expressions,
                         function (exp) {
@@ -512,14 +514,21 @@ module.exports = function (grunt) {
 
         // Delete images that are not in the white set
         var delcount = 0;
-        _.keys(allimages).forEach(function (i) {
-            if (!whiteset[allimages[i]] && !_.some(acceptedReg, function (reg) {
-                return reg.test(allimages[i]);
+        var keepImages = new Set();
+        var delImages = new Set();
+        for (let image of allimages) {
+            if (!whiteset[image] && !_.some(acceptedReg, function (reg) {
+                return reg.test(image);
             })) {
-                fs.unlinkSync(allimages[i]);
+                delImages.add(image);
+                fs.unlinkSync(image);
                 delcount++;
+            } else {
+                keepImages.add(image);
             }
-        });
+        }
+        fs.writeFileSync('keep.txt', [...keepImages].join('\n'));
+        fs.writeFileSync('remove.txt', [...delImages].join('\n'));
         console.log('Deleted ' + delcount + ' out of ' + allimages.length + ' images.');
     });
 
