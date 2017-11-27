@@ -417,121 +417,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-react');
 
-    grunt.registerTask('clean-images', 'Clean all images that are not used in the build', function () {
-        var options;
-        var walker;
-        var whiteset = {
-            'build/lib/forms/images/arrow_merge.png': true,
-            'build/lib/forms/images/table_row_delete.png': true,
-            'build/lib/forms/images/basket_go.png': true,
-            'build/lib/forms/images/beer.png': true,
-            'build/lib/forms/images/basket_add.png': true,
-            'build/lib/forms/images/table_sort.png': true,
-            'build/lib/forms/images/money_dollar.png': true,
-            'build/lib/forms/images/basket_full.png': true,
-            'build/lib/forms/images/emotion_bad_smelly.png': true,
-            'build/lib/forms/images/basket_error.png': true,
-            'build/lib/forms/images/application_form_add.png': true,
-            'build/lib/forms/images/table_select_column.png': true,
-            'build/lib/forms/images/buttons.png': true,
-            'build/lib/forms/images/lock.png': true
-        };
-
-        var acceptedReg = [
-            /build\/lib\/svg-edit\/images\/.*/,
-            /build\/components/
-        ];
-        var allimages = [];
-
-        // To be truly synchronous in the emitter and maintain a compatible api,
-        // the listeners must be listed before the object is created
-        options = {
-            listeners: {
-                file: function (root, fileStats, next) {
-                    function findFormIcon(regexp) {
-                        var m = regexp.exec(content);
-                        while (m != null) {
-                            var fn = 'build/lib/forms/images/' + m[1] + '.png';
-                            if (fs.existsSync(fn)) {
-                                whiteset[fn] = true;
-                            }
-                            m = iconreg.exec(content);
-                        }
-                    }
-
-                    var expressions;
-
-                    // Find all images in all files and shove them into an array
-                    expressions = [/\.jpg$/, /\.png$/, /\.jpeg$/, /\.gif$/];
-                    if (_.some(expressions,
-                        function (exp) {
-                            return fileStats.name.match(exp);
-                        })
-                    ) {
-                        allimages.push(root + '/' + fileStats.name);
-                    }
-
-                    // Find references to images in code
-                    expressions = [/\.css$/, /\.js$/, /\.html$/];
-                    if (_.some(expressions,
-                        function (exp) {
-                            return fileStats.name.match(exp);
-                        })) {
-                        // File content
-                        var content = fs.readFileSync(root + '/' + fileStats.name).toString();
-
-                        // Search for icons specified using the forms library
-                        if (fileStats.name.match(/\.js$/)) {
-                            var iconreg = /icon:\s*['"]([a-zA-Z_-]+)['"]/g;
-                            findFormIcon(iconreg);
-                            iconreg = /setIcon\(['"]([a-zA-Z_-]+)['"]/g;
-                            findFormIcon(iconreg);
-                        }
-
-                        // Search for images specified in .js, .css and .html files
-                        var reg = new RegExp('[/\\.a-zA-Z_\\- 0-9]+\\.(png|jpeg|jpg|gif)', 'gi');
-                        var res = content.match(reg);
-                        if (res) {
-                            _.keys(res).forEach(function (i) {
-                                if (res[i][0] !== '/') { // ignore absolute path
-                                    var filepath = path.join(root, res[i]);
-                                    if (fs.existsSync(filepath)) {
-                                        whiteset[filepath] = true;
-                                    }
-                                }
-                            });
-                        }
-                        next();
-                    }
-                }, errors: function (root, nodeStatsArray, next) {
-                    console.log('An error occured in walk');
-                    next();
-                }
-            }
-        };
-
-        walker = walk.walkSync('build', options);
-
-        // Delete images that are not in the white set
-        var delcount = 0;
-        var keepImages = new Set();
-        var delImages = new Set();
-        for (let image of allimages) {
-            if (!whiteset[image] && !_.some(acceptedReg, function (reg) {
-                return reg.test(image);
-            })) {
-                delImages.add(image);
-                fs.unlinkSync(image);
-                delcount++;
-            } else {
-                keepImages.add(image);
-            }
-        }
-        fs.writeFileSync('keep.txt', [...keepImages].join('\n'));
-        fs.writeFileSync('remove.txt', [...delImages].join('\n'));
-        console.log('Deleted ' + delcount + ' out of ' + allimages.length + ' images.');
-    });
-
     grunt.registerTask('manifest:generate', function () {
         var files = recursivelyLookupDirectory('build', true);
         fs.writeFileSync('build/cache.appcache', 'CACHE MANIFEST\n\nCACHE:\n\n');
@@ -603,10 +488,6 @@ module.exports = function (grunt) {
         'buildTime:unset'
     ];
 
-    if (grunt.option('clean-images')) {
-        console.log('clean-images on');
-        buildTasks.push('clean-images');
-    }
     if (grunt.option('manifest')) {
         console.log('manifest on');
         buildTasks.push('manifest:generate');
@@ -838,7 +719,7 @@ module.exports = function (grunt) {
 
         target.modules = [];
         for (var i = 0, l = allModules.length; i < l; i++) {
-            var moduleInfo = /moduleInformation[^\{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[i] + '/controller.js'));
+            var moduleInfo = /moduleInformation[^{]+(\{[^}]+})/.exec(grunt.file.read(basePath + '/' + allModules[i] + '/controller.js'));
 
             try {
                 eval('moduleInfo = ' + moduleInfo[1]);
@@ -1045,7 +926,7 @@ module.exports = function (grunt) {
     }
 
     function moduleIdFromUrl(url) {
-        var reg = /([^\/]+)(\/)?$/;
+        var reg = /([^/]+)(\/)?$/;
         var res = url.match(reg);
         return res[1];
     }
