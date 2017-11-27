@@ -116,7 +116,7 @@ define([
         return new Promise(function (resolve) {
             const done = (name) => {
                 var obj = form.getData(true);
-                obj._buttonLabel = name;
+                obj._clickedButton = name;
                 form.unbind();
                 resolve(obj);
                 dialog.dialog('destroy');
@@ -131,7 +131,7 @@ define([
 
             form.onSubmit((event) => {
                 done(event.target.name);
-                debugger;
+                
                 console.log(event);
             });
 
@@ -143,13 +143,14 @@ define([
                 }
             });
 
-
-            if (opts.buttonLabel) {
-                dialogOptions.buttons[opts.buttonLabel] = () => done(opts.buttonLabel);
-            }
-            if(opts.buttonLabels) {
-                for(let i = 0; i<opts.buttonLabels.length; i++) {
-                    dialogOptions.buttons[opts.buttonLabels[i]] = () => done(opts.buttonLabels[i])
+            if (opts.buttonLabels) {
+                for (let i = 0; i < opts.buttonLabels.length; i++) {
+                    const button = opts.buttonLabels[i];
+                    if (typeof button === 'string') {
+                        dialogOptions.buttons[button] = () => done(button);
+                    } else {
+                        dialogOptions.buttons[button.label] = () => done(button.key);
+                    }
                 }
             }
             var dialog = exports.dialog(div, dialogOptions);
