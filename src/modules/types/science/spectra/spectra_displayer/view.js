@@ -165,6 +165,10 @@ define([
                             this.module.model.trackData = result;
                             this.module.controller.sendActionFromEvent('onTrackMouse', 'trackData', result);
                             this.module.controller.sendActionFromEvent('onTrackMouse', 'mouseEvent', event);
+                            this.module.controller.sendActionFromEvent('onTrackMouse', 'dataAndEvent', {
+                                data: result,
+                                event: event
+                            });
                             this.module.controller.createDataFromEvent('onTrackMouse', 'trackData', result);
                         };
                     }
