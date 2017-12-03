@@ -53,6 +53,7 @@ define([
                 fill: 'black'
             }, Util.evalOptions(this.module.getConfiguration('highlightOptions')));
 
+            this.serieHiddenState = new Map();
         },
 
         inDom() {
@@ -490,6 +491,15 @@ define([
             var plotinfos = this.module.getConfiguration('plotinfos');
             const stackVerticalSpacing = this.module.getConfiguration('stackVerticalSpacing');
             var foundInfo = false;
+
+
+            if( this.serieHiddenState.get( varname ) ) {
+                serie.hidden = true;
+            } else {
+                serie.hidden = false;
+            }
+
+
             if (plotinfos) {
                 const axes = new Set();
                 for (var plotinfo of plotinfos) {
@@ -568,6 +578,17 @@ define([
                     }
                 }, false, this.module.getId());
             }
+        },
+
+        registerSerieEvents( serie, seriename ) {
+
+            serie.on('hide', () => {
+                this.serieHiddenState.set( seriename, true );
+            });
+
+            serie.on('show', () => {
+                this.serieHiddenState.set( seriename, false );
+            });
         },
 
         blank: {
@@ -673,6 +694,8 @@ define([
 
                     var serie = this.graph.newSerie(serieName, serieOptions.options, serieType);
 
+                    this.registerSerieEvents( serie, serieName );
+
                     if (serieOptions.others.peakPicking) {
                         this.graph.getPlugin('peakPicking').setSerie(serie);
                     }
@@ -763,6 +786,8 @@ define([
                     serieOptions = this.getSerieOptions(varname, null, val),
                     serie = this.graph.newSerie(varname, serieOptions.options);
 
+                this.registerSerieEvents( serie, varname );
+
                 if (serieOptions.others.peakPicking) {
                     this.graph.getPlugin('peakPicking').setSerie(serie);
                 }
@@ -811,6 +836,7 @@ define([
                 let serieOptions = this.getSerieOptions(varname, null, [null, [val]]);
                 var serie = this.graph.newSerie(varname, serieOptions.options);
 
+                this.registerSerieEvents( serie, varname );
 
                 if (serieOptions.others.peakPicking) {
                     this.graph.getPlugin('peakPicking').setSerie(serie);
@@ -906,6 +932,9 @@ define([
                     if (spectra.contourLines) {
                         serie = that.graph.newSerie(varname, that.getSerieOptions(varname).options, 'contour');
 
+                         that.registerSerieEvents( serie, varname );
+
+
                         serie.setData(spectra.contourLines);
                         that.setSerieParameters(serie, varname);
                         that.series[varname].push(serie);
@@ -933,6 +962,7 @@ define([
 
                             let serieOptions = that.getSerieOptions(varname, null, data);
                             serie = that.graph.newSerie(varname, serieOptions.options);
+                            that.registerSerieEvents( serie, varname );
 
 
                             if (serieOptions.others.peakPicking) {
@@ -974,6 +1004,7 @@ define([
                         var opts = this.getSerieOptions(varname, null, data[i].data);
 
                         var serie = this.graph.newSerie(data[i].name, opts.options);
+                        that.registerSerieEvents( serie, data[i].name );
 
 
                         serie.autoAxis();
@@ -1027,6 +1058,8 @@ define([
 
         makeSerie(data, value, name) {
             var serie = this.graph.newSerie(data.name);
+
+            this.registerSerieEvents( serie, data.name );
 
             data.onChange(() => {
                 serie.setData(data.data);
