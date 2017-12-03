@@ -301,6 +301,10 @@ define([
                     this.module.model.dataTriggerChange(shape.getData());
                 });
 
+                graph.on('shapeMoved', shape => {
+                    this.module.model.dataTriggerChange(shape.getData());
+                });
+
                 graph.on('shapeClicked', shape => {
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeProperties', shape.getProperties());
                     this.module.controller.createDataFromEvent('onShapeClick', 'shapeInfos', shape.getData());
@@ -864,9 +868,8 @@ define([
                 for (let i = 0; i < annotations.length; i++) {
                     let annotation = annotations[i];
                     annotation.selectOnClick = true;
-
                     
-                    let shape = this.graph.newShape(String(annotation.type), annotation);
+                    let shape = this.graph.newShape( String( annotation.type ), annotation, false, annotation.properties );
 
                     if (!shape) {
                         return;
