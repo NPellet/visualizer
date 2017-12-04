@@ -43,7 +43,7 @@
                 "new"
               ],
               "storedObject": [
-                "[{\"type\":\"rect\",\"properties\":{\"position\":[{\"x\":0.1,\"y\":\"10px\"},{\"x\":0.2,\"y\":\"20px\"}],\"strokeWidth\":[\"0px\"],\"fillColor\":[\"lightgreen\"],\"resizable\":[true],\"movable\":[true],\"selectable\":[true],\"selectOnClick\":[true],\"handles\":[true]}},{\"type\":\"rect\",\"position\":[{\"x\":0.3,\"y\":\"20px\"},{\"x\":0.4,\"y\":\"30px\"}],\"strokeWidth\":\"0px\",\"fillColor\":\"pink\"},{\"type\":\"rect\",\"position\":[{\"x\":0.5,\"y\":\"10px\"},{\"x\":0.6,\"y\":\"20px\"}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightblue\"},{\"type\":\"rect\",\"position\":[{\"x\":0.7,\"y\":\"20px\"},{\"x\":0.8,\"y\":\"30px\"}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightyellow\"}]"
+                "[{\"type\":\"rect\",\"properties\":{\"position\":[{\"x\":0.1,\"y\":\"10px\"},{\"x\":0.2,\"y\":\"20px\"}],\"strokeWidth\":[\"0px\"],\"fillColor\":[\"lightgreen\"],\"resizable\":[true],\"movable\":[true],\"selectable\":[true],\"selectOnClick\":[true],\"staticHandles\":[true],\"handles\":[{\"type\":\"seamlessX\"}]}},{\"type\":\"rect\",\"position\":[{\"x\":0.3,\"y\":\"20px\"},{\"x\":0.4,\"y\":\"30px\"}],\"strokeWidth\":\"0px\",\"fillColor\":\"pink\"},{\"type\":\"rect\",\"position\":[{\"x\":0.5,\"y\":\"10px\"},{\"x\":0.6,\"y\":\"20px\"}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightblue\"},{\"type\":\"rect\",\"position\":[{\"x\":0.7,\"y\":\"20px\"},{\"x\":0.8,\"y\":\"30px\"}],\"strokeWidth\":\"0px\",\"fillColor\":\"lightyellow\"}]"
               ]
             }
           ]
