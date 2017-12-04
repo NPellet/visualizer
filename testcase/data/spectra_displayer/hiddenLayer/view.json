@@ -199,11 +199,11 @@
             "top": 0
           },
           "size": {
-            "width": 62,
-            "height": 43
+            "width": 1,
+            "height": 6
           },
           "zIndex": 0,
-          "display": false,
+          "display": true,
           "title": "",
           "bgColor": [
             255,
@@ -221,8 +221,8 @@
             "top": 0
           },
           "size": {
-            "width": 62,
-            "height": 43
+            "width": 59,
+            "height": 52
           },
           "zIndex": 0,
           "display": true,
@@ -238,7 +238,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 1,
       "vars_in": [
         {
           "rel": "jcamp",
@@ -383,7 +383,7 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 2,
       "vars_in": [
         {}
       ],
