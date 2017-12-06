@@ -303,7 +303,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.gcGraph.on('click', function (e) {
                 e = e[3];
                 if (e.target.nodeName === 'path' || e.target.nodeName === 'text') {
-                    return;
+                    
                 }
 
                 //that.lockTrackingLine = !that.lockTrackingLine;

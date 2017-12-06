@@ -329,7 +329,7 @@ define([
     };
 
     Controller.prototype.addValue = function (option, value) {
-        if ('function' === typeof value.resurrect) {
+        if (typeof value.resurrect === 'function') {
             value = value.resurrect();
         }
         var str = typeof value === 'string';

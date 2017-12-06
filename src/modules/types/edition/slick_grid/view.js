@@ -1822,7 +1822,7 @@ define([
                 this.grid.setSelectedRows(this.grid.getSelectedRows().filter(idx => idx !== this.lastActiveRow));
                 this.grid.resetActiveCell();
                 this.module.controller.unselectRow();
-                return;
+                
             },
             
             // "mimick click row"

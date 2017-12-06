@@ -1119,7 +1119,7 @@ define([
                     $legendTitles.show();
                     break;
                 default:
-                    return;
+                    
             }
 
 
