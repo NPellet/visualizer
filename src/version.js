@@ -5,7 +5,7 @@ define(['lib/semver/semver'], function (semver) {
     /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
     const MAJOR = 2;
     const MINOR = 87;
-    const PATCH = 3;
+    const PATCH = 4;
     const PRERELEASE = 0;
     const IS_RELEASE = false;
     const BUILD_TIME = null;
