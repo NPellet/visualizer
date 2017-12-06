@@ -497,7 +497,7 @@ define([
             var foundInfo = false;
 
 
-            if( this.serieHiddenState.get( varname ) ) {
+            if (this.serieHiddenState.get(varname)) {
                 serie.hidden = true;
             } else {
                 serie.hidden = false;
@@ -584,14 +584,14 @@ define([
             }
         },
 
-        registerSerieEvents( serie, seriename ) {
+        registerSerieEvents(serie, seriename) {
 
             serie.on('hide', () => {
-                this.serieHiddenState.set( seriename, true );
+                this.serieHiddenState.set(seriename, true);
             });
 
             serie.on('show', () => {
-                this.serieHiddenState.set( seriename, false );
+                this.serieHiddenState.set(seriename, false);
             });
         },
 
@@ -698,7 +698,7 @@ define([
 
                     var serie = this.graph.newSerie(serieName, serieOptions.options, serieType);
 
-                    this.registerSerieEvents( serie, serieName );
+                    this.registerSerieEvents(serie, serieName);
 
                     if (serieOptions.others.peakPicking) {
                         this.graph.getPlugin('peakPicking').setSerie(serie);
@@ -790,7 +790,7 @@ define([
                     serieOptions = this.getSerieOptions(varname, null, val),
                     serie = this.graph.newSerie(varname, serieOptions.options);
 
-                this.registerSerieEvents( serie, varname );
+                this.registerSerieEvents(serie, varname);
 
                 if (serieOptions.others.peakPicking) {
                     this.graph.getPlugin('peakPicking').setSerie(serie);
@@ -840,7 +840,7 @@ define([
                 let serieOptions = this.getSerieOptions(varname, null, [null, [val]]);
                 var serie = this.graph.newSerie(varname, serieOptions.options);
 
-                this.registerSerieEvents( serie, varname );
+                this.registerSerieEvents(serie, varname);
 
                 if (serieOptions.others.peakPicking) {
                     this.graph.getPlugin('peakPicking').setSerie(serie);
@@ -869,7 +869,7 @@ define([
                     let annotation = annotations[i];
                     annotation.selectOnClick = true;
                     
-                    let shape = this.graph.newShape( String( annotation.type ), annotation, false, annotation.properties );
+                    let shape = this.graph.newShape(String(annotation.type), annotation, false, annotation.properties);
 
                     if (!shape) {
                         return;
@@ -935,7 +935,7 @@ define([
                     if (spectra.contourLines) {
                         serie = that.graph.newSerie(varname, that.getSerieOptions(varname).options, 'contour');
 
-                         that.registerSerieEvents( serie, varname );
+                        that.registerSerieEvents(serie, varname);
 
 
                         serie.setData(spectra.contourLines);
@@ -965,7 +965,7 @@ define([
 
                             let serieOptions = that.getSerieOptions(varname, null, data);
                             serie = that.graph.newSerie(varname, serieOptions.options);
-                            that.registerSerieEvents( serie, varname );
+                            that.registerSerieEvents(serie, varname);
 
 
                             if (serieOptions.others.peakPicking) {
@@ -1007,7 +1007,7 @@ define([
                         var opts = this.getSerieOptions(varname, null, data[i].data);
 
                         var serie = this.graph.newSerie(data[i].name, opts.options);
-                        that.registerSerieEvents( serie, data[i].name );
+                        that.registerSerieEvents(serie, data[i].name);
 
 
                         serie.autoAxis();
@@ -1062,7 +1062,7 @@ define([
         makeSerie(data, value, name) {
             var serie = this.graph.newSerie(data.name);
 
-            this.registerSerieEvents( serie, data.name );
+            this.registerSerieEvents(serie, data.name);
 
             data.onChange(() => {
                 serie.setData(data.data);
