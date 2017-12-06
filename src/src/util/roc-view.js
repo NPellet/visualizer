@@ -222,7 +222,7 @@ define(['./util'], function (Util) {
 
         reload() {
             return this.manager.getRequestDB(`/entry/${this.id}`)
-                .then(getRes => this.view = getRes.body);
+                .then(getRes => (this.view = getRes.body));
         }
 
         togglePublic() {
@@ -235,8 +235,9 @@ define(['./util'], function (Util) {
 
         getRevisions(force) {
             if (this._revs && !force) return this._revs;
-            return this._revs = this.manager.getRequestDB(`/entry/${this.id}`, {revs_info: true})
+            this._revs = this.manager.getRequestDB(`/entry/${this.id}`, {revs_info: true})
                 .then(doc => doc.body._revs_info.filter(rev => rev.status === 'available').map(rev => rev.rev));
+            return this._revs;
         }
 
         setRevision(rev) {

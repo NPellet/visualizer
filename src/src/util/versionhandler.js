@@ -54,10 +54,11 @@ define([
                 return this._getServer().pipe(function (data) {
 
                     if (that.type == 'view') {
-                        return that._data.server = new DataObject(data, true);
+                        that._data.server = new DataObject(data, true);
                     } else if (that.type == 'data') {
-                        return that._data.server = new DataObject(data, true);
+                        that._data.server = new DataObject(data, true);
                     }
+                    return that._data.server;
 
                 }, function () {
                     return false;
@@ -72,10 +73,11 @@ define([
                     }
 
                     if (that.type == 'view') {
-                        return that._data.local = new DataObject(data, true);
+                        that._data.local = new DataObject(data, true);
                     } else if (that.type == 'data') {
-                        return that._data.local = new DataObject(data, true);
+                        that._data.local = new DataObject(data, true);
                     }
+                    return that._data.local;
 
                 }, function () {
                     return false;

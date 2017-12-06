@@ -99,7 +99,7 @@ define([
         },
 
         getForm() {
-            return this.currentForm = this.form.getData(false);
+            return (this.currentForm = this.form.getData(false));
         },
 
         submitChange(event, noChange) {
@@ -203,7 +203,7 @@ define([
 
         render(cb) {
             var that = this;
-            return this.renderPromise = this.renderPromise.then(() => {
+            this.renderPromise = this.renderPromise.then(() => {
                 if (this.formName) {
                     this._values[this.formName] = this.formObject;
                 }
@@ -220,6 +220,7 @@ define([
             }).catch(e => {
                 Debug.warn('Error rendering twig template', e);
             });
+            return this.renderPromise;
         }
     });
 

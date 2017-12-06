@@ -136,7 +136,7 @@ define([
 
         getModulesById() {
             const modulesById = {};
-            this.traverseModules((mod) => modulesById[mod.id] = mod);
+            this.traverseModules((mod) => (modulesById[mod.id] = mod));
             return modulesById;
         }
     };

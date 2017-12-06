@@ -706,7 +706,7 @@ define([
 
                     if (!serie) {
                         console.log(serieType);
-                        throw 'The serie was not created !';
+                        throw new Error('The serie was not created !');
                     }
                     serie.setLabel(serieLabel);
                     //                    this.normalize(valFinal, varname);
@@ -753,13 +753,13 @@ define([
                         }
 
                         let keys = new Set(Object.keys(defaultStyles).concat(Object.keys(modifiers)));
-
-                        keys.forEach((styleName) => {
-
+                        for (const styleName of keys) {
                             serie.setStyle(
-                                Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {}), modifiers[ styleName ] || [], styleName
+                                Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {}),
+                                modifiers[ styleName ] || [],
+                                styleName
                             );
-                        });
+                        }
 
                         if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
                             var plugin = this.graph.getPlugin('selectScatter');

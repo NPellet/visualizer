@@ -249,7 +249,8 @@ define([
         } else if (fromArray) {
             sources = list.length;
             var allProm = new Array(list.length);
-            for (var i = 0; i < list.length; i++) {
+            for (let i = 0; i < list.length; i++) {
+                //eslint-disable-next-line no-loop-func
                 allProm[i] = list[i].promise.then(addItems).catch(function (e) {
                     Debug.error('failed', e);
                     sources--;

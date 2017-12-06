@@ -110,7 +110,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             var y = value.data[0].y;
             var highlight = value.data[0]._highlight;
             var infos = value.data[0].info;
-            for (var i = 0; i < y.length; i++) {
+            for (let i = 0; i < y.length; i++) {
                 this._data[i] = {
                     data: y[i]
                 };

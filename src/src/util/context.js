@@ -20,6 +20,7 @@ define([
                 }
 
                 for (let i = 0; i < elements.length; i++) {
+                    // eslint-disable-next-line no-loop-func
                     (function (element, callbackClick, callbackOpen) {
                         if (Config.contextMenu().indexOf('all') === -1 && Config.contextMenu().indexOf(element.attr('name') || 'undefined') === -1) return;
                         if ((callbackOpen && callbackOpen(e, element)) || !callbackOpen) {

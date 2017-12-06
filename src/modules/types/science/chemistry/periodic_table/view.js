@@ -474,8 +474,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         // helper function for selecting elements with actions
         _selectElements(elements, val) {
             if (Array.isArray(val)) {
+                const finder = (element) => element.Z === val[num];
                 for (var num = 0; num < val.length; num++) {
-                    var z = this.elements.findIndex((element) => element.Z === val[num]);
+                    var z = this.elements.findIndex(finder);
                     if (z >= 0) {
                         $(elements[z]).addClass('el-selected');
                     }

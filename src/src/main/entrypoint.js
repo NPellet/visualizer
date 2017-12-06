@@ -150,7 +150,7 @@ define([
             Debug.error('View loading problem', e, e.stack);
         });
 
-        async function doInitScript() {
+        function doInitScript() {
             if (view.init_script) {
                 const sandbox = new Sandbox();
                 sandbox.setContext({API});

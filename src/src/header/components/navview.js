@@ -398,9 +398,9 @@ define([
                         switch (event.which) {
                             case 8:
                                 if (data.node.isFolder()) {
-                                    that.removeDir.apply(that, [data.node]);
+                                    that.removeDir(data.node);
                                 } else {
-                                    that.remove.apply(that, [data.node]);
+                                    that.remove(data.node);
                                 }
                                 break;
                         }
@@ -425,7 +425,7 @@ define([
                             // Simulate to start a slow ajax request...
                             data.node.setTitle(data.input.val());
                             $(data.node.span).addClass('pending');
-                            that.inlineRename.apply(that, [data.node]);
+                            that.inlineRename(data.node);
                             // We return true, so ext-edit will set the current user input
                             // as title
                             return true;

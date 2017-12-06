@@ -458,7 +458,7 @@ define([
         ctx.grid.onColumnsResized.subscribe(function () {
             var cols = ctx.grid.getColumns();
 
-            for (var i = 0; i < cols.length; i++) {
+            for (let i = 0; i < cols.length; i++) {
                 var colToChange = ctx.colConfig.find(function (col) {
                     return col === cols[i].colDef;
                 });
@@ -1493,14 +1493,14 @@ define([
             var tmp = {};
             this._selectHighlight();
             this.lastViewport = this.grid.getViewport();
-            for (var i = this.lastViewport.top; i <= this.lastViewport.bottom; i++) {
+            for (let i = this.lastViewport.top; i <= this.lastViewport.bottom; i++) {
                 //var item = this.grid.getDataItem(i);
                 var itemInfo = this._getItemInfoFromRow(i);
                 if (!itemInfo) continue;
                 var item = itemInfo.item;
                 if (_.some(
                     that._highlighted,
-                    function (k) {
+                    function (k) { // eslint-disable-line no-loop-func
                         var hl = item._highlight;
                         if (!Array.isArray(hl)) {
                             hl = [hl];

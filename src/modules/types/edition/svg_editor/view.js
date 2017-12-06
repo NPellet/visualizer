@@ -178,7 +178,7 @@ define([
             for (var k in anim) {
                 if (animationReserved.indexOf(k) === -1) thisDefault[k] = _.cloneDeep(anim[k]);
             }
-            for (var i = 0; i < anim.attributes.length; i++) {
+            for (let i = 0; i < anim.attributes.length; i++) {
                 anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
 
                 $svgEl.each(function () {
@@ -249,7 +249,7 @@ define([
         },
 
         setAttributesOneByOne: function ($svgEl, attributes) {
-            for (var key in attributes) {
+            for (const key in attributes) {
                 if (typeof attributes[key] === 'function') {
                     $svgEl.each(function () {
                         this.setAttribute(key, attributes[key].call());

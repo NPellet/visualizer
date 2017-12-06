@@ -195,7 +195,7 @@ require([
     Promise.config({
         warnings: Version.head,
         longStackTraces: Version.head,
-        monitoring: false // todo: activate and use the monitoring API. See http://bluebirdjs.com/docs/features.html
+        monitoring: false
     });
     $.browser = {msie: false}; // Property used by old libraries and not present in jQuery anymore
     $(document).ready(() => {

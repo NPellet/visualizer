@@ -248,14 +248,19 @@ define([
 
         },
         openMenu: function (which) {
-            if (which === this.lastMenu) {
-                
-            } else if (which === 'tree') {
-                this.$_elToOpen.html(this.getMenuContent());
-                this.lastMenu = 'tree';
-            } else if (which === 'login') {
-                this.$_elToOpen.html(this.getLoginForm());
-                this.lastMenu = 'login';
+            switch (which) {
+                case this.lastMenu:
+                    return;
+                case 'tree':
+                    this.$_elToOpen.html(this.getMenuContent());
+                    this.lastMenu = 'tree';
+                    break;
+                case 'login':
+                    this.$_elToOpen.html(this.getLoginForm());
+                    this.lastMenu = 'login';
+                    break;
+                default:
+                    // ignore
             }
         },
         load: function (node, rev) {
@@ -492,13 +497,13 @@ define([
             for (var i = 0; i < this.options.loginMethods.length; i++) {
                 switch (this.options.loginMethods[i]) {
                     case 'google':
-                        $('<a href=" ' + this.url + '/auth/google' + '">Google login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
+                        $('<a href=" ' + this.url + '/auth/google">Google login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
                         break;
                     case 'github':
-                        $('<a href=" ' + this.url + '/auth/github' + '">Github login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
+                        $('<a href=" ' + this.url + '/auth/github">Github login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
                         break;
                     case 'facebook':
-                        $('<a href=" ' + this.url + '/auth/facebook' + '">Facebook login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
+                        $('<a href=" ' + this.url + '/auth/facebook">Facebook login</a><br/>').appendTo(this.loginForm).on('click', openLogin);
                         break;
                     case 'couchdb':
                         this.loginForm.append('<div> Couchdb Login </div>');
@@ -698,20 +703,16 @@ define([
                         prom = prom.then(function () {
                             return couchA.remove(_.map(toDelete, 'name'));
                         });
-                        for (i = 0; i < largeUploads.length; i++) {
-                            (function (i) {
-                                prom = prom.then(function () {
-                                    return couchA.upload(largeUploads[i]);
-                                });
-                            })(i);
+                        for (let i = 0; i < largeUploads.length; i++) {
+                            prom = prom.then(function () {
+                                return couchA.upload(largeUploads[i]);
+                            });
                         }
 
-                        for (i = 0; i < inlineUploads.length; i++) {
-                            (function (i) {
-                                prom = prom.then(function () {
-                                    return couchA.inlineUploads(inlineUploads[i]);
-                                });
-                            })(i);
+                        for (let i = 0; i < inlineUploads.length; i++) {
+                            prom = prom.then(function () {
+                                return couchA.inlineUploads(inlineUploads[i]);
+                            });
                         }
 
                         prom.then(function () {
@@ -1307,7 +1308,7 @@ define([
             if (this._flavor) {
                 return this._flavor;
             } else {
-                return this._flavor = window.sessionStorage.getItem('ci-visualizer-pouchdb2-flavor') || 'default';
+                return (this._flavor = window.sessionStorage.getItem('ci-visualizer-pouchdb2-flavor') || 'default');
             }
         },
         set: function (value) {

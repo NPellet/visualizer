@@ -50,7 +50,7 @@ define([
         return new Promise(
             function (resolve, reject) {
                 if (!moduleURL) {
-                    reject();
+                    reject(new Error('no module URL'));
                     return;
                 }
 
@@ -217,6 +217,7 @@ define([
             for (let i = 0; i < vars.length; i++) {
                 const variable = API.getVar(vars[i].name);
                 if (variable.isDefined()) {
+                    // eslint-disable-next-line no-await-in-loop
                     await this.model.onVarChange(variable);
                 }
             }
@@ -228,7 +229,7 @@ define([
         getDomContent() {
             if (typeof this.domContent !== 'undefined')
                 return this.domContent;
-            throw 'The module has not been loaded yet';
+            throw new Error('The module has not been loaded yet');
         },
 
         /*
@@ -238,7 +239,7 @@ define([
             if (typeof this.domWrapper !== 'undefined') {
                 return this.domWrapper;
             }
-            throw 'The module has not been loaded yet';
+            throw new Error('The module has not been loaded yet');
         },
 
         /*
@@ -248,7 +249,7 @@ define([
             if (typeof this.view.getDom == 'function') {
                 return this.view.getDom();
             }
-            throw 'The module\'s view doest not implement the getDom function';
+            throw new Error('The module\'s view doest not implement the getDom function');
         },
 
         /*
@@ -258,7 +259,7 @@ define([
             if (typeof this.domHeader !== 'undefined') {
                 return this.domHeader;
             }
-            throw 'The module has not been loaded yet';
+            throw new Error('The module has not been loaded yet');
         },
 
         /*
@@ -468,7 +469,9 @@ define([
                 }));
 
             const alljpaths = {};
-            Object.keys(references).forEach(ref => alljpaths[ref] = this.model.getjPath(ref));
+            Object.keys(references).forEach(ref => {
+                alljpaths[ref] = this.model.getjPath(ref);
+            });
 
             const eventsVariables = [];
             const eventsActions = [];
@@ -1122,7 +1125,8 @@ define([
                 this.definition.vars_out = this.definition.dataSend;
                 delete this.definition.dataSend;
             }
-            return this.definition.vars_out = this.definition.vars_out || new DataArray();
+            if (!this.definition.vars_out) this.definition.vars_out = new DataArray();
+            return this.definition.vars_out;
         },
 
 
@@ -1132,7 +1136,8 @@ define([
                 this.definition.actions_in = this.definition.actionsIn;
                 delete this.definition.actionsIn;
             }
-            return this.definition.actions_in = this.definition.actions_in || new DataArray();
+            if (!this.definition.actions_in) this.definition.actions_in = new DataArray();
+            return this.definition.actions_in;
         },
 
 
@@ -1142,7 +1147,8 @@ define([
                 this.definition.actions_out = this.definition.actionsOut;
                 delete this.definition.actionsOut;
             }
-            return this.definition.actions_out = this.definition.actions_out || new DataArray();
+            if (!this.definition.actions_out) this.definition.actions_out = new DataArray();
+            return this.definition.actions_out;
         },
 
         getDefinition() {

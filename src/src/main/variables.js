@@ -83,7 +83,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                                 return filterFunction.filter(value, resolve, reject);
                             }
 
-                            reject('No filter function defined');
+                            reject(new Error('No filter function defined'));
                         });
                     };
                 }

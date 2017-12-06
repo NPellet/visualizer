@@ -1736,8 +1736,8 @@ define([
                 return validate(val.get());
             }
 
-            for (var i = 0; i < value.length; i++) {
-                _.each(jp, v => v[0] = i);
+            for (let i = 0; i < value.length; i++) {
+                _.each(jp, v => (v[0] = i));
                 that._data.x.push(getFromJpath(value, jp.x, 0));
                 that._data.y.push(getFromJpath(value, jp.y, 0));
                 that._data.z.push(getFromJpath(value, jp.z, 0));
@@ -1765,7 +1765,7 @@ define([
             }
 
             // Get data
-            for (var j = 0; j < value.data.length; j++) {
+            for (let j = 0; j < value.data.length; j++) {
                 _.keys(value.data[j]).forEach(function (key) {
                     if (Array.isArray(value.data[j][key])) {
                         that._data[key] = that._data[key] || [];
@@ -1788,8 +1788,7 @@ define([
             this._data._highlight = this._data._highlight || [];
 
             _.keys(value).forEach(function (key) {
-                if (key === 'data') return;
-                else that._meta[key] = value[key];
+                if (key !== 'data') that._meta[key] = value[key];
             });
 
             that._dispFilter = that._dispFilter || [];

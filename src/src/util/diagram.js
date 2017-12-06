@@ -153,7 +153,7 @@ define([
                 });
             }
         }
-        for (i = 0; i < targets.length; i++) {
+        for (let i = 0; i < targets.length; i++) {
             // Try to find source with same name
             var source = _.filter(sources, function (s) {
                 return s.name === targets[i].name;
@@ -189,7 +189,7 @@ define([
             //}
         }
 
-        for (i = 0; i < sources.length; i++) {
+        for (let i = 0; i < sources.length; i++) {
             var target = _.filter(targets, function (t) {
                 return t.name === sources[i].name;
             });

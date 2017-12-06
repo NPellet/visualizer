@@ -157,7 +157,7 @@ define([
                                 });
                             };
                             reader.onerror = function () {
-                                return reject('Error while reading file');
+                                return reject(new Error('Error while reading file'));
                             };
                             reader.readAsDataURL(data);
                         });

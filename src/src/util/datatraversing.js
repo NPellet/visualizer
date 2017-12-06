@@ -32,7 +32,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         if (typeof el != 'object' && jpath.length > 0)
             el = {};
         if (jpath.length == 1)
-            return el[jpath[0]] = newValue;
+            return (el[jpath[0]] = newValue);
         var jpathElement = jpath.shift();
         if (jpathElement) {
             if (!(subelement = el[jpathElement])) { // If not an object, we make it an object

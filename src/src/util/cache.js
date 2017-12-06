@@ -9,7 +9,7 @@ define(function () {
     };
 
     exports.set = function (name, value) {
-        return cache[name] = value;
+        return (cache[name] = value);
     };
 
     exports.clear = function () {

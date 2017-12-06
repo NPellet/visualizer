@@ -518,9 +518,7 @@ define([
         var def = $.Deferred();
 
         if (name) {
-            return definition.layers[name] = {name: name};
-            //setLayers();
-            //def.resolve(definition.layers[name]);
+            return (definition.layers[name] = {name: name});
         }
 
         var div = ui.dialog({

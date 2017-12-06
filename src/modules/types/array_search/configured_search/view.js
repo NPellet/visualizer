@@ -46,7 +46,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
             this.module.getDomContent().html(parentDom);
             this.variables = {};
             this.cfgValue = {};
-            this.maxhits = parseInt(this.module.getConfiguration('maxhits')) || Number.POSITIVE_INFINITY;
+            this.maxhits = parseInt(this.module.getConfiguration('maxhits'), 10) || Number.POSITIVE_INFINITY;
 
             this._jpathsFcts = {};
 
@@ -65,7 +65,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
                                     },
                                     fields: FormCreator.makeStructure(searchfields, function (field) {
 
-                                        for (var k = 0, m = field.groups.general[0].searchOnField.length; k < m, field.groups.general[0].searchOnField[k]; k++) {
+                                        for (var k = 0, m = field.groups.general[0].searchOnField.length; field.groups.general[0].searchOnField[k]; k++) {
                                             Util.addjPathFunction(that._jpathsFcts, field.groups.general[0].searchOnField[k]);
                                         }
                                     })

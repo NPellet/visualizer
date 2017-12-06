@@ -195,21 +195,19 @@ define([
             this._names = names;
 
             var newVal, val;
-            for (i = 0; i < vl; i++) {
+            for (let i = 0; i < vl; i++) {
                 newVal = {};
                 val = value[i];
                 newValue[i] = newVal;
 
-                (function (i) {
-                    API.listenHighlight(val, function (onOff) {
-                        if (onOff) { // add highlight
-                            that._highlighted.push(that._data[i]);
-                        } else {
-                            that._highlighted.splice(that._highlighted.indexOf(that._data[i], 1));
-                        }
-                        that.updateHighlight();
-                    }, false, that.module.getId());
-                })(i);
+                API.listenHighlight(val, function (onOff) {
+                    if (onOff) { // add highlight
+                        that._highlighted.push(that._data[i]);
+                    } else {
+                        that._highlighted.splice(that._highlighted.indexOf(that._data[i], 1));
+                    }
+                    that.updateHighlight();
+                }, false, that.module.getId());
 
                 for (var j = 0; j < l; j++) {
                     var theVal = columns[j].jpathF(val);

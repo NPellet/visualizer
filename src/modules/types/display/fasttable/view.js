@@ -446,7 +446,6 @@ define([
 
             var result = [];
             var allEls = [],
-                i = 0,
                 l = this.elements.length;
 
             var jpaths = this.colsjPaths;
@@ -457,9 +456,10 @@ define([
             }
             result.push(header.join('\t'));
 
-            for (; i < l; i++) {
+            for (let i = 0; i < l; i++) {
                 var line = [];
                 for (var j = 0; j < jpaths.length; j++) {
+                    // eslint-disable-next-line no-loop-func
                     Traversing.getValueFromJPath(this.elements[i], jpaths[j].jpath).done(function (elVal) {
                         line.push(elVal);
                     });

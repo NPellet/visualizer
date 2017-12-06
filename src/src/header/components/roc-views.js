@@ -41,7 +41,7 @@ define([
             if (this._flavor) {
                 return this._flavor;
             } else {
-                return this._flavor = window.localStorage.getItem('ci-visualizer-roc-views-flavor') || 'default';
+                return (this._flavor = window.localStorage.getItem('ci-visualizer-roc-views-flavor') || 'default');
             }
         }
 
@@ -156,16 +156,19 @@ define([
         }
 
         openMenu(which) {
-            if (which === this.currentMenu) {
-                
-            } else if (which === 'tree') {
-                this.$_elToOpen.html(this.getMenuContent());
-                this.currentMenu = 'tree';
-            } else if (which === 'login') {
-                this.$_elToOpen.html(this.getLoginContent());
-                this.currentMenu = 'login';
-            } else {
-                Debug.error('roc-views: unexpected value for which: ' + which);
+            switch (which) {
+                case this.currentMenu:
+                    return;
+                case 'tree':
+                    this.$_elToOpen.html(this.getMenuContent());
+                    this.currentMenu = 'tree';
+                    break;
+                case 'login':
+                    this.$_elToOpen.html(this.getLoginContent());
+                    this.currentMenu = 'login';
+                    break;
+                default:
+                    Debug.error('roc-views: unexpected value for which: ' + which);
             }
         }
 
@@ -1204,11 +1207,11 @@ define([
                 await couchA.remove(_.map(toDelete, 'name'));
 
                 for (let i = 0; i < largeUploads.length; i++) {
-                    await couchA.upload(largeUploads[i]);
+                    await couchA.upload(largeUploads[i]); // eslint-disable-line no-await-in-loop
                 }
 
                 for (let i = 0; i < inlineUploads.length; i++) {
-                    await couchA.inlineUploads(inlineUploads[i]);
+                    await couchA.inlineUploads(inlineUploads[i]); // eslint-disable-line no-await-in-loop
                 }
 
                 this.showHide(false);

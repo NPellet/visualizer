@@ -74,10 +74,10 @@ define(['require', 'modules/default/defaultview', 'src/util/util', 'src/util/api
 
             for (; i < l; i++) {
                 var line = [];
-                for (var j = 0; j < this.jpaths.length; j++) {
+                for (let j = 0; j < this.jpaths.length; j++) {
+                    // eslint-disable-next-line no-loop-func
                     Traversing.getValueFromJPath(this.elements[i], this.jpaths[j].jpath).done(function (elVal) {
                         line.push(elVal);
-                        //allEls.push(elVal);
                     });
                 }
                 result.push(line.join('\t'));

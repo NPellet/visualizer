@@ -253,10 +253,11 @@ define([
             var zoneY = pxPerCell * this.canvasNbY;
 
 
-            return this.xyShift = {
+            this.xyShift = {
                 x: Math.floor((this.canvas.width - zoneX) / 2),
                 y: Math.floor((this.canvas.height - zoneY) / 2)
             };
+            return this.xyShift;
         },
 
         blank: {
@@ -337,7 +338,8 @@ define([
         },
 
         incrementPxPerCellFetch: function () {
-            return this.currentPxFetch = this.availableZoomsForFetch.shift();
+            this.currentPxFetch = this.availableZoomsForFetch.shift();
+            return this.currentPxFetch;
         },
 
         launchWorkers: function (restartAtNormal) {

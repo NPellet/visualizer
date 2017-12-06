@@ -100,7 +100,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
                                     if (filterFunction.filter) {
                                         return filterFunction.filter(varValue, resolve, reject);
                                     }
-                                    reject('No filter function defined');
+                                    reject(new Error('No filter function defined'));
                                 });
                             } else {
                                 resolve(varValue);

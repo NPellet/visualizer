@@ -301,10 +301,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.msGraph.redraw();
 
             this.gcGraph.on('click', function (e) {
-                e = e[3];
-                if (e.target.nodeName === 'path' || e.target.nodeName === 'text') {
+                // todo what is this?
+                // e = e[3];
+                // if (e.target.nodeName === 'path' || e.target.nodeName === 'text') {
                     
-                }
+                // }
 
                 //that.lockTrackingLine = !that.lockTrackingLine;
             });

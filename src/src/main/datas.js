@@ -26,10 +26,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         } else if (Array.isArray(object)) {
             currentProto = object;
             while (currentProto !== DataArrayProto) { // eslint-disable-line no-constant-condition
-                nextProto = currentProto.__proto__;
+                nextProto = Object.getPrototypeOf(currentProto);
                 if (nextProto === null ||
                     (nextProto.constructor && (nextProto.constructor === Array || nextProto.constructor.name === 'Array'))) {
-                    currentProto.__proto__ = DataArrayProto;
+                    Object.setPrototypeOf(currentProto, DataArrayProto);
                     break;
                 }
                 currentProto = nextProto;
@@ -43,10 +43,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             if (type === 'object') {
                 currentProto = object;
                 while (currentProto !== DataObjectProto) { // eslint-disable-line no-constant-condition
-                    nextProto = currentProto.__proto__;
+                    nextProto = Object.getPrototypeOf(currentProto);
                     if (nextProto === null ||
                         (nextProto.constructor && (nextProto.constructor === Object || nextProto.constructor.name === 'Object'))) {
-                        currentProto.__proto__ = DataObjectProto;
+                        Object.setPrototypeOf(currentProto, DataObjectProto);
                         break;
                     }
                     currentProto = nextProto;
@@ -224,7 +224,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
         var newArr = [];
         if (arr) {
             if (!Array.isArray(arr))
-                throw 'DataArray can only be constructed from arrays';
+                throw new Error('DataArray can only be constructed from arrays');
             for (var i = 0, l = arr.length; i < l; i++) {
                 if (recursive) {
                     newArr[i] = DataObject.check(arr[i], recursive, forceCopy);
@@ -233,7 +233,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
                 }
             }
         }
-        newArr.__proto__ = DataArrayProto;
+        Object.setPrototypeOf(newArr, DataArrayProto);
         return newArr;
     }
 
@@ -614,7 +614,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
             args[0].jpath.unshift(this.__name);
 
-            this.__parent._triggerBubble.call(this.__parent, args);
+            this.__parent._triggerBubble(args);
 
         }
     };
@@ -669,7 +669,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
 
             args[0].jpath.unshift(this.__name);
 
-            this.__parent._triggerBubble.call(this.__parent, args);
+            this.__parent._triggerBubble(args);
         }
     };
 
@@ -860,8 +860,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     };
 
     const getChildNative = {
-        value: async function getChildNative(jpath) {
-            return this.getChildSync(jpath);
+        value: function getChildNative(jpath) {
+            return Promise.resolve(this.getChildSync(jpath));
         }
     };
 
@@ -891,8 +891,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     };
 
     const traceNative = {
-        value: async function traceNative(jpath) {
-            return this.getChildSync(jpath);
+        value: function traceNative(jpath) {
+            return Promise.resolve(this.getChildSync(jpath));
         }
     };
 
@@ -917,12 +917,12 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
     Object.defineProperties(DataBoolean.prototype, commonNativeProperties);
 
     function isDataObject(object) {
-        return object instanceof DataObject && object.__proto__ === DataObjectProto;
+        return object instanceof DataObject && Object.getPrototypeOf(object) === DataObjectProto;
     }
     DataObject.isDataObject = isDataObject;
 
     function isDataArray(object) {
-        return object instanceof DataArray && object.__proto__ === DataArrayProto;
+        return object instanceof DataArray && Object.getPrototypeOf(object) === DataArrayProto;
     }
     DataArray.isDataArray = isDataArray;
 
