@@ -157,7 +157,7 @@ define([
 
         openMenu(which) {
             if (which === this.currentMenu) {
-                return;
+                
             } else if (which === 'tree') {
                 this.$_elToOpen.html(this.getMenuContent());
                 this.currentMenu = 'tree';

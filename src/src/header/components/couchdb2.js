@@ -249,7 +249,7 @@ define([
         },
         openMenu: function (which) {
             if (which === this.lastMenu) {
-                return;
+                
             } else if (which === 'tree') {
                 this.$_elToOpen.html(this.getMenuContent());
                 this.lastMenu = 'tree';

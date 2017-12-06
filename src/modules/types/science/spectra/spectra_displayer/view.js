@@ -1007,7 +1007,7 @@ define([
                         var opts = this.getSerieOptions(varname, null, data[i].data);
 
                         var serie = this.graph.newSerie(data[i].name, opts.options);
-                        this.graph.registerSerieEvents( serie, data[i].name );
+                        this.graph.registerSerieEvents(serie, data[i].name);
 
                         serie.autoAxis();
                         this.series[varname].push(serie);
