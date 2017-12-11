@@ -1,3 +1,13 @@
+<a name="2.87.5"></a>
+## [2.87.5](https://github.com/NPellet/visualizer/compare/v2.87.4...v2.87.5) (2017-12-11)
+
+
+### Bug Fixes
+
+* **data:** do not overwrite data value in trace ([0a6d269](https://github.com/NPellet/visualizer/commit/0a6d269))
+
+
+
 <a name="2.87.4"></a>
 ## [2.87.4](https://github.com/NPellet/visualizer/compare/v2.87.3...v2.87.4) (2017-12-06)
 
