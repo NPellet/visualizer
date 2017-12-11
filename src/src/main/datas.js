@@ -426,7 +426,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             const el = jpath.shift();
             var subEl = await this.get(el, true);
             if (typeof subEl !== 'undefined') {
-                this.get()[el] = DataObject.check(subEl, true);
                 if (subEl && subEl.linkToParent) {
                     subEl.linkToParent(this, el);
                 }
