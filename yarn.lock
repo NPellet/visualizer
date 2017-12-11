@@ -2386,9 +2386,9 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-eslint-config-cheminfo@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-cheminfo/-/eslint-config-cheminfo-1.8.0.tgz#7f5c15889c240425643a8f8159c881937b2cdd82"
+eslint-config-cheminfo@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-cheminfo/-/eslint-config-cheminfo-1.9.1.tgz#fd8e8dfa507f22b5c4a67569cfd7b97f793d6d1e"
 
 eslint-plugin-no-only-tests@^2.0.0:
   version "2.0.0"
