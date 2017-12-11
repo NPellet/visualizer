@@ -187,6 +187,7 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                 return null;
             }).then((value) => {
                 this._setValue(value);
+                return value;
             });
             var prom = this.currentPromise.catch(err => {
                 if (
