@@ -171,14 +171,12 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                         })
                             .then(value => {
                                 value = DataObject.check(value, true);
-                                this._setValue(value);
                                 _resolve(value);
                             }, error => {
                                 Debug.warn('Error during variable filtering : ', error);
                                 _reject(new Error('filter')); // todo remove this hack
                             });
                     } else {
-                        this._setValue(value);
                         _resolve(value);
                     }
                     return null;
@@ -187,6 +185,8 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
                 });
 
                 return null;
+            }).then((value) => {
+                this._setValue(value);
             });
             var prom = this.currentPromise.catch(err => {
                 if (
