@@ -1,3 +1,13 @@
+<a name="2.87.6"></a>
+## [2.87.6](https://github.com/NPellet/visualizer/compare/v2.87.5...v2.87.6) (2017-12-14)
+
+
+### Bug Fixes
+
+* **spectra-displayer:** autodetection continuous ([b566076](https://github.com/NPellet/visualizer/commit/b566076))
+
+
+
 <a name="2.87.5"></a>
 ## [2.87.5](https://github.com/NPellet/visualizer/compare/v2.87.4...v2.87.5) (2017-12-11)
 
