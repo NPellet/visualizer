@@ -446,10 +446,10 @@ define([
             if (plotinfos) {
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
-
                         var continuous = plotinfos[i].plotcontinuous;
                         if (continuous === 'auto') {
                             continuous = analyzeContinuous(data);
+                            console.log('auto', continuous);
                         }
 
                         if (plotinfos[i].markers[0]) {
@@ -1194,10 +1194,18 @@ define([
             var maxInterval = -Infinity;
             var interval, i, ii;
             var MIN_FOR_CONTINUOUS = 20;
+ 
             if (typeof data[0] === 'number') {
                 if (data.length < (MIN_FOR_CONTINUOUS * 2 - 1)) return 'discrete';
                 for (i = 0, ii = data.length - 2; i < ii; i += 2) {
                     interval = data[i + 2] - data[i];
+                    if (interval > maxInterval) maxInterval = interval;
+                    if (interval < minInterval) minInterval = interval;
+                }
+            } else if (Array.isArray(data[0]) && data.length === 2) {
+                if (data[0].length < MIN_FOR_CONTINUOUS) return 'discrete';
+                for (i = 0, ii = data[0].length - 1; i < ii; i++) {
+                    interval = data[0][i + 1] - data[0][i];
                     if (interval > maxInterval) maxInterval = interval;
                     if (interval < minInterval) minInterval = interval;
                 }
