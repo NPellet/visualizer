@@ -43,6 +43,7 @@ define([
             $('<div id="' + this._id + '"></div>').css('height', '100%').css('width', '100%').appendTo(this.editorCell);
             this.editor = ace.edit(this._id);
             this.editor.$blockScrolling = Infinity;
+            this.editor.getSession().setOption('useWorker', false);
             this.editor.getSession().setMode('./mode/javascript');
             this.editor.setValue(initVal, -1);
             this.editor.getSession().on('change', this.editorChanged.bind(this));

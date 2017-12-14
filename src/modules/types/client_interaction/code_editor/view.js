@@ -52,6 +52,7 @@ define([
 
                 aceHelper.applyConfig(this.module, this.editor);
                 this.editor.$blockScrolling = Infinity;
+                this.editor.getSession().setOption('useWorker', false);
                 this.editor.getSession().setMode(mode);
                 this.editor.setValue(initVal, -1);
                 this.editor.getSession().on('change', this.editorChangedDebounced);
