@@ -45,11 +45,8 @@ define([
         update: {
             jcamp: function (moduleValue, varname, view) {
                 var that = this;
-                console.log(view);
                 JcampConverter.convert(String(moduleValue.get()), true).then(function (spectra) {
-
                     that.nmr.setSerieX(varname, spectra.spectra[0].data[0], that.getOptions(varname));
-
                 });
             }
         },
