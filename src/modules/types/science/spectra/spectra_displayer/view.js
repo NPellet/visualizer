@@ -449,7 +449,6 @@ define([
                         var continuous = plotinfos[i].plotcontinuous;
                         if (continuous === 'auto') {
                             continuous = analyzeContinuous(data);
-                            console.log('auto', continuous);
                         }
 
                         if (plotinfos[i].markers[0]) {

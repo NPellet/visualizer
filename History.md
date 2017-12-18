@@ -1,3 +1,13 @@
+<a name="2.87.7"></a>
+## [2.87.7](https://github.com/NPellet/visualizer/compare/v2.87.6...v2.87.7) (2017-12-14)
+
+
+### Bug Fixes
+
+* disable ace worker ([1de625f](https://github.com/NPellet/visualizer/commit/1de625f))
+
+
+
 <a name="2.87.6"></a>
 ## [2.87.6](https://github.com/NPellet/visualizer/compare/v2.87.5...v2.87.6) (2017-12-14)
 

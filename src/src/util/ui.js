@@ -55,6 +55,7 @@ define([
             exports.dialog($(`<div style="width: 100%; height: 100%;" id="${id}"></div>`), opts);
             var editor = ace.edit(id);
             var mode = './mode/' + opts.mode;
+            editor.getSession().setOption('useWorker', false);
             editor.getSession().setMode(mode);
             editor.setValue(opts.content, -1);
         });
