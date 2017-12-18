@@ -1142,6 +1142,24 @@ define([
                 }
             },
 
+            toggleGrid(options) {
+                // currently we don't take into account options
+                var currentPreferences = this.module.definition.configuration;
+                var xAxis = currentPreferences.sections.axis[0].groups.xAxis[0].checkboxes;
+                var yAxis = currentPreferences.sections.axis[0].groups.yAxis[0].checkboxes;
+                let show = true;
+                if (xAxis[0].includes('main')) {
+                    show = false;
+                }
+                xAxis[0] = xAxis[0].filter((item) => (item != 'main' && item != 'sec'));
+                yAxis[0] = yAxis[0].filter((item) => (item != 'main' && item != 'sec'));
+                if (show) {
+                    xAxis[0].push('main', 'sec');
+                    yAxis[0].push('main', 'sec');
+                }
+                this.module.reload();
+            },
+
             fullOut(value) {
                 this.fullOut(fullOutMap[String(value)]);
             },

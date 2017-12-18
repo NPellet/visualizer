@@ -178,7 +178,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         selectSerie: 'Select a serie',
         unselectSerie: 'Unselect a serie',
         fullOut: 'Full zoom out (x, y or xy)',
-        exportSVG: 'Export current state as SVG'
+        exportSVG: 'Export current state as SVG',
+        toggleGrid: 'Toggle grid'
     };
 
     var axisFields = {

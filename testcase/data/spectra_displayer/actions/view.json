@@ -1,5 +1,5 @@
 {
-  "version": "2.82.4",
+  "version": "2.87.7-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -65,7 +65,7 @@
           "name": "Default layer"
         }
       },
-      "id": 2,
+      "id": 1,
       "vars_in": [
         {}
       ],
@@ -159,7 +159,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 2,
       "vars_in": [
         {}
       ],
@@ -251,7 +251,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
@@ -356,7 +356,7 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 4,
       "vars_in": [
         {}
       ],
@@ -482,7 +482,7 @@
           "name": "Default layer"
         }
       },
-      "id": 6,
+      "id": 5,
       "vars_in": [
         {
           "rel": "value",
@@ -713,7 +713,7 @@
           "name": "Default layer"
         }
       },
-      "id": 7,
+      "id": 6,
       "vars_in": [
         {
           "rel": "chart",
@@ -924,6 +924,23 @@
               }
             }
           ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "variables": [
             {
               "sections": {},
@@ -949,11 +966,23 @@
                       "markerSize": 2,
                       "normalize": "none",
                       "optimizeSlots": [],
-                      "degrade": 0,
-                      "monotoneous": [],
                       "tracking": []
                     }
                   ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
                 ]
               }
             }
@@ -985,7 +1014,7 @@
           "name": "Default layer"
         }
       },
-      "id": 8,
+      "id": 7,
       "vars_in": [
         {
           "rel": "chart",
@@ -1004,6 +1033,10 @@
         {
           "rel": "fromToY",
           "name": "zoomLevelY"
+        },
+        {
+          "rel": "toggleGrid",
+          "name": "toggleGrid"
         }
       ],
       "title": "A chart",
@@ -1051,9 +1084,9 @@
         "custom": [
           [
             {
-              "title": "",
-              "icon": "",
-              "action": "",
+              "title": "Toggle grid",
+              "icon": "fa-table",
+              "action": "toggleGrid",
               "position": "begin"
             }
           ]
