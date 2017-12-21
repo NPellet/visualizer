@@ -114,12 +114,10 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'sr
             this.createDataFromEvent('onStructureChange', 'molV3', molfileV3);
             this.createDataFromEvent('onStructureChange', 'smiles', smiles);
             this.createDataFromEvent('onStructureChange', 'actid', {
-                type: 'oclID',
                 value: split[0],
                 coordinates: split[1]
             });
             this.createDataFromEvent('onStructureChange', 'actidOrGroup', {
-                type: 'oclID',
                 value: idCodeOr,
                 coordinates: coordinates
             });
