@@ -1142,21 +1142,12 @@ define([
             },
 
             toggleGrid(options) {
-                // currently we don't take into account options
-                var currentPreferences = this.module.definition.configuration;
-                var xAxis = currentPreferences.sections.axis[0].groups.xAxis[0].checkboxes;
-                var yAxis = currentPreferences.sections.axis[0].groups.yAxis[0].checkboxes;
-                let show = true;
-                if (xAxis[0].includes('main')) {
-                    show = false;
-                }
-                xAxis[0] = xAxis[0].filter((item) => (item != 'main' && item != 'sec'));
-                yAxis[0] = yAxis[0].filter((item) => (item != 'main' && item != 'sec'));
-                if (show) {
-                    xAxis[0].push('main', 'sec');
-                    yAxis[0].push('main', 'sec');
-                }
-                this.module.reload();
+                let gridShow = !this.xAxis.options.primaryGrid;
+                this.xAxis.setPrimaryGrid(gridShow);
+                this.xAxis.setSecondaryGrid(gridShow);
+                this.yAxis.setPrimaryGrid(gridShow);
+                this.yAxis.setSecondaryGrid(gridShow);
+                this.graph.redraw();
             },
 
             fullOut(value) {
