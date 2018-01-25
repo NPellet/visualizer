@@ -188,6 +188,7 @@ define([
 
         if (ctx.module.getConfigurationCheckbox('copyPaste', 'active')) {
             ctx.grid.registerPlugin(new Slick.CellExternalCopyManager({
+                noAutoFocus: ctx.module.getConfigurationCheckbox('copyPasteOptions', 'noAutoFocus'),
                 readOnlyMode: ctx.module.getConfigurationCheckbox('copyPasteOptions', 'readOnly'),
                 newRowCreator: function (nb) {
                     if (!ctx.module.getConfigurationCheckbox('copyPasteOptions', 'newRows')) return;

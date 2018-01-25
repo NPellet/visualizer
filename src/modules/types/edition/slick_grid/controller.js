@@ -67,7 +67,8 @@ define(['modules/default/defaultcontroller', 'src/util/util', 'lodash', 'src/uti
                             title: 'Copy paste options',
                             options: {
                                 readOnly: 'Read only',
-                                newRows: 'Paste to new rows when overflowing'
+                                newRows: 'Paste to new rows when overflowing',
+                                noAutoFocus: 'Disable auto focus when row selection changes'
                             },
                             displayTarget: ['cp'],
                             default: ['newRows']
