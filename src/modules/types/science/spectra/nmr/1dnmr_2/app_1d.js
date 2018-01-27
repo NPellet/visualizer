@@ -1855,9 +1855,7 @@ var Shape = function (_EventEmitter) {
           self.handleMouseDown(e);
         });
 
-        this.group.addEventListener('click', function (e) {
-          self.handleClick(e);
-        });
+        this.group.addEventListener('click', this.handleClick.bind(this));
 
         this.group.addEventListener('dblclick', function (e) {
 
@@ -1913,7 +1911,7 @@ var Shape = function (_EventEmitter) {
     key: 'kill',
     value: function kill(keepDom) {
 
-      if (this._inDom) {
+      if (this._inDom && !keepDom) {
         this.graph.removeShapeFromDom(this);
       }
 
@@ -2277,6 +2275,7 @@ var Shape = function (_EventEmitter) {
 
       this.redrawImpl();
       if (!this.position) {
+        this.updateLabels();
         return this;
       }
 
@@ -3668,6 +3667,7 @@ var Shape = function (_EventEmitter) {
           if (!this.graph.prevent(false)) {
 
             this.moving = true;
+            this.moved = false;
           }
         }
       }
@@ -3726,6 +3726,7 @@ var Shape = function (_EventEmitter) {
         return false;
       }
 
+      this.moved = true;
       var coords = this.graph._getXY(e);
       var deltaX = this.getXAxis().getRelVal(coords.x - this._mouseCoords.x),
           deltaY = this.getYAxis().getRelVal(coords.y - this._mouseCoords.y);
@@ -3752,7 +3753,7 @@ var Shape = function (_EventEmitter) {
     key: 'handleMouseUp',
     value: function handleMouseUp(e) {
 
-      if (this.moving) {
+      if (this.moving && this.moved) {
 
         this.graph.emit('shapeMoved', this);
         this.emit('shapeMoved');
@@ -8707,7 +8708,7 @@ function refreshDrawingZone(graph) {
 function _handleKey(graph, event, type) {
 
   var self = graph;
-
+  console.log(event, type);
   if (graph.forcedPlugin) {
 
     graph.activePlugin = graph.forcedPlugin;
@@ -8763,7 +8764,8 @@ function checkKeyActions(graph, e, parameters, methodName) {
       e.stopPropagation();
 
       graph.selectedShapes.map(function (shape) {
-        shape.kill();
+
+        shape.kill(keyComb[i].keepInDom);
       });
     }
 
@@ -8975,18 +8977,17 @@ function _registerEvents(graph) {
     throw 'No wrapper exists. Cannot register the events.';
   }
 
-  graph.wrapper.addEventListener('keydown', function (e) {
+  graph.dom.setAttribute('tabindex', 0);
 
+  graph.dom.addEventListener('keydown', function (e) {
     _handleKey(graph, e, 'keydown');
   });
 
-  graph.wrapper.addEventListener('keypress', function (e) {
-
+  graph.dom.addEventListener('keypress', function (e) {
     _handleKey(graph, e, 'keypress');
   });
 
-  graph.wrapper.addEventListener('keyup', function (e) {
-
+  graph.dom.addEventListener('keyup', function (e) {
     _handleKey(graph, e, 'keyup');
   });
   // Not sure this has to be prevented
@@ -8996,7 +8997,6 @@ function _registerEvents(graph) {
   graph.dom.addEventListener('mousemove', function (e) {
     //e.preventDefault();
     var coords = graph._getXY(e);
-
     _handleMouseMove(graph, coords.x, coords.y, e);
   });
 
@@ -10911,6 +10911,9 @@ var Waveform = function () {
           }
       */
 
+      if (pxWidth > 2147483647) {
+        pxWidth = 2147483647;
+      }
       var level = pow2ceil(pxWidth);
 
       if (this._dataAggregated[level]) {
@@ -12795,7 +12798,6 @@ var SerieLine = function (_Serie) {
       }
 
       if (force || this.hasDataChanged()) {
-
         if (!this.drawInit(force)) {
           return;
         }
@@ -13515,7 +13517,9 @@ var SerieLine = function (_Serie) {
     value: function searchClosestValue(valX, valY) {
 
       if (this.waveform) {
+
         var indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+
         var returnObj = {};
 
         var direction = void 0;
@@ -31723,7 +31727,7 @@ class NMR1D extends _react2.default.Component {
 				}
 			}],
 
-			keyActions: [{ type: 'keydown', key: 'backspace', removeSelectedShape: true }]
+			keyActions: [{ type: 'keydown', key: 'backspace', removeSelectedShape: true, keepInDom: true }]
 
 		});
 
@@ -32166,14 +32170,18 @@ class NMR1D extends _react2.default.Component {
 		this.legend.setAutoPosition('bottom');
 	}
 
-	onIntegralLabelRatioChanged(seriename, integralId, newRatio) {
+	onIntegralLabelRatioChanged(seriename, rescaleBy) {
 
 		let update = false;
 		for (let serie of this.state.series) {
 
 			if (serie.name == seriename) {
 
-				serie.integralLabelRatio = newRatio;
+				for (let integral of serie.integrals) {
+
+					integral.integral *= rescaleBy;
+				}
+				//serie.integralLabelRatio = newRatio;
 				update = true;
 			}
 
@@ -32188,7 +32196,7 @@ class NMR1D extends _react2.default.Component {
 		}
 	}
 
-	onIntegralChanged(seriename, integralId, integralFrom, integralTo) {
+	onIntegralChanged(seriename, integralId, integralFrom, integralTo, newValue) {
 
 		let update = false;
 		for (let serie of this.state.series) {
@@ -32202,6 +32210,7 @@ class NMR1D extends _react2.default.Component {
 						integral.from = integralFrom;
 						integral.to = integralTo;
 						integral.id = this.getIntegralId(integralFrom, integralTo);
+						integral.integral = newValue;
 						update = true;
 
 						break;
@@ -32232,8 +32241,6 @@ class NMR1D extends _react2.default.Component {
 					if (integral.id == integralId) {
 						integral.signal = integral.signal || [];
 						integral.signal.push((0, _extend2.default)(true, {}, signalValue, { delta: signalDelta, id: undefined }));
-
-						console.log(integral.signal);
 					}
 				}
 
@@ -32337,7 +32344,7 @@ class NMR1D extends _react2.default.Component {
 
 		return _react2.default.createElement(
 			"table",
-			null,
+			{ ref: el => this.globalWraper = el },
 			_react2.default.createElement(
 				"tbody",
 				null,
@@ -32352,7 +32359,8 @@ class NMR1D extends _react2.default.Component {
 							{
 								id: this.unique,
 								ref: el => this.wrapper = el,
-								style: { position: 'relative' }
+								style: { position: 'relative' },
+								tabIndex: "0"
 							},
 							_react2.default.createElement("div", { style: { position: "absolute", userSelect: "none" }, ref: el => this.dom = el }),
 							_react2.default.createElement("div", {
@@ -32446,7 +32454,7 @@ class NMR1D extends _react2.default.Component {
 		);
 	}
 }
-
+//
 NMR1D.childContextTypes = {
 	assignment: _propTypes2.default.instanceOf(_assignment2.default),
 	graph: _propTypes2.default.instanceOf(_graph2.default),
@@ -42426,7 +42434,14 @@ var ShapeNMRIntegral = function (_Shape) {
     key: 'createDom',
     value: function createDom() {
       this._dom = document.createElementNS(this.graph.ns, 'path');
+      this._domShadow = document.createElementNS(this.graph.ns, 'path');
+      this._domShadow.jsGraphIsShape = this;
       this._dom.setAttribute('pointer-events', 'stroke');
+      this._domShadow.setAttribute('pointer-events', 'stroke');
+      this._domShadow.setAttribute('stroke-width', '12');
+      this._domShadow.setAttribute('fill', 'transparent');
+      this._domShadow.setAttribute('stroke', 'transparent');
+      this.group.appendChild(this._domShadow);
     }
   }, {
     key: 'initImpl',
@@ -42481,7 +42496,9 @@ var ShapeNMRIntegral = function (_Shape) {
 
       if (pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() || pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax()) {
         this.setDom('d', '');
-        this.emptyLabels();
+        this._domShadow.setAttribute('d', '');
+
+        this.hideLabel(0);
         return false;
       }
 
@@ -42654,6 +42671,7 @@ var ShapeNMRIntegral = function (_Shape) {
       this.firstPointY = baseLine;
 
       this.setDom('d', currentLine);
+      this._domShadow.setAttribute('d', currentLine);
 
       this.firstX = firstX;
       this.firstY = firstY;
@@ -42677,13 +42695,20 @@ var ShapeNMRIntegral = function (_Shape) {
     key: 'updateIntegralValue',
     value: function updateIntegralValue() {
       var ratioLabel = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.ratioLabel;
+      var forceValue = arguments[1];
 
 
       if (ratioLabel) {
         this.ratioLabel = ratioLabel;
       }
+
+      if (forceValue !== undefined) {
+        this.ratioLabel = forceValue / this.sumVal;
+      }
+
       this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : 'N/A', 0);
       this.updateLabels();
+      return this.ratioLabel;
     }
   }, {
     key: 'getAxis',
@@ -43839,12 +43864,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 class NMRRange extends _react2.default.Component {
 
-	constructor(props, context) {
+	constructor(props) {
 
 		super(props);
 
 		this.state = {};
-		this.annotation = context.graph.newShape("nmrintegral", {
+
+		this.onSignalChanged = this.onSignalChanged.bind(this);
+		this.onSignalCreated = this.onSignalCreated.bind(this);
+		// Determine the shift
+	}
+
+	componentDidMount() {
+
+		this.annotation = this.context.graph.newShape("nmrintegral", {
 			editable: true,
 			selectable: true,
 			selectOnClick: true,
@@ -43856,14 +43889,13 @@ class NMRRange extends _react2.default.Component {
 		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });
 
 		this.annotation.addClass('integral');
-		this.annotation.setProp('baseLine', context.integralBaseline);
+		this.annotation.setProp('baseLine', this.context.integralBaseline);
 
 		this.ratio = undefined;
 		this.annotation.draw(false, true);
 		this.annotation.on("changed", () => {
 
 			if (this.annotation.sumVal !== this.sum) {
-
 				this.sum = this.annotation.sumVal;
 				this.props.onSumChanged && this.props.onSumChanged(this.sum, this.props.id);
 			}
@@ -43871,32 +43903,27 @@ class NMRRange extends _react2.default.Component {
 
 		this.annotation.on("shapeResized", () => {
 
-			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x);
+			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x, parseFloat(this.annotation.getLabelText()));
 		});
 
 		this.annotation.on("shapeMoved", () => {
 
-			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x);
+			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x, parseFloat(this.annotation.getLabelText()));
 		});
 
 		this.annotation.on("shapeLabelChanged", (shape, parameters) => {
-
-			//const rescale = parseFloat( parameters.nextValue ) / parameters.previousValue;
-			this.props.onValueChanged(parseFloat(parameters.nextValue));
+			this.props.onValueChanged(parseFloat(parameters.nextValue) / parseFloat(parameters.previousValue));
 		});
 
 		this.annotation.on("removed", () => {
 			this.props.onRemoved(this.props.id);
 		});
 
-		this.onSignalChanged = this.onSignalChanged.bind(this);
-		this.onSignalCreated = this.onSignalCreated.bind(this);
-		// Determine the shift
+		this.updateAnnotation();
 	}
 
-	componentDidMount() {
-
-		this.updateAnnotation();
+	componentWillUnmount() {
+		this.annotation.kill();
 	}
 
 	updateAnnotation(props = this.props) {
@@ -43908,8 +43935,19 @@ class NMRRange extends _react2.default.Component {
 		this.annotation.setSerie(this.context.serie);
 		this.annotation.setDom('data-integral-id', props.id);
 		this.annotation.setProp('labelHTMLData', { 'data-integral-id': props.id });
-		this.annotation.updateIntegralValue(props.labelRatio);
+
 		this.annotation.redraw();
+
+		//if( props.integralValue !== undefined ) {
+		let ratio = this.annotation.updateIntegralValue(undefined, props.integralValue);
+
+		//if( ! isNaN( ratio ) ) {
+		//this.props.onValueChanged( ratio );
+		//}
+		//	} else {
+		//this.annotation.updateIntegralValue( props.labelRatio );
+		//	}
+
 	}
 
 	componentWillUpdate(nextProps) {
@@ -43926,8 +43964,6 @@ class NMRRange extends _react2.default.Component {
 	}
 
 	render() {
-
-		this.updateAnnotation();
 
 		return _react2.default.createElement(
 			"span",
@@ -44031,14 +44067,13 @@ class NMRSerie extends _react2.default.Component {
 		this.integralRemoved = this.integralRemoved.bind(this);
 		this.onSignalChanged = this.onSignalChanged.bind(this);
 		this.onSignalCreated = this.onSignalCreated.bind(this);
+		this.scaleIntegralText = this.scaleIntegralText.bind(this);
 	}
 
 	sumChanged(newSum, identifier) {
 
-		if (Object.keys(this.sums).length == 0) {
-			// None for now
-
-			this.setState({ labelRatio: 1 / Object.values(this.sums)[0] });
+		if (Object.keys(this.sums).length == 0) {// None for now
+			//		this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
 		}
 
 		this.sums[identifier] = newSum;
@@ -44164,8 +44199,8 @@ class NMRSerie extends _react2.default.Component {
 		this.setShift(this.props.shift);
 	}
 
-	integralChanged(integralId, from, to) {
-		this.props.onIntegralChanged(this.props.name, integralId, from, to);
+	integralChanged(integralId, from, to, newValue) {
+		this.props.onIntegralChanged(this.props.name, integralId, from, to, newValue);
 	}
 
 	integralRemoved(integralId) {
@@ -44173,14 +44208,8 @@ class NMRSerie extends _react2.default.Component {
 	}
 
 	// Occurs after the rescaling of the integral
-	scaleIntegralText(whichIntegral, whichValue) {
-
-		const sum = this.sums[whichIntegral];
-		if (!sum) {
-			return;
-		}
-
-		this.props.onIntegralLabelRatioChanged(this.props.name, whichIntegral, whichValue / sum);
+	scaleIntegralText(newRatio) {
+		this.props.onIntegralLabelRatioChanged(this.props.name, newRatio);
 	}
 
 	onSignalChanged(integralId, signalId, signalValue) {
@@ -44196,31 +44225,37 @@ class NMRSerie extends _react2.default.Component {
 		//this._jsGraphGraph.redraw();
 
 		this.loadedState = false;
-
 		this._jsGraphSerie.setLineColor(this.props.color, "unselected", true);
+		let integralValue;
 
 		return _react2.default.createElement(
 			"span",
 			null,
-			(this.props.integrals || []).map(el => {
+			(this.props.integrals || []).map((el, index) => {
 
 				if (!el.key) {
 					el.key = Math.random();
 				}
 
+				//							if( index == 0 && this.state.labelRatio == undefined ) { // First value is dictating the ratios. Do NOT pass that value to the indices > 0
+				integralValue = parseFloat(el.integral);
+				//							} else {
+				//								integralValue = undefined;
+				//							}
+
+
 				return _react2.default.createElement(_nmrrange2.default, {
 					id: el.id,
 					key: el.key,
-					labelRatio: this.state.labelRatio,
 					ratio: this.state.ratio,
 					from: el.from,
 					signal: el.signal,
 					to: el.to,
+					integralValue: integralValue,
+					labelRatio: this.state.labelRatio,
 					onSumChanged: this.sumChanged,
 					onChanged: this.integralChanged,
-					onValueChanged: value => {
-						this.scaleIntegralText(el.id, value);
-					},
+					onValueChanged: this.scaleIntegralText,
 					onRemoved: this.integralRemoved,
 					onSignalChanged: this.onSignalChanged,
 					onSignalCreated: this.onSignalCreated
@@ -44503,8 +44538,6 @@ class NMRSignal extends _react2.default.Component {
 		if (!Array.isArray(this.props.j)) {
 			return;
 		}
-
-		console.log(this.props.j);
 
 		for (var i = 0; i < this.props.j.length; i++) {
 			var multiplicity = this.props.j[i].multiplicity;

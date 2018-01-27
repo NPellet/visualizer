@@ -184,7 +184,7 @@ define([
 
         bindToolbar() {
             var that = this;
-            this.dom.find('.ci-module-header-toolbar ul').on('click', 'li', function (event) {
+            this.dom.find('.ci-module-header-toolbar ul').on('click', 'li', (event) => {
                 var toolbar = that.controller.getToolbar();
                 var title = $(event.target).parent('li').attr('title');
                 var t = _.find(toolbar, val => val.title === title);
