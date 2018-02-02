@@ -6298,12 +6298,11 @@ var Graph = function (_EventEmitter) {
           var min = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues);
           var max = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues);
 
-          if (isFinite(min)) {
-            axis.setMinValueData(min);
-          }
-
           if (isFinite(max)) {
             axis.setMaxValueData(max);
+          }
+          if (isFinite(min)) {
+            axis.setMinValueData(min);
           }
         }
       }
@@ -17707,8 +17706,9 @@ var Axis = function (_EventEmitter) {
 
       // 25.10.2017. This is to help in the case there's no autoscaling
       if (isNaN(this.getCurrentMin())) {
-        this.setCurrentMin(this.getMinValue());
-        this.cache();
+        //this.setCurrentMin( this.getMinValue() );
+        //this.cache();
+
       }
     }
   }, {
@@ -17717,9 +17717,11 @@ var Axis = function (_EventEmitter) {
       this.dataMax = max;
 
       // 25.10.2017. This is to help in the case there's no autoscaling
+      // 02.02.2018. Don't agree with this. Next time, put a link to show the use of this piece of code
       if (isNaN(this.getCurrentMax())) {
-        this.setCurrentMax(this.getMaxValue());
-        this.cache();
+        //     this.setCurrentMax( this.getMaxValue() );
+        //this.cache();
+
       }
     }
 
@@ -18203,7 +18205,8 @@ var Axis = function (_EventEmitter) {
       if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val === undefined)) {
         val = this.getMinValue();
       }
-
+      console.trace();
+      console.error("HERE");
       this.currentAxisMin = val;
       if (this.options.logScale) {
         this.currentAxisMin = Math.max(1e-50, val);
@@ -18942,6 +18945,8 @@ var Axis = function (_EventEmitter) {
       // Ex 50 / (100) * (1000 - 700) + 700
 
       //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
+
+
       if (!this.options.logScale) {
 
         return (value - this.getCurrentMin()) / this.getCurrentInterval() * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
@@ -31658,6 +31663,7 @@ class NMR1D extends _react2.default.Component {
 		this.reactFormArea = new _formarea2.default();
 
 		this.graph = new _graph2.default({
+
 			close: false,
 			plugins: {
 				'zoom': { zoomMode: 'x', transition: false },
@@ -31764,10 +31770,9 @@ class NMR1D extends _react2.default.Component {
 
 		if (!this.props.options.slave) {
 
-			this.graph.getLeftAxis().hide();
-			this.graph.getBottomAxis().gridsOff();
+			this.graph.getLeftAxis().hide().setAxisDataSpacing(0.1, 0.1);
 
-			this.graph.getBottomAxis().flip(true).setLabel('\u03B4').setUnit('ppm');
+			this.graph.getBottomAxis().gridsOff().flip(true).setLabel('\u03B4').setUnit('ppm');
 		} else {
 
 			this.graph.getBottomAxis().hide();
