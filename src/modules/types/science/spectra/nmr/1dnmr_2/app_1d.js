@@ -18205,8 +18205,6 @@ var Axis = function (_EventEmitter) {
       if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val === undefined)) {
         val = this.getMinValue();
       }
-      console.trace();
-      console.error("HERE");
       this.currentAxisMin = val;
       if (this.options.logScale) {
         this.currentAxisMin = Math.max(1e-50, val);
@@ -32156,7 +32154,7 @@ class NMR1D extends _react2.default.Component {
 		this.updateMainData();
 
 		if (nextProps.options.legend && !this.legend) {
-			this.makeLegend({ frame: "transparent" });
+			this.makeLegend({ frame: false });
 		}
 
 		return;
@@ -44488,9 +44486,9 @@ class NMRSignal extends _react2.default.Component {
 
 		if (horizontal) {
 			let peak = currentPeaks[0];
+			this.annotations.push(makeDiagonalLine(horizontal[1], peak.y + levelHeight / 2, horizontal[0], peak.y + levelHeight / 2, color));
 			this.annotations.push(makePeakLine(horizontal[0], peak.y, null, color));
 			this.annotations.push(makePeakLine(horizontal[1], peak.y, null, color));
-			this.annotations.push(makeDiagonalLine(horizontal[1], peak.y + levelHeight / 2, horizontal[0], peak.y + levelHeight / 2, color));
 		} else {
 			// we paint vertical of current level
 			for (var i = 0; i < currentPeaks.length; i++) {

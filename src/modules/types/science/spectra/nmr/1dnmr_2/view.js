@@ -9,6 +9,7 @@ define([
     './app_1d',
     'jcampconverter',
     'src/util/api'
+
 ], function ($, ReactDOM, React, Default, NMR1DModule, JcampConverter, API ) {
 
     class DefaultClass {};
@@ -80,7 +81,7 @@ define([
             } );
 
             ReactDOM.render(
-              React.createElement(NMR1D, {width:  this.width, height:  this.height, options:  options, molecule:  this.moleculeSVG,  series:  this.series, onChanged:  this.changed}),
+              React.createElement("div", {className: "jsNMR"}, React.createElement(NMR1D, {width:  this.width, height:  this.height, options:  options, molecule:  this.moleculeSVG,  series:  this.series, onChanged:  this.changed})),
               this.dom
             );
         }
