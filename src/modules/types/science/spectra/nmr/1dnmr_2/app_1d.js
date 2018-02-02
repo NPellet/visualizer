@@ -23244,20 +23244,20 @@ var ShapeLine = function (_GraphShape) {
       }
 
       if (this.moving) {
-
+        console.log(this._data);
         // If the pos2 is defined by a delta, no need to move them
-        if (pos.x) {
+        if (pos.x && !this._data.noX) {
           pos.deltaPosition('x', deltaX, this.getXAxis());
         }
-        if (pos.y) {
+        if (pos.y && !this._data.noY) {
           pos.deltaPosition('y', deltaY, this.getYAxis());
         }
 
         // If the pos2 is defined by a delta, no need to move them
-        if (pos2.x) {
+        if (pos2.x && !this._data.noX) {
           pos2.deltaPosition('x', deltaX, this.getXAxis());
         }
-        if (pos2.y) {
+        if (pos2.y && !this._data.noY) {
           pos2.deltaPosition('y', deltaY, this.getYAxis());
         }
       }
@@ -32151,7 +32151,7 @@ class NMR1D extends _react2.default.Component {
 		this.updateMainData();
 
 		if (nextProps.options.legend && !this.legend) {
-			this.makeLegend();
+			this.makeLegend({ frame: "transparent" });
 		}
 
 		return;
@@ -42681,7 +42681,7 @@ var ShapeNMRIntegral = function (_Shape) {
             }
              this.setHandles();*/
 
-      this.ratioLabel && this.updateIntegralValue(this.ratioLabel) || this.updateLabels();
+      this.serie.ratioLabel && this.updateIntegralValue(this.serie.ratioLabel) || this.updateLabels();
 
       this.changed();
       this.handleCondition = !this.xor(incrementation == -1, flipped);
@@ -42694,21 +42694,21 @@ var ShapeNMRIntegral = function (_Shape) {
   }, {
     key: 'updateIntegralValue',
     value: function updateIntegralValue() {
-      var ratioLabel = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.ratioLabel;
+      var ratioLabel = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serie.ratioLabel;
       var forceValue = arguments[1];
 
-
+      console.log(ratioLabel);
       if (ratioLabel) {
-        this.ratioLabel = ratioLabel;
+        this.serie.ratioLabel = ratioLabel;
       }
 
-      if (forceValue !== undefined) {
-        this.ratioLabel = forceValue / this.sumVal;
+      if (!isNaN(forceValue) && !isNaN(this.sumVal) && this.sumVal) {
+        this.serie.ratioLabel = forceValue / this.sumVal;
       }
 
       this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : 'N/A', 0);
       this.updateLabels();
-      return this.ratioLabel;
+      return this.serie.ratioLabel;
     }
   }, {
     key: 'getAxis',
@@ -43884,9 +43884,18 @@ class NMRRange extends _react2.default.Component {
 			resizable: true,
 			movable: true,
 			handles: true,
-			labels: [{ text: "", anchor: "middle", backgroundColor: 'white', backgroundOpacity: 0.8, baseline: 'middle' }]
-
-		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });
+			labels: [{
+				text: "",
+				anchor: "middle",
+				backgroundColor: 'white',
+				backgroundOpacity: 0.8,
+				baseline: 'middle'
+			}]
+		}, false, {
+			labelEditable: [true],
+			layer: [3],
+			strokeWidth: [2]
+		});
 
 		this.annotation.addClass('integral');
 		this.annotation.setProp('baseLine', this.context.integralBaseline);
@@ -43902,12 +43911,10 @@ class NMRRange extends _react2.default.Component {
 		});
 
 		this.annotation.on("shapeResized", () => {
-
 			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x, parseFloat(this.annotation.getLabelText()));
 		});
 
 		this.annotation.on("shapeMoved", () => {
-
 			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x, parseFloat(this.annotation.getLabelText()));
 		});
 
@@ -43938,16 +43945,11 @@ class NMRRange extends _react2.default.Component {
 
 		this.annotation.redraw();
 
-		//if( props.integralValue !== undefined ) {
-		let ratio = this.annotation.updateIntegralValue(undefined, props.integralValue);
-
-		//if( ! isNaN( ratio ) ) {
-		//this.props.onValueChanged( ratio );
-		//}
-		//	} else {
-		//this.annotation.updateIntegralValue( props.labelRatio );
-		//	}
-
+		if (props.integralValue !== undefined) {
+			let ratio = this.annotation.updateIntegralValue(undefined, props.integralValue);
+		} else {
+			let ratio = this.annotation.updateIntegralValue(props.labelRatio);
+		}
 	}
 
 	componentWillUpdate(nextProps) {
@@ -43980,7 +43982,9 @@ class NMRRange extends _react2.default.Component {
 					id: el.delta,
 					delta: el.delta,
 					onSignalChanged: this.onSignalChanged,
-					onSignalCreated: this.onSignalCreated
+					onSignalCreated: this.onSignalCreated,
+					from: this.props.from,
+					to: this.props.to
 				});
 			})
 		);
@@ -44073,8 +44077,10 @@ class NMRSerie extends _react2.default.Component {
 	sumChanged(newSum, identifier) {
 
 		if (Object.keys(this.sums).length == 0) {// None for now
-			//		this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
-		}
+			//this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
+		} else {
+				//this.setState( { labelRatio: labelValue / newSum } );
+			}
 
 		this.sums[identifier] = newSum;
 		this.rescaleIntegrals();
@@ -44461,7 +44467,7 @@ class NMRSignal extends _react2.default.Component {
 		this.previousLevel = this.currentLevel;
 	}
 
-	paintTree(parentPeak, currentPeaks, color) {
+	paintTree(parentPeak, currentPeaks, color, horizontal) {
 		// we paint diagonals to parent
 
 		this._jsGraphShapes.map(shape => shape.kill());
@@ -44475,16 +44481,23 @@ class NMRSignal extends _react2.default.Component {
 			}
 		};
 
-		// we paint vertical of current level
-		for (var i = 0; i < currentPeaks.length; i++) {
-			var peak = currentPeaks[i];
-			this.annotations.push(makePeakLine(peak.x, peak.y, null, color));
+		if (horizontal) {
+			let peak = currentPeaks[0];
+			this.annotations.push(makePeakLine(horizontal[0], peak.y, null, color));
+			this.annotations.push(makePeakLine(horizontal[1], peak.y, null, color));
+			this.annotations.push(makeDiagonalLine(horizontal[1], peak.y + levelHeight / 2, horizontal[0], peak.y + levelHeight / 2, color));
+		} else {
+			// we paint vertical of current level
+			for (var i = 0; i < currentPeaks.length; i++) {
+				let peak = currentPeaks[i];
+				this.annotations.push(makePeakLine(peak.x, peak.y, null, color));
+			}
 		}
 
 		let refShape;
 		this._jsGraphShapes = this.annotations.map((annotation, index) => {
 
-			let annotation_jsGraph = this.graph.newShape(annotation.type, undefined, false, annotation.properties);
+			let annotation_jsGraph = this.graph.newShape(annotation.type, { noY: true }, false, annotation.properties);
 			annotation_jsGraph.setDom('data-signal-id', this.props.id);
 			annotation_jsGraph.draw().redraw();
 
@@ -44534,7 +44547,13 @@ class NMRSignal extends _react2.default.Component {
 		};
 
 		this.allLevels = [this.previousLevel];
-		this.paintTree(null, this.previousLevel.peaks, this.currentColor);
+		this.paintTree(null, this.previousLevel.peaks, this.currentColor, !this.props.j || this.props.j.length == 0 ? [this.props.from, this.props.to] : undefined);
+
+		this._jsGraphShapes[0].selectable(true);
+		this._jsGraphShapes[0].movable(true);
+		this._jsGraphShapes[0].setProp('selectOnMouseDown', true);
+		//this._jsGraphShapes[ 0 ]._data = { noY: true };
+
 		if (!Array.isArray(this.props.j)) {
 			return;
 		}
