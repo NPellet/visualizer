@@ -315,6 +315,8 @@ define([
     functions.mol2d.toscreen = async function ($element, molfile, molfileRoot, options) {
         const OCL = await asyncRequire(oclUrl);
         const mol = OCL.Molecule.fromMolfile(String(molfile));
+        // we will not make rendering of an empty molecule
+        if (mol.getAllAtoms() === 0) return '';
         if (mol.getIDCoordinates() === '') {
             mol.inventCoordinates();
         }
