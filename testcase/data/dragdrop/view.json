@@ -1,269 +1,407 @@
 {
-	"version": "2.82.1-0",
+	"version": "2.87.8-0",
 	"grid": {
-		"layers": {
-			"Default layer": {
-				"name": "Default layer"
-			}
-		},
-		"xWidth": 10,
-		"yHeight": 10
+	  "layers": {
+		"Default layer": {
+		  "name": "Default layer"
+		}
+	  },
+	  "xWidth": 10,
+	  "yHeight": 10
 	},
 	"modules": [
-		{
-			"url": "modules/types/client_interaction/dragdrop/",
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"label": [
-								"Drop your file here"
-							],
-							"dragoverlabel": [
-								null
-							],
-							"hoverlabel": [
-								null
-							],
-							"getusermedia": [
-								[]
-							],
-							"capture": [
-								"none"
-							]
-						}
-					],
-					"vars": [
-						[
-							{
-								"filter": "ext",
-								"extension": "*",
-								"filetype": "base64",
-								"type": "",
-								"variable": "file"
-							}
-						]
-					],
-					"string_general": [
-						{
-							"askFilename": [
-								[]
-							]
-						}
-					],
-					"string": [
-						[
-							{
-								"filter": "ext",
-								"extension": "*",
-								"type": "",
-								"variable": "str"
-							}
-						]
-					],
-					"photo": [
-						[
-							{
-								"variable": "photo"
-							}
-						]
-					]
-				}
-			},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 0,
-						"top": 0
-					},
-					"size": {
-						"width": 39,
-						"height": 18
-					},
-					"zIndex": 0,
-					"display": true,
-					"title": "",
-					"bgColor": [
-						255,
-						255,
-						255,
-						0
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
-			},
-			"id": 3,
-			"vars_out": [
-				{
-					"event": "onRead",
-					"rel": "data",
-					"jpath": [],
-					"name": "data"
-				}
-			],
-			"vars_in": [],
-			"actions_in": [
-				{}
-			],
-			"actions_out": [
-				{
-					"jpath": []
-				}
-			],
-			"toolbar": {
-				"custom": [
-					[
-						{
-							"title": "",
-							"icon": "",
-							"action": "",
-							"position": "begin"
-						}
-					]
+	  {
+		"url": "modules/types/client_interaction/dragdrop/",
+		"configuration": {
+		  "sections": {},
+		  "groups": {
+			"group": [
+			  {
+				"label": [
+				  "Drop your file here"
 				],
-				"common": [
-					{
-						"toolbar": [
-							[
-								"Open Preferences"
-							]
-						]
-					}
+				"dragoverlabel": [
+				  null
+				],
+				"hoverlabel": [
+				  null
+				],
+				"getusermedia": [
+				  []
+				],
+				"capture": [
+				  "none"
 				]
-			},
-			"css": [
-				{
-					"fontSize": [
-						""
-					],
-					"fontFamily": [
-						""
-					]
-				}
+			  }
 			],
-			"title": ""
+			"vars": [
+			  [
+				{
+				  "filter": "ext",
+				  "extension": "*",
+				  "filetype": "base64",
+				  "type": "",
+				  "variable": "file"
+				}
+			  ]
+			],
+			"string_general": [
+			  {
+				"askFilename": [
+				  []
+				]
+			  }
+			],
+			"string": [
+			  [
+				{
+				  "filter": "ext",
+				  "extension": "*",
+				  "type": "",
+				  "variable": "str"
+				}
+			  ]
+			],
+			"photo": [
+			  [
+				{
+				  "variable": "photo"
+				}
+			  ]
+			]
+		  }
 		},
-		{
-			"url": "modules/types/edition/object_editor/",
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"editable": [
-								"view"
-							],
-							"expanded": [
-								[]
-							],
-							"storeObject": [
-								[]
-							],
-							"displayValue": [
-								[]
-							],
-							"searchBox": [
-								[
-									"search"
-								]
-							],
-							"sendButton": [
-								[]
-							],
-							"output": [
-								"new"
-							],
-							"storedObject": [
-								"{}"
-							]
-						}
-					]
-				}
+		"layers": {
+		  "Default layer": {
+			"position": {
+			  "left": 0,
+			  "top": 0
 			},
-			"layers": {
-				"Default layer": {
-					"position": {
-						"left": 59,
-						"top": 0
-					},
-					"size": {
-						"width": 48,
-						"height": 43
-					},
-					"zIndex": 0,
-					"display": true,
-					"title": "",
-					"bgColor": [
-						255,
-						255,
-						255,
-						0
-					],
-					"wrapper": true,
-					"created": true,
-					"name": "Default layer"
-				}
+			"size": {
+			  "width": 39,
+			  "height": 18
 			},
-			"id": 4,
-			"vars_in": [
-				{
-					"rel": "value",
-					"name": "data"
-				}
+			"zIndex": 0,
+			"display": true,
+			"title": "",
+			"bgColor": [
+			  255,
+			  255,
+			  255,
+			  0
 			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"jpath": []
-				}
-			],
-			"actions_out": [
-				{
-					"jpath": []
-				}
-			],
-			"toolbar": {
-				"custom": [
-					[
-						{
-							"title": "",
-							"icon": "",
-							"action": "",
-							"position": "begin"
-						}
-					]
-				],
-				"common": [
-					{
-						"toolbar": [
-							[
-								"Open Preferences"
-							]
-						]
-					}
+			"wrapper": true,
+			"created": true,
+			"name": "Default layer"
+		  }
+		},
+		"id": 1,
+		"vars_out": [
+		  {
+			"event": "onRead",
+			"rel": "data",
+			"jpath": [],
+			"name": "data"
+		  }
+		],
+		"vars_in": [],
+		"actions_in": [
+		  {}
+		],
+		"actions_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"toolbar": {
+		  "custom": [
+			[
+			  {
+				"title": "",
+				"icon": "",
+				"action": "",
+				"position": "begin"
+			  }
+			]
+		  ],
+		  "common": [
+			{
+			  "toolbar": [
+				[
+				  "Open Preferences"
 				]
-			},
-			"css": [
-				{
-					"fontSize": [
-						""
-					],
-					"fontFamily": [
-						""
-					]
-				}
+			  ]
+			}
+		  ]
+		},
+		"css": [
+		  {
+			"fontSize": [
+			  ""
 			],
-			"title": ""
-		}
+			"fontFamily": [
+			  ""
+			]
+		  }
+		],
+		"title": ""
+	  },
+	  {
+		"url": "modules/types/edition/object_editor/",
+		"configuration": {
+		  "sections": {},
+		  "groups": {
+			"group": [
+			  {
+				"editable": [
+				  "text"
+				],
+				"expanded": [
+				  []
+				],
+				"storeObject": [
+				  []
+				],
+				"displayValue": [
+				  []
+				],
+				"searchBox": [
+				  [
+					"search"
+				  ]
+				],
+				"sendButton": [
+				  []
+				],
+				"output": [
+				  "new"
+				],
+				"storedObject": [
+				  "{}"
+				]
+			  }
+			]
+		  }
+		},
+		"layers": {
+		  "Default layer": {
+			"position": {
+			  "left": 59,
+			  "top": 0
+			},
+			"size": {
+			  "width": 48,
+			  "height": 43
+			},
+			"zIndex": 0,
+			"display": true,
+			"title": "",
+			"bgColor": [
+			  255,
+			  255,
+			  255,
+			  0
+			],
+			"wrapper": true,
+			"created": true,
+			"name": "Default layer"
+		  }
+		},
+		"id": 2,
+		"vars_in": [
+		  {
+			"rel": "value",
+			"name": "data"
+		  }
+		],
+		"actions_in": [
+		  {}
+		],
+		"vars_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"actions_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"toolbar": {
+		  "custom": [
+			[
+			  {
+				"title": "",
+				"icon": "",
+				"action": "",
+				"position": "begin"
+			  }
+			]
+		  ],
+		  "common": [
+			{
+			  "toolbar": [
+				[
+				  "Open Preferences"
+				]
+			  ]
+			}
+		  ]
+		},
+		"css": [
+		  {
+			"fontSize": [
+			  ""
+			],
+			"fontFamily": [
+			  ""
+			]
+		  }
+		],
+		"title": ""
+	  },
+	  {
+		"url": "modules/types/client_interaction/dragdrop/",
+		"configuration": {
+		  "sections": {},
+		  "groups": {
+			"group": [
+			  {
+				"label": [
+				  "Drop your file here"
+				],
+				"dragoverlabel": [
+				  null
+				],
+				"hoverlabel": [
+				  null
+				],
+				"getusermedia": [
+				  []
+				],
+				"capture": [
+				  "none"
+				]
+			  }
+			],
+			"vars": [
+			  [
+				{
+				  "filter": "ext",
+				  "extension": "*",
+				  "filetype": "base64",
+				  "type": "",
+				  "variable": "file"
+				}
+			  ]
+			],
+			"string_general": [
+			  {
+				"askFilename": [
+				  [
+					"yes"
+				  ]
+				]
+			  }
+			],
+			"string": [
+			  [
+				{
+				  "filter": "ext",
+				  "extension": "*",
+				  "type": "",
+				  "variable": "str"
+				}
+			  ]
+			],
+			"photo": [
+			  [
+				{
+				  "variable": "photo"
+				}
+			  ]
+			]
+		  }
+		},
+		"layers": {
+		  "Default layer": {
+			"position": {
+			  "left": 0,
+			  "top": 29
+			},
+			"size": {
+			  "width": 39,
+			  "height": 18
+			},
+			"zIndex": 0,
+			"display": true,
+			"title": "Ask for name when pasting data",
+			"bgColor": [
+			  255,
+			  255,
+			  255,
+			  0
+			],
+			"wrapper": true,
+			"created": true,
+			"name": "Default layer"
+		  }
+		},
+		"id": 3,
+		"vars_out": [
+		  {
+			"event": "onRead",
+			"rel": "data",
+			"jpath": [],
+			"name": "data"
+		  }
+		],
+		"vars_in": [],
+		"actions_in": [
+		  {}
+		],
+		"actions_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"toolbar": {
+		  "custom": [
+			[
+			  {
+				"title": "",
+				"icon": "",
+				"action": "",
+				"position": "begin"
+			  }
+			]
+		  ],
+		  "common": [
+			{
+			  "toolbar": [
+				[
+				  "Open Preferences"
+				]
+			  ]
+			}
+		  ]
+		},
+		"css": [
+		  {
+			"fontSize": [
+			  ""
+			],
+			"fontFamily": [
+			  ""
+			]
+		  }
+		],
+		"title": "Ask for name when pasting data"
+	  }
 	],
 	"variables": [],
 	"aliases": [],
 	"configuration": {
-		"title": "No title"
+	  "title": "No title"
 	}
-}
+  }
