@@ -454,7 +454,7 @@ define(
                 })
                 .then(row => {
                     if (row.type === 'auto') row.type = '';
-                    if (row === undefined) {
+                    if (row == undefined) {
                         meta.def.resolve();
                         return;
                     }
@@ -466,6 +466,7 @@ define(
         };
 
         Controller.prototype.treatString = function (item, meta) {
+            debugger; // eslint-disable-line
             var description = getDescription(meta.cfg);
             item.getAsString(str => {
                 if (
@@ -486,8 +487,7 @@ define(
                             }
                         })
                         .then(val => {
-                            console.log(val);
-                            if (val === undefined) return;
+                            if (val == undefined) return;
                             var m = this.checkMetadata(
                                 item,
                                 meta.cfg,
@@ -599,7 +599,26 @@ define(
             }
         };
 
-        Controller.prototype.read = function (file, meta) {
+        Controller.prototype.read = async function (item, meta) {
+            if (meta.filename === 'image.png') {
+                const value = await ui.enterValue({
+                    label: 'Enter image name',
+                    validationMessage: 'Incorrect file extension',
+                    validation: val => {
+                        return this.checkMetadata(
+                            item,
+                            this.fileCfg,
+                            'image/png',
+                            `${val}.png`
+                        );
+                    }
+                });
+                if (value == null) {
+                    meta.def.resolve();
+                    return;
+                }
+                meta.filename = `${value}.png`;
+            }
             var reader = new FileReader();
             reader.onload = e => {
                 this.fileRead(e.target.result, meta);
@@ -609,16 +628,16 @@ define(
             };
             switch (meta.cfg.filetype) {
                 case 'text': {
-                    reader.readAsText(file);
+                    reader.readAsText(item);
                     break;
                 }
                 case 'base64':
                 case 'url': {
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(item);
                     break;
                 }
                 case 'buffer': {
-                    reader.readAsArrayBuffer(file);
+                    reader.readAsArrayBuffer(item);
                     break;
                 }
             }
