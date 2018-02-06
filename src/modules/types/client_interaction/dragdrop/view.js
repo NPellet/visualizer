@@ -1,22 +1,36 @@
 'use strict';
 
-define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (Default, bowser, Debug) {
-    bowser.mobileos = bowser.ios || bowser.android || bowser.blackberry || bowser.firefoxos || bowser.webos || false;
-    var hasGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
+    Default,
+    bowser,
+    Debug
+) {
+    bowser.mobileos =
+        bowser.ios ||
+        bowser.android ||
+        bowser.blackberry ||
+        bowser.firefoxos ||
+        bowser.webos ||
+        false;
+    var hasGetUserMedia = !!(
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia
+    );
     var useGetUserMedia = !bowser.mobileos && hasGetUserMedia;
 
-    function View() {
-    }
+    function View() {}
 
     $.extend(true, View.prototype, Default, {
-
         init: function () {
-
             var that = this;
-            var $fileInput = $('<input/>').css('display', 'none').attr({
-                type: 'file',
-                multiple: true
-            });
+            var $fileInput = $('<input/>')
+                .css('display', 'none')
+                .attr({
+                    type: 'file',
+                    multiple: true
+                });
             var capture = this.module.getConfiguration('capture');
             if (capture && capture !== 'none') {
                 $fileInput.attr('capture', capture);
@@ -33,37 +47,55 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
                 }
             }
 
-            var textarea = $('<textarea>').css({
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: 0,
-                width: 0,
-                opacity: 0
-            }).on('paste', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                that.module.controller.open(e.originalEvent.clipboardData);
-            });
+            var textarea = $('<textarea>')
+                .css({
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    height: 0,
+                    width: 0,
+                    opacity: 0
+                })
+                .on('paste', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    that.module.controller.open(e.originalEvent.clipboardData);
+                });
             var defaultMessage = this.module.getConfiguration('label');
             this.messages = {
                 default: defaultMessage,
-                drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
-                hover: this.module.getConfiguration('hoverlabel') || defaultMessage
+                drag:
+                    this.module.getConfiguration('dragoverlabel') ||
+                    defaultMessage,
+                hover:
+                    this.module.getConfiguration('hoverlabel') || defaultMessage
             };
-            this.messageP = $('<div>').css('display', 'inline-block').html(this.messages.default);
-            this.dom = $('<div />', {class: 'dragdropzone'}).html(this.messageP).on('click mousemove', function () {
-                textarea.focus();
-            }).mouseout(function () {
-                textarea.blur();
-            }).append(textarea);
-
+            this.messageP = $('<div>')
+                .css('display', 'inline-block')
+                .html(this.messages.default);
+            this.dom = $('<div />', {class: 'dragdropzone'})
+                .html(this.messageP)
+                .on('click mousemove', function () {
+                    textarea.focus();
+                })
+                .mouseout(function () {
+                    textarea.blur();
+                })
+                .append(textarea);
 
             this.dom.on('click', function (event) {
                 event.stopPropagation();
-                if (!useGetUserMedia || !that.module.getConfigurationCheckbox('getusermedia', 'yes')) $fileInput.click();
+                if (
+                    !useGetUserMedia ||
+                    !that.module.getConfigurationCheckbox('getusermedia', 'yes')
+                )
+                    $fileInput.click();
                 else {
-                    confirm($('<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>')).then(function (value) {
+                    confirm(
+                        $(
+                            '<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>'
+                        )
+                    ).then(function (value) {
                         if (!value) return;
                         if (value) {
                             that.module.controller.openPhoto(value);
@@ -73,17 +105,17 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
             });
 
             $fileInput.on('change', function (e) {
-                that.module.controller.open(that.module.controller.emulDataTransfer(e));
+                that.module.controller.open(
+                    that.module.controller.emulDataTransfer(e)
+                );
             });
 
-            $fileInput.on('load', function (e) {
-            });
+            $fileInput.on('load', function (e) {});
 
             this.module.getDomContent().html(this.dom);
         },
 
         inDom: function () {
-
             var that = this,
                 dom = this.dom.get(0);
 
@@ -106,7 +138,6 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
                     that.messageP.html(that.messages.drag);
                     that.dom.addClass('dragdrop-over');
                 }
-
             });
 
             dom.addEventListener('dragover', function (e) {
@@ -122,7 +153,6 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
                     that.messageP.html(that.messages.default);
                     that.dom.removeClass('dragdrop-over');
                 }
-
             });
 
             dom.addEventListener('mouseleave', function (e) {
@@ -142,7 +172,6 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
             this.resolveReady();
         },
         onResize: function () {
-
             var f = this.dom.first('div');
             var p = this.dom.parent().parent();
             f.css('font-size', 26);
@@ -156,10 +185,8 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
             while (p.height() - h < f.height() && fsize > 2) {
                 f.css('font-size', --fsize);
             }
-
         }
     });
-
 
     var stream;
     var $dialog;
@@ -175,40 +202,43 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
             var imgData = null;
             $dialog.html(message);
 
-
             var streaming = false,
                 video = document.querySelector('#video'),
                 canvas = document.querySelector('#canvas'),
                 width = 320,
                 height = 0;
 
-
-            navigator.getMedia = (navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia);
+            navigator.getMedia =
+                navigator.getUserMedia ||
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia ||
+                navigator.msGetUserMedia;
 
             navigator.getMedia(
                 {
                     video: true,
                     audio: false
-                }, treatStream,
+                },
+                treatStream,
                 function (err) {
                     Debug.error('An error occured! ' + err);
                 }
             );
 
-
-            video.addEventListener('canplay', function (ev) {
-                if (!streaming) {
-                    height = video.videoHeight / (video.videoWidth / width);
-                    video.setAttribute('width', width);
-                    video.setAttribute('height', height);
-                    canvas.setAttribute('width', width);
-                    canvas.setAttribute('height', height);
-                    streaming = true;
-                }
-            }, false);
+            video.addEventListener(
+                'canplay',
+                function (ev) {
+                    if (!streaming) {
+                        height = video.videoHeight / (video.videoWidth / width);
+                        video.setAttribute('width', width);
+                        video.setAttribute('height', height);
+                        canvas.setAttribute('width', width);
+                        canvas.setAttribute('height', height);
+                        streaming = true;
+                    }
+                },
+                false
+            );
 
             function treatStream(s) {
                 stream = s;
@@ -223,7 +253,6 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
                 }
                 video.play();
             }
-
 
             function takepicture() {
                 canvas.width = width;
@@ -259,5 +288,4 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (De
     }
 
     return View;
-
 });
