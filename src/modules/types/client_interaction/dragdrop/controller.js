@@ -93,6 +93,15 @@ define(
                                     {title: 'microphone', key: 'microphone'}
                                 ],
                                 default: 'none'
+                            },
+                            checkOptions: {
+                                type: 'checkbox',
+                                title: 'General options',
+                                options: {
+                                    promptAmbiguous:
+                                        'Prompt for filename when ambiguous'
+                                },
+                                default: ['promptAmbiguous']
                             }
                         }
                     },
@@ -228,6 +237,7 @@ define(
             photo: ['groups', 'photo', 0],
             showPhotoButton: ['groups', 'group', 0, 'showPhotoButton', 0],
             capture: ['groups', 'group', 0, 'capture', 0],
+            checkOptions: ['groups', 'group', 0, 'checkOptions', 0],
             askFilename: ['groups', 'string_general', 0, 'askFilename', 0]
         };
 
@@ -600,9 +610,15 @@ define(
         };
 
         Controller.prototype.read = async function (item, meta) {
-            if (meta.filename === 'image.png') {
+            if (
+                meta.filename === 'image.png' &&
+                this.module.getConfigurationCheckbox(
+                    'checkOptions',
+                    'promptAmbiguous'
+                )
+            ) {
                 const value = await ui.enterValue({
-                    label: 'Enter image name',
+                    label: 'Enter image name (without file extension)',
                     validationMessage: 'Incorrect file extension',
                     validation: val => {
                         return this.checkMetadata(
