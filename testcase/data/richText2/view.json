@@ -352,17 +352,6 @@
               "autoHeight": [
                 []
               ],
-              "bgColor": [
-                [
-                  255,
-                  255,
-                  255,
-                  1
-                ]
-              ],
-              "postit": [
-                []
-              ],
               "html": [
                 [
                   "yes"
@@ -398,10 +387,16 @@
       },
       "id": 3,
       "vars_in": [
-        {}
+        {
+          "rel": "html",
+          "name": "test"
+        }
       ],
       "actions_in": [
-        {}
+        {
+          "rel": "insertHtml",
+          "name": "html"
+        }
       ],
       "vars_out": [
         {
