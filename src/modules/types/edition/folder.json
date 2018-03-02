@@ -22,6 +22,10 @@
       "url": "modules/types/edition/rich_text/"
     },
     {
+      "moduleName": "Rich text editor 2",
+      "url": "modules/types/edition/quill_editor/"
+    },
+    {
       "moduleName": "Simple Form",
       "url": "modules/types/edition/form_simple/"
     },
