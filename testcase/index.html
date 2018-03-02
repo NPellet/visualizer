@@ -1,143 +1,148 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Visualizer Demo</title>
-    <link rel="stylesheet" href="../src/css/main.css" media="screen, print"/>
+    <link rel="stylesheet" href="../src/css/main.css" media="screen, print" />
     <script src="../src/components/jquery/dist/jquery.min.js"></script>
     <script>
         var configs = [
-            {description: 'Empty', name: ''},
-            {description: 'Default', name: 'default'},
-            {description: 'Test', name: 'test'},
-            {description: 'Title only', name: 'title'},
-            {description: 'Multiview header', name: 'multiview'}
+            { description: 'Empty', name: '' },
+            { description: 'Default', name: 'default' },
+            { description: 'Test', name: 'test' },
+            { description: 'Title only', name: 'title' },
+            { description: 'Multiview header', name: 'multiview' }
         ];
         var currentHeader = 'default';
         var examples = {
             'Array search': [
-                {description: 'Configured array search', folder: 'filter'},
-                {description: 'Smart array filter', folder: 'smartArray'}
+                { description: 'Configured array search', folder: 'filter' },
+                { description: 'Smart array filter', folder: 'smartArray' }
             ],
             'Slickgrid': [
-                {description: 'Action columns', folder: 'slickActionColumn'}
+                { description: 'Action columns', folder: 'slickActionColumn' }
             ],
             'Bio': [
-                {description: 'Protein Feature Viewer', folder: 'bioFeatureViewer'},
-                {description: 'AA sequence displayer', folder: 'bioSequence'},
-                {description: 'Bio-synthesis tutorial', folder: 'bioSynthesis'},
-                {description: 'Expérience de Griffith', folder: 'Griffith'}
+                { description: 'Protein Feature Viewer', folder: 'bioFeatureViewer' },
+                { description: 'AA sequence displayer', folder: 'bioSequence' },
+                { description: 'Bio-synthesis tutorial', folder: 'bioSynthesis' },
+                { description: 'Expérience de Griffith', folder: 'Griffith' }
             ],
             'Chart': [
-                {description: '3D function', folder: 'chart-function'},
-                {description: 'Parallel coordinates', folder: 'parcoords'},
-                {description: 'Parallel coordinates (Big data)', folder: 'parcoords2'},
-                {description: 'Flot Chart', folder: 'flotChart'},
-                {description: 'Flot Stack', folder: 'flotStack'},
-                {description: 'Radar Chart', folder: 'dhtmlxchart'},
-                {description: 'Phylogram', folder: 'phylogram'},
-                {description: 'Phylogram 2', folder: 'phylogram2'},
-                {description: 'Leaflet Map', folder: 'leaflet-map'},
-                {description: 'Hexagonal map', folder: 'hexaMap'},
-                {description: "Word Cloud", folder: "wordcloud"},
-                {description: 'Fibers (similarity matrix)', folder: 'fiber'},
-                {description: 'Loading plot', folder: 'loadingPlot'},
-                {description: 'Dendrogram', folder: 'dendrogram'},
-                {description: 'Annotated Dendrogram', folder: 'annotatedDendrogram'},
-                {description: 'Matrix test', folder: 'matrixTest'},
-                {description: 'Matrix of numbers', folder: 'matrix-num'},
-                {description: 'Scatter 3D', folder: 'plot3D'},
-                {description: 'Self-organizing map of random colors', folder: 'somRGB'}
+                { description: '3D function', folder: 'chart-function' },
+                { description: 'Parallel coordinates', folder: 'parcoords' },
+                { description: 'Parallel coordinates (Big data)', folder: 'parcoords2' },
+                { description: 'Flot Chart', folder: 'flotChart' },
+                { description: 'Flot Stack', folder: 'flotStack' },
+                { description: 'Radar Chart', folder: 'dhtmlxchart' },
+                { description: 'Phylogram', folder: 'phylogram' },
+                { description: 'Phylogram 2', folder: 'phylogram2' },
+                { description: 'Leaflet Map', folder: 'leaflet-map' },
+                { description: 'Hexagonal map', folder: 'hexaMap' },
+                { description: "Word Cloud", folder: "wordcloud" },
+                { description: 'Fibers (similarity matrix)', folder: 'fiber' },
+                { description: 'Loading plot', folder: 'loadingPlot' },
+                { description: 'Dendrogram', folder: 'dendrogram' },
+                { description: 'Annotated Dendrogram', folder: 'annotatedDendrogram' },
+                { description: 'Matrix test', folder: 'matrixTest' },
+                { description: 'Matrix of numbers', folder: 'matrix-num' },
+                { description: 'Scatter 3D', folder: 'plot3D' },
+                { description: 'Self-organizing map of random colors', folder: 'somRGB' }
             ],
             'Chemistry': [
-                {description: 'Molecule', folder: 'molecule'},
-                {description: 'Linked atoms - molecules', folder: 'linkedAtomMolecule'},
-                {description: 'jsNMR 1D', folder: 'jsnmr1d'},
-                {description: 'jsNMR 1D v2', folder: 'jsnmr1dv2'},
-                {description: 'jsNMR 2D', folder: 'jsnmr2d'},
-                {description: 'JSMol', folder: 'jsmol'},
-                {description: 'JSMol - JSME', folder: 'jsmol-jsme'},
-                {description: 'JSMol Script', folder: 'jsmolScript'},
-                {description: 'JSME and database lookup', folder: 'jsme-lookup'},
-                {description: 'JSME display', folder: 'jsme-display'},
-                {description: 'JSME action', folder: 'jsme-action'},
-                {description: 'JSME switch layer', folder: 'jsme-switch-layer'},
-                {description: 'NMR simulation', folder: 'nmrSimulation'},
-                {description: 'OCL Molecule editor', folder: 'ocl_edit'},
-                {description: "Periodic Table", folder: "periodic"},
-                {description: 'Chemistry exercise with jqGrid', folder: 'chem-exercise'},
-                {description: 'Openchemlib diastereotopic ID', folder: 'openchemlibDiaID'},
-                {description: 'Openchemlib editor', folder: 'openchemlib-editor'}
+                { description: 'Molecule', folder: 'molecule' },
+                { description: 'Linked atoms - molecules', folder: 'linkedAtomMolecule' },
+                { description: 'jsNMR 1D', folder: 'jsnmr1d' },
+                { description: 'jsNMR 1D v2', folder: 'jsnmr1dv2' },
+                { description: 'jsNMR 2D', folder: 'jsnmr2d' },
+                { description: 'JSMol', folder: 'jsmol' },
+                { description: 'JSMol - JSME', folder: 'jsmol-jsme' },
+                { description: 'JSMol Script', folder: 'jsmolScript' },
+                { description: 'JSME and database lookup', folder: 'jsme-lookup' },
+                { description: 'JSME display', folder: 'jsme-display' },
+                { description: 'JSME action', folder: 'jsme-action' },
+                { description: 'JSME switch layer', folder: 'jsme-switch-layer' },
+                { description: 'NMR simulation', folder: 'nmrSimulation' },
+                { description: 'OCL Molecule editor', folder: 'ocl_edit' },
+                { description: "Periodic Table", folder: "periodic" },
+                { description: 'Chemistry exercise with jqGrid', folder: 'chem-exercise' },
+                { description: 'Openchemlib diastereotopic ID', folder: 'openchemlibDiaID' },
+                { description: 'Openchemlib editor', folder: 'openchemlib-editor' }
             ],
             'Client interaction': [
-                {description: 'Drag and drop / paste', folder: 'dragdrop'},
-                {description: 'Drop image for histogram', folder: 'histogram'},
-                {description: 'Code executor', folder: 'scriptExecutor'},
-                {description: 'Code executor 2', folder: 'scriptExecutor2'},
-                {description: 'Code executor navigation', folder: 'code-executor'},
-                {description: 'Let user choose from a list', folder: 'ui-choose'}
+                { description: 'Drag and drop / paste', folder: 'dragdrop' },
+                { description: 'Drop image for histogram', folder: 'histogram' },
+                { description: 'Code executor', folder: 'scriptExecutor' },
+                { description: 'Code executor 2', folder: 'scriptExecutor2' },
+                { description: 'Code executor navigation', folder: 'code-executor' },
+                { description: 'Let user choose from a list', folder: 'ui-choose' }
             ],
             'Edition': [
-                {description: 'Onde - Input schema with default', folder: 'onde-default'},
-                {description: 'Rich text', folder: 'richText'}
+                { description: 'Onde - Input schema with default', folder: 'onde-default' },
+                { description: 'Rich text', folder: 'richText' },
+                { description: 'Rich text 2', folder: 'richText2' }
             ],
             'Spectra displayer': [
-                {description: 'Chart', folder: 'chart'},
-                {description: 'Jcamp Viewer', folder: 'jcampViewer'},
-                {description: '2D Spectra', folder: 'spectra2D'},
-                {description: 'GC/MS', folder: 'gcms'},
-                {description: 'Automatic line or bars', folder: 'spectra_displayer/auto-line'},
-                {description: 'Scatter plot selection', folder: 'scatterSelect'},
-                {description: 'Shapes and annotations', folder: 'jsgraph-shapes'},
-                {description: 'Resize Shapes', folder: 'jsgraph-resize-shapes'},
-                {description: 'Compare NMR spectra', folder: 'compareSpectra'},
-                {description: 'Epoch X axis', folder: 'spectra_displayer/epoch_axis'},
-                {description: 'Big mass data', folder: 'spectra_displayer/big_data'},
-                {description: 'Renderer', folder: 'spectra_displayer/renderer'},
-                {description: 'Actions', folder: 'spectra_displayer/actions'},
-                {description: 'NMR1D', folder: 'spectra_displayer/nmr1d'},
-                {description: 'Stacked series', folder: 'spectra_displayer/stacked'},
-                {description: 'Mouse tracking', folder: 'spectra_displayer/mouseTracking'},
-                {description: 'Hidden layer', folder: 'spectra_displayer/hiddenLayer'}
+                { description: 'Chart', folder: 'chart' },
+                { description: 'Jcamp Viewer', folder: 'jcampViewer' },
+                { description: '2D Spectra', folder: 'spectra2D' },
+                { description: 'GC/MS', folder: 'gcms' },
+                { description: 'Automatic line or bars', folder: 'spectra_displayer/auto-line' },
+                { description: 'Scatter plot selection', folder: 'scatterSelect' },
+                { description: 'Shapes and annotations', folder: 'jsgraph-shapes' },
+                { description: 'Resize Shapes', folder: 'jsgraph-resize-shapes' },
+                { description: 'Compare NMR spectra', folder: 'compareSpectra' },
+                { description: 'Epoch X axis', folder: 'spectra_displayer/epoch_axis' },
+                { description: 'Big mass data', folder: 'spectra_displayer/big_data' },
+                { description: 'Renderer', folder: 'spectra_displayer/renderer' },
+                { description: 'Actions', folder: 'spectra_displayer/actions' },
+                { description: 'NMR1D', folder: 'spectra_displayer/nmr1d' },
+                { description: 'Stacked series', folder: 'spectra_displayer/stacked' },
+                { description: 'Mouse tracking', folder: 'spectra_displayer/mouseTracking' },
+                { description: 'Hidden layer', folder: 'spectra_displayer/hiddenLayer' }
             ],
             'Server interaction': [
-                {description: 'ChemCalc Lookup', folder: 'chemcalcLookup'},
-                {description: 'ChemCalc monoisotopic mass', folder: 'chemcalc'},
-                {description: 'WebService CRON', folder: 'webserviceCron'}
+                { description: 'ChemCalc Lookup', folder: 'chemcalcLookup' },
+                { description: 'ChemCalc monoisotopic mass', folder: 'chemcalc' },
+                { description: 'WebService CRON', folder: 'webserviceCron' }
             ],
             'Type renderer': [
-                {description: 'Chart', folder: 'typerenderer/chart'},
-                {description: 'Object', folder: 'typerenderer/object'},
-                {description: 'Chemical and twig', folder: 'typerenderer/chemical'},
-                {description: 'Add type API', folder: 'typerenderer/addtype'},
-                {description: 'Sample', folder: 'typerenderer/sample'}
+                { description: 'Chart', folder: 'typerenderer/chart' },
+                { description: 'Object', folder: 'typerenderer/object' },
+                { description: 'Chemical and twig', folder: 'typerenderer/chemical' },
+                { description: 'Add type API', folder: 'typerenderer/addtype' },
+                { description: 'Sample', folder: 'typerenderer/sample' }
             ],
             'Misc': [
-                {description: 'Single value and download link', folder: 'singleValue'},
-                {description: 'Simple table to display array data', folder: 'array'},
-                {description: 'Variable modification', folder: 'varedit'},
-                {description: 'Highlight', folder: 'highlight'},
-                {description: 'Dummy', folder: 'dummy'},
-                {description: 'Multiview', folder: 'multiview'},
-                {description: 'Filter - DOI', folder: 'filter-doi'},
-                {description: 'Twig template', folder: 'twig'},
-                {description: 'Twig form', folder: 'twig-form'},
-                {description: 'SVG Editor (Bioreactor)', folder: 'svgEditor'},
-                {description: 'House monitoring', folder: 'houseMonitoring'},
-                {description: 'Hierarchical structure explorer', folder: 'fancytree'},
-                {description: 'Panzoom', folder: 'panzoom'},
-                {description: 'Loading screen API', folder: 'loading'},
-                {description: 'Progress bar', folder: 'progress'},
-                {description: 'In-place modification', folder: 'inplace-modification'},
-                {description: 'Module lifecycle actions', folder: 'moduleActions'}
+                { description: 'Single value and download link', folder: 'singleValue' },
+                { description: 'Simple table to display array data', folder: 'array' },
+                { description: 'Variable modification', folder: 'varedit' },
+                { description: 'Highlight', folder: 'highlight' },
+                { description: 'Dummy', folder: 'dummy' },
+                { description: 'Multiview', folder: 'multiview' },
+                { description: 'Filter - DOI', folder: 'filter-doi' },
+                { description: 'Twig template', folder: 'twig' },
+                { description: 'Twig form', folder: 'twig-form' },
+                { description: 'SVG Editor (Bioreactor)', folder: 'svgEditor' },
+                { description: 'House monitoring', folder: 'houseMonitoring' },
+                { description: 'Hierarchical structure explorer', folder: 'fancytree' },
+                { description: 'Panzoom', folder: 'panzoom' },
+                { description: 'Loading screen API', folder: 'loading' },
+                { description: 'Progress bar', folder: 'progress' },
+                { description: 'In-place modification', folder: 'inplace-modification' },
+                { description: 'Module lifecycle actions', folder: 'moduleActions' }
             ]
         };
     </script>
     <style>
-        body, div, iframe {
+        body,
+        div,
+        iframe {
             margin: 0;
             padding: 0;
         }
+
         #container {
             display: flex;
             height: 100vh;
@@ -165,72 +170,73 @@
 </head>
 
 <body>
-<div id="container">
-    <div id="left">
-        <h1>Examples</h1>
-        <br>
-        <div style="margin-left: 40px">
-            Select the config type:
-            <div id="configs" style="display: inline-block"></div>
+    <div id="container">
+        <div id="left">
+            <h1>Examples</h1>
             <br>
+            <div style="margin-left: 40px">
+                Select the config type:
+                <div id="configs" style="display: inline-block"></div>
+                <br>
 
-            <div id="version" style="display: inline-block">
-                <label for="selectedVersion">Select the version to
-                    test: </label><select id="selectedVersion"
-                                          onchange="updateExamples();">
-                <option value="src">source</option>
-                <option value="build">build</option>
-            </select>
+                <div id="version" style="display: inline-block">
+                    <label for="selectedVersion">Select the version to test: </label>
+                    <select id="selectedVersion" onchange="updateExamples();">
+                        <option value="src">source</option>
+                        <option value="build">build</option>
+                    </select>
+                </div>
+                <br>
+                <br>
+
+                <div id="examples"></div>
             </div>
-            <br><br>
-
-            <div id="examples"></div>
+        </div>
+        <div id="right">
+            <iframe id="frame"></iframe>
         </div>
     </div>
-    <div id="right">
-        <iframe id="frame"></iframe>
-    </div>
-</div>
-<script>
-    function updateHeaders() {
-        var html = [];
-        html.push('<select id="selectedHeader" onchange="updateExamples();">');
-        for (var i = 0; i < configs.length; i++) {
-            var defaultHeader = '';
-            if (configs[i].name == currentHeader) defaultHeader = 'selected';
-            html.push('<option value="' + configs[i].name + '" ' + defaultHeader + '>' + configs[i].description + '</option>');
-        }
-        html.push('</select>');
-        $('#configs').html(html.join(''));
-    }
-    updateHeaders();
-
-    function updateExamples() {
-        var currentHeader = $('#selectedHeader').val();
-        var version = $('#selectedVersion').val();
-        var $examples = $('#examples');
-        $examples.empty();
-        for (var name in examples) {
-            var html = ['<h3>' + name + '</h3><p>'];
-            var example = examples[name];
-            for (var i = 0; i < example.length; i++) {
-                var viewURL = '../testcase/data/' + example[i].folder + '/view.json';
-                var dataURL = '../testcase/data/' + example[i].folder + '/data.json';
-                var configURL = '';
-                if (currentHeader) configURL = '../testcase/config/' + currentHeader + '.json';
-                var url = '../' + version + '/index.html?config=' + configURL + '&viewURL=' + viewURL + '&dataURL=' + dataURL;
-                html.push('<a href="' + url + '" onclick="openInIframe(\'' + url + '\');return false;">' + example[i].description + '</a>');
-                html.push('<br>');
+    <script>
+        function updateHeaders() {
+            var html = [];
+            html.push('<select id="selectedHeader" onchange="updateExamples();">');
+            for (var i = 0; i < configs.length; i++) {
+                var defaultHeader = '';
+                if (configs[i].name == currentHeader) defaultHeader = 'selected';
+                html.push('<option value="' + configs[i].name + '" ' + defaultHeader + '>' + configs[i].description + '</option>');
             }
-            html.push('</p><br>');
-            $examples.append(html.join(''));
+            html.push('</select>');
+            $('#configs').html(html.join(''));
         }
-    }
-    updateExamples();
+        updateHeaders();
 
-    function openInIframe(url) {
-        $('#frame').attr('src', url);
-    }
-</script>
+        function updateExamples() {
+            var currentHeader = $('#selectedHeader').val();
+            var version = $('#selectedVersion').val();
+            var $examples = $('#examples');
+            $examples.empty();
+            for (var name in examples) {
+                var html = ['<h3>' + name + '</h3><p>'];
+                var example = examples[name];
+                for (var i = 0; i < example.length; i++) {
+                    var viewURL = '../testcase/data/' + example[i].folder + '/view.json';
+                    var dataURL = '../testcase/data/' + example[i].folder + '/data.json';
+                    var configURL = '';
+                    if (currentHeader) configURL = '../testcase/config/' + currentHeader + '.json';
+                    var url = '../' + version + '/index.html?config=' + configURL + '&viewURL=' + viewURL + '&dataURL=' + dataURL;
+                    html.push('<a href="' + url + '" onclick="openInIframe(\'' + url + '\');return false;">' + example[i].description + '</a>');
+                    html.push('<br>');
+                }
+                html.push('</p><br>');
+                $examples.append(html.join(''));
+            }
+        }
+        updateExamples();
+
+        function openInIframe(url) {
+            $('#frame').attr('src', url);
+        }
+    </script>
 </body>
+
 </html>
