@@ -179,7 +179,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         unselectSerie: 'Unselect a serie',
         fullOut: 'Full zoom out (x, y or xy)',
         exportSVG: 'Export current state as SVG',
-        toggleGrid: 'Toggle grid'
+        toggleGrid: 'Toggle grid',
+        setContinous: 'Set a serie to continuous mode',
+        setDiscrete: 'Set a serie to discrete mode',
+        setAuto: 'Set a serie to auto mode (continuous or discrete)',
     };
 
     var axisFields = {
