@@ -1,0 +1,583 @@
+{
+  "version": "2.88.3-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"type\":\"chart\",\"value\":{\"title\":\"A Chart\",\"data\":[{\"x\":[259.146,259.645,259.648,259.65,260.14300000000003,260.147,260.148,260.15,260.151,260.152,260.153,260.645,260.647,260.648,260.649,260.65,260.651,260.652,260.653,261.149,261.15,261.151,261.152,261.153,261.65,261.652,261.654],\"y\":[1,0.02557308603316071,0.2301776993419999,0.004600529060841997,0.0002802783125397597,0.005886354108187962,0.016557598801726265,0.02525795352370475,0.0010449195188225987,0.000014019676158023666,0.000010317872974330227,0.00006365969557028607,0.0004204202321078576,0.0006282232014227966,0.000017700617060479587,0.0037607322862103425,0.0017265842599530235,0.00015049439625652202,0.00011301565603357734,0.00009549017098416619,0.00004303304587393598,0.00011824396746306696,0.0004038604267987271,0.00009907905116993613,0.00001032795743991285,0.000026856787111039268,0.000027664282748132092]}]}}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 40,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "JSON of a chart",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "chart"
+        }
+      ],
+      "title": "JSON of a chart",
+      "actions_out": {},
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "x"
+                    ],
+                    "wheelAction": [
+                      "zoomY"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      [
+                        "track"
+                      ]
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.1"
+                    ],
+                    "afterSpacing": [
+                      "0.1"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      []
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      "0"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "chart",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "discrete",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 41,
+            "top": 0
+          },
+          "size": {
+            "width": 56,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "A chart",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "fromToX",
+          "name": "zoomLevelX"
+        },
+        {
+          "rel": "fromToY",
+          "name": "zoomLevelY"
+        },
+        {
+          "rel": "toggleGrid",
+          "name": "toggleGrid"
+        },
+        {
+          "rel": "setContinous",
+          "name": "continuous"
+        },
+        {
+          "rel": "setDiscrete",
+          "name": "discrete"
+        },
+        {
+          "rel": "setAuto",
+          "name": "auto"
+        }
+      ],
+      "title": "A chart",
+      "vars_out": [
+        {
+          "event": "onMouseOverShape",
+          "rel": "shapeInfos",
+          "jpath": [],
+          "name": "info"
+        },
+        {
+          "event": "onZoomChange",
+          "rel": "fromToXY",
+          "jpath": [],
+          "name": "zoomLevel"
+        }
+      ],
+      "actions_out": [
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "mouseMoved"
+        },
+        {
+          "event": "onTrackClick",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "mouseClicked"
+        },
+        {
+          "event": "onZoomChange",
+          "rel": "fromToX",
+          "jpath": [],
+          "name": "zoomLevelX"
+        },
+        {
+          "event": "onZoomChange",
+          "rel": "fromToY",
+          "jpath": [],
+          "name": "zoomLevelY"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "Toggle grid",
+              "icon": "fa-table",
+              "action": "toggleGrid",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "switch (this.button) {\n    case 'continuous':\n        API.doAction('continuous','');\n        break;\n    case 'discrete':\n        API.doAction('discrete','');\n        break;\n    case 'auto':\n        API.doAction('auto','');\n        break;\n}"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "continuous",
+                "label": "Continuous",
+                "hide": [],
+                "disable": []
+              },
+              {
+                "name": "discrete",
+                "label": "Discrete",
+                "hide": [],
+                "disable": []
+              },
+              {
+                "name": "auto",
+                "label": "Auto",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 98,
+            "top": 1
+          },
+          "size": {
+            "width": 59,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Send action",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "mouseMoved"
+        },
+        {
+          "rel": "execute",
+          "name": "mouseClicked"
+        },
+        {
+          "rel": "execute",
+          "name": "zoomLevelX"
+        },
+        {
+          "rel": "execute",
+          "name": "zoomLevelY"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Send action"
+    }
+  ],
+  "variables": [
+    {
+      "varname": "table",
+      "jpath": [
+        "table"
+      ]
+    },
+    {
+      "varname": "anotherChart",
+      "jpath": [
+        "anotherChart"
+      ]
+    }
+  ],
+  "configuration": {
+    "title": "Chart with annotations"
+  },
+  "aliases": []
+}
