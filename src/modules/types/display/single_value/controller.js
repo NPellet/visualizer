@@ -29,7 +29,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     Controller.prototype.variablesIn = ['value', 'color'];
 
     Controller.prototype.configurationStructure = function () {
-        var typeList = Util.getStructuresComboOptions();
+        var typeList = Util.getRenderersComboOptions();
         return {
             groups: {
                 group: {

@@ -8,7 +8,7 @@ define([
     'numeral',
     'sprintf',
     './util',
-    './typerenderer/chart'
+    './typerenderer/chart',
 ], function (require, $, _, moment, numeral, sprintf, Util, chartRenderer) {
 
     const asyncRequire = Util.require;
@@ -706,6 +706,10 @@ define([
         },
         addType(name, renderer) {
             functions[name.toLowerCase()] = renderer;
+        },
+
+        getList() {
+            return Object.keys(functions);
         },
 
         hasType(name) {

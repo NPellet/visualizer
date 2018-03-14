@@ -10,8 +10,9 @@ define([
     './debug',
     './color',
     '../data/structures',
-    'web-animations'
-], function (Promise, _, Debug, Color, structures) {
+    'web-animations',
+    './typerenderer',
+], function (Promise, _, Debug, Color, structures, typeRenderer) {
 
     var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -521,12 +522,23 @@ define([
         return btoa(unescape(encodeURIComponent(String(str))));
     };
 
+    // Should be replaced by getRenerersComboOptions ?
     exports.getStructuresComboOptions = function () {
         var typeList = [];
         typeList.push({key: '', title: 'none'});
-        var types = structures._getList(),
-            l = types.length;
-        for (var i = 0; i < l; i++) {
+        var types = structures._getList();
+        for (var i = 0; i < types.length; i++) {
+            typeList.push({key: types[i], title: types[i]});
+        }
+
+        return typeList;
+    };
+
+    exports.getRenderersComboOptions = function () {
+        var typeList = [];
+        typeList.push({key: '', title: 'none'});
+        var types = typeRenderer.getTypes();
+        for (var i = 0; i < types.length; i++) {
             typeList.push({key: types[i], title: types[i]});
         }
 
