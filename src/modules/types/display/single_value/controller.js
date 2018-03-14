@@ -1,6 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
+define([
+    'modules/default/defaultcontroller',
+    'src/util/util',
+    'src/util/typerenderer',
+], function (Default, Util, Renderer) {
 
     function Controller() {
     }
@@ -29,7 +33,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     Controller.prototype.variablesIn = ['value', 'color'];
 
     Controller.prototype.configurationStructure = function () {
-        var typeList = Util.getStructuresComboOptions();
+        var typeList = Renderer.getRendererComboOptions();
         return {
             groups: {
                 group: {

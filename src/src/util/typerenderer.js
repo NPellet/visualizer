@@ -708,6 +708,14 @@ define([
             functions[name.toLowerCase()] = renderer;
         },
 
+        getRendererComboOptions() {
+            return Object.keys(functions).map(k => ({key: k, title: k}));
+        },
+
+        getList() {
+            return Object.keys(functions);
+        },
+
         hasType(name) {
             return !!functions[name.toLowerCase()];
         }

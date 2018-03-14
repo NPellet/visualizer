@@ -5,9 +5,10 @@ define(
         'modules/default/defaultcontroller',
         'src/util/util',
         'lodash',
-        'src/util/api'
+        'src/util/api',
+        'src/util/typerenderer',
     ],
-    function (Default, Util, _, API) {
+    function (Default, Util, _, API, Renderer) {
         function Controller() {}
 
         $.extend(true, Controller.prototype, Default);
@@ -24,7 +25,7 @@ define(
         Controller.prototype.configurationStructure = function () {
             var that = this;
 
-            var typeList = Util.getStructuresComboOptions();
+            var typeList = Renderer.getRendererComboOptions();
 
             var jpaths = this.module.model.getjPath('row', false);
 
