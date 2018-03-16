@@ -175,7 +175,7 @@ define([
                     html += '<img src="' + toolbar[i].icon + '"/>';
                 }
                 if (toolbar[i].cssClass) {
-                    html += '<span style="color: rgba(170, 170, 170, 0.9);" class="' + toolbar[i].cssClass + '"/>';
+                    html += '<span style="color: rgba(100,100, 100, 1);" class="' + toolbar[i].cssClass + '"/>';
                 }
                 html += '</li>';
             }
