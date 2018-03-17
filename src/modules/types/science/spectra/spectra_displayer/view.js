@@ -433,6 +433,22 @@ define([
             this.module.model.setYBoundaries(minY, maxY);
         },
 
+        setPlotContinuous(varname, continuous) {
+            
+            let plotinfos = this.module.getConfiguration('plotinfos');
+            console.log('BEFORE', plotinfos[0].plotcontinuous);
+            if (plotinfos) {
+                for (var i = 0, l = plotinfos.length; i < l; i++) {
+                    if (varname == plotinfos[i].variable || !varname) {
+                        plotinfos[i].plotcontinuous = continuous;
+                    }
+                }
+                
+                this.graph.redraw();
+            }
+            console.log('AFTER', plotinfos[0].plotcontinuous);
+        },
+
         getSerieOptions(varname, highlight, data) {
 
             let plotinfos = this.module.getConfiguration('plotinfos'),
@@ -446,7 +462,9 @@ define([
             if (plotinfos) {
                 for (var i = 0, l = plotinfos.length; i < l; i++) {
                     if (varname == plotinfos[i].variable) {
+                       
                         var continuous = plotinfos[i].plotcontinuous;
+                        console.log('GET', varname, continuous);
                         if (continuous === 'auto') {
                             continuous = analyzeContinuous(data);
                         }
@@ -462,6 +480,9 @@ define([
                         if (pp) {
                             others.peakPicking = true;
                         }
+
+                        console.log('GET2', varname, continuous);
+
                     }
                 }
             }
@@ -704,7 +725,6 @@ define([
                     }
 
                     if (!serie) {
-                        console.log(serieType);
                         throw new Error('The serie was not created !');
                     }
                     serie.setLabel(serieLabel);
@@ -1142,6 +1162,27 @@ define([
             },
 
             toggleGrid(options) {
+                let gridShow = !this.xAxis.options.primaryGrid;
+                this.xAxis.setPrimaryGrid(gridShow);
+                this.xAxis.setSecondaryGrid(gridShow);
+                this.yAxis.setPrimaryGrid(gridShow);
+                this.yAxis.setSecondaryGrid(gridShow);
+                this.graph.redraw();
+            },
+            
+            setContinous(varname) {
+                this.setPlotContinuous(varname, 'continuous');
+            },
+
+            setDiscrete(varname) {
+                this.setPlotContinuous(varname, 'discrete');
+            },
+
+            setAuto(varname) {
+                this.setPlotContinuous(varname, 'auto');
+            },
+
+            setContinuous(options) {
                 let gridShow = !this.xAxis.options.primaryGrid;
                 this.xAxis.setPrimaryGrid(gridShow);
                 this.xAxis.setSecondaryGrid(gridShow);

@@ -521,6 +521,7 @@ define([
         return btoa(unescape(encodeURIComponent(String(str))));
     };
 
+    // Should be replaced by getRenerersComboOptions ?
     exports.getStructuresComboOptions = function () {
         var typeList = [];
         typeList.push({key: '', title: 'none'});
