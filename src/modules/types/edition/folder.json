@@ -22,7 +22,7 @@
       "url": "modules/types/edition/rich_text/"
     },
     {
-      "moduleName": "Rich text editor 2",
+      "moduleName": "Quill text editor",
       "url": "modules/types/edition/quill_editor/"
     },
     {

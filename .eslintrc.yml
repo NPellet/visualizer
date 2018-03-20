@@ -9,7 +9,6 @@ parserOptions:
 rules:
   # Disable those for now
   no-console: 1
-  no-debugger: 0
   curly: 0
   eqeqeq: 0
   camelcase: 0
