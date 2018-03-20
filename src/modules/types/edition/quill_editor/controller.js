@@ -6,12 +6,12 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     $.extend(true, Controller.prototype, Default);
 
     Controller.prototype.moduleInformation = {
-        name: 'Rich text editor 2',
+        name: 'Quill text editor',
         description: 'Edit rich text in a wysiwyg interface.',
         author: 'Miguel Asencio',
         date: '01.03.2018',
         license: 'MIT',
-        cssClass: 'rich_text_2'
+        cssClass: 'quill_editor'
     };
 
     Controller.prototype.references = {
