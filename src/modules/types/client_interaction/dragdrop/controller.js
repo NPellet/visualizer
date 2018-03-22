@@ -476,7 +476,6 @@ define(
         };
 
         Controller.prototype.treatString = function (item, meta) {
-            debugger; // eslint-disable-line
             var description = getDescription(meta.cfg);
             item.getAsString(str => {
                 if (
