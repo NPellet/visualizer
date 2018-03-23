@@ -114,6 +114,10 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         formOptions: ['groups', 'group', 0, 'formOptions', 0]
     };
 
+    Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
+        clearForm: 'Clear form'
+    });
+
     Controller.prototype.onRendered = function (renderedHtml) {
         setTimeout(() => { // Figure out why I have to set timeout
             this.createDataFromEvent('onRendered', 'renderedHtml', renderedHtml);

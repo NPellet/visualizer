@@ -128,6 +128,10 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
             return Array.from(changedNames);
         }
 
+        clear() {
+            this.setData({});
+        }
+
         // Fill the given dom element with the given value
         // Transforms values back
         _setElement(el, value) {

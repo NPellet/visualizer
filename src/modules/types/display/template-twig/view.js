@@ -71,6 +71,10 @@ define([
             });
         },
 
+        clearForm() {
+            this.form.clear();
+        },
+
         resetForm() {
             this.form.setData(this.currentForm);
         },
@@ -192,6 +196,15 @@ define([
             style(value) {
                 this.styleObject = value.resurrect();
                 this.rerender();
+            }
+        },
+
+        onActionReceive: {
+            clearForm: function (submitChange) {
+                this.clearForm();
+                if (submitChange) {
+                    this.submitChange();
+                }
             }
         },
 
