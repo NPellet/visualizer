@@ -2041,6 +2041,7 @@ define(
 
             _findItem: function (row) {
                 var item;
+                if (!this.module.data) return null;
                 var data = this.module.data.get();
                 if (typeof row === 'function') {
                     return data.find(row);
@@ -2187,7 +2188,7 @@ define(
                     srows = [];
                 }
                 if (items) {
-                    srows = items.map(i => {
+                    srows = items.filter(item => item).map(i => {
                         return this.slick.data.getRowById(
                             i[this.idPropertyName]
                         );
