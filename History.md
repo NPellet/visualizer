@@ -1,3 +1,13 @@
+<a name="2.90.0"></a>
+# [2.90.0](https://github.com/NPellet/visualizer/compare/v2.89.0...v2.90.0) (2018-04-11)
+
+
+### Features
+
+* add clearForm action to twig module ([7a0f2e2](https://github.com/NPellet/visualizer/commit/7a0f2e2))
+
+
+
 <a name="2.89.0"></a>
 # [2.89.0](https://github.com/NPellet/visualizer/compare/v2.88.2...v2.89.0) (2018-03-16)
 
