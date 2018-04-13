@@ -115,7 +115,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     };
 
     Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
-        clearForm: 'Clear form'
+        clearForm: 'Clear form',
+        setForm: 'Set form values'
     });
 
     Controller.prototype.onRendered = function (renderedHtml) {

@@ -75,6 +75,10 @@ define([
             this.form.clear();
         },
 
+        setForm(data) {
+            this.form.setData(data);
+        },
+
         resetForm() {
             this.form.setData(this.currentForm);
         },
@@ -205,6 +209,14 @@ define([
                 if (submitChange) {
                     this.submitChange();
                 }
+            },
+            setForm: function (options) {
+                if (!options.data) throw new Error('setForm invalid arguments. Must be object with data property.');
+                this.setForm(options.data);
+                if (options.submitChange) {
+                    this.submitChange();
+                }
+                
             }
         },
 
