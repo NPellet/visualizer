@@ -78,7 +78,7 @@ define([
 
     Object.getOwnPropertyNames(String.prototype).forEach(function(method) {
         if(typeof String.prototype[method] === 'function') {
-            Twig.extendFilter('string_' + method, function (val, ...rest) {
+            Twig.extendFilter('string_' + method, function (val, rest) {
                 return String.prototype[method].apply(val, rest);
             });
         }
