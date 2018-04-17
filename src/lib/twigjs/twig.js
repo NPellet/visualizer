@@ -67,6 +67,15 @@ define([
         console.log.apply(console, arguments);
     });
 
+    Twig.extendFilter('regReplace', function (val, rest) {
+        const [reg, ...params] = rest;
+        if(typeof val !== 'string' || !reg) {
+            return val;
+        }
+        console.log(val, reg, params);
+        return val.replace(new RegExp(reg) , ...params);
+    })
+
     // Add filters for mathematical functions
     Object.getOwnPropertyNames(Math).forEach(function(method) {
         if(typeof Math[method] === 'function') {
@@ -79,6 +88,9 @@ define([
     Object.getOwnPropertyNames(String.prototype).forEach(function(method) {
         if(typeof String.prototype[method] === 'function') {
             Twig.extendFilter('string_' + method, function (val, rest) {
+                if(typeof val !== 'string') {
+                    return val;
+                }
                 return String.prototype[method].apply(val, rest);
             });
         }
