@@ -1,3 +1,13 @@
+<a name="2.92.0"></a>
+# [2.92.0](https://github.com/NPellet/visualizer/compare/v2.91.0...v2.92.0) (2018-04-17)
+
+
+### Features
+
+* **twig:** add regReplace filter ([78b5cf3](https://github.com/NPellet/visualizer/commit/78b5cf3))
+
+
+
 <a name="2.91.0"></a>
 # [2.91.0](https://github.com/NPellet/visualizer/compare/v2.90.0...v2.91.0) (2018-04-17)
 
