@@ -1,3 +1,13 @@
+<a name="2.91.0"></a>
+# [2.91.0](https://github.com/NPellet/visualizer/compare/v2.90.0...v2.91.0) (2018-04-17)
+
+
+### Features
+
+* **twig:** add setForm action to twig module ([ff2ba80](https://github.com/NPellet/visualizer/commit/ff2ba80))
+
+
+
 <a name="2.90.0"></a>
 # [2.90.0](https://github.com/NPellet/visualizer/compare/v2.89.0...v2.90.0) (2018-04-11)
 
