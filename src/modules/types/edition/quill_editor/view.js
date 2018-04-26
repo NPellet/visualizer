@@ -6,8 +6,10 @@ define([
     'src/util/util',
     'quill',
     'lodash',
-    'src/main/grid'
-], function ($, Default, Util, Quill, _, Grid) {
+    'src/main/grid',
+    'katex'
+], function ($, Default, Util, Quill, _, Grid, katex) {
+    window.katex = katex; // Needed for quill to work :(
     function View() {
         this._id = Util.getNextUniqueId();
     }
@@ -15,10 +17,6 @@ define([
     $.extend(true, View.prototype, Default, {
         init: function () {
             var that = this;
-            this.plainHtml = this.module.getConfigurationCheckbox(
-                'plainHtml',
-                'yes'
-            );
             this.debounce = this.module.getConfiguration('debouncing');
             this.storeInView = this.module.getConfigurationCheckbox(
                 'storeInView',
@@ -34,87 +32,49 @@ define([
         inDom: function () {
             this.initEditor();
         },
-        blank: {
-            html: function () {
-                this.replaceContent('');
-            }
-        },
-        update: {
-            html: function (moduleValue) {
-                this.module.data = moduleValue;
-                var val = moduleValue.get();
-                if (this.storeInView) {
-                    this.module.definition.richtext = val;
-                }
-                this.replaceContent(val);
-            }
-        },
         initEditor: function () {
             Util.loadCss('./components/quill/quill.core.css').then(() => {
                 return Util.loadCss('./components/quill/quill.snow.css');
             }).then(() => {
-                var initText = this.module.definition.richtext || '';
-                this.readOnly = !this.module.getConfigurationCheckbox(
-                    'editable',
-                    'isEditable'
-                );
-    
+                return Util.loadCss('node_modules/katex/dist/katex.min.css');
+            }).then(() => {
+                var contents = this.module.definition.richtext || '';
                 this.dom = $(
                     `<div class="quill_wrapper">
                         <div id="${this._id}" class="quill_editor" />
                      </div>`
                 );
-                // if (this.storeInView) {
-                //     this.dom.html(initText);
-                //     this.module.controller.valueChanged(initText);
-                // }
+
                 this.module.getDomContent().html(this.dom);
-                this._setCss();
     
-                this.instance = new Quill('#' + this._id, {modules: {
-                    toolbar: [
-                        [{header: [1, 2, false]}],
-                        ['bold', 'italic', 'underline'],
-                        ['image', 'code-block']
-                    ]
-                },
-                placeholder: 'Compose an epic...',
-                theme: 'snow' // or 'bubble');
+                const readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
+                this.instance = new Quill('#' + this._id, {
+                    modules: {
+                        formula: true,
+                        toolbar: readOnly ? false : [
+                            [{header: [1, 2, false]}],
+                            ['size', 'font', 'color', 'background'],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            ['link', 'image', 'code-block'],
+                            ['align', 'indent', 'list'],
+                            ['formula']
+                        ]
+                    },
+                    placeholder: 'Start composing here...',
+                    readOnly,
+                    theme: 'snow' // or 'bubble'
                 });
     
-                this.instance.on('change', () => {
-                    this.valueChanged(this.instance.getData());
-                    if (
-                        this.module.getConfigurationCheckbox(
-                            'autoHeight',
-                            'yes'
-                        )
-                    ) {
-                        this.module
-                            .getDomWrapper()
-                            .height(this.getContentHeight() + 50);
-                        Grid.moduleResize(this.module);
-                    }
+                if (this.storeInView) {
+                    this.instance.setContents(contents);
+                    // this.module.controller.valueChanged(contents);
+                }
+                this.instance.on('text-change', () => {
+                    this.valueChanged(this.instance.getContents());
                 });
                 this.resolveReady();
             });
         },
-        replaceContent: function (html) {
-            html = String(html);
-            if (this.plainHtml) {
-                this.dom.html(html);
-            } else {
-                this.instance.clipboard.dangerouslyPasteHTML(html);
-            }
-        },
-        getContentHeight: function () {
-            var height = 0;
-            this.dom.children().each(function () {
-                height += $(this).height();
-            });
-            return height;
-        },
-
         onActionReceive: {
             insertHtml: function (html) {
                 this.instance.focus();
@@ -130,26 +90,6 @@ define([
                 this.instance.deleteText(range.index, range.length);
                 this.instance.clipboard.insertText(range.index, text);
             }
-        },
-
-        _setCss: function () {
-            this.dom.css({
-                height: '100%',
-                width: '100%',
-                padding: '5px',
-                boxSizing: 'border-box'
-            });
-
-            this.dom.css({
-                background: ''
-            });
-            this.dom.css({
-                'background-color': 'white'
-            });
-            this.dom.removeClass('richtext-postit');
-            this.dom
-                .parents('.ci-module-wrapper')
-                .removeClass('ci-module-richtext-postit');
         }
     });
 
