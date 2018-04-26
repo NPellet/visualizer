@@ -118,14 +118,15 @@ define([
         onActionReceive: {
             insertHtml: function (html) {
                 html = String(html);
-                var len = this.instance.getLength();
-                this.instance.clipboard.dangerouslyPasteHTML(len, html);
+                const range = this.instance.getSelection();
+                this.instance.deleteText(range.index, range.length);
+                this.instance.clipboard.dangerouslyPasteHTML(range.index, html);
             },
             insertText: function (text) {
                 text = String(text);
-            
-                var len = this.instance.getLength();
-                this.instance.clipboard.insertText(len, text);
+                const range = this.instance.getSelection();
+                this.instance.deleteText(range.index, range.length);
+                this.instance.clipboard.insertText(range.index, text);
             }
         },
 
