@@ -244,7 +244,8 @@ module.exports = function (grunt) {
                             './fetch/fetch.js',
                             './js-yaml/dist/**',
                             './canvg/dist/**',
-                            './eventEmitter/*.js'
+                            './eventEmitter/*.js',
+                            ['./quill/*.min.js*', './quill/*.css']
                         ],
                         dest: './build/components/'
                     },

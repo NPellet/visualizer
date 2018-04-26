@@ -7,7 +7,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
     Controller.prototype.moduleInformation = {
         name: 'Quill text editor',
-        description: 'Edit rich text in a wysiwyg interface.',
+        description: 'The quill wysiwyg editor',
         author: 'Miguel Asencio',
         date: '01.03.2018',
         license: 'MIT',

@@ -62,7 +62,7 @@ require.config({
         papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
-        quill: 'components/quill/quill',
+        quill: 'components/quill/quill.min',
         react: 'components/react/react.development',
         'react-dom': 'components/react/react-dom.development',
         select2: 'components/select2/dist/js/select2.full',

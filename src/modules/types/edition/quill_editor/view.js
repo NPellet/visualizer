@@ -50,34 +50,38 @@ define([
             }
         },
         initEditor: function () {
-            var initText = this.module.definition.richtext || '';
-            this.readOnly = !this.module.getConfigurationCheckbox(
-                'editable',
-                'isEditable'
-            );
-
-            if (this.plainHtml) {
-                this.dom = $('<div>');
-                if (this.storeInView) this.dom.html(initText);
+            Util.loadCss('./components/quill/quill.core.css').then(() => {
+                return Util.loadCss('./components/quill/quill.snow.css');
+            }).then(() => {
+                var initText = this.module.definition.richtext || '';
+                this.readOnly = !this.module.getConfigurationCheckbox(
+                    'editable',
+                    'isEditable'
+                );
+    
+                this.dom = $(
+                    `<div class="quill_wrapper">
+                        <div id="${this._id}" class="quill_editor" />
+                     </div>`
+                );
+                // if (this.storeInView) {
+                //     this.dom.html(initText);
+                //     this.module.controller.valueChanged(initText);
+                // }
                 this.module.getDomContent().html(this.dom);
                 this._setCss();
-            } else {
-                this.dom = $(
-                    '<div id="' + this._id + '" contenteditable="true">'
-                );
-                if (this.storeInView) {
-                    this.dom.html(initText);
-                    this.module.controller.valueChanged(initText);
-                }
-                var toolbar = $('<div id="' + this._id + '_toolbar">');
-                this.module.getDomContent().html([toolbar, this.dom]);
-                this._setCss();
-
-                this.instance = new Quill('#' + this._id, {
-                    modules: {toolbar: {container: toolbar}},
-                    readOnly: this.readOnly
+    
+                this.instance = new Quill('#' + this._id, {modules: {
+                    toolbar: [
+                        [{header: [1, 2, false]}],
+                        ['bold', 'italic', 'underline'],
+                        ['image', 'code-block']
+                    ]
+                },
+                placeholder: 'Compose an epic...',
+                theme: 'snow' // or 'bubble');
                 });
-
+    
                 this.instance.on('change', () => {
                     this.valueChanged(this.instance.getData());
                     if (
@@ -92,8 +96,8 @@ define([
                         Grid.moduleResize(this.module);
                     }
                 });
-            }
-            this.resolveReady();
+                this.resolveReady();
+            });
         },
         replaceContent: function (html) {
             html = String(html);
@@ -114,21 +118,14 @@ define([
         onActionReceive: {
             insertHtml: function (html) {
                 html = String(html);
-                if (this.plainHtml) {
-                    this.dom.html(html);
-                } else {
-                    var len = this.instance.getLength();
-                    this.instance.clipboard.dangerouslyPasteHTML(len, html);
-                }
+                var len = this.instance.getLength();
+                this.instance.clipboard.dangerouslyPasteHTML(len, html);
             },
             insertText: function (text) {
                 text = String(text);
-                if (this.plainHtml) {
-                    this.dom.html(text);
-                } else {
-                    var len = this.instance.getLength();
-                    this.instance.clipboard.insertText(len, text);
-                }
+            
+                var len = this.instance.getLength();
+                this.instance.clipboard.insertText(len, text);
             }
         },
 
