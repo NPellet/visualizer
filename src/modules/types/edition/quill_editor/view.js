@@ -117,12 +117,14 @@ define([
 
         onActionReceive: {
             insertHtml: function (html) {
+                this.instance.focus();
                 html = String(html);
                 const range = this.instance.getSelection();
                 this.instance.deleteText(range.index, range.length);
                 this.instance.clipboard.dangerouslyPasteHTML(range.index, html);
             },
             insertText: function (text) {
+                this.instance.focus();
                 text = String(text);
                 const range = this.instance.getSelection();
                 this.instance.deleteText(range.index, range.length);
