@@ -72,7 +72,6 @@ define([
         if(typeof val !== 'string' || !reg) {
             return val;
         }
-        console.log(val, reg, params);
         return val.replace(new RegExp(reg) , ...params);
     })
 
