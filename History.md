@@ -1,3 +1,19 @@
+<a name="2.93.0"></a>
+# [2.93.0](https://github.com/NPellet/visualizer/compare/v2.92.0...v2.93.0) (2018-05-01)
+
+
+### Bug Fixes
+
+* **quill:** cleanup options and variables ([bcdb52a](https://github.com/NPellet/visualizer/commit/bcdb52a))
+* **quill:** editor should take focus when text / html is inserted ([476c240](https://github.com/NPellet/visualizer/commit/476c240))
+
+
+### Features
+
+* **quill:** add initial implementation ([de4b9c1](https://github.com/NPellet/visualizer/commit/de4b9c1))
+
+
+
 <a name="2.92.0"></a>
 # [2.92.0](https://github.com/NPellet/visualizer/compare/v2.91.0...v2.92.0) (2018-04-17)
 
