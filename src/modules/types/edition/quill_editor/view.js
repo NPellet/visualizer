@@ -39,11 +39,10 @@ define([
                 return Util.loadCss('node_modules/katex/dist/katex.min.css');
             }).then(() => {
                 var contents = this.module.definition.richtext || '';
-                this.dom = $(
-                    `<div class="quill_wrapper">
-                        <div id="${this._id}" class="quill_editor" />
-                     </div>`
-                );
+                this.$content = $(`<div id="${this._id}" class="quill_editor" />`);
+                
+                this.dom = $('<div class="quill_wrapper" />');
+                this.$content.appendTo(this.dom);
 
                 this.module.getDomContent().html(this.dom);
     
@@ -67,13 +66,40 @@ define([
     
                 if (this.storeInView) {
                     this.instance.setContents(contents);
-                    // this.module.controller.valueChanged(contents);
+                    this.module.controller.valueChanged(contents);
                 }
                 this.instance.on('text-change', () => {
                     this.valueChanged(this.instance.getContents());
                 });
                 this.resolveReady();
             });
+        },
+        update: {
+            html: function (moduleValue) {
+                this.module.data = moduleValue;
+                this.clear();
+                this.mode = 'html';
+                this.instance.clipboard.dangerouslyPasteHTML(0, moduleValue.get());
+            },
+            quill: function (moduleValue) {
+                this.module.data = moduleValue;
+                this.clear();
+                this.mode = 'quill';
+                this.instance.setContents(moduleValue.get());
+            }
+
+        },
+        blank: {
+            html: function () {
+                this.clear();
+            },
+            quill: function () {
+                this.clear();
+            }
+        },
+        clear() {
+            const len = this.instance.getLength();
+            this.instance.deleteText(0, len);
         },
         onActionReceive: {
             insertHtml: function (html) {

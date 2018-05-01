@@ -16,29 +16,47 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
     Controller.prototype.references = {
         quill: {
-            label: 'A Quill Delta object'
+            label: 'A Quill delta object'
+        },
+        html: {
+            label: 'A string with html'
         }
     };
 
     Controller.prototype.events = {
         onEditorChange: {
             label: 'The value in the editor has changed',
-            refVariable: ['quill']
+            refVariable: ['quill', 'html']
         }
     };
 
-    Controller.prototype.variablesIn = [];
+    Controller.prototype.variablesIn = ['html', 'quill'];
 
     Controller.prototype.onRemove = function () {};
 
     Controller.prototype.valueChanged = function (value) {
+        const html = this.module.view.instance.root.innerHTML;
         if (this.module.getConfigurationCheckbox('storeInView', 'yes')) {
             this.module.definition.richtext = value;
+        }
+        if (this.module.getConfigurationCheckbox('modifyVarIn', 'yes') && this.module.data) {
+            if (this.module.view.mode === 'html') {
+                this.module.data.setValue(html, true);
+                this.module.model.dataTriggerChange(this.module.data);
+            } else {
+                this.module.model.dataSetChild(this.module.data, ['ops'], value.ops);
+            }
         }
         this.createDataFromEvent(
             'onEditorChange',
             'quill',
             value
+        );
+
+        this.createDataFromEvent(
+            'onEditorChange',
+            'html',
+            html
         );
     };
 
@@ -66,6 +84,12 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                             title: 'Store content in view',
                             options: {yes: 'Yes'},
                             default: ['yes']
+                        },
+                        modifyVarIn: {
+                            type: 'checkbox',
+                            title: 'Modify input variable',
+                            options: {yes: 'Yes'},
+                            default: []
                         }
                     }
                 }
@@ -81,7 +105,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     Controller.prototype.configAliases = {
         editable: ['groups', 'group', 0, 'editable', 0],
         storeInView: ['groups', 'group', 0, 'storeInView', 0],
-        debouncing: ['groups', 'group', 0, 'debouncing', 0]
+        debouncing: ['groups', 'group', 0, 'debouncing', 0],
+        modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0],
     };
 
     return Controller;
