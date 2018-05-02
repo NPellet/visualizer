@@ -51,18 +51,27 @@ define([
                     modules: {
                         formula: true,
                         toolbar: readOnly ? false : [
-                            [{header: [1, 2, false]}],
-                            ['size', 'font', 'color', 'background'],
+                            [{header: [1, 2, 3, 4, false]}],
+                            [{font: []}],
+                            [{size: ['small', false, 'large', 'huge']}],
+                            [{color: []}, {background: []}],
                             ['bold', 'italic', 'underline', 'strike'],
-                            ['link', 'image', 'code-block'],
-                            ['align', 'indent', 'list'],
-                            ['formula']
+                            ['link', 'image', 'video', 'code-block', 'blockquote', 'code'],
+                            [{align: []}],
+                            [{list: 'ordered'}, {list: 'bullet'}],
+                            [{script: 'sub'}, {script: 'super'}], // superscript/subscript
+                            [{indent: '-1'}, {indent: '+1'}],
+                            [{direction: 'rtl'}],
+                            ['formula'],
+                            ['clean']
                         ]
                     },
                     placeholder: 'Start composing here...',
                     readOnly,
                     theme: 'snow' // or 'bubble'
                 });
+
+                this.$content.find('[data-toggle="tooltip"]').tooltip();
     
                 if (this.storeInView) {
                     this.instance.setContents(contents);
