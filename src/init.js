@@ -62,7 +62,10 @@ require.config({
         papaparse: 'components/papa-parse/papaparse.min',
         plot: 'lib/plot/plot',
         pouchdb: 'components/pouchdb/dist/pouchdb.min',
+        quillPrivate: 'src/quillPrivate',
         quill: 'components/quill/quill.min',
+        quillImageResizeModule: 'node_modules/quill-image-resize-module/image-resize.min',
+        quillImageDropModule: 'node_modules/quill-image-drop-module/image-drop.min',
         react: 'components/react/react.development',
         'react-dom': 'components/react/react-dom.development',
         select2: 'components/select2/dist/js/select2.full',
@@ -127,6 +130,8 @@ require.config({
         'lib/parser/Parser': {
             exports: 'Parser'
         },
+        quillImageResizeModule: ['quillPrivate', 'quill'],
+        quillImageDropModule: ['quillPrivate', 'quill'],
         'jquery-cookie': 'jquery',
         select2: ['jquery'],
         jsbarcode: ['jquery'],
@@ -177,6 +182,14 @@ require.config({
             'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'
         ],
         BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
+    },
+    map: {
+        '*': {
+            quill: 'quillPrivate'
+        },
+        quillPrivate: {
+            quill: 'quill'
+        }
     }
 });
 

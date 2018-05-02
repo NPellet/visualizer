@@ -5,11 +5,12 @@ define([
     'modules/default/defaultview',
     'src/util/util',
     'quill',
+    'quillImageResizeModule',
     'lodash',
     'src/main/grid',
-    'katex'
-], function ($, Default, Util, Quill, _, Grid, katex) {
-    window.katex = katex; // Needed for quill to work :(
+    'quillImageDropModule'
+], function ($, Default, Util, Quill, ImageResize, _, Grid) {
+    Quill.register('modules/ImageResize', ImageResize.default);
     function View() {
         this._id = Util.getNextUniqueId();
     }
@@ -49,6 +50,8 @@ define([
                 const readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
                 this.instance = new Quill('#' + this._id, {
                     modules: {
+                        imageDrop: true,
+                        ImageResize: {},
                         formula: true,
                         toolbar: readOnly ? false : [
                             [{header: [1, 2, 3, 4, false]}],

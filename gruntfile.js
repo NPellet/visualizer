@@ -245,7 +245,9 @@ module.exports = function (grunt) {
                             './js-yaml/dist/**',
                             './canvg/dist/**',
                             './eventEmitter/*.js',
-                            ['./quill/*.min.js*', './quill/*.css']
+                            ['./quill/*.min.js*', './quill/*.css'],
+                            './quill-image-drop-module/image-drop.min.js',
+                            './quill-image-resize-module/image-resize.min.js'
                         ],
                         dest: './build/components/'
                     },
