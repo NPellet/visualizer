@@ -50,6 +50,9 @@ define([
                 const readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
                 this.instance = new Quill('#' + this._id, {
                     modules: {
+                        clipboard: {
+                            matchVisual: false
+                        },
                         imageDrop: true,
                         ImageResize: {},
                         formula: true,
