@@ -663,7 +663,8 @@ define([
                 'lib/forms/style.css',
                 'components/fancytree/dist/skin-lion/ui.fancytree.css',
                 'css/overwrite_styles.css',
-                'components/font-awesome/css/font-awesome.min.css' // needed for typerenderer
+                'components/font-awesome/web-fonts-with-css/css/fa-solid.min.css', // needed for typerenderer
+                'components/font-awesome/web-fonts-with-css/css/fontawesome.min.css'
             ];
 
             css.forEach(function (css) {
