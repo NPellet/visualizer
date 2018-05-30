@@ -168,7 +168,7 @@ define(
                                 type: 'jscode',
                                 title: 'Filter',
                                 default:
-                                    '// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300',
+                                    '// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735',
                                 displayTarget: ['p']
                             },
                             customJpaths: {
