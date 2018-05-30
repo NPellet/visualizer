@@ -939,6 +939,25 @@ define(
                     this._setScript(this.module.getConfiguration('filterRow'));
                 }
 
+                this.postRenderer = function (
+                    cellNode,
+                    row, dataContext,
+                    colDef
+                ) {
+                    if (cellNode) {
+                        let context = {
+                            event: 'postRender',
+                            column: colDef,
+                            row: {
+                                item: dataContext
+                            },
+                            renderOptions: {}
+                        };
+                        that._runFilter(context);
+                        that.postUpdateCell(cellNode, context.renderOptions);
+                    }
+                };
+
                 this.actionRenderer = function (
                     cellNode,
                     row,
@@ -970,7 +989,7 @@ define(
                         if (context.renderOptions.disabled) {
                             cellNode.innerHTML = '';
                         } else {
-                            if (context.renderOptions.icon.startsWith('fa-')) {
+                            if (context.renderOptions.icon && context.renderOptions.icon.startsWith('fa-')) {
                                 cellNode.innerHTML = `<div style="width:100%; height: 100%"><a><i class="fa ${
                                     context.renderOptions.icon
                                 } centered-icon"></i></a></div>`;
@@ -983,10 +1002,7 @@ define(
 
                         var $cellNode = $(cellNode);
 
-                        $cellNode.css(
-                            'backgroundColor',
-                            context.renderOptions.backgroundColor
-                        );
+                        that.postUpdateCell(cellNode, context.renderOptions);
                         $cellNode.css('cursor', 'default');
                         $cellNode
                             .find('a')
@@ -1036,6 +1052,16 @@ define(
                     });
                 } else {
                     that.resolveReady();
+                }
+            },
+
+            postUpdateCell: function (cellNode, renderOptions) {
+                var $cellNode = $(cellNode);
+                if (renderOptions.backgroundColor) {
+                    $cellNode.css(
+                        'backgroundColor',
+                        renderOptions.backgroundColor
+                    );
                 }
             },
 
@@ -1150,7 +1176,7 @@ define(
                             asyncPostRender:
                                 row.formatter === 'typerenderer'
                                     ? tp
-                                    : undefined,
+                                    : that.postRenderer.bind(this),
                             jpath: row.jpath,
                             simpleJpath: row.jpath.length === 1,
                             dataType: type,
@@ -1686,13 +1712,17 @@ define(
             //    this.column         Description of the column associated to event
             //    this.renderOptions  Can be used to dynamically set rendering options
 
-            // this.renderOptions     applicable to action columns only
+            // this.renderOptions     on renderAction event
             //    icon                icon to render, e.g. fa-trash
             //    disabled            disable rendering
             //    action              The action to send when cell is clicked
             //    backgroundColor     Background color of the cell
             //    color               Foreground color of the cell
             //    clickMode           'text': only content is clickable. 'background': whole cell is clickable
+
+            // this.renderOptions     on postRender event
+            //   backgroundColor      set the background color of the cell
+            //   color                set the foreground color of the cell
 
             // Row description
             //    row.id              The id of the row
@@ -1786,11 +1816,15 @@ define(
                 if (!that.hasFilter || !that.lastViewport) return;
                 var rows = that._getRowsFromViewport();
                 var items = that._getItemsInfo(rows);
+                const context =
                 that._runFilter({
                     rows: items,
                     cell: null,
-                    event: 'inView'
+                    event: 'inView',
+                    // renderOptions: {}
                 });
+
+                
                 // If used asynchronously (e.g. in debounce)
                 //that.grid.invalidateAllRows();
                 //that.grid.render();
@@ -2360,6 +2394,7 @@ define(
                     colDef.jpath,
                     rendererOptions
                 );
+                this.postRenderer(cellNode, row, dataContext, colDef);
             }
         }
 
