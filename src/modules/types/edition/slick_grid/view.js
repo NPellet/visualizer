@@ -1057,12 +1057,7 @@ define(
 
             postUpdateCell: function (cellNode, renderOptions) {
                 var $cellNode = $(cellNode);
-                if (renderOptions.backgroundColor) {
-                    $cellNode.css(
-                        'backgroundColor',
-                        renderOptions.backgroundColor
-                    );
-                }
+                $cellNode.css(renderOptions);
             },
 
             preventRowHelp: function () {
@@ -1720,7 +1715,7 @@ define(
             //    color               Foreground color of the cell
             //    clickMode           'text': only content is clickable. 'background': whole cell is clickable
 
-            // this.renderOptions     on postRender event
+            // this.renderOptions     on postRender event. Setting those properties will set the corresponding css properties on the top level dom element
             //   backgroundColor      set the background color of the cell
             //   color                set the foreground color of the cell
 
@@ -1738,7 +1733,6 @@ define(
             //    newRow              A new row has been commited to the input array
             //    scriptChanged       The filter script changed
             //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering
-            // options
             _setScript: function (script) {
                 this.filterScript = script || '';
                 this.hasFilter = this._hasFilter();
