@@ -279,7 +279,12 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                     if (!stream) {
                         return resolve(false);
                     }
-                    stream.stop();
+                    const tracks = stream.getTracks();
+                    if (tracks) {
+                        for (let track of tracks) {
+                            track.stop();
+                        }
+                    }
                     return resolve(imgData);
                 },
                 width: 400
