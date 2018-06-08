@@ -190,6 +190,7 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
 
     var stream;
     var $dialog;
+    var dialogClosed = true;
 
     function confirm(message) {
         return new Promise(function (resolve) {
@@ -207,8 +208,13 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                 width = 320,
                 height = 0;
 
+            navigator.getMedia =
+                navigator.getUserMedia ||
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia ||
+                navigator.msGetUserMedia;
 
-            navigator.mediaDevices.getUserMedia(
+            navigator.getMedia(
                 {
                     video: true,
                     audio: false
@@ -236,7 +242,15 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
 
             function treatStream(s) {
                 stream = s;
-                video.srcObject = stream;
+                if (dialogClosed) {
+                    s.stop();
+                }
+                if (navigator.mozGetUserMedia) {
+                    video.mozSrcObject = stream;
+                } else {
+                    var vendorURL = window.URL || window.webkitURL;
+                    video.src = vendorURL.createObjectURL(stream);
+                }
                 video.play();
             }
 
@@ -248,6 +262,7 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                 //photo.setAttribute('src', data);
             }
 
+            dialogClosed = false;
             $dialog.dialog({
                 modal: true,
                 buttons: {
@@ -264,9 +279,7 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                     if (!stream) {
                         return resolve(false);
                     }
-                    for (let track of stream.getTracks()) {
-                        track.stop();
-                    }
+                    stream.stop();
                     return resolve(imgData);
                 },
                 width: 400
