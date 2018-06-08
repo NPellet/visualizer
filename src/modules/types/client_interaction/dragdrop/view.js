@@ -243,7 +243,8 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
             function treatStream(s) {
                 stream = s;
                 if (dialogClosed) {
-                    s.stop();
+                    stopTracks(stream);
+                    return;
                 }
                 if (navigator.mozGetUserMedia) {
                     video.mozSrcObject = stream;
@@ -279,17 +280,22 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                     if (!stream) {
                         return resolve(false);
                     }
-                    const tracks = stream.getTracks();
-                    if (tracks) {
-                        for (let track of tracks) {
-                            track.stop();
-                        }
-                    }
+                    stopTracks(stream);
                     return resolve(imgData);
                 },
                 width: 400
             });
         });
+    }
+
+    function stopTracks(stream) {
+        if (!stream) return;
+        const tracks = stream.getTracks();
+        if (tracks) {
+            for (let track of tracks) {
+                track.stop();
+            }
+        }
     }
 
     return View;
