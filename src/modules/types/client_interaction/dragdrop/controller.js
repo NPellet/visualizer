@@ -78,23 +78,6 @@ define(
                                 title: 'Text displayed on select file button',
                                 default: 'Select file'
                             },
-                            getusermedia: {
-                                type: 'checkbox',
-                                title: 'Use getUserMedia',
-                                options: {yes: 'Yes'},
-                                default: []
-                            },
-                            capture: {
-                                type: 'combo',
-                                title: 'Capture',
-                                options: [
-                                    {title: 'none', key: 'none'},
-                                    {title: 'camera', key: 'camera'},
-                                    {title: 'camcorder', key: 'camcorder'},
-                                    {title: 'microphone', key: 'microphone'}
-                                ],
-                                default: 'none'
-                            },
                             checkOptions: {
                                 type: 'checkbox',
                                 title: 'General options',

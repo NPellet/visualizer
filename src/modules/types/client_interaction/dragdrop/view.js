@@ -31,21 +31,6 @@ define(['modules/default/defaultview', 'bowser', 'src/util/ui'], function (
                     type: 'file',
                     multiple: true
                 });
-            var capture = this.module.getConfiguration('capture');
-            if (capture && capture !== 'none') {
-                $fileInput.attr('capture', capture);
-                switch (capture) {
-                    case 'camera':
-                        $fileInput.attr('accept', 'image/*');
-                        break;
-                    case 'camcorder':
-                        $fileInput.attr('accept', 'video/*');
-                        break;
-                    case 'microphone':
-                        $fileInput.attr('accept', 'audio/*');
-                        break;
-                }
-            }
 
             var textarea = $('<textarea>')
                 .css({
