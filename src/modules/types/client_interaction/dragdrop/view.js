@@ -1,9 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
+define(['modules/default/defaultview', 'bowser', 'src/util/ui'], function (
     Default,
     bowser,
-    Debug
+    UI
 ) {
     bowser.mobileos =
         bowser.ios ||
@@ -68,13 +68,18 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                     this.module.getConfiguration('dragoverlabel') ||
                     defaultMessage,
                 hover:
-                    this.module.getConfiguration('hoverlabel') || defaultMessage
+                    this.module.getConfiguration('hoverlabel', 'Select file')
             };
+            this.$messages = $('<div class="flex-container">');
             this.messageP = $('<div>')
                 .css('display', 'inline-block')
                 .html(this.messages.default);
+            
+            this.$fileDialogButton = $(`<button type="button" class="form-button blue"><i class="fa fa-file"/>&nbsp; &nbsp; ${this.messages.hover}</button>`);
+            this.$cameraDialogButton = $('<button type="button" class="form-button red"><i class="fa fa-camera"/>&nbsp; &nbsp; Take picture</button>');
+            this.$messages.append(this.messageP).append(this.$fileDialogButton).append(this.$cameraDialogButton);
             this.dom = $('<div />', {class: 'dragdropzone'})
-                .html(this.messageP)
+                .html(this.$messages)
                 .on('click mousemove', function () {
                     textarea.focus();
                 })
@@ -83,25 +88,22 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                 })
                 .append(textarea);
 
-            this.dom.on('click', function (event) {
+            this.$fileDialogButton.on('click', function (event) {
                 event.stopPropagation();
-                if (
-                    !useGetUserMedia ||
-                    !that.module.getConfigurationCheckbox('getusermedia', 'yes')
-                )
-                    $fileInput.click();
-                else {
-                    confirm(
-                        $(
-                            '<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>'
-                        )
-                    ).then(function (value) {
-                        if (!value) return;
-                        if (value) {
-                            that.module.controller.openPhoto(value);
-                        }
-                    });
-                }
+                $fileInput.click();
+            });
+
+            this.$cameraDialogButton.on('click', function () {
+                confirm(
+                    $(
+                        '<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>'
+                    )
+                ).then(function (value) {
+                    if (!value) return;
+                    if (value) {
+                        that.module.controller.openPhoto(value);
+                    }
+                });
             });
 
             $fileInput.on('change', function (e) {
@@ -123,12 +125,6 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
             // The dragleave event is fired when entering a child element
             // See http://stackoverflow.com/q/7110353/1247233
             var dragCount = 0;
-            dom.addEventListener('mouseenter', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                that.messageP.html(that.messages.hover);
-                that.dom.addClass('dragdrop-over');
-            });
 
             dom.addEventListener('dragenter', function (e) {
                 dragCount++;
@@ -155,17 +151,12 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                 }
             });
 
-            dom.addEventListener('mouseleave', function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                that.messageP.html(that.messages.default);
-                that.dom.removeClass('dragdrop-over');
-            });
-
             dom.addEventListener('drop', function (e) {
                 dragCount = 0;
                 e.stopPropagation();
                 e.preventDefault();
+                that.dom.removeClass('dragdrop-over');
+                that.messageP.html(that.messages.default);
                 that.module.controller.open(e.dataTransfer);
             });
 
@@ -221,7 +212,9 @@ define(['modules/default/defaultview', 'bowser', 'src/util/debug'], function (
                 },
                 treatStream,
                 function (err) {
-                    Debug.error('An error occured! ' + err);
+                    UI.showNotification(err.message);
+                    $dialog.dialog('close');
+
                 }
             );
 

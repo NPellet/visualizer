@@ -75,7 +75,8 @@ define(
                             },
                             hoverlabel: {
                                 type: 'text',
-                                title: 'Text displayed on hover'
+                                title: 'Text displayed on select file button',
+                                default: 'Select file'
                             },
                             getusermedia: {
                                 type: 'checkbox',

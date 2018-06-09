@@ -20,3 +20,13 @@
 .dragdrop-over {
     background-color: rgba(231, 242, 196, 0.2);
 }
+
+.ci-module-dragdrop .flex-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.ci-module-dragdrop .flex-container > * {
+    margin: 10px auto;
+}
