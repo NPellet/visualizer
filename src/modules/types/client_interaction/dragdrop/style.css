@@ -3,18 +3,18 @@
     display: table;
 }
 
-.dragdropzone {
+.content-zone {
     width: 100%;
     height: 100%;
-
     vertical-align: middle;
-    font-size: 26px;
-    color: rgba(0, 0, 0, 0.5);
-    border: 10px dashed rgba(0, 0, 0, 0.3);
-    box-sizing: border-box;
     text-align: center;
     display: table-cell;
-    vertical-align: middle;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.dragdropzone {
+    border: 10px dashed rgba(0, 0, 0, 0.3);
 }
 
 .dragdrop-over {

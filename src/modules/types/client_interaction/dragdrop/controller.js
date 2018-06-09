@@ -75,8 +75,18 @@ define(
                             },
                             hoverlabel: {
                                 type: 'text',
-                                title: 'Text displayed on select file button',
+                                title: 'Text displayed on hover drop / paste area',
+                                default: 'Drag\'n drop or paste here'
+                            },
+                            fileSelectLabel: {
+                                type: 'text',
+                                title: 'Text displayed on file select button',
                                 default: 'Select file'
+                            },
+                            labelFontSize: {
+                                type: 'float',
+                                title: 'Size of the label text',
+                                default: 26
                             },
                             checkOptions: {
                                 type: 'checkbox',
@@ -86,6 +96,17 @@ define(
                                         'Prompt for filename when ambiguous'
                                 },
                                 default: ['promptAmbiguous']
+                            },
+                            inputOptions: {
+                                type: 'checkbox',
+                                title: 'Input options',
+                                options: {
+                                    allowDrop: 'Allow files to be dropped',
+                                    allowPaste: 'Allow text to be pasted',
+                                    allowCamera: 'Allow taking pictures with camera',
+                                    allowFileInput: 'Allow open file dialog'
+                                },
+                                default: ['allowDrop', 'allowPaste', 'allowFileInput']
                             }
                         }
                     },
@@ -215,7 +236,9 @@ define(
             label: ['groups', 'group', 0, 'label', 0],
             dragoverlabel: ['groups', 'group', 0, 'dragoverlabel', 0],
             hoverlabel: ['groups', 'group', 0, 'hoverlabel', 0],
-            getusermedia: ['groups', 'group', 0, 'getusermedia', 0],
+            fileSelectLabel: ['groups', 'group', 0, 'fileSelectLabel', 0],
+            labelFontSize: ['groups', 'group', 0, 'labelFontSize', 0],
+            inputOptions: ['groups', 'group', 0, 'inputOptions', 0],
             vars: ['groups', 'vars', 0],
             string: ['groups', 'string', 0],
             photo: ['groups', 'photo', 0],
