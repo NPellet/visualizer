@@ -1,3 +1,23 @@
+<a name="2.94.0"></a>
+# [2.94.0](https://github.com/NPellet/visualizer/compare/v2.93.0...v2.94.0) (2018-06-10)
+
+
+### Bug Fixes
+
+* **dragdrop:** close video stream if dialog was closed before stream was created ([4d71f22](https://github.com/NPellet/visualizer/commit/4d71f22))
+* **quill:** set matchVisual clipboard option to false ([274ae27](https://github.com/NPellet/visualizer/commit/274ae27))
+
+
+### Features
+
+* **dragdrop:** add input options ([f16643e](https://github.com/NPellet/visualizer/commit/f16643e))
+* **dragdrop:** enhance layout ([a8864f6](https://github.com/NPellet/visualizer/commit/a8864f6))
+* **dragdrop:** remove capture option (was meant for mobile) ([a6f15a6](https://github.com/NPellet/visualizer/commit/a6f15a6))
+* **quill:** input html or quill variable ([1d95ee1](https://github.com/NPellet/visualizer/commit/1d95ee1))
+* **slickgrid:** add postRender filter event ([09b9aee](https://github.com/NPellet/visualizer/commit/09b9aee))
+
+
+
 <a name="2.93.0"></a>
 # [2.93.0](https://github.com/NPellet/visualizer/compare/v2.92.0...v2.93.0) (2018-05-01)
 
