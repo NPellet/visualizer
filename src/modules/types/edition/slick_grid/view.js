@@ -990,7 +990,7 @@ define(
                             cellNode.innerHTML = '';
                         } else {
                             if (context.renderOptions.icon && context.renderOptions.icon.startsWith('fa-')) {
-                                cellNode.innerHTML = `<div style="width:100%; height: 100%"><a><i class="fa ${
+                                cellNode.innerHTML = `<div style="width:100%; height: 100%"><a style="display: block; text-align:center;"><i class="fa ${
                                     context.renderOptions.icon
                                 } centered-icon"></i></a></div>`;
                             } else {
@@ -2363,7 +2363,7 @@ define(
         }
 
         function binFormatter() {
-            return '<div style="width:100%; height: 100%;"><a class="recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
+            return '<div style="width:100%; height: 100%;"><a class="icon-clickable"><i class="centered-icon fa fa-trash"></i></a></div>';
         }
 
         function requiredFieldValidator(value) {

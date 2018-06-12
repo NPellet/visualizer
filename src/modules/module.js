@@ -166,7 +166,6 @@ define([
         drawToolbar() {
             var isLocked = API.isViewLocked();
             var $ul = this.dom.find('.ci-module-header-toolbar ul');
-            debugger;
             var toolbar = this.controller.getToolbar();
             var html = '';
             for (var i = 0; i < toolbar.length; i++) {

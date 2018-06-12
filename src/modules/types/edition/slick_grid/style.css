@@ -462,12 +462,11 @@ classes should alter those!
 }
 
 /* =========== MODULE CUSTOM CSS ============ */
-.slick-cell a.recycle-bin {
-    cursor: pointer;
-}
 
 .slick-cell a.icon-clickable {
     cursor: pointer;
+    display: block;
+    text-align: center;
 }
 
 .ci-module-slickgrid .main-container{
