@@ -245,9 +245,7 @@ module.exports = function (grunt) {
                             './js-yaml/dist/**',
                             './canvg/dist/**',
                             './eventEmitter/*.js',
-                            ['./quill/*.min.js*', './quill/*.css'],
-                            './quill-image-drop-module/image-drop.min.js',
-                            './quill-image-resize-module/image-resize.min.js'
+                            ['./quill/*.min.js*', './quill/*.css']
                         ],
                         dest: './build/components/'
                     },
@@ -256,7 +254,9 @@ module.exports = function (grunt) {
                         cwd: './node_modules',
                         src: [
                             './katex/dist/**',
-                            './angularplasmid/dist/**'
+                            './angularplasmid/dist/**',
+                            './quill-image-drop-module/image-drop.min.js',
+                            './quill-image-resize-module/image-resize.min.js'
                         ],
                         dest: './build/node_modules/'
                     },
