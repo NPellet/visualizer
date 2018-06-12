@@ -1,12 +1,11 @@
 'use strict';
 
-define([
-    'jquery',
-    'src/util/api',
-    'src/util/util',
-    'src/main/grid'
-], function ($, API, Util, Grid) {
-
+define(['jquery', 'src/util/api', 'src/util/util', 'src/main/grid'], function (
+    $,
+    API,
+    Util,
+    Grid
+) {
     return {
         setModule(module) {
             this.module = module;
@@ -23,7 +22,8 @@ define([
         getToolbar() {
             var tb = this.module.definition.toolbar;
             if (tb) {
-                var common = this.module.definition.toolbar.common[0].toolbar[0];
+                var common = this.module.definition.toolbar.common[0]
+                    .toolbar[0];
                 var custom = this.module.definition.toolbar.custom[0];
             }
 
@@ -97,6 +97,7 @@ define([
             const customB = [];
             const customE = [];
             if (custom) {
+                custom = custom.filter(el => el.title);
                 for (let i = 0; i < custom.length; i++) {
                     let el = {
                         ifLocked: true,
@@ -127,7 +128,11 @@ define([
 
             let first = true;
             for (let i = 0; i < varsOut.length; i++) {
-                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
+                if (
+                    varsOut[i].event == event &&
+                    (varsOut[i].rel == rel || !rel) &&
+                    varsOut[i].name
+                ) {
                     if (first && callback) {
                         first = false;
                         callback.call(this);
@@ -140,7 +145,12 @@ define([
                         varsOut[i].jpath.shift();
                     }
 
-                    API.setVar(varsOut[i].name, this.module.getVariableFromRel(relSource), jpath.concat(varsOut[i].jpath), varsOut[i].filter);
+                    API.setVar(
+                        varsOut[i].name,
+                        this.module.getVariableFromRel(relSource),
+                        jpath.concat(varsOut[i].jpath),
+                        varsOut[i].filter
+                    );
                 }
             }
         },
@@ -153,13 +163,22 @@ define([
 
             let first = true;
             for (let i = 0; i < varsOut.length; i++) {
-                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel) && varsOut[i].name) {
+                if (
+                    varsOut[i].event == event &&
+                    (varsOut[i].rel == rel || !rel) &&
+                    varsOut[i].name
+                ) {
                     if (first && callback) {
                         first = false;
                         data = callback.call(this);
                     }
 
-                    API.createDataJpath(varsOut[i].name, data, varsOut[i].jpath, varsOut[i].filter);
+                    API.createDataJpath(
+                        varsOut[i].name,
+                        data,
+                        varsOut[i].jpath,
+                        varsOut[i].filter
+                    );
                 }
             }
         },
@@ -172,7 +191,11 @@ define([
             }
 
             for (let i = actionsOut.length - 1; i >= 0; i--) {
-                if (actionsOut[i].name && actionsOut[i].rel === rel && ((event && event === actionsOut[i].event) || !event)) {
+                if (
+                    actionsOut[i].name &&
+                    actionsOut[i].rel === rel &&
+                    ((event && event === actionsOut[i].event) || !event)
+                ) {
                     const actionName = actionsOut[i].name;
                     const jpath = actionsOut[i].jpath;
 
@@ -181,7 +204,7 @@ define([
                             value = DataObject.check(value, true);
                         }
 
-                        value.getChild(jpath).then((returned) => {
+                        value.getChild(jpath).then(returned => {
                             API.doAction(actionName, returned);
                         });
                     } else {
@@ -202,7 +225,10 @@ define([
             }
 
             for (let i = 0; i < varsOut.length; i++) {
-                if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel)) {
+                if (
+                    varsOut[i].event == event &&
+                    (varsOut[i].rel == rel || !rel)
+                ) {
                     callback(varsOut[i]);
                 }
             }

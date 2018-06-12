@@ -27,6 +27,7 @@ require.config({
         eventEmitter: 'components/eventEmitter/EventEmitter.min',
         fancytree: 'components/fancytree/dist/jquery.fancytree-all',
         fetch: 'components/fetch/fetch',
+        fontawesome: 'components/font-awesome/svg-with-js/js/fontawesome.min',
         'file-saver': 'components/file-saver.js/FileSaver',
         forms: 'lib/forms',
         highlightjs: 'lib/highlight.js/highlight.pack',
@@ -79,7 +80,6 @@ require.config({
         uri: 'components/uri.js/src',
         'web-animations': 'components/web-animations-js/web-animations.min',
         x2js: 'components/x2js/xml2json.min',
-
         BiojsSequence: 'lib/biojs-1.0/src/main/javascript/Biojs.Sequence',
         BiojsTooltip: 'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
         BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
@@ -168,6 +168,9 @@ require.config({
         },
         fancytree: ['jquery-ui/ui/effects/effect-blind', 'jquery-ui/ui/widgets/droppable', 'jquery-ui/ui/widgets/draggable'],
         'moment-duration-format': ['moment'],
+        fontawesome: [,
+        'components/font-awesome/svg-with-js/js/fa-solid.min',
+        'components/font-awesome/svg-with-js/js/fa-v4-shims.min'],
         BiojsCore: {
             exports: 'Biojs'
         },

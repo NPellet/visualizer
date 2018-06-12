@@ -22,7 +22,8 @@ define([
     'src/util/sandbox',
     'src/util/shortcuts',
     'src/util/copyPasteManager',
-    './forceLoad'
+    './forceLoad',
+    'fontawesome'
 ], function (
     $,
     _,
@@ -662,9 +663,7 @@ define([
                 'components/jquery-ui/themes/base/jquery-ui.min.css',
                 'lib/forms/style.css',
                 'components/fancytree/dist/skin-lion/ui.fancytree.css',
-                'css/overwrite_styles.css',
-                'components/font-awesome/web-fonts-with-css/css/fa-solid.min.css', // needed for typerenderer
-                'components/font-awesome/web-fonts-with-css/css/fontawesome.min.css'
+                'css/overwrite_styles.css'
             ];
 
             css.forEach(function (css) {

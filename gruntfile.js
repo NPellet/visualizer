@@ -190,7 +190,7 @@ module.exports = function (grunt) {
                             './jit/Jit/**/*',
                             './ui-contextmenu/jquery.ui-contextmenu*',
                             './papa-parse/papaparse*',
-                            ['./font-awesome/web-fonts-with-css/css/*', './font-awesome/web-fonts-with-css/webfonts/*'],
+                            ['./font-awesome/svg-with-js/js/*'],
                             './colors/css/colors.min.css',
                             './pouchdb/dist/**',
                             './uri.js/src/*.js',
