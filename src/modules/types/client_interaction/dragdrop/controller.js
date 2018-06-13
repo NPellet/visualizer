@@ -104,7 +104,8 @@ define(
                                     allowDrop: 'Allow files to be dropped',
                                     allowPaste: 'Allow text to be pasted',
                                     allowCamera: 'Allow taking pictures with camera',
-                                    allowFileInput: 'Allow open file dialog'
+                                    allowFileInput: 'Allow open file dialog',
+                                    showFileInputButton: 'Show file input button'
                                 },
                                 default: ['allowDrop', 'allowPaste', 'allowFileInput']
                             }

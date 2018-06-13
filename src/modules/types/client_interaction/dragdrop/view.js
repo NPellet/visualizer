@@ -1,9 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/ui'], function (
-    Default,
-    UI
-) {
+define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
     function View() {}
 
     $.extend(true, View.prototype, Default, {
@@ -16,24 +13,22 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                     multiple: true
                 });
 
-            var textarea = $('<textarea>')
-                .css({
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    height: 0,
-                    width: 0,
-                    opacity: 0
-                });
+            var textarea = $('<textarea>').css({
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                opacity: 0
+            });
 
             var defaultMessage = this.module.getConfiguration('label');
             this.messages = {
                 default: defaultMessage,
                 drag:
-                        this.module.getConfiguration('dragoverlabel') ||
-                        defaultMessage,
-                hover:
-                        this.module.getConfiguration('hoverlabel'),
+                    this.module.getConfiguration('dragoverlabel') ||
+                    defaultMessage,
+                hover: this.module.getConfiguration('hoverlabel'),
                 fileSelect: this.module.getConfiguration('fileSelectLabel')
             };
 
@@ -43,7 +38,11 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                 .css('font-size', this.module.getConfiguration('labelFontSize'))
                 .html(this.messages.default);
 
-            this.dom = $('<div />', {class: this.canDropOrPaste ? 'content-zone dragdropzone' : 'content-zone'})
+            this.dom = $('<div />', {
+                class: this.canDropOrPaste
+                    ? 'content-zone dragdropzone'
+                    : 'content-zone'
+            })
                 .html(this.$messages)
                 .on('click mousemove', function () {
                     textarea.focus();
@@ -53,7 +52,12 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                 })
                 .append(textarea);
 
-            if (this.module.getConfigurationCheckbox('inputOptions', 'allowPaste')) {
+            if (
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowPaste'
+                )
+            ) {
                 textarea.on('paste', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -61,27 +65,64 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                 });
             }
 
-            this.canDropOrPaste = this.module.getConfigurationCheckbox('inputOptions', 'allowDrop') || this.module.getConfigurationCheckbox('inputOptions', 'allowPaste');
+            this.canDropOrPaste =
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowDrop'
+                ) ||
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowPaste'
+                );
             if (this.canDropOrPaste) {
                 this.$messages.append(this.messageP);
             }
-            if (this.module.getConfigurationCheckbox('inputOptions', 'allowFileInput')) {
-                const $fileDialogButton = $(`<button type="button" class="form-button blue"><i class="fa fa-file"/>&nbsp; &nbsp; ${this.messages.fileSelect}</button>`);
+            if (
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowFileInput'
+                ) &&
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'showFileInputButton'
+                )
+            ) {
+                const $fileDialogButton = $(
+                    `<button type="button" class="form-button blue"><i class="fa fa-file"/>&nbsp; &nbsp; ${
+                        this.messages.fileSelect
+                    }</button>`
+                );
                 this.$messages.append($fileDialogButton);
                 $fileDialogButton.on('click', function (event) {
                     event.stopPropagation();
                     $fileInput.click();
                 });
+            }
+
+            if (
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowFileInput'
+                )
+            ) {
                 this.dom.on('click', function (event) {
                     event.stopPropagation();
                     $fileInput.click();
                 });
             }
 
-            if (this.module.getConfigurationCheckbox('inputOptions', 'allowCamera')) {
-                const $cameraDialogButton = $('<button type="button" class="form-button red"><i class="fa fa-camera"/>&nbsp; &nbsp; Take picture</button>');
+            if (
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowCamera'
+                )
+            ) {
+                const $cameraDialogButton = $(
+                    '<button type="button" class="form-button red"><i class="fa fa-camera"/>&nbsp; &nbsp; Take picture</button>'
+                );
                 this.$messages.append($cameraDialogButton);
-                $cameraDialogButton.on('click', function () {
+                $cameraDialogButton.on('click', function (event) {
+                    event.stopPropagation();
                     confirm(
                         $(
                             '<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>'
@@ -94,7 +135,6 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                     });
                 });
             }
-            
 
             $fileInput.on('change', function (e) {
                 that.module.controller.open(
@@ -116,7 +156,12 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
             // See http://stackoverflow.com/q/7110353/1247233
             var dragCount = 0;
 
-            if (this.module.getConfigurationCheckbox('inputOptions', 'allowDrop')) {
+            if (
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowDrop'
+                )
+            ) {
                 dom.addEventListener('dragenter', function (e) {
                     dragCount++;
                     e.stopPropagation();
@@ -126,12 +171,12 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                         that.dom.addClass('dragdrop-over');
                     }
                 });
-    
+
                 dom.addEventListener('dragover', function (e) {
                     e.stopPropagation();
                     e.preventDefault();
                 });
-    
+
                 dom.addEventListener('dragleave', function (e) {
                     dragCount--;
                     e.stopPropagation();
@@ -141,7 +186,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                         that.dom.removeClass('dragdrop-over');
                     }
                 });
-    
+
                 dom.addEventListener('drop', function (e) {
                     dragCount = 0;
                     e.stopPropagation();
@@ -152,7 +197,12 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                 });
             }
 
-            if (this.module.getConfigurationCheckbox('inputOptions', 'allowPaste')) {
+            if (
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowPaste'
+                )
+            ) {
                 dom.addEventListener('mouseleave', function (e) {
                     e.stopPropagation();
                     e.preventDefault();
@@ -167,7 +217,6 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                     that.dom.addClass('dragdrop-over');
                 });
             }
-            
 
             this.resolveReady();
         }
@@ -208,7 +257,6 @@ define(['modules/default/defaultview', 'src/util/ui'], function (
                 function (err) {
                     UI.showNotification(err.message);
                     $dialog.dialog('close');
-
                 }
             );
 
