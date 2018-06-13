@@ -88,7 +88,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
                 )
             ) {
                 const $fileDialogButton = $(
-                    `<button type="button" class="form-button blue"><i class="fa fa-file"/>&nbsp; &nbsp; ${
+                    `<button type="button" class="form-button blue"><i class="fa fa-file fa-lg"/>&nbsp; &nbsp; ${
                         this.messages.fileSelect
                     }</button>`
                 );
@@ -118,7 +118,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
                 )
             ) {
                 const $cameraDialogButton = $(
-                    '<button type="button" class="form-button red"><i class="fa fa-camera"/>&nbsp; &nbsp; Take picture</button>'
+                    '<button type="button" class="form-button red"><i class="fa fa-camera fa-lg"/>&nbsp; &nbsp; Take picture</button>'
                 );
                 this.$messages.append($cameraDialogButton);
                 $cameraDialogButton.on('click', function (event) {
