@@ -1,3 +1,13 @@
+<a name="2.94.1"></a>
+## [2.94.1](https://github.com/NPellet/visualizer/compare/v2.94.0...v2.94.1) (2018-06-14)
+
+
+### Bug Fixes
+
+* **dragdrop:** keep layout of previous versions by default ([f5ef07f](https://github.com/NPellet/visualizer/commit/f5ef07f))
+
+
+
 <a name="2.94.0"></a>
 # [2.94.0](https://github.com/NPellet/visualizer/compare/v2.93.0...v2.94.0) (2018-06-10)
 
