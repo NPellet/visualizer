@@ -14,14 +14,14 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
                 });
 
             this.canDropOrPaste =
-            this.module.getConfigurationCheckbox(
-                'inputOptions',
-                'allowDrop'
-            ) ||
-            this.module.getConfigurationCheckbox(
-                'inputOptions',
-                'allowPaste'
-            );
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowDrop'
+                ) ||
+                this.module.getConfigurationCheckbox(
+                    'inputOptions',
+                    'allowPaste'
+                );
 
             var textarea = $('<textarea>').css({
                 position: 'absolute',
