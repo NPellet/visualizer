@@ -1,3 +1,19 @@
+<a name="2.94.2"></a>
+## [2.94.2](https://github.com/NPellet/visualizer/compare/v2.94.1...v2.94.2) (2018-06-16)
+
+
+### Bug Fixes
+
+* **dragdrop:** problem with css of the box ([a586e7c](https://github.com/NPellet/visualizer/commit/a586e7c))
+* **quill:** add alias for toolbarMode option ([1e561cc](https://github.com/NPellet/visualizer/commit/1e561cc))
+
+
+### Features
+
+* **quill:** toolbar mode option ([30cf609](https://github.com/NPellet/visualizer/commit/30cf609))
+
+
+
 <a name="2.94.1"></a>
 ## [2.94.1](https://github.com/NPellet/visualizer/compare/v2.94.0...v2.94.1) (2018-06-14)
 
