@@ -115,7 +115,8 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         editable: ['groups', 'group', 0, 'editable', 0],
         storeInView: ['groups', 'group', 0, 'storeInView', 0],
         debouncing: ['groups', 'group', 0, 'debouncing', 0],
-        modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0]
+        modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0],
+        toolbarMode: ['groups', 'group', 0, 'toolbarMode', 0]
     };
 
     return Controller;
