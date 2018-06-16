@@ -39,25 +39,24 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         if (this.module.getConfigurationCheckbox('storeInView', 'yes')) {
             this.module.definition.richtext = value;
         }
-        if (this.module.getConfigurationCheckbox('modifyVarIn', 'yes') && this.module.data) {
+        if (
+            this.module.getConfigurationCheckbox('modifyVarIn', 'yes') &&
+            this.module.data
+        ) {
             if (this.module.view.mode === 'html') {
                 this.module.data.setValue(html, true);
                 this.module.model.dataTriggerChange(this.module.data);
             } else {
-                this.module.model.dataSetChild(this.module.data, ['ops'], value.ops);
+                this.module.model.dataSetChild(
+                    this.module.data,
+                    ['ops'],
+                    value.ops
+                );
             }
         }
-        this.createDataFromEvent(
-            'onEditorChange',
-            'quill',
-            value
-        );
+        this.createDataFromEvent('onEditorChange', 'quill', value);
 
-        this.createDataFromEvent(
-            'onEditorChange',
-            'html',
-            html
-        );
+        this.createDataFromEvent('onEditorChange', 'html', html);
     };
 
     Controller.prototype.configurationStructure = function () {
@@ -73,6 +72,16 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
                             title: 'Is Editable',
                             options: {isEditable: 'Yes'},
                             default: ['isEditable']
+                        },
+                        toolbarMode: {
+                            type: 'combo',
+                            title: 'Toolbar',
+                            options: [
+                                {key: 'minimal', title: 'Minimal'},
+                                {key: 'light', title: 'Light'},
+                                {key: 'all', title: 'All'}
+                            ],
+                            default: 'light'
                         },
                         debouncing: {
                             type: 'float',
@@ -106,7 +115,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         editable: ['groups', 'group', 0, 'editable', 0],
         storeInView: ['groups', 'group', 0, 'storeInView', 0],
         debouncing: ['groups', 'group', 0, 'debouncing', 0],
-        modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0],
+        modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0]
     };
 
     return Controller;
