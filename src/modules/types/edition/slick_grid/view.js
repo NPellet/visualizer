@@ -2363,7 +2363,7 @@ define(
         }
 
         function binFormatter() {
-            return '<div style="width:100%; height: 100%;"><a class="icon-clickable"><i class="centered-icon fa fa-trash"></i></a></div>';
+            return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
         }
 
         function requiredFieldValidator(value) {
