@@ -26,9 +26,9 @@ define([
             this.dom = $('<div>').css({
                 height: '100%',
                 width: '100%',
-                'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'initial' : 'none'
+                'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'text' : 'none'
             });
-
+            'user-select': selectable ? 'text' : 'none'
 
             var debouncing = this.module.getConfiguration('debouncing');
             if (debouncing) {
