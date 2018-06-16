@@ -13,6 +13,16 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
                     multiple: true
                 });
 
+            this.canDropOrPaste =
+            this.module.getConfigurationCheckbox(
+                'inputOptions',
+                'allowDrop'
+            ) ||
+            this.module.getConfigurationCheckbox(
+                'inputOptions',
+                'allowPaste'
+            );
+
             var textarea = $('<textarea>').css({
                 position: 'absolute',
                 top: 0,
@@ -65,15 +75,6 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
                 });
             }
 
-            this.canDropOrPaste =
-                this.module.getConfigurationCheckbox(
-                    'inputOptions',
-                    'allowDrop'
-                ) ||
-                this.module.getConfigurationCheckbox(
-                    'inputOptions',
-                    'allowPaste'
-                );
             if (this.canDropOrPaste) {
                 this.$messages.append(this.messageP);
             }
