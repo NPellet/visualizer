@@ -1,3 +1,13 @@
+<a name="2.94.3"></a>
+## [2.94.3](https://github.com/NPellet/visualizer/compare/v2.94.2...v2.94.3) (2018-06-17)
+
+
+### Bug Fixes
+
+* **slick:** delete row ([5575313](https://github.com/NPellet/visualizer/commit/5575313))
+
+
+
 <a name="2.94.2"></a>
 ## [2.94.2](https://github.com/NPellet/visualizer/compare/v2.94.1...v2.94.2) (2018-06-16)
 
