@@ -17,9 +17,6 @@
           "groups": {
             "group": [
               {
-                "prefs": [
-                  []
-                ],
                 "script": [
                   "wireframe 0;\nribbon on;\n"
                 ],
@@ -100,7 +97,9 @@
               "toolbar": [
                 [
                   "Open Preferences",
-                  "Export Data"
+                  "Export Data",
+                  "Show fullscreen",
+                  "Print"
                 ]
               ]
             }
