@@ -8,10 +8,11 @@
         console.log = function() {};
     </script>
     <script type="text/javascript" language="javascript" src="../../../../../components/jsmol/src/JSmol.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../../../../../components/jsmol/src/JSmol.GLmol.min.js"></script>
 
 
 </head>
-<body style="margin: 0; padding: 0; overflow: hidden;">
+<body style="margin: 0; padding: 0; overflow: hidden; width: 100vw; height: 100vh">
 
 <div id="appletContainer"></div>
 
@@ -36,14 +37,16 @@
         var useSignedApplet = false;
         var self = this;
         var info = {
-            width: window.innerWidth,
-            height: window.innerHeight,
+           // width: window.innerWidth,
+           // height: window.innerHeight,
+           width: '100%',
+           height:'100%',
             debug: false,
             color: "0xF0F0F0",
             addSelectionOptions: false,
             use: "HTML5",
             j2sPath: "../../../../../components/jsmol/src/j2s",
-            isSigned: useSignedApplet,
+            // isSigned: useSignedApplet,
             disableJ2SLoadMonitor: true,
             disableInitialConsole: true,
             messagecallback: "messageCallback",
@@ -56,7 +59,7 @@
                 });
             },
             allowjavascript: true,
-            script: "set antialiasDisplay"
+            script: "set antialiasDisplay; unbind _slideZoom;" // need to unbind otherwise problems in zoom mode
         };
 
         //   Jmol._XhtmlElement = $('#appletContainer').get(0);
@@ -107,7 +110,7 @@
     };
 
     window.setSize = function (w, h) {
-        Jmol.resizeApplet(this.applet, [w, h]);
+   //     Jmol.resizeApplet(this.applet, [w, h]);
     };
 
     /*
@@ -158,7 +161,6 @@
         } catch(e) {
             return;
         }
-
         switch (message.type) {
             case 'init':
                 parent = {

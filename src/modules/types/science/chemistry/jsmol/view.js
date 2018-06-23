@@ -60,8 +60,17 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api', 'src
             var id = this.module.getId();
             views[id] = this;
 
-            this.dom = $('<iframe>', {src: require.toUrl('./jsmol.html')}).css('border', 0);
-            this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
+            this.dom = $('<iframe>', {src: require.toUrl('./jsmol.html')}).css({
+                border: 0,
+                height: '100%',
+                width: '100%'
+            });
+            this.module.getDomContent().html(this.dom).css({
+                overflow: 'hidden',
+                height: '100%',
+                width: '100%',
+                display: 'block'
+            });
 
             this._highlights = this._highlights || [];
 
@@ -74,11 +83,14 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api', 'src
         },
 
         onResize: function () {
+            /*
             this.dom.height(this.height).width(this.width);
+            console.log('resize', this.height, this.width);
             this.postMessage('setSize', {
                 width: this.width,
                 height: this.height
             });
+            */
         },
 
         inDom: function () {

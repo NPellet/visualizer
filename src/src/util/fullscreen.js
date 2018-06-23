@@ -15,8 +15,8 @@ define(['src/util/ui'], function (ui) {
             fullscreenElement.setAttribute('style', 'height:100%; width:100%; background-color:white;');
             currentFullscreenElement = fullscreenElement;
             oldViewDimensions = {height: view.height, width: view.width};
-            view.height = currentFullscreenModule.getDomContent().height();
-            view.width = currentFullscreenModule.getDomContent().width();
+            view.height = screen.height / window.devicePixelRatio;
+            view.width = screen.width / window.devicePixelRatio;
         } else { // Stopping fullscreen
             currentFullscreenElement.setAttribute('style', oldStyle);
             view.height = oldViewDimensions.height;
