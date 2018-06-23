@@ -78,6 +78,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     },
 
                     fields: {
+                        /*
+                        prefs: {
+                            type: 'checkbox',
+                            title: 'Options',
+                            default: [],
+                            options: {
+                                webgl: 'Enable webgl (fast but limited rendering options)'
+                            }
+                        },
+                        */
                         script: {
                             type: 'jscode',
                             title: 'After load script'
@@ -120,6 +130,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.onSyncExecDone = function (message) {
         this.createDataFromEvent('onExecResult', 'execResult', message);
+    };
+
+    Controller.prototype.export = function () {
+        return this.module.view.postMessage('executeScriptSync', ['write PNGJ jsmol.png']);
+
     };
 
     return Controller;

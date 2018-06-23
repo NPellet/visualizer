@@ -1,451 +1,457 @@
 {
-    "version": "2.50.1-0",
+    "version": "2.94.4-0",
     "grid": {
-        "layers": {
-            "Default layer": {
-                "name": "Default layer"
-            }
-        },
-        "xWidth": 10,
-        "yHeight": 10
+      "layers": {
+        "Default layer": {
+          "name": "Default layer"
+        }
+      },
+      "xWidth": 10,
+      "yHeight": 10
     },
     "modules": [
-        {
-            "url": "modules/types/science/chemistry/jsmol/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "script": [
-                                "wireframe 0;\nribbon on;\n"
-                            ],
-                            "syncScript": [
-                                null
-                            ]
-                        }
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 0,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 59,
-                        "height": 51
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
-            },
-            "id": 1,
-            "vars_in": [
-                {
-                    "rel": "data",
-                    "name": "pdb"
-                }
-            ],
-            "actions_in": [
-                {
-                    "rel": "jsmolscript",
-                    "name": "testscript"
-                }
-            ],
-            "title": "",
-            "vars_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "actions_out": [],
-            "toolbar": {
-                "custom": [
-                    [
-                        {
-                            "title": "",
-                            "icon": "",
-                            "action": "",
-                            "position": "begin"
-                        }
-                    ]
+      {
+        "url": "modules/types/science/chemistry/jsmol/",
+        "configuration": {
+          "sections": {},
+          "groups": {
+            "group": [
+              {
+                "prefs": [
+                  []
                 ],
-                "common": [
-                    {
-                        "toolbar": [
-                            [
-                                "Open Preferences"
-                            ]
-                        ]
-                    }
+                "script": [
+                  "wireframe 0;\nribbon on;\n"
+                ],
+                "syncScript": [
+                  null
                 ]
-            }
+              }
+            ]
+          }
         },
-        {
-            "url": "modules/types/client_interaction/code_editor/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "mode": [
-                                "text"
-                            ],
-                            "outputType": [
-                                null
-                            ],
-                            "btnvalue": [
-                                "Run script"
-                            ],
-                            "iseditable": [
-                                [
-                                    "editable"
-                                ]
-                            ],
-                            "hasButton": [
-                                [
-                                    "button"
-                                ]
-                            ],
-                            "variable": [
-                                []
-                            ],
-                            "debouncing": [
-                                0
-                            ],
-                            "script": [
-                                "cpk 0 ;"
-                            ]
-                        }
-                    ]
-                }
+        "layers": {
+          "Default layer": {
+            "position": {
+              "left": 0,
+              "top": 0
             },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 60,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 41,
-                        "height": 51
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
+            "size": {
+              "width": 59,
+              "height": 51
             },
-            "id": 2,
-            "vars_in": [
-                {}
-            ],
-            "actions_in": [
-                {}
-            ],
-            "vars_out": [
-                {
-                    "jpath": []
-                }
-            ],
+            "zIndex": 0,
+            "display": true,
             "title": "",
-            "actions_out": [
-                {
-                    "event": "onButtonClick",
-                    "rel": "data",
-                    "jpath": [],
-                    "name": "testscript"
-                }
+            "bgColor": [
+              255,
+              255,
+              255,
+              0
             ],
-            "toolbar": {
-                "custom": [
-                    [
-                        {
-                            "title": "",
-                            "icon": "",
-                            "action": "",
-                            "position": "begin"
-                        }
-                    ]
-                ],
-                "common": [
-                    {
-                        "toolbar": [
-                            [
-                                "Open Preferences"
-                            ]
-                        ]
-                    }
-                ]
-            }
+            "wrapper": true,
+            "created": true,
+            "name": "Default layer"
+          }
         },
-        {
-            "url": "modules/types/display/fasttable/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "nblines": [
-                                20
-                            ],
-                            "toggle": [
-                                null
-                            ],
-                            "colorjpath": [
-                                null
-                            ],
-                            "filterRow": [
-                                null
-                            ],
-                            "highlightLine": [
-                                [
-                                    "Yes"
-                                ]
-                            ]
-                        }
-                    ],
-                    "cols": [
-                        [
-                            {
-                                "name": "ID",
-                                "jpath": "element.id",
-                                "number": [],
-                                "editable": "none"
-                            }
-                        ]
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 107,
-                        "top": 9
-                    },
-                    "size": {
-                        "width": 24,
-                        "height": 17
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
-            },
-            "id": 3,
-            "vars_in": [
-                {
-                    "rel": "list",
-                    "name": "result"
-                }
-            ],
-            "actions_in": [
-                {}
-            ],
-            "title": "",
-            "vars_out": [
-                {
-                    "event": "onSelect",
-                    "rel": "row",
-                    "jpath": [
-                        "pdb"
-                    ],
-                    "name": "pdb"
-                }
-            ],
-            "actions_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "toolbar": {
-                "custom": [
-                    [
-                        {
-                            "title": "",
-                            "icon": "",
-                            "action": "",
-                            "position": "begin"
-                        }
-                    ]
-                ],
-                "common": [
-                    {
-                        "toolbar": [
-                            [
-                                "Open Preferences"
-                            ]
-                        ]
-                    }
+        "id": 1,
+        "vars_in": [
+          {
+            "rel": "data",
+            "name": "pdb"
+          }
+        ],
+        "actions_in": [
+          {
+            "rel": "jsmolscript",
+            "name": "testscript"
+          }
+        ],
+        "title": "",
+        "vars_out": [
+          {
+            "jpath": []
+          }
+        ],
+        "actions_out": [
+          {
+            "jpath": []
+          }
+        ],
+        "toolbar": {
+          "custom": [
+            [
+              {
+                "title": "",
+                "icon": "",
+                "action": "",
+                "position": "begin",
+                "color": [
+                  100,
+                  100,
+                  100,
+                  1
                 ]
+              }
+            ]
+          ],
+          "common": [
+            {
+              "toolbar": [
+                [
+                  "Open Preferences",
+                  "Export Data"
+                ]
+              ]
             }
+          ]
+        },
+        "css": [
+          {
+            "fontSize": [
+              ""
+            ],
+            "fontFamily": [
+              ""
+            ]
+          }
+        ]
+      },
+      {
+        "url": "modules/types/client_interaction/code_editor/",
+        "configuration": {
+          "sections": {},
+          "groups": {
+            "group": [
+              {
+                "mode": [
+                  "text"
+                ],
+                "outputType": [
+                  null
+                ],
+                "btnvalue": [
+                  "Run script"
+                ],
+                "iseditable": [
+                  [
+                    "editable"
+                  ]
+                ],
+                "hasButton": [
+                  [
+                    "button"
+                  ]
+                ],
+                "variable": [
+                  []
+                ],
+                "debouncing": [
+                  0
+                ],
+                "script": [
+                  "cpk 0 ;"
+                ]
+              }
+            ]
+          }
+        },
+        "layers": {
+          "Default layer": {
+            "position": {
+              "left": 60,
+              "top": 0
+            },
+            "size": {
+              "width": 41,
+              "height": 51
+            },
+            "zIndex": 0,
+            "display": true,
+            "title": "",
+            "bgColor": [
+              255,
+              255,
+              255,
+              0
+            ],
+            "wrapper": true,
+            "created": true,
+            "name": "Default layer"
+          }
+        },
+        "id": 2,
+        "vars_in": [
+          {}
+        ],
+        "actions_in": [
+          {}
+        ],
+        "vars_out": [
+          {
+            "jpath": []
+          }
+        ],
+        "title": "",
+        "actions_out": [
+          {
+            "event": "onButtonClick",
+            "rel": "data",
+            "jpath": [],
+            "name": "testscript"
+          }
+        ],
+        "toolbar": {
+          "custom": [
+            [
+              {
+                "title": "",
+                "icon": "",
+                "action": "",
+                "position": "begin"
+              }
+            ]
+          ],
+          "common": [
+            {
+              "toolbar": [
+                [
+                  "Open Preferences"
+                ]
+              ]
+            }
+          ]
         }
+      },
+      {
+        "url": "modules/types/display/fasttable/",
+        "configuration": {
+          "sections": {},
+          "groups": {
+            "group": [
+              {
+                "nblines": [
+                  20
+                ],
+                "toggle": [
+                  null
+                ],
+                "colorjpath": [
+                  null
+                ],
+                "filterRow": [
+                  null
+                ],
+                "highlightLine": [
+                  [
+                    "Yes"
+                  ]
+                ]
+              }
+            ],
+            "cols": [
+              [
+                {
+                  "name": "ID",
+                  "jpath": "element.id",
+                  "number": [],
+                  "editable": "none"
+                }
+              ]
+            ]
+          }
+        },
+        "layers": {
+          "Default layer": {
+            "position": {
+              "left": 107,
+              "top": 9
+            },
+            "size": {
+              "width": 24,
+              "height": 17
+            },
+            "zIndex": 0,
+            "display": true,
+            "title": "",
+            "bgColor": [
+              255,
+              255,
+              255,
+              0
+            ],
+            "wrapper": true,
+            "created": true,
+            "name": "Default layer"
+          }
+        },
+        "id": 3,
+        "vars_in": [
+          {
+            "rel": "list",
+            "name": "result"
+          }
+        ],
+        "actions_in": [
+          {}
+        ],
+        "title": "",
+        "vars_out": [
+          {
+            "event": "onSelect",
+            "rel": "row",
+            "jpath": [
+              "pdb"
+            ],
+            "name": "pdb"
+          }
+        ],
+        "actions_out": [
+          {
+            "jpath": []
+          }
+        ],
+        "toolbar": {
+          "custom": [
+            [
+              {
+                "title": "",
+                "icon": "",
+                "action": "",
+                "position": "begin"
+              }
+            ]
+          ],
+          "common": [
+            {
+              "toolbar": [
+                [
+                  "Open Preferences"
+                ]
+              ]
+            }
+          ]
+        }
+      }
     ],
     "variables": [
-        {
-            "varname": "result",
-            "jpath": [
-                "result",
-                "pdbs"
-            ]
-        },
-        {
-            "varname": "pdb",
-            "jpath": [
-                "result",
-                "pdbs",
-                "0",
-                "pdb"
-            ]
-        }
+      {
+        "varname": "result",
+        "jpath": [
+          "result",
+          "pdbs"
+        ]
+      },
+      {
+        "varname": "pdb",
+        "jpath": [
+          "result",
+          "pdbs",
+          "0",
+          "pdb"
+        ]
+      }
     ],
     "aliases": [
-        {}
-    ],
-    "pouchvariables": [
-        {}
+      {}
     ],
     "configuration": {
-        "title": "No title"
+      "title": "No title"
     },
     "actionscripts": [
-        {
-            "sections": {},
-            "groups": {
-                "action": [
-                    {
-                        "name": [
-                            null
-                        ],
-                        "script": [
-                            null
-                        ]
-                    }
-                ]
+      {
+        "sections": {},
+        "groups": {
+          "action": [
+            {
+              "name": [
+                null
+              ],
+              "script": [
+                null
+              ]
             }
+          ]
         }
-    ],
-    "couch_replication": [
-        {
-            "sections": {},
-            "groups": {
-                "couch": [
-                    [
-                        {
-                            "direction": "both",
-                            "continuous": []
-                        }
-                    ]
-                ]
-            }
-        }
+      }
     ],
     "init_script": [
-        {
-            "sections": {},
-            "groups": {
-                "general": [
-                    {
-                        "script": [
-                            null
-                        ]
-                    }
-                ]
+      {
+        "sections": {},
+        "groups": {
+          "general": [
+            {
+              "script": [
+                null
+              ]
             }
+          ]
         }
+      }
     ],
     "custom_filters": [
-        {
-            "sections": {
+      {
+        "sections": {
+          "modules": [
+            {
+              "sections": {},
+              "groups": {
                 "modules": [
-                    {
-                        "sections": {},
-                        "groups": {
-                            "modules": [
-                                [
-                                    {}
-                                ]
-                            ]
-                        }
-                    }
-                ],
-                "filtersLib": [
-                    {
-                        "sections": {},
-                        "groups": {
-                            "filters": [
-                                [
-                                    {}
-                                ]
-                            ]
-                        }
-                    }
-                ],
-                "filters": [
-                    {
-                        "sections": {},
-                        "groups": {
-                            "filter": [
-                                {
-                                    "name": [
-                                        null
-                                    ],
-                                    "script": [
-                                        null
-                                    ]
-                                }
-                            ],
-                            "libs": [
-                                [
-                                    {}
-                                ]
-                            ]
-                        }
-                    }
+                  [
+                    {}
+                  ]
                 ]
-            },
-            "groups": {}
-        }
+              }
+            }
+          ],
+          "filtersLib": [
+            {
+              "sections": {},
+              "groups": {
+                "filters": [
+                  [
+                    {}
+                  ]
+                ]
+              }
+            }
+          ],
+          "filters": [
+            {
+              "sections": {},
+              "groups": {
+                "filter": [
+                  {
+                    "name": [
+                      null
+                    ],
+                    "script": [
+                      null
+                    ]
+                  }
+                ],
+                "libs": [
+                  [
+                    {}
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      }
     ],
     "actionfiles": [
-        {
-            "sections": {},
-            "groups": {
-                "action": [
-                    [
-                        {}
-                    ]
-                ]
-            }
+      {
+        "sections": {},
+        "groups": {
+          "action": [
+            [
+              {}
+            ]
+          ]
         }
+      }
     ]
-}
+  }
