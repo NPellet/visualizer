@@ -78,7 +78,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     },
 
                     fields: {
-                        /*
                         prefs: {
                             type: 'checkbox',
                             title: 'Options',
@@ -87,7 +86,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
                                 webgl: 'Enable webgl (fast but limited rendering options)'
                             }
                         },
-                        */
                         script: {
                             type: 'jscode',
                             title: 'After load script'
@@ -104,7 +102,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
     Controller.prototype.configAliases = {
         script: ['groups', 'group', 0, 'script', 0],
-        syncScript: ['groups', 'group', 0, 'syncScript', 0]
+        syncScript: ['groups', 'group', 0, 'syncScript', 0],
+        prefs: ['groups', 'group', 0, 'prefs', 0],
     };
 
     Controller.prototype.actionsIn = {

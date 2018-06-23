@@ -60,7 +60,9 @@ define(['require', 'lodash', 'modules/default/defaultview', 'src/util/api', 'src
             var id = this.module.getId();
             views[id] = this;
 
-            this.dom = $('<iframe>', {src: require.toUrl('./jsmol.html')}).css({
+            let webgl = this.module.getConfiguration('prefs').includes('webgl');
+
+            this.dom = $('<iframe>', {src: require.toUrl('./jsmol.html?webgl=' + webgl)}).css({
                 border: 0,
                 height: '100%',
                 width: '100%'
