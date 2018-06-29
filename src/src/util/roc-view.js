@@ -66,6 +66,14 @@ define(['./util'], function (Util) {
             return this.content.keywords || [];
         }
 
+        get icon() {
+            return this.content.icon;
+        }
+
+        get name() {
+            return this.content.name;
+        }
+
         get version() {
             return this.content.version || '0.0.0';
         }
@@ -149,6 +157,8 @@ define(['./util'], function (Util) {
             this.content.title = view.title;
             this.content.version = view.version;
             this.content.keywords = view.keywords;
+            this.content.icon = view.icon;
+            this.content.name = view.name;
             if (!this.view._attachments) {
                 this.view._attachments = {};
             }

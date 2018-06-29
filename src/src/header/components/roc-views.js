@@ -845,7 +845,13 @@ define([
             ));
 
             this.$metaBox.html($('<p>').append(
-                `Keywords: <input type="text" value="${view.keywords ? view.keywords.join(', ') : '' }"/>`
+                `
+                    <table>
+                    <tr><td>Keywords:</td><td><input type="text" value="${view.keywords ? view.keywords.join(', ') : '' }"/></td></tr>
+                    <tr><td>Icon:</td><td><input type="text" value="${view.icon || ''}" /></td></tr>
+                    <tr><td>Short name:</td><td><input type="text" value="${view.name || ''}" /></td></tr>
+                    </table>
+                `
             ));
             if (this.loadedNode && this.loadedNode !== this.activeNode) {
                 this.$infoBox.append('<br>');
@@ -1267,27 +1273,33 @@ define([
             var dialog = UI.dialog(div, {buttons: {Add}});
         }
 
-        getKeywords() {
+        getMeta() {
+            const meta = {};
             var $input = this.$metaBox.find('input');
             if ($input[0]) {
-                return $input[0].value.split(',').map(val => val.trim()).filter(val => val);
+                meta.keywords = $input[0].value.split(',').map(val => val.trim()).filter(val => val);
             }
+            if ($input[1]) {
+                meta.icon = $input[1].value || undefined;
+            }
+            if ($input[2]) {
+                meta.name = $input[2].value || undefined;
+            }
+            return meta;
         }
 
         getCurrentView() {
             const view = Versioning.getView();
             const json = Versioning.getViewJSON();
             const title = (view.configuration ? view.configuration.title : '') || '';
-            const keywords = this.getKeywords();
-            return {
+            return Object.assign(this.getMeta(), {
                 version: view.version,
                 title,
-                keywords,
                 attachment: {
                     content_type: 'application/json',
                     data: btoa(unescape(encodeURIComponent(json)))
                 }
-            };
+            });
         }
     }
 
