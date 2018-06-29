@@ -850,6 +850,7 @@ define([
                     <tr><td>Keywords:</td><td><input type="text" value="${view.keywords ? view.keywords.join(', ') : '' }"/></td></tr>
                     <tr><td>Icon:</td><td><input type="text" value="${view.icon || ''}" /></td></tr>
                     <tr><td>Short name:</td><td><input type="text" value="${view.name || ''}" /></td></tr>
+                    <tr><td>Category:</td><td><input type="text" value="${view.category || ''}" /></td></tr>
                     </table>
                 `
             ));
@@ -1284,6 +1285,9 @@ define([
             }
             if ($input[2]) {
                 meta.name = $input[2].value || undefined;
+            }
+            if ($input[3]) {
+                meta.category = $input[3].value || undefined;
             }
             return meta;
         }
