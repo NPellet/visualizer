@@ -132,8 +132,6 @@ define([
 
             form.onSubmit((event) => {
                 done(event.target.name);
-                
-                console.log(event);
             });
 
             const dialogOptions = Object.assign({buttons: {}}, opts.dialog, {
@@ -156,6 +154,95 @@ define([
             }
             var dialog = exports.dialog(div, dialogOptions);
         });
+    };
+
+    exports.chooseSearch = async function (list, options) {
+        let _resolve;
+        const promise = new Promise(function (resolve) {
+            _resolve = resolve;
+        });
+        options = Object.assign({}, {
+            title: 'Choose',
+            width: 500,
+            template: (element) => element.text || element.id,
+            id: (el) => el.id,
+            text: (el) => el.text,
+            groupBy: null
+        }, options);
+
+        let searchList = list.map(el => ({
+            original: el,
+            text: options.text(el),
+            id: options.id(el)
+        }));
+
+        if (options.groupBy) {
+            const grouped = _.groupBy(searchList, (el) => options.groupBy(el.original));
+            const keys = Object.keys(grouped);
+            searchList = keys.map(key => ({
+                id: `group-${key}`,
+                text: key,
+                children: grouped[key]
+            }));
+        }
+
+        await Util.require('select2');
+        await Util.loadCss('components/select2/dist/css/select2.css');
+
+        var $select2 = '<div><div style="height:50px"></div> <select>';
+        var selectWidth = options.width;
+
+        var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+        $select2 += '</select></div>';
+        $select2 = $($select2);
+
+        $select2 = $select2.css({
+            position: 'fixed',
+            'justify-content': 'center',
+            top: 0,
+            left: 0,
+            width: ww,
+            height: wh,
+            paddingLeft: Math.floor(ww / 2 - selectWidth / 2),
+            paddingTop: 50,
+            margin: 0,
+            'box-sizing': 'border-box',
+            opacity: 0.7,
+            backgroundColor: '#262b33'
+        })
+            .appendTo('body')
+            .find('select')
+            .addClass('js-example-basic-single').css({
+                width: selectWidth,
+                zIndex: 5000
+            });
+
+        $select2.select2({
+            placeholder: options.title,
+            data: searchList,
+            templateResult: options.template
+        }).select2('open').val(null).trigger('change');
+
+        var selecting;
+        $select2.on('select2:selecting', function (e) {
+            selecting = true;
+        });
+        $select2.on('select2:select', function (e) {
+            $select2.select2('destroy');
+            $select2.parent().remove();
+            _resolve(e.params.data.original);
+        });
+
+        $select2.on('select2:close', function (e) {
+            if (!selecting) {
+                $select2.select2('destroy');
+                $select2.parent().remove();
+                _resolve(null);
+            }
+        });
+        return promise;
     };
 
     exports.choose = function (list, options) {
