@@ -1,3 +1,13 @@
+<a name="2.95.0"></a>
+# [2.95.0](https://github.com/NPellet/visualizer/compare/v2.94.3...v2.95.0) (2018-06-29)
+
+
+### Features
+
+* **util/ui:** choose from list with search ([13dd905](https://github.com/NPellet/visualizer/commit/13dd905))
+
+
+
 <a name="2.94.3"></a>
 ## [2.94.3](https://github.com/NPellet/visualizer/compare/v2.94.2...v2.94.3) (2018-06-17)
 
