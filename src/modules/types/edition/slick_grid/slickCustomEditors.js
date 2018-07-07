@@ -8,15 +8,15 @@
 
 define(
     [
-        'src/util/util',
         'lodash',
+        'src/util/util',
+        'src/util/ui',
         'components/spectrum/spectrum',
         'jquery',
         'jquery-ui/ui/widgets/datepicker'
     ],
-    function (Util, _) {
+    function (_, Util, UI) {
         Util.loadCss('./components/spectrum/spectrum.css');
-
         (function ($) {
             // register namespace
             $.extend(true, window, {
@@ -30,7 +30,8 @@ define(
                         Date: DateEditor,
                         LongText: LongTextEditor,
                         SimpleLongText: SimpleLongTextEditor,
-                        Select: SelectEditor
+                        Select: SelectEditor,
+                        Unit: UnitEditor
                     }
                 }
             });
@@ -430,6 +431,68 @@ define(
                 };
                 this.init();
             }
+            function UnitEditor(args, options) {
+                this.args = args;
+                this.initOptions = options;
+                this.init = defaultInit;
+                this.destroy = defaultDestroy;
+                this.focus = defaultFocus;
+                this.getValue = defaultGetValue;
+                this.setValue = defaultSetValue;
+                this.loadValue = function (item) {
+                    DataObject.check(item, true);
+                    const value = item.getChildSync(this.args.column.jpath);
+                    this.defaultValue = '';
+                    if (value) {
+                        let unit = UnitEditor.mathjs.unit(String(value.unit));
+                        unit.value = Number(value.SI);
+                        this.defaultValue = `${unit.toNumber(value.unit)} ${value.unit}`;
+                    }
+                    this.$input.val(this.defaultValue);
+                    this.$input[0].defaultValue = this.defaultValue;
+                    this.$input.select();
+                };
+                this.serializeValue = function () {
+                    const val = this.$input.val();
+                    try {
+                        const unit = UnitEditor.mathjs.unit(val);
+                        const editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
+                        if (editorOptions.base) {
+                            const baseUnit = UnitEditor.mathjs.unit(editorOptions.base);
+                            if (!baseUnit.equalBase(unit)) {
+                                throw new Error(`Must use same base as ${editorOptions.base}`);
+                            }
+                        }
+                        return {
+                            unit: unit.formatUnits(),
+                            SI: unit.value
+                        };
+                    } catch (e) {
+                        UI.showNotification(e.message, 'warning');
+                        return null;
+                    }
+                    
+
+                };
+                this.isValueChanged = () => {
+                    return this.serializeValue() !== null;
+                };
+                this.validate = defaultValidate;
+                this.applyValue = function (item, state) {
+                    defaultApplyValue.call(
+                        this,
+                        item,
+                        state,
+                        this.args.column.dataType
+                    );
+                };
+                this.init();
+            }
+
+            UnitEditor.load = async function () {
+                const mathjs = await Util.require('mathjs');
+                UnitEditor.mathjs = mathjs;
+            };
         })(jQuery);
 
         // ======== DEFAULT EDITOR FUNCTIONS ===============
@@ -809,7 +872,7 @@ define(
                     choices: editorOptions
                 };
             }
-            return {};
+            return options || {};
         }
     }
 );

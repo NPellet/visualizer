@@ -6,12 +6,12 @@ define(
         'modules/default/defaultview',
         'src/util/debug',
         'lodash',
+        'slickgrid',
         'src/util/util',
         'src/util/ui',
         'src/util/color',
         'src/util/api',
         'src/util/typerenderer',
-        'slickgrid',
         'src/util/sandbox',
         'src/data/structures',
         './copyFormatters'
@@ -21,12 +21,12 @@ define(
         Default,
         Debug,
         _,
+        Slick,
         Util,
         UI,
         Color,
         API,
         Renderer,
-        Slick,
         Sandbox,
         structures,
         copyFormatters
@@ -64,6 +64,7 @@ define(
         typeEditors.longtext = Slick.CustomEditors.LongText;
         typeEditors.select = Slick.CustomEditors.Select;
         typeEditors.ocl = Slick.CustomEditors.OCL;
+        typeEditors.unit = Slick.CustomEditors.Unit;
 
         function isSpecialColumn(col) {
             return !col.colDef;

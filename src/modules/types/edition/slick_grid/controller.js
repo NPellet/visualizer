@@ -6,7 +6,7 @@ define(
         'src/util/util',
         'lodash',
         'src/util/api',
-        'src/util/typerenderer',
+        'src/util/typerenderer'
     ],
     function (Default, Util, _, API, Renderer) {
         function Controller() {}
@@ -209,7 +209,8 @@ define(
                                     {key: 'color', title: 'Color'},
                                     {key: 'date', title: 'Date'},
                                     {key: 'longtext', title: 'Long Text'},
-                                    {key: 'select', title: 'Select'}
+                                    {key: 'select', title: 'Select'},
+                                    {key: 'unit', title: 'Unit'}
                                 ]
                             },
                             forceType: {
