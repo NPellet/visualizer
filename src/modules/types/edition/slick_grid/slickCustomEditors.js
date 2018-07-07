@@ -511,13 +511,13 @@ define(
                 );
             } else {
                 this.$input = $('<input type="text" class="editor-text" />');
-                if (editorOptions) {
+                if (editorOptions.choices) {
                     this.$input.attr('list', 'choices');
                 }
             }
             this.$input
                 .appendTo(this.args.container)
-                .after(`<datalist id="choices">${editorOptions}</datalist>`)
+                .after(`<datalist id="choices">${getSelectOptions(editorOptions.choices)}</datalist>`)
                 .bind('keydown.nav', function (e) {
                     if (
                         e.keyCode === $.ui.keyCode.LEFT ||
@@ -744,11 +744,11 @@ define(
         // ========== SELECT ===================
         function selectInit() {
             var options = this.args.column.colDef.editorOptions;
-            var htmlOptions = getEditorOptions(options);
+            var editorOptions = getEditorOptions(options);
             var $wrapper = $(this.args.container);
             this.initOptions = this.initOptions || {};
 
-            this.$input = $(`<select>${htmlOptions}</select>`);
+            this.$input = $(`<select>${getSelectOptions(editorOptions.choices)}</select>`);
 
             this.$input
                 .appendTo($wrapper)
@@ -791,7 +791,7 @@ define(
             this.init();
         }
 
-        function getEditorOptions(editorOptions) {
+        function getSelectOptions(editorOptions) {
             if (!editorOptions) {
                 editorOptions = [];
             } else {
@@ -800,6 +800,16 @@ define(
             return editorOptions
                 .map(o => `<option value="${o[0]}">${o[1] || o[0]}</option>`)
                 .join('');
+        }
+
+        function getEditorOptions(editorOptions) {
+            const options = Util.evalOptions(editorOptions);
+            if (editorOptions && options === undefined) {
+                return {
+                    choices: editorOptions
+                };
+            }
+            return {};
         }
     }
 );
