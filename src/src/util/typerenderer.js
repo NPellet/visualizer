@@ -185,7 +185,7 @@ define([
     ) {
         const mathjs = await asyncRequire('mathjs');
         let unit = mathjs.unit(String(val.unit));
-        unit.value = val.SI;
+        unit.value = Number(val.SI);
         if (options.unit) {
             unit = unit.to(options.unit);
         }
