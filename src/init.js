@@ -53,7 +53,7 @@ require.config({
         'markdown-js': 'components/markdown-js/lib/markdown',
         marked: 'components/marked/lib/marked',
         //mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
-        mathjs: 'components/mathjs/dist/math.min',
+        mathjs: 'node_modules/mathjs/dist/math.min',
         'mime-types': 'browserified/mime-types/index',
         moment: 'components/moment/moment',
         'moment-duration-format':

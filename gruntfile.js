@@ -256,7 +256,9 @@ module.exports = function (grunt) {
                             './katex/dist/**',
                             './angularplasmid/dist/**',
                             './quill-image-drop-module/image-drop.min.js',
-                            './quill-image-resize-module/image-resize.min.js'
+                            './quill-image-resize-module/image-resize.min.js',
+                            './mathjs/dist/math.min.js',
+                            './mathjs/dist/math.min.map'
                         ],
                         dest: './build/node_modules/'
                     },
