@@ -11,13 +11,12 @@ define([
     'lodash',
     'jquery',
     'src/util/typerenderer',
-    'slickgrid',
     'forms/button',
     'src/util/Form',
     'lib/twigjs/twig',
     'notifyjs',
     'jquery-ui/ui/widgets/dialog'
-], function (Util, Debug, _, $, Renderer, Slick, Button, Form, Twig) {
+], function (Util, Debug, _, $, Renderer, Button, Form, Twig) {
     // On load add the style for the progress notification
     $.notify.addStyle('inprogress', {
         html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(24, 'black').css('vertical-align', 'middle').wrap('<div/>').parent().html()}</div>`,
@@ -245,7 +244,8 @@ define([
         return promise;
     };
 
-    exports.choose = function (list, options) {
+    exports.choose = async function (list, options) {
+        const Slick = await Util.require('slickgrid');
         options = Object.assign({slick: {}}, options);
         var readyToAddItems;
 
