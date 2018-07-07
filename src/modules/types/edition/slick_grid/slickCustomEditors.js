@@ -446,7 +446,7 @@ define(
                     if (value) {
                         let unit = UnitEditor.mathjs.unit(String(value.unit));
                         unit.value = Number(value.SI);
-                        this.defaultValue = `${unit.toNumber(value.unit)} ${value.unit}`;
+                        this.defaultValue = unit.toString();
                     }
                     this.$input.val(this.defaultValue);
                     this.$input[0].defaultValue = this.defaultValue;
@@ -460,7 +460,7 @@ define(
                         if (editorOptions.base) {
                             const baseUnit = UnitEditor.mathjs.unit(editorOptions.base);
                             if (!baseUnit.equalBase(unit)) {
-                                throw new Error(`Must use same base as ${editorOptions.base}`);
+                                throw new Error(`${unit.formatUnits()} is not the same base as ${editorOptions.base}`);
                             }
                         }
                         return {
