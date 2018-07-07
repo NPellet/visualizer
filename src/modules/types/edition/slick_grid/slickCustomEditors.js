@@ -444,9 +444,10 @@ define(
                     const value = item.getChildSync(this.args.column.jpath);
                     this.defaultValue = '';
                     if (value) {
-                        let unit = UnitEditor.mathjs.unit(String(value.unit));
+                        const unitStr = String(value.unit);
+                        let unit = UnitEditor.mathjs.unit(unitStr);
                         unit.value = Number(value.SI);
-                        this.defaultValue = unit.toString();
+                        this.defaultValue = `${unit.toNumber(unitStr)} ${unitStr}`;
                     }
                     this.$input.val(this.defaultValue);
                     this.$input[0].defaultValue = this.defaultValue;

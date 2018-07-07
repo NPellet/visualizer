@@ -186,10 +186,20 @@ define([
         const mathjs = await asyncRequire('mathjs');
         let unit = mathjs.unit(String(val.unit));
         unit.value = Number(val.SI);
-        if (options.unit) {
-            unit = unit.to(options.unit);
+        let displayValue;
+        if (options.format) {
+            displayValue = unit.format();
+        } else {
+            if (options.unit) {
+                unit = unit.to(options.unit);
+                displayValue = `${unit.toNumber(options.unit)} ${options.unit}`;
+            } else {
+                const unitStr = String(val.unit);
+                displayValue = `${unit.toNumber(unitStr)} ${unitStr}`;
+            }
         }
-        $element.html(unit.format());
+
+        $element.html(displayValue);
     };
 
     functions.picture = {};
