@@ -264,7 +264,6 @@ define(
                             ctx.onActionReceive.addRow.call(ctx, rows);
                         },
                         dataItemColumnValueExtractor: function (item, colDef) {
-                            console.log(colDef);
                             const cpFormatter = copyFormatters[colDef.colDef.copyFormatter];
                             if (cpFormatter) {
                                 return cpFormatter.extract(item, colDef);
@@ -872,7 +871,7 @@ define(
         }
 
         $.extend(true, View.prototype, Default, {
-            init: function () {
+            init: async function () {
                 var that = this,
                     varname;
                 this.columnFilters = {};
@@ -1039,20 +1038,25 @@ define(
                 };
 
                 if (varname) {
-                    API.createData(
+                    const data = await API.createData(
                         varname,
                         JSON.parse(this.module.getConfiguration('data'))
-                    ).then(data => {
-                        data.onChange(() => {
-                            this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(
-                                data
-                            );
-                        });
-                        that.resolveReady();
+                    );
+                    data.onChange(() => {
+                        this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(
+                            data
+                        );
                     });
+                    that.resolveReady();
                 } else {
                     that.resolveReady();
                 }
+            },
+
+            loadEditors: async function () {
+                const columns = this.getAllSlickColumns();
+                const loadableColumns = columns.filter((col) => col.editor && col.editor.load);
+                await Promise.all(loadableColumns.map((col) => col.editor.load()));
             },
 
             postUpdateCell: function (cellNode, renderOptions) {
@@ -1569,7 +1573,7 @@ define(
                             copyFormatters[column.copyFormatter].load();
                         }
                     }
-                    cssLoaded.then(function () {
+                    Promise.all([cssLoaded, this.loadEditors()]).then(function () {
                         doGrid(that);
                     });
                 }
