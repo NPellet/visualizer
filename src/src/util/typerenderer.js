@@ -176,6 +176,22 @@ define([
         $element.html(number);
     };
 
+    functions.unit = {};
+    functions.unit.toscreen = async function (
+        $element,
+        val,
+        rootVal,
+        options
+    ) {
+        const mathjs = await asyncRequire('mathjs');
+        let unit = mathjs.unit(String(val.unit));
+        unit.value = val.SI;
+        if (options.unit) {
+            unit = unit.to(options.unit);
+        }
+        $element.html(unit.format());
+    };
+
     functions.picture = {};
     functions.picture.toscreen = function (element, val, rootVal, options) {
         var $img = $('<img>');
