@@ -192,10 +192,10 @@ define([
         } else {
             if (options.unit) {
                 unit = unit.to(options.unit);
-                displayValue = `${unit.toNumber(options.unit)} ${options.unit}`;
+                displayValue = `${unit.toNumber(options.unit)} ${unit.formatUnits()}`;
             } else {
                 const unitStr = String(val.unit);
-                displayValue = `${unit.toNumber(unitStr)} ${unitStr}`;
+                displayValue = `${unit.toNumber(unitStr)} ${unit.formatUnits()}`;
             }
         }
 
