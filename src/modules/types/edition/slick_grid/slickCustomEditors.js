@@ -455,6 +455,7 @@ define(
                 };
                 this.serializeValue = function () {
                     const val = this.$input.val();
+                    if (!val) return null;
                     try {
                         const unit = UnitEditor.mathjs.unit(val);
                         const editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
