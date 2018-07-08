@@ -458,14 +458,16 @@ define(
                     let val = this.$input.val();
                     if (!val) return null;
                     try {
+                        const editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
                         const valNumber = +val;
                         if (!Number.isNaN(valNumber)) {
                             if (this.item && this.item.unit) {
                                 val = `${val} ${this.item.unit}`;
+                            } else if (editorOptions.base) {
+                                val = `${val} ${editorOptions.base}`;
                             }
                         }
                         const unit = UnitEditor.mathjs.unit(val);
-                        const editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
                         if (editorOptions.base) {
                             const baseUnit = UnitEditor.mathjs.unit(editorOptions.base);
                             if (!baseUnit.equalBase(unit)) {
