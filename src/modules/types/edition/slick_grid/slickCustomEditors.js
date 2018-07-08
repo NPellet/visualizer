@@ -456,7 +456,7 @@ define(
                 };
                 this.serializeValue = function () {
                     let val = this.$input.val();
-                    if (!val) return null;
+                    if (!val) return undefined;
                     try {
                         const editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
                         const valNumber = +val;
