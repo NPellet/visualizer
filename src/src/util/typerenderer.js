@@ -157,8 +157,7 @@ define([
         }
     }
 
-    functions.number = {};
-    functions.number.toscreen = function ($element, val, rootVal, options) {
+    function formatNumber(val, options) {
         var number = Number(val);
         if (isNaN(number)) {
             number = 'NaN';
@@ -173,6 +172,12 @@ define([
         } else if (checkDate(options)) {
             number = toDate(number, options);
         }
+        return number;
+    }
+
+    functions.number = {};
+    functions.number.toscreen = function ($element, val, rootVal, options) {
+        const number = formatNumber(val, options);
         $element.html(number);
     };
 
@@ -186,20 +191,20 @@ define([
         const mathjs = await asyncRequire('mathjs');
         let unit = mathjs.unit(String(val.unit));
         unit.value = Number(val.SI);
-        let displayValue;
+        let number;
         if (options.format) {
-            displayValue = unit.format();
+            number = unit.format();
         } else {
             if (options.unit) {
                 unit = unit.to(options.unit);
-                displayValue = `${unit.toNumber(options.unit)} ${unit.formatUnits()}`;
+                number = unit.toNumber(options.unit);
             } else {
                 const unitStr = String(val.unit);
-                displayValue = `${unit.toNumber(unitStr)} ${unit.formatUnits()}`;
+                number = unit.toNumber(unitStr);
             }
         }
 
-        $element.html(displayValue);
+        $element.html(`${formatNumber(number, options)} ${unit.formatUnits()}`);
     };
 
     functions.picture = {};
