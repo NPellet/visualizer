@@ -467,7 +467,7 @@ define(
                                 val = `${val} ${editorOptions.base}`;
                             }
                         }
-                        const unit = UnitEditor.mathjs.unit(val);
+                        const unit = UnitEditor.mathjs.unit(UnitEditor.mathjs.eval(val));
                         if (editorOptions.base) {
                             const baseUnit = UnitEditor.mathjs.unit(editorOptions.base);
                             if (!baseUnit.equalBase(unit)) {
