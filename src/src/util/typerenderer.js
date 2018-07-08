@@ -191,10 +191,13 @@ define([
         const mathjs = await asyncRequire('mathjs');
         let unit = mathjs.unit(String(val.unit));
         unit.value = Number(val.SI);
-        let number;
+        let displayValue;
         if (options.format) {
-            number = unit.format();
+            const str = unit.toString();
+            const [number, ...unitParts] = str.split(/\s+/);
+            displayValue = `${formatNumber(number, options)} ${unitParts.join(' ')}`;
         } else {
+            let number;
             if (options.unit) {
                 unit = unit.to(options.unit);
                 number = unit.toNumber(options.unit);
@@ -202,9 +205,10 @@ define([
                 const unitStr = String(val.unit);
                 number = unit.toNumber(unitStr);
             }
+            displayValue = `${formatNumber(number, options)} ${unit.formatUnits()}`;
         }
 
-        $element.html(`${formatNumber(number, options)} ${unit.formatUnits()}`);
+        $element.html(displayValue);
     };
 
     functions.picture = {};
