@@ -442,6 +442,7 @@ define(
                 this.loadValue = function (item) {
                     DataObject.check(item, true);
                     const value = item.getChildSync(this.args.column.jpath);
+                    this.item = value;
                     this.defaultValue = '';
                     if (value) {
                         const unitStr = String(value.unit);
@@ -454,9 +455,15 @@ define(
                     this.$input.select();
                 };
                 this.serializeValue = function () {
-                    const val = this.$input.val();
+                    let val = this.$input.val();
                     if (!val) return null;
                     try {
+                        const valNumber = +val;
+                        if (!Number.isNaN(valNumber)) {
+                            if (this.item && this.item.unit) {
+                                val = `${val} ${this.item.unit}`;
+                            }
+                        }
                         const unit = UnitEditor.mathjs.unit(val);
                         const editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
                         if (editorOptions.base) {
