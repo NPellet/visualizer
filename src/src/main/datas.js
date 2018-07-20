@@ -778,7 +778,23 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (Util, 
             var el = from[i];
             if (typeof el === 'object') {
                 if (Array.isArray(el)) {
-                    to.set(i, el, true);
+                    var toEl = to.get(i);
+                    if (!(toEl instanceof DataArray)) {
+                        toEl = new DataArray();
+                        to.set(i, toEl, true);
+                    }
+                    for (let j = 0; j < el.length; j++) {
+                        var value = el[j];
+                        var toValue = toEl[j];
+                        if (value === undefined && toValue !== undefined) continue;
+                        if (typeof value !== 'object' || isSpecialNativeObject(value)) {
+                            toEl.set(j, value);
+                        } else if (typeof toValue !== 'object' || isSpecialNativeObject(toValue)) {
+                            toEl.set(j, value);
+                        } else {
+                            merge(toEl.get(j), value);
+                        }
+                    }
                 } else if (el !== null) {
                     if (!to.get(i))
                         to.set(i, new DataObject(), true);

@@ -142,7 +142,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
         this.sendActionFromEvent(name, 'formFull', data);
 
         if (!noChange && this.module.getConfigurationCheckbox('modifyInForm', 'yes') && this.module.view.formObject) {
-            this.module.view.formObject.mergeWith(JSON.parse(JSON.stringify(data.data)), this.module.getId());
+            this.module.view.formObject.mergeWith(DataObject.resurrect(data.data), this.module.getId());
         }
     };
 
