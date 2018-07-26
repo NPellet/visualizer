@@ -50,7 +50,7 @@
         "eslint-config-cheminfo": "^1.9.1",
         "eslint-plugin-no-only-tests": "^2.0.0",
         "extend": "^3.0.2",
-        "grunt": "^1.0.1",
+        "grunt": "^1.0.3",
         "grunt-babel": "^6.0.0",
         "grunt-browserify": "^5.2.0",
         "grunt-cli": "^1.2.0",
