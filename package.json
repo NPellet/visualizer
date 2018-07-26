@@ -63,7 +63,7 @@
         "ink-docstrap": "^1.2.1",
         "lodash": "^4.17.10",
         "mkpath": "^1.0.0",
-        "semver": "^5.4.1",
+        "semver": "^5.5.0",
         "tempfile": "^2.0.0",
         "walk": "^2.3.4"
     },
