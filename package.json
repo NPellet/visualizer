@@ -72,7 +72,7 @@
         "angularplasmid": "^1.0.5",
         "bio-parsers": "4.2.4",
         "country-data": "0.0.31",
-        "katex": "^0.8.3",
+        "katex": "^0.10.0-beta",
         "mathjs": "^5.0.4",
         "mime-types": "^2.1.19",
         "node-jsgraph": "2.0.29",
