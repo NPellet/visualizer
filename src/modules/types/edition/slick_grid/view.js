@@ -1738,6 +1738,7 @@ define(
             //    newRow              A new row has been commited to the input array
             //    scriptChanged       The filter script changed
             //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering
+            //    postRender          Called on each row after rendering
             _setScript: function (script) {
                 this.filterScript = script || '';
                 this.hasFilter = this._hasFilter();
