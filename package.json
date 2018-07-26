@@ -65,7 +65,7 @@
         "mkpath": "^1.0.0",
         "semver": "^5.5.0",
         "tempfile": "^2.0.0",
-        "walk": "^2.3.4"
+        "walk": "^2.3.14"
     },
     "private": true,
     "dependencies": {
