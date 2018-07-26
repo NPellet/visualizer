@@ -61,7 +61,7 @@
         "grunt-react": "^0.12.3",
         "grunt-rename": "^0.1.4",
         "ink-docstrap": "^1.2.1",
-        "lodash": "^4.17.1",
+        "lodash": "^4.17.10",
         "mkpath": "^1.0.0",
         "semver": "^5.4.1",
         "tempfile": "^2.0.0",
