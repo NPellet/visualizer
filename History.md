@@ -1,3 +1,22 @@
+<a name="2.96.0"></a>
+# [2.96.0](https://github.com/NPellet/visualizer/compare/v2.95.0...v2.96.0) (2018-08-05)
+
+
+### Bug Fixes
+
+* circular dependency, load slickgrid dynamically in ui.choose ([6828e77](https://github.com/NPellet/visualizer/commit/6828e77))
+* unit.toString() does not work as expected ([473d723](https://github.com/NPellet/visualizer/commit/473d723))
+* **data:** correctly merge arrays in DataObject.mergeWith ([254ca00](https://github.com/NPellet/visualizer/commit/254ca00))
+
+
+### Features
+
+* add unit typerenderer ([f8f0afa](https://github.com/NPellet/visualizer/commit/f8f0afa))
+* allow editors to be loaded asynchronously in slick_grid ([a770ab3](https://github.com/NPellet/visualizer/commit/a770ab3))
+* **slick_grid:** add Unit editor ([b63e2a5](https://github.com/NPellet/visualizer/commit/b63e2a5))
+
+
+
 <a name="2.95.0"></a>
 # [2.95.0](https://github.com/NPellet/visualizer/compare/v2.94.3...v2.95.0) (2018-06-29)
 
