@@ -50,7 +50,7 @@
         "jquery.threedubmedia":
             "git://github.com/threedubmedia/jquery.threedubmedia",
         "jsbarcode": "3.5.7",
-        "jsgraph": "2.0.68",
+        "jsgraph": "2.0.87",
         "jsme": "bcdc8f0d475eb72c2d75d20afae0b7ca4ebde273",
         "jsmol": "v1.2.0",
         "jsnmr": "v0.0.14",
@@ -93,7 +93,7 @@
             "https://github.com/quilljs/quill/releases/download/v1.3.5/quill.tar.gz"
     },
     "resolutions": {
-        "jsgraph": "2.0.68",
+        "jsgraph": "2.0.87",
         "jcampconverter": "2.8.0",
         "jquery": "2.2.1",
         "eventEmitter": "^5.1.0"
