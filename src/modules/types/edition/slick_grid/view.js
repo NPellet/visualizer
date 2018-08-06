@@ -964,6 +964,12 @@ define(
                     dataContext,
                     colDef
                 ) {
+                    function sendAction() {
+                        API.doAction(
+                            context.renderOptions.action,
+                            dataContext
+                        );
+                    }
                     if (cellNode) {
                         var context = {
                             event: 'renderAction',
@@ -1015,24 +1021,14 @@ define(
                             if (context.renderOptions.clickMode === 'text') {
                                 $a.addClass('icon-clickable');
                                 if ($a.length) {
-                                    $a[0].onclick = function (event) {
-                                        API.doAction(
-                                            context.renderOptions.action,
-                                            dataContext
-                                        );
-                                    };
+                                    $a[0].onclick = sendAction;
                                 }
                             } else if (
                                 context.renderOptions.clickMode === 'background'
                             ) {
                                 $cellNode.css('cursor', 'pointer');
                                 $cellNode.off('click.action');
-                                $cellNode.on('click.action', function () {
-                                    API.doAction(
-                                        context.renderOptions.action,
-                                        dataContext
-                                    );
-                                });
+                                $cellNode.on('click.action', sendAction);
                             }
                         }
                     }
@@ -2235,7 +2231,7 @@ define(
                 appendRow: function (items) {
                     this.onActionReceive.addRow.call(this, items);
                 },
-                prependRow: function (items) {
+                prependRow: function (items, ...args) {
                     if (this.slick.data) {
                         if (!Array.isArray(items)) {
                             items = [items];
@@ -2260,6 +2256,19 @@ define(
                             this.setNextUniqId(item, true);
                             this.slick.data.addItem(item);
                             this._newRow(item);
+                        }
+                    }
+                },
+                insertRow: function (items) {
+                    if (this.slick.data) {
+                        if (!Array.isArray(items)) {
+                            items = [items];
+                            for (let i = 0; i < items.length; i++) {
+                                let {row, item} = items[i];
+                                this.setNextUniqId(item, true);
+                                this.slick.data.insertItem(row, item);
+                                this._newRow(item);
+                            }
                         }
                     }
                 },

@@ -520,6 +520,7 @@ define(
             addRow: 'Add new row(s)',
             appendRow: 'Append new row(s)',
             prependRow: 'Prepend new row(s)',
+            insertRow: 'insert new row(s)',
             showColumn: 'Show a column',
             hideColumn: 'Hide a column',
             rerender: 'Rerender the grid'
