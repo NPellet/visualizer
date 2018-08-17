@@ -86,8 +86,6 @@ define(
 
             update: {
                 tree(moduleValue) {
-                    // eslint-disable-next-line
-                    debugger;
                     this._value = $.extend(
                         true,
                         new DataObject({}),
@@ -96,14 +94,10 @@ define(
                     this.updateTree();
                 },
                 newTree(moduleValue) {
-                    // eslint-disable-next-line
-                    debugger;
                     this._tree = moduleValue.get();
                     this.doAnnotation();
                 },
                 data(data) {
-                    // eslint-disable-next-line
-                    debugger;
                     this._data = data.get();
                     this.doAnnotation();
                 }
