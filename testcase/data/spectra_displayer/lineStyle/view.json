@@ -1,0 +1,382 @@
+{
+  "version": "2.96.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["chart"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 44,
+            "top": 0
+          },
+          "size": {
+            "width": 64,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Display value chart rendering",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "chart"
+        }
+      ],
+      "actions_in": [{}],
+      "title": "Display value chart rendering",
+      "vars_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [""],
+                    "zoom": ["xy"],
+                    "wheelAction": ["none"],
+                    "wheelbaseline": [0],
+                    "fullOut": ["both"],
+                    "legend": ["bottom"],
+                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
+                    "mouseTracking": [[]],
+                    "selectScatter": [[]],
+                    "independantYZoom": [[]]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "axismodification": ["none"]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "fitToAxisOnFromTo": [[]]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [[]],
+                    "stackVerticalSpacing": [0]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [1, 1, 255, 1],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": ["{}"]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 44,
+            "top": 36
+          },
+          "size": {
+            "width": 64,
+            "height": 47
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Show chart using spectraDisplayer",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart"
+        }
+      ],
+      "actions_in": [{}],
+      "title": "Show chart using spectraDisplayer",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": [
+                "{\"title\":\"My chart\",\"data\":[{\"type\":\"line\",\"label\":\"First\",\"styles\":{\"unselected\":{\"lineColor\":\"blue\",\"lineWidth\":3,\"lineStyle\":4},\"selected\":{\"lineColor\":\"blue\",\"lineWidth\":5,\"lineStyle\":4}},\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1]},{\"type\":\"line\",\"label\":\"Second\",\"style\":{\"lineColor\":\"red\",\"lineWidth\":3,\"lineStyle\":1},\"x\":[1,2,3,4,5],\"y\":[2,3,4,3,2]}]}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 43,
+            "height": 83
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "chart"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": ["data"],
+          "name": "data"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "twigTpl",
+      "jpath": ["twigTpl"]
+    },
+    {
+      "varname": "entries",
+      "jpath": ["entries"]
+    },
+    {
+      "varname": "files",
+      "jpath": ["files"]
+    },
+    {
+      "varname": "droppedImages",
+      "jpath": ["droppedImages"]
+    }
+  ],
+  "aliases": [],
+  "configuration": {
+    "title": "Promise ajax query using SuperAgent to fetch files from github and display in jsGraph"
+  }
+}
