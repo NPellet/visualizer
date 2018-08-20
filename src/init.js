@@ -27,6 +27,7 @@ require.config({
         ckeditor: 'components/ckeditor/ckeditor',
         countryData: 'browserified/country-data/index',
         d3: 'components/d3/d3.min',
+        'd3-hierarchy': 'node_modules/d3-hierarchy/dist/d3-hierarchy.min',
         eventEmitter: 'components/eventEmitter/EventEmitter.min',
         fancytree: 'components/fancytree/dist/jquery.fancytree-all',
         fetch: 'components/fetch/fetch',

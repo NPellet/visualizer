@@ -258,7 +258,8 @@ module.exports = function (grunt) {
                             './quill-image-drop-module/image-drop.min.js',
                             './quill-image-resize-module/image-resize.min.js',
                             './mathjs/dist/math.min.js',
-                            './mathjs/dist/math.min.map'
+                            './mathjs/dist/math.min.map',
+                            './d3-hierarchy/dist/d3-hierarchy.min.js'
                         ],
                         dest: './build/node_modules/'
                     },
