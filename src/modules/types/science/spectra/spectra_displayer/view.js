@@ -12,7 +12,7 @@ define(
         'src/util/debug',
         'src/util/util'
     ],
-    function(
+    function (
         $,
         Default,
         Graph,
@@ -277,7 +277,7 @@ define(
                             .on('zoom', xZoomHandler)
                             .on('zoomOutFull', xZoomHandler);
                         if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-                            xAxis.on('zoom', function() {
+                            xAxis.on('zoom', function () {
                                 yAxis.scaleToFitAxis(this);
                             });
                         }
@@ -604,7 +604,7 @@ define(
                     'overflowX'
                 );
 
-                return { options: options, others: others };
+                return {options: options, others: others};
             },
 
             setSerieParameters(serie, varname, highlight, forceColor) {
@@ -712,7 +712,7 @@ define(
 
                 if (highlight) {
                     API.listenHighlight(
-                        { _highlight: highlight },
+                        {_highlight: highlight},
                         (value, commonKeys) => {
                             for (
                                 var i = 0, ii = commonKeys.length;
@@ -1321,7 +1321,7 @@ define(
                     );
                 }
 
-                this.onchanges[varname] = { obj: obj, id: id };
+                this.onchanges[varname] = {obj: obj, id: id};
             },
 
             removeAnnotations(varName) {
