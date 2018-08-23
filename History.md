@@ -1,3 +1,13 @@
+<a name="2.97.0"></a>
+# [2.97.0](https://github.com/NPellet/visualizer/compare/v2.96.0...v2.97.0) (2018-08-23)
+
+
+### Features
+
+* **slick_grid:** add insert rows action ([c320508](https://github.com/NPellet/visualizer/commit/c320508))
+
+
+
 <a name="2.96.0"></a>
 # [2.96.0](https://github.com/NPellet/visualizer/compare/v2.95.0...v2.96.0) (2018-08-05)
 
