@@ -4,8 +4,8 @@ define(['src/main/datas'], function (Data) {
     var uniqueID = 0;
 
     function annotateTree(tree, data, options) {
-        for (let i = 0; i < data.length; i++) {
-            data[i] = DataObject.check(data[i]);
+        for (let key in data) {
+            data[key] = DataObject.check(data[key]);
         }
 
         var root = tree;
