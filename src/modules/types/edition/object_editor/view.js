@@ -1,6 +1,13 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/context', 'jquery', 'ace/ace'], function (Default, Util, jsoneditor, Context, $, ace) {
+define([
+  'modules/default/defaultview',
+  'src/util/util',
+  'jsoneditor',
+  'src/util/context',
+  'jquery',
+  'ace/ace'
+], function (Default, Util, jsoneditor, Context, $, ace) {
   function View() {
     this._id = Util.getNextUniqueId();
   }
@@ -28,8 +35,16 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
       var mode = this.module.getConfiguration('editable');
       if (mode === 'text') mode = 'code'; // backward compatibility
       this.expand = !!this.module.getConfiguration('expanded', false)[0];
-      this.storeObject = !!this.module.getConfiguration('storeObject', false)[0];
-      this.changeInputData(DataObject.check(JSON.parse(this.module.getConfiguration('storedObject')), true));
+      this.storeObject = !!this.module.getConfiguration(
+        'storeObject',
+        false
+      )[0];
+      this.changeInputData(
+        DataObject.check(
+          JSON.parse(this.module.getConfiguration('storedObject')),
+          true
+        )
+      );
 
       this.editor = new jsoneditor(document.getElementById(this._id), {
         mode,
@@ -61,16 +76,22 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
     setSendButton: function () {
       var sendButton = this.dom
         .find('.jsoneditor-menu')
-        .prepend('<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt; color: black">Send</span>\n</button>')
+        .prepend(
+          '<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt; color: black">Send</span>\n</button>'
+        )
         .find('button.send');
 
-      sendButton.on('click', () => {
-        this.module.controller.sendValue(this.editor.get(), 'onObjectSend');
-      }).on('mouseenter', function () {
-        $(this).css('background-color', '#f0f2f5');
-      }).on('mouseleave', function () {
-        $(this).css('background-color', '#e3eaf6');
-      }).css('background-color', '#e3eaf6');
+      sendButton
+        .on('click', () => {
+          this.module.controller.sendValue(this.editor.get(), 'onObjectSend');
+        })
+        .on('mouseenter', function () {
+          $(this).css('background-color', '#f0f2f5');
+        })
+        .on('mouseleave', function () {
+          $(this).css('background-color', '#e3eaf6');
+        })
+        .css('background-color', '#e3eaf6');
     },
     update: {
       value(value) {
@@ -80,14 +101,12 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
         this.changeInputData(value);
         var valNative = this.inputData.resurrect();
         this.editor.set(JSON.parse(JSON.stringify(valNative))); // TODO more investigation (see issue #513)
-        if (this.expand && this.editor.expandAll)
-          this.editor.expandAll();
+        if (this.expand && this.editor.expandAll) this.editor.expandAll();
         this.module.controller.sendValue(valNative, 'onObjectChange');
       }
     },
     changeInputData(newData) {
-      if (this.inputData === newData)
-        return;
+      if (this.inputData === newData) return;
       // var that = this;
       // var id = this.module.getId();
 
@@ -98,7 +117,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jsoneditor', 'src/util/
 
              that.update.value.call( that, this );
 
-             }, 'value');	*/
+             }, 'value'); */
     }
   });
 

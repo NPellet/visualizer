@@ -413,7 +413,7 @@ define(
         }, 250)
       );
 
-      ctx.grid.onHeaderRowCellRendered.subscribe(function (e, args) {
+      ctx.grid.onHeaderRowCellRendered.subscribe(function (event, args) {
         $(args.node).empty();
         $("<input type='text'>")
           .css('width', '100%')
@@ -439,7 +439,7 @@ define(
         )
       ) {
         ctx.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(
-          function (e, args) {
+          function (event, args) {
             this.getData().collapseAllGroups(args.item.level);
             this.getData().expandGroup(args.item.groupingKey);
           }

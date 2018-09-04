@@ -183,7 +183,7 @@ define([
     checkDatabase: function () {
       var that = this;
       $.couch.info({
-        success: function (e) {
+        success: function (event) {
           that.ok = true;
         },
         error: function (e, f, g) {
@@ -577,7 +577,7 @@ define([
             appendTo: '#ci-visualizer',
             minLength: 0,
             source: that.flavorList
-          }).on('autocompleteselect', function (e, d) {
+          }).on('autocompleteselect', function (event, d) {
             var flavor = d.item.value;
             if (that.flavor !== flavor) that.changeFlavor(flavor);
             flavorField.blur();

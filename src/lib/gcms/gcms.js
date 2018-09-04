@@ -100,7 +100,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         onAnnotationUnselect: function (annot) {
           that.killMsFromAUC();
         },
-        onMouseMoveData: function (e, val) {
+        onMouseMoveData: function (event, val) {
           if (that.lockTrackingLine) {
             return;
           }
@@ -240,7 +240,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                  }*/
       };
       var axisMs = {
-
         bottom: [
           {
             labelValue: 'm/z',
@@ -298,22 +297,17 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.gcGraph.redraw();
       this.msGraph.redraw();
 
-      this.gcGraph.on('click', function (e) {
+      this.gcGraph.on('click', function (event) {
         // todo what is this?
         // e = e[3];
         // if (e.target.nodeName === 'path' || e.target.nodeName === 'text') {
-                    
         // }
-
         // that.lockTrackingLine = !that.lockTrackingLine;
       });
 
       var shape = this.gcGraph.newShape({
         type: 'line',
-        position: [
-          { x: 100, y: 'min' },
-          { x: 100, y: 'max' }
-        ],
+        position: [{ x: 100, y: 'min' }, { x: 100, y: 'max' }],
         strokeColor: 'rgba(0, 0, 0, 1)',
         strokeWidth: 2
       });
@@ -433,7 +427,6 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       ]);
     },
 
-
     resize: function (w, h) {
       var h1 = h * this.sizeFactor;
       var h2 = h * (1 - this.sizeFactor);
@@ -448,7 +441,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.msGraph._dom.style.height = `${h2}px`;
     },
 
-    doMsFromAUC: function (annot, shape) { // Creating an averaged MS on the fly
+    doMsFromAUC: function (annot, shape) {
+      // Creating an averaged MS on the fly
       if (!this.gcSerie) return;
 
       var data = annot.getProperties();
@@ -503,8 +497,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
 
       if (!buffer.msFromAucSerie) {
-        buffer.msFromAucSerie = this
-          .msGraph
+        buffer.msFromAucSerie = this.msGraph
           .newSerie('fromAUC', {
             autoPeakPicking: true,
             lineToZero: !this.options.msIsContinuous,
@@ -516,7 +509,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
 
       buffer.msFromAucSerie.setData(finalMs);
-      buffer.msFromAucSerie.setLineColor(annot.strokeColor || annot.fillColor || this.options.aucColor);
+      buffer.msFromAucSerie.setLineColor(
+        annot.strokeColor || annot.fillColor || this.options.aucColor
+      );
 
       // that.msGraph._updateAxes();
 
@@ -525,13 +520,20 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         this.firstMsSerie = false;
       }
 
-      that.msGraph.getRightAxis().scaleToFitAxis(that.msGraph.getBottomAxis()/* , buffer.msFromAucSerie */);
+      that.msGraph
+        .getRightAxis()
+        .scaleToFitAxis(
+          that.msGraph.getBottomAxis() /* , buffer.msFromAucSerie */
+        );
 
       that.msGraph.redraw();
       that.msGraph.drawSeries();
 
-
-      that.trigger('onMsFromAUCChange', [finalMs, annot, buffer.msFromAucSerie]);
+      that.trigger('onMsFromAUCChange', [
+        finalMs,
+        annot,
+        buffer.msFromAucSerie
+      ]);
     },
 
     clearMsFromAuc() {
@@ -541,14 +543,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
     },
 
-
     addAUC: function (from, to, options) {
       var that = this,
         obj = {
-          position: [
-            { x: from },
-            { x: to }
-          ],
+          position: [{ x: from }, { x: to }],
 
           type: 'areaundercurve',
           fillColor: this.options.aucColorT,
@@ -561,11 +559,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         obj.fillColor = options.color;
       }
 
-
       if (options.linecolor) {
         obj.strokeColor = options.linecolor;
       }
-
 
       this.gcGraph.newShape(obj).then(function (shape) {
         shape.setSerie(that.gcGraph.getSerie(0));
@@ -614,8 +610,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     zoomOnGC: function (start, end, y) {
-      this.gcGraph.getBottomAxis().zoom(start - (end - start) * 0.4, end + (end - start) * 0.4);
-      this.gcGraph.getLeftAxis().scaleToFitAxis(this.gcGraph.getBottomAxis(), start, end);
+      this.gcGraph
+        .getBottomAxis()
+        .zoom(start - (end - start) * 0.4, end + (end - start) * 0.4);
+      this.gcGraph
+        .getLeftAxis()
+        .scaleToFitAxis(this.gcGraph.getBottomAxis(), start, end);
 
       this.gcGraph.redraw();
       this.gcGraph.drawSeries();
@@ -673,13 +673,17 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
       for (var serieName in chromatogram.series) {
         if (serieName !== 'ms') {
-          var serie = this.gcGraph.newSerie('gc', {
-            useSlots: false,
-            lineColor: this.options.mainColor
-          }).autoAxis().setData({
-            x: chromatogram.times,
-            y: chromatogram.series[serieName].data
-          }).XIsMonotoneous();
+          var serie = this.gcGraph
+            .newSerie('gc', {
+              useSlots: false,
+              lineColor: this.options.mainColor
+            })
+            .autoAxis()
+            .setData({
+              x: chromatogram.times,
+              y: chromatogram.series[serieName].data
+            })
+            .XIsMonotoneous();
           serie.setLineWidth(1, 'selected');
           this.gcGraph.selectSerie(serie);
 
@@ -720,14 +724,18 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
       for (var serieName in chromatogram.series) {
         if (serieName !== 'ms') {
-          var serie = this.gcGraph.newSerie('gcro', {
-            useSlots: false,
-            selectable: false,
-            lineColor: this.options.roColor
-          }).autoAxis().setData({
-            x: chromatogram.times,
-            y: chromatogram.series[serieName].data
-          }).XIsMonotoneous();
+          var serie = this.gcGraph
+            .newSerie('gcro', {
+              useSlots: false,
+              selectable: false,
+              lineColor: this.options.roColor
+            })
+            .autoAxis()
+            .setData({
+              x: chromatogram.times,
+              y: chromatogram.series[serieName].data
+            })
+            .XIsMonotoneous();
 
           this.gcDataRO = chromatogram.series[serieName].data;
           this.gcTimesRO = chromatogram.times;
@@ -755,7 +763,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
           }
         }
       }
-      this.msGraph.getBottomAxis().forceMin(minX).forceMax(maxX);
+      this.msGraph
+        .getBottomAxis()
+        .forceMin(minX)
+        .forceMax(maxX);
       this.msData = ms;
     },
 
@@ -784,8 +795,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.trigger('MSChangeIndex', [x, ms]);
 
       if (!this.msSerieMouseTrack) {
-        this.msSerieMouseTrack = this
-          .msGraph
+        this.msSerieMouseTrack = this.msGraph
           .newSerie('ms', {
             lineToZero: !this.options.msIsContinuous,
             lineColor: this.options.mainColor
@@ -794,8 +804,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
 
       if (!this.msSerieMouseTrackRO) {
-        this.msSerieMouseTrackRO = this
-          .msGraph
+        this.msSerieMouseTrackRO = this.msGraph
           .newSerie('msro', {
             lineToZero: !this.options.msIsContinuous,
             lineColor: this.options.roColor
