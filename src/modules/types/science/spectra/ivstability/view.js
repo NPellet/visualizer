@@ -1,31 +1,48 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing', 'src/util/urldata'], function (Default, Graph, Traversing, LRU) {
-  function View() {
-  }
+define([
+  'modules/default/defaultview',
+  'lib/plot/plot',
+  'src/util/datatraversing',
+  'src/util/urldata'
+], function (Default, Graph, Traversing, LRU) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       var html = [];
-      html.push('<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>');
+      html.push(
+        '<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>'
+      );
       this.namedSeries = {};
       this.graphs = [];
       this.series = {};
       this.ivseries = {};
-      this.colors = ['#0066cc', '#cc0033', '#cc00cc', '#00cccc', '#009933', '#999966', '#cc9900', '#669999', '#000000'];
+      this.colors = [
+        '#0066cc',
+        '#cc0033',
+        '#cc00cc',
+        '#00cccc',
+        '#009933',
+        '#999966',
+        '#cc9900',
+        '#669999',
+        '#000000'
+      ];
       this.usedColors = [];
 
       this.legends = [];
       this.dom = $(html.join(''));
       this.legendDom = this.dom.find('.ivstablegend');
-      this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
+      this.module
+        .getDomContent()
+        .html(this.dom)
+        .css('overflow', 'hidden');
       this.resolveReady();
     },
 
     doIv: function (lineId, name, val, color, dashing) {
-      if (!this.ivseries[name])
-        this.ivseries[name] = {};
+      if (!this.ivseries[name]) this.ivseries[name] = {};
 
       if (!this.ivseries[name][lineId]) {
         this.ivseries[name][lineId] = this.iv.newSerie(name);
@@ -41,7 +58,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
     inDom: function () {
       var that = this;
       var options = {
-
         paddingTop: 5,
         paddingBottom: 0,
         paddingLeft: 20,
@@ -63,8 +79,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
         fontSize: 12,
         fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-
-        onMouseMoveData: function (e, val) {
+        onMouseMoveData: function (error, val) {
           /* for(var i in val) {
                      LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
                      for(var i in data) {
@@ -76,9 +91,17 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
 
         onVerticalTracking: function (lineId, val, dasharray) {
           for (var i in that.series) {
-            LRU.get(`http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=${i}&date=${val}`).done(function (data) {
+            LRU.get(
+              `http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=${i}&date=${val}`
+            ).done(function (data) {
               for (var i in data) {
-                that.doIv(lineId, i, data[i], that.graphs[0].getSerie(i).getLineColor(), dasharray);
+                that.doIv(
+                  lineId,
+                  i,
+                  data[i],
+                  that.graphs[0].getSerie(i).getLineColor(),
+                  dasharray
+                );
               }
             });
           }
@@ -86,7 +109,6 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
       };
 
       var axis = {
-
         bottom: [
           {
             labelValue: 'Time (h)',
@@ -111,26 +133,45 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
         ]
       };
 
+      this.graphs.push(
+        new Graph(
+          this.dom.find('.ivstability-jsc').get(0),
+          options,
+          $.extend(true, {}, axis, {
+            left: [{ labelValue: 'Jsc (mA/cm2)' }]
+          })
+        )
+      );
 
-      this.graphs.push(new Graph(this.dom.find('.ivstability-jsc').get(0), options, $.extend(true, {}, axis, {
-        left: [{ labelValue: 'Jsc (mA/cm2)' }]
-      })));
+      this.graphs.push(
+        new Graph(
+          this.dom.find('.ivstability-voc').get(0),
+          options,
+          $.extend(true, {}, axis, {
+            left: [{ labelValue: 'Voc (mV)' }]
+          })
+        )
+      );
 
+      this.graphs.push(
+        new Graph(
+          this.dom.find('.ivstability-ff').get(0),
+          options,
+          $.extend(true, {}, axis, {
+            left: [{ labelValue: 'FF (-)' }]
+          })
+        )
+      );
 
-      this.graphs.push(new Graph(this.dom.find('.ivstability-voc').get(0), options, $.extend(true, {}, axis, {
-        left: [{ labelValue: 'Voc (mV)' }]
-      })));
-
-
-      this.graphs.push(new Graph(this.dom.find('.ivstability-ff').get(0), options, $.extend(true, {}, axis, {
-        left: [{ labelValue: 'FF (-)' }]
-      })));
-
-
-      this.graphs.push(new Graph(this.dom.find('.ivstability-efficiency').get(0), options, $.extend(true, {}, axis, {
-        left: [{ labelValue: 'Efficiency (%)' }]
-      })));
-
+      this.graphs.push(
+        new Graph(
+          this.dom.find('.ivstability-efficiency').get(0),
+          options,
+          $.extend(true, {}, axis, {
+            left: [{ labelValue: 'Efficiency (%)' }]
+          })
+        )
+      );
 
       this.iv = new Graph(this.dom.find('.ivcurve').get(0), options, {
         bottom: [
@@ -166,13 +207,9 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
     },
 
     update: {
-      plotdata: function (moduleValue) {
+      plotdata: function (moduleValue) {},
 
-      },
-
-      serieSet: function (moduleValue, name) {
-
-      }
+      serieSet: function (moduleValue, name) {}
     },
 
     getNextColor: function () {
@@ -202,59 +239,73 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
         marginBottom: '10px'
       });
 
-      var nameDom = $('<div />').css({
-        marginLeft: '35px',
-        fontSize: '1.1em'
-      }).text(name);
+      var nameDom = $('<div />')
+        .css({
+          marginLeft: '35px',
+          fontSize: '1.1em'
+        })
+        .text(name);
 
-      var descriptionDom = $('<div />').css({
-        marginLeft: '35px',
-        marginTop: '2px'
-      }).attr('contentEditable', 'true').text(description || defaultText)
+      var descriptionDom = $('<div />')
+        .css({
+          marginLeft: '35px',
+          marginTop: '2px'
+        })
+        .attr('contentEditable', 'true')
+        .text(description || defaultText)
 
         .bind('mousedown', function () {
           if ($(this).text() == defaultText)
-            $(this).text('').css({
-              color: 'black',
-              fontStyle: 'normal'
-            }).focus();
-        }).bind('keypress', function (e) {
+            $(this)
+              .text('')
+              .css({
+                color: 'black',
+                fontStyle: 'normal'
+              })
+              .focus();
+        })
+        .bind('keypress', function (e) {
           if (e.keyCode == 13) {
             e.preventDefault();
             $(this).trigger('blur');
             return false;
           }
-        }).bind('blur', function () {
+        })
+        .bind('blur', function () {
           var text = $(this).text();
           if (text == '' || text == null || text == defaultText)
-            $(this).text(defaultText).css({
-              color: 'grey',
-              fontStyle: 'italic'
-            });
+            $(this)
+              .text(defaultText)
+              .css({
+                color: 'grey',
+                fontStyle: 'italic'
+              });
           else {
             that.editCellComment(id, text);
           }
-        }).trigger('blur');
-
+        })
+        .trigger('blur');
 
       var clearDom = $('<div />').css({
         clear: 'both'
       });
 
-      div.append(square).append(nameDom).append(descriptionDom).append(clearDom);
+      div
+        .append(square)
+        .append(nameDom)
+        .append(descriptionDom)
+        .append(clearDom);
       this.legendDom.append(div);
     },
 
     removeLegend: function (name) {
-      if (!this.legends[name])
-        return;
+      if (!this.legends[name]) return;
 
       this.legends[name].remove();
       delete this.legends[name];
     },
 
     onActionReceive: {
-
       addSerie: function (value) {
         value = Traversing.getValueIfNeeded(value);
         var options = { trackMouse: true };
@@ -312,8 +363,7 @@ define(['modules/default/defaultview', 'lib/plot/plot', 'src/util/datatraversing
           delete this.series[serieName];
         }
 
-        if (!this.ivseries[serieName])
-          return;
+        if (!this.ivseries[serieName]) return;
 
         for (var i in this.ivseries[serieName])
           this.ivseries[serieName][i].kill();

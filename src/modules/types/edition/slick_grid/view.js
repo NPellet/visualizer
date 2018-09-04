@@ -447,12 +447,12 @@ define(
       }
 
       // wire up model events to drive the grid
-      ctx.slick.data.onRowCountChanged.subscribe(function (e, args) {
+      ctx.slick.data.onRowCountChanged.subscribe(function (event, args) {
         ctx.grid.updateRowCount();
         ctx.grid.render();
       });
 
-      ctx.slick.data.onRowsChanged.subscribe(function (e, args) {
+      ctx.slick.data.onRowsChanged.subscribe(function (event, args) {
         if (ctx.hasFilter) {
           var items = ctx._getItemsInfo(args.rows);
           ctx._runFilter({
@@ -464,7 +464,7 @@ define(
         ctx.grid.render();
       });
 
-      ctx.grid.onAddNewRow.subscribe(function (e, args) {
+      ctx.grid.onAddNewRow.subscribe(function (event, args) {
         const item = args.item;
         ctx.setNextUniqId(item, true);
         ctx.slick.data.addItem(item);

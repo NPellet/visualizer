@@ -1,13 +1,20 @@
 'use strict';
 
-define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/util/versioning', 'src/main/grid', 'src/util/debug'], function (mouseTracker, ModuleFactory, ui, Versioning, Grid, Debug) {
-  document.addEventListener('copy', function (e) {
+define([
+  'src/util/mousetracker',
+  'modules/modulefactory',
+  'src/util/ui',
+  'src/util/versioning',
+  'src/main/grid',
+  'src/util/debug'
+], function (mouseTracker, ModuleFactory, ui, Versioning, Grid, Debug) {
+  document.addEventListener('copy', function (event) {
     var currentFocus = document.activeElement;
     if (currentFocus && currentFocus.nodeName === 'TEXTAREA') return;
     var success = false;
     var state = mouseTracker.getState();
     if (state.kind === 'grid') {
-      e.clipboardData.setData('text/plain', Versioning.getViewJSON());
+      event.clipboardData.setData('text/plain', Versioning.getViewJSON());
       ui.showNotification('View copied', 'success');
       success = true;
     } else if (state.kind === 'module') {
@@ -16,14 +23,17 @@ define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/ut
         return Number(m.getId()) === state.moduleId;
       });
       if (modules.length) {
-        e.clipboardData.setData('text/plain', JSON.stringify(modules[0].definition));
+        event.clipboardData.setData(
+          'text/plain',
+          JSON.stringify(modules[0].definition)
+        );
         ui.showNotification('Module copied', 'success');
         success = true;
       }
     }
 
     if (success) {
-      e.preventDefault();
+      event.preventDefault();
     }
   });
 
@@ -38,7 +48,7 @@ define(['src/util/mousetracker', 'modules/modulefactory', 'src/util/ui', 'src/ut
         } else if (obj.url) {
           Grid.addModuleFromJSON(obj);
         }
-      } catch (e) {
+      } catch (error) {
         Debug.info('Ignored error while pasting');
       }
     });

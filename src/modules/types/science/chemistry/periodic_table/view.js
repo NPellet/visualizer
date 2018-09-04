@@ -182,7 +182,7 @@ define([
           if (!Array.isArray(obj)) {
             throw new Error();
           }
-        } catch (event) {
+        } catch (error) {
           try {
             obj = Papa.parse(toParse, {
               delimiter: '\t',
@@ -190,7 +190,7 @@ define([
               dynamicTyping: true
             });
             obj = obj.data;
-          } catch (event) {
+          } catch (error2) {
             Debug.error('Could not parse elements');
             return;
           }
