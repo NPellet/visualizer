@@ -20,8 +20,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
 
   Observable.set = function (name, value) {
     var current = this.get(name);
-    if (current == value)
-      return;
+    if (current == value) return;
     this.update(name, value);
     var to = this.get(name);
     this.trigger('change', name, to, current);
@@ -29,18 +28,17 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   };
 
   Observable.prototype._proxiedSet = function () {
-    if (!this.__proxiedSet)
-      this.__proxiedSet = this.set.bind(this);
+    if (!this.__proxiedSet) this.__proxiedSet = this.set.bind(this);
     return this.__proxiedSet;
   };
   // List of observables targets
   // When any of the target change, change myself
   // Example:
   //
-  //	var obs1 = new Observable();
-  //	var obs2 = new Observable();
-  //	obs1.pull(obs2);
-  //	obs2.set('varName', 'varVal'); // ==> obs1.set('varName', 'varVal')
+  // var obs1 = new Observable();
+  // var obs2 = new Observable();
+  // obs1.pull(obs2);
+  // obs2.set('varName', 'varVal'); // ==> obs1.set('varName', 'varVal')
   Observable.prototype.pull = function () {
     var mySet = this._proxiedSet();
     $.each(arguments, function (i, trgt) {
@@ -71,4 +69,3 @@ define(['jquery', 'src/util/event'], function ($, Event) {
 
   return Observable;
 });
-
