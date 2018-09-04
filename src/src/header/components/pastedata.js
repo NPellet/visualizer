@@ -1,16 +1,14 @@
 'use strict';
 
 define(['src/header/components/default', 'src/util/versioning', 'src/util/util'], function (Default, Versioning, Util) {
+  function Element() {
+  }
 
-    function Element() {
+  Util.inherits(Element, Default, {
+    _onClick() {
+      Versioning.pasteData();
     }
+  });
 
-    Util.inherits(Element, Default, {
-        _onClick() {
-            Versioning.pasteData();
-        }
-    });
-
-    return Element;
-
+  return Element;
 });

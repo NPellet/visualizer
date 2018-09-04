@@ -1,20 +1,20 @@
 'use strict';
 
 define(function () {
-    var cache = {};
-    var exports = {};
+  var cache = {};
+  var exports = {};
 
-    exports.get = function (name) {
-        return cache[name];
-    };
+  exports.get = function (name) {
+    return cache[name];
+  };
 
-    exports.set = function (name, value) {
-        return (cache[name] = value);
-    };
+  exports.set = function (name, value) {
+    return (cache[name] = value);
+  };
 
-    exports.clear = function () {
-        cache = {};
-    };
+  exports.clear = function () {
+    cache = {};
+  };
 
-    return exports;
+  return exports;
 });

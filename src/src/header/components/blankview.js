@@ -1,18 +1,16 @@
 'use strict';
 
 define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, Default, Versioning, Util) {
+  function Element() {
+  }
 
-    function Element() {
+  Util.inherits(Element, Default, {
+
+    _onClick: function () {
+      Versioning.blankView();
     }
 
-    Util.inherits(Element, Default, {
+  });
 
-        _onClick: function () {
-            Versioning.blankView();
-        }
-
-    });
-
-    return Element;
-
+  return Element;
 });

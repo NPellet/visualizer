@@ -1,12 +1,10 @@
 'use strict';
 
 define(['modules/default/defaultmodel'], function (Default) {
+  function Model() {
+  }
 
-    function Model() {
-    }
+  $.extend(true, Model.prototype, Default);
 
-    $.extend(true, Model.prototype, Default);
-
-    return Model;
-
+  return Model;
 });
