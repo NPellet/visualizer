@@ -14,14 +14,8 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         });
 
       this.canDropOrPaste =
-                this.module.getConfigurationCheckbox(
-                  'inputOptions',
-                  'allowDrop'
-                ) ||
-                this.module.getConfigurationCheckbox(
-                  'inputOptions',
-                  'allowPaste'
-                );
+        this.module.getConfigurationCheckbox('inputOptions', 'allowDrop') ||
+        this.module.getConfigurationCheckbox('inputOptions', 'allowPaste');
 
       var textarea = $('<textarea>').css({
         position: 'absolute',
@@ -35,9 +29,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       var defaultMessage = this.module.getConfiguration('label');
       this.messages = {
         default: defaultMessage,
-        drag:
-                    this.module.getConfiguration('dragoverlabel') ||
-                    defaultMessage,
+        drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
         hover: this.module.getConfiguration('hoverlabel'),
         fileSelect: this.module.getConfiguration('fileSelectLabel')
       };
@@ -62,12 +54,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         })
         .append(textarea);
 
-      if (
-        this.module.getConfigurationCheckbox(
-          'inputOptions',
-          'allowPaste'
-        )
-      ) {
+      if (this.module.getConfigurationCheckbox('inputOptions', 'allowPaste')) {
         textarea.on('paste', function (e) {
           e.preventDefault();
           e.stopPropagation();
@@ -83,10 +70,10 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
           'inputOptions',
           'allowFileInput'
         ) &&
-                this.module.getConfigurationCheckbox(
-                  'inputOptions',
-                  'showFileInputButton'
-                )
+        this.module.getConfigurationCheckbox(
+          'inputOptions',
+          'showFileInputButton'
+        )
       ) {
         const $fileDialogButton = $(
           `<button type="button" class="form-button blue"><i class="fa fa-file fa-lg"/>&nbsp; &nbsp; ${
@@ -101,10 +88,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       }
 
       if (
-        this.module.getConfigurationCheckbox(
-          'inputOptions',
-          'allowFileInput'
-        )
+        this.module.getConfigurationCheckbox('inputOptions', 'allowFileInput')
       ) {
         this.dom.on('click', function (event) {
           event.stopPropagation();
@@ -112,12 +96,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         });
       }
 
-      if (
-        this.module.getConfigurationCheckbox(
-          'inputOptions',
-          'allowCamera'
-        )
-      ) {
+      if (this.module.getConfigurationCheckbox('inputOptions', 'allowCamera')) {
         const $cameraDialogButton = $(
           '<button type="button" class="form-button red"><i class="fa fa-camera fa-lg"/>&nbsp; &nbsp; Take picture</button>'
         );
@@ -138,12 +117,10 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       }
 
       $fileInput.on('change', function (e) {
-        that.module.controller.open(
-          that.module.controller.emulDataTransfer(e)
-        );
+        that.module.controller.open(that.module.controller.emulDataTransfer(e));
       });
 
-      $fileInput.on('load', function (e) {});
+      $fileInput.on('load', function (event) {});
 
       this.module.getDomContent().html(this.dom);
     },
@@ -157,12 +134,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       // See http://stackoverflow.com/q/7110353/1247233
       var dragCount = 0;
 
-      if (
-        this.module.getConfigurationCheckbox(
-          'inputOptions',
-          'allowDrop'
-        )
-      ) {
+      if (this.module.getConfigurationCheckbox('inputOptions', 'allowDrop')) {
         dom.addEventListener('dragenter', function (e) {
           dragCount++;
           e.stopPropagation();
@@ -198,12 +170,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         });
       }
 
-      if (
-        this.module.getConfigurationCheckbox(
-          'inputOptions',
-          'allowPaste'
-        )
-      ) {
+      if (this.module.getConfigurationCheckbox('inputOptions', 'allowPaste')) {
         dom.addEventListener('mouseleave', function (e) {
           e.stopPropagation();
           e.preventDefault();
@@ -244,10 +211,10 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         height = 0;
 
       navigator.getMedia =
-                navigator.getUserMedia ||
-                navigator.webkitGetUserMedia ||
-                navigator.mozGetUserMedia ||
-                navigator.msGetUserMedia;
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
 
       navigator.getMedia(
         {

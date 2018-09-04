@@ -563,7 +563,7 @@ define([
       }, 500);
     });
 
-    $modulesGrid.on('mouseleave', '[data-tooltip]', function (e) {
+    $modulesGrid.on('mouseleave', '[data-tooltip]', function (event) {
       clearTimeout(current);
       tooltip.css({
         opacity: 0,

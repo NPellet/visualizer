@@ -22,16 +22,17 @@ rules:
   no-empty-function: 0
   one-var: 0
   no-multi-spaces: 2
+  prefer-rest-params: 0
   brace-style:
     - 2
-    - "1tbs"
-    - {allowSingleLine: true}
+    - '1tbs'
+    - { allowSingleLine: true }
   consistent-this:
     - 2
-    - "that"
+    - 'that'
   no-trailing-spaces:
     - 2
-    - {skipBlankLines: true}
+    - { skipBlankLines: true }
 
 globals:
   setImmediate: false,

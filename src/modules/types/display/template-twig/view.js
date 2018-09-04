@@ -9,8 +9,7 @@ define([
   'src/util/Form',
   'src/util/util'
 ], function ($, Default, Twig, Debug, _, Form, Util) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -25,7 +24,9 @@ define([
       this.dom = $('<div>').css({
         height: '100%',
         width: '100%',
-        'user-select': this.module.getConfigurationCheckbox('selectable', 'yes') ? 'text' : 'none'
+        'user-select': this.module.getConfigurationCheckbox('selectable', 'yes')
+          ? 'text'
+          : 'none'
       });
 
       var debouncing = this.module.getConfiguration('debouncing');
@@ -39,7 +40,10 @@ define([
 
       if (this.form) this.form.unbind();
       this.form = new Form(this.dom, {
-        keepFormValueIfDataUndefined: this.module.getConfigurationCheckbox('formOptions', 'keepFormValueIfDataUndefined')
+        keepFormValueIfDataUndefined: this.module.getConfigurationCheckbox(
+          'formOptions',
+          'keepFormValueIfDataUndefined'
+        )
       });
 
       this.form.onChange(submitChange);
@@ -90,7 +94,9 @@ define([
 
       for (let i = 0; i < style.length; i++) {
         if (style[i].input) {
-          var selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"],select[name="${style[i].input}"]`;
+          var selector = `input[name="${style[i].input}"],textarea[name="${
+            style[i].input
+          }"],select[name="${style[i].input}"]`;
         } else {
           selector = style[i].selector;
         }
@@ -141,12 +147,14 @@ define([
     },
     blank: {
       value() {
-        this.renderPromise = this.renderPromise.then(() => {
-          this.dom.hide();
-          this.getForm();
-        }).catch((e) => {
-          Debug.warn('Error');
-        });
+        this.renderPromise = this.renderPromise
+          .then(() => {
+            this.dom.hide();
+            this.getForm();
+          })
+          .catch((event) => {
+            Debug.warn('Error');
+          });
         return null;
       },
       tpl() {
@@ -174,17 +182,21 @@ define([
       },
       tpl(value) {
         var tpl = value.get().toString();
-        return this.renderPromise.then(() => {
-          this.template = Twig.twig({
-            data: tpl
+        return this.renderPromise
+          .then(() => {
+            this.template = Twig.twig({
+              data: tpl
+            });
+            this.rerender();
+            return null;
+          })
+          .then(() => this._resolveTemplate())
+          .catch((e) => {
+            Debug.info(`Problem with template: ${e}`);
+          })
+          .then(() => {
+            this.submitChange();
           });
-          this.rerender();
-          return null;
-        }).then(() => this._resolveTemplate()).catch((e) => {
-          Debug.info(`Problem with template: ${e}`);
-        }).then(() => {
-          this.submitChange();
-        });
       },
 
       form(value, name) {
@@ -209,7 +221,10 @@ define([
         }
       },
       setForm: function (options) {
-        if (!options.data) throw new Error('setForm invalid arguments. Must be object with data property.');
+        if (!options.data)
+          throw new Error(
+            'setForm invalid arguments. Must be object with data property.'
+          );
         this.setForm(options.data);
         if (options.submitChange) {
           this.submitChange();
@@ -225,23 +240,25 @@ define([
 
     render(cb) {
       var that = this;
-      this.renderPromise = this.renderPromise.then(() => {
-        if (this.formName) {
-          this._values[this.formName] = this.formObject;
-        }
-        var render = this.template.renderAsync(this._values);
-        this.dom.html(render.html);
-        const renderProm = render.render().then(function () {
-          if (cb) cb();
-          that.setStyle();
-          that.module.controller.onRendered(that.dom.html());
-        });
+      this.renderPromise = this.renderPromise
+        .then(() => {
+          if (this.formName) {
+            this._values[this.formName] = this.formObject;
+          }
+          var render = this.template.renderAsync(this._values);
+          this.dom.html(render.html);
+          const renderProm = render.render().then(function () {
+            if (cb) cb();
+            that.setStyle();
+            that.module.controller.onRendered(that.dom.html());
+          });
 
-        this.dom.show();
-        return renderProm;
-      }).catch((e) => {
-        Debug.warn('Error rendering twig template', e);
-      });
+          this.dom.show();
+          return renderProm;
+        })
+        .catch((e) => {
+          Debug.warn('Error rendering twig template', e);
+        });
       return this.renderPromise;
     }
   });

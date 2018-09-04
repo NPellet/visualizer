@@ -19,7 +19,14 @@ define([
 ], function (Util, Debug, _, $, Renderer, Button, Form, Twig) {
   // On load add the style for the progress notification
   $.notify.addStyle('inprogress', {
-    html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(24, 'black').css('vertical-align', 'middle').wrap('<div/>').parent().html()}</div>`,
+    html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(
+      24,
+      'black'
+    )
+      .css('vertical-align', 'middle')
+      .wrap('<div/>')
+      .parent()
+      .html()}</div>`,
     classes: {
       xxx: {
         'font-weight': 'bold',
@@ -43,15 +50,21 @@ define([
   var $dialog;
 
   exports.showCode = function (opts) {
-    var opts = Object.assign({
-      mode: 'json',
-      content: '',
-      width: 800,
-      height: 600
-    }, opts);
+    var opts = Object.assign(
+      {
+        mode: 'json',
+        content: '',
+        width: 800,
+        height: 600
+      },
+      opts
+    );
     require(['ace/ace'], function (ace) {
       var id = Util.getNextUniqueId(true);
-      exports.dialog($(`<div style="width: 100%; height: 100%;" id="${id}"></div>`), opts);
+      exports.dialog(
+        $(`<div style="width: 100%; height: 100%;" id="${id}"></div>`),
+        opts
+      );
       var editor = ace.edit(id);
       var mode = `./mode/${opts.mode}`;
       editor.getSession().setOption('useWorker', false);
@@ -74,9 +87,11 @@ define([
 
     return new Promise(function (resolve) {
       var div = $(`<div>${opts.description}<div>${opts.label}: </div></div>`);
-      var input = $(`<input type="text" value="${opts.value}"/>`).appendTo(div.find('div')).on('keypress', (evt) => {
-        if (evt.keyCode === 13) done();
-      });
+      var input = $(`<input type="text" value="${opts.value}"/>`)
+        .appendTo(div.find('div'))
+        .on('keypress', (evt) => {
+          if (evt.keyCode === 13) done();
+        });
       const done = () => {
         var value = input.val();
         if (!opts.validation(value)) {
@@ -159,14 +174,18 @@ define([
     const promise = new Promise(function (resolve) {
       _resolve = resolve;
     });
-    options = Object.assign({}, {
-      title: 'Choose',
-      width: 500,
-      template: (element) => element.text || element.id,
-      id: (el) => el.id,
-      text: (el) => el.text,
-      groupBy: null
-    }, options);
+    options = Object.assign(
+      {},
+      {
+        title: 'Choose',
+        width: 500,
+        template: (element) => element.text || element.id,
+        id: (el) => el.id,
+        text: (el) => el.text,
+        groupBy: null
+      },
+      options
+    );
 
     let searchList = list.map((el) => ({
       original: el,
@@ -190,50 +209,62 @@ define([
     var $select2 = '<div><div style="height:50px"></div> <select>';
     var selectWidth = options.width;
 
-    var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    var ww = Math.max(
+      document.documentElement.clientWidth,
+      window.innerWidth || 0
+    );
+    var wh = Math.max(
+      document.documentElement.clientHeight,
+      window.innerHeight || 0
+    );
 
     $select2 += '</select></div>';
     $select2 = $($select2);
 
-    $select2 = $select2.css({
-      position: 'fixed',
-      'justify-content': 'center',
-      top: 0,
-      left: 0,
-      width: ww,
-      height: wh,
-      paddingLeft: Math.floor(ww / 2 - selectWidth / 2),
-      paddingTop: 50,
-      margin: 0,
-      'box-sizing': 'border-box',
-      opacity: 0.7,
-      backgroundColor: '#262b33'
-    })
+    $select2 = $select2
+      .css({
+        position: 'fixed',
+        'justify-content': 'center',
+        top: 0,
+        left: 0,
+        width: ww,
+        height: wh,
+        paddingLeft: Math.floor(ww / 2 - selectWidth / 2),
+        paddingTop: 50,
+        margin: 0,
+        'box-sizing': 'border-box',
+        opacity: 0.7,
+        backgroundColor: '#262b33'
+      })
       .appendTo('body')
       .find('select')
-      .addClass('js-example-basic-single').css({
+      .addClass('js-example-basic-single')
+      .css({
         width: selectWidth,
         zIndex: 5000
       });
 
-    $select2.select2({
-      placeholder: options.title,
-      data: searchList,
-      templateResult: options.template
-    }).select2('open').val(null).trigger('change');
+    $select2
+      .select2({
+        placeholder: options.title,
+        data: searchList,
+        templateResult: options.template
+      })
+      .select2('open')
+      .val(null)
+      .trigger('change');
 
     var selecting;
-    $select2.on('select2:selecting', function (e) {
+    $select2.on('select2:selecting', function () {
       selecting = true;
     });
-    $select2.on('select2:select', function (e) {
+    $select2.on('select2:select', function (event) {
       $select2.select2('destroy');
       $select2.parent().remove();
-      _resolve(e.params.data.original);
+      _resolve(event.params.data.original);
     });
 
-    $select2.on('select2:close', function (e) {
+    $select2.on('select2:close', function (event) {
       if (!selecting) {
         $select2.select2('destroy');
         $select2.parent().remove();
@@ -268,7 +299,13 @@ define([
     function updateHeader() {
       $header.html(`
                 <table><tr><td>
-                ${sources ? (`${sources} sources left`) : `Sources loaded.${failedSources ? (` (${failedSources} failed)`) : ''}`}
+                ${
+  sources
+    ? `${sources} sources left`
+    : `Sources loaded.${
+      failedSources ? ` (${failedSources} failed)` : ''
+    }`
+}
                 </td>
                 <td id="abc">
                 </td></tr>
@@ -280,7 +317,6 @@ define([
         animCell.remove();
       }
     }
-
 
     function addItems(arr) {
       return _ready.then(function (slick) {
@@ -313,7 +349,13 @@ define([
       asyncPostRender: typeRenderer
     };
 
-    var grid, data, lastClickedId, buttons, arr, columns, sources,
+    var grid,
+      data,
+      lastClickedId,
+      buttons,
+      arr,
+      columns,
+      sources,
       failedSources = 0,
       $header;
     var fromArray = Array.isArray(list);
@@ -422,45 +464,50 @@ define([
           height: 500
         };
 
-        const dialogOptions = Object.assign({}, defaultDialogOptions, options.dialog, {
-          noWrap: true,
-          closeOnEscape: false,
-          buttons: buttons,
-          close: function () {
-            resolve(null);
-          },
-          resize: function () {
-            grid.resizeCanvas();
-          },
-          open: function () {
-            var that = this;
-            $container.addClass('flex-main-container');
-            $slick.addClass('flex-1');
-            $header = $('<div>');
-            $container.append($header);
-            $container.append($slick);
-            $dialog.append($container);
-            data = new Slick.Data.DataView();
-            data.setItems([], options.idField || 'key');
-            grid = new Slick.Grid($slick, data, columns, slickOptions);
-            grid.setSelectionModel(new Slick.RowSelectionModel());
-            grid.onClick.subscribe(function (e, args) {
-              // Get id
-              if (options.noSelect) return;
-              lastClickedId = data.mapRowsToIds([args.row])[0];
-              if (options.noConfirmation) {
-                resolve(lastClickedId);
-                $(that).dialog('close');
-              }
-            });
-            grid.init();
-            readyToAddItems({
-              data,
-              grid
-            });
-            updateHeader();
+        const dialogOptions = Object.assign(
+          {},
+          defaultDialogOptions,
+          options.dialog,
+          {
+            noWrap: true,
+            closeOnEscape: false,
+            buttons: buttons,
+            close: function () {
+              resolve(null);
+            },
+            resize: function () {
+              grid.resizeCanvas();
+            },
+            open: function () {
+              var that = this;
+              $container.addClass('flex-main-container');
+              $slick.addClass('flex-1');
+              $header = $('<div>');
+              $container.append($header);
+              $container.append($slick);
+              $dialog.append($container);
+              data = new Slick.Data.DataView();
+              data.setItems([], options.idField || 'key');
+              grid = new Slick.Grid($slick, data, columns, slickOptions);
+              grid.setSelectionModel(new Slick.RowSelectionModel());
+              grid.onClick.subscribe(function (e, args) {
+                // Get id
+                if (options.noSelect) return;
+                lastClickedId = data.mapRowsToIds([args.row])[0];
+                if (options.noConfirmation) {
+                  resolve(lastClickedId);
+                  $(that).dialog('close');
+                }
+              });
+              grid.init();
+              readyToAddItems({
+                data,
+                grid
+              });
+              updateHeader();
+            }
           }
-        });
+        );
 
         exports.dialog($dialog, dialogOptions);
       });
@@ -487,26 +534,31 @@ define([
         $dialog.html(html);
       }
 
-      dialogOptions = Object.assign({
-        modal: true,
-        width: 400
-      }, dialogOptions, {
-        close: function () {
-          resolve(false);
+      dialogOptions = Object.assign(
+        {
+          modal: true,
+          width: 400
         },
-        buttons: {}
-      });
+        dialogOptions,
+        {
+          close: function () {
+            resolve(false);
+          },
+          buttons: {}
+        }
+      );
 
+      if (okLabel !== null && okLabel !== '')
+        dialogOptions.buttons[okLabel] = function () {
+          resolve(true);
+          $(this).dialog('close');
+        };
 
-      if (okLabel !== null && okLabel !== '') dialogOptions.buttons[okLabel] = function () {
-        resolve(true);
-        $(this).dialog('close');
-      };
-
-      if (cancelLabel !== null && cancelLabel !== '') dialogOptions.buttons[cancelLabel] = function () {
-        resolve(false);
-        $(this).dialog('close');
-      };
+      if (cancelLabel !== null && cancelLabel !== '')
+        dialogOptions.buttons[cancelLabel] = function () {
+          resolve(false);
+          $(this).dialog('close');
+        };
 
       $dialog.dialog(dialogOptions);
     });
@@ -553,11 +605,13 @@ define([
 
   exports.copyToClipboard = function (str) {
     var strlen = str.length;
-    var txtarea = $('<textarea/>').text(str).css({
-      width: 0,
-      height: 0,
-      position: 'fixed'
-    });
+    var txtarea = $('<textarea/>')
+      .text(str)
+      .css({
+        width: 0,
+        height: 0,
+        position: 'fixed'
+      });
 
     $('body').append(txtarea);
 
@@ -576,7 +630,7 @@ define([
   exports.showNotification = function () {
     var args = Array.from(arguments);
     args[1] = args[1] || 'error';
-    if (args[1] && (typeof args[1] === 'string')) {
+    if (args[1] && typeof args[1] === 'string') {
       args[1] = {
         className: args[1],
         autoHide: args[1] !== 'error'

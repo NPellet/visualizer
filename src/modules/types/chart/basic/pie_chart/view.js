@@ -1,25 +1,32 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'src/util/util', 'lib/flot/jquery.flot', 'lib/flot/jquery.flot.pie'], function (Default, Traversing, API, Util) {
-  function View() {
-  }
+define([
+  'modules/default/defaultview',
+  'src/util/datatraversing',
+  'src/util/api',
+  'src/util/util',
+  'lib/flot/jquery.flot',
+  'lib/flot/jquery.flot.pie'
+], function (Default, Traversing, API, Util) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       // When we change configuration the method init is called again. Also the case when we change completely of view
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
-        this.dom = $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%');
+        this.dom = $(`<div id="${this._id}"></div>`)
+          .css('height', '100%')
+          .css('width', '100%');
         this.module.getDomContent().html(this.dom);
       }
-
 
       if (this.dom) {
         // in the dom exists and the preferences has been changed we need to clean the canvas
         this.dom.empty();
       }
-      if (this._flot) { // if the dom existedd there was probably a rgraph or when changing of view
+      if (this._flot) {
+        // if the dom existedd there was probably a rgraph or when changing of view
         delete this._flot;
       }
 
@@ -29,7 +36,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
       this.updateOptions();
 
-      this._data = [];	// the data that will be sent to FLOT
+      this._data = []; // the data that will be sent to FLOT
 
       this.resolveReady();
     },
@@ -54,22 +61,26 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
           }
         });
 
-
         API.killHighlight(that.module.getId());
 
         for (var i = 0; i < that._data.length; i++) {
           if (!that._data[i]._highlight) continue;
           (function (i) {
-            API.listenHighlight(that._data[i], function (onOff, key) {
-              // we need to highlight the correct shape ...
-              if (onOff) {
-                // that.module.controller.elementHover(that._data[i]);
-                that._plot.highlight(0, i);
-              } else {
-                // that.module.controller.elementOut();
-                that._plot.unhighlight(0, i);
-              }
-            }, false, that.module.getId());
+            API.listenHighlight(
+              that._data[i],
+              function (onOff, key) {
+                // we need to highlight the correct shape ...
+                if (onOff) {
+                  // that.module.controller.elementHover(that._data[i]);
+                  that._plot.highlight(0, i);
+                } else {
+                  // that.module.controller.elementOut();
+                  that._plot.unhighlight(0, i);
+                }
+              },
+              false,
+              that.module.getId()
+            );
           })(i);
         }
       });
@@ -101,7 +112,12 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     _convertChartToData: function (value) {
       this._data = [];
       var that = this;
-      if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
+      if (
+        !Array.isArray(value.data) ||
+        !value.data[0] ||
+        !Array.isArray(value.data[0].y)
+      )
+        return;
       var y = value.data[0].y;
       var highlight = value.data[0]._highlight;
       var infos = value.data[0].info;
@@ -118,7 +134,9 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         }
         if (Array.isArray(infos) && infos.length > i) {
           // Data can be retrieved async so to fetch an information from the "info" object we need this strange code
-          Traversing.getValueFromJPath(infos[i], 'element.name').done(function (elVal) {
+          Traversing.getValueFromJPath(infos[i], 'element.name').done(function (
+            elVal
+          ) {
             that._data[i].label = elVal;
             that._data[i].info = infos[i];
           });

@@ -1,15 +1,35 @@
 'use strict';
 
-define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src/util/colorbar', 'src/util/color', 'components/papa-parse/papaparse.min', 'src/util/api', 'lodash', 'src/util/urldata'], function (Default, Twig, Debug, Colorbar, Color, Papa, API, _, urlData) {
+define([
+  'modules/default/defaultview',
+  'lib/twigjs/twig',
+  'src/util/debug',
+  'src/util/colorbar',
+  'src/util/color',
+  'components/papa-parse/papaparse.min',
+  'src/util/api',
+  'lodash',
+  'src/util/urldata'
+], function (Default, Twig, Debug, Colorbar, Color, Papa, API, _, urlData) {
   const MIN_TEMPERATURE = 0;
   const MAX_TEMPERATURE = 6000;
   const INITIAL_TEMPERATURE = 293;
   const STEP_TEMPERATURE = 1;
 
-  const series = ['alkali', 'alkaline', 'transition', 'lanthanoid', 'actinoid', 'poor', 'metalloid', 'nonmetal', 'halogen', 'noble'];
+  const series = [
+    'alkali',
+    'alkaline',
+    'transition',
+    'lanthanoid',
+    'actinoid',
+    'poor',
+    'metalloid',
+    'nonmetal',
+    'halogen',
+    'noble'
+  ];
 
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -141,12 +161,17 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
       });
 
       var varName = this.module.getConfiguration('varName');
-      if (varName && this.module.getConfiguration('elementsSource') !== 'varin') {
+      if (
+        varName &&
+        this.module.getConfiguration('elementsSource') !== 'varin'
+      ) {
         API.createData(varName, value);
       }
 
       this.dataElements = DataObject.check(elements, true);
-      this.elements = JSON.parse(JSON.stringify(DataObject.resurrect(elements)));
+      this.elements = JSON.parse(
+        JSON.stringify(DataObject.resurrect(elements))
+      );
     },
 
     parseElements(toParse) {
@@ -157,17 +182,15 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
           if (!Array.isArray(obj)) {
             throw new Error();
           }
-        } catch (e) {
+        } catch (event) {
           try {
-            obj = Papa.parse(toParse,
-              {
-                delimiter: '\t',
-                header: true,
-                dynamicTyping: true
-              }
-            );
+            obj = Papa.parse(toParse, {
+              delimiter: '\t',
+              header: true,
+              dynamicTyping: true
+            });
             obj = obj.data;
-          } catch (e) {
+          } catch (event) {
             Debug.error('Could not parse elements');
             return;
           }
@@ -191,14 +214,17 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
       }
 
       for (let i = 0; i < this.elements.length; i++) {
-        var $element = $(`<div>${this.template.render({ element: this.elements[i] })}</div>`).data('idx', i);
+        var $element = $(
+          `<div>${this.template.render({ element: this.elements[i] })}</div>`
+        ).data('idx', i);
 
-        $element.addClass(`${'element' +
-                    ' e'}${this.elements[i].Z
-        } period${this.elements[i].period
-        } group${this.elements[i].group
-        } block-${this.elements[i].block
-        } ${this.elements[i].serie}`);
+        $element.addClass(
+          `${'element' + ' e'}${this.elements[i].Z} period${
+            this.elements[i].period
+          } group${this.elements[i].group} block-${this.elements[i].block} ${
+            this.elements[i].serie
+          }`
+        );
 
         that.dom.append($element);
       }
@@ -208,7 +234,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
       that.defaultLegend = $('<div class="default-legend"></div>');
       var elementZoom = $('<div class="element-zoom hidden"></div>');
       var elementDatas = $('<div class="element-datas hidden"></div>');
-      legend.append(that.defaultLegend).append(elementZoom).append(elementDatas);
+      legend
+        .append(that.defaultLegend)
+        .append(elementZoom)
+        .append(elementDatas);
 
       // default Legend. Better in a twig.
       that.innerLegend = $('<div class="inner-legend"></div>');
@@ -227,24 +256,30 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
                 </ul>`);
       that.innerLegend.append(that.colorSerie);
 
-      var $elements = that.$elements = that.dom.find('.element');
+      var $elements = (that.$elements = that.dom.find('.element'));
 
       that.innerLegend.append('<div class="stateOfMatter"></div>');
       that.stateOfMatter = that.innerLegend.find('.stateOfMatter');
-
 
       if (that.foreground.mode === 'state') {
         that.stateOfMatter.append(`<table><tbody>
                 <tr><td class="solid">S</td><td>Solid</td><td class="liquid">L</td><td>Liquid</td></tr>
                 <tr><td class="gas"">G</td><td>Gas</td><td class="unknown">U</td><td>Unknown</td></tr>
                 </tbody></table>`);
-        that.stateOfMatter.append('<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>');
+        that.stateOfMatter.append(
+          '<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>'
+        );
       }
 
-
       if (that.foreground.mode === 'state') {
-        that.defaultLegend.append(`<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`);
-        that.innerLegend.find('dl').append(`<dt>Temperature</dt><dd id="foregroundVal">${INITIAL_TEMPERATURE} K</dd>`);
+        that.defaultLegend.append(
+          `<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`
+        );
+        that.innerLegend
+          .find('dl')
+          .append(
+            `<dt>Temperature</dt><dd id="foregroundVal">${INITIAL_TEMPERATURE} K</dd>`
+          );
         this.updateElementPhase(INITIAL_TEMPERATURE);
       } else if (that.foreground.mode === 'custom') {
         that._addSlider('foreground');
@@ -264,7 +299,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
       this.innerLegend.on('click', 'ul.color-serie li', (event) => {
         that.unselectElements(event, $elements);
-        var classes = $(event.target).attr('class').split(' ');
+        var classes = $(event.target)
+          .attr('class')
+          .split(' ');
         var found = series.find((s) => {
           return classes.some((c) => c === s);
         });
@@ -278,20 +315,29 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
       that.defaultLegend.on('input', '#foregroundSlider>input', (event) => {
         if (that.foreground.mode === 'state') {
           this.updateElementPhase(event.target.value);
-          that.innerLegend.find('#foregroundVal').html(`${event.target.value} K`);
+          that.innerLegend
+            .find('#foregroundVal')
+            .html(`${event.target.value} K`);
         } else {
           this.updateColors('foreground', event.target.value);
-          that.innerLegend.find('#foregroundVal').html(`${event.target.value} ${this.foreground.unit}`);
+          that.innerLegend
+            .find('#foregroundVal')
+            .html(`${event.target.value} ${this.foreground.unit}`);
         }
       });
 
       that.defaultLegend.on('input', '#backgroundSlider>input', (event) => {
         this.updateColors('background', event.target.value);
-        that.innerLegend.find('#backgroundVal').html(`${event.target.value} ${this.background.unit}`);
+        that.innerLegend
+          .find('#backgroundVal')
+          .html(`${event.target.value} ${this.background.unit}`);
       });
 
       var showDefaultLegend = _.debounce(() => {
-        $('.element-zoom').delay(50000).empty().unbind();
+        $('.element-zoom')
+          .delay(50000)
+          .empty()
+          .unbind();
         that.defaultLegend.removeClass('hidden');
         if (this.module.getConfigurationCheckbox('display', 'families')) {
           that.colorSerie.removeClass('hidden');
@@ -339,7 +385,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
       that.dom.on('click', '.indic-p', function (event) {
         // find period to which it belongs
-        var p = $(this).attr('class').replace(/^.*(period\d+).*$/, '$1');
+        var p = $(this)
+          .attr('class')
+          .replace(/^.*(period\d+).*$/, '$1');
         var pN = p.substr(6);
         that.unselectElements(event, $elements);
         var $selected = $elements.filter(`.${p}`);
@@ -358,7 +406,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
       that.dom.on('click', '.indic-g', function (event) {
         // find group to which it belongs
-        var g = $(this).attr('class').replace(/^.*(group\d+).*$/, '$1');
+        var g = $(this)
+          .attr('class')
+          .replace(/^.*(group\d+).*$/, '$1');
         var gN = g.substr(5);
         that.unselectElements(event, $elements);
         var $selected = $elements.filter(`.${g}`);
@@ -379,12 +429,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         elementZoom.append(that.hltemplate.render({ element: el }));
       }
 
-      var interactZone = ('<div class="interactive-zone"><div id="slider"></div>');
+      var interactZone =
+        '<div class="interactive-zone"><div id="slider"></div>';
       legend.after(interactZone);
 
-
-      var actinid = ('<div class="indic-f period7"><p>89-103</p></div>');
-      var lanthanid = ('<div class="indic-f period6"><p>57-71</p></div>');
+      var actinid = '<div class="indic-f period7"><p>89-103</p></div>';
+      var lanthanid = '<div class="indic-f period6"><p>57-71</p></div>';
       that.dom.find('div.e56').after(lanthanid);
       that.dom.find('div.e88').after(actinid);
 
@@ -395,7 +445,21 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
     _getOptions(type) {
       var cfg = this.module.getConfiguration;
       var r = {};
-      ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'NoValueColor', 'FixedColor', 'Step', 'Label', 'Unit', 'Mode', 'Jpath'].forEach((val) => {
+      [
+        'Min',
+        'Max',
+        'Val',
+        'MinColor',
+        'MaxColor',
+        'NeutralColor',
+        'NoValueColor',
+        'FixedColor',
+        'Step',
+        'Label',
+        'Unit',
+        'Mode',
+        'Jpath'
+      ].forEach((val) => {
         var prop = val.toLowerCase();
         r[prop] = cfg(`${type}${val}`);
         if (val.match(/color/i)) {
@@ -403,7 +467,10 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
         }
       });
       [['ShowSlider', 'yes']].forEach((val) => {
-        r[val[0].toLowerCase()] = this.module.getConfigurationCheckbox(`${type}${val[0]}`, val[1]);
+        r[val[0].toLowerCase()] = this.module.getConfigurationCheckbox(
+          `${type}${val[0]}`,
+          val[1]
+        );
       });
       return r;
     },
@@ -412,11 +479,16 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
       var width = this.defaultLegend.width(),
         height = 51;
       var options = {
-        stops: [this[type].mincolor, this[type].neutralcolor, this[type].maxcolor],
+        stops: [
+          this[type].mincolor,
+          this[type].neutralcolor,
+          this[type].maxcolor
+        ],
         stopPositions: [this[type].min, value, this[type].max],
         domain: [this[type].min, this[type].max],
         stopType: 'values',
-        width, height,
+        width,
+        height,
         returnMode: 'svg',
         axis: {
           orientation: 'top'
@@ -433,9 +505,21 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
     _addSlider(type) {
       if (this[type].showslider) {
-        this.defaultLegend.append(`<div class="periodicSlider" id="${type}Slider"><input type="range" min="${this[type].min}" max="${this[type].max}" step="${this[type].step}" value="${this[type].val}"/><div class="periodicGradient"></div></div>`);
+        this.defaultLegend.append(
+          `<div class="periodicSlider" id="${type}Slider"><input type="range" min="${
+            this[type].min
+          }" max="${this[type].max}" step="${this[type].step}" value="${
+            this[type].val
+          }"/><div class="periodicGradient"></div></div>`
+        );
       }
-      this.innerLegend.find('dl').append(`<dt>${this[type].label}</dt><dd id="${type}Val">${this[type].val} ${this[type].unit}</dd>`);
+      this.innerLegend
+        .find('dl')
+        .append(
+          `<dt>${this[type].label}</dt><dd id="${type}Val">${this[type].val} ${
+            this[type].unit
+          }</dd>`
+        );
     },
 
     unselectElements(event, $el) {
@@ -449,9 +533,12 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
     },
 
     elementsSelected() {
-      var sel = this.dom.find('.el-selected').map((idx, el) => {
-        return this.getZ($(el));
-      }).toArray();
+      var sel = this.dom
+        .find('.el-selected')
+        .map((idx, el) => {
+          return this.getZ($(el));
+        })
+        .toArray();
       this.module.controller.elementsSelected(sel);
     },
 
@@ -499,7 +586,9 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
       for (let i = 0; i < $elements.length; i++) {
         let $el = $($elements[i]);
         var idx = $el.data('idx');
-        var elVal = Number(this.dataElements.getChildSync([idx].concat(this[type].jpath)));
+        var elVal = Number(
+          this.dataElements.getChildSync([idx].concat(this[type].jpath))
+        );
         if (isNaN(elVal)) {
           var c = {
             rgba: this[type].novaluecolor
@@ -549,28 +638,41 @@ define(['modules/default/defaultview', 'lib/twigjs/twig', 'src/util/debug', 'src
 
     _activateHighlights: function () {
       var that = this;
-      var hl = _(that.elements).map('_highlight').flatten().filter((val) => !_.isUndefined(val)).value();
+      var hl = _(that.elements)
+        .map('_highlight')
+        .flatten()
+        .filter((val) => !_.isUndefined(val))
+        .value();
 
       that._highlighted = [];
 
       API.killHighlight(that.module.getId());
 
       for (let i = 0; i < hl.length; i++) {
-        API.listenHighlight({ _highlight: hl[i] }, function (onOff, key, killerId, senderId) {
-          // Ignore if sent my the module itself
-          if (senderId === that.module.getId()) return;
-          if (!Array.isArray(key)) {
-            key = [key];
-          }
-          if (onOff) {
-            that._highlighted = _(that._highlighted).push(key).flatten().uniq().value();
-          } else {
-            that._highlighted = _.filter(that._highlighted, function (val) {
-              return key.indexOf(val) === -1;
-            });
-          }
-          that._drawHighlight();
-        }, false, that.module.getId());
+        API.listenHighlight(
+          { _highlight: hl[i] },
+          function (onOff, key, killerId, senderId) {
+            // Ignore if sent my the module itself
+            if (senderId === that.module.getId()) return;
+            if (!Array.isArray(key)) {
+              key = [key];
+            }
+            if (onOff) {
+              that._highlighted = _(that._highlighted)
+                .push(key)
+                .flatten()
+                .uniq()
+                .value();
+            } else {
+              that._highlighted = _.filter(that._highlighted, function (val) {
+                return key.indexOf(val) === -1;
+              });
+            }
+            that._drawHighlight();
+          },
+          false,
+          that.module.getId()
+        );
       }
     },
 

@@ -1,8 +1,13 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 'src/util/typerenderer'], function ($, Default, Button, ui, Renderer) {
-  function View() {
-  }
+define([
+  'jquery',
+  'modules/default/defaultview',
+  'forms/button',
+  'src/util/ui',
+  'src/util/typerenderer'
+], function ($, Default, Button, ui, Renderer) {
+  function View() {}
 
   var onClick;
 
@@ -18,18 +23,28 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
       var content = this.module.getConfiguration('content');
       var contentType = this.module.getConfiguration('contentType');
       var buttonType = this.module.getConfiguration('toggle');
-      if (buttonType === 'toggle' && this.module.getConfiguration('startState') === 'off') {
+      if (
+        buttonType === 'toggle' &&
+        this.module.getConfiguration('startState') === 'off'
+      ) {
         label = this.module.getConfiguration('offLabel');
-      } else if (buttonType === 'toggle' && this.module.getConfiguration('startState') === 'on') {
+      } else if (
+        buttonType === 'toggle' &&
+        this.module.getConfiguration('startState') === 'on'
+      ) {
         label = this.module.getConfiguration('onLabel');
       } else {
         label = this.module.getConfiguration('label');
       }
 
-      onClick = function (e, val) {
+      onClick = function (event, val) {
         var prom = Promise.resolve(true);
         if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
-          prom = ui.confirm(that.module.getConfiguration('confirmText'), that.module.getConfiguration('okLabel'), that.module.getConfiguration('cancelLabel'));
+          prom = ui.confirm(
+            that.module.getConfiguration('confirmText'),
+            that.module.getConfiguration('okLabel'),
+            that.module.getConfiguration('cancelLabel')
+          );
         }
         const buttonType = that.module.getConfiguration('toggle');
         prom.then(function (ok) {
@@ -47,26 +62,23 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
         });
       };
 
-      var button = new Button(
-        label,
-        onClick,
-        {
-          color: 'Grey',
-          disabled: false,
-          checkbox: this.module.getConfiguration('toggle') !== 'click',
-          value: this.module.getConfiguration('startState') === 'on'
-        }
-      );
-
+      var button = new Button(label, onClick, {
+        color: 'Grey',
+        disabled: false,
+        checkbox: this.module.getConfiguration('toggle') !== 'click',
+        value: this.module.getConfiguration('startState') === 'on'
+      });
 
       this.module.getDomContent().html(this.dom);
 
       var buttonType = this.getButtonType();
       if (buttonType === 'button') {
-        this.dom.html(button.render().css({
-          position: 'absolute',
-          bottom: 3
-        }));
+        this.dom.html(
+          button.render().css({
+            position: 'absolute',
+            bottom: 3
+          })
+        );
       } else if (buttonType === 'imageUrl') {
         var $div = $(`<div><img src="${content}"/></div>`);
         $div.find('img').css({
@@ -104,7 +116,9 @@ define(['jquery', 'modules/default/defaultview', 'forms/button', 'src/util/ui', 
 
       if (buttonType !== 'button') {
         this.$div = $div;
-        this.$mask = $('<div style="position: absolute; width:100%; height: 100%; background-color: rgba(255, 255, 255, 0); pointer-events: none"></div>');
+        this.$mask = $(
+          '<div style="position: absolute; width:100%; height: 100%; background-color: rgba(255, 255, 255, 0); pointer-events: none"></div>'
+        );
         this.dom.prepend(this.$mask);
       }
 

@@ -4,25 +4,31 @@ define(['jquery'], function ($) {
   var db, process;
 
   return {
-
     open: function () {
       // In the following line, you should include the prefixes of implementations you want to test.
       // This condition should not be removed. Prevents error in firefox
       if (!('indexedDB' in window)) {
-        window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.oIndexedDB || window.msIndexedDB;
+        window.indexedDB =
+          window.indexedDB ||
+          window.webkitIndexedDB ||
+          window.mozIndexedDB ||
+          window.oIndexedDB ||
+          window.msIndexedDB;
       }
       // DON'T use 'var indexedDB = ...' if you're not in a function.
       // Moreover, you may need references to some window.IDB* objects:
-      window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-      window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+      window.IDBTransaction =
+        window.IDBTransaction ||
+        window.webkitIDBTransaction ||
+        window.msIDBTransaction;
+      window.IDBKeyRange =
+        window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
       // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
 
       var def = $.Deferred();
-      if (!indexedDB)
-        return def.reject();
+      if (!indexedDB) return def.reject();
 
-      if (db)
-        return def.resolve();
+      if (db) return def.resolve();
 
       var req = indexedDB.open('ci', 26);
 
@@ -44,7 +50,6 @@ define(['jquery'], function ($) {
         if (db.objectStoreNames.contains('localdata')) {
           db.deleteObjectStore('localdata');
         }
-
 
         var def3 = $.Deferred(),
           def4 = $.Deferred();
@@ -73,14 +78,13 @@ define(['jquery'], function ($) {
     getAll: function (type, key, branch) {
       var def = $.Deferred(),
         that = this;
-      type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
+      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
 
       var trans = db.transaction([type], 'readwrite');
       var store = trans.objectStore(type);
       var stack = {};
 
-      if (branch)
-        var req = store.get(`${key};${branch}`);
+      if (branch) var req = store.get(`${key};${branch}`);
       else {
         var req = store.openCursor();
       }
@@ -100,8 +104,7 @@ define(['jquery'], function ($) {
           if (e.target.result && e.target.result.key.indexOf(key) > -1)
             stack[e.target.result.value.branch] = e.target.result.value;
 
-          if (e.target.result)
-            e.target.result.continue();
+          if (e.target.result) e.target.result.continue();
           else {
             def.resolve(stack);
           }
@@ -128,12 +131,12 @@ define(['jquery'], function ($) {
 
       var def = $.Deferred();
 
-      type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
+      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
       var store = trans.objectStore(type);
       var req = store.put(obj);
 
-      req.onsuccess = function (e) {
+      req.onsuccess = function () {
         def.resolve(obj);
       };
 
@@ -143,7 +146,7 @@ define(['jquery'], function ($) {
     storeToHead: function (type, key, branch, obj) {
       var def = $.Deferred(),
         that = this;
-      type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
+      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
       var store = trans.objectStore(type);
 
@@ -153,7 +156,7 @@ define(['jquery'], function ($) {
           var obj2 = e.target.result;
           obj2.head = JSON.stringify(obj);
           var req2 = store.put(obj2);
-          req2.onsuccess = function (e) {
+          req2.onsuccess = function () {
             def.resolve(obj);
           };
         } else {
@@ -169,7 +172,7 @@ define(['jquery'], function ($) {
 
     store: function (type, key, branch, obj) {
       var def = $.Deferred();
-      type = (type == 'data' || type == 'localdata') ? 'localdata' : 'localview';
+      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
 
       var store = trans.objectStore(type);
@@ -185,7 +188,7 @@ define(['jquery'], function ($) {
             var store = trans.objectStore(type);
             resulted.head = obj;
             var req2 = store.put(resulted);
-            req2.onsuccess = function (e) {
+            req2.onsuccess = function () {
               def.resolve(obj);
             };
           });
@@ -193,7 +196,7 @@ define(['jquery'], function ($) {
           var obj2 = e.target.result;
           obj2.list.push(obj);
           var req2 = store.put(obj2);
-          req2.onsuccess = function (e) {
+          req2.onsuccess = function () {
             def.resolve(obj);
           };
         }

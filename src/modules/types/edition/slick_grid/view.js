@@ -304,7 +304,7 @@ define(
           return true;
         });
 
-        moveRowsPlugin.onMoveRows.subscribe(function (e, args) {
+        moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
           var rows = args.rows;
           rows = rows.map(function (r) {
             return ctx._getItemInfoFromRow(r).idx;
@@ -387,7 +387,7 @@ define(
           }
           dd.helper.css({ top: e.pageY + 5, left: e.pageX + 5 });
         });
-        ctx.grid.onDragEnd.subscribe(function (e, dd) {
+        ctx.grid.onDragEnd.subscribe(function (event, dd) {
           if (dd.mode != 'recycle') {
             return;
           }
@@ -399,7 +399,7 @@ define(
       $(ctx.grid.getHeaderRow()).delegate(
         ':input',
         'change keyup',
-        _.debounce(function (e) {
+        _.debounce(function (event) {
           var columnId = $(this).data('columnId');
           if (columnId != null) {
             ctx.columnFilters[columnId] = $.trim($(this).val());
@@ -569,7 +569,7 @@ define(
         ctx.grid.invalidate();
       });
 
-      ctx.grid.onCellChange.subscribe(function (e, args) {
+      ctx.grid.onCellChange.subscribe(function (event, args) {
         if (ctx.fromPopup) {
           // We don't really know what has been edited...
           var columns = ctx.getColumnsGivenEditContext();
@@ -620,7 +620,7 @@ define(
         }
       });
 
-      ctx.grid.onClick.subscribe(function (e, args) {
+      ctx.grid.onClick.subscribe(function (event, args) {
         var columns = ctx.grid.getColumns();
         var itemInfo = ctx._getItemInfoFromRow(args.row);
         if (itemInfo) {
@@ -641,7 +641,7 @@ define(
         }
       });
 
-      ctx.grid.onDblClick.subscribe(function (e, args) {
+      ctx.grid.onDblClick.subscribe(function (event, args) {
         var itemInfo = ctx._getItemInfoFromRow(args.row);
         ctx.module.controller.onDoubleClick(
           itemInfo.idx,
@@ -649,7 +649,7 @@ define(
         );
       });
 
-      ctx.grid.onActiveCellChanged.subscribe(function (e, args) {
+      ctx.grid.onActiveCellChanged.subscribe(function (event, args) {
         ctx.lastActiveCell = args.cell;
         ctx.lastActiveRow = args.row;
 
@@ -700,7 +700,7 @@ define(
         }
       });
 
-      ctx.grid.onSelectedRowsChanged.subscribe(function (e, args) {
+      ctx.grid.onSelectedRowsChanged.subscribe(function (event, args) {
         ctx.lastSelectedRows = args.rows.slice();
         var selectedItems = ctx._getItemsInfo(ctx.lastSelectedRows);
         if (ctx.hasFilter) {
@@ -724,7 +724,7 @@ define(
         );
       });
 
-      ctx.grid.onSort.subscribe(function (e, args) {
+      ctx.grid.onSort.subscribe(function (event, args) {
         // args.multiColumnSort indicates whether or not this is a multi-column sort.
         // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
         // If not, the sort column and direction will be in args.sortCol & args.sortAsc.

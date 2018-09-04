@@ -13,7 +13,8 @@ define([
   'src/util/debug',
   'version',
   'src/util/config'
-], function ($,
+], function (
+  $,
   ui,
   Util,
   diagram,
@@ -24,7 +25,8 @@ define([
   Variables,
   Debug,
   Version,
-  Config) {
+  Config
+) {
   var definition, jqdom, moduleMove;
   var isInit = false;
   var activeLayer = 'Default layer';
@@ -36,17 +38,18 @@ define([
       name: '1080',
       width: 1920,
       height: 1080
-    }, {
+    },
+    {
       name: '768',
       width: 1366,
       height: 768
-    }, {
+    },
+    {
       name: '1440',
       width: 2560,
       height: 1440
     }
   ];
-
 
   const defaults = {
     xWidth: 10,
@@ -59,7 +62,9 @@ define([
   };
   const widthInfo = $('<span>').css(infoCss);
   const heightInfo = $('<span>').css(infoCss);
-  const positionInfo = $('<span>').css(infoCss).css({ top: -2, left: 4 });
+  const positionInfo = $('<span>')
+    .css(infoCss)
+    .css({ top: -2, left: 4 });
 
   function checkDimensions(extend) {
     var modules = ModuleFactory.getModules();
@@ -68,13 +73,21 @@ define([
       var pos = modules[i].getPosition(getActiveLayer()),
         size = modules[i].getSize(getActiveLayer());
 
-      if (pos.top && size.height && modules[i].getLayer(getActiveLayer()).display) {
+      if (
+        pos.top &&
+        size.height &&
+        modules[i].getLayer(getActiveLayer()).display
+      ) {
         bottomMax = Math.max(bottomMax, pos.top + size.height);
       }
     }
 
-    jqdom.css('height',
-      Math.max($('#ci-visualizer').height() - $('#header').outerHeight(true) - 5, (defaults.yHeight * bottomMax + (extend ? 400 : 0)))
+    jqdom.css(
+      'height',
+      Math.max(
+        $('#ci-visualizer').height() - $('#header').outerHeight(true) - 5,
+        defaults.yHeight * bottomMax + (extend ? 400 : 0)
+      )
     );
   }
 
@@ -85,7 +98,9 @@ define([
   }
 
   function duplicateModule(module) {
-    const def = DataObject.recursiveTransform(JSON.parse(JSON.stringify(module.definition)));
+    const def = DataObject.recursiveTransform(
+      JSON.parse(JSON.stringify(module.definition))
+    );
 
     def.layers[getActiveLayer()].position.left += 2;
     def.layers[getActiveLayer()].position.top += 2;
@@ -109,147 +124,176 @@ define([
   }
 
   function addModule(module) {
-    module.setLayers(definition.getChildSync(['layers'], true), true, false, false, getActiveLayer());
+    module.setLayers(
+      definition.getChildSync(['layers'], true),
+      true,
+      false,
+      false,
+      getActiveLayer()
+    );
 
-    module.ready.then(function () {
-      module.getDomWrapper().appendTo(jqdom);
-      setModuleSize(module);
-      if (!Versioning.isViewLocked()) {
-        Context.listen(module.getDomWrapper().get(0), [
+    module.ready.then(
+      function () {
+        module.getDomWrapper().appendTo(jqdom);
+        setModuleSize(module);
+        if (!Versioning.isViewLocked()) {
+          Context.listen(module.getDomWrapper().get(0), [
+            [
+              '<li name="tofront"><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>',
+              function () {
+                moveToFront(module);
+              }
+            ],
 
-          [
-            '<li name="tofront"><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>',
-            function () {
-              moveToFront(module);
-            }
-          ],
+            [
+              '<li name="toback"><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>',
+              function () {
+                moveToBack(module);
+              }
+            ],
 
-          [
-            '<li name="toback"><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>',
-            function () {
-              moveToBack(module);
-            }
-          ],
+            [
+              '<li name="remove"><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>',
+              function () {
+                removeModule(module);
+              }
+            ],
 
-          [
-            '<li name="remove"><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>',
-            function () {
-              removeModule(module);
-            }
-          ],
+            [
+              '<li name="move"><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>',
+              function (e) {
+                var pos = module.getDomWrapper().position();
+                var shiftX = e.pageX - pos.left;
+                var shiftY = e.pageY - pos.top;
+                moveModule(module, shiftX, shiftY);
+              }
+            ],
 
-          [
-            '<li name="move"><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>',
-            function (e) {
-              var pos = module.getDomWrapper().position();
-              var shiftX = e.pageX - pos.left;
-              var shiftY = e.pageY - pos.top;
-              moveModule(module, shiftX, shiftY);
-            }
-          ],
+            [
+              '<li name="duplicate"><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>',
+              function () {
+                duplicateModule(module);
+              }
+            ],
 
-          [
-            '<li name="duplicate"><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>',
-            function () {
-              duplicateModule(module);
-            }
-          ],
-
-          [
-            '<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
-            function () {
-              window.localStorage.setItem('ci-copy-module', JSON.stringify(module.definition));
-            }
-          ]
-        ]);
-      }
-
-
-      if (module.inDom) {
-        module.inDom();
-      }
-
-
-      if (!Versioning.isViewLocked()) {
-        // Insert jQuery UI resizable and draggable
-        module.getDomWrapper().resizable({
-          grid: [definition.xWidth, definition.yHeight],
-          start() {
-            Util.maskIframes();
-            module.resizing = true;
-          },
-          stop() {
-            Util.unmaskIframes();
-            hideModuleDimensions();
-            moduleResize(module);
-            module.resizing = false;
-            checkDimensions(false);
-          },
-          resize(event, ui) {
-            showModuleDimensions(module, ui.size);
-            checkDimensions(true);
-          },
-          containment: 'parent'
-
-        }).draggable({
-
-          grid: [definition.xWidth, definition.yHeight],
-          containment: 'parent',
-          handle: '.ci-module-header',
-          start() {
-            Util.maskIframes();
-            checkDimensions(true);
-            module.moving = true;
-          },
-          stop() {
-            const position = $(this).position();
-            Util.unmaskIframes();
-            hideModulePosition();
-            module.getPosition(getActiveLayer()).set('left', Math.round(position.left / definition.xWidth));
-            module.getPosition(getActiveLayer()).set('top', Math.round(position.top / definition.yHeight));
-            module.moving = false;
-            checkDimensions(true);
-          },
-          drag(event, ui) {
-            showModulePosition(module, ui.position);
-            checkDimensions(true);
-          }
-
-        }).trigger('resize');
-      }
-
-      module.getDomWrapper().on('mouseover', function () {
-        if (module.resizing || module.moving)
-          return;
-        if (module.getDomHeader().hasClass('ci-hidden')) {
-          module.getDomHeader().removeClass('ci-hidden').addClass('ci-hidden-disabled');
-          moduleResize(module);
+            [
+              '<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
+              function () {
+                window.localStorage.setItem(
+                  'ci-copy-module',
+                  JSON.stringify(module.definition)
+                );
+              }
+            ]
+          ]);
         }
-      }).on('mouseout', function () {
-        if (module.resizing || module.moving)
-          return;
 
-        if (module.getDomHeader().hasClass('ci-hidden-disabled')) {
-          module.getDomHeader().addClass('ci-hidden').removeClass('ci-hidden-disabled');
-          moduleResize(module);
+        if (module.inDom) {
+          module.inDom();
         }
-      });
 
-      module.getDomWrapper().find('.ui-resizable-handle').on('mousedown', function () {
-        checkDimensions(true);
-      });
+        if (!Versioning.isViewLocked()) {
+          // Insert jQuery UI resizable and draggable
+          module
+            .getDomWrapper()
+            .resizable({
+              grid: [definition.xWidth, definition.yHeight],
+              start() {
+                Util.maskIframes();
+                module.resizing = true;
+              },
+              stop() {
+                Util.unmaskIframes();
+                hideModuleDimensions();
+                moduleResize(module);
+                module.resizing = false;
+                checkDimensions(false);
+              },
+              resize(event, ui) {
+                showModuleDimensions(module, ui.size);
+                checkDimensions(true);
+              },
+              containment: 'parent'
+            })
+            .draggable({
+              grid: [definition.xWidth, definition.yHeight],
+              containment: 'parent',
+              handle: '.ci-module-header',
+              start() {
+                Util.maskIframes();
+                checkDimensions(true);
+                module.moving = true;
+              },
+              stop() {
+                const position = $(this).position();
+                Util.unmaskIframes();
+                hideModulePosition();
+                module
+                  .getPosition(getActiveLayer())
+                  .set('left', Math.round(position.left / definition.xWidth));
+                module
+                  .getPosition(getActiveLayer())
+                  .set('top', Math.round(position.top / definition.yHeight));
+                module.moving = false;
+                checkDimensions(true);
+              },
+              drag(event, ui) {
+                showModulePosition(module, ui.position);
+                checkDimensions(true);
+              }
+            })
+            .trigger('resize');
+        }
 
-      module.getDomWrapper().on('click', '.ci-module-expand', function () {
-        module.getDomWrapper().height((module.getDomContent().outerHeight() + module.getDomHeader().outerHeight(true)));
+        module
+          .getDomWrapper()
+          .on('mouseover', function () {
+            if (module.resizing || module.moving) return;
+            if (module.getDomHeader().hasClass('ci-hidden')) {
+              module
+                .getDomHeader()
+                .removeClass('ci-hidden')
+                .addClass('ci-hidden-disabled');
+              moduleResize(module);
+            }
+          })
+          .on('mouseout', function () {
+            if (module.resizing || module.moving) return;
+
+            if (module.getDomHeader().hasClass('ci-hidden-disabled')) {
+              module
+                .getDomHeader()
+                .addClass('ci-hidden')
+                .removeClass('ci-hidden-disabled');
+              moduleResize(module);
+            }
+          });
+
+        module
+          .getDomWrapper()
+          .find('.ui-resizable-handle')
+          .on('mousedown', function () {
+            checkDimensions(true);
+          });
+
+        module.getDomWrapper().on('click', '.ci-module-expand', function () {
+          module
+            .getDomWrapper()
+            .height(
+              module.getDomContent().outerHeight() +
+                module.getDomHeader().outerHeight(true)
+            );
+          moduleResize(module);
+        });
+
         moduleResize(module);
-      });
 
-      moduleResize(module);
-
-      module.toggleLayer(getActiveLayer());
-    }, function (err) {
-      Debug.error('Error during module dom initialization', err);
-    });
+        module.toggleLayer(getActiveLayer());
+      },
+      function (err) {
+        Debug.error('Error during module dom initialization', err);
+      }
+    );
   }
 
   function showModuleDimensions(module, size) {
@@ -257,15 +301,19 @@ define([
     const height = Math.round(size.height);
     const domWrapper = module.getDomWrapper();
     domWrapper.append(widthInfo);
-    widthInfo.css({
-      top: size.height,
-      left: size.width / 2
-    }).text(String(width));
+    widthInfo
+      .css({
+        top: size.height,
+        left: size.width / 2
+      })
+      .text(String(width));
     domWrapper.append(heightInfo);
-    heightInfo.css({
-      top: size.height / 2,
-      left: size.width + 4
-    }).text(String(height));
+    heightInfo
+      .css({
+        top: size.height / 2,
+        left: size.width + 4
+      })
+      .text(String(height));
   }
 
   function hideModuleDimensions() {
@@ -288,10 +336,18 @@ define([
   function moduleResize(module) {
     var wrapper = module.getDomWrapper();
 
-    module.getSize(getActiveLayer()).set('width', Math.round(wrapper.width() / definition.xWidth));
-    module.getSize(getActiveLayer()).set('height', Math.round(wrapper.height() / definition.yHeight));
+    module
+      .getSize(getActiveLayer())
+      .set('width', Math.round(wrapper.width() / definition.xWidth));
+    module
+      .getSize(getActiveLayer())
+      .set('height', Math.round(wrapper.height() / definition.yHeight));
 
-    var containerHeight = wrapper.height() - (module.getDomHeader().is(':visible') ? module.getDomHeader().outerHeight(true) : 0);
+    var containerHeight =
+      wrapper.height() -
+      (module.getDomHeader().is(':visible')
+        ? module.getDomHeader().outerHeight(true)
+        : 0);
 
     module.getDomContent().css({
       height: containerHeight
@@ -307,7 +363,9 @@ define([
 
     var mouseUpHandler = function () {
       var gridPos = jqdom.position();
-      var left = Math.round((modulePos.left - gridPos.left) / definition.xWidth);
+      var left = Math.round(
+        (modulePos.left - gridPos.left) / definition.xWidth
+      );
       var top = Math.round((modulePos.top - gridPos.top) / definition.yHeight);
       var width = Math.round(modulePos.width / definition.xWidth);
       var height = Math.round(modulePos.height / definition.yHeight);
@@ -315,12 +373,12 @@ define([
       modulePos.div.remove();
       modulePos = {};
 
-      var module = ModuleFactory.newModule(new DataObject({
-        // type: type,
-        url: url
-
-      }));
-
+      var module = ModuleFactory.newModule(
+        new DataObject({
+          // type: type,
+          url: url
+        })
+      );
 
       addModule(module);
 
@@ -334,7 +392,6 @@ define([
 
       layer.wrapper = true;
       layer.title = '';
-
 
       $(document)
         .off('mousedown', mouseDownHandler)
@@ -351,29 +408,27 @@ define([
       modulePos.ileft = e.pageX;
       modulePos.itop = e.pageY;
 
-      modulePos.div = $('<div>').css({
-
-        border: '1px solid red',
-        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-        width: 0,
-        height: 0,
-        left: modulePos.left,
-        top: modulePos.top,
-        position: 'absolute'
-
-      }).appendTo($('body'));
+      modulePos.div = $('<div>')
+        .css({
+          border: '1px solid red',
+          backgroundColor: 'rgba(255, 0, 0, 0.2)',
+          width: 0,
+          height: 0,
+          left: modulePos.left,
+          top: modulePos.top,
+          position: 'absolute'
+        })
+        .appendTo($('body'));
     };
 
     var mouseMoveHandler = function (e) {
-      if (!modulePos.left)
-        return;
+      if (!modulePos.left) return;
 
       modulePos.width = Math.abs(e.pageX - modulePos.ileft);
       modulePos.height = Math.abs(e.pageY - modulePos.itop);
 
       modulePos.left = Math.min(modulePos.ileft, e.pageX);
       modulePos.top = Math.min(modulePos.itop, e.pageY);
-
 
       modulePos.div.css({
         width: modulePos.width,
@@ -435,13 +490,22 @@ define([
     }
 
     try {
-      module.getDomWrapper().remove().unbind();
+      module
+        .getDomWrapper()
+        .remove()
+        .unbind();
     } catch (e) {
-      module.onReady().then(function () {
-        module.getDomWrapper().remove().unbind();
-      }).catch(function (e) {
-        Debug.warn('Could not remove module from dom.', e);
-      });
+      module
+        .onReady()
+        .then(function () {
+          module
+            .getDomWrapper()
+            .remove()
+            .unbind();
+        })
+        .catch(function (e) {
+          Debug.warn('Could not remove module from dom.', e);
+        });
     }
 
     ModuleFactory.removeModule(module);
@@ -452,7 +516,6 @@ define([
 
     Variables.unlisten(module);
   }
-
 
   function moveModule(module, shiftX, shiftY) {
     moduleMove = { module: module, div: module.getDomWrapper() };
@@ -469,14 +532,13 @@ define([
       });
     };
 
-    var clickHandler = function (e) {
-      if (!moduleMove.left)
-        return;
+    var clickHandler = function () {
+      if (!moduleMove.left) return;
 
       var gridPos = jqdom.position();
 
-      var left = Math.max(-3, Math.round((moduleMove.left) / definition.xWidth));
-      var top = Math.max(-3, Math.round((moduleMove.top) / definition.yHeight));
+      var left = Math.max(-3, Math.round(moduleMove.left / definition.xWidth));
+      var top = Math.max(-3, Math.round(moduleMove.top / definition.yHeight));
 
       moduleMove.module.getPosition(getActiveLayer()).top = top;
       moduleMove.module.getPosition(getActiveLayer()).left = left;
@@ -505,7 +567,6 @@ define([
       callback(modules[i]);
     }
   };
-
 
   var getActiveLayer = function () {
     return activeLayer;
@@ -650,20 +711,28 @@ define([
       var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
         layer = { name: value.layername[0] };
 
-      if (definition.layers[layer.name] && (Object.keys(definition.layers).length > 1)) {
-        ui.confirm(`<p>Are you sure that you want to delete the layer "${layer.name}"</p>`, 'Confirm', 'Cancel')
-          .then(function (conf) {
-            if (conf) {
-              // changes to other layer if is in the actual
-              if (layer.name === activeLayer) {
-                switchToLayer(Object.keys(definition.layers)[0]);
-              }
-              delete definition.layers[layer.name];
-              ui.showNotification(`Layer "${layer.name}" deleted`, 'success');
-            } else {
-              ui.showNotification('Cancel layer deletion', 'info');
+      if (
+        definition.layers[layer.name] &&
+        Object.keys(definition.layers).length > 1
+      ) {
+        ui.confirm(
+          `<p>Are you sure that you want to delete the layer "${
+            layer.name
+          }"</p>`,
+          'Confirm',
+          'Cancel'
+        ).then(function (conf) {
+          if (conf) {
+            // changes to other layer if is in the actual
+            if (layer.name === activeLayer) {
+              switchToLayer(Object.keys(definition.layers)[0]);
             }
-          });
+            delete definition.layers[layer.name];
+            ui.showNotification(`Layer "${layer.name}" deleted`, 'success');
+          } else {
+            ui.showNotification('Cancel layer deletion', 'info');
+          }
+        });
       } else {
         ui.showNotification(`Layer "${layer.name}" doesn't exist`, 'error');
       }
@@ -756,7 +825,10 @@ define([
           if (layer.old === activeLayer) {
             switchToLayer(layer.new);
           }
-          ui.showNotification(`Layer "${layer.old}" renamed to "${layer.new}"`, 'success');
+          ui.showNotification(
+            `Layer "${layer.old}" renamed to "${layer.new}"`,
+            'success'
+          );
         }
       } else {
         ui.showNotification(`Layer "${layer.old}" doesn't exist`, 'error');
@@ -775,7 +847,13 @@ define([
 
   function setLayers(newIsBlank, modify_layer, blank) {
     eachModules(function (moduleInstance) {
-      moduleInstance.setLayers(definition.layers, newIsBlank, modify_layer, blank, getActiveLayer());
+      moduleInstance.setLayers(
+        definition.layers,
+        newIsBlank,
+        modify_layer,
+        blank,
+        getActiveLayer()
+      );
     });
   }
 
@@ -794,9 +872,7 @@ define([
 
   // we will find the large resolution we could use
   function getBestResolutions(options = {}) {
-    var {
-      onlyLarger = true
-    } = options;
+    var { onlyLarger = true } = options;
     var resolutions = JSON.parse(JSON.stringify(SCREEN_RESOLUTIONS));
     var width = screen.width;
     var height = screen.height;
@@ -820,7 +896,9 @@ define([
   function switchToLayer(layerId, options = {}) {
     if (options.autoSize) layerId = getBestLayerName(layerId, options);
 
-    var layer = (!definition.layers[layerId]) ? (newLayer(false, layerId)) : definition.layers[layerId];
+    var layer = !definition.layers[layerId]
+      ? newLayer(false, layerId)
+      : definition.layers[layerId];
 
     $.when(layer).then(function (layer2) {
       if (layer2) {
@@ -864,11 +942,16 @@ define([
             if (elements.modules[i].hidden) {
               continue;
             }
-            dom.append(`<li class="ci-item-newmodule" data-url="${encodeURIComponent(elements.modules[i].url)}"><a>${elements.modules[i].moduleName}</a></li>`);
+            dom.append(
+              `<li class="ci-item-newmodule" data-url="${encodeURIComponent(
+                elements.modules[i].url
+              )}"><a>${elements.modules[i].moduleName}</a></li>`
+            );
           }
         }
 
-        if (elements.folders) { // List of folders
+        if (elements.folders) {
+          // List of folders
           for (var i in elements.folders) {
             var el = $(`<li><a>${i}</a></li>`);
             var ul = $('<ul />').appendTo(el);
@@ -883,14 +966,18 @@ define([
           [
             '<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
             function () {
-              var module = DataObject.recursiveTransform(JSON.parse(window.localStorage.getItem('ci-copy-module')));
+              var module = DataObject.recursiveTransform(
+                JSON.parse(window.localStorage.getItem('ci-copy-module'))
+              );
               addModuleFromJSON(module);
             }
           ]
-        ]
-        );
+        ]);
 
-        if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('add') > -1) {
+        if (
+          Config.contextMenu().indexOf('all') > -1 ||
+          Config.contextMenu().indexOf('add') > -1
+        ) {
           Context.listen(dom, [], function (contextDom) {
             var $li = $('<li name="add"><a> Add a module</a></li>');
 
@@ -917,32 +1004,44 @@ define([
                 module = module.parent();
               }
               var url = module.attr('data-url');
-              if (url)
-                newModule(decodeURIComponent(url));
+              if (url) newModule(decodeURIComponent(url));
             });
           });
         }
 
-
         layersLi = $('<li><a> Switch to layer</a></li>');
         layersUl = $('<ul />').appendTo(layersLi);
 
-
-        if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('layers') > -1) {
+        if (
+          Config.contextMenu().indexOf('all') > -1 ||
+          Config.contextMenu().indexOf('layers') > -1
+        ) {
           Context.listen(dom, [], function (contextDom) {
             layersUl.empty();
 
             eachLayer(function (layer, key) {
-              var li = $(`<li data-layer="${encodeURIComponent(key)}"><a><span />${key}</a></li>`).data('layerkey', key).appendTo(layersUl);
+              var li = $(
+                `<li data-layer="${encodeURIComponent(
+                  key
+                )}"><a><span />${key}</a></li>`
+              )
+                .data('layerkey', key)
+                .appendTo(layersUl);
 
               if (key == activeLayer) {
                 li.find('span').addClass('ui-icon ui-icon-check');
               }
             });
 
-            $('<li data-layer=""><a>+ Add a new layer</a></li>').data('layerkey', '-1').appendTo(layersUl);
-            $('<li data-layer=""><a>- Remove a layer</a></li>').data('layerkey', '-2').appendTo(layersUl);
-            $('<li data-layer=""><a>= Rename a layer</a></li>').data('layerkey', '-3').appendTo(layersUl);
+            $('<li data-layer=""><a>+ Add a new layer</a></li>')
+              .data('layerkey', '-1')
+              .appendTo(layersUl);
+            $('<li data-layer=""><a>- Remove a layer</a></li>')
+              .data('layerkey', '-2')
+              .appendTo(layersUl);
+            $('<li data-layer=""><a>= Rename a layer</a></li>')
+              .data('layerkey', '-3')
+              .appendTo(layersUl);
 
             $(contextDom).append(layersLi);
 
@@ -953,7 +1052,7 @@ define([
                 target = target.parent();
               }
               var layer = target.data('layerkey');
-              if ((layer !== '-1') && (layer !== '-2') && (layer !== '-3')) {
+              if (layer !== '-1' && layer !== '-2' && layer !== '-3') {
                 switchToLayer(layer);
               } else if (layer == '-1') {
                 newLayer();
@@ -969,15 +1068,47 @@ define([
         utilLi = $('<li name="utils"><a>Utils</a></li>');
         utilUl = $('<ul />').appendTo(utilLi);
 
-        if (Config.contextMenu().indexOf('all') > -1 || Config.contextMenu().indexOf('utils') > -1) {
+        if (
+          Config.contextMenu().indexOf('all') > -1 ||
+          Config.contextMenu().indexOf('utils') > -1
+        ) {
           Context.listen(dom, [], function (contextDom) {
             utilUl.empty();
-            utilUl.append($('<li data-util="copyview"><a><span/>Copy view</a></li>').data('utilkey', 'copyview'));
-            utilUl.append($('<li data-util="copydata"><a><span/>Copy data</a></li>').data('utilkey', 'copydata'));
-            utilUl.append($('<li data-util="pasteview"><a><span/>Paste view</a></li>').data('utilkey', 'pasteview'));
-            utilUl.append($('<li data-util="pastedata"><a><span/>Paste data</a></li>').data('utilkey', 'pastedata'));
-            utilUl.append($('<li data-util="blankview"><a><span/>Blank view</a></li>').data('utilkey', 'blankview'));
-            utilUl.append($('<li data-util="feedback"><a><span/>Send Feedback</a></li>').data('utilkey', 'feedback'));
+            utilUl.append(
+              $('<li data-util="copyview"><a><span/>Copy view</a></li>').data(
+                'utilkey',
+                'copyview'
+              )
+            );
+            utilUl.append(
+              $('<li data-util="copydata"><a><span/>Copy data</a></li>').data(
+                'utilkey',
+                'copydata'
+              )
+            );
+            utilUl.append(
+              $('<li data-util="pasteview"><a><span/>Paste view</a></li>').data(
+                'utilkey',
+                'pasteview'
+              )
+            );
+            utilUl.append(
+              $('<li data-util="pastedata"><a><span/>Paste data</a></li>').data(
+                'utilkey',
+                'pastedata'
+              )
+            );
+            utilUl.append(
+              $('<li data-util="blankview"><a><span/>Blank view</a></li>').data(
+                'utilkey',
+                'blankview'
+              )
+            );
+            utilUl.append(
+              $(
+                '<li data-util="feedback"><a><span/>Send Feedback</a></li>'
+              ).data('utilkey', 'feedback')
+            );
             $(contextDom).append(utilLi);
 
             utilLi.on('mouseup', function (event) {
@@ -1016,35 +1147,54 @@ define([
               diagram.showVariableDiagram();
             }
           ]
-        ]
-        );
+        ]);
         Context.listen(
-          Context.getRootDom(), [
+          Context.getRootDom(),
+          [
             [
-              `<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>${Versioning.version} </a></li>`,
+              `<li class="ci-item-configureentrypoint" class="ui-state-disabled" id="context-menu-version"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>${
+                Versioning.version
+              } </a></li>`,
               function () {
                 window.open('https://github.com/NPellet/visualizer', '_blank');
               }
             ]
-          ], null, function ($ctxmenu) {
+          ],
+          null,
+          function ($ctxmenu) {
             var original = Versioning.originalVersion;
             var prefix = '';
             if (original !== 'none' && original !== Versioning.version) {
               prefix = `${original}\u2192`;
             }
-            $ctxmenu.find('#context-menu-version a').html(`<span class="ui-icon ui-icon-info"></span>${prefix}${Versioning.version}${Version.isRelease ? '' : ' (pre)'}`);
+            $ctxmenu
+              .find('#context-menu-version a')
+              .html(
+                `<span class="ui-icon ui-icon-info"></span>${prefix}${
+                  Versioning.version
+                }${Version.isRelease ? '' : ' (pre)'}`
+              );
           }
         );
 
         if (Version.buildTime) {
-          Context.listen(Context.getRootDom(), [
+          Context.listen(
+            Context.getRootDom(),
             [
-              `<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ${Version.buildTime}</a></li>`,
-              Util.noop
-            ]
-          ], null, function ($ctxmenu) {
-            $ctxmenu.find('#context-menu-build-info').insertAfter($ctxmenu.find('#context-menu-version'));
-          });
+              [
+                `<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ${
+                  Version.buildTime
+                }</a></li>`,
+                Util.noop
+              ]
+            ],
+            null,
+            function ($ctxmenu) {
+              $ctxmenu
+                .find('#context-menu-build-info')
+                .insertAfter($ctxmenu.find('#context-menu-version'));
+            }
+          );
         }
       }
 

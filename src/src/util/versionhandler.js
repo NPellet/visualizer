@@ -1,11 +1,11 @@
 'use strict';
 
-define([
-  'jquery',
-  'src/util/util',
-  'src/util/localdb',
-  'src/util/ui'
-], function ($, Util, db, UI) {
+define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function (
+  $,
+  Util,
+  db,
+  UI
+) {
   var DataViewHandler = function (dirUrl, defaultBranch, defaultUrl) {
     this.currentPath = [];
     this._allData = {};
@@ -15,14 +15,16 @@ define([
     this._data = {};
     this.structure = {
       server: {
-        title: 'Server', children: {
+        title: 'Server',
+        children: {
           head: { title: 'Head' },
           stored: { title: 'Stored', children: true }
         }
       },
 
       local: {
-        title: 'Local DB', children: {
+        title: 'Local DB',
+        children: {
           head: { title: 'Head' },
           stored: { title: 'Stored', children: true }
         }
@@ -31,7 +33,6 @@ define([
   };
 
   DataViewHandler.prototype = {
-
     setType: function (type) {
       this.type = type;
     },
@@ -48,34 +49,39 @@ define([
       var that = this;
 
       if (this.currentPath[1] == 'server') {
-        return this._getServer().pipe(function (data) {
-          if (that.type == 'view') {
-            that._data.server = new DataObject(data, true);
-          } else if (that.type == 'data') {
-            that._data.server = new DataObject(data, true);
+        return this._getServer().pipe(
+          function (data) {
+            if (that.type == 'view') {
+              that._data.server = new DataObject(data, true);
+            } else if (that.type == 'data') {
+              that._data.server = new DataObject(data, true);
+            }
+            return that._data.server;
+          },
+          function () {
+            return false;
           }
-          return that._data.server;
-        }, function () {
-          return false;
-        });
+        );
       } else {
-        return this._getLocal().pipe(function (data) {
-          if (typeof data !== 'object') {
-            data = JSON.parse(data);
-          }
+        return this._getLocal().pipe(
+          function (data) {
+            if (typeof data !== 'object') {
+              data = JSON.parse(data);
+            }
 
-          if (that.type == 'view') {
-            that._data.local = new DataObject(data, true);
-          } else if (that.type == 'data') {
-            that._data.local = new DataObject(data, true);
+            if (that.type == 'view') {
+              that._data.local = new DataObject(data, true);
+            } else if (that.type == 'data') {
+              that._data.local = new DataObject(data, true);
+            }
+            return that._data.local;
+          },
+          function () {
+            return false;
           }
-          return that._data.local;
-        }, function () {
-          return false;
-        });
+        );
       }
     },
-
 
     getBranches: function () {
       var that = this;
@@ -85,7 +91,8 @@ define([
         for (var i in data) {
           // i is branch name
           // data.revisions is all revs || data[i].list
-          branches[i] = `${i} (${data[i].list.length + (that.currentPath[1] == 'local' ? 1 : 0)})`;
+          branches[i] = `${i} (${data[i].list.length +
+            (that.currentPath[1] == 'local' ? 1 : 0)})`;
         }
         return branches;
       });
@@ -109,8 +116,7 @@ define([
     },
 
     makeFilename: function (el, head) {
-      if (!el._time)
-        return 'Head';
+      if (!el._time) return 'Head';
 
       var time = new Date(el._time);
       var str = `${time.getDate()}/${time.getMonth()}/${time.getFullYear()} `;
@@ -161,9 +167,11 @@ define([
       // Want to display the top level (server/local)
       if (level == 1) {
         toOpen = { server: 'Server', local: 'Local Database' };
-      } else if (level == 2) { // (head/stored)
+      } else if (level == 2) {
+        // (head/stored)
         toOpen = this.getBranches();
-      } else if (level == 3) { // Display all month + years
+      } else if (level == 3) {
+        // Display all month + years
         toOpen = this.getElements();
       }
 
@@ -171,16 +179,33 @@ define([
       return $.when(toOpen).pipe(function (toOpen) {
         // It's still an object
         if (!Array.isArray(toOpen))
-          return that.objectToMenu(toOpen, level, that.currentPath[level - 1] || null, that.currentPath[level - 2] || null);
+          return that.objectToMenu(
+            toOpen,
+            level,
+            that.currentPath[level - 1] || null,
+            that.currentPath[level - 2] || null
+          );
         else
-          return that.arrayToMenu(toOpen, level, that.currentPath[level - 1] || null, that.currentPath[level - 2] || null);
+          return that.arrayToMenu(
+            toOpen,
+            level,
+            that.currentPath[level - 1] || null,
+            that.currentPath[level - 2] || null
+          );
       });
     },
 
     arrayToMenu: function (array, level, parent, parentParent) {
       var html = '';
       for (var i = 0, l = array.length; i < l; i++) {
-        html += `<li draggable="false" data-parent-parent="${parentParent}" data-parent="${parent}" data-el="${array[i][1]}"><a>${array[i][0]}${level < 3 ? `<ul draggable="false" class="ci-dataview-menu" data-level="${level + 1}"><li><a>Fetching data...</a></li></ul>` : ''}</a></li>`;
+        html += `<li draggable="false" data-parent-parent="${parentParent}" data-parent="${parent}" data-el="${
+          array[i][1]
+        }"><a>${array[i][0]}${
+          level < 3
+            ? `<ul draggable="false" class="ci-dataview-menu" data-level="${level +
+                1}"><li><a>Fetching data...</a></li></ul>`
+            : ''
+        }</a></li>`;
       }
       return html;
     },
@@ -188,7 +213,14 @@ define([
     objectToMenu: function (object, level, parent, parentParent) {
       var html = '';
       for (var i in object) {
-        html += `<li draggable="false" data-parent-parent="${parentParent}" data-el="${i}" data-parent="${parent}"><a>${object[i]}${level < 3 ? `<ul draggable="false" class="ci-dataview-menu" data-level="${level + 1}"><li><a>Fetching data...</a></li></ul>` : ''}</a></li>`;
+        html += `<li draggable="false" data-parent-parent="${parentParent}" data-el="${i}" data-parent="${parent}"><a>${
+          object[i]
+        }${
+          level < 3
+            ? `<ul draggable="false" class="ci-dataview-menu" data-level="${level +
+                1}"><li><a>Fetching data...</a></li></ul>`
+            : ''
+        }</a></li>`;
       }
       return html;
     },
@@ -196,29 +228,36 @@ define([
     bindEventsMenu: function (dom) {
       var that = this;
 
-      dom.on('mouseenter', 'li', function (e) {
+      dom.on('mouseenter', 'li', function () {
         var $this = $(this);
-        if ($this.find('.ci-fetched').length > 0)
-          return;
+        if ($this.find('.ci-fetched').length > 0) return;
 
         var ul = $this.parent();
         var level = ul.data('level');
         that.currentPath[level] = $this.data('el');
 
         // Leaf
-        if (level == 3)
-          return;
+        if (level == 3) return;
 
-        that.makeMenu(level + 1).then(function (menu) {
-          menu = $(menu);
-          $this.find('ul').html(menu).addClass('ci-fetched');
-          if (level + 1 == 3 && that.currentPath[2] == 'head')
-            menu.find('ul').remove();
-          that._menu.menu('refresh');
-        }, function () {
-          $this.find('ul').html('<li><a>No element here</a></li>').addClass('ci-fetched');
-          that._menu.menu('refresh');
-        });
+        that.makeMenu(level + 1).then(
+          function (menu) {
+            menu = $(menu);
+            $this
+              .find('ul')
+              .html(menu)
+              .addClass('ci-fetched');
+            if (level + 1 == 3 && that.currentPath[2] == 'head')
+              menu.find('ul').remove();
+            that._menu.menu('refresh');
+          },
+          function () {
+            $this
+              .find('ul')
+              .html('<li><a>No element here</a></li>')
+              .addClass('ci-fetched');
+            that._menu.menu('refresh');
+          }
+        );
         return false;
       });
 
@@ -228,8 +267,7 @@ define([
         var level = ul.data('level');
         that.currentPath[level] = $this.data('el');
 
-        if ($this.find('ul').length > 0)
-          return;
+        if ($this.find('ul').length > 0) return;
 
         that.clickLeaf($this);
       });
@@ -237,7 +275,6 @@ define([
 
     buildDom: function (el) {
       var html = '<ul draggable="false" class="ci-dataview">';
-
 
       html += this._buildDomEl(1, this.currentPath[1]); // Local / Server
       html += this._buildDomEl(2, this.currentPath[2]); // Master / Branch1 / Branch2
@@ -269,19 +306,26 @@ define([
 
       // this.currentPath[level] = value;
 
-      return `<li draggable="false" class="ci-dataview-lvl ci-dataview-lvl-${level}" data-level="${level}" data-value="${escape(value)}">${htmlvalue}</li>${level < 3 ? '<li class="inter">></li>' : ''}`;
+      return `<li draggable="false" class="ci-dataview-lvl ci-dataview-lvl-${level}" data-level="${level}" data-value="${escape(
+        value
+      )}">${htmlvalue}</li>${level < 3 ? '<li class="inter">></li>' : ''}`;
     },
 
     bindEventsDom: function (dom) {
       var that = this;
 
-
-      dom.on('mousedown', 'li', function (e) {
+      dom.on('mousedown', 'li', function () {
         var $this = $(this);
         var pos = $this.position();
 
         that.makeMenu($this.data('level')).done(function (menu) {
-          menu = $(`<ul draggable="false" class="ci-dataview-menu" data-level="${$this.data('level')}"></ul>`).append(menu).menu();
+          menu = $(
+            `<ul draggable="false" class="ci-dataview-menu" data-level="${$this.data(
+              'level'
+            )}"></ul>`
+          )
+            .append(menu)
+            .menu();
           that._menu = menu;
           that.bindEventsMenu(menu);
           menu.appendTo('#visualizer-dataviews').css({
@@ -327,10 +371,10 @@ define([
       var branch = li.data('parent');
       var mode = li.data('parent-parent');
 
-      if (mode == 'server') { // fetch head from server
+      if (mode == 'server') {
+        // fetch head from server
         var data = { branch: branch };
-        if (i !== 'head')
-          data.revision = i;
+        if (i !== 'head') data.revision = i;
 
         this.getFromServer(data).done(function (el) {
           that.currentPath[1] = 'server';
@@ -387,7 +431,9 @@ define([
               dataType: 'text',
               success: onSuccess,
               error: function (e) {
-                UI.showNotification(`Loading ${that.type} failed: ${e.statusText}`);
+                UI.showNotification(
+                  `Loading ${that.type} failed: ${e.statusText}`
+                );
                 def.reject(e);
               }
             });
@@ -420,7 +466,7 @@ define([
         return def;
       }
 
-      var branch = (this.defaultBranch || 'Master');
+      var branch = this.defaultBranch || 'Master';
       var defServer = this.getFromServer({
         branch: branch,
         action: 'Load'
@@ -430,47 +476,52 @@ define([
       // First load the server
       // Needed to identify branch and revision of the file
 
-      $.when(defServer).then(function (server) {
-        // Success
-        var branch = server._name || that.defaultBranch;
-        var rev = server._time || 'head';
-        var saved = server._saved || 0;
+      $.when(defServer).then(
+        function (server) {
+          // Success
+          var branch = server._name || that.defaultBranch;
+          var rev = server._time || 'head';
+          var saved = server._saved || 0;
 
-        // Always compare to the head of the local branch
-        var defLocal = that._getLocalHead(branch);
+          // Always compare to the head of the local branch
+          var defLocal = that._getLocalHead(branch);
 
-        $.when(defLocal).then(function (el) {
-          // If the corresponding head does not exist, we copy the server data
-          // to the head of the corresponding local branch
-          if (!el._saved) {
-            // doServer(server, branch, rev);
-            that.serverCopy(server, branch, 'head').done(function () {
-              doLocal(server, server._name, 'head');
-            });
-          } else {
-            var savedLocal = el._saved || 0;
-            // Loads the latest file
-            el._name = branch;
+          $.when(defLocal).then(
+            function (el) {
+              // If the corresponding head does not exist, we copy the server data
+              // to the head of the corresponding local branch
+              if (!el._saved) {
+                // doServer(server, branch, rev);
+                that.serverCopy(server, branch, 'head').done(function () {
+                  doLocal(server, server._name, 'head');
+                });
+              } else {
+                var savedLocal = el._saved || 0;
+                // Loads the latest file
+                el._name = branch;
 
-            if (savedLocal > saved && 1 == 0) // Prevent loading local for now
-              doLocal(el, el._name, el._time || 'head');
-            else
+                if (savedLocal > saved && 1 == 0)
+                  // Prevent loading local for now
+                  doLocal(el, el._name, el._time || 'head');
+                else doServer(server, branch, rev);
+              }
+            },
+            function () {
               doServer(server, branch, rev);
-          }
-        }, function () {
-          doServer(server, branch, rev);
-        });
-      }, function (server) {
-        $.when(that._getLocalHead(branch)).then(function (el) {
-          doLocal(el, branch, el._time || 'head');
-        });
-      });
+            }
+          );
+        },
+        function (server) {
+          $.when(that._getLocalHead(branch)).then(function (el) {
+            doLocal(el, branch, el._time || 'head');
+          });
+        }
+      );
 
       function doLocal(el, branch, rev) {
         that.currentPath[1] = 'local';
         that.currentPath[2] = branch;
         that.currentPath[3] = rev;
-
 
         that._savedLocal = JSON.stringify(el);
         that.make(el, that.currentPath[2], that.currentPath[3]);
@@ -492,7 +543,6 @@ define([
       return def;
     },
 
-
     getUrl: function () {
       return this._dirUrl;
     },
@@ -505,11 +555,9 @@ define([
       return Util.getDay(i);
     },
 
-
     /** **********************/
     /** LOCAL SIDE **********/
     /** **********************/
-
 
     _getLocalHead: function (branch) {
       branch = branch || 'Master';
@@ -533,7 +581,12 @@ define([
       // this._savedLocal = JSON.stringify(obj);
 
       return db.open().pipe(function () {
-        return db[mode == 'head' ? 'storeToHead' : 'store'](that.type, that._dirUrl, name, obj).pipe(function (element) {
+        return db[mode == 'head' ? 'storeToHead' : 'store'](
+          that.type,
+          that._dirUrl,
+          name,
+          obj
+        ).pipe(function (element) {
           that.currentPath[1] = 'local';
           that.currentPath[2] = name;
           that.currentPath[3] = obj._time || 'head';
@@ -547,10 +600,11 @@ define([
     },
 
     localSnapshot: function (data) {
-      if (!data)
-        return;
+      if (!data) return;
 
-      this._localSave(data, 'stored', data._name || 'Master').pipe(function (element) {
+      this._localSave(data, 'stored', data._name || 'Master').pipe(function (
+        element
+      ) {
         element._time = false; // We saved a snapshot, but have to reload the head (we continue working on the head)
         return element;
       });
@@ -558,15 +612,13 @@ define([
 
     localAutosave: function (val, callback, done) {
       var that = this;
-      if (this._autosaveLocal)
-        window.clearInterval(this._autosaveLocal);
+      if (this._autosaveLocal) window.clearInterval(this._autosaveLocal);
 
       if (val)
         this._autosaveLocal = window.setInterval(function () {
           var el = callback();
           that._localSave(el, 'head', el._name || 'Master').done(function () {
-            if (done)
-              done();
+            if (done) done();
           });
         }, 10000);
     },
@@ -590,25 +642,21 @@ define([
       });
     },
 
-
     /** **********************/
     /** SERVER SIDE *********/
     /** **********************/
 
     autosaveServer: function (val, callback, done) {
       var that = this;
-      if (this._autosaveServer)
-        window.clearInterval(this._autosaveServer);
+      if (this._autosaveServer) window.clearInterval(this._autosaveServer);
 
       if (val)
         this._autosaveServer = window.setInterval(function () {
           that._saveToServer(callback()).done(function () {
-            if (done)
-              done();
+            if (done) done();
           });
         }, 10000);
     },
-
 
     _saveToServer: function (obj) {
       // obj._name = mode || 'Master';
@@ -646,7 +694,8 @@ define([
         url: url,
         cache: false,
         data: data || {},
-        success: function (data) { // data is now a text
+        success: function (data) {
+          // data is now a text
           that._savedServer = data;
           data = that._reviver(JSON.parse(data));
           def.resolve(data);
