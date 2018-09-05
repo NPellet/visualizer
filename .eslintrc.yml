@@ -18,6 +18,7 @@ rules:
   consistent-return: 0
   prefer-spread: 0
   default-case: 0
+  no-loop-func: 0
   no-implicit-globals: 2
   no-prototype-builtins: 0
   no-empty-function: 0

@@ -219,7 +219,7 @@ define([
         ).data('idx', i);
 
         $element.addClass(
-          `${'element' + ' e'}${this.elements[i].Z} period${
+          `${'element e'}${this.elements[i].Z} period${
             this.elements[i].period
           } group${this.elements[i].group} block-${this.elements[i].block} ${
             this.elements[i].serie

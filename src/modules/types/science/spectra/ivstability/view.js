@@ -79,7 +79,7 @@ define([
         fontSize: 12,
         fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-        onMouseMoveData: function (error, val) {
+        onMouseMoveData: function (event, val) {
           /* for(var i in val) {
                      LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
                      for(var i in data) {
