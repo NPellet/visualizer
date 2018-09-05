@@ -1,3 +1,13 @@
+<a name="2.98.0"></a>
+# [2.98.0](https://github.com/NPellet/visualizer/compare/v2.97.0...v2.98.0) (2018-09-05)
+
+
+### Features
+
+* **display_value:** allow a search/replace filter after edition ([e083196](https://github.com/NPellet/visualizer/commit/e083196))
+
+
+
 <a name="2.97.0"></a>
 # [2.97.0](https://github.com/NPellet/visualizer/compare/v2.96.0...v2.97.0) (2018-08-23)
 
