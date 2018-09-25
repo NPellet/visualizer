@@ -334,10 +334,8 @@ define([
     },
 
     doHighlight: function (i, val) {
-      this.domBody
-        .find('tr')
-        .eq(i)
-        [val ? 'addClass' : 'removeClass']('ci-highlight');
+      let elements = this.domBody.find('tr').eq(i);
+      elements[val ? 'addClass' : 'removeClass']('ci-highlight');
     },
 
     getValue: function (trVal, jpath) {
