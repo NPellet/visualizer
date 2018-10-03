@@ -61,8 +61,8 @@ define([
         }
 
         contextMenu = null;
-        top = e.clientY;
-        left = e.clientX;
+        top = e.clientY-1;
+        left = e.clientX-1;
         var $menu = $('<ul class="ci-contextmenu"></ul>').css({
           position: 'fixed',
           left: left,
