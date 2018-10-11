@@ -2407,7 +2407,8 @@ define(
       }
     }
 
-    function getColumnFilterFunction(query) {
+    function 
+    getColumnFilterFunction(query) {
       function pad(n, width, z) {
         z = z || '0';
         n = `${n}`;
