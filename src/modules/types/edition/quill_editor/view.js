@@ -122,7 +122,13 @@ define([
         text = String(text);
         const range = this.instance.getSelection();
         this.instance.deleteText(range.index, range.length);
-        this.instance.insertText(range.index, text);
+
+        let div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        this.instance.clipboard.dangerouslyPasteHTML(
+          range.index,
+          div.innerHTML
+        );
       }
     }
   });
