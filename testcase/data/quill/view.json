@@ -1,0 +1,627 @@
+{
+  "version": "2.98.3-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/quill_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [["isEditable"]],
+              "toolbarMode": ["light"],
+              "debouncing": [100],
+              "storeInView": [[]],
+              "modifyVarIn": [["yes"]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 39,
+            "top": 0
+          },
+          "size": {
+            "width": 54,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "html",
+          "name": "test"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "insertHtml",
+          "name": "insertHTML"
+        },
+        {
+          "rel": "insertText",
+          "name": "insertText"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "",
+      "richtext": {
+        "ops": [
+          {
+            "attributes": {
+              "link": "#reagent_2"
+            },
+            "insert": "Hello"
+          },
+          {
+            "insert": "\n"
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 94,
+            "top": 0
+          },
+          "size": {
+            "width": 48,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Resulting HTML",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "test"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "Resulting HTML"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "\n\nAPI.doAction('insertHTML','<a href=\"#reagent_2\">Hello</a>')"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 37
+          },
+          "size": {
+            "width": 62,
+            "height": 17
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "var test=API.getData('test');\nvar newValue=test.replace(/<a.*?href=\"#(.*?)\".*?>(.*?)<\\/a>/g, \n    (x,id,content) => `<a href=\"#${id}\">\n        ${content.substring(0,5)+Math.random()}</a>`\n);\ntest.setValue(newValue);\n"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 63,
+            "top": 37
+          },
+          "size": {
+            "width": 61,
+            "height": 21
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Test to replace the data",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "Test to replace the data"
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
+              "script": ["a  "]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 38,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "test"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "\n\nAPI.doAction('insertText','<a href=\"#reagent_2\">Hello</a>')"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 55
+          },
+          "size": {
+            "width": 62,
+            "height": 17
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "jpath": [""]
+    }
+  ],
+  "aliases": [{}],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [null],
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [""]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
+  ]
+}
