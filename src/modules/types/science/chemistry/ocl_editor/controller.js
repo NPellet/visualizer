@@ -1,6 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'src/util/ui'], function (Default, OCL, ui) {
+define([
+  'modules/default/defaultcontroller',
+  'openchemlib/openchemlib-full',
+  'src/util/ui'
+], function (Default, OCL, ui) {
   function Controller() {
     this.currentMol = {
       idcode: '',
@@ -16,12 +20,17 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'sr
       onClick: function () {
         var w = $(window).width();
         var h = $(window).height();
-        var url = require.toUrl('modules/types/science/chemistry/ocl_editor/help/index.html');
-        ui.dialog(`<iframe src=${url} width="100%", height="100%" frameBorder="0"></iframe>`, {
-          width: Math.min(w - 40, 800),
-          height: h - 70,
-          title: 'OpenChemLib editor Help'
-        });
+        var url = require.toUrl(
+          'modules/types/science/chemistry/ocl_editor/help/index.html'
+        );
+        ui.dialog(
+          `<iframe src=${url} width="100%", height="100%" frameBorder="0"></iframe>`,
+          {
+            width: Math.min(w - 40, 800),
+            height: h - 70,
+            title: 'OpenChemLib editor Help'
+          }
+        );
       },
       title: 'Help',
       cssClass: 'fa fa-question',
@@ -80,8 +89,8 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'sr
               default: ['svg'],
               options: {
                 queryFeatures: 'Enable query features',
-                svg: 'Use SVG toolbar'
-                // inPlace: 'In-place modification of input'
+                svg: 'Use SVG toolbar',
+                inPlace: 'Modify input variable'
               }
             }
           }
@@ -95,12 +104,24 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'sr
   };
 
   Controller.prototype.onChange = function (idCode, molecule) {
+    // When the module is blanked we consider it local state
+    // And we don't send out updates
+    // This also prevents infinite recursiveness
+    if (this.module.view._currentValue === null) {
+      return;
+    }
     var split = (idCode || ' ').split(' ');
 
-    var idCodeOr = molecule.getCanonizedIDCode(OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS);
+    var idCodeOr = molecule.getCanonizedIDCode(
+      OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS
+    );
     var idCode = split[0];
     var coordinates = split[1];
-    if (idCodeOr !== this.currentMol.idCodeOr || coordinates !== this.currentMol.coordinates) {
+
+    if (
+      idCodeOr !== this.currentMol.idCodeOr
+      // coordinates !== this.currentMol.coordinates
+    ) {
       this.currentMol = {
         coordinates,
         idCode,
@@ -120,28 +141,31 @@ define(['modules/default/defaultcontroller', 'openchemlib/openchemlib-full', 'sr
         value: idCodeOr,
         coordinates: coordinates
       });
-            
 
       // inplace modification is disabled for now because of unexpected change events
-      /* if (this.module.getConfigurationCheckbox('prefs', 'inPlace') &&
-                this.module.view._currentType) {
-                var currentValue = this.module.view._currentValue;
-                switch (this.module.view._currentType) {
-                    case 'mol':
-                        currentValue.setValue(molfile);
-                        break;
-                    case 'smiles':
-                        currentValue.setValue(smiles);
-                        break;
-                    case 'oclid':
-                        if (currentValue.value) {
-                            currentValue.coordinates = split[1];
-                        }
-                        currentValue.setValue(split[0]);
-                        break;
-                }
-                this.module.model.dataTriggerChange(currentValue);
-            }*/
+      if (
+        this.module.getConfigurationCheckbox('prefs', 'inPlace') &&
+        this.module.view._currentType
+      ) {
+        var currentValue = this.module.view._currentValue;
+        switch (this.module.view._currentType) {
+          case 'mol':
+            currentValue.setValue(molfile);
+            break;
+          case 'smiles':
+            currentValue.setValue(smiles);
+            break;
+          case 'oclid':
+            if (currentValue.value) {
+              currentValue.coordinates = split[1];
+            }
+            currentValue.setValue(split[0]);
+            break;
+          default:
+            throw new Error('invalid structure format type');
+        }
+        this.module.model.dataTriggerChange(currentValue);
+      }
     }
   };
 

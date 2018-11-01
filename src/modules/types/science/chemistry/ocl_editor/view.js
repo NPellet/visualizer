@@ -1,12 +1,15 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib-full'], function (Default, Util, OCL) {
+define([
+  'modules/default/defaultview',
+  'src/util/util',
+  'openchemlib/openchemlib-full'
+], function (Default, Util, OCL) {
   function View() {
     this.id = Util.getNextUniqueId();
   }
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       this.editor = null;
     },
@@ -67,8 +70,13 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
       var controller = this.module.controller;
       var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
       this.editor = new OCL.StructureEditor(this.id, useSVG, 1);
-      this.editor.setChangeListenerCallback(this.module.controller.onChange.bind(controller));
-      this.editor.setIDCode(controller.currentMol.idcode, controller.currentMol.coordinates);
+      this.editor.setChangeListenerCallback(
+        this.module.controller.onChange.bind(controller)
+      );
+      this.editor.setIDCode(
+        controller.currentMol.idcode,
+        controller.currentMol.coordinates
+      );
       this.setFragment();
       this.resolveReady();
     },
@@ -86,7 +94,6 @@ define(['modules/default/defaultview', 'src/util/util', 'openchemlib/openchemlib
         this.editor.setFragment(false);
       }
     }
-
   });
 
   return View;
