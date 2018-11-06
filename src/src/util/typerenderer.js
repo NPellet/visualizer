@@ -168,6 +168,10 @@ define([
       number = numeral(number).format(options.numeral);
     } else if (options.hasOwnProperty('sprintf')) {
       number = sprintf.sprintf(options.sprintf, number);
+    } else if (options.hasOwnProperty('duration')) {
+      number = moment.duration(number).as(options.duration);
+    } else if (options.hasOwnProperty('durationS')) {
+      number = moment.duration(number*1000).as(options.durationS);
     } else if (checkDate(options)) {
       number = toDate(number, options);
     }
