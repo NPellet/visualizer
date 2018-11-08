@@ -208,7 +208,7 @@ define([
         const unitStr = String(val.unit);
         number = unit.toNumber(unitStr);
       }
-      displayValue = `${formatNumber(number, options)} ${unit.formatUnits()}`;
+      displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '':unit.formatUnits()}`;
     }
 
     $element.html(displayValue);
