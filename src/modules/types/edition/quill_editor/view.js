@@ -14,7 +14,9 @@ define([
   function View() {
     this._id = Util.getNextUniqueId();
   }
-  Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('blob');
+  if (!Quill.imports['formats/link'].PROTOCOL_WHITELIST.includes('blob')) {
+    Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('blob');
+  }
 
   $.extend(true, View.prototype, Default, {
     init: function () {
