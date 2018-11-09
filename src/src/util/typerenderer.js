@@ -163,7 +163,7 @@ define([
     } else if (options.hasOwnProperty('duration')) {
       number = moment.duration(number).as(options.duration);
     } else if (options.hasOwnProperty('durationS')) {
-      number = moment.duration(number*1000).as(options.durationS);
+      number = moment.duration(number * 1000).as(options.durationS);
     } else if (options.hasOwnProperty('toPrecision')) {
       number = number.toPrecision(options.toPrecision);
     } else if (options.hasOwnProperty('toFixed')) {
@@ -208,7 +208,7 @@ define([
         const unitStr = String(val.unit);
         number = unit.toNumber(unitStr);
       }
-      displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '':unit.formatUnits()}`;
+      displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '' : unit.formatUnits()}`;
     }
 
     $element.html(displayValue);
