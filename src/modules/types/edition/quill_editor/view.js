@@ -14,6 +14,7 @@ define([
   function View() {
     this._id = Util.getNextUniqueId();
   }
+  Quill.imports['formats/link'].PROTOCOL_WHITELIST.push('blob');
 
   $.extend(true, View.prototype, Default, {
     init: function () {
