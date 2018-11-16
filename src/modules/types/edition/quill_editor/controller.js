@@ -41,17 +41,13 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     }
     if (
       this.module.getConfigurationCheckbox('modifyVarIn', 'yes') &&
-            this.module.data
+      this.module.data
     ) {
       if (this.module.view.mode === 'html') {
         this.module.data.setValue(html, true);
         this.module.model.dataTriggerChange(this.module.data);
       } else {
-        this.module.model.dataSetChild(
-          this.module.data,
-          ['ops'],
-          value.ops
-        );
+        this.module.model.dataSetChild(this.module.data, ['ops'], value.ops);
       }
     }
     this.createDataFromEvent('onEditorChange', 'quill', value);
@@ -99,6 +95,17 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
               title: 'Modify input variable',
               options: { yes: 'Yes' },
               default: []
+            },
+            className: {
+              type: 'text',
+              title: 'CSS class name',
+              default: 'quill'
+            },
+            css: {
+              type: 'jscode',
+              title: 'CSS',
+              mode: 'css',
+              default: '.quill {}'
             }
           }
         }
@@ -116,7 +123,9 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     storeInView: ['groups', 'group', 0, 'storeInView', 0],
     debouncing: ['groups', 'group', 0, 'debouncing', 0],
     modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0],
-    toolbarMode: ['groups', 'group', 0, 'toolbarMode', 0]
+    toolbarMode: ['groups', 'group', 0, 'toolbarMode', 0],
+    className: ['groups', 'group', 0, 'className', 0],
+    css: ['groups', 'group', 0, 'css', 0]
   };
 
   return Controller;

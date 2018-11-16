@@ -46,7 +46,16 @@ define([
         })
         .then(() => {
           var contents = this.module.definition.richtext || '';
-          this.$content = $(`<div id="${this._id}" class="quill_editor" />`);
+          this.$content = $(`
+            <style>
+              ${this.module.getConfiguration('css')}
+            </style>
+            <div id="${
+  this._id
+}" class="quill_editor ${this.module.getConfiguration(
+  'className'
+)}" />
+          `);
 
           this.dom = $('<div class="quill_wrapper" />');
           this.$content.appendTo(this.dom);
