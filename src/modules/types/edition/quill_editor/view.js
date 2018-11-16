@@ -91,7 +91,9 @@ define([
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'html';
-        this.instance.clipboard.dangerouslyPasteHTML(0, moduleValue.get());
+        this.instance.setContents(
+          this.instance.clipboard.convert(moduleValue.get())
+        );
       },
       quill: function (moduleValue) {
         this.module.data = moduleValue;
