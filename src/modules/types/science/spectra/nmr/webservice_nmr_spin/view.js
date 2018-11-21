@@ -91,6 +91,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       content.push('<select id="frequency" name="frequency">');
       content.push('<option value="60">60 MHz</option>');
       content.push('<option value="90">90 MHz</option>');
+      content.push('<option value="100">100 MHz</option>');
       content.push('<option value="200">200 MHz</option>');
       content.push('<option value="300">300 MHz</option>');
       content.push('<option value="400" selected>400 MHz</option>');
