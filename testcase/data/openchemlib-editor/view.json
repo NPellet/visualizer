@@ -1,5 +1,5 @@
 {
-  "version": "2.86.4-0",
+  "version": "2.100.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,11 +17,7 @@
         "groups": {
           "group": [
             {
-              "prefs": [
-                [
-                  "svg"
-                ]
-              ]
+              "prefs": [["svg"]]
             }
           ]
         }
@@ -33,29 +29,25 @@
             "top": 0
           },
           "size": {
-            "width": 59,
+            "width": 43,
             "height": 37
           },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [
-        {}
-      ],
+      "vars_in": [{}],
       "actions_in": [
-        {}
+        {
+          "rel": "setMolfile",
+          "name": "setMolfile"
+        }
       ],
       "vars_out": [
         {
@@ -89,28 +81,21 @@
               "title": "",
               "icon": "",
               "action": "",
-              "position": "begin"
+              "position": "begin",
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -122,11 +107,7 @@
         "groups": {
           "group": [
             {
-              "prefs": [
-                [
-                  "svg"
-                ]
-              ]
+              "prefs": [["svg"]]
             }
           ]
         }
@@ -144,12 +125,7 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -162,9 +138,7 @@
           "name": "molfile"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -188,22 +162,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -215,47 +181,21 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "text"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
-              "script": [
-                null
-              ]
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -273,12 +213,7 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -291,9 +226,7 @@
           "name": "molfile"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -317,22 +250,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -344,47 +269,21 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "text"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
-              "script": [
-                null
-              ]
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -402,12 +301,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Unique code",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -420,9 +314,7 @@
           "name": "ocl"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -446,22 +338,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Unique code"
@@ -473,47 +357,21 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "text"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
-              "script": [
-                null
-              ]
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -531,12 +389,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Code with keeping OR racemic group",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -549,9 +402,7 @@
           "name": "oclOr"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -575,22 +426,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Code with keeping OR racemic group"
@@ -602,11 +445,7 @@
         "groups": {
           "group": [
             {
-              "prefs": [
-                [
-                  "svg"
-                ]
-              ]
+              "prefs": [["svg"]]
             }
           ]
         }
@@ -624,12 +463,7 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -642,9 +476,7 @@
           "name": "oclOr"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -668,22 +500,100 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.doAction('setMolfile', `\nActelion Java MolfileCreator 2.0\n\n  0  0  0  0  0  0              0 V3000\nM  V30 BEGIN CTAB\nM  V30 COUNTS 6 6 0 0 0\nM  V30 BEGIN ATOM\nM  V30 1 C 10.9375 -10.0625 0 0\nM  V30 2 C 10.9375 -11.5625 0 0\nM  V30 3 C 12.2365 -12.3125 0 0\nM  V30 4 C 13.5355 -11.5625 0 0\nM  V30 5 C 13.5355 -10.0625 0 0\nM  V30 6 C 12.2365 -9.3125 0 0\nM  V30 END ATOM\nM  V30 BEGIN BOND\nM  V30 1 1 1 2\nM  V30 2 1 2 3\nM  V30 3 1 3 4\nM  V30 4 1 4 5\nM  V30 5 1 5 6\nM  V30 6 1 6 1\nM  V30 END BOND\nM  V30 END CTAB\nM  END`)"
+              ]
+            }
           ],
-          "fontFamily": [
-            ""
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
           ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 44,
+            "top": 0
+          },
+          "size": {
+            "width": 34,
+            "height": 32
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
