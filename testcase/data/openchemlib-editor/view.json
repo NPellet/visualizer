@@ -67,6 +67,9 @@
           "rel": "actidOrGroup",
           "jpath": [],
           "name": "oclOr"
+        },
+        {
+          "jpath": []
         }
       ],
       "actions_out": [
@@ -78,9 +81,9 @@
         "custom": [
           [
             {
-              "title": "",
-              "icon": "",
-              "action": "",
+              "title": "Paste molfile",
+              "icon": "fa-paste",
+              "action": "PasteMolfile",
               "position": "begin",
               "color": [100, 100, 100, 1]
             }
@@ -548,7 +551,7 @@
           },
           "size": {
             "width": 34,
-            "height": 32
+            "height": 20
           },
           "zIndex": 0,
           "display": true,
@@ -599,9 +602,85 @@
       "title": ""
     }
   ],
-  "variables": [],
-  "aliases": [],
+  "variables": [
+    {
+      "jpath": [""]
+    }
+  ],
+  "aliases": [{}],
   "configuration": {
     "title": "No title"
-  }
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": ["PasteMolfile"],
+            "script": [
+              "if (navigator.clipboard) {\n    navigator.clipboard.readText().then ( (text) => {\n        API.doAction('setMolfile', text);\n    });\n}\n\n"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
+  ]
 }
