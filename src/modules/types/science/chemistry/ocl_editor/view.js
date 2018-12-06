@@ -81,7 +81,7 @@ define(
         this.editor.setChangeListenerCallback(
           this.module.controller.onChange.bind(controller));
         this.editor.setIDCode(
-          controller.currentMol.idcode, controller.currentMol.coordinates);
+          `${controller.currentMol.idCode} ${controller.currentMol.coordinates}`);
         this.setFragment();
         this.resolveReady();
       },

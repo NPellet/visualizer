@@ -7,7 +7,7 @@ define(
   ],
   function (Default, OCL, ui) {
     function Controller() {
-      this.currentMol = { idcode: '', coordinates: '' };
+      this.currentMol = { idCode: '', coordinates: '' };
     }
 
     $.extend(true, Controller.prototype, Default);
