@@ -32,6 +32,9 @@ define(
         mol: function () {
           this.clearEditor();
         },
+        molV3: function () {
+          this.clearEditor();
+        },
         smiles: function () {
           this.clearEditor();
         },
