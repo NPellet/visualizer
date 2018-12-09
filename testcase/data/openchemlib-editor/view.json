@@ -176,7 +176,10 @@
         }
       ],
       "actions_in": [
-        {}
+        {
+          "rel": "setMolfile",
+          "name": "setMolfile"
+        }
       ],
       "vars_out": [
         {
@@ -192,9 +195,9 @@
         "custom": [
           [
             {
-              "title": "",
-              "icon": "",
-              "action": "",
+              "title": "Paste molfile",
+              "icon": "fa-paste",
+              "action": "PasteMolfile",
               "position": "begin",
               "color": [
                 100,
@@ -758,7 +761,7 @@
           },
           "size": {
             "width": 34,
-            "height": 20
+            "height": 35
           },
           "zIndex": 0,
           "display": true,

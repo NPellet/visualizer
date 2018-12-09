@@ -45,8 +45,12 @@ define(
 
       onActionReceive: {
         setMolfile: function (val) {
-          this._currentValue = val;
-          this._currentType = 'mol';
+          if (this._currentValue && this._currentValue.setValue) {
+            this._currentValue.setValue(val);
+          } else {
+            this._currentValue = val;
+          }
+          this._currentType = 'molV3';
           this.editor.setMolFile(val);
           this.setFragment();
         }
