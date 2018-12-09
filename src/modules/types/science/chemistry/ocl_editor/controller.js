@@ -54,7 +54,7 @@ define(
             { label: 'OCL molecule ID. Distinguish racemic OR group.' }
     };
 
-    Controller.prototype.variablesIn = ['mol', 'smiles', 'actid'];
+    Controller.prototype.variablesIn = ['mol', 'molV3', 'smiles', 'actid'];
 
     Controller.prototype.events = {
       onStructureChange: {
@@ -132,6 +132,9 @@ define(
           switch (this.module.view._currentType) {
             case 'mol':
               currentValue.setValue(molfile);
+              break;
+            case 'molV3':
+              currentValue.setValue(molfileV3);
               break;
             case 'smiles':
               currentValue.setValue(smiles);

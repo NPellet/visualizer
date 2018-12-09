@@ -56,6 +56,12 @@ define(
           this.editor.setMolFile(String(val.get()));
           this.setFragment();
         },
+        molV3: function (val) {
+          this._currentValue = val;
+          this._currentType = 'molV3';
+          this.editor.setMolFile(String(val.get()));
+          this.setFragment();
+        },
         smiles: function (val) {
           this._currentValue = val;
           this._currentType = 'smiles';
