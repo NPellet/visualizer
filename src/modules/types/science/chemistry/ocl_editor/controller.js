@@ -33,20 +33,20 @@ define(
         cssClass: 'fa fa-question',
         ifLocked: true
       });
-    //   base.unshift({
-    //     onClick: function () {
-    //       if (navigator.clipboard) {
-    //         navigator.clipboard.readText().then((text) => {
-    //           // self.module.view.onActionReceive.setMolfile(text);
-    //         });
-    //       }
-    //     },
-    //     title: 'Paste molfile',
-    //     cssClass: 'fa fa-paste',
-    //     ifLocked: true
-    //   });
-    //   return base;
-    // };
+      base.unshift({
+        onClick: function () {
+          if (navigator.clipboard) {
+            navigator.clipboard.readText().then((text) => {
+            // self.module.view.onActionReceive.setMolfile(text);
+            });
+          }
+        },
+        title: 'Paste molfile',
+        cssClass: 'fa fa-paste',
+        ifLocked: true
+      });
+      return base;
+    };
 
     Controller.prototype.moduleInformation = {
       name: 'OCL Molecule editor',
