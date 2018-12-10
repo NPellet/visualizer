@@ -1,3 +1,8 @@
+<a name="2.102.2"></a>
+## [2.102.2](https://github.com/NPellet/visualizer/compare/v2.102.1...v2.102.2) (2018-12-10)
+
+
+
 <a name="2.102.1"></a>
 ## [2.102.1](https://github.com/NPellet/visualizer/compare/v2.102.0...v2.102.1) (2018-12-09)
 
