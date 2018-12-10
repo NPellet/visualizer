@@ -1,5 +1,5 @@
 {
-  "version": "2.98.3-0",
+  "version": "2.100.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -21,7 +21,11 @@
               "toolbarMode": ["light"],
               "debouncing": [100],
               "storeInView": [[]],
-              "modifyVarIn": [["yes"]]
+              "modifyVarIn": [["yes"]],
+              "className": ["quill"],
+              "css": [
+                ".quill a {\n    text-decoration: none;\n    color: black;\n    font-weight: bold;\n}\n.quill p {\n    padding-top: 3px;\n    padding-bottom: 3px;\n}"
+              ]
             }
           ]
         }
@@ -387,7 +391,7 @@
               "variable": [[]],
               "storeOnChange": [["store"]],
               "debouncing": [0],
-              "script": ["a  "]
+              "script": ["Test <a href='ab'>asdfasdf</a>\n"]
             }
           ],
           "ace": [
