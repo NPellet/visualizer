@@ -1,0 +1,266 @@
+{
+  "version": "2.102.1",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/science/chemistry/jsme/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [["oldlook", "nozoom", "useopenchemlib"]],
+              "defaultaction": [null],
+              "labelsize": [14],
+              "bondwidth": [1],
+              "highlightColor": ["3"],
+              "outputResult": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 50,
+            "height": 40
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onStructureChange",
+          "rel": "molV3",
+          "jpath": [],
+          "name": "molfile"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [["button"]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 51,
+            "top": 0
+          },
+          "size": {
+            "width": 36,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/science/chemistry/jsme/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [["oldlook", "nozoom", "useopenchemlib"]],
+              "defaultaction": [null],
+              "labelsize": [14],
+              "bondwidth": [1],
+              "highlightColor": ["3"],
+              "outputResult": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 88,
+            "top": 0
+          },
+          "size": {
+            "width": 52,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "mol",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}

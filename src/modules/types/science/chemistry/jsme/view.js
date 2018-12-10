@@ -1,8 +1,13 @@
 'use strict';
 
-define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui', 'src/util/debug'], function (require, Default, API, ui, Debug) {
-  function View() {
-  }
+define([
+  'require',
+  'modules/default/defaultview',
+  'src/util/api',
+  'src/util/ui',
+  'src/util/debug'
+], function (require, Default, API, ui, Debug) {
+  function View() {}
 
   var views = {};
 
@@ -50,7 +55,6 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
   });
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       var that = this;
 
@@ -79,7 +83,9 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
 
     setJSMEOptions: function (options) {
       options = Object.assign({}, options, {
-        prefs: options.prefs ? options.prefs.map((d) => String(d)).join() : undefined
+        prefs: options.prefs
+          ? options.prefs.map((d) => String(d)).join()
+          : undefined
       });
       this.postMessage('setOptions', options);
     },
@@ -132,8 +138,19 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
         this._currentType = 'mol';
         if (!moduleValue.get()) return;
 
-        this.postMessage('setMolFile', String(moduleValue.get()));
-        this._initHighlight(moduleValue);
+        let molfile = String(moduleValue.get());
+        if (molfile.includes('V3000')) {
+          console.log('Convering V3000 to V2000');
+          let that = this;
+          require(['openchemlib/openchemlib-core'], function (OCL) {
+            let mol = OCL.Molecule.fromMolfile(molfile);
+            that.postMessage('setMolFile', mol.toMolfile());
+            that._initHighlight(moduleValue);
+          });
+        } else {
+          this.postMessage('setMolFile', molfile);
+          this._initHighlight(moduleValue);
+        }
       },
       jme: function (moduleValue) {
         this._currentValue = moduleValue;
@@ -166,15 +183,20 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
     _initHighlight: function (moduleValue) {
       var that = this;
       API.killHighlight(this.module.getId());
-      API.listenHighlight(moduleValue, function (onOff, highlightId) {
-        var atoms = [];
-        for (var i = 0, l = highlightId.length; i < l; i++) {
-          if (!(moduleValue._atoms[highlightId[i]] instanceof Array))
-            moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
-          atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
-        }
-        that.postMessage('setHighlight', { atoms: atoms, onOff: onOff });
-      }, false, this.module.getId());
+      API.listenHighlight(
+        moduleValue,
+        function (onOff, highlightId) {
+          var atoms = [];
+          for (var i = 0, l = highlightId.length; i < l; i++) {
+            if (!(moduleValue._atoms[highlightId[i]] instanceof Array))
+              moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
+            atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
+          }
+          that.postMessage('setHighlight', { atoms: atoms, onOff: onOff });
+        },
+        false,
+        this.module.getId()
+      );
     },
 
     _doHighlight: function (mol, id) {
@@ -202,17 +224,19 @@ define(['require', 'modules/default/defaultview', 'src/util/api', 'src/util/ui',
     postMessage: function (type, message) {
       var cw = this.dom.get(0).contentWindow;
       if (cw) {
-        cw.postMessage(JSON.stringify({
-          type: type,
-          message: message
-        }), '*');
+        cw.postMessage(
+          JSON.stringify({
+            type: type,
+            message: message
+          }),
+          '*'
+        );
       }
     },
 
     remove: function (id) {
       delete views[id];
     }
-
   });
 
   return View;
