@@ -105,10 +105,13 @@ define(
     };
 
     Controller.prototype.onChange = function (idCode, molecule) {
+      const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
+
+      // In modify variable in mode
       // When the module is blanked we consider it local state
       // And we don't send out updates
       // This also prevents infinite recursiveness
-      if (this.module.view._currentValue === null) {
+      if (inPlace && this.module.view._currentValue === null) {
         return;
       }
       var split = (idCode || ' ').split(' ');
@@ -138,7 +141,7 @@ define(
 
         // inplace modification is disabled for now because of unexpected
         // change events
-        if (this.module.getConfigurationCheckbox('prefs', 'inPlace') &&
+        if (inPlace &&
               this.module.view._currentType) {
           var currentValue = this.module.view._currentValue;
           switch (this.module.view._currentType) {
