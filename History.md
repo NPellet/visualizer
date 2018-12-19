@@ -1,3 +1,13 @@
+<a name="2.102.3"></a>
+## [2.102.3](https://github.com/NPellet/visualizer/compare/v2.102.2...v2.102.3) (2018-12-19)
+
+
+### Bug Fixes
+
+* always send out updates to out variables when not inplace ([d4b5953](https://github.com/NPellet/visualizer/commit/d4b5953))
+
+
+
 <a name="2.102.2"></a>
 ## [2.102.2](https://github.com/NPellet/visualizer/compare/v2.102.1...v2.102.2) (2018-12-10)
 
