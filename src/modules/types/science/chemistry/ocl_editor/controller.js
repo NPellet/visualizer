@@ -33,6 +33,26 @@ define(
         cssClass: 'fa fa-question',
         ifLocked: true
       });
+      base.unshift({
+        onClick: () => {
+          const molfile = this.getMolfile();
+          ui.copyToClipboard(molfile, { successMessage: 'Molfile copied to the clipboard' });
+        },
+        title: 'Copy Molfile to clipboard',
+        cssClass: 'fa fa-copy',
+        ifLocked: true
+      });
+      base.unshift({
+        onClick: () => {
+          const svg = this.getSvg();
+          ui.downloadFile(svg, 'molecule.svg', {
+            mimeType: 'application/svg;charset=utf-8'
+          });
+        },
+        title: 'Download as SVG vector file',
+        cssClass: 'fa fa-download',
+        ifLocked: true
+      });
       // base.unshift({
       //   onClick: function () {
       //     if (navigator.clipboard) {
@@ -102,6 +122,16 @@ define(
 
     Controller.prototype.configAliases = {
       prefs: ['groups', 'group', 0, 'prefs', 0]
+    };
+
+    Controller.prototype.getMolfile = function () {
+      const molecule = this.module.view.editor.getMolecule();
+      return molecule.toMolfileV3();
+    };
+
+    Controller.prototype.getSvg = function () {
+      const molecule = this.module.view.editor.getMolecule();
+      return molecule.toSVG(800, 600);
     };
 
     Controller.prototype.onChange = function (idCode, molecule) {

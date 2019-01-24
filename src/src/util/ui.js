@@ -603,7 +603,8 @@ define([
     return $dialog;
   };
 
-  exports.copyToClipboard = function (str) {
+  exports.copyToClipboard = function (str, options = {}) {
+    const { successMessage = 'Copy success', failureMessage = 'Copy failure' } = options;
     var strlen = str.length;
     var txtarea = $('<textarea/>')
       .text(str)
@@ -622,9 +623,22 @@ define([
     txtdom.focus();
 
     var success = document.execCommand('copy');
-    if (success) exports.showNotification('Copy success', 'success');
-    else exports.showNotification('Copy failure', 'error');
+    if (success) {
+      exports.showNotification(successMessage, 'success');
+    } else {
+      exports.showNotification(failureMessage, 'error');
+    }
     txtarea.remove();
+  };
+
+  exports.downloadFile = function (data, filename, options = {}) {
+    const {
+      mimeType = (typeof data === 'string' ? 'text/plain' : 'application/octet-stream')
+    } = options;
+    require(['file-saver'], (fileSaver) => {
+      var blob = new Blob(typeof data === 'string' ? [data] : data, { type: mimeType });
+      fileSaver(blob, filename);
+    });
   };
 
   exports.showNotification = function () {
