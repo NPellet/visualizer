@@ -35,6 +35,21 @@ define([
     });
     base.unshift({
       onClick: () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.readText().then((text) => {
+            this.module.view.onActionReceive.setMolfile.call(
+              this.module.view,
+              text
+            );
+          });
+        }
+      },
+      title: 'Import Molfile from clipboard',
+      cssClass: 'fa fa-paste',
+      ifLocked: true
+    });
+    base.unshift({
+      onClick: () => {
         this.module.view.onActionReceive.getMolfile.call(this.module.view);
       },
       title: 'Copy Molfile to clipboard',
@@ -47,21 +62,6 @@ define([
       },
       title: 'Download as SVG vector file',
       cssClass: 'fa fa-download',
-      ifLocked: true
-    });
-    base.unshift({
-      onClick: () => {
-        if (navigator.clipboard) {
-          navigator.clipboard.readText().then((text) => {
-            this.module.view.onActionReceive.setMolfile.call(
-              this.module.view,
-              text
-            );
-          });
-        }
-      },
-      title: 'Import Molfile from clipboard',
-      cssClass: 'fa fa-paste',
       ifLocked: true
     });
     return base;
