@@ -1,11 +1,7 @@
 {
   "version": "2.102.5-0",
   "grid": {
-    "layers": {
-      "Default layer": {
-        "name": "Default layer"
-      }
-    },
+    "layers": { "Default layer": { "name": "Default layer" } },
     "xWidth": 10,
     "yHeight": 10
   },
@@ -14,59 +10,29 @@
       "url": "modules/types/science/chemistry/ocl_editor/",
       "configuration": {
         "sections": {},
-        "groups": {
-          "group": [
-            {
-              "prefs": [
-                [
-                  "svg"
-                ]
-              ]
-            }
-          ]
-        }
+        "groups": { "group": [{ "prefs": [["svg"]] }] }
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 48,
-            "top": 7
-          },
-          "size": {
-            "width": 96,
-            "height": 58
-          },
+          "position": { "left": 71, "top": 6 },
+          "size": { "width": 96, "height": 58 },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [
-        {}
-      ],
+      "vars_in": [{}],
       "actions_in": [
-        {}
+        { "rel": "downloadSvg", "name": "svg" },
+        { "rel": "copyMolfile", "name": "copyMol" }
       ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "vars_out": [{ "jpath": [] }],
+      "actions_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -75,41 +41,150 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["click"],
+              "label": ["Download SVG"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "onColor": [[0, 0, 0, 1]],
+              "offColor": [[0, 0, 0, 1]],
+              "startState": ["off"],
+              "text": [null],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "content": [""],
+              "contentType": ["content"],
+              "maskOpacity": [0.6]
+            }
           ]
         }
+      },
+      "layers": {
+        "Default layer": {
+          "position": { "left": 31, "top": 10 },
+          "size": { "width": 25, "height": 7 },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        { "event": "onClick", "rel": "actionText", "jpath": [], "name": "svg" }
       ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [{ "toolbar": [["Open Preferences"]] }]
+      },
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["click"],
+              "label": ["Copy Molfile to clipboard"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "onColor": [[0, 0, 0, 1]],
+              "offColor": [[0, 0, 0, 1]],
+              "startState": ["off"],
+              "text": [null],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "content": [""],
+              "contentType": ["content"],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": { "left": 31, "top": 19 },
+          "size": { "width": 25, "height": 7 },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "copyMol"
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [{ "toolbar": [["Open Preferences"]] }]
+      },
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": ""
     }
   ],
   "variables": [],
   "aliases": [],
-  "configuration": {
-    "title": "No title"
-  }
+  "configuration": { "title": "No title" }
 }
