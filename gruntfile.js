@@ -80,23 +80,6 @@ module.exports = function (grunt) {
       }
     },
     pkg: grunt.file.readJSON('package.json'),
-    react: {
-      nmr: {
-        files: {
-          './src/modules/types/science/spectra/nmr/1dnmr_2/view.js':
-            './src/modules/types/science/spectra/nmr/1dnmr_2/view.jsx'
-        }
-      }
-    },
-
-    sass: {
-      nmr: {
-        files: {
-          './src/modules/types/science/spectra/nmr/1dnmr_2/style.css':
-            './src/modules/types/science/spectra/nmr/1dnmr_2/style.scss'
-        }
-      }
-    },
     babel: {
       transpile: {
         options: {
@@ -470,10 +453,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-rename');
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-react');
 
   grunt.registerTask('manifest:generate', function () {
     var files = recursivelyLookupDirectory('build', true);

@@ -1,10 +1,6 @@
 {
   "modules": [
     {
-      "moduleName": "1D NMR",
-      "url": "modules/types/science/spectra/nmr/1dnmr_2/"
-    },
-    {
       "moduleName": "2D NMR",
       "url": "modules/types/science/spectra/nmr/2dnmr/"
     },

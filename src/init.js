@@ -16,7 +16,7 @@ require.config({
   paths: {
     ace: 'components/ace/src',
     angularplasmid:
-            'node_modules/angularplasmid/dist/angularplasmid.complete.min',
+      'node_modules/angularplasmid/dist/angularplasmid.complete.min',
     async: 'components/async/dist/async',
     babel: 'components/babel-standalone/babel.min',
     bioParsers: 'browserified/bioParsers/index',
@@ -58,7 +58,7 @@ require.config({
     'mime-types': 'browserified/mime-types/index',
     moment: 'components/moment/moment',
     'moment-duration-format':
-            'components/moment-duration-format/lib/moment-duration-format',
+      'components/moment-duration-format/lib/moment-duration-format',
     notifyjs: 'components/notifyjs/dist/notify',
     modernizr: 'components/modernizr/modernizr',
     msa: 'lib/msa/msa.min',
@@ -71,16 +71,13 @@ require.config({
     quillPrivate: 'src/quillPrivate',
     quill: 'components/quill/quill.min',
     quillImageResizeModule:
-            'node_modules/quill-image-resize-module/image-resize.min',
-    quillImageDropModule:
-            'node_modules/quill-image-drop-module/image-drop.min',
-    react: 'components/react/react.development',
-    'react-dom': 'components/react/react-dom.development',
+      'node_modules/quill-image-resize-module/image-resize.min',
+    quillImageDropModule: 'node_modules/quill-image-drop-module/image-drop.min',
     select2: 'components/select2/dist/js/select2.full',
     slickgrid: 'components/slickgrid/slick.grid',
     slickgrid_core: 'components/slickgrid/slick.core',
     'smart-array-filter':
-            'components/smart-array-filter/dist/smart-array-filter.min',
+      'components/smart-array-filter/dist/smart-array-filter.min',
     sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
     sprintf: 'components/sprintf/dist/sprintf.min',
     superagent: 'browserified/superagent/index',
@@ -90,13 +87,12 @@ require.config({
     x2js: 'components/x2js/xml2json.min',
     BiojsSequence: 'lib/biojs-1.0/src/main/javascript/Biojs.Sequence',
     BiojsTooltip: 'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
-    BiojsFeatureViewer:
-            'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
+    BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
     BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
     BiojsMyFeatureViewer:
-            'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
+      'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
     BiojsDasProteinFeatureViewer:
-            'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
+      'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
   },
   shim: {
     canvg: {
@@ -149,11 +145,7 @@ require.config({
     'lib/threejs/TrackballControls': ['threejs'],
     jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
     'lib/couchdb/jquery.couch': ['jquery'],
-    slickgrid_core: [
-      'jquery',
-      'jquery-ui/ui/widgets/sortable',
-      'jquery-tmpl'
-    ],
+    slickgrid_core: ['jquery', 'jquery-ui/ui/widgets/sortable', 'jquery-tmpl'],
     slickgrid: {
       deps: [
         'slickgrid_core',
@@ -240,9 +232,11 @@ require([
   $(document).ready(() => {
     const url = new URI(window.location.href);
     const type =
-            url.search().length > 0
-              ? 'search'
-              : url.fragment()[0] === '?' ? 'fragment' : 'search';
+      url.search().length > 0
+        ? 'search'
+        : url.fragment()[0] === '?'
+          ? 'fragment'
+          : 'search';
     const query = new URI(url[type]()).query(true);
     EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
   });

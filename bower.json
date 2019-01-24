@@ -64,7 +64,6 @@
     "openchemlib": "5.9.1",
     "papa-parse": "4.1.2",
     "pouchdb": "3.3.1",
-    "react": "^16.0.0",
     "requirejs": "2.3.2",
     "select2": "4.0.3",
     "setImmediate": "YuzuJS/setImmediate#1.0.5",

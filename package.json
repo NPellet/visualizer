@@ -56,8 +56,6 @@
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-requirejs": "^1.0.0",
-    "grunt-contrib-sass": "^1.0.0",
-    "grunt-react": "^0.12.3",
     "grunt-rename": "^0.1.4",
     "ink-docstrap": "^1.3.2",
     "lodash": "^4.17.11",
@@ -81,8 +79,6 @@
     "node-jsgraph": "2.1.11",
     "quill-image-drop-module": "github:cheminfo/quill-image-drop-module#4cdc591cfddec42a22ab25b635f34de9e973c86d",
     "quill-image-resize-module": "^3.0.0",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
     "superagent": "^3.8.3",
     "twig": "^1.13.2"
   }
