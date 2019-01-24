@@ -35,6 +35,7 @@ rules:
   no-trailing-spaces:
     - 2
     - { skipBlankLines: true }
+  import/no-dynamic-require: off
 
 globals:
   setImmediate: false,
