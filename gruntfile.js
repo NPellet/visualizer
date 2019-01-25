@@ -235,7 +235,6 @@ module.exports = function (grunt) {
               './setImmediate/setImmediate.js',
               './chroma-js/chroma*',
               './async/dist/**',
-              './jsnmr/dist/**',
               './loglevel/dist/**',
               './marked/lib/marked.js',
               './highlight.js/build/highlight.pack.js',
