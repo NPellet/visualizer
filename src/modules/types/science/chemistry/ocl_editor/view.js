@@ -57,8 +57,7 @@ define([
         this.setFragment();
       },
       copyMolfile: function () {
-        const molecule = this.editor.getMolecule();
-        const molfile = molecule.toMolfileV3();
+        const molfile = this.editor.getMolFileV3();
         ui.copyToClipboard(molfile, {
           successMessage: 'Molfile copied to the clipboard'
         });

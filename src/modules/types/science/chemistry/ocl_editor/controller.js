@@ -50,9 +50,9 @@ define([
     });
     base.unshift({
       onClick: () => {
-        this.module.view.onActionReceive.getMolfile.call(this.module.view);
+        this.module.view.onActionReceive.copyMolfile.call(this.module.view);
       },
-      title: 'Copy Molfile to clipboard',
+      title: 'Copy Molfile V3 to clipboard',
       cssClass: 'fa fa-copy',
       ifLocked: true
     });
