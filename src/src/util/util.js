@@ -10,10 +10,31 @@ define([
   './debug',
   './color',
   '../data/structures',
-  'web-animations',
+  'web-animations'
 ], function (Promise, _, Debug, Color, structures) {
-  var months = ['January', 'February', 'March', 'April', 'Mai', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'Mai',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  var days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+  ];
 
   function noop() {
     // empty
@@ -47,7 +68,11 @@ define([
     }
 
     var functionEvaled = noop;
-    eval(`functionEvaled = function( el ) { if (el && ${ifString}) return ${ifElement}['${splitted[l].replace(regQuote, '\\"')}']; };`);
+    eval(
+      `functionEvaled = function( el ) { if (el && ${ifString}) return ${ifElement}['${splitted[
+        l
+      ].replace(regQuote, '\\"')}']; };`
+    );
     return functionEvaled;
   }
 
@@ -59,14 +84,21 @@ define([
     }
 
     var i = 0,
-      stylesheet, ii, cssRule;
+      stylesheet,
+      ii,
+      cssRule;
 
     for (; i < document.styleSheets.length; i++) {
       stylesheet = document.styleSheets[i];
       ii = 0;
       cssRule = false;
-      do { // For each rule in stylesheet
-        cssRule = stylesheet.cssRules ? stylesheet.cssRules[ii] : (stylesheet.rules ? stylesheet.rules[ii] : null);
+      do {
+        // For each rule in stylesheet
+        cssRule = stylesheet.cssRules
+          ? stylesheet.cssRules[ii]
+          : stylesheet.rules
+            ? stylesheet.rules[ii]
+            : null;
         if (!cssRule || !cssRule.selectorText) {
           ii++;
           continue;
@@ -102,15 +134,19 @@ define([
         var pos = iframe.position();
         var width = iframe.width();
         var height = iframe.height();
-        iframe.before($('<div />').css({
-          position: 'absolute',
-          width: width,
-          height: height,
-          top: pos.top,
-          left: pos.left,
-          background: 'white',
-          opacity: 0.5
-        }).addClass('iframemask'));
+        iframe.before(
+          $('<div />')
+            .css({
+              position: 'absolute',
+              width: width,
+              height: height,
+              top: pos.top,
+              left: pos.left,
+              background: 'white',
+              opacity: 0.5
+            })
+            .addClass('iframemask')
+        );
       });
     },
     unmaskIframes: function () {
@@ -140,7 +176,8 @@ define([
 
         that.loadedCss = that.loadedCss || {};
 
-        if (that.loadedCss[url]) { // element is already loaded
+        if (that.loadedCss[url]) {
+          // element is already loaded
           that.loadedCss[url].disabled = false;
           return resolve(that.loadedCss[url]);
         }
@@ -174,8 +211,8 @@ define([
       var pre = (Array.prototype.slice
         .call(styles)
         .join('')
-        .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-      )[1];
+        .match(/-(moz|webkit|ms)-/) ||
+        (styles.OLink === '' && ['', 'o']))[1];
       return `-${pre}-`;
     },
 
@@ -224,7 +261,6 @@ define([
     // See http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript
     // for original source
 
-
     getCSS: getCSS,
 
     removeCSS: function (ruleName) {
@@ -252,15 +288,25 @@ define([
 
     // http://stackoverflow.com/questions/9318674/javascript-number-currency-formatting
     formatMoney: function (n, decPlaces, thouSeparator, decSeparator) {
-      decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? 2 : decPlaces;
+      decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces;
       decSeparator = decSeparator == undefined ? '.' : decSeparator;
       thouSeparator = thouSeparator == undefined ? ',' : thouSeparator;
 
       var sign = n < 0 ? '-' : '',
-        i = `${parseInt(n = Math.abs(+n || 0).toFixed(decPlaces))}`,
+        i = `${parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`,
         j = i.length;
       j = j > 3 ? j % 3 : 0;
-      return sign + (j ? i.substr(0, j) + thouSeparator : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, `$1${thouSeparator}`) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : '');
+      return (
+        sign +
+        (j ? i.substr(0, j) + thouSeparator : '') +
+        i.substr(j).replace(/(\d{3})(?=\d)/g, `$1${thouSeparator}`) +
+        (decPlaces
+          ? decSeparator +
+            Math.abs(n - i)
+              .toFixed(decPlaces)
+              .slice(2)
+          : '')
+      );
     },
 
     safeAccess: function () {
@@ -274,20 +320,19 @@ define([
 
       return access;
     }
-
   };
 
-    /**
-     * No-op function
-     */
+  /**
+   * No-op function
+   */
   exports.noop = noop;
 
   let uniqueid = 0;
   /**
-     * Returns a unique id.
-     * @param {boolean} [absolute]
-     * @return {string}
-     */
+   * Returns a unique id.
+   * @param {boolean} [absolute]
+   * @return {string}
+   */
   exports.getNextUniqueId = function getNextUniqueId(absolute) {
     if (absolute) {
       return `id_${Date.now()}${Math.round(Math.random() * 100000)}`;
@@ -296,11 +341,11 @@ define([
   };
 
   /**
-     * Mark that a method should not be used. Returns a modified function which warns once when called.
-     * @param {function} method - the deprecated method
-     * @param {string} [message] - optional message to log
-     * @return {*}
-     */
+   * Mark that a method should not be used. Returns a modified function which warns once when called.
+   * @param {function} method - the deprecated method
+   * @param {string} [message] - optional message to log
+   * @return {*}
+   */
   exports.deprecate = function deprecate(method, message) {
     var warned = false;
     return function deprecated() {
@@ -312,37 +357,21 @@ define([
     };
   };
 
-  /*
-     TODO remove when Set API is supported in more browsers
-     */
-  var warnOnceMap, warnOnceCheck;
-  if (typeof Set === 'undefined') {
-    warnOnceMap = {};
-    warnOnceCheck = function (name) {
-      if (warnOnceMap[name]) {
-        return true;
-      } else {
-        warnOnceMap[name] = true;
-        return false;
-      }
-    };
-  } else {
-    warnOnceMap = new Set();
-    warnOnceCheck = function (name) {
-      if (warnOnceMap.has(name)) {
-        return true;
-      } else {
-        warnOnceMap.add(name);
-        return false;
-      }
-    };
-  }
+  const warnOnceMap = new Set();
+  const warnOnceCheck = function (name) {
+    if (warnOnceMap.has(name)) {
+      return true;
+    } else {
+      warnOnceMap.add(name);
+      return false;
+    }
+  };
 
   /**
-     * Prints a warning message only once per id
-     * @param {string} id
-     * @param {string} message
-     */
+   * Prints a warning message only once per id
+   * @param {string} id
+   * @param {string} message
+   */
   exports.warnOnce = function warnOnce(id, message) {
     if (!warnOnceCheck(id)) {
       Debug.warn(message);
@@ -350,12 +379,12 @@ define([
   };
 
   /**
-     * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
-     * property to access the super constructor
-     * @param {function} ctor - New constructor
-     * @param {function} superCtor - Super constructor
-     * @param {object} [methods] - Methods to add to the new constructor
-     */
+   * Make a constructor's prototype inherit another one, while adding optionally new methods to it. Also sets a `super_`
+   * property to access the super constructor
+   * @param {function} ctor - New constructor
+   * @param {function} superCtor - Super constructor
+   * @param {object} [methods] - Methods to add to the new constructor
+   */
   exports.inherits = function (ctor, superCtor, methods) {
     ctor.super_ = superCtor;
     ctor.prototype = Object.create(superCtor.prototype, {
@@ -452,8 +481,14 @@ define([
   };
 
   // Deprecated color methods. Moved to src/util/color
-  exports.getDistinctColors = exports.deprecate(Color.getDistinctColors, 'use Color.getDistinctColors');
-  exports.getNextColorRGB = exports.deprecate(Color.getNextColorRGB, 'use Color.getNextColorRGB');
+  exports.getDistinctColors = exports.deprecate(
+    Color.getDistinctColors,
+    'use Color.getDistinctColors'
+  );
+  exports.getNextColorRGB = exports.deprecate(
+    Color.getNextColorRGB,
+    'use Color.getNextColorRGB'
+  );
   exports.hsl2rgb = exports.deprecate(Color.hsl2rgb, 'use Color.hsl2rgb');
   exports.hueToRgb = exports.deprecate(Color.hue2rgb, 'use Color.hue2rgb');
   exports.hexToRgb = exports.deprecate(Color.hex2rgb, 'use Color.hex2rgb');
@@ -521,14 +556,24 @@ define([
   };
 
   exports.hexToBase64 = function (str) {
-    return btoa(String.fromCharCode.apply(null,
-      str.replace(/\r|\n/g, '').replace(/([\da-fA-F]{2}) ?/g, '0x$1 ').replace(/ +$/, '').split(' '))
+    return btoa(
+      String.fromCharCode.apply(
+        null,
+        str
+          .replace(/\r|\n/g, '')
+          .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
+          .replace(/ +$/, '')
+          .split(' ')
+      )
     );
   };
 
-
   exports.base64ToHex = function (str) {
-    for (var i = 0, bin = atob(str.replace(/[ \r\n]+$/, '')), hex = []; i < bin.length; ++i) {
+    for (
+      var i = 0, bin = atob(str.replace(/[ \r\n]+$/, '')), hex = [];
+      i < bin.length;
+      ++i
+    ) {
       var tmp = bin.charCodeAt(i).toString(16);
       if (tmp.length === 1) tmp = `0${tmp}`;
       hex[hex.length] = tmp;
@@ -567,12 +612,13 @@ define([
 
   exports.hashCode = function (str) {
     var hash = 0,
-      i, chr,
+      i,
+      chr,
       len = str.length;
     if (len === 0) return hash;
     for (i = 0; i < len; i++) {
       chr = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + chr;
+      hash = (hash << 5) - hash + chr;
       hash |= 0;
     }
     return hash;
