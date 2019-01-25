@@ -32,7 +32,7 @@
     "jcampconverter": "2.11.0",
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
-    "jquery": "2.2.1",
+    "jquery": "2.2.4",
     "jquery-cookie": "1.4.1",
     "jquery-mousewheel": "3.1.13",
     "jquery-qrcode": "cheminfo/jquery-qrcode#efece6cf4e32d1151436a146a2ac0e2197e0837b",
@@ -82,7 +82,7 @@
   "resolutions": {
     "jsgraph": "2.1.12",
     "jcampconverter": "2.11.0",
-    "jquery": "2.2.1",
+    "jquery": "2.2.4",
     "eventEmitter": "^5.1.0"
   },
   "private": true
