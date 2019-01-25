@@ -5,22 +5,11 @@ define([
   'modules/default/defaultview',
   'jsgraph',
   'json-chart',
-  'src/util/datatraversing',
   'src/util/api',
   'src/util/color',
   'src/util/debug',
   'src/util/util'
-], function (
-  $,
-  Default,
-  Graph,
-  JSONChart,
-  DataTraversing,
-  API,
-  Color,
-  Debug,
-  Util
-) {
+], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -529,7 +518,7 @@ define([
             }
 
             options.lineToZero = continuous == 'discrete';
-            options.strokeWidth = parseInt(plotinfos[i].strokewidth);
+            options.strokeWidth = parseInt(plotinfos[i].strokewidth, 10);
 
             var pp = plotinfos[i].peakpicking[0];
             if (pp) {
@@ -613,7 +602,7 @@ define([
 
             serie.setLineWidth(lineWidth);
             serie.setLineStyle(
-              parseInt(plotinfos[i].strokestyle) || 1,
+              parseInt(plotinfos[i].strokestyle, 10) || 1,
               false,
               true
             );
@@ -622,7 +611,7 @@ define([
               serie.showMarkers();
               serie.setMarkers([
                 {
-                  type: parseInt(plotinfos[i].markerShape),
+                  type: parseInt(plotinfos[i].markerShape, 10),
                   zoom: plotinfos[i].markerSize,
                   strokeColor: Color.getColor(color),
                   fillColor: Color.getColor(color),
@@ -797,8 +786,7 @@ define([
           }
 
           if (!serie) {
-            console.log(serieType);
-            throw new Error('The serie was not created !');
+            throw new Error(`The serie of type ${serieType} was not created !`);
           }
           serie.setLabel(serieLabel);
           //                    this.normalize(valFinal, varname);
@@ -836,7 +824,6 @@ define([
                 (aData.styles || {})[styleName]
               );
               serie.setStyle(style, styleName);
-              console.log(styleName, style);
             }
           } else {
             serie.setData(valFinal);

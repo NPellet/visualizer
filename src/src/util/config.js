@@ -1,4 +1,5 @@
 'use strict';
+
 define(['./versioning'], function (Versioning) {
   var config;
   // Default List of what should appear in the context menu
@@ -6,9 +7,25 @@ define(['./versioning'], function (Versioning) {
   // If all is set everything will appear no matter what
   // If undefined is set then not setting the name attribute will add it anyway
   var defaultContextMenu = [
-    'undefined', 'all', 'global-configuration', 'configuration',
-    'copy', 'paste', 'duplicate', 'add', 'layers', 'utils',
-    'remove', 'export', 'print', 'refresh', 'tofront', 'toback', 'move', 'custom', 'fullscreen'
+    'undefined',
+    'all',
+    'global-configuration',
+    'configuration',
+    'copy',
+    'paste',
+    'duplicate',
+    'add',
+    'layers',
+    'utils',
+    'remove',
+    'export',
+    'print',
+    'refresh',
+    'tofront',
+    'toback',
+    'move',
+    'custom',
+    'fullscreen'
   ];
   return {
     getConfig: function () {

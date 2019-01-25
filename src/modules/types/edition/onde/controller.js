@@ -6,10 +6,8 @@ define([
   'lodash',
   'src/util/debug',
   'js-yaml'
-]
-  , function (Default, Schema, _, Debug, Yaml) {
-  function Controller() {
-  }
+], function (Default, Schema, _, Debug, Yaml) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -50,7 +48,6 @@ define([
   Controller.prototype.variablesIn = ['inputValue', 'schema'];
 
   Controller.prototype.actionsIn = {};
-
 
   Controller.prototype.configurationStructure = function () {
     return {
@@ -181,11 +178,14 @@ define([
 
   Controller.prototype.onBeforeSave = function (formValue) {
     var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
-    var saveInView = formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
+    var saveInView =
+      formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
     var vars_in = formValue.vars_in[0].groups.group[0];
     var output = formValue.module_specific_config[0].groups.group[0].output[0];
     if (saveInView && output !== 'modified') {
-      Debug.warn('onde: if save in view is activated you probably want to modify var in');
+      Debug.warn(
+        'onde: if save in view is activated you probably want to modify var in'
+      );
     }
     var varin = vars_in.filter(function (v) {
       return v.rel === 'inputValue';
@@ -209,16 +209,17 @@ define([
   Controller.prototype.getSchema = function () {
     var mode = this.module.getConfiguration('mode');
     var schema = {};
-    if ((mode === 'object' || mode === 'both') && this.module.view.inputVal !== null) {
+    if (
+      (mode === 'object' || mode === 'both') &&
+      this.module.view.inputVal !== null
+    ) {
       schema = Schema.fromObject(this.module.view.inputVal);
     }
     if (mode === 'schema' || mode === 'both') {
       var schemaSource = this.module.getConfiguration('schemaSource');
       var intSchema;
-      if (schemaSource === 'variable')
-        intSchema = this.inputSchema;
-      else
-        intSchema = Yaml.safeLoad(this.module.getConfiguration('schema'));
+      if (schemaSource === 'variable') intSchema = this.inputSchema;
+      else intSchema = Yaml.safeLoad(this.module.getConfiguration('schema'));
       $.extend(true, schema, intSchema);
     }
     if (_.isEmpty(schema)) return;
@@ -227,7 +228,7 @@ define([
   };
 
   function schemaJpath(schema, jpath) {
-    if (schema.type === 'object' && (typeof schema.properties === 'object')) {
+    if (schema.type === 'object' && typeof schema.properties === 'object') {
       for (var key in schema.properties) {
         schema.jpath = jpath;
         var njpath = jpath.slice();

@@ -2443,9 +2443,9 @@ define(
       match = query.match(/^([<>=]{1,2})([0-9]+)-([0-9\-:]*)$/);
       if (match) {
         match = query.match(/^([<>=]{0,2})([0-9]+)-([0-9]*)-?([0-9]*)/);
-        let year = parseInt(match[2]);
-        let month = parseInt(match[3]);
-        let day = parseInt(match[4]);
+        let year = parseInt(match[2], 10);
+        let month = parseInt(match[3], 10);
+        let day = parseInt(match[4], 10);
         if (Number.isNaN(month)) month = 1;
         if (Number.isNaN(day)) day = 1;
         const date = new Date();

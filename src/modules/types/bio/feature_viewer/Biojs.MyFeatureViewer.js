@@ -1,17 +1,18 @@
 'use strict';
+
 /* global Biojs canvg*/
 Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
   /* @lends Biojs.DasProteinFeatureViewer */
   {
     /*
-         * Private variables
-         */
+     * Private variables
+     */
     _webservice: 'http://wwwdev.ebi.ac.uk/uniprot/featureViewer/image',
     _dasReference: 'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/',
     /*
-         * Default values for the options
-         * @name Biojs.DasProteinFeatureViewer-constructor
-         */
+     * Default values for the options
+     * @name Biojs.DasProteinFeatureViewer-constructor
+     */
     constructor: function (options) {
       this.base(options);
       try {
@@ -20,7 +21,8 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         }
       } catch (err) {
         document.getElementById(this.opt.target).innerHTML = '';
-        document.getElementById(this.opt.target).innerHTML = 'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
+        document.getElementById(this.opt.target).innerHTML =
+          'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
       }
     },
 
@@ -40,18 +42,18 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
     },
 
     /*
-         * Array containing the supported event names
-         * @name Biojs.DasProteinFeatureViewer-eventTypes
-         */
+     * Array containing the supported event names
+     * @name Biojs.DasProteinFeatureViewer-eventTypes
+     */
     eventTypes: [],
 
     /*
-         * Opens a new window/tab in the browser with the graphical representation for all feature types.
-         *
-         * @example
-         * myPainter.showGeneralLegend();
-         *
-         */
+     * Opens a new window/tab in the browser with the graphical representation for all feature types.
+     *
+     * @example
+     * myPainter.showGeneralLegend();
+     *
+     */
     showGeneralLegend: function () {
       var config = this.opt.json.configuration;
       var dataURL = `${this._webservice}?`;
@@ -59,32 +61,32 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
     },
 
     /*
-         * Opens a new window/tab in the browser with the graphical representation as a plain image.
-         * Note: For IE it does not reflect the drags/drops on sites
-         *
-         * @example
-         * myPainter.exportFeaturesToImage();
-         *
-         */
+     * Opens a new window/tab in the browser with the graphical representation as a plain image.
+     * Note: For IE it does not reflect the drags/drops on sites
+     *
+     * @example
+     * myPainter.exportFeaturesToImage();
+     *
+     */
     exportFeaturesToImage: function () {
       //        if (typeof FlashCanvas != 'undefined') {
       //            FlashCanvas.initElement(canvas);
       //        }
       var config = this.opt.json.configuration;
       var dataURL = '';
-      if (jQuery.browser.msie) { // canvas does not work (not even with IE 9)
+      if (jQuery.browser.msie) {
+        // canvas does not work (not even with IE 9)
         var args = `segment=${this.opt.json.segment}`;
-        if ((config.requestedStart != 0) && (config.requestedStop != 0)) {
+        if (config.requestedStart != 0 && config.requestedStop != 0) {
           args = `${args}:${config.requestedStart},${config.requestedStop}`;
         }
-        args = `${args
-        }&dasReference=${config.dasReference
-        }&dasSources=${config.dasSources
-        }&width=${config.sizeX
-        }&option=image` +
-                    `&hgrid=${config.horizontalGrid
-                    }&vgrid=${config.verticalGrid
-                    }&style=${config.style}`;
+        args =
+          `${args}&dasReference=${config.dasReference}&dasSources=${
+            config.dasSources
+          }&width=${config.sizeX}&option=image` +
+          `&hgrid=${config.horizontalGrid}&vgrid=${config.verticalGrid}&style=${
+            config.style
+          }`;
         dataURL = `${this._webservice}?${args}`;
         window.open(dataURL); // open generated image in new tab/window
       } else {
@@ -94,14 +96,19 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         var oldH = $svg.attr('height');
         $svg.attr('width', `${$svg.width()}px`);
         $svg.attr('height', `${$svg.height()}px`);
-        var svg = document.getElementById('uniprotFeaturePainter-holder').innerHTML;
+        var svg = document.getElementById('uniprotFeaturePainter-holder')
+          .innerHTML;
         var canvas = document.createElement('canvas');
         canvg(canvas, svg);
         dataURL = canvas.toDataURL();
         $svg.attr('width', `${$svg.width()}px`);
         $svg.attr('height', oldH).attr('width', oldW);
-        this.$imageExported = jQuery('<div id="uniprotFeaturePainter-imageExportedDiv"></div>')
-          .html(`<img id="uniprotFeaturePainter-imageExported" alt="exported image" src="${dataURL}"/>`)
+        this.$imageExported = jQuery(
+          '<div id="uniprotFeaturePainter-imageExportedDiv"></div>'
+        )
+          .html(
+            `<img id="uniprotFeaturePainter-imageExported" alt="exported image" src="${dataURL}"/>`
+          )
           .dialog({
             autoOpen: true,
             title: 'Exported image',
@@ -112,42 +119,45 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
     },
 
     /*
-         * Applies a style, either "centered", "nonOverlapping", or "rows".
-         * @param show
-         *
-         * @example
-         * myPainter.applyStyle("centered");
-         */
+     * Applies a style, either "centered", "nonOverlapping", or "rows".
+     * @param show
+     *
+     * @example
+     * myPainter.applyStyle("centered");
+     */
     applyStyle: function (style) {
-      if ((style != undefined) && ((style == 'centered') || (style == 'nonOverlapping') || (style = 'rows'))) {
+      if (
+        style != undefined &&
+        (style == 'centered' || style == 'nonOverlapping' || (style = 'rows'))
+      ) {
         var config = this.opt.json.configuration;
         this.customize(style, config.horizontalGrid, config.verticalGrid);
       }
     },
 
     /*
-         * Shows/hide the horizontal guide lines.
-         * @param show
-         *
-         * @example
-         * myPainter.showHideHorizontalGrid(true);
-         */
+     * Shows/hide the horizontal guide lines.
+     * @param show
+     *
+     * @example
+     * myPainter.showHideHorizontalGrid(true);
+     */
     showHideHorizontalGrid: function (show) {
-      if ((show != undefined) && ((show == true) || (show == false))) {
+      if (show != undefined && (show == true || show == false)) {
         var config = this.opt.json.configuration;
         this.customize(config.style, show, config.verticalGrid);
       }
     },
 
     /*
-         * Shows/hide the horizontal guide lines.
-         * @param show
-         *
-         * @example
-         * myPainter.showHideVerticalGrid(true);
-         */
+     * Shows/hide the horizontal guide lines.
+     * @param show
+     *
+     * @example
+     * myPainter.showHideVerticalGrid(true);
+     */
     showHideVerticalGrid: function (show) {
-      if ((show != undefined) && ((show == true) || (show == false))) {
+      if (show != undefined && (show == true || show == false)) {
         var config = this.opt.json.configuration;
         this.customize(config.style, config.horizontalGrid, show);
       }

@@ -47,7 +47,11 @@ define([
       country = countryData.lookup.countries({ name: val })[0];
     }
     if (country) {
-      $element.html(`<span title="${country.name}" class="flag-icon flag-icon-${country.alpha2.toLowerCase()}"></span>`);
+      $element.html(
+        `<span title="${
+          country.name
+        }" class="flag-icon flag-icon-${country.alpha2.toLowerCase()}"></span>`
+      );
     } else {
       $element.html(val);
     }
@@ -58,9 +62,15 @@ define([
     await asyncRequire('components/jquery-qrcode/jquery.qrcode.min');
   };
   functions.qrcode.toscreen = function ($element, val, rootVal, options) {
-    options = Object.assign({
-      width: 128, height: 128, text: String(val), render: 'table'
-    }, options);
+    options = Object.assign(
+      {
+        width: 128,
+        height: 128,
+        text: String(val),
+        render: 'table'
+      },
+      options
+    );
     $element.qrcode(options);
   };
 
@@ -90,7 +100,7 @@ define([
   };
   functions.sparkline.toscreen = function ($el, val, rootval, options) {
     var defaultOptions = {
-      width: (options.type === 'discrete' ? 'auto' : '100%'),
+      width: options.type === 'discrete' ? 'auto' : '100%',
       height: '100%'
     };
     options = _.defaults(options, defaultOptions);
@@ -136,14 +146,16 @@ define([
   functions.color = {};
   functions.color.toscreen = function ($element, val) {
     var result = `${'<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
-            '<div style="background-color: '}${val}; width: 100%; height:100%; min-height: 1px; padding:0; margin:0"></div></div>`;
+      '<div style="background-color: '}${val}; width: 100%; height:100%; min-height: 1px; padding:0; margin:0"></div></div>`;
     $element.html(result);
   };
 
   function checkDate(options) {
-    return options.hasOwnProperty('dateFormat')
-            || options.hasOwnProperty('dateFromNow')
-            || options.hasOwnProperty('dateCalendar');
+    return (
+      options.hasOwnProperty('dateFormat') ||
+      options.hasOwnProperty('dateFromNow') ||
+      options.hasOwnProperty('dateCalendar')
+    );
   }
 
   function toDate(value, options) {
@@ -185,12 +197,7 @@ define([
   };
 
   functions.unit = {};
-  functions.unit.toscreen = async function (
-    $element,
-    val,
-    rootVal,
-    options
-  ) {
+  functions.unit.toscreen = async function ($element, val, rootVal, options) {
     const mathjs = await asyncRequire('mathjs');
     let unit = mathjs.unit(String(val.unit));
     unit.value = Number(val.SI);
@@ -208,7 +215,9 @@ define([
         const unitStr = String(val.unit);
         number = unit.toNumber(unitStr);
       }
-      displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '' : unit.formatUnits()}`;
+      displayValue = `${formatNumber(number, options)} ${
+        options.hideUnit ? '' : unit.formatUnits()
+      }`;
     }
 
     $element.html(displayValue);
@@ -240,7 +249,12 @@ define([
   functions.svg = {};
   functions.svg.toscreen = function ($element, val) {
     var dom = $(String(val));
-    var viewbox = [0, 0, parseInt(dom.attr('width')), parseInt(dom.attr('height'))];
+    var viewbox = [
+      0,
+      0,
+      parseInt(dom.attr('width'), 10),
+      parseInt(dom.attr('height'), 10)
+    ];
     dom[0].setAttribute('viewBox', viewbox.join(' '));
     dom.removeAttr('id');
     dom.attr('width', '100%');
@@ -280,7 +294,12 @@ define([
 
   functions.doi = {};
   functions.doi.toscreen = function ($element, value) {
-    return $element.html(value.replace(/^(.*)$/, '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'));
+    return $element.html(
+      value.replace(
+        /^(.*)$/,
+        '<a target="_blank" href="http://dx.doi.org/$1"><img src="bin/logo/doi.png" /></a>'
+      )
+    );
   };
 
   const oclUrl = 'openchemlib/openchemlib-full';
@@ -291,7 +310,13 @@ define([
     noStereoProblem: true
   };
 
-  async function renderOpenChemLibStructure(isMol, $element, idcode, coordinates, options) {
+  async function renderOpenChemLibStructure(
+    isMol,
+    $element,
+    idcode,
+    coordinates,
+    options
+  ) {
     const OCL = await asyncRequire(oclUrl);
     options = $.extend({}, defaultOpenChemLibStructureOptions, options);
 
@@ -309,13 +334,25 @@ define([
       canEl.height = h - 5;
       canEl.width = w;
       $element.html(can);
-      OCL.StructureView.drawStructure(id, String(idcode), String(coordinates), options);
+      OCL.StructureView.drawStructure(
+        id,
+        String(idcode),
+        String(coordinates),
+        options
+      );
     } else {
       let mol = idcode;
       if (!isMol) {
         mol = OCL.Molecule.fromIDCode(idcode, coordinates);
       }
-      $element.html(mol.toSVG(options.width || $element.width(), options.height || $element.height() - 5, null, options));
+      $element.html(
+        mol.toSVG(
+          options.width || $element.width(),
+          options.height || $element.height() - 5,
+          null,
+          options
+        )
+      );
     }
   }
 
@@ -345,12 +382,23 @@ define([
         writable: true
       });
     }
-    return renderOpenChemLibStructure(false, $element, String(val), String(root.coordinates), options);
+    return renderOpenChemLibStructure(
+      false,
+      $element,
+      String(val),
+      String(root.coordinates),
+      options
+    );
   };
   functions.actelionid = functions.oclid;
 
   functions.mol2d = {};
-  functions.mol2d.toscreen = async function ($element, molfile, molfileRoot, options) {
+  functions.mol2d.toscreen = async function (
+    $element,
+    molfile,
+    molfileRoot,
+    options
+  ) {
     const OCL = await asyncRequire(oclUrl);
     const mol = OCL.Molecule.fromMolfile(String(molfile));
     // we will not make rendering of an empty molecule
@@ -413,7 +461,8 @@ define([
       });
 
       // overlap sub and sup
-      value = value.replace(/(<sub>[0-9.]+<\/sub>)(<sup>[0-9]*[+‒]<\/sup>)/g,
+      value = value.replace(
+        /(<sub>[0-9.]+<\/sub>)(<sup>[0-9]*[+‒]<\/sup>)/g,
         '<span class="superimpose">$2$1</span>'
       );
 
@@ -477,12 +526,21 @@ define([
     var title = options && options.title;
     title = title || 'Download resource';
 
-    $element.html(`<a download${options.filename ? (`=${options.filename}`) : ''} title="${title}" href="${value}">⤵</a>`);
+    $element.html(
+      `<a download${
+        options.filename ? `=${options.filename}` : ''
+      } title="${title}" href="${value}">⤵</a>`
+    );
   };
 
   functions.openlink = {};
   functions.openlink.toscreen = function ($element, value) {
-    $element.html(value.replace(/^(.*)$/, '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'));
+    $element.html(
+      value.replace(
+        /^(.*)$/,
+        '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'
+      )
+    );
   };
 
   functions.boolean = {};
@@ -490,10 +548,8 @@ define([
     if (value instanceof DataBoolean) {
       value = value.get();
     }
-    if (value)
-      $element.html('<span style="color: green;">&#10004;</span>');
-    else
-      $element.html('<span style="color: red;">&#10008;</span>');
+    if (value) $element.html('<span style="color: green;">&#10004;</span>');
+    else $element.html('<span style="color: red;">&#10008;</span>');
   };
 
   functions.gradient = {};
@@ -526,29 +582,34 @@ define([
     for (; i < l; total += value[i++][0]);
 
     var start = 0,
-      end, color;
+      end,
+      color;
     for (i = 0; i < l; i++) {
-      end = start + value[i][0] / total * 100;
+      end = start + (value[i][0] / total) * 100;
       color = value[i][1];
       gradient += `, ${color} ${start}%, ${color} ${end}%`;
       start = end;
     }
     gradient += ')';
 
-    div.css({
-      height: '100%',
-      width: '100%',
-      minHeight: '1px'
-    }).css('background', gradient);
+    div
+      .css({
+        height: '100%',
+        width: '100%',
+        minHeight: '1px'
+      })
+      .css('background', gradient);
     $element.html(div);
   };
 
   functions.indicator = {};
   functions.indicator.init = function () {
-    var tooltip = $('<div class="ci-tooltip"></div>').css({
-      display: 'none',
-      opacity: 0
-    }).appendTo('#ci-visualizer');
+    var tooltip = $('<div class="ci-tooltip"></div>')
+      .css({
+        display: 'none',
+        opacity: 0
+      })
+      .appendTo('#ci-visualizer');
     var current;
 
     var $modulesGrid = $('#modules-grid');
@@ -556,11 +617,13 @@ define([
       current = setTimeout(function () {
         var target = $(e.target);
         var offset = target.offset();
-        tooltip.css({
-          left: offset.left,
-          top: offset.top,
-          display: 'block'
-        }).text(target.attr('data-tooltip'));
+        tooltip
+          .css({
+            left: offset.left,
+            top: offset.top,
+            display: 'block'
+          })
+          .text(target.attr('data-tooltip'));
         tooltip.animate({
           opacity: 1
         });
@@ -580,7 +643,8 @@ define([
     if (!Array.isArray(value)) {
       return;
     }
-    var html = '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
+    var html =
+      '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
 
     // if the first element of the array is a number ... we need to convert the array.
 
@@ -604,32 +668,24 @@ define([
       totalSize += value[i].size;
     }
 
-
     for (var i = 0; i < length; i++) {
       var element = value[i];
       var span = $('<td></td>').css({
         minHeight: '1px',
-        width: `${100 * element.size / totalSize}%`,
+        width: `${(100 * element.size) / totalSize}%`,
         border: 'none',
         overflow: 'hidden',
-        'max-width': `${100 * element.size / totalSize}%`,
+        'max-width': `${(100 * element.size) / totalSize}%`,
         'white-space': 'nowrap',
         'text-overflow': 'ellipsis'
       });
-      if (element.bgcolor)
-        span.css('background-color', element.bgcolor);
-      if (element.color)
-        span.css('color', element.color);
-      if (element.text)
-        span.append(element.text);
-      if (element.class)
-        span.addClass(element.class);
-      if (element.icon)
-        span.prepend(`<i class="fa fa-${element.icon}"></i>`);
-      if (element.css)
-        span.css(element.css);
-      if (element.tooltip)
-        span.attr('data-tooltip', element.tooltip);
+      if (element.bgcolor) span.css('background-color', element.bgcolor);
+      if (element.color) span.css('color', element.color);
+      if (element.text) span.append(element.text);
+      if (element.class) span.addClass(element.class);
+      if (element.icon) span.prepend(`<i class="fa fa-${element.icon}"></i>`);
+      if (element.css) span.css(element.css);
+      if (element.tooltip) span.attr('data-tooltip', element.tooltip);
       html += span.get(0).outerHTML;
     }
     html += '</tr></table>';
@@ -686,7 +742,10 @@ define([
       type = object.getType().toLowerCase();
     }
     if (!functions[type]) {
-      Util.warnOnce(`no-typerenderer-${type}`, `No renderer found for type ${type}`);
+      Util.warnOnce(
+        `no-typerenderer-${type}`,
+        `No renderer found for type ${type}`
+      );
       $element.html(String(value));
       return;
     }

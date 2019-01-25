@@ -1,12 +1,21 @@
 'use strict';
+
 /* global EmbeddedSVGEdit*/
 require.config({
   paths: {
     svgsanitize: 'lib/svg-edit/sanitize'
   },
   shim: {
-    svgsanitize: ['lib/svg-edit/svgedit', 'lib/svg-edit/browser', 'lib/svg-edit/svgutils'],
-    'lib/svg-edit/svgutils': ['lib/svg-edit/browser', 'lib/svg-edit/svgtransformlist', 'lib/svg-edit/units'],
+    svgsanitize: [
+      'lib/svg-edit/svgedit',
+      'lib/svg-edit/browser',
+      'lib/svg-edit/svgutils'
+    ],
+    'lib/svg-edit/svgutils': [
+      'lib/svg-edit/browser',
+      'lib/svg-edit/svgtransformlist',
+      'lib/svg-edit/units'
+    ],
     'lib/svg-edit/svgtransformlist': ['lib/svg-edit/browser']
   }
 });
@@ -41,7 +50,6 @@ define([
       saveAndTrigger(data);
     }
 
-
     if (args[0]._configCheckBox('editable', 'isEditable')) {
       setTimeout(function () {
         args[0].svgCanvas.getSvgString()(handleSvgData);
@@ -49,13 +57,25 @@ define([
     } else {
       var svgcode = args[0].dom.clone();
       var viewbox = svgcode[0].getAttribute('viewBox').split(' ');
-      svgcode.attr('width', viewbox[2]).attr('height', viewbox[3]).removeAttr('viewBox');
-      svgcode = svgcode.wrap('<p/>').parent().html();
+      svgcode
+        .attr('width', viewbox[2])
+        .attr('height', viewbox[3])
+        .removeAttr('viewBox');
+      svgcode = svgcode
+        .wrap('<p/>')
+        .parent()
+        .html();
       saveAndTrigger(svgcode);
     }
   }, 1000);
 
-  var animationTags = ['animate', 'set', 'animateMotion', 'animateColor', 'animateTransform'];
+  var animationTags = [
+    'animate',
+    'set',
+    'animateMotion',
+    'animateColor',
+    'animateTransform'
+  ];
   var defaultAnimAttributes = {
     begin: 'indefinite',
     options: {
@@ -95,9 +115,11 @@ define([
         if (this._configCheckBox('editable', 'isEditable')) {
           if (this.dom) this.dom.remove();
           this.svgCanvas = null;
-          this.dom = $(`<iframe src="lib/svg-edit/svg-editor.html?extensions=ext-xdomain-messaging.js${
-            window.location.href.replace(/\?(.*)$/, '&$1') // Append arguments to this file onto the iframe
-          }"></iframe>`);
+          this.dom = $(
+            `<iframe src="lib/svg-edit/svg-editor.html?extensions=ext-xdomain-messaging.js${
+              window.location.href.replace(/\?(.*)$/, '&$1') // Append arguments to this file onto the iframe
+            }"></iframe>`
+          );
 
           this.module.getDomContent().html(this.dom);
 
@@ -105,7 +127,8 @@ define([
             var frame = that.dom[0];
             that.svgCanvas = new EmbeddedSVGEdit(frame);
             // Hide main button, as we will be controlling new, load, save, etc. from the host document
-            that.iframeDoc = frame.contentDocument || frame.contentWindow.document;
+            that.iframeDoc =
+              frame.contentDocument || frame.contentWindow.document;
             that.svgEditor = frame.contentWindow.svgEditor;
             frame.contentWindow.svgedit.options = {};
 
@@ -124,11 +147,14 @@ define([
           return Renderer.render(domContent, {
             type: 'svg',
             value: svgCode
-          }).catch(function () {
-            domContent.html('<svg></svg>');
-          }).then(function () {
-            that.dom = domContent.find('svg');
-          }).then(resolve);
+          })
+            .catch(function () {
+              domContent.html('<svg></svg>');
+            })
+            .then(function () {
+              that.dom = domContent.find('svg');
+            })
+            .then(resolve);
         }
       }).then(() => {
         this.modifySvgFromArray(this.queuedSvgModifier, true);
@@ -176,21 +202,25 @@ define([
 
       var thisDefault = {};
       for (var k in anim) {
-        if (animationReserved.indexOf(k) === -1) thisDefault[k] = _.cloneDeep(anim[k]);
+        if (animationReserved.indexOf(k) === -1)
+          thisDefault[k] = _.cloneDeep(anim[k]);
       }
       for (let i = 0; i < anim.attributes.length; i++) {
         anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
 
         $svgEl.each(function () {
-          var animation = document.createElementNS('http://www.w3.org/2000/svg', anim.tag);
+          var animation = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            anim.tag
+          );
           for (var attribute in anim.attributes[i]) {
             var attrValue = anim.attributes[i][attribute];
-            attrValue = (typeof attrValue === 'function') ? attrValue.call() : attrValue;
+            attrValue =
+              typeof attrValue === 'function' ? attrValue.call() : attrValue;
             animation.setAttributeNS(null, attribute, attrValue);
           }
           $(this).append(animation);
         });
-
 
         // get the animations we just appended
         var $animations = $svgEl.children(':last-child');
@@ -203,7 +233,10 @@ define([
           // Persist works only for <animate/>
           if (anim.options.persistOnEnd) {
             if (anim.tag === 'animate') {
-              $svgEl.attr(this.getAttribute('attributeName'), this.getAttribute('to'));
+              $svgEl.attr(
+                this.getAttribute('attributeName'),
+                this.getAttribute('to')
+              );
             } else {
               Debug.warn('Could not persist animation');
             }
@@ -228,13 +261,15 @@ define([
         });
         this.addEventListener('beginEvent', function () {
           if (anim.options.clearAnimationTagsBeforeBegin) {
-            that.$getAnimationTags($svgEl).not($allAnimations).remove();
+            that
+              .$getAnimationTags($svgEl)
+              .not($allAnimations)
+              .remove();
             highlightCount[highlightId] = 0;
             blockHighlight[highlightId] = true;
           }
         });
-        if (this.getAttribute('begin') === 'indefinite')
-          this.beginElement();
+        if (this.getAttribute('begin') === 'indefinite') this.beginElement();
       });
     },
 
@@ -298,8 +333,7 @@ define([
       var selector = obj.selector;
       if (!selector) return;
 
-      var doHighlight = (typeof obj._highlight === 'string');
-
+      var doHighlight = typeof obj._highlight === 'string';
 
       if (obj.info) {
         that.module._data = obj.info;
@@ -332,7 +366,9 @@ define([
 
       if (obj.attributes && !obj.animation) {
         // Case 1)
-        if (_.some(obj.attributes, (attribute) => typeof attribute === 'function')) {
+        if (
+          _.some(obj.attributes, (attribute) => typeof attribute === 'function')
+        ) {
           this.setAttributesOneByOne($svgEl, obj.attributes);
         } else {
           // Use straightforward solution
@@ -363,8 +399,7 @@ define([
       }
 
       // We don't set callbacks on secondary calls
-      if (!isPrimaryCall)
-        return;
+      if (!isPrimaryCall) return;
 
       function onMouseEnter() {
         $(this).css('cursor', 'pointer');
@@ -421,12 +456,14 @@ define([
       // Set mouse event callbacks
       (function ($svgEl) {
         // We override the previous varout callback unconditionally
-        $svgEl.off('mouseenter.svgeditor.varout')
+        $svgEl
+          .off('mouseenter.svgeditor.varout')
           .off('mouseleave.svgeditor.varout')
           .off('click.svgeditor.varout');
 
         if (obj.info) {
-          $svgEl.on('mouseenter.svgeditor.varout', onMouseEnter)
+          $svgEl
+            .on('mouseenter.svgeditor.varout', onMouseEnter)
             .on('mouseleave.svgeditor.varout', onMouseLeave)
             .on('click.svgeditor.varout', onMouseClick);
         }
@@ -448,9 +485,12 @@ define([
     },
 
     getHighlightId: function ($svgEl) {
-      $svgEl.map(function () {
-        return this.getAttribute('id');
-      }).toArray().join(',');
+      $svgEl
+        .map(function () {
+          return this.getAttribute('id');
+        })
+        .toArray()
+        .join(',');
     },
 
     getDom: function () {
@@ -468,19 +508,34 @@ define([
     },
 
     _configCheckBox: function (config, option) {
-      return this.module.getConfiguration(config) && _.find(this.module.getConfiguration(config), (val) => val === option);
+      return (
+        this.module.getConfiguration(config) &&
+        _.find(this.module.getConfiguration(config), (val) => val === option)
+      );
     },
 
     memorizeAnim: function (anim, id) {
-      if (!id || !anim.attributes || !anim.attributes.to || !anim.attributes.attributeName) return;
+      if (
+        !id ||
+        !anim.attributes ||
+        !anim.attributes.to ||
+        !anim.attributes.attributeName
+      )
+        return;
       animMemory[id] = animMemory[id] || {};
-      animMemory[id][anim.attributes.attributeName] = animMemory[id][anim.attributes.attributeName] || {};
+      animMemory[id][anim.attributes.attributeName] =
+        animMemory[id][anim.attributes.attributeName] || {};
       animMemory[id][anim.attributes.attributeName].to = anim.attributes.to;
     },
 
     rememberAnim: function (anim, id) {
       if (!anim.attributes || anim.attributes.from || !id) return;
-      if (!animMemory[id] || !animMemory[id][anim.attributes.attributeName] || !animMemory[id][anim.attributes.attributeName].to) return;
+      if (
+        !animMemory[id] ||
+        !animMemory[id][anim.attributes.attributeName] ||
+        !animMemory[id][anim.attributes.attributeName].to
+      )
+        return;
       anim.attributes.from = animMemory[id][anim.attributes.attributeName].to;
     },
 

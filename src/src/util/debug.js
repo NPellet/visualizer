@@ -27,12 +27,11 @@ define(['loglevel'], function (log) {
   var debugLevel = Levels.TRACE;
 
   var Debug = {
-
     Levels: Levels,
 
     setDebugLevel: function (level) {
-      level = parseInt(level);
-      if (isNaN(level) || (level < -1)) {
+      level = parseInt(level, 10);
+      if (isNaN(level) || level < -1) {
         return;
       }
       if (level > 4) {
@@ -64,7 +63,6 @@ define(['loglevel'], function (log) {
     },
 
     Timer: Timer
-
   };
 
   function formatTime(time, format) {

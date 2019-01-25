@@ -1,4 +1,5 @@
 'use strict';
+
 define([
   'require',
   'modules/default/defaultview',

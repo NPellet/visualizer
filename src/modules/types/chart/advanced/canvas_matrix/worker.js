@@ -26,34 +26,30 @@ function getColorFromValue(value) {
 }
 
 function getColorBetween(value, color1, color2, color1Val, color2Val) {
-  /* var color1 = getRGB(color1);
-     var color2 = getRGB(color2);
-     */
   // Between 0 and 1
   var ratio = (value - color1Val) / (color2Val - color1Val);
 
   return [
-    parseInt(ratio * (color2[0] - color1[0]) + color1[0]),
-    parseInt(ratio * (color2[1] - color1[1]) + color1[1]),
-    parseInt(ratio * (color2[2] - color1[2]) + color1[2]),
-    parseInt(ratio * (color2[3] - color1[3]) + color1[3])
+    parseInt(ratio * (color2[0] - color1[0]) + color1[0], 10),
+    parseInt(ratio * (color2[1] - color1[1]) + color1[1], 10),
+    parseInt(ratio * (color2[2] - color1[2]) + color1[2], 10),
+    parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10)
   ];
-  // return [parseInt(ratio * Math.abs(color2[0] - color1[0]) + Math.min(color2[0], color1[0])), parseInt(ratio * Math.abs(color2[1] - color1[1]) + Math.min(color2[1], color1[1])), parseInt(ratio * Math.abs(color2[2] - color1[2]) + Math.min(color2[2], color1[2]))];
 }
 
 function getRGB(color) {
   if (!color) return false;
   if (color.length == 7) {
     return [
-      parseInt(`0x${color.substring(1, 3)}`),
-      parseInt(`0x${color.substring(3, 5)}`),
-      parseInt(`0x${color.substring(5, 7)}`)
+      parseInt(`0x${color.substring(1, 3)}`, 16),
+      parseInt(`0x${color.substring(3, 5)}`, 16),
+      parseInt(`0x${color.substring(5, 7)}`, 16)
     ];
   } else if (color.length == 4) {
     return [
-      parseInt(`0x${color.substring(1, 2)}`),
-      parseInt(`0x${color.substring(2, 3)}`),
-      parseInt(`0x${color.substring(3, 4)}`)
+      parseInt(`0x${color.substring(1, 2)}`, 16),
+      parseInt(`0x${color.substring(2, 3)}`, 16),
+      parseInt(`0x${color.substring(3, 4)}`, 16)
     ];
   }
 }

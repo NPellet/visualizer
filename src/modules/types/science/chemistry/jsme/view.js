@@ -140,7 +140,6 @@ define([
 
         let molfile = String(moduleValue.get());
         if (molfile.includes('V3000')) {
-          console.log('Convering V3000 to V2000');
           let that = this;
           require(['openchemlib/openchemlib-core'], function (OCL) {
             let mol = OCL.Molecule.fromMolfile(molfile);

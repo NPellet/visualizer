@@ -1,12 +1,11 @@
 'use strict';
+
 /* global dhtmlXChart*/
 define([
   'modules/default/defaultview',
-  'src/util/datatraversing',
-  'src/util/api',
   'src/util/util',
   'lib/dhtmlxchart/dhtmlxchart'
-], function (Default, Traversing, API, Util) {
+], function (Default, Util) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {

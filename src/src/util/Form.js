@@ -33,24 +33,27 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
       if (!this.dom) return;
       const inputs = this.dom.find('input,textarea,select');
       let radios = [];
-      const out = inputs.map(function () {
-        const { name, value, type } = this;
-        return {
-          name,
-          value,
-          type,
-          transform: getTransform(this, 'forward'),
-          dom: this
-        };
-      }).toArray().filter((o) => {
-        if (!o.name) return false;
-        // Radio buttons need special treatment
-        if (o.type === 'radio') {
-          radios.push(o);
-          return false;
-        }
-        return true;
-      });
+      const out = inputs
+        .map(function () {
+          const { name, value, type } = this;
+          return {
+            name,
+            value,
+            type,
+            transform: getTransform(this, 'forward'),
+            dom: this
+          };
+        })
+        .toArray()
+        .filter((o) => {
+          if (!o.name) return false;
+          // Radio buttons need special treatment
+          if (o.type === 'radio') {
+            radios.push(o);
+            return false;
+          }
+          return true;
+        });
 
       const groupedRadios = _.groupBy(radios, (radio) => radio.name);
       for (let name in groupedRadios) {
@@ -86,7 +89,6 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
       return out;
     }
 
-
     // Returns a DataObject with the form data
     // if merge is true it edits the previous data object
     getData(merge) {
@@ -100,7 +102,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
       for (let i = 0; i < f.length; i++) {
         const jpath = f[i].name.split('.').map((el) => {
           if (el.match(/^\d+$/)) {
-            return Number.parseInt(el);
+            return Number.parseInt(el, 10);
           }
           return el;
         });
@@ -153,13 +155,15 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
           this.dom.find(`input[name="${name}"]`).each(function () {
             this.checked = false;
           });
-          this.dom.find(`input[name="${name}"][value="${transform(value)}"]`).each(function () {
-            this.checked = true;
-          });
+          this.dom
+            .find(`input[name="${name}"][value="${transform(value)}"]`)
+            .each(function () {
+              this.checked = true;
+            });
           break;
         case 'select-one':
           if (!transform(value)) return;
-          // fallthrough
+        // fallthrough
         default:
           el.value = transform(value);
           break;
@@ -188,7 +192,6 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
     }
   }
 
-
   function onChange(ctx) {
     return function (e) {
       if (ctx.changeCb) ctx.changeCb(e);
@@ -202,14 +205,16 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
     };
   }
 
-
   function getTransform(dom, type) {
-    if (type !== 'forward' && type !== 'backward') throw new TypeError('Type should be "forward" or "backward"');
+    if (type !== 'forward' && type !== 'backward')
+      throw new TypeError('Type should be "forward" or "backward"');
     const transform = dom.getAttribute('data-transform');
     let transformFn;
     if (transform) {
       if (!dataTransform[transform]) {
-        Debug.warn(`util/Form: invalid attribute value for data-transform: ${transform} (transform not found)`);
+        Debug.warn(
+          `util/Form: invalid attribute value for data-transform: ${transform} (transform not found)`
+        );
       } else {
         transformFn = dataTransform[transform][type];
       }
@@ -234,4 +239,3 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
 
   return Form;
 });
-

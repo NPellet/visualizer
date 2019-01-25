@@ -1152,9 +1152,9 @@ define([
         var result = '';
         for (var i = 0; i < num.length; i++) {
           if (num[i] === '2' || num[i] === '3') {
-            result += String.fromCharCode(176 + parseInt(num[i]));
+            result += String.fromCharCode(176 + parseInt(num[i], 10));
           } else if (num[i] >= '0' && num[i] < '9') {
-            result += String.fromCharCode(8304 + parseInt(num[i]));
+            result += String.fromCharCode(8304 + parseInt(num[i], 10));
           } else if (num[i] === '-') {
             result += String.fromCharCode(8315);
           }

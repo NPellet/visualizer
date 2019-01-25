@@ -55,7 +55,6 @@ define([
   API.setRepositoryHighlights(RepositoryHighlight);
   API.setRepositoryActions(RepositoryActions);
 
-
   function doView(view) {
     DataObject.recursiveTransform(view, false);
 
@@ -133,17 +132,25 @@ define([
       loadMainVariables(),
       configureRequirejs(),
       loadCustomModules()
-    ]).then(doInitScript).then(function () {
-      ActionManager.viewHasChanged(view);
-      ModuleFactory.getModules().forEach(function (module) {
-        if (module.controller && typeof module.controller.onGlobalPreferenceChange === 'function') {
-          module.controller.onGlobalPreferenceChange();
+    ])
+      .then(doInitScript)
+      .then(
+        function () {
+          ActionManager.viewHasChanged(view);
+          ModuleFactory.getModules().forEach(function (module) {
+            if (
+              module.controller &&
+              typeof module.controller.onGlobalPreferenceChange === 'function'
+            ) {
+              module.controller.onGlobalPreferenceChange();
+            }
+          });
+          _modulesSet.then(checkCustomModules, checkCustomModules);
+        },
+        function (e) {
+          Debug.error('View loading problem', e, e.stack);
         }
-      });
-      _modulesSet.then(checkCustomModules, checkCustomModules);
-    }, function (e) {
-      Debug.error('View loading problem', e, e.stack);
-    });
+      );
 
     function doInitScript() {
       if (view.init_script) {
@@ -182,10 +189,14 @@ define([
         var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
         var module = modulesById[moduleId];
         if (!module) {
-          Debug.warn(`Your view contains an url to a module (id: ${moduleId}) that does not correspond to any loaded modules`);
+          Debug.warn(
+            `Your view contains an url to a module (id: ${moduleId}) that does not correspond to any loaded modules`
+          );
           continue;
         }
-        if (module.url.replace(/\/$/, '') !== v.modules[j].url.replace(/\/$/, '')) {
+        if (
+          module.url.replace(/\/$/, '') !== v.modules[j].url.replace(/\/$/, '')
+        ) {
           changed = true;
           v.modules[j].url = module.url;
         }
@@ -196,7 +207,16 @@ define([
     }
 
     function loadCustomModules() {
-      var modules = view.getChildSync(['custom_filters', 0, 'sections', 'modules', 0, 'groups', 'modules', 0]);
+      var modules = view.getChildSync([
+        'custom_filters',
+        0,
+        'sections',
+        'modules',
+        0,
+        'groups',
+        'modules',
+        0
+      ]);
       if (!modules) return Promise.resolve();
       modules = _.filter(modules, function (m) {
         return m && m.url;
@@ -244,7 +264,16 @@ define([
             }
           }
         }
-        var filtersLib = view.getChildSync('custom_filters', 0, 'sections', 'filtersLib', 0, 'groups', 'filters', 0);
+        var filtersLib = view.getChildSync(
+          'custom_filters',
+          0,
+          'sections',
+          'filtersLib',
+          0,
+          'groups',
+          'filters',
+          0
+        );
         if (filtersLib) {
           filtersLib = _.filter(filtersLib, function (v) {
             return v && v.name && v.file;
@@ -275,13 +304,15 @@ define([
           if (entryVar.varname) {
             // Defined by an URL
             if (entryVar.url) {
-              fetching.push(UrlData.get(entryVar.url, entryVar.timeout | 0, {
-                Accept: 'application/json'
-              }).then(function (v) {
-                var varname = entryVar.varname;
-                data.setChild([varname], v, true);
-                return API.setVariable(varname, false, [varname]);
-              }));
+              fetching.push(
+                UrlData.get(entryVar.url, entryVar.timeout | 0, {
+                  Accept: 'application/json'
+                }).then(function (v) {
+                  var varname = entryVar.varname;
+                  data.setChild([varname], v, true);
+                  return API.setVariable(varname, false, [varname]);
+                })
+              );
             } else if (!entryVar.jpath) {
               // If there is no jpath, we assume the variable is an object and we add it in the data stack
               // Note: if that's not an object, we will have a problem...
@@ -292,7 +323,9 @@ define([
                 entryVar.jpath.shift();
               }
 
-              fetching.push(API.setVariable(entryVar.varname, false, entryVar.jpath));
+              fetching.push(
+                API.setVariable(entryVar.varname, false, entryVar.jpath)
+              );
             }
           }
         })(i);
@@ -322,8 +355,7 @@ define([
       var form = new Form();
 
       form.init({
-        onValueChanged: function (value) {
-        }
+        onValueChanged: function (value) {}
       });
 
       form.setStructure({
@@ -446,7 +478,8 @@ define([
                     type: 'combo',
                     title: 'File type',
                     options: [
-                      { key: 'worker', title: 'WebWorker' }, {
+                      { key: 'worker', title: 'WebWorker' },
+                      {
                         key: 'amd',
                         title: 'Asynchronously loaded module'
                       }
@@ -504,7 +537,6 @@ define([
                     }
                   }
                 }
-
               },
               filters: {
                 options: {
@@ -564,7 +596,6 @@ define([
                     type: 'jscode',
                     title: 'Javascript to execute'
                   }
-
                 }
               }
             }
@@ -612,7 +643,10 @@ define([
         data = new DataArray(value.sections.cfg[0].groups.tablevars[0], true);
 
         view.variables = data;
-        view.aliases = new DataArray(value.sections.cfg[0].groups.aliases[0], true);
+        view.aliases = new DataArray(
+          value.sections.cfg[0].groups.aliases[0],
+          true
+        );
         view.init_script = value.sections.init_script;
         view.custom_filters = value.sections.custom_filters;
         view.requirejs = value.sections.requirejs;
@@ -637,7 +671,6 @@ define([
     });
   }
 
-
   return {
     init: function (urls, type) {
       // Check that browser is compatible
@@ -659,10 +692,9 @@ define([
         Util.loadCss(css);
       });
 
-
       var debugSet;
       if (urls.debug) {
-        Debug.setDebugLevel(parseInt(urls.debug));
+        Debug.setDebugLevel(parseInt(urls.debug, 10));
         debugSet = true;
       }
 
@@ -677,17 +709,22 @@ define([
         var visualizerDiv = $('#ci-visualizer');
 
         if (errorMessage) {
-          visualizerDiv.append(`<div id="browser-compatibility">${errorMessage}</div>`);
+          visualizerDiv.append(
+            `<div id="browser-compatibility">${errorMessage}</div>`
+          );
           return;
         }
 
-
-        visualizerDiv.html('<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>');
+        visualizerDiv.html(
+          '<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>'
+        );
 
         var configJson = urls.config || visualizerDiv.attr('data-ci-config');
         if (!configJson) {
           if (visualizerDiv.attr('config')) {
-            Debug.warn('config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.');
+            Debug.warn(
+              'config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.'
+            );
             configJson = visualizerDiv.attr('config');
           } else {
             configJson = require.toUrl('usr/config/default.json');
@@ -721,72 +758,78 @@ define([
             _modulesSet = ModuleFactory.setModules(cfgJson.modules);
           }
 
-
           // Set the filters
           API.setAllFilters(cfgJson.filters || []);
-        }).fail(function (a, b) {
-          Debug.error(`Error loading the config : ${b}`);
-        }).always(function () {
-          require(['usr/datastructures/filelist'], function () {
-            Context.init(document.getElementById('modules-grid'));
-            if (!Versioning.isViewLocked()) {
-              Context.listen(Context.getRootDom(), [
-                [
-                  '<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
-                  function () {
-                    configureEntryPoint();
-                  }
-                ]
-              ]
-              );
-              Context.listen(Context.getRootDom(), [
-                [
-                  '<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
-                  function () {
-                    document.location.reload();
-                  }
-                ]
-              ]
-              );
-            }
-
-            Versioning.setViewLoadCallback(doView);
-            Versioning.setDataLoadCallback(doData);
-
-            Versioning.setViewJSON({});
-            Versioning.setDataJSON({});
-
-            Versioning.setURLType(type);
-            var $visualizer = $('#ci-visualizer');
-
-            var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
-            if (!viewURL && $visualizer.attr('viewURL')) {
-              Debug.warn('viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.');
-              viewURL = $visualizer.attr('viewURL');
-            }
-
-            var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
-            if (!dataURL && $visualizer.attr('dataURL')) {
-              Debug.warn('dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.');
-              dataURL = $visualizer.attr('dataURL');
-            }
-
-            var viewInfo = {
-              view: {
-                urls: urls.views,
-                branch: urls.viewBranch,
-                url: viewURL
-              },
-              data: {
-                urls: urls.results,
-                branch: urls.resultBranch,
-                url: dataURL
+        })
+          .fail(function (a, b) {
+            Debug.error(`Error loading the config : ${b}`);
+          })
+          .always(function () {
+            require(['usr/datastructures/filelist'], function () {
+              Context.init(document.getElementById('modules-grid'));
+              if (!Versioning.isViewLocked()) {
+                Context.listen(Context.getRootDom(), [
+                  [
+                    '<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
+                    function () {
+                      configureEntryPoint();
+                    }
+                  ]
+                ]);
+                Context.listen(Context.getRootDom(), [
+                  [
+                    '<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
+                    function () {
+                      document.location.reload();
+                    }
+                  ]
+                ]);
               }
-            };
-            window.history.replaceState({ type: 'viewchange', value: viewInfo }, '');
-            Versioning.switchView(viewInfo, false);
+
+              Versioning.setViewLoadCallback(doView);
+              Versioning.setDataLoadCallback(doData);
+
+              Versioning.setViewJSON({});
+              Versioning.setDataJSON({});
+
+              Versioning.setURLType(type);
+              var $visualizer = $('#ci-visualizer');
+
+              var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
+              if (!viewURL && $visualizer.attr('viewURL')) {
+                Debug.warn(
+                  'viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.'
+                );
+                viewURL = $visualizer.attr('viewURL');
+              }
+
+              var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
+              if (!dataURL && $visualizer.attr('dataURL')) {
+                Debug.warn(
+                  'dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.'
+                );
+                dataURL = $visualizer.attr('dataURL');
+              }
+
+              var viewInfo = {
+                view: {
+                  urls: urls.views,
+                  branch: urls.viewBranch,
+                  url: viewURL
+                },
+                data: {
+                  urls: urls.results,
+                  branch: urls.resultBranch,
+                  url: dataURL
+                }
+              };
+              window.history.replaceState(
+                { type: 'viewchange', value: viewInfo },
+                ''
+              );
+              Versioning.switchView(viewInfo, false);
+            });
           });
-        });
       }
     }
   };
