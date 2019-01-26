@@ -26,6 +26,8 @@ define([
         'storeInView',
         'yes'
       );
+      this.module.currentWord = ''; // used for shortcut expansion
+      this.module.shortcuts = [];
       this.valueChanged = _.debounce(function () {
         that.module.controller.valueChanged.apply(
           that.module.controller,
@@ -58,6 +60,7 @@ define([
           `);
 
           this.dom = $('<div class="quill_wrapper" />');
+          this.dom.bind('keyup', (event) => this._listenForShortcuts(event));
           this.$content.appendTo(this.dom);
 
           this.module.getDomContent().html(this.dom);
@@ -109,6 +112,16 @@ define([
         this.clear();
         this.mode = 'quill';
         this.instance.setContents(moduleValue.get());
+      },
+      shortcuts: function (value) {
+        if (!value || value.length < 1) {
+          this.module.shortcuts = [];
+        }
+        value = JSON.parse(JSON.stringify(value));
+        if (!Array.isArray(value)) return;
+        this.module.shortcuts = value.filter(
+          (entry) => entry.key && (entry.html || entry.text)
+        );
       }
     },
     blank: {
@@ -117,6 +130,9 @@ define([
       },
       quill: function () {
         this.clear();
+      },
+      shortcuts: function () {
+        this.module.shortcuts = [];
       }
     },
     clear() {
@@ -143,6 +159,32 @@ define([
           range.index,
           div.innerHTML
         );
+      }
+    },
+    _listenForShortcuts: function (event) {
+      if (!this.module.shortcuts || this.module.shortcuts.length < 1) return;
+      if (event.key < 'a' || event.key > 'z') {
+        let matching = this.module.shortcuts.filter(
+          (entry) => entry.key === this.module.currentWord
+        )[0];
+        this.module.currentWord = '';
+        if (!matching) return;
+        let selection = this.instance.getSelection();
+        let keyLength = matching.key.length;
+        let insertPosition = selection.index - keyLength - 1;
+        this.instance.deleteText(insertPosition, keyLength);
+
+        if (matching.text) {
+          this.instance.insertText(insertPosition, matching.text);
+        } else if (matching.html) {
+          this.instance.clipboard.dangerouslyPasteHTML(
+            insertPosition,
+            matching.html
+          );
+          this.instance.setSelection(this.instance.getSelection().index + 1, 0);
+        }
+      } else {
+        this.module.currentWord += event.key;
       }
     }
   });

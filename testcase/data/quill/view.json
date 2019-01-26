@@ -1,5 +1,5 @@
 {
-  "version": "2.100.1-0",
+  "version": "2.102.5-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -54,6 +54,10 @@
         {
           "rel": "html",
           "name": "test"
+        },
+        {
+          "rel": "shortcuts",
+          "name": "shortcuts"
         }
       ],
       "actions_in": [
@@ -327,7 +331,7 @@
           },
           "size": {
             "width": 61,
-            "height": 21
+            "height": 17
           },
           "zIndex": 0,
           "display": true,
@@ -531,6 +535,88 @@
               "icon": "",
               "action": "",
               "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": [
+                "[{\"key\":\"abc\",\"text\":\"the abc string\"},{\"key\":\"def\",\"html\":\"the <b>DEF</b> html\"}]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 63,
+            "top": 56
+          },
+          "size": {
+            "width": 56,
+            "height": 17
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "shortcuts"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
             }
           ]
         ],

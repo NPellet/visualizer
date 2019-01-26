@@ -20,6 +20,9 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     },
     html: {
       label: 'A string with html'
+    },
+    shortcuts: {
+      label: 'An array of key / text / html object'
     }
   };
 
@@ -30,7 +33,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     }
   };
 
-  Controller.prototype.variablesIn = ['html', 'quill'];
+  Controller.prototype.variablesIn = ['html', 'quill', 'shortcuts'];
 
   Controller.prototype.onRemove = function () {};
 
