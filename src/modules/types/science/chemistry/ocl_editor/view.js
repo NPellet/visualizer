@@ -2,13 +2,10 @@
 
 define([
   'modules/default/defaultview',
-  'src/util/util',
   'src/util/ui',
   'openchemlib/openchemlib-full'
-], function (Default, Util, ui, OCL) {
-  function View() {
-    this.id = Util.getNextUniqueId();
-  }
+], function (Default, ui, OCL) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init: function () {
@@ -17,7 +14,6 @@ define([
 
     inDom: function () {
       this.dom = $('<div>')
-        .attr('id', this.id)
         .css({
           height: '99%',
           width: '100%'
@@ -106,7 +102,7 @@ define([
     initEditor: function () {
       var controller = this.module.controller;
       var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
-      this.editor = new OCL.StructureEditor(this.id, useSVG, 1);
+      this.editor = new OCL.StructureEditor(this.dom.get(0), useSVG, 1);
       this.editor.setChangeListenerCallback(
         this.module.controller.onChange.bind(controller)
       );
