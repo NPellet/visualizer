@@ -24,7 +24,7 @@
           "group": [
             {
               "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
+              "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
                 "let files=[];\n\nlet {\n    username,\n    password\n} = API.getData('prefs').resurrect();\n\nlet headers = new Headers();\nheaders.set('Authorization', 'Basic ' + btoa(username + \":\" + password));\n\n\nlet toc=await getJSON('https://api.github.com/repos/NPellet/jsGraph/contents/examples/v2?ref=2.1');\nfor (let item of toc) {\n    if (item.type==='dir') {\n        let dir=(await getJSON(item.git_url)).tree;\n        for (let file of dir) {\n            console.log(file);\n            if (file.path.endsWith('.json')) {\n                files.push({\n                    directory: item.name,\n                    name: file.path,\n                    dataURL: file.url\n                })\n            }\n        }\n    }\n}\n\nAPI.createData('files', files);\n\nasync function getJSON(url) {\n    let response=await fetch(url,{headers});\n    return response.json();\n}\n\n\n\n\n\n"
@@ -43,7 +43,7 @@
             [
               {
                 "name": "button1",
-                "label": "Execute",
+                "label": "Featch examples from GitHub",
                 "hide": [],
                 "disable": []
               }
@@ -54,18 +54,18 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 5,
+            "top": 16
           },
           "size": {
-            "width": 46,
-            "height": 25
+            "width": 30,
+            "height": 5
           },
           "zIndex": 0,
-          "display": false,
+          "display": true,
           "title": "We load the chart examples from github",
           "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
+          "wrapper": false,
           "created": true,
           "name": "Default layer"
         },
@@ -132,7 +132,7 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [[]]
           }
         ]
       },
@@ -236,11 +236,11 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 16
+            "top": 22
           },
           "size": {
             "width": 35,
-            "height": 49
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
@@ -366,7 +366,7 @@
           },
           "size": {
             "width": 60,
-            "height": 31
+            "height": 44
           },
           "zIndex": 0,
           "display": true,
@@ -434,214 +434,6 @@
               "icon": "",
               "action": "",
               "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ]
-    },
-    {
-      "url": "modules/types/science/spectra/spectra_displayer/",
-      "configuration": {
-        "sections": {
-          "graph": [
-            {
-              "sections": {},
-              "groups": {
-                "graph": [
-                  {
-                    "url": [""],
-                    "zoom": ["xy"],
-                    "wheelAction": ["none"],
-                    "wheelbaseline": [0],
-                    "fullOut": ["both"],
-                    "legend": [null],
-                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [[]],
-                    "selectScatter": [[]],
-                    "independantYZoom": [[]]
-                  }
-                ]
-              }
-            }
-          ],
-          "axis": [
-            {
-              "sections": {},
-              "groups": {
-                "xAxis": [
-                  {
-                    "checkboxes": [["display"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "axismodification": ["none"]
-                  }
-                ],
-                "yAxis": [
-                  {
-                    "checkboxes": [["display"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "fitToAxisOnFromTo": [[]]
-                  }
-                ]
-              }
-            }
-          ],
-          "series": [
-            {
-              "sections": {},
-              "groups": {
-                "series": [
-                  {
-                    "overflow": [[]],
-                    "stackVerticalSpacing": [0]
-                  }
-                ]
-              }
-            }
-          ],
-          "variables": [
-            {
-              "sections": {},
-              "groups": {
-                "variables": [
-                  [
-                    {
-                      "variable": "",
-                      "axis": "0",
-                      "adaptTo": "none",
-                      "plotcolor": [1, 1, 255, 1],
-                      "strokewidth": "1",
-                      "strokestyle": "1",
-                      "plotcontinuous": "continuous",
-                      "peakpicking": [],
-                      "markers": [],
-                      "markerShape": "1",
-                      "markerSize": 2,
-                      "normalize": "none",
-                      "optimizeSlots": [],
-                      "tracking": []
-                    }
-                  ]
-                ]
-              }
-            }
-          ],
-          "misc": [
-            {
-              "sections": {},
-              "groups": {
-                "misc": [
-                  {
-                    "highlightOptions": ["{}"]
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        "groups": {}
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 36,
-            "top": 32
-          },
-          "size": {
-            "width": 60,
-            "height": 33
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "Show chart using spectraDisplayer",
-          "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        },
-        "Admin": {
-          "position": {
-            "left": 107.00000133514405,
-            "top": 47.00000076293945
-          },
-          "size": {
-            "width": 67,
-            "height": 47
-          },
-          "zIndex": 0,
-          "display": false,
-          "title": "Show chart using spectraDisplayer",
-          "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        },
-        "Prefs": {
-          "position": {
-            "left": 36,
-            "top": 32
-          },
-          "size": {
-            "width": 60,
-            "height": 33
-          },
-          "zIndex": 0,
-          "display": false,
-          "title": "Show chart using spectraDisplayer",
-          "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 4,
-      "vars_in": [
-        {
-          "rel": "chart",
-          "name": "chart"
-        }
-      ],
-      "actions_in": [{}],
-      "title": "Show chart using spectraDisplayer",
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin",
-              "color": [100, 100, 100, 1]
             }
           ]
         ],
