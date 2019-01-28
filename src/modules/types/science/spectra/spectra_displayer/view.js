@@ -1318,6 +1318,7 @@ define([
   });
 
   function analyzeContinuous(data) {
+    console.log(data);
     if (Array.isArray(data)) {
       var minInterval = Infinity;
       var maxInterval = -Infinity;
@@ -1332,11 +1333,10 @@ define([
           if (interval < minInterval) minInterval = interval;
         }
       } else if (Array.isArray(data[0]) && data.length === 2) {
-        if (data[0].length < MIN_FOR_CONTINUOUS) return 'discrete';
-        for (i = 0, ii = data[0].length - 1; i < ii; i++) {
-          interval = data[0][i + 1] - data[0][i];
-          if (interval > maxInterval) maxInterval = interval;
-          if (interval < minInterval) minInterval = interval;
+        if (isContinuous({ x: data[0], y: data[1] })) {
+          return 'continuous';
+        } else {
+          return 'discrete';
         }
       } else {
         if (data.length < MIN_FOR_CONTINUOUS) return 'discrete';
@@ -1352,6 +1352,32 @@ define([
         return 'continuous';
       }
     }
+  }
+
+  function isContinuous(data) {
+    // from molecular-formula/ms-spectrum/iscontinous
+
+    let xs = data.x;
+    let ys = data.y;
+    if (xs.length < 100) {
+      return false;
+    } else {
+      let previousDelta = xs[1] - xs[0];
+
+      for (let i = 0; i < xs.length - 1; i++) {
+        let delta = xs[i + 1] - xs[i];
+        let ratio = delta / previousDelta;
+        if (
+          (Math.abs(delta) > 0.1 || ratio < 0.5 || ratio > 2) &&
+          ys[i] !== 0 &&
+          ys[i + 1] !== 0
+        ) {
+          return false;
+        }
+        previousDelta = delta;
+      }
+    }
+    return true;
   }
 
   return View;
