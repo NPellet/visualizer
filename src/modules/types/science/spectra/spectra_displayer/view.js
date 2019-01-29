@@ -509,8 +509,8 @@ define([
         for (var i = 0, l = plotinfos.length; i < l; i++) {
           if (varname == plotinfos[i].variable) {
             var continuous = plotinfos[i].plotcontinuous;
-            if (continuous === 'auto') {
-              continuous = analyzeContinuous(data);
+            if (continuous.startsWith('auto')) {
+              continuous = analyzeContinuous(data, continuous);
             }
 
             if (plotinfos[i].markers[0]) {
@@ -1317,8 +1317,7 @@ define([
     }
   });
 
-  function analyzeContinuous(data) {
-    console.log(data);
+  function analyzeContinuous(data, continuous) {
     if (Array.isArray(data)) {
       var minInterval = Infinity;
       var maxInterval = -Infinity;
@@ -1333,10 +1332,19 @@ define([
           if (interval < minInterval) minInterval = interval;
         }
       } else if (Array.isArray(data[0]) && data.length === 2) {
-        if (isContinuous({ x: data[0], y: data[1] })) {
-          return 'continuous';
+        if (continuous === 'automass') {
+          if (isContinuous({ x: data[0], y: data[1] })) {
+            return 'continuous';
+          } else {
+            return 'discrete';
+          }
         } else {
-          return 'discrete';
+          if (data[0].length < MIN_FOR_CONTINUOUS) return 'discrete';
+          for (let i = 0; i < data[0].length - 1; i++) {
+            interval = data[0][i + 1] - data[0][i];
+            if (interval > maxInterval) maxInterval = interval;
+            if (interval < minInterval) minInterval = interval;
+          }
         }
       } else {
         if (data.length < MIN_FOR_CONTINUOUS) return 'discrete';
@@ -1355,7 +1363,7 @@ define([
   }
 
   function isContinuous(data) {
-    // from molecular-formula/ms-spectrum/iscontinous
+    // from molecular-formula/ms-spectrum/iscontinuous
 
     let xs = data.x;
     let ys = data.y;

@@ -1,8 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Default, _, $) {
-  function Controller() {
-  }
+define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
+  Default,
+  _,
+  $
+) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -166,7 +169,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     }
   };
 
-  Controller.prototype.variablesIn = ['chart', 'xArray', 'xyArray', 'jcamp', 'annotations', 'series_xy1d'];
+  Controller.prototype.variablesIn = [
+    'chart',
+    'xArray',
+    'xyArray',
+    'jcamp',
+    'annotations',
+    'series_xy1d'
+  ];
 
   Controller.prototype.actionsIn = {
     fromToX: 'From - To X',
@@ -237,7 +247,13 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
         l = currentCfg.length;
 
       for (; i < l; i++) {
-        if (currentCfg[i].rel == 'jcamp' || currentCfg[i].rel == 'xArray' || currentCfg[i].rel == 'xyArray' || currentCfg[i].rel == 'chart' || currentCfg[i].rel == 'series_xy1d') {
+        if (
+          currentCfg[i].rel == 'jcamp' ||
+          currentCfg[i].rel == 'xArray' ||
+          currentCfg[i].rel == 'xyArray' ||
+          currentCfg[i].rel == 'chart' ||
+          currentCfg[i].rel == 'series_xy1d'
+        ) {
           vars.push({
             title: currentCfg[i].name,
             key: currentCfg[i].name
@@ -309,7 +325,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                   options: [
                     { key: 'zoomX', title: 'Zoom X' },
                     { key: 'zoomY', title: 'Zoom Y' },
-                    { key: 'zoomYMousePos', title: 'Zoom Y with baseline on mouse position' },
+                    {
+                      key: 'zoomYMousePos',
+                      title: 'Zoom Y with baseline on mouse position'
+                    },
                     { key: 'none', title: 'None' }
                   ],
                   default: 'none'
@@ -368,7 +387,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                   type: 'checkbox',
                   title: 'Independant Y zoom',
                   options: {
-                    yes: 'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)'
+                    yes:
+                      'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)'
                   }
                 }
               }
@@ -524,7 +544,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
                   options: [
                     { key: 'continuous', title: 'Continuous' },
                     { key: 'discrete', title: 'Discrete' },
-                    { key: 'auto', title: 'Auto' }
+                    { key: 'auto', title: 'Auto' },
+                    { key: 'automass', title: 'Auto Mass' }
                   ],
                   default: 'continuous'
                 },
@@ -645,45 +666,225 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     // Graph
     graphurl: ['sections', 'graph', 0, 'groups', 'graph', 0, 'url', 0],
     zoom: ['sections', 'graph', 0, 'groups', 'graph', 0, 'zoom', 0],
-    wheelAction: ['sections', 'graph', 0, 'groups', 'graph', 0, 'wheelAction', 0],
-    wheelbaseline: ['sections', 'graph', 0, 'groups', 'graph', 0, 'wheelbaseline', 0],
+    wheelAction: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'wheelAction',
+      0
+    ],
+    wheelbaseline: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'wheelbaseline',
+      0
+    ],
     fullOut: ['sections', 'graph', 0, 'groups', 'graph', 0, 'fullOut', 0],
     legend: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legend', 0],
-    legendOptions: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legendOptions', 0],
-    mouseTracking: ['sections', 'graph', 0, 'groups', 'graph', 0, 'mouseTracking', 0],
-    selectScatter: ['sections', 'graph', 0, 'groups', 'graph', 0, 'selectScatter', 0],
-    independantYZoom: ['sections', 'graph', 0, 'groups', 'graph', 0, 'independantYZoom', 0],
+    legendOptions: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'legendOptions',
+      0
+    ],
+    mouseTracking: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'mouseTracking',
+      0
+    ],
+    selectScatter: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'selectScatter',
+      0
+    ],
+    independantYZoom: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'independantYZoom',
+      0
+    ],
     // X Axis
-    displayXAxis: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
+    displayXAxis: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'checkboxes',
+      0
+    ],
     flipX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
-    vertGridMain: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
+    vertGridMain: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'checkboxes',
+      0
+    ],
     vertGridSec: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
     xLabel: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'label', 0],
-    xLeftSpacing: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'beforeSpacing', 0],
-    xRightSpacing: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'afterSpacing', 0],
+    xLeftSpacing: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'beforeSpacing',
+      0
+    ],
+    xRightSpacing: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'afterSpacing',
+      0
+    ],
     minX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'min', 0],
     maxX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'max', 0],
-    xnbTicksPrimary: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'nbTicksPrimary', 0],
-    xaxismodification: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'axismodification', 0],
+    xnbTicksPrimary: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'nbTicksPrimary',
+      0
+    ],
+    xaxismodification: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'axismodification',
+      0
+    ],
     // Y Axis
-    displayYAxis: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
+    displayYAxis: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'yAxis',
+      0,
+      'checkboxes',
+      0
+    ],
     flipY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
     horGridMain: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
     horGridSec: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
     yLabel: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'label', 0],
-    yBottomSpacing: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'beforeSpacing', 0],
-    yTopSpacing: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'afterSpacing', 0],
+    yBottomSpacing: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'yAxis',
+      0,
+      'beforeSpacing',
+      0
+    ],
+    yTopSpacing: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'yAxis',
+      0,
+      'afterSpacing',
+      0
+    ],
     minY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'min', 0],
     maxY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'max', 0],
-    ynbTicksPrimary: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'nbTicksPrimary', 0],
-    FitYToAxisOnFromTo: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'fitToAxisOnFromTo', 0],
+    ynbTicksPrimary: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'yAxis',
+      0,
+      'nbTicksPrimary',
+      0
+    ],
+    FitYToAxisOnFromTo: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'yAxis',
+      0,
+      'fitToAxisOnFromTo',
+      0
+    ],
     // Serie parameters
     overflow: ['sections', 'series', 0, 'groups', 'series', 0, 'overflow', 0],
-    stackVerticalSpacing: ['sections', 'series', 0, 'groups', 'series', 0, 'stackVerticalSpacing', 0],
-    stackHorizontalSpacing: ['sections', 'series', 0, 'groups', 'series', 0, 'stackHorizontalSpacing', 0],
+    stackVerticalSpacing: [
+      'sections',
+      'series',
+      0,
+      'groups',
+      'series',
+      0,
+      'stackVerticalSpacing',
+      0
+    ],
+    stackHorizontalSpacing: [
+      'sections',
+      'series',
+      0,
+      'groups',
+      'series',
+      0,
+      'stackHorizontalSpacing',
+      0
+    ],
     // Variables
     plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0],
-    highlightOptions: ['sections', 'misc', 0, 'groups', 'misc', 0, 'highlightOptions', 0]
+    highlightOptions: [
+      'sections',
+      'misc',
+      0,
+      'groups',
+      'misc',
+      0,
+      'highlightOptions',
+      0
+    ]
   };
 
   Controller.prototype.zoomChanged = function (axis, min, max) {
@@ -699,11 +900,15 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (Defa
     this.sendBoundaries();
   };
 
-  Controller.prototype.sendBoundaries = _.throttle(function () {
-    var boundaries = this.module.model.getBoundaries();
-    this.sendActionFromEvent('onZoomChange', 'fromToXY', boundaries);
-    this.createDataFromEvent('onZoomChange', 'fromToXY', boundaries);
-  }, 1, { leading: false });
+  Controller.prototype.sendBoundaries = _.throttle(
+    function () {
+      var boundaries = this.module.model.getBoundaries();
+      this.sendActionFromEvent('onZoomChange', 'fromToXY', boundaries);
+      this.createDataFromEvent('onZoomChange', 'fromToXY', boundaries);
+    },
+    1,
+    { leading: false }
+  );
 
   Controller.prototype.onMouseOverMarker = function (xy, infos) {
     this.infos = infos;
