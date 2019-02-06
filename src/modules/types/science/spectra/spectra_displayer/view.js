@@ -365,6 +365,14 @@ define([
               'shapeInfos',
               shape.getData()
             );
+            this.module.controller.sendActionFromEvent(
+              'onShapeClick',
+              'dataAndEvent',
+              {
+                data: shape.getData(),
+                event: event
+              }
+            );
           });
 
           graph.on('shapeSelected', (shape) => {
