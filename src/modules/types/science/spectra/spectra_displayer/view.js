@@ -881,10 +881,17 @@ define([
               plugin.setSerie(serie);
             }
           } else {
-            var color =
-              defaultStyle.lineColor ||
-              (data.length > 1 ? Color.getNextColorRGB(i, data.length) : null);
-            this.setSerieParameters(serie, varname, aData._highlight, color);
+            if (aData.style) {
+              serie.setStyle(aData.style);
+              serie.setMarkers(aData.style.markers);
+            } else {
+              var color =
+                defaultStyle.lineColor ||
+                (data.length > 1
+                  ? Color.getNextColorRGB(i, data.length)
+                  : null);
+              this.setSerieParameters(serie, varname, aData._highlight, color);
+            }
           }
 
           this.series[varname].push(serie);
