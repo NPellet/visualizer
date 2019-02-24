@@ -1,0 +1,393 @@
+{
+  "modules": [
+    {
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [""],
+                    "zoom": ["xy"],
+                    "wheelAction": ["none"],
+                    "wheelbaseline": [0],
+                    "fullOut": ["both"],
+                    "legend": ["bottom"],
+                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
+                    "mouseTracking": [[]],
+                    "selectScatter": [[]],
+                    "independantYZoom": [[]]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [["display", "main", "sec"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "axismodification": ["none"]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [["display", "main", "sec"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "fitToAxisOnFromTo": [[]]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [[]],
+                    "stackVerticalSpacing": [0]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "multiCharts",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [0, 0, 0, 1],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": ["markers"],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": ["slots"],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": ["{}"]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "multiCharts"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onMouseOverMarker",
+          "rel": "markerInfos",
+          "jpath": ["id"],
+          "name": "currentID"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 55,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 63,
+            "height": 47
+          },
+          "display": true,
+          "title": "Untitled module",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "Untitled module",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "defaultvalue": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "font": [null],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "sprintf": [null]
+            }
+          ]
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "currentID"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": null,
+          "name": null
+        }
+      ],
+      "vars_out": [
+        {
+          "event": null,
+          "rel": null,
+          "jpath": null,
+          "name": null
+        }
+      ],
+      "actions_out": [
+        {
+          "event": null,
+          "rel": null,
+          "jpath": null,
+          "name": null
+        }
+      ],
+      "url": "modules/types/display/single_value/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 187,
+            "top": 22,
+            "right": 0
+          },
+          "size": {
+            "width": 16,
+            "height": 12
+          },
+          "display": true,
+          "title": "Untitled module",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "Untitled module",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": [
+                "{\"type\":\"chart\",\"value\":{\"title\":\"Multi charts\",\"axis\":{\"0\":{\"type\":\"bottom\",\"name\":\"X axis\",\"flip\":true},\"1\":{\"type\":\"left\",\"name\":\"Left axis\"},\"2\":{\"type\":\"right\",\"name\":\"Right axis\"}},\"data\":[{\"xAxis\":\"0\",\"yAxis\":\"1\",\"y\":[0.04695,0.92235,0.23304,0.18811,0.37288,0.22087,0.95161,0.30119,0.00326,0.81202],\"style\":{\"lineStyle\":3,\"trackMouseLabelRouding\":1,\"lineWidth\":4,\"label\":\"ABCDEFG\",\"trackMouse\":true,\"lineToZero\":true,\"lineColor\":\"green\",\"autoPeakPickingNb\":4,\"markers\":{\"fillColor\":\"blue\",\"zoom\":1,\"show\":false,\"type\":1,\"strokeColor\":\"yellow\",\"strokeWidth\":3},\"autoPeakPickingMinDistance\":10,\"autoPeakPicking\":false},\"x\":[0,1,2,3,4,5,6,7,8,9]},{\"label\":\"customLabel\",\"xAxis\":\"0\",\"yAxis\":\"1\",\"info\":[{\"id\":\"ID: 0\",\"_highlight\":[0]},{\"id\":\"ID: 1\",\"_highlight\":[1]},{\"id\":\"ID: 2\",\"_highlight\":[2]},{\"id\":\"ID: 3\",\"_highlight\":[3]},{\"id\":\"ID: 4\",\"_highlight\":[4]},{\"id\":\"ID: 5\",\"_highlight\":[5]},{\"id\":\"ID: 6\",\"_highlight\":[6]},{\"id\":\"ID: 7\",\"_highlight\":[7]},{\"id\":\"ID: 8\",\"_highlight\":[8]},{\"id\":\"ID: 9\",\"_highlight\":[9]}],\"_highlight\":[0,1,2,3,4,5,6,7,8,9],\"y\":[0.06252,0.29886,0.29234,0.78914,0.98178,0.32066,0.12801,0.62031,0.54239,0.46619],\"style\":{\"trackMouseLabelRouding\":1,\"trackMouse\":false,\"lineToZero\":false,\"trackMouseLabel\":false,\"lineColor\":\"red\",\"autoPeakPickingNb\":4,\"markers\":{\"fillColor\":\"transparent\",\"zoom\":1,\"show\":false,\"type\":1,\"strokeColor\":false,\"strokeWidth\":1},\"lineStyle\":1,\"autoPeakPickingMinDistance\":10,\"label\":\"\",\"autoPeakPicking\":false,\"flip\":false},\"x\":[0,1,2,3,4,5,6,7,8,9]}]}}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 53,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "multiCharts"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "chart",
+      "jpath": ["chart"],
+      "url": null
+    },
+    {
+      "varname": "simpleArray",
+      "jpath": ["simpleArray"],
+      "url": null
+    },
+    {
+      "varname": "infos",
+      "jpath": ["chart", "infos"],
+      "url": null
+    },
+    {
+      "varname": "multiCharts",
+      "jpath": ["multiCharts"],
+      "url": null
+    },
+    {
+      "varname": "simpleArray2",
+      "jpath": ["simpleArray2"],
+      "url": null
+    },
+    {
+      "varname": "simpleArray3",
+      "jpath": ["simpleArray3"]
+    }
+  ],
+  "configuration": {
+    "title": "Chart demonstration"
+  },
+  "version": "2.102.5-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "aliases": []
+}
