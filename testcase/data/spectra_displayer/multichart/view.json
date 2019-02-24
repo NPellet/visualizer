@@ -11,14 +11,14 @@
                   {
                     "url": [""],
                     "zoom": ["xy"],
-                    "wheelAction": ["none"],
+                    "wheelAction": ["zoomY"],
                     "wheelbaseline": [0],
                     "fullOut": ["both"],
                     "legend": ["bottom"],
                     "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
                     "mouseTracking": [[]],
                     "selectScatter": [[]],
-                    "independantYZoom": [[]]
+                    "independantYZoom": [["yes"]]
                   }
                 ]
               }
@@ -277,7 +277,7 @@
               "sendButton": [[]],
               "output": ["new"],
               "storedObject": [
-                "{\"type\":\"chart\",\"value\":{\"title\":\"Multi charts\",\"axis\":{\"0\":{\"type\":\"bottom\",\"name\":\"X axis\",\"flip\":true},\"1\":{\"type\":\"left\",\"name\":\"Left axis\"},\"2\":{\"type\":\"right\",\"name\":\"Right axis\"}},\"data\":[{\"xAxis\":\"0\",\"yAxis\":\"1\",\"y\":[0.04695,0.92235,0.23304,0.18811,0.37288,0.22087,0.95161,0.30119,0.00326,0.81202],\"style\":{\"lineStyle\":3,\"trackMouseLabelRouding\":1,\"lineWidth\":4,\"label\":\"ABCDEFG\",\"trackMouse\":true,\"lineToZero\":true,\"lineColor\":\"green\",\"autoPeakPickingNb\":4,\"markers\":{\"fillColor\":\"blue\",\"zoom\":1,\"show\":false,\"type\":1,\"strokeColor\":\"yellow\",\"strokeWidth\":3},\"autoPeakPickingMinDistance\":10,\"autoPeakPicking\":false},\"x\":[0,1,2,3,4,5,6,7,8,9]},{\"label\":\"customLabel\",\"xAxis\":\"0\",\"yAxis\":\"1\",\"info\":[{\"id\":\"ID: 0\",\"_highlight\":[0]},{\"id\":\"ID: 1\",\"_highlight\":[1]},{\"id\":\"ID: 2\",\"_highlight\":[2]},{\"id\":\"ID: 3\",\"_highlight\":[3]},{\"id\":\"ID: 4\",\"_highlight\":[4]},{\"id\":\"ID: 5\",\"_highlight\":[5]},{\"id\":\"ID: 6\",\"_highlight\":[6]},{\"id\":\"ID: 7\",\"_highlight\":[7]},{\"id\":\"ID: 8\",\"_highlight\":[8]},{\"id\":\"ID: 9\",\"_highlight\":[9]}],\"_highlight\":[0,1,2,3,4,5,6,7,8,9],\"y\":[0.06252,0.29886,0.29234,0.78914,0.98178,0.32066,0.12801,0.62031,0.54239,0.46619],\"style\":{\"trackMouseLabelRouding\":1,\"trackMouse\":false,\"lineToZero\":false,\"trackMouseLabel\":false,\"lineColor\":\"red\",\"autoPeakPickingNb\":4,\"markers\":{\"fillColor\":\"transparent\",\"zoom\":1,\"show\":false,\"type\":1,\"strokeColor\":false,\"strokeWidth\":1},\"lineStyle\":1,\"autoPeakPickingMinDistance\":10,\"label\":\"\",\"autoPeakPicking\":false,\"flip\":false},\"x\":[0,1,2,3,4,5,6,7,8,9]}]}}"
+                "{\"type\":\"chart\",\"value\":{\"title\":\"Multi charts\",\"data\":[{\"y\":[0.04695,0.92235,0.23304,0.18811,0.37288,0.22087,0.95161,0.30119,0.00326,0.81202],\"style\":{\"lineStyle\":3,\"lineWidth\":4,\"lineColor\":\"green\",\"autoPeakPickingNb\":4,\"markers\":{\"fillColor\":\"blue\",\"zoom\":2,\"type\":1,\"strokeColor\":\"yellow\",\"strokeWidth\":3}},\"x\":[0,1,2,3,4,5,6,7,8,9]},{\"label\":\"customLabel\",\"y\":[0.06252,0.29886,0.29234,0.78914,0.98178,0.32066,0.12801,0.62031,0.54239,0.46619],\"style\":{\"lineColor\":\"red\",\"lineStyle\":5,\"lineWidth\":1,\"markers\":{\"fillColor\":\"pink\",\"zoom\":1,\"type\":1,\"strokeColor\":false,\"strokeWidth\":1}},\"x\":[0,1,2,3,4,5,6,7,8,9]}]}}"
               ]
             }
           ]
