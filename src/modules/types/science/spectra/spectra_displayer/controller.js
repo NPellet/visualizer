@@ -61,7 +61,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       type: 'object'
     },
     dataAndEvent: {
-      label: 'Mouse event and track data',
+      label: 'Mouse event and data',
       type: 'object'
     },
     svgString: {
@@ -157,7 +157,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     onShapeClick: {
       label: 'Shape is clicked',
       refVariable: ['shapeInfos', 'shapeProperties'],
-      refAction: ['shapeInfos','dataAndEvent']
+      refAction: ['shapeInfos', 'dataAndEvent']
     },
     onSelectScatter: {
       label: 'Selection on a scatter plot',
