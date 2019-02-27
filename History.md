@@ -1,3 +1,14 @@
+# [2.103.0](https://github.com/NPellet/visualizer/compare/v2.102.4...v2.103.0) (2019-02-27)
+
+
+### Features
+
+* **ocl:** add copy molfile to clipboard and download svg ([42f7296](https://github.com/NPellet/visualizer/commit/42f7296))
+* **ocl:** copyMolfile and downloadSvg actions and enable import from clipboard ([7b4ae15](https://github.com/NPellet/visualizer/commit/7b4ae15))
+* use font-awesome-all instead of font-awesome (youtube icon) ([fd098f3](https://github.com/NPellet/visualizer/commit/fd098f3))
+
+
+
 <a name="2.102.4"></a>
 ## [2.102.4](https://github.com/NPellet/visualizer/compare/v2.102.3...v2.102.4) (2019-01-15)
 
