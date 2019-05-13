@@ -131,11 +131,18 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "console.log(\n    JSON.stringify(this.action,undefined,2)\n);\n"
+                "console.log(\n    JSON.stringify(this.action,undefined,2)\n);\nUI.showNotification(this.action.name+':'+JSON.stringify(this.action.value), 'info');\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {
+                "lib": "src/util/ui",
+                "alias": "UI"
+              }
+            ]
+          ],
           "buttons": [
             [
               {
