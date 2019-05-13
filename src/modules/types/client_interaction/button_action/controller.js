@@ -18,31 +18,46 @@ define(['modules/default/defaultcontroller'], function (Default) {
     actionText: {
       label: 'The action text to send',
       type: 'string'
+    },
+    actionValue: {
+      label: 'Object with action information',
+      type: 'object'
     }
   };
 
   Controller.prototype.events = {
     onToggleOn: {
       label: 'Button is toggled on',
-      refAction: ['actionText']
+      refAction: ['actionText', 'actionValue']
     },
     onToggleOff: {
       label: 'Button is toggled off',
-      refAction: ['actionText']
+      refAction: ['actionText', 'actionValue']
     },
     onClick: {
       label: 'Button is clicked',
-      refAction: ['actionText']
+      refAction: ['actionText', 'actionValue']
     }
   };
 
-  Controller.prototype.onClick = function (on) {
+  Controller.prototype.onClick = function (view, action) {
     var text = this.module.getConfiguration('text');
+    let value = {
+      label: text,
+      state: view.currentState,
+      isToggle: view.isToggle
+    };
     this.sendActionFromEvent('onClick', 'actionText', text);
+    this.sendActionFromEvent('onClick', 'actionValue', value);
     this.sendActionFromEvent(
-      on ? 'onToggleOn' : 'onToggleOff',
+      view.currentState ? 'onToggleOn' : 'onToggleOff',
       'actionText',
       text
+    );
+    this.sendActionFromEvent(
+      view.currentState ? 'onToggleOn' : 'onToggleOff',
+      'actionValue',
+      value
     );
   };
 
@@ -90,18 +105,25 @@ define(['modules/default/defaultcontroller'], function (Default) {
               title: 'Tooltip',
               default: ''
             },
+            css: {
+              type: 'jscode',
+              mode: 'css',
+              title: 'CSS',
+              default: 'background-color: green;',
+              displayTarget: ['c']
+            },
             cssOn: {
               type: 'jscode',
               mode: 'css',
               title: 'CSS (on)',
-              default: '{background-color: green}',
+              default: 'background-color: blue;',
               displayTarget: ['t']
             },
             cssOff: {
               type: 'jscode',
               mode: 'css',
               title: 'CSS (off)',
-              default: '{background-color: red}',
+              default: 'background-color: red;',
               displayTarget: ['t']
             },
             startState: {
@@ -143,21 +165,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
               default: 'Cancel',
               displayTarget: ['y']
             },
-            content: {
-              type: 'jscode',
-              title: 'Content',
-              mode: 'html',
-              default: ''
-            },
             contentType: {
               type: 'combo',
               title: 'Content Type',
               options: [
                 { key: 'imageUrl', title: 'Image url' },
                 { key: 'svg', title: 'svg' },
-                { key: 'content', title: 'Content' }
+                { key: 'content', title: 'Button or custom button' }
               ],
               default: 'content'
+            },
+            content: {
+              type: 'jscode',
+              title: 'Content',
+              mode: 'html',
+              default: ''
             },
             maskOpacity: {
               type: 'float',
@@ -175,6 +197,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     onLabel: ['groups', 'group', 0, 'onLabel', 0],
     offLabel: ['groups', 'group', 0, 'offLabel', 0],
     title: ['groups', 'group', 0, 'title', 0],
+    css: ['groups', 'group', 0, 'css', 0],
     cssOn: ['groups', 'group', 0, 'cssOn', 0],
     cssOff: ['groups', 'group', 0, 'cssOff', 0],
     text: ['groups', 'group', 0, 'text', 0],

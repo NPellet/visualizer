@@ -9,101 +9,139 @@ define([
 ], function ($, Default, Button, ui, Renderer) {
   function View() {}
 
-  var onClick;
+  let onClick;
 
   $.extend(true, View.prototype, Default, {
     redrawButton() {
-      let buttonType = this.module.getConfiguration('toggle');
+      let contentType = this.module.getConfiguration('contentType');
       var content = this.module.getConfiguration('content');
-      switch (buttonType) {
-        case 'button':
+      switch (contentType) {
+        case 'content':
+          {
+            let label = '';
+            let css = '';
+            if (this.isToggle) {
+              if (this.currentState) {
+                label = this.module.getConfiguration('onLabel');
+                css = this.module.getConfiguration('cssOn');
+              } else {
+                label = this.module.getConfiguration('offLabel');
+                css = this.module.getConfiguration('cssOff');
+              }
+            } else {
+              label = this.module.getConfiguration('label');
+              css = this.module.getConfiguration('css');
+            }
+            this.button.setTitle(label);
+            let rendered = this.button.render();
+            if (css) rendered.attr('style', css);
+
+            this.dom.html(rendered);
+          }
+
           break;
         case 'imageUrl':
-          var $div = $(`<div><img src="${content}"/></div>`);
-          $div.find('img').css({
-            width: this.width,
-            height: this.height,
-            objectFit: 'contain'
-          });
-          $div.css({
-            cursor: 'pointer'
-          });
-          this.dom.html($div);
-          this.dom.css({
-            overflow: 'hidden'
-          });
+          {
+            let $div = $(`<div><img src="${content}"/></div>`);
+            $div.find('img').css({
+              width: this.width,
+              height: this.height,
+              objectFit: 'contain'
+            });
+            $div.css({
+              cursor: 'pointer'
+            });
+            this.dom.html($div);
+            this.dom.css({
+              overflow: 'hidden'
+            });
+            this.updateOpacity($div);
+          }
           break;
         case 'svg':
-          var $div = $('<div>');
-          $div.append(content);
-          $div.css('cursor', 'pointer');
-          Renderer.render($div, {
-            type: 'svg',
-            value: content
-          });
-          this.dom.html($div);
+          {
+            let $div = $('<div>');
+            $div.append(content);
+            $div.css('cursor', 'pointer');
+            Renderer.render($div, {
+              type: 'svg',
+              value: content
+            });
+            this.dom.html($div);
+            this.updateOpacity($div);
+          }
           break;
         default:
       }
     },
 
+    updateOpacity: function ($div) {
+      if (this.isToggle) {
+        if (this.currentState) {
+          $div.css({
+            opacity: 1
+          });
+        } else {
+          $div.css({
+            opacity: this.maskOpacity
+          });
+        }
+      }
+    },
+
     onResize: function () {
-      var that = this;
+      let that = this;
       this.maskOpacity = this.module.getConfiguration('maskOpacity');
+      this.isToggle = this.module.getConfiguration('toggle') === 'toggle';
+      this.isButton = this.module.getConfiguration('contentType') === 'content';
+
       var label;
       this.dom = $('<div></div>').css({
         width: '100%',
         height: '100%'
       });
-      var buttonType = this.module.getConfiguration('toggle');
-      if (
-        buttonType === 'toggle' &&
-        this.module.getConfiguration('startState') === 'off'
-      ) {
-        label = this.module.getConfiguration('offLabel');
-      } else if (
-        buttonType === 'toggle' &&
-        this.module.getConfiguration('startState') === 'on'
-      ) {
-        label = this.module.getConfiguration('onLabel');
-      } else {
-        label = this.module.getConfiguration('label');
+      if (this.isToggle) {
+        this.currentState = this.module.getConfiguration('startState') === 'on';
       }
 
-      onClick = function (event, val) {
-        var prom = Promise.resolve(true);
+      onClick = async function (event, val) {
+        let ok = true;
         if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
-          prom = ui.confirm(
+          ok = await ui.confirm(
             that.module.getConfiguration('confirmText'),
             that.module.getConfiguration('okLabel'),
             that.module.getConfiguration('cancelLabel')
           );
         }
-        const buttonType = that.module.getConfiguration('toggle');
-        prom.then(function (ok) {
-          if (!ok) {
-            return;
-          }
-          if (!val && buttonType === 'toggle' && !content) {
-            button.setTitle(that.module.getConfiguration('offLabel'));
-            that.setButtonColor(that.module.getConfiguration('offColor'));
-          } else if (buttonType === 'toggle' && !content) {
-            button.setTitle(that.module.getConfiguration('onLabel'));
-            that.setButtonColor(that.module.getConfiguration('onColor'));
-          }
-          that.module.controller.onClick(val);
-        });
+
+        if (!ok) {
+          return;
+        }
+        if (that.isToggle) {
+          that.currentState = !that.currentState;
+        }
+        that.module.controller.onClick(that);
+        that.redrawButton();
       };
 
-      var button = new Button(label, onClick, {
-        color: 'Grey',
-        disabled: false,
-        checkbox: this.module.getConfiguration('toggle') !== 'click',
-        value: this.module.getConfiguration('startState') === 'on'
-      });
+      if (this.isButton) {
+        let content = this.module.getConfiguration('content');
+        if (content) {
+          this.button = $.parseHTML(content);
+        } else {
+          this.button = new Button(label, onClick, {
+            color: 'Grey',
+            disabled: false,
+            checkbox: this.isToggle
+          });
+        }
+      } else {
+        this.dom.on('click', onClick);
+      }
 
       this.module.getDomContent().html(this.dom);
-
+      this.redrawButton();
+      /*
       var buttonType = this.getContentType();
       if (buttonType === 'button') {
         this.dom.html(
@@ -123,7 +161,7 @@ define([
         $div.on('click', onClick);
         this.dom.html($div);
       }
-      this.button = button;
+
 
       if (buttonType !== 'button') {
         this.$div = $div;
@@ -138,19 +176,8 @@ define([
       }
 
       this.dom.attr('title', that.module.getConfiguration('title'));
+      */
       this.resolveReady();
-    },
-
-    activate: function () {
-      var contentType = this.getContentType();
-      switch (contentType) {
-        case 'button':
-          this.activateButton();
-          break;
-        default:
-          this.activateMask();
-          break;
-      }
     },
 
     deactivate: function () {
@@ -177,46 +204,6 @@ define([
       }
     },
 
-    activateMask() {
-      this.$mask.css({
-        backgroundColor: 'rgba(255, 255, 255)',
-        opacity: 0
-      });
-      this.dom.off('click', onClick);
-      this.dom.on('click', onClick);
-      this.$div.css({
-        cursor: 'pointer'
-      });
-    },
-
-    deactivateMask() {
-      this.$mask.css({
-        backgroundColor: 'rgba(255, 255, 255)',
-        opacity: this.maskOpacity
-      });
-      this.dom.off('click', onClick);
-      this.$div.css({
-        cursor: 'auto'
-      });
-    },
-
-    toggleMask() {
-      if (this.$mask.css('opacity') == this.maskOpacity) {
-        this.activateMask();
-      } else {
-        this.deactivateMask();
-      }
-    },
-
-    deactivateButton() {
-      var $button = this.dom.find('button');
-      $button.attr('disabled', true);
-      $button.css({
-        cursor: 'auto',
-        pointerEvent: 'none'
-      });
-    },
-
     activateButton() {
       var $button = this.dom.find('button');
       $button.removeAttr('disabled');
@@ -232,11 +219,6 @@ define([
       } else {
         this.deactivateButton();
       }
-    },
-
-    setButtonColor: function (color) {
-      color = `rgba(${color.join(',')})`;
-      this.button.setColorCss(color);
     },
 
     getContentType: function () {

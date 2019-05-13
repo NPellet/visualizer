@@ -252,8 +252,8 @@ define([
     var viewbox = [
       0,
       0,
-      parseInt(dom.attr('width'), 10),
-      parseInt(dom.attr('height'), 10)
+      parseInt(dom.attr('width')),
+      parseInt(dom.attr('height'))
     ];
     dom[0].setAttribute('viewBox', viewbox.join(' '));
     dom.removeAttr('id');
