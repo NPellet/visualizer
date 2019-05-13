@@ -1,5 +1,5 @@
 {
-  "version": "2.102.5-0",
+  "version": "2.103.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -172,7 +172,7 @@
             "top": 0
           },
           "size": {
-            "width": 35,
+            "width": 36,
             "height": 35
           },
           "zIndex": 0,
@@ -248,12 +248,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 98,
+            "left": 135,
             "top": 36
           },
           "size": {
-            "width": 68,
-            "height": 45
+            "width": 28,
+            "height": 35
           },
           "zIndex": 0,
           "display": true,
@@ -437,7 +437,7 @@
                 "xAxis": [
                   {
                     "checkboxes": [["display"]],
-                    "label": [""],
+                    "label": ["ABC"],
                     "beforeSpacing": ["0.1"],
                     "afterSpacing": ["0.1"],
                     "min": [""],
@@ -449,7 +449,7 @@
                 "yAxis": [
                   {
                     "checkboxes": [["display"]],
-                    "label": [""],
+                    "label": ["DEF"],
                     "beforeSpacing": ["0"],
                     "afterSpacing": ["0"],
                     "min": [""],
@@ -554,6 +554,10 @@
         {
           "rel": "fromToY",
           "name": "zoomLevelY"
+        },
+        {
+          "rel": "_editPreferences",
+          "name": "axis"
         }
       ],
       "title": "A chart",
@@ -847,6 +851,92 @@
           "fontFamily": [""]
         }
       ]
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.doAction('axis', {\n  \"xLabel\": \"ABC\",\n  \"yLabel\": \"DEF\"\n}\n);"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 98,
+            "top": 36
+          },
+          "size": {
+            "width": 36,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Change the axis",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "Change the axis"
     }
   ],
   "variables": [

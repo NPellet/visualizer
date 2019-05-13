@@ -1,0 +1,109 @@
+{
+  "version": "2.103.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["toggle"],
+              "label": ["Action"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "onColor": [[0, 0, 0, 1]],
+              "offColor": [[0, 0, 0, 1]],
+              "startState": ["off"],
+              "text": [null],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "content": [""],
+              "contentType": ["content"],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 3,
+            "top": 6
+          },
+          "size": {
+            "width": 21,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "results",
+      "jpath": ["results"]
+    },
+    {
+      "varname": "twod",
+      "jpath": ["twod"]
+    }
+  ],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
