@@ -32,11 +32,9 @@ define([
               label = this.module.getConfiguration('label');
               css = this.module.getConfiguration('css');
             }
-            this.button.setTitle(label);
-            let rendered = this.button.render();
-            if (css) rendered.attr('style', css);
+            this.button.html(label);
 
-            this.dom.html(rendered);
+            if (css) this.button.attr('style', css);
           }
 
           break;
@@ -51,6 +49,7 @@ define([
             $div.css({
               cursor: 'pointer'
             });
+
             this.dom.html($div);
             this.dom.css({
               overflow: 'hidden'
@@ -86,6 +85,17 @@ define([
             opacity: this.maskOpacity
           });
         }
+      } else {
+        $div.mousedown(() => {
+          $div.css({
+            opacity: this.maskOpacity
+          });
+        });
+        $div.mouseup(() => {
+          $div.css({
+            opacity: 1
+          });
+        });
       }
     },
 
@@ -125,83 +135,29 @@ define([
       };
 
       if (this.isButton) {
-        let content = this.module.getConfiguration('content');
-        if (content) {
-          this.button = $.parseHTML(content);
-        } else {
-          this.button = new Button(label, onClick, {
-            color: 'Grey',
-            disabled: false,
-            checkbox: this.isToggle
-          });
-        }
+        this.button = $('<button />');
+        this.button.click(onClick);
+        this.dom.html(this.button);
       } else {
         this.dom.on('click', onClick);
       }
 
       this.module.getDomContent().html(this.dom);
       this.redrawButton();
-      /*
-      var buttonType = this.getContentType();
-      if (buttonType === 'button') {
-        this.dom.html(
-          button.render().css({
-            position: 'absolute',
-            bottom: 3
-          })
-        );
-      } else if (buttonType === 'imageUrl') {
-        this.dom.on('click', onClick);
-      } else if (buttonType === 'svg') {
-        this.dom.on('click', onClick);
-      } else if (buttonType === 'content') {
-        var $div = $('<div>');
-        $div.append(content);
-        $div.css('cursor', 'pointer');
-        $div.on('click', onClick);
-        this.dom.html($div);
-      }
 
-
-      if (buttonType !== 'button') {
-        this.$div = $div;
-        this.$mask = $(
-          '<div style="position: absolute; width:100%; height: 100%; background-color: rgba(255, 255, 255, 0); pointer-events: none"></div>'
-        );
-        this.dom.prepend(this.$mask);
-      }
-
-      if (buttonType === 'toggle' && !content) {
-        that.setButtonColor(that.module.getConfiguration('offColor'));
-      }
-
-      this.dom.attr('title', that.module.getConfiguration('title'));
-      */
       this.resolveReady();
     },
 
+    activate: function () {
+      this.currentState = true;
+    },
+
     deactivate: function () {
-      var type = this.getContentType();
-      switch (type) {
-        case 'button':
-          this.deactivateButton();
-          break;
-        default:
-          this.deactivateMask();
-          break;
-      }
+      this.currentState = false;
     },
 
     toggle: function () {
-      var type = this.getContentType();
-      switch (type) {
-        case 'button':
-          this.toggleButton();
-          break;
-        default:
-          this.toggleMask();
-          break;
-      }
+      this.currentState = !this.currentState;
     },
 
     activateButton() {
@@ -233,12 +189,15 @@ define([
     onActionReceive: {
       activate: function () {
         this.activate();
+        this.redrawButton();
       },
       deactivate: function () {
         this.deactivate();
+        this.redrawButton();
       },
       toggle: function () {
         this.toggle();
+        this.redrawButton();
       }
     }
   });

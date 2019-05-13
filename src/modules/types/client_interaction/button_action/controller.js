@@ -171,15 +171,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
               options: [
                 { key: 'imageUrl', title: 'Image url' },
                 { key: 'svg', title: 'svg' },
-                { key: 'content', title: 'Button or custom button' }
+                { key: 'content', title: 'Button' }
               ],
+              displaySource: { svg: 'svg', imageUrl: 'imageUrl' },
               default: 'content'
             },
             content: {
               type: 'jscode',
               title: 'Content',
               mode: 'html',
-              default: ''
+              default: '',
+              displayTarget: ['svg', 'imageUrl']
             },
             maskOpacity: {
               type: 'float',
