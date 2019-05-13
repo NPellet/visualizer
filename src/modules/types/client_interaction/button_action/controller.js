@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -40,7 +39,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
   Controller.prototype.onClick = function (on) {
     var text = this.module.getConfiguration('text');
     this.sendActionFromEvent('onClick', 'actionText', text);
-    this.sendActionFromEvent(on ? 'onToggleOn' : 'onToggleOff', 'actionText', text);
+    this.sendActionFromEvent(
+      on ? 'onToggleOn' : 'onToggleOff',
+      'actionText',
+      text
+    );
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -69,7 +72,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
               title: 'Button label',
               default: 'Action',
               displayTarget: ['c']
-
             },
             onLabel: {
               type: 'text',
@@ -88,16 +90,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
               title: 'Tooltip',
               default: ''
             },
-            onColor: {
-              type: 'spectrum',
-              title: 'Color (on)',
-              default: [0, 0, 0, 1],
+            cssOn: {
+              type: 'jscode',
+              mode: 'css',
+              title: 'CSS (on)',
+              default: '{background-color: green}',
               displayTarget: ['t']
             },
-            offColor: {
-              type: 'spectrum',
-              title: 'Color (off)',
-              default: [0, 0, 0, 1],
+            cssOff: {
+              type: 'jscode',
+              mode: 'css',
+              title: 'CSS (off)',
+              default: '{background-color: red}',
               displayTarget: ['t']
             },
             startState: {
@@ -171,8 +175,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
     onLabel: ['groups', 'group', 0, 'onLabel', 0],
     offLabel: ['groups', 'group', 0, 'offLabel', 0],
     title: ['groups', 'group', 0, 'title', 0],
-    onColor: ['groups', 'group', 0, 'onColor', 0],
-    offColor: ['groups', 'group', 0, 'offColor', 0],
+    cssOn: ['groups', 'group', 0, 'cssOn', 0],
+    cssOff: ['groups', 'group', 0, 'cssOff', 0],
     text: ['groups', 'group', 0, 'text', 0],
     toggle: ['groups', 'group', 0, 'toggle', 0],
     askConfirm: ['groups', 'group', 0, 'askConfirm', 0],

@@ -12,6 +12,41 @@ define([
   var onClick;
 
   $.extend(true, View.prototype, Default, {
+    redrawButton() {
+      let buttonType = this.module.getConfiguration('toggle');
+      var content = this.module.getConfiguration('content');
+      switch (buttonType) {
+        case 'button':
+          break;
+        case 'imageUrl':
+          var $div = $(`<div><img src="${content}"/></div>`);
+          $div.find('img').css({
+            width: this.width,
+            height: this.height,
+            objectFit: 'contain'
+          });
+          $div.css({
+            cursor: 'pointer'
+          });
+          this.dom.html($div);
+          this.dom.css({
+            overflow: 'hidden'
+          });
+          break;
+        case 'svg':
+          var $div = $('<div>');
+          $div.append(content);
+          $div.css('cursor', 'pointer');
+          Renderer.render($div, {
+            type: 'svg',
+            value: content
+          });
+          this.dom.html($div);
+          break;
+        default:
+      }
+    },
+
     onResize: function () {
       var that = this;
       this.maskOpacity = this.module.getConfiguration('maskOpacity');
@@ -20,8 +55,6 @@ define([
         width: '100%',
         height: '100%'
       });
-      var content = this.module.getConfiguration('content');
-      var contentType = this.module.getConfiguration('contentType');
       var buttonType = this.module.getConfiguration('toggle');
       if (
         buttonType === 'toggle' &&
@@ -71,7 +104,7 @@ define([
 
       this.module.getDomContent().html(this.dom);
 
-      var buttonType = this.getButtonType();
+      var buttonType = this.getContentType();
       if (buttonType === 'button') {
         this.dom.html(
           button.render().css({
@@ -80,31 +113,9 @@ define([
           })
         );
       } else if (buttonType === 'imageUrl') {
-        var $div = $(`<div><img src="${content}"/></div>`);
-        $div.find('img').css({
-          width: this.width,
-          height: this.height,
-          objectFit: 'contain'
-        });
-        $div.css({
-          cursor: 'pointer'
-        });
-        this.dom.html($div);
-        this.dom.css({
-          overflow: 'hidden'
-        });
-
         this.dom.on('click', onClick);
       } else if (buttonType === 'svg') {
-        var $div = $('<div>');
-        $div.append(content);
-        $div.css('cursor', 'pointer');
-        Renderer.render($div, {
-          type: 'svg',
-          value: content
-        });
-        $div.on('click', onClick);
-        this.dom.html($div);
+        this.dom.on('click', onClick);
       } else if (buttonType === 'content') {
         var $div = $('<div>');
         $div.append(content);
@@ -131,8 +142,8 @@ define([
     },
 
     activate: function () {
-      var type = this.getButtonType();
-      switch (type) {
+      var contentType = this.getContentType();
+      switch (contentType) {
         case 'button':
           this.activateButton();
           break;
@@ -143,7 +154,7 @@ define([
     },
 
     deactivate: function () {
-      var type = this.getButtonType();
+      var type = this.getContentType();
       switch (type) {
         case 'button':
           this.deactivateButton();
@@ -155,7 +166,7 @@ define([
     },
 
     toggle: function () {
-      var type = this.getButtonType();
+      var type = this.getContentType();
       switch (type) {
         case 'button':
           this.toggleButton();
@@ -228,7 +239,7 @@ define([
       this.button.setColorCss(color);
     },
 
-    getButtonType: function () {
+    getContentType: function () {
       var contentType = this.module.getConfiguration('contentType');
       if (contentType === 'content') {
         var content = this.module.getConfiguration('content');
