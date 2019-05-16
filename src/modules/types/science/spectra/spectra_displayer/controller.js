@@ -90,6 +90,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       label: 'SVG string',
       type: 'string'
     },
+    wheelDelta: {
+      label: 'Mouse wheel delta',
+      type: 'number'
+    },
     // input
     chart: {
       type: ['chart', 'object', 'array'],
@@ -140,6 +144,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       label: 'Mouse tracking (click)',
       refVariable: ['trackData'],
       refAction: ['trackData', 'mouseEvent', 'dataAndEvent']
+    },
+    onMouseWheel: {
+      label: 'Mouse wheel event',
+      refAction: ['mouseEvent', 'wheelDelta']
+    },
+    onMouseWheelShift: {
+      label: 'Mouse wheel event (with shift key)',
+      refAction: ['mouseEvent', 'wheelDelta']
     },
     onAnnotationAdd: {
       label: 'Annotation added',

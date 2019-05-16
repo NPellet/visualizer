@@ -160,6 +160,39 @@ define([
             });
           }
 
+          options.mouseActions.push({
+            callback: (wheelDelta, event) => {
+              this.module.controller.sendActionFromEvent(
+                'onMouseWheel',
+                'mouseEvent',
+                event
+              );
+              this.module.controller.sendActionFromEvent(
+                'onMouseWheel',
+                'wheelDelta',
+                wheelDelta
+              );
+            },
+            type: 'mousewheel'
+          });
+
+          options.mouseActions.push({
+            callback: (wheelDelta, event) => {
+              this.module.controller.sendActionFromEvent(
+                'onMouseWheelShift',
+                'mouseEvent',
+                event
+              );
+              this.module.controller.sendActionFromEvent(
+                'onMouseWheelShift',
+                'wheelDelta',
+                wheelDelta
+              );
+            },
+            shift: true,
+            type: 'mousewheel'
+          });
+
           const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
           if (useMouseTracking) {
             options.onMouseMoveData = (event, result) => {
