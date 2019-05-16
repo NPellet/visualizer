@@ -50,7 +50,7 @@ module.exports = function (grunt) {
       },
       superagent: {
         files: {
-          'src/browserified/superagent/index.js': ['./node_modules/superagent/lib/node/index.js']
+          'src/browserified/superagent/index.js': ['./node_modules/superagent/lib/client.js']
         },
         options: {
           browserifyOptions: {
