@@ -453,7 +453,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   type: 'checkbox',
                   title: 'Mouse tracking',
                   options: {
-                    track: ''
+                    track: 'Enable mouse tracking',
+                    legend: 'Display tracking legend (mouse tracking must be enabled)'
                   }
                 },
                 selectScatter: {

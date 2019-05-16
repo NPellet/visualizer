@@ -270,6 +270,17 @@ define([
           }
 
           if (useMouseTracking) {
+            const trackLineOptions = {
+              mode: 'individual'
+            };
+            const showTracingLegend = cfgCheckbox('mouseTracking', 'legend');
+            if (showTracingLegend) {
+              Object.assign(trackLineOptions, {
+                legend: true,
+                legendType: 'common'
+              });
+            }
+            graph.trackingLine(trackLineOptions);
             graph.on('click', (e) => {
               if (this.module.model.trackData) {
                 this.module.controller.sendActionFromEvent(
@@ -633,7 +644,7 @@ define([
             }
 
             if (plotinfos[i].tracking && plotinfos[i].tracking[0] === 'yes') {
-              serie.allowTrackingLine({});
+              serie.allowTrackingLine();
             }
           }
         }
