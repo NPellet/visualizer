@@ -72,6 +72,7 @@ require.config({
     quillImageResizeModule:
       'node_modules/quill-image-resize-module/image-resize.min',
     quillImageDropModule: 'node_modules/quill-image-drop-module/image-drop.min',
+    RxnRenderer: 'browserified/RxnRenderer/index',
     select2: 'components/select2/dist/js/select2.full',
     slickgrid: 'components/slickgrid/slick.grid',
     slickgrid_core: 'components/slickgrid/slick.core',

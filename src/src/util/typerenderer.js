@@ -371,17 +371,28 @@ define([
   };
 
   functions.rxn = {};
-  functions.rxn.toscreen = async function ($element, val, root, options) {
+  functions.rxn.toscreen = async function ($element, val, root, options = {}) {
+    const { maxWidth = 300, maxHeight = 300 } = options;
     const OCL = await asyncRequire(oclUrl);
-    const RxnRenderer = await asyncRequire('rxn-renderer');
-    console.log(RxnRenderer);
-    return renderOpenChemLibStructure(
-      false,
-      $element,
-      String(val),
-      String(root.coordinates),
-      options
-    );
+    const { RxnRenderer } = await asyncRequire('RxnRenderer');
+    let renderer = new RxnRenderer(OCL, { maxWidth, maxHeight });
+    let html = renderer.renderRXN(val);
+    $element.html(html);
+  };
+
+  functions.reaction = {};
+  functions.reaction.toscreen = async function (
+    $element,
+    val,
+    root,
+    options = {}
+  ) {
+    const { maxWidth = 300, maxHeight = 300 } = options;
+    const OCL = await asyncRequire(oclUrl);
+    const { RxnRenderer } = await asyncRequire('RxnRenderer');
+    let renderer = new RxnRenderer(OCL, { maxWidth, maxHeight });
+    let html = renderer.render(val);
+    $element.html(html);
   };
 
   functions.oclid = {};

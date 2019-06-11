@@ -77,6 +77,16 @@ module.exports = function (grunt) {
             standalone: 'bioParsers'
           }
         }
+      },
+      RxnRenderer: {
+        files: {
+          'src/browserified/RxnRenderer/index.js': ['./node_modules/rxn-renderer/lib/index.js']
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'RxnRenderer'
+          }
+        }
       }
     },
     pkg: grunt.file.readJSON('package.json'),

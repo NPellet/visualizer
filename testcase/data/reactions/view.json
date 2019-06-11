@@ -35,7 +35,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 4
+            "top": 0
           },
           "size": {
             "width": 51,
@@ -124,11 +124,11 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 35
+            "top": 30
           },
           "size": {
             "width": 51,
-            "height": 30
+            "height": 29
           },
           "zIndex": 0,
           "display": true,
@@ -212,12 +212,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 54,
-            "top": 35
+            "left": 52,
+            "top": 30
           },
           "size": {
-            "width": 63,
-            "height": 28
+            "width": 68,
+            "height": 29
           },
           "zIndex": 0,
           "display": true,
@@ -233,6 +233,93 @@
         {
           "rel": "value",
           "name": "rxn"
+        }
+      ],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["reaction"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 52,
+            "top": 0
+          },
+          "size": {
+            "width": 68,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "object"
         }
       ],
       "actions_in": [{}],
