@@ -1,0 +1,277 @@
+{
+  "version": "2.103.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["view"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [[]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": [
+                "{\"rxn\":\"$RXN\\n\\n\\nJME Molecular Editor\\n  2  1\\n$MOL\\nCC(C)(C)N.CC(C)C(=O)Cl>>CC(C)C(=O)NC(C)(C)C\\nJME 2017-11-16 Tue Jun 11 08:00:39 GMT+200 2019\\n\\n  5  4  0  0  0  0  0  0  0  0999 V2000\\n    2.4388    0.6811    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2193    1.3842    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2084    2.7903    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2084    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    0.6921    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n  1  2  1  0  0  0  0\\n  2  3  1  0  0  0  0\\n  2  4  1  0  0  0  0\\n  2  5  1  0  0  0  0\\nM  END\\n$MOL\\nCC(C)(C)N.CC(C)C(=O)Cl>>CC(C)C(=O)NC(C)(C)C\\nJME 2017-11-16 Tue Jun 11 08:00:39 GMT+200 2019\\n\\n  6  5  0  0  0  0  0  0  0  0999 V2000\\n    2.4460    0.0000    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0\\n    2.4350    1.4040    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.6307    2.1060    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2175    2.1060    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2066    3.5100    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    1.4150    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n  1  2  1  0  0  0  0\\n  2  3  2  0  0  0  0\\n  2  4  1  0  0  0  0\\n  4  5  1  0  0  0  0\\n  4  6  1  0  0  0  0\\nM  END\\n$MOL\\nCC(C)(C)N.CC(C)C(=O)Cl>>CC(C)C(=O)NC(C)(C)C\\nJME 2017-11-16 Tue Jun 11 08:00:39 GMT+200 2019\\n\\n 10  9  0  0  0  0  0  0  0  0999 V2000\\n    2.4249    1.4000    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.6373    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    4.8498    1.4000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    6.0622    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    4.8498    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.6373    3.5000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2124    2.1000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    1.4000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2124    3.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000    2.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n  1  2  1  0  0  0  0\\n  2  3  1  0  0  0  0\\n  3  4  1  0  0  0  0\\n  3  5  1  0  0  0  0\\n  2  6  2  0  0  0  0\\n  1  7  1  0  0  0  0\\n  7  8  1  0  0  0  0\\n  7  9  1  0  0  0  0\\n  7 10  1  0  0  0  0\\nM  END\\n\",\"conditions\":\"In solution\",\"catalyst\":\"Pd/C\",\"reagent\":\"Et3N\",\"yield\":\"73%\",\"solvent\":\"CH2Cl2\",\"temperature\":\"RT\"}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 4
+          },
+          "size": {
+            "width": 51,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "object"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [["button"]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
+              "script": [
+                "$RXN\n\nRhea  rhea-util042920191555  10014\nRHEA:release=104\n  2  3\n$MOL\nCHEBI:58682\n  CDK    2/12/10,15:28\n\n 14 14  0  0  0  0  0  0  0  0999 V2000\n   -2.8775    0.9500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.5907    0.5354    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.1593   -0.2854    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.8725   -0.7000    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.1618    0.5396    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4473    1.7771    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4473    0.9521    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.7328    0.5396    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.0184    0.9521    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.6961    0.5396    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.4106    0.9521    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.1251    0.5396    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.5882   -0.2896    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.3027   -0.7021    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0 \n  1  5  1  0  0  0  0 \n  2 13  1  0  0  0  0 \n 13  4  2  0  0  0  0 \n  4  3  1  0  0  0  0 \n  3  5  2  0  0  0  0 \n  5  7  1  0  0  0  0 \n  7  6  2  0  0  0  0 \n  7  8  1  0  0  0  0 \n  8  9  1  0  0  0  0 \n  9 10  1  0  0  0  0 \n 10 11  1  0  0  0  0 \n 11 12  1  0  0  0  0 \n 13 14  1  0  0  0  0 \nM  CHG  1  11   1\nM  END\n$MOL\nCHEBI:16240\n  Marvin  12010510582D          \n\n  4  3  0  0  0  0            999 V2000\n    0.3572   -0.2063    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.3572    0.2063    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.0717   -0.2062    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n    1.0717    0.2062    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  3  2  1  0  0  0  0\n  4  1  1  0  0  0  0\nM  END\n$MOL\nCHEBI:58413\n  Mrv0541 04131511232D          \n\n 14 15  0  0  1  0            999 V2000\n    8.0491   -9.7491    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.7942   -8.9646    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9692   -8.9646    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.3817  -10.2341    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0\n    6.7143   -9.7491    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0\n    5.9999  -10.1616    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.9999  -10.9867    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.2854   -9.7491    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.5710  -10.1616    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.5710  -10.9867    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.2854  -11.3992    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    5.9142   -9.5323    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n    3.8566  -11.3911    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    7.3853  -11.0630    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  4  1  1  0  0  0  0\n  4  5  1  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  1  0  0  0  0\n  3  5  1  0  0  0  0\n  5  6  1  0  0  0  0\n  7  6  2  0  0  0  0\n  6  8  1  0  0  0  0\n 11  7  1  0  0  0  0\n 11 10  2  0  0  0  0\n  8  9  2  0  0  0  0\n  9 10  1  0  0  0  0\n  5 12  1  6  0  0  0\n 10 13  1  0  0  0  0\n  4 14  1  0  0  0  0\nM  CHG  1   4   1\nM  END\n$MOL\nCHEBI:15377\n  Marvin  01211112152D          \n\n  3  2  0  0  0  0            999 V2000\n   -0.4125    0.7145    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.4125   -0.7145    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n  2  1  1  0  0  0  0\n  2  3  1  0  0  0  0\nM  END\n$MOL\nCHEBI:15379\n  Marvin  02030822342D          \n\n  2  1  0  0  0  0            999 V2000\n   -0.4125    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4125    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0\nM  STY  1   1 SUP\nM  SAL   1  2   1   2\nM  SMT   1 O2\nM  END\n"
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 35
+          },
+          "size": {
+            "width": 51,
+            "height": 30
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "rxn"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["rxn"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 54,
+            "top": 35
+          },
+          "size": {
+            "width": 63,
+            "height": 28
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "rxn"
+        }
+      ],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}

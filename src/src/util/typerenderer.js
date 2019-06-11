@@ -370,6 +370,20 @@ define([
     return renderOpenChemLibStructure(true, $element, mol, false, options);
   };
 
+  functions.rxn = {};
+  functions.rxn.toscreen = async function ($element, val, root, options) {
+    const OCL = await asyncRequire(oclUrl);
+    const RxnRenderer = await asyncRequire('rxn-renderer');
+    console.log(RxnRenderer);
+    return renderOpenChemLibStructure(
+      false,
+      $element,
+      String(val),
+      String(root.coordinates),
+      options
+    );
+  };
+
   functions.oclid = {};
   functions.oclid.toscreen = async function ($element, val, root, options) {
     const OCL = await asyncRequire(oclUrl);

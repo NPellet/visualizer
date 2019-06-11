@@ -4,6 +4,8 @@ define(function () {
   var structures = {
     //        'object': 'object', // Removed ! Object should by dynamic.
     latex: 'string',
+    rxn: 'string',
+    reaction: 'object',
     mol2d: 'string',
     molfile2D: 'string',
     mol3d: 'string',
