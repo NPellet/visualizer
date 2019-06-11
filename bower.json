@@ -41,7 +41,7 @@
     "jquery.panzoom": "cheminfo/jquery.panzoom#2cbe83a059b4f41181f4c5bba628e5267d6a12f5",
     "jquery.threedubmedia": "git://github.com/threedubmedia/jquery.threedubmedia",
     "jsbarcode": "3.5.7",
-    "jsgraph": "2.2.1",
+    "jsgraph": "2.2.9",
     "jsme": "bcdc8f0d475eb72c2d75d20afae0b7ca4ebde273",
     "jsmol": "v1.2.0",
     "json-chart": "1.1.0",
@@ -80,7 +80,7 @@
     "quill": "https://github.com/quilljs/quill/releases/download/v1.3.6/quill.tar.gz"
   },
   "resolutions": {
-    "jsgraph": "2.2.1",
+    "jsgraph": "2.2.9",
     "jcampconverter": "2.11.0",
     "jquery": "2.2.4",
     "eventEmitter": "^5.1.0"
