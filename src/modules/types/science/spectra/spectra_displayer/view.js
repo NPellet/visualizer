@@ -195,32 +195,7 @@ define([
 
           const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
           if (useMouseTracking) {
-            options.onMouseMoveData = (event, result) => {
-              this.module.model.trackData = result;
-              this.module.controller.sendActionFromEvent(
-                'onTrackMouse',
-                'trackData',
-                result
-              );
-              this.module.controller.sendActionFromEvent(
-                'onTrackMouse',
-                'mouseEvent',
-                event
-              );
-              this.module.controller.sendActionFromEvent(
-                'onTrackMouse',
-                'dataAndEvent',
-                {
-                  data: result,
-                  event: event
-                }
-              );
-              this.module.controller.createDataFromEvent(
-                'onTrackMouse',
-                'trackData',
-                result
-              );
-            };
+            options.mouseMoveData = true;
           }
 
           const selectScatterPlugin = cfgCheckbox('selectScatter', 'yes');
@@ -314,6 +289,34 @@ define([
               });
             }
             graph.trackingLine(trackLineOptions);
+            graph.on('mouseMoveData', (result) => {
+              // todo: use the event from callback once it's back
+              const event = null;
+              this.module.model.trackData = result;
+              this.module.controller.sendActionFromEvent(
+                'onTrackMouse',
+                'trackData',
+                result
+              );
+              this.module.controller.sendActionFromEvent(
+                'onTrackMouse',
+                'mouseEvent',
+                event
+              );
+              this.module.controller.sendActionFromEvent(
+                'onTrackMouse',
+                'dataAndEvent',
+                {
+                  data: result,
+                  event: event
+                }
+              );
+              this.module.controller.createDataFromEvent(
+                'onTrackMouse',
+                'trackData',
+                result
+              );
+            });
             graph.on('click', (e) => {
               if (this.module.model.trackData) {
                 this.module.controller.sendActionFromEvent(
