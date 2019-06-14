@@ -29,7 +29,7 @@
     "file-saver.js": "1.20150507.2",
     "flag-icon-css": "2.8.0",
     "font-awesome": "5.0.13",
-    "jcampconverter": "2.11.0",
+    "jcampconverter": "3.0.2",
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
     "jquery": "2.2.4",
@@ -81,7 +81,7 @@
   },
   "resolutions": {
     "jsgraph": "2.2.9",
-    "jcampconverter": "2.11.0",
+    "jcampconverter": "3.0.2",
     "jquery": "2.2.4",
     "eventEmitter": "^5.1.0"
   },
