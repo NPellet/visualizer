@@ -1,7 +1,11 @@
 {
   "version": "2.103.1-0",
   "grid": {
-    "layers": { "Default layer": { "name": "Default layer" } },
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
     "xWidth": 10,
     "yHeight": 10
   },
@@ -17,7 +21,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "const createContours = API.cache('createContours');\n\nlet zoomPos = API.cache('currentZoomPos');\nlet zoomNeg = API.cache('currentZoomNeg');\n\nif(this.action.name === 'wheelPos') {\n    zoomPos += Math.sign(this.action.value);\n} else {\n    zoomNeg += Math.sign(this.action.value);\n}\n\ncreateContours(zoomPos, zoomNeg);\n\nAPI.cache('currentZoomPos', zoomPos);\nAPI.cache('currentZoomNeg', zoomNeg);"
+                "const createContours = API.cache('createContours');\n\nlet zoomPos = API.cache('currentZoomPos');\nlet zoomNeg = API.cache('currentZoomNeg');\n\nconst sign = Math.sign(this.action.value);\n\nif(this.action.name === 'wheelPos') {\n    if (zoomPos === 0 && sign === -1) return;\n    zoomPos += sign;\n} else {\n    if (zoomNeg === 0 && sign === -1) return;\n    zoomNeg += sign;\n}\n\ncreateContours(zoomPos, zoomNeg);\n\nAPI.cache('currentZoomPos', zoomPos);\nAPI.cache('currentZoomNeg', zoomNeg);"
               ]
             }
           ],
@@ -36,8 +40,14 @@
       },
       "layers": {
         "Default layer": {
-          "position": { "left": 0, "top": 0 },
-          "size": { "width": 45, "height": 27 },
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 45,
+            "height": 27
+          },
           "zIndex": 0,
           "display": true,
           "title": "",
@@ -50,11 +60,25 @@
       "id": 1,
       "vars_in": [{}],
       "actions_in": [
-        { "rel": "execute", "name": "wheelPos" },
-        { "rel": "execute", "name": "wheelNeg" }
+        {
+          "rel": "execute",
+          "name": "wheelPos"
+        },
+        {
+          "rel": "execute",
+          "name": "wheelNeg"
+        }
       ],
-      "vars_out": [{ "jpath": [] }],
-      "actions_out": [{ "jpath": [] }],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -67,9 +91,18 @@
             }
           ]
         ],
-        "common": [{ "toolbar": [["Open Preferences"]] }]
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
       },
-      "css": [{ "fontSize": [""], "fontFamily": [""] }],
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
       "title": ""
     },
     {
@@ -83,11 +116,18 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "const Conrec = API.cache('conrec-lib');\n\nconst req = await fetch('../testcase/data/spectra2D/hmbc.jdx')\nconst jcamp = await req.text();\n\nconst parsed = await Converter.convert(jcamp, {\n    noContour: true,\n    xy: true\n})\n\nconst minMax = parsed.minMax;\n// todo bug in JCAMPCONVERTER!\nif (minMax.minX > minMax.maxX) {\n    const tmp = minMax.minX;\n    minMax.minX = minMax.maxX;\n    minMax.maxX = tmp;\n}\nif (minMax.minY > minMax.maxY) {\n    const tmp = minMax.minY;\n    minMax.minY = minMax.maxY;\n    minMax.maxY = tmp;\n}\nconst xs = getRange(minMax.minY, minMax.maxY, minMax.z.length);\nconst ys = getRange(minMax.minX, minMax.maxX, minMax.z[0].length);\nconst conrec = new Conrec(minMax.z, {xs, ys});\n\nconst firstLine = minMax.z[0].map(Math.abs);\nfirstLine.sort((a,b) => a-b);\nconst median = 2 * firstLine[Math.floor(firstLine.length / 2)];\n\nAPI.cache('createContours', createContours);\n\ncreateContours(0, 0);\n\nfunction createContours(zoomPos, zoomNeg) {\n    const positive = getContours(zoomPos, false);\n    const negative = getContours(zoomNeg, true);\n    const chart = {\n        data: [\n            {\n                type: 'contour',\n                contourLines: positive\n            },\n            {\n                type: 'contour',\n                contourLines: negative\n            }\n        ]\n    }\n    API.createData('chart', chart)\n}\n\nfunction getContours(zoomLevel, negative = false) {\n    const max = Math.max(Math.abs(minMax.maxZ), Math.abs(minMax.minZ));\n    let range;\n    if (negative) {\n        range = getRange(-max * 20 / 100, -median * 4 * Math.pow(2, zoomLevel), 10, 2);\n    } else {\n        range = getRange(median * 4 * Math.pow(2, zoomLevel), max * 20 / 100, 10, 2);\n    }\n    \n    const contours = conrec.drawContour({\n        levels: range,\n        timeout: 1000\n    });\n    return {\n        minX: minMax.minY,\n        maxX: minMax.maxY,\n        minY: minMax.minX,\n        maxY: minMax.maxX,\n        segments: contours\n    };\n}\n\nfunction getRange(min, max, length, exp) {\n    if (exp) {\n        var factors = new Array(length);\n        factors[0] = 0;\n        for (var i = 1; i < length; i++) {\n            factors[i] = factors[i - 1] + (exp - 1) / Math.pow(exp, i);\n        }\n        const lastFactor = factors[i - 1];\n\n        var result = new Array(length);\n        for (var i = 0; i < length; i++) {\n            result[i] = (max - min) * (1 - factors[i] / lastFactor) + min;\n        }\n        return result;\n    } else {\n        const step = (max - min) / (length - 1);\n        return range(min, max + step, step);\n    }\n}\n\nfunction range(from, to, step) {\n  const result = [];\n  for (let i = from; i < to; i += step) result.push(i);\n  return result;\n}\n"
+                "const Conrec = API.cache('conrec-lib');\n\nconst req = await fetch('../testcase/data/spectra2D/hmbc.jdx')\nconst jcamp = await req.text();\n\nconst parsed = await Converter.convert(jcamp, {\n    noContour: true,\n    xy: true\n})\n\nconst minMax = parsed.minMax;\n\nconst xs = getRange(minMax.minY, minMax.maxY, minMax.z.length);\nconst ys = getRange(minMax.minX, minMax.maxX, minMax.z[0].length);\nconst conrec = new Conrec(minMax.z, {xs, ys});\n\nconst median = minMax.noise\nAPI.cache('createContours', createContours);\n\nAPI.cache('currentZoomPos', 3)\nAPI.cache('currentZoomNeg', 3)\ncreateContours(3, 3);\n\nfunction createContours(zoomPos, zoomNeg) {\n    zoomPos /= 2;\n    zoomNeg /= 2;\n    const positive = getContours(zoomPos, false);\n    const negative = getContours(zoomNeg, true);\n    const chart = {\n        data: [\n            {\n                type: 'contour',\n                contourLines: positive\n            },\n            {\n                type: 'contour',\n                contourLines: negative\n            }\n        ]\n    }\n    API.createData('chart', chart)\n}\n\nfunction getContours(zoomLevel, negative = false) {\n    const max = Math.max(Math.abs(minMax.maxZ), Math.abs(minMax.minZ));\n    let range;\n    if (negative) {\n        range = getRange(-max, -median * 3 * Math.pow(2, zoomLevel), 10, 2);\n    } else {\n        range = getRange(median * 3 * Math.pow(2, zoomLevel), max, 10, 2);\n    }\n\n    const contours = conrec.drawContour({\n        levels: range,\n        timeout: 1000\n    });\n    return {\n        minX: minMax.minY,\n        maxX: minMax.maxY,\n        minY: minMax.minX,\n        maxY: minMax.maxX,\n        segments: contours\n    };\n}\n\nfunction getRange(min, max, length, exp) {\n    if (exp) {\n        var factors = [];\n        factors[0] = 0;\n        for (var i = 1; i <= length; i++) {\n            factors[i] = factors[i - 1] + (exp - 1) / Math.pow(exp, i);\n        }\n        const lastFactor = factors[i - 1];\n\n        var result = new Array(length);\n        for (var i = 0; i < length; i++) {\n            result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;\n        }\n        return result;\n    } else {\n        const step = (max - min) / (length - 1);\n        return range(min, max + step, step);\n    }\n}\n\nfunction range(from, to, step) {\n  const result = [];\n  for (let i = from; i < to; i += step) result.push(i);\n  return result;\n}\n"
               ]
             }
           ],
-          "libs": [[{ "lib": "jcampconverter", "alias": "Converter" }]],
+          "libs": [
+            [
+              {
+                "lib": "jcampconverter",
+                "alias": "Converter"
+              }
+            ]
+          ],
           "buttons": [
             [
               {
@@ -102,8 +142,14 @@
       },
       "layers": {
         "Default layer": {
-          "position": { "left": 0, "top": 28 },
-          "size": { "width": 45, "height": 27 },
+          "position": {
+            "left": 0,
+            "top": 28
+          },
+          "size": {
+            "width": 45,
+            "height": 27
+          },
           "zIndex": 0,
           "display": true,
           "title": "",
@@ -115,9 +161,22 @@
       },
       "id": 2,
       "vars_in": [{}],
-      "actions_in": [{ "rel": "execute", "name": "start" }],
-      "vars_out": [{ "jpath": [] }],
-      "actions_out": [{ "jpath": [] }],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "start"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -130,9 +189,18 @@
             }
           ]
         ],
-        "common": [{ "toolbar": [["Open Preferences"]] }]
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
       },
-      "css": [{ "fontSize": [""], "fontFamily": [""] }],
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
       "title": ""
     },
     {
@@ -165,8 +233,14 @@
       },
       "layers": {
         "Default layer": {
-          "position": { "left": 0, "top": 56 },
-          "size": { "width": 45, "height": 28 },
+          "position": {
+            "left": 0,
+            "top": 56
+          },
+          "size": {
+            "width": 45,
+            "height": 28
+          },
           "zIndex": 0,
           "display": true,
           "title": "",
@@ -179,8 +253,16 @@
       "id": 3,
       "vars_in": [{}],
       "actions_in": [{}],
-      "vars_out": [{ "jpath": [] }],
-      "actions_out": [{ "jpath": [] }],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "toolbar": {
         "custom": [
           [
@@ -193,9 +275,18 @@
             }
           ]
         ],
-        "common": [{ "toolbar": [["Open Preferences"]] }]
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
       },
-      "css": [{ "fontSize": [""], "fontFamily": [""] }],
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
       "title": ""
     },
     {
@@ -209,10 +300,10 @@
                 "graph": [
                   {
                     "url": [""],
-                    "zoom": ["none"],
+                    "zoom": ["xy"],
                     "wheelAction": ["none"],
                     "wheelbaseline": [0],
-                    "fullOut": ["both"],
+                    "fullOut": ["once"],
                     "legend": [null],
                     "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
                     "mouseTracking": [[]],
@@ -229,8 +320,8 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [["display"]],
-                    "label": [""],
+                    "checkboxes": [["display", "flip"]],
+                    "label": ["ppm"],
                     "beforeSpacing": ["0"],
                     "afterSpacing": [0],
                     "min": [""],
@@ -241,8 +332,8 @@
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [["display"]],
-                    "label": [""],
+                    "checkboxes": [["display", "flip"]],
+                    "label": ["ppm"],
                     "beforeSpacing": ["0"],
                     "afterSpacing": [0],
                     "min": [""],
@@ -258,7 +349,12 @@
             {
               "sections": {},
               "groups": {
-                "series": [{ "overflow": [[]], "stackVerticalSpacing": [0] }]
+                "series": [
+                  {
+                    "overflow": [[]],
+                    "stackVerticalSpacing": [0]
+                  }
+                ]
               }
             }
           ],
@@ -292,7 +388,13 @@
           "misc": [
             {
               "sections": {},
-              "groups": { "misc": [{ "highlightOptions": ["{}"] }] }
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": ["{}"]
+                  }
+                ]
+              }
             }
           ]
         },
@@ -300,8 +402,14 @@
       },
       "layers": {
         "Default layer": {
-          "position": { "left": 46, "top": 0 },
-          "size": { "width": 107, "height": 77 },
+          "position": {
+            "left": 46,
+            "top": 0
+          },
+          "size": {
+            "width": 116,
+            "height": 77
+          },
           "zIndex": 0,
           "display": true,
           "title": "",
@@ -312,9 +420,18 @@
         }
       },
       "id": 4,
-      "vars_in": [{ "rel": "chart", "name": "chart" }],
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart"
+        }
+      ],
       "actions_in": [{}],
-      "vars_out": [{ "jpath": [] }],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
       "actions_out": [
         {
           "event": "onMouseWheel",
@@ -341,19 +458,41 @@
             }
           ]
         ],
-        "common": [{ "toolbar": [["Open Preferences"]] }]
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
       },
-      "css": [{ "fontSize": [""], "fontFamily": [""] }],
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
       "title": ""
     }
   ],
-  "variables": [{ "jpath": [""] }],
+  "variables": [
+    {
+      "jpath": [""]
+    }
+  ],
   "aliases": [{}],
-  "configuration": { "title": "No title" },
+  "configuration": {
+    "title": "No title"
+  },
   "actionscripts": [
     {
       "sections": {},
-      "groups": { "action": [{ "name": [null], "script": [null] }] }
+      "groups": {
+        "action": [
+          {
+            "name": [null],
+            "script": [null]
+          }
+        ]
+      }
     }
   ],
   "init_script": [
@@ -373,13 +512,32 @@
   "custom_filters": [
     {
       "sections": {
-        "modules": [{ "sections": {}, "groups": { "modules": [[{}]] } }],
-        "filtersLib": [{ "sections": {}, "groups": { "filters": [[{}]] } }],
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
         "filters": [
           {
             "sections": {},
             "groups": {
-              "filter": [{ "name": [null], "script": [null] }],
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
               "libs": [[{}]]
             }
           }
@@ -388,5 +546,12 @@
       "groups": {}
     }
   ],
-  "actionfiles": [{ "sections": {}, "groups": { "action": [[{}]] } }]
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
+  ]
 }
