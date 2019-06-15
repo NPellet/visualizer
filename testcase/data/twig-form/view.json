@@ -183,7 +183,7 @@
 		"layers": {
 		  "Default layer": {
 			"position": {
-			  "left": 80,
+			  "left": 89,
 			  "top": 0
 			},
 			"size": {
@@ -292,7 +292,7 @@
 			  "top": 0
 			},
 			"size": {
-			  "width": 31,
+			  "width": 40,
 			  "height": 62
 			},
 			"zIndex": 0,
@@ -417,7 +417,7 @@
 		"layers": {
 		  "Default layer": {
 			"position": {
-			  "left": 80,
+			  "left": 89,
 			  "top": 31
 			},
 			"size": {
