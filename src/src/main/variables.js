@@ -1,6 +1,11 @@
 'use strict';
 
-define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function ($, Util, Datas, Debug) {
+define([
+  'jquery',
+  'src/util/util',
+  'src/main/datas',
+  'src/util/debug'
+], function ($, Util, Datas, Debug) {
   var data = new DataObject();
   data.onChange(handleChange);
 
@@ -34,7 +39,8 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
       }
     }
 
-    setjPath(jpath) { // Reroute variable to some other place in the data
+    setjPath(jpath) {
+      // Reroute variable to some other place in the data
       if (typeof jpath === 'string') {
         jpath = jpath.split('.');
         jpath.shift();
@@ -98,24 +104,23 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
 
     createData(jpath, dataToCreate) {
       dataToCreate = Datas.resurrect(dataToCreate);
-      return data.setChild(jpath, dataToCreate)
-        .then(() => {
-          this._upToDate = false;
-          return this.setjPath(jpath);
-        });
+      return data.setChild(jpath, dataToCreate).then(() => {
+        this._upToDate = false;
+        return this.setjPath(jpath);
+      });
     }
 
     getData() {
       return this._value;
     }
 
-    setData(newData) { // CAUTION. This function will overwrite source data
+    setData(newData) {
+      // CAUTION. This function will overwrite source data
       newData = Datas.resurrect(newData);
-      return data.setChild(this.getjPath(), newData)
-        .then(() => {
-          this._upToDate = false;
-          this.update();
-        });
+      return data.setChild(this.getjPath(), newData).then(() => {
+        this._upToDate = false;
+        this.update();
+      });
     }
 
     _setValue(value) {
@@ -157,45 +162,53 @@ define(['jquery', 'src/util/util', 'src/main/datas', 'src/util/debug'], function
         this.rejectCurrentPromise = false;
       }
 
-      this.currentPromise = new Promise((resolve, reject) => {
+      var prom = new Promise((resolve, reject) => {
         this.rejectCurrentPromise = reject;
 
         const _resolve = resolve;
         const _reject = reject;
 
-        data.trace(this._jpath).then((value) => {
-          if (callback) {
-            new Promise((resolve, reject) => {
-              callback(value, resolve, reject);
-            })
-              .then((value) => {
-                value = DataObject.check(value, true);
-                _resolve(value);
-              }, (error) => {
-                Debug.warn('Error during variable filtering : ', error);
-                _reject(new Error('filter')); // todo remove this hack
-              });
-          } else {
-            _resolve(value);
+        data.trace(this._jpath).then(
+          (value) => {
+            if (callback) {
+              new Promise((resolve, reject) => {
+                callback(value, resolve, reject);
+              }).then(
+                (value) => {
+                  value = DataObject.check(value, true);
+                  _resolve(value);
+                },
+                (error) => {
+                  Debug.warn('Error during variable filtering : ', error);
+                  _reject(new Error('filter')); // todo remove this hack
+                }
+              );
+            } else {
+              _resolve(value);
+            }
+            return null;
+          },
+          (err) => {
+            _reject(err);
           }
-          return null;
-        }, (err) => {
-          _reject(err);
-        });
+        );
 
         return null;
       }).then((value) => {
         this._setValue(value);
         return value;
       });
-      var prom = this.currentPromise.catch((err) => {
+      this.currentPromise = prom.catch((err) => {
         if (
           err.message === 'filter' || // Already caught
-                    err.message === 'latency' // Expected
+          err.message === 'latency' // Expected
         ) {
           return;
         }
-        Debug.error('Error in getting the variable through variable.js', err.stack || err);
+        Debug.error(
+          'Error in getting the variable through variable.js',
+          err.stack || err
+        );
       });
 
       for (var i = 0, l = this._listeners.length; i < l; i++) {
