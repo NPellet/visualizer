@@ -394,7 +394,7 @@
 				  ]
 				],
 				"script": [
-				  "API.createData('data', {\n    title:'abc',\n    authors:[\n        {firstname:'ab', lastname:'cd', nationalities: ['belgian']},\n        {firstname:'gh', lastname:'ij', nationalities: []},\n        {firstname:'kl', lastname:'mn'},\n        {firstname:'op', lastname:'qr', nationalities: ['belgian','swiss']},\n    ],\n    info: {\n        keywords:['kwd1','kw2'],\n        parameters: [\n            {\n              \"description\": \"asdf\",\n              \"value\": \"asdf\"\n            },\n            {\n              \"description\": \"fds\",\n              \"value\": \"asdff\"\n            }\n        ]\n    }\n});\n"
+				  "API.createData('data', {\n    title:'abc',\n    authors:[\n        {firstname:'ab', lastname:'cd', nationalities: ['belgian']},\n        {firstname:'gh', lastname:'ij', nationalities: []},\n        {firstname:'kl', lastname:'mn'},\n        {firstname:'op', lastname:'qr', nationalities: ['belgian','swiss']},\n    ],\n    info: {\n        keywords:['kwd1','kw2'],\n        parameters: [\n            {\n              \"description\": \"asdf\",\n              \"value\": \"asdf\"\n            },\n            {\n              \"description\": \"fds\",\n              \"value\": \"asdff\"\n            }\n        ]\n    }\n});\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
 				]
 			  }
 			],
@@ -510,7 +510,7 @@
 				  ]
 				],
 				"script": [
-				  "let data=API.getData('data');\nfor (let key of Object.keys(data)) {\n    data[key]=undefined;\n}\ndata.triggerChange();\n"
+				  "let data=API.getData('data');\nfor (let key of Object.keys(data)) {\n    data[key]=undefined;\n}\ndata.triggerChange();\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
 				]
 			  }
 			],
