@@ -2170,7 +2170,7 @@ define(
         });
       },
 
-      showColumn: function (column) {
+      hideColumn: function (column) {
         if (!this.hiddenColumns) return;
         if (this.hiddenColumns.indexOf(column) === -1) {
           this.hiddenColumns.push(column);
@@ -2178,7 +2178,7 @@ define(
         }
       },
 
-      hideColumn: function (column) {
+      showColumn: function (column) {
         if (!this.hiddenColumns) return;
         var idx = this.hiddenColumns.indexOf(column);
         if (idx > -1) {
