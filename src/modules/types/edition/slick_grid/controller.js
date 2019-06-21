@@ -523,6 +523,7 @@ define(
       insertRow: 'insert new row(s)',
       showColumn: 'Show a column',
       hideColumn: 'Hide a column',
+      toggleColumn: 'Toggle a column\'s visibility',
       rerender: 'Rerender the grid'
     });
 
