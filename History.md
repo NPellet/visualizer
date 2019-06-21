@@ -1,3 +1,17 @@
+# [2.104.0](https://github.com/NPellet/visualizer/compare/v2.103.0...v2.104.0) (2019-06-21)
+
+
+### Bug Fixes
+
+* hide / show column opposite behavior ([9ad0e52](https://github.com/NPellet/visualizer/commit/9ad0e52))
+
+
+### Features
+
+* **slick_grid:** add toggle column visibility action ([da44911](https://github.com/NPellet/visualizer/commit/da44911))
+
+
+
 # [2.103.0](https://github.com/NPellet/visualizer/compare/v2.102.4...v2.103.0) (2019-02-27)
 
 
