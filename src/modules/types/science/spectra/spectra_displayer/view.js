@@ -289,9 +289,7 @@ define([
               });
             }
             graph.trackingLine(trackLineOptions);
-            graph.on('mouseMoveData', (result) => {
-              // todo: use the event from callback once it's back
-              const event = null;
+            graph.on('mouseMoveData', (event, result) => {
               this.module.model.trackData = result;
               this.module.controller.sendActionFromEvent(
                 'onTrackMouse',

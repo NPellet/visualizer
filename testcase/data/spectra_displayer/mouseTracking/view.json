@@ -1,5 +1,5 @@
 {
-  "version": "2.87.3-0",
+  "version": "2.103.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -20,41 +20,16 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [
-                      ""
-                    ],
-                    "zoom": [
-                      "none"
-                    ],
-                    "wheelAction": [
-                      "none"
-                    ],
-                    "wheelbaseline": [
-                      0
-                    ],
-                    "fullOut": [
-                      "both"
-                    ],
-                    "legend": [
-                      null
-                    ],
-                    "legendOptions": [
-                      [
-                        "isSerieHideable",
-                        "isSerieSelectable"
-                      ]
-                    ],
-                    "mouseTracking": [
-                      [
-                        "track"
-                      ]
-                    ],
-                    "selectScatter": [
-                      []
-                    ],
-                    "independantYZoom": [
-                      []
-                    ]
+                    "url": [""],
+                    "zoom": ["none"],
+                    "wheelAction": ["none"],
+                    "wheelbaseline": [0],
+                    "fullOut": ["both"],
+                    "legend": [null],
+                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
+                    "mouseTracking": [["track", "legend"]],
+                    "selectScatter": [[]],
+                    "independantYZoom": [[]]
                   }
                 ]
               }
@@ -66,62 +41,26 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [
-                      [
-                        "display"
-                      ]
-                    ],
-                    "label": [
-                      ""
-                    ],
-                    "beforeSpacing": [
-                      "0"
-                    ],
-                    "afterSpacing": [
-                      0
-                    ],
-                    "min": [
-                      ""
-                    ],
-                    "max": [
-                      ""
-                    ],
-                    "nbTicksPrimary": [
-                      5
-                    ],
-                    "axismodification": [
-                      "none"
-                    ]
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "axismodification": ["none"]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [
-                      [
-                        "display"
-                      ]
-                    ],
-                    "label": [
-                      ""
-                    ],
-                    "beforeSpacing": [
-                      "0"
-                    ],
-                    "afterSpacing": [
-                      0
-                    ],
-                    "min": [
-                      ""
-                    ],
-                    "max": [
-                      ""
-                    ],
-                    "nbTicksPrimary": [
-                      5
-                    ],
-                    "fitToAxisOnFromTo": [
-                      []
-                    ]
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "fitToAxisOnFromTo": [[]]
                   }
                 ]
               }
@@ -133,12 +72,8 @@
               "groups": {
                 "series": [
                   {
-                    "overflow": [
-                      []
-                    ],
-                    "stackVerticalSpacing": [
-                      0
-                    ]
+                    "overflow": [[]],
+                    "stackVerticalSpacing": [0]
                   }
                 ]
               }
@@ -151,15 +86,10 @@
                 "variables": [
                   [
                     {
-                      "variable": "",
+                      "variable": "xydata",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [
-                        1,
-                        1,
-                        255,
-                        1
-                      ],
+                      "plotcolor": [0, 0, 0, 1],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -169,7 +99,7 @@
                       "markerSize": 2,
                       "normalize": "none",
                       "optimizeSlots": [],
-                      "tracking": []
+                      "tracking": ["yes"]
                     }
                   ]
                 ]
@@ -182,9 +112,7 @@
               "groups": {
                 "misc": [
                   {
-                    "highlightOptions": [
-                      "{}"
-                    ]
+                    "highlightOptions": ["{}"]
                   }
                 ]
               }
@@ -206,12 +134,7 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -224,9 +147,7 @@
           "name": "xydata"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onTrackClick",
@@ -259,28 +180,21 @@
               "title": "",
               "icon": "",
               "action": "",
-              "position": "begin"
+              "position": "begin",
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -292,32 +206,15 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                [
-                  "yes"
-                ]
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
               "script": [
                 "const xydata = [0,0,1,1,2,2,3,2,2,1];\nAPI.createData('xydata', xydata);"
               ]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -343,24 +240,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 2,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -384,22 +272,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -411,30 +291,13 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                []
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
-              "script": [
-                "console.log(this.action);\n"
-              ]
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": ["console.log(this.action);\n"]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -460,21 +323,14 @@
           "zIndex": 0,
           "display": true,
           "title": "We just display the clickEvent ",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 3,
-      "vars_in": [
-        {}
-      ],
+      "vars_in": [{}],
       "actions_in": [
         {
           "rel": "execute",
@@ -508,22 +364,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "We just display the clickEvent "
