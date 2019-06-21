@@ -2187,6 +2187,15 @@ define(
         }
       },
 
+      toggleColumn: function (column) {
+        var idx = this.hiddenColumns.indexOf(column);
+        if (idx === -1) {
+          this.hideColumn(column);
+        } else {
+          this.showColumn(column);
+        }
+      },
+
       getRowIndexes: function (rows) {
         var data = this.module.data.get();
         var srows, items;
@@ -2369,6 +2378,10 @@ define(
 
         hideColumn: function (column) {
           this.hideColumn(column);
+        },
+
+        toggleColumn: function (column) {
+          this.toggleColumn(column);
         }
       }
     });
