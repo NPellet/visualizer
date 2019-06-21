@@ -489,7 +489,6 @@ define(function () {
               }
             }
           }
-
         },
         mass: {
           type: 'array',
@@ -535,9 +534,7 @@ define(function () {
               }
             }
           }
-
         }
-
       }
     },
     geojson: 'object',
@@ -552,8 +549,7 @@ define(function () {
   };
 
   var parse = function (type, value) {
-    if (!this[type])
-      return;
+    if (!this[type]) return;
 
     var result = { type: type };
     var val;
