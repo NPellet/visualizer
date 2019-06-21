@@ -181,13 +181,13 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
 
     unbind() {
       this.dom.off('input', 'input,textarea', onChange(this));
-      this.dom.off('submit', 'form', onSubmit(this));
+      this.dom.off('submit', onSubmit(this));
       this.dom.off('change', 'input,select', onChange(this));
     }
 
     bind() {
       this.dom.on('input', 'input,textarea', onChange(this));
-      this.dom.on('submit', 'form', onSubmit(this));
+      this.dom.on('submit', onSubmit(this));
       this.dom.on('change', 'input,select', onChange(this));
     }
   }

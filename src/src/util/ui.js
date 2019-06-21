@@ -604,7 +604,10 @@ define([
   };
 
   exports.copyToClipboard = function (str, options = {}) {
-    const { successMessage = 'Copy success', failureMessage = 'Copy failure' } = options;
+    const {
+      successMessage = 'Copy success',
+      failureMessage = 'Copy failure'
+    } = options;
     var strlen = str.length;
     var txtarea = $('<textarea/>')
       .text(str)
@@ -633,10 +636,14 @@ define([
 
   exports.downloadFile = function (data, filename, options = {}) {
     const {
-      mimeType = (typeof data === 'string' ? 'text/plain' : 'application/octet-stream')
+      mimeType = typeof data === 'string'
+        ? 'text/plain'
+        : 'application/octet-stream'
     } = options;
     require(['file-saver'], (fileSaver) => {
-      var blob = new Blob(typeof data === 'string' ? [data] : data, { type: mimeType });
+      var blob = new Blob(typeof data === 'string' ? [data] : data, {
+        type: mimeType
+      });
       fileSaver(blob, filename);
     });
   };
