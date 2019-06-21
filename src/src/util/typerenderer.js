@@ -376,7 +376,7 @@ define([
     const OCL = await asyncRequire(oclUrl);
     const { RxnRenderer } = await asyncRequire('RxnRenderer');
     let renderer = new RxnRenderer(OCL, { maxWidth, maxHeight });
-    let html = renderer.renderRXN(val);
+    let html = renderer.renderRXN(String(val));
     $element.html(html);
   };
 
