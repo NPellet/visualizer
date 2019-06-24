@@ -109,21 +109,36 @@ define(['modules/default/defaultcontroller'], function (Default) {
               type: 'jscode',
               mode: 'css',
               title: 'CSS',
-              default: 'background-color: green;',
+              default: `font-size: 11px;
+background-color: #E6E6E6;
+border: 1px solid rgba(0, 0, 0, 0.2);
+height: 30px;
+padding: .5em 1em;
+font-weight: bold;`,
               displayTarget: ['c']
             },
             cssOn: {
               type: 'jscode',
               mode: 'css',
               title: 'CSS (on)',
-              default: 'background-color: blue;',
+              default: `font-size: 11px;
+background-color: #E6E6E6;
+border: 1px solid rgba(0, 0, 0, 0.2);
+height: 30px;
+padding: .5em 1em;
+font-weight: bold;`,
               displayTarget: ['t']
             },
             cssOff: {
               type: 'jscode',
               mode: 'css',
               title: 'CSS (off)',
-              default: 'background-color: red;',
+              default: `font-size: 11px;
+background-color: #E6E6E6;
+border: 1px solid rgba(0, 0, 0, 0.2);
+height: 30px;
+padding: .5em 1em;
+font-weight: bold;`,
               displayTarget: ['t']
             },
             startState: {

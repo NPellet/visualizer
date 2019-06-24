@@ -1,5 +1,5 @@
 {
-  "version": "2.103.1-0",
+  "version": "2.104.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -1461,6 +1461,340 @@
         }
       ],
       "title": "Toggle OFF"
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["click"],
+              "label": ["Action"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "css": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;"
+              ],
+              "cssOn": [""],
+              "cssOff": [""],
+              "startState": ["off"],
+              "text": [""],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "contentType": ["content"],
+              "content": [""],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 102,
+            "top": 12
+          },
+          "size": {
+            "width": 25,
+            "height": 11
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 15,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["toggle"],
+              "label": ["Action"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "css": [""],
+              "cssOn": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;"
+              ],
+              "cssOff": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;"
+              ],
+              "startState": ["off"],
+              "text": [""],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "contentType": ["content"],
+              "content": [""],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 102,
+            "top": 24
+          },
+          "size": {
+            "width": 25,
+            "height": 11
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 16,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["click"],
+              "label": ["Action"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "css": [""],
+              "cssOn": [""],
+              "cssOff": [""],
+              "startState": ["off"],
+              "text": [""],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "contentType": ["content"],
+              "content": [""],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 102,
+            "top": 36
+          },
+          "size": {
+            "width": 25,
+            "height": 11
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 17,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["toggle"],
+              "label": ["Action"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "css": [""],
+              "cssOn": [""],
+              "cssOff": [""],
+              "startState": ["off"],
+              "text": [""],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "contentType": ["content"],
+              "content": [""],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 102,
+            "top": 48
+          },
+          "size": {
+            "width": 25,
+            "height": 11
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 18,
+      "vars_in": [],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
