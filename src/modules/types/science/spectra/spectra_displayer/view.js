@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/default/defaultview',
   'jsgraph',
-  './jsonChart.js',
+  'json-chart',
   'src/util/api',
   'src/util/color',
   'src/util/debug',
