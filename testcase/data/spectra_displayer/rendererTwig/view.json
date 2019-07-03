@@ -1,0 +1,290 @@
+{
+  "version": "2.104.2-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["html"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [["button"]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
+              "script": [
+                "<div>\n    <div style=\"width: 100px, height: 200px\">\n    {{rendertypeBlock(chart,'chart')}}\n</div>\n</div>"
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 3
+          },
+          "size": {
+            "width": 48,
+            "height": 30
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 9,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "template"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": [
+                "{\"title\":\"PCA PC 1 vs 1 (101.03%)\",\"axes\":{\"x\":{\"label\":\"PC 1 (50.51%)\"},\"y\":{\"label\":\"PC 1 (50.111151%)\"}},\"series\":[{\"type\":\"scatter\",\"data\":{\"x\":[5.629116176534194,9.932519811909449,6.48913622828093,10.915798951296582,-2.094104831869714,2.396190860465466,3.357352432580302,0.7452465612297401,1.6050301349224074,9.022797416254715,1.0264958455692363,1.4141287050434266,1.7372354726744035,4.728585326550296,4.124169913548015,-41.168841861300116,-46.447346105506846,-38.16264428349209,-51.66052364003963,-32.97323951726928,-43.375355717503986,21.21839449773412,17.45133284503146,27.23288852662392,23.561709412608874,14.105391771240685,18.026072454036235,4.429002237921735,26.890449237351763,22.835870179057608,17.007140958515844],\"y\":[5.629116176534194,9.932519811909449,6.48913622828093,10.915798951296582,-2.094104831869714,2.396190860465466,3.357352432580302,0.7452465612297401,1.6050301349224074,9.022797416254715,1.0264958455692363,1.4141287050434266,1.7372354726744035,4.728585326550296,4.124169913548015,-41.168841861300116,-46.447346105506846,-38.16264428349209,-51.66052364003963,-32.97323951726928,-43.375355717503986,21.21839449773412,17.45133284503146,27.23288852662392,23.561709412608874,14.105391771240685,18.026072454036235,4.429002237921735,26.890449237351763,22.835870179057608,17.007140958515844]},\"style\":{\"marker\":{\"default\":{},\"modifiers\":[{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(230,0,0)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(255,204,51)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(255,204,51)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(255,204,51)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(255,204,51)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(255,204,51)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(255,204,51)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3},{\"shape\":\"circle\",\"fill\":\"rgb(191,255,128)\",\"r\":3}]}}}]}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 37
+          },
+          "size": {
+            "width": 48,
+            "height": 26
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "chart"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/display/template-twig/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "selectable": [[]],
+              "template": [""],
+              "modifyInForm": [[]],
+              "debouncing": [0],
+              "formOptions": [["keepFormValueIfDataUndefined"]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 55,
+            "top": 7
+          },
+          "size": {
+            "width": 65,
+            "height": 50
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 11,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "chart"
+        },
+        {
+          "rel": "tpl",
+          "name": "template"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "prefs",
+      "jpath": ["prefs"]
+    },
+    {
+      "varname": "template",
+      "jpath": ["template"]
+    },
+    {
+      "varname": "files",
+      "jpath": ["files"]
+    },
+    {
+      "varname": "chart",
+      "jpath": ["chart"]
+    }
+  ],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
