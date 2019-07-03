@@ -1,3 +1,7 @@
+## [2.104.2](https://github.com/NPellet/visualizer/compare/v2.104.1...v2.104.2) (2019-07-03)
+
+
+
 ## [2.104.1](https://github.com/NPellet/visualizer/compare/v2.104.0...v2.104.1) (2019-07-01)
 
 
