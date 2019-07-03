@@ -1,5 +1,5 @@
 {
-  "version": "2.104.1-0",
+  "version": "2.104.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -232,8 +232,10 @@
       ],
       "vars_out": [
         {
-          "event": "onTrackClick",
-          "jpath": []
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
         }
       ],
       "actions_out": [
@@ -851,8 +853,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 76,
-            "top": 15
+            "left": 88,
+            "top": 14
           },
           "size": {
             "width": 55,
@@ -884,8 +886,10 @@
       ],
       "vars_out": [
         {
-          "event": "onTrackClick",
-          "jpath": []
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
         }
       ],
       "actions_out": [
@@ -1290,8 +1294,10 @@
       ],
       "vars_out": [
         {
-          "event": "onTrackClick",
-          "jpath": []
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
         }
       ],
       "actions_out": [
@@ -1311,6 +1317,128 @@
           "rel": "dataAndEvent",
           "jpath": [],
           "name": "moveEvent"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                [
+                  "expand"
+                ]
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 56,
+            "top": 15
+          },
+          "size": {
+            "width": 31,
+            "height": 34
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "track"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
         }
       ],
       "toolbar": {
