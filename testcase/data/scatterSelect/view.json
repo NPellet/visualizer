@@ -1,5 +1,5 @@
 {
-  "version": "2.103.1-0",
+  "version": "2.104.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -32,7 +32,7 @@
                 []
               ],
               "script": [
-                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            type: 'scatter'\n        }\n    ]\n};\n\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nAPI.createData('chart', chart);\n"
+                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            type: 'scatter'\n        }\n    ]\n};\n\nAPI.createData('chart', chart);\n\nvar chart2 = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            type: 'line'\n        }\n    ]\n};\n\nAPI.createData('chart2', chart2);\n"
               ]
             }
           ],
@@ -321,8 +321,8 @@
             "top": 0
           },
           "size": {
-            "width": 59,
-            "height": 58
+            "width": 37,
+            "height": 34
           },
           "zIndex": 0,
           "display": true,
@@ -522,12 +522,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 110,
+            "left": 88,
             "top": 0
           },
           "size": {
             "width": 30,
-            "height": 35
+            "height": 19
           },
           "zIndex": 0,
           "display": true,
@@ -660,12 +660,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 110,
-            "top": 37
+            "left": 97,
+            "top": 21
           },
           "size": {
-            "width": 59,
-            "height": 46
+            "width": 35,
+            "height": 36
           },
           "zIndex": 0,
           "display": true,
@@ -851,6 +851,285 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "zoomY"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      [
+                        "track"
+                      ]
+                    ],
+                    "selectScatter": [
+                      [
+                        "yes"
+                      ]
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.01"
+                    ],
+                    "afterSpacing": [
+                      "0.01"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      []
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.01"
+                    ],
+                    "afterSpacing": [
+                      "0.01"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "chart",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "0",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [
+                        "markers"
+                      ],
+                      "markerShape": "1",
+                      "markerSize": 5,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 50,
+            "top": 35
+          },
+          "size": {
+            "width": 36,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Spectra displayer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart2"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Spectra displayer",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onSelectScatter",
+          "rel": "selectedData",
+          "jpath": [],
+          "name": "data"
+        },
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     }
   ],
   "variables": [

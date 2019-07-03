@@ -1,5 +1,5 @@
 {
-  "version": "2.102.5-0",
+  "version": "2.104.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -23,11 +23,22 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
-                "let files=[];\n\nlet {\n    username,\n    password\n} = API.getData('prefs').resurrect();\n\nlet headers = new Headers();\nheaders.set('Authorization', 'Basic ' + btoa(username + \":\" + password));\n\n\nlet toc=await getJSON('https://api.github.com/repos/NPellet/jsGraph/contents/examples/v2?ref=2.1');\nfor (let item of toc) {\n    if (item.type==='dir') {\n        let dir=(await getJSON(item.git_url)).tree;\n        for (let file of dir) {\n            console.log(file);\n            if (file.path.endsWith('.json')) {\n                files.push({\n                    directory: item.name,\n                    name: file.path,\n                    dataURL: file.url\n                })\n            }\n        }\n    }\n}\n\nAPI.createData('files', files);\n\nasync function getJSON(url) {\n    let response=await fetch(url,{headers});\n    return response.json();\n}\n\n\n\n\n\n"
+                "let files=[];\n\nlet {\n    username,\n    password\n} = API.getData('prefs').resurrect();\n\nlet headers = new Headers();\nheaders.set('Authorization', 'Basic ' + btoa(username + \":\" + password));\n\n\nlet toc=await getJSON('https://api.github.com/repos/NPellet/jsGraph/contents/examples/v2?ref=2.2');\nfor (let item of toc) {\n    if (item.type==='dir') {\n        let dir=(await getJSON(item.git_url)).tree;\n        for (let file of dir) {\n            console.log(file);\n            if (file.path.endsWith('.json')) {\n                files.push({\n                    directory: item.name,\n                    name: file.path,\n                    dataURL: file.url\n                })\n            }\n        }\n    }\n}\n\nAPI.createData('files', files);\n\nasync function getJSON(url) {\n    let response=await fetch(url,{headers});\n    return response.json();\n}\n\n\n\n\n\n"
               ]
             }
           ],
@@ -64,7 +75,12 @@
           "zIndex": 0,
           "display": true,
           "title": "We load the chart examples from github",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": false,
           "created": true,
           "name": "Default layer"
@@ -81,7 +97,12 @@
           "zIndex": 0,
           "display": true,
           "title": "We load the chart examples from github",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -98,15 +119,24 @@
           "zIndex": 0,
           "display": false,
           "title": "We load the chart examples from github",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "title": "We load the chart examples from github",
       "vars_out": [
         {
@@ -126,20 +156,31 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [[]]
+            "toolbar": [
+              []
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -160,28 +201,56 @@
                   "filterColumns"
                 ]
               ],
-              "copyPaste": [[]],
-              "copyPasteOptions": [["newRows"]],
-              "autoColumns": [[]],
-              "toolbar": [[]],
-              "colorjpath": [[]],
-              "slick.defaultColumnWidth": [null],
-              "slick.rowHeight": [null],
-              "slick.headerRowHeight": [30],
-              "slick.selectionModel": ["row"],
-              "idProperty": [""],
-              "filterType": ["pref"],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
               "filterRow": [
                 "// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940"
               ],
-              "customJpaths": [""]
+              "customJpaths": [
+                ""
+              ]
             }
           ],
           "cols": [
             [
               {
                 "name": "Folder",
-                "jpath": ["directory"],
+                "jpath": [
+                  "directory"
+                ],
                 "editor": "none",
                 "forceType": "",
                 "formatter": "typerenderer",
@@ -193,7 +262,9 @@
               },
               {
                 "name": "Name",
-                "jpath": ["name"],
+                "jpath": [
+                  "name"
+                ],
                 "editor": "none",
                 "forceType": "",
                 "formatter": "typerenderer",
@@ -208,8 +279,18 @@
           "actionCols": [
             [
               {
-                "backgroundColor": [255, 255, 255, 1],
-                "color": [0, 0, 0, 1],
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  1
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
                 "position": "end",
                 "clickMode": "text"
               }
@@ -222,12 +303,22 @@
               }
             ]
           ],
-          "actionOutButtons": [[{}]],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
           "data": [
             {
-              "saveInView": [[]],
-              "varname": [""],
-              "data": ["[]"]
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
             }
           ]
         }
@@ -245,7 +336,12 @@
           "zIndex": 0,
           "display": true,
           "title": "Just click on a  line",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -262,7 +358,12 @@
           "zIndex": 0,
           "display": false,
           "title": "Just click on a  line",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -279,7 +380,12 @@
           "zIndex": 0,
           "display": false,
           "title": "Just click on a  line",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -292,13 +398,17 @@
           "name": "files"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "title": "Just click on a  line",
       "vars_out": [
         {
           "event": "onRowActive",
           "rel": "row",
-          "jpath": ["dataURL"],
+          "jpath": [
+            "dataURL"
+          ],
           "name": "dataURL"
         }
       ],
@@ -315,20 +425,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -339,21 +462,56 @@
         "groups": {
           "group": [
             {
-              "append": [[]],
-              "maxEntries": [1],
-              "editable": [[]],
-              "debounce": [0],
-              "defaultvalue": [null],
-              "font": [null],
-              "fontcolor": [[0, 0, 0, 1]],
-              "fontsize": [null],
-              "align": [null],
-              "valign": [null],
-              "rendererOptions": [""],
-              "forceType": ["chart"],
-              "sprintf": [null],
-              "sprintfOrder": [null],
-              "preformatted": [[]]
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                "chart"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
             }
           ]
         }
@@ -366,12 +524,17 @@
           },
           "size": {
             "width": 60,
-            "height": 44
+            "height": 32
           },
           "zIndex": 0,
           "display": true,
           "title": "Display value chart rendering",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -388,7 +551,12 @@
           "zIndex": 0,
           "display": false,
           "title": "Display value chart rendering",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -405,7 +573,12 @@
           "zIndex": 0,
           "display": false,
           "title": "Display value chart rendering",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -418,7 +591,9 @@
           "name": "chart"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "title": "Display value chart rendering",
       "vars_out": [],
       "actions_out": [
@@ -439,14 +614,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -457,15 +640,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "let {\n    username,\n    password\n} = API.getData('prefs').resurrect();\n\nlet headers = new Headers();\nheaders.set('Authorization', 'Basic ' + btoa(username + \":\" + password));\n\n\n\nlet dataURL=get('dataURL');\nconsole.log(dataURL);\nlet chart=JSON.parse(atob((await getJSON(dataURL)).content));\n\n\nAPI.createData('chart', chart);\n\n\nasync function getJSON(url) {\n    let response=await fetch(url,{headers});\n    return response.json();\n}\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -491,7 +689,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -508,7 +711,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -525,20 +733,27 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 4,
       "vars_in": [
         {
           "rel": "inputValue",
           "name": "dataURL"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -557,20 +772,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -582,14 +810,34 @@
         "groups": {
           "group": [
             {
-              "editable": ["text"],
-              "expanded": [[]],
-              "storeObject": [[]],
-              "displayValue": [["display"]],
-              "searchBox": [["search"]],
-              "sendButton": [[]],
-              "output": ["modified"],
-              "storedObject": ["{}"]
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                [
+                  "display"
+                ]
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "modified"
+              ],
+              "storedObject": [
+                "{}"
+              ]
             }
           ]
         }
@@ -607,7 +855,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -624,7 +877,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -641,20 +899,27 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 6,
+      "id": 5,
       "vars_in": [
         {
           "rel": "value",
           "name": "chart"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -673,20 +938,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -698,14 +976,36 @@
         "groups": {
           "group": [
             {
-              "mode": ["text"],
-              "outputType": [null],
-              "btnvalue": ["Send script"],
-              "iseditable": [["editable"]],
-              "hasButton": [["button"]],
-              "variable": [[]],
-              "storeOnChange": [["store"]],
-              "debouncing": [0],
+              "mode": [
+                "text"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                [
+                  "store"
+                ]
+              ],
+              "debouncing": [
+                0
+              ],
               "script": [
                 "<style>\n  #prefs {\n    zoom: 1.5\n  }\n</style>\n\n<div id=\"prefs\">\nIn order to test this page you need to often access to github API\nand you may have to enter your github username / password.<p>\n\nUsername: <input type=\"text\" name=\"username\"><br>\nPassowrd: <input type=\"password\" name=\"password\">\n</div>\n"
               ]
@@ -713,8 +1013,14 @@
           ],
           "ace": [
             {
-              "useSoftTabs": [["yes"]],
-              "tabSize": [4]
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
             }
           ]
         }
@@ -732,7 +1038,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -749,7 +1060,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Admin"
@@ -766,15 +1082,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Prefs"
         }
       },
-      "id": 7,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "id": 6,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -796,20 +1121,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -821,11 +1159,25 @@
         "groups": {
           "group": [
             {
-              "selectable": [[]],
-              "template": [""],
-              "modifyInForm": [["yes"]],
-              "debouncing": [0],
-              "formOptions": [["keepFormValueIfDataUndefined"]]
+              "selectable": [
+                []
+              ],
+              "template": [
+                ""
+              ],
+              "modifyInForm": [
+                [
+                  "yes"
+                ]
+              ],
+              "debouncing": [
+                0
+              ],
+              "formOptions": [
+                [
+                  "keepFormValueIfDataUndefined"
+                ]
+              ]
             }
           ]
         }
@@ -843,7 +1195,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -860,7 +1217,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Admin"
@@ -877,13 +1239,18 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Prefs"
         }
       },
-      "id": 8,
+      "id": 7,
       "vars_in": [
         {
           "rel": "form",
@@ -894,7 +1261,9 @@
           "name": "template"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -913,20 +1282,341 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 36,
+            "top": 33
+          },
+          "size": {
+            "width": 60,
+            "height": 32
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "Prefs": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Prefs"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -935,22 +1625,32 @@
   "variables": [
     {
       "varname": "twigTpl",
-      "jpath": ["twigTpl"]
+      "jpath": [
+        "twigTpl"
+      ]
     },
     {
       "varname": "entries",
-      "jpath": ["entries"]
+      "jpath": [
+        "entries"
+      ]
     },
     {
       "varname": "files",
-      "jpath": ["files"]
+      "jpath": [
+        "files"
+      ]
     },
     {
       "varname": "droppedImages",
-      "jpath": ["droppedImages"]
+      "jpath": [
+        "droppedImages"
+      ]
     }
   ],
-  "aliases": [{}],
+  "aliases": [
+    {}
+  ],
   "configuration": {
     "title": "JsGraph github test cases"
   },
@@ -960,8 +1660,12 @@
       "groups": {
         "action": [
           {
-            "name": [null],
-            "script": [null]
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -988,7 +1692,11 @@
           {
             "sections": {},
             "groups": {
-              "modules": [[{}]]
+              "modules": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -996,7 +1704,11 @@
           {
             "sections": {},
             "groups": {
-              "filters": [[{}]]
+              "filters": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -1006,11 +1718,19 @@
             "groups": {
               "filter": [
                 {
-                  "name": [null],
-                  "script": [null]
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
                 }
               ],
-              "libs": [[{}]]
+              "libs": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ]
@@ -1022,7 +1742,11 @@
     {
       "sections": {},
       "groups": {
-        "action": [[{}]]
+        "action": [
+          [
+            {}
+          ]
+        ]
       }
     }
   ]
