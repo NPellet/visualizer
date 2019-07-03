@@ -746,7 +746,6 @@ define([
       },
 
       annotations(varName) {
-        console.log('remove annotation: ', varName);
         this.removeAnnotations(varName);
       }
     },
@@ -1040,7 +1039,6 @@ define([
       },
 
       annotations(value, varName) {
-        console.log('add annotation: ', varName);
         this.annotations[varName] = this.annotations[varName] || [];
         const annotations = value.get();
         for (let i = 0; i < annotations.length; i++) {
