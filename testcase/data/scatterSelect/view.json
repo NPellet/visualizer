@@ -32,7 +32,7 @@
                 []
               ],
               "script": [
-                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            type: 'scatter'\n        }\n    ]\n};\n\nAPI.createData('chart', chart);\n\nvar chart2 = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            type: 'line'\n        }\n    ]\n};\n\nAPI.createData('chart2', chart2);\n"
+                "var size = 10;\nvar y = new Array(size);\nvar x = new Array(size);\nvar info = new Array(size);\nfor (var i = 0; i < size; i++) {\n    x[i] = i;\n    y[i] = Math.random();\n    info[i] = {\n        i\n    };\n}\n\nvar chart = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            styles: {\n                unselected: [null,{ fill: 'green' }],\n                selected: [null, { fill: 'orange' }]\n            },\n            type: 'scatter'\n        }\n    ]\n};\n\nAPI.createData('chart', chart);\n\nvar chart2 = {\n    name: 'chart',\n    title: 'main data',\n    data: [\n        {\n            x,\n            y,\n            info,\n            defaultStyle: {\n                fill: 'red'\n            },\n            defaultStyles: {\n                unselected: { fill: 'purple' },\n                selected: { fill: 'blue' }\n            },\n            type: 'line'\n        }\n    ]\n};\n\nAPI.createData('chart2', chart2);\n\nAPI.createData('chart3', {\n    x:[1,2,3,4,5],\n    y:[1,2,3,2,1]\n})\n"
               ]
             }
           ],
@@ -61,7 +61,7 @@
           },
           "size": {
             "width": 49,
-            "height": 58
+            "height": 57
           },
           "zIndex": 0,
           "display": true,
@@ -660,8 +660,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 97,
-            "top": 21
+            "left": 88,
+            "top": 20
           },
           "size": {
             "width": 35,
@@ -772,12 +772,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 50,
-            "top": 59
+            "left": 125,
+            "top": 1
           },
           "size": {
-            "width": 39,
-            "height": 24
+            "width": 27,
+            "height": 30
           },
           "zIndex": 0,
           "display": true,
@@ -1068,6 +1068,285 @@
         {
           "rel": "chart",
           "name": "chart2"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Spectra displayer",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onSelectScatter",
+          "rel": "selectedData",
+          "jpath": [],
+          "name": "data"
+        },
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "zoomY"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      [
+                        "track"
+                      ]
+                    ],
+                    "selectScatter": [
+                      [
+                        "yes"
+                      ]
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.01"
+                    ],
+                    "afterSpacing": [
+                      "0.01"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      []
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0.01"
+                    ],
+                    "afterSpacing": [
+                      "0.01"
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "chart",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "0",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [
+                        "markers"
+                      ],
+                      "markerShape": "1",
+                      "markerSize": 5,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": [
+                      "{}"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 50,
+            "top": 58
+          },
+          "size": {
+            "width": 36,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Spectra displayer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "chart",
+          "name": "chart3"
         }
       ],
       "actions_in": [

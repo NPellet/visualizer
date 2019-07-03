@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/default/defaultview',
   'jsgraph',
-  'json-chart',
+  './jsonChart.js',
   'src/util/api',
   'src/util/color',
   'src/util/debug',
@@ -810,7 +810,7 @@ define([
               break;
           }
 
-          var serieType = aData.type;
+          var serieType = String(aData.type || 'line');
 
           if (serieType == 'color') {
             serieType = 'line.color';
@@ -851,8 +851,6 @@ define([
             serieType == 'scatter' ||
             serieType == 'line.color'
           ) {
-            // jsGraph 2.0
-
             var wave = Graph.newWaveform();
 
             wave.setData(valFinalY, valFinalX);
@@ -888,7 +886,6 @@ define([
             if (!Array.isArray(colors)) {
               throw new Error('Serie colors must be an array');
             }
-
             serie.setColors(colors);
           }
 
@@ -898,7 +895,7 @@ define([
 
           serie.autoAxis();
 
-          if (String(aData.type) === 'scatter') {
+          if (serieType === 'scatter' || serieType == 'line') {
             let modifiers = [];
             if (Array.isArray(aData.styles)) {
               modifiers = aData.styles;
@@ -906,11 +903,28 @@ define([
               modifiers = aData.styles;
             }
 
+            /* Demo of how to change the style */
+            /*
+              serie.setMarkerStyle(
+                {
+                  fill: 'red'
+                },
+                [{ fill: 'yellow' }],
+                'unselected'
+              );
+              serie.setMarkerStyle(
+                {
+                  fill: 'pink'
+                },[],
+                'selected'
+              );
+              */
+
             let keys = new Set(
               Object.keys(defaultStyles).concat(Object.keys(modifiers))
             );
             for (const styleName of keys) {
-              serie.setStyle(
+              serie.setMarkerStyle(
                 Object.assign(
                   {},
                   defaultScatterStyle,
@@ -929,7 +943,6 @@ define([
           } else {
             if (aData.style) {
               serie.setStyle(aData.style);
-              serie.setMarkers(aData.style.markers);
             } else {
               var color =
                 defaultStyle.lineColor ||
