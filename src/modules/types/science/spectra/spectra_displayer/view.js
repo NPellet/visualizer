@@ -279,6 +279,7 @@ define([
 
           if (useMouseTracking) {
             const trackLineOptions = {
+    //          useAxis: 'x',
               mode: 'individual'
             };
             const showTracingLegend = cfgCheckbox('mouseTracking', 'legend');
@@ -607,7 +608,6 @@ define([
 
     setSerieParameters(serie, varname, highlight, forceColor) {
       serie.setXAxis(0);
-
       var plotinfos = this.module.getConfiguration('plotinfos');
       const stackVerticalSpacing = this.module.getConfiguration(
         'stackVerticalSpacing'
@@ -894,7 +894,7 @@ define([
 
           serie.autoAxis();
 
-          if (serieType === 'scatter' || serieType == 'line') {
+          if (serieType === 'scatter') {
             let modifiers = [];
             if (Array.isArray(aData.styles)) {
               modifiers = aData.styles;
