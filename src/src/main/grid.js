@@ -179,9 +179,18 @@ define([
             [
               '<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
               function () {
+                let activeLayer = getActiveLayer();
+                let currentDefinition = JSON.parse(
+                  JSON.stringify(module.definition)
+                );
+                Object.keys(currentDefinition.layers).forEach((layer) => {
+                  if (layer !== activeLayer) {
+                    delete currentDefinition.layers[layer];
+                  }
+                });
                 window.localStorage.setItem(
                   'ci-copy-module',
-                  JSON.stringify(module.definition)
+                  JSON.stringify(currentDefinition)
                 );
               }
             ]

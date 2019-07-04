@@ -23,9 +23,19 @@ define([
         return Number(m.getId()) === state.moduleId;
       });
       if (modules.length) {
+        let activeLayer = Grid.getActiveLayerName();
+        let currentDefinition = JSON.parse(
+          JSON.stringify(modules[0].definition)
+        );
+        Object.keys(currentDefinition.layers).forEach((layer) => {
+          if (layer !== activeLayer) {
+            delete currentDefinition.layers[layer];
+          }
+        });
+
         event.clipboardData.setData(
           'text/plain',
-          JSON.stringify(modules[0].definition)
+          JSON.stringify(currentDefinition)
         );
         ui.showNotification('Module copied', 'success');
         success = true;
