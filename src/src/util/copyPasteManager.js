@@ -23,12 +23,11 @@ define([
         return Number(m.getId()) === state.moduleId;
       });
       if (modules.length) {
-        let activeLayer = Grid.getActiveLayerName();
         let currentDefinition = JSON.parse(
           JSON.stringify(modules[0].definition)
         );
         Object.keys(currentDefinition.layers).forEach((layer) => {
-          if (layer !== activeLayer) {
+          if (layer !== 'Default layer') {
             delete currentDefinition.layers[layer];
           }
         });

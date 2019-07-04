@@ -179,12 +179,11 @@ define([
             [
               '<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
               function () {
-                let activeLayer = getActiveLayer();
                 let currentDefinition = JSON.parse(
                   JSON.stringify(module.definition)
                 );
                 Object.keys(currentDefinition.layers).forEach((layer) => {
-                  if (layer !== activeLayer) {
+                  if (layer !== 'Default layer') {
                     delete currentDefinition.layers[layer];
                   }
                 });
