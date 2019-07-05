@@ -162,7 +162,7 @@ define([
         this.rejectCurrentPromise = false;
       }
 
-      var prom = new Promise((resolve, reject) => {
+      this.currentPromise = new Promise((resolve, reject) => {
         this.rejectCurrentPromise = reject;
 
         const _resolve = resolve;
@@ -198,7 +198,7 @@ define([
         this._setValue(value);
         return value;
       });
-      this.currentPromise = prom.catch((err) => {
+      var prom = this.currentPromise.catch((err) => {
         if (
           err.message === 'filter' || // Already caught
           err.message === 'latency' // Expected
