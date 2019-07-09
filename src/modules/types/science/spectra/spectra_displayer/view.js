@@ -196,6 +196,9 @@ define([
           const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
           if (useMouseTracking) {
             options.mouseMoveData = true;
+            options.mouseMoveDataOptions = {
+              useAxis: cfg('trackingAxis')
+            };
           }
 
           const selectScatterPlugin = cfgCheckbox('selectScatter', 'yes');
@@ -218,6 +221,10 @@ define([
           } else if (cfg('xaxismodification') == 'valtotime:min.sec') {
             xOptions.unitModification = 'time:min.sec';
           }
+
+          options.mouseMoveDataOptions = {
+            useAxis: cfg('trackingAxis')
+          };
 
           var graph = new Graph(this.dom.get(0), options, {
             bottom: [xOptions]
@@ -279,7 +286,7 @@ define([
 
           if (useMouseTracking) {
             const trackLineOptions = {
-    //          useAxis: 'x',
+              useAxis: cfg('trackingAxis'),
               mode: 'individual'
             };
             const showTracingLegend = cfgCheckbox('mouseTracking', 'legend');
@@ -607,7 +614,6 @@ define([
     },
 
     setSerieParameters(serie, varname, highlight, forceColor) {
-      serie.setXAxis(0);
       var plotinfos = this.module.getConfiguration('plotinfos');
       const stackVerticalSpacing = this.module.getConfiguration(
         'stackVerticalSpacing'
@@ -678,7 +684,9 @@ define([
             }
 
             if (plotinfos[i].tracking && plotinfos[i].tracking[0] === 'yes') {
-              serie.allowTrackingLine();
+              serie.allowTrackingLine({
+                useAxis: this.module.getConfiguration('trackingAxis')
+              });
             }
           }
         }

@@ -30,7 +30,6 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     return base;
   };
 
-
   Controller.prototype.moduleInformation = {
     name: 'Spectra displayer',
     description: 'Displays a plot, either data or jcamp',
@@ -288,10 +287,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       for (; i < l; i++) {
         if (
           currentCfg[i].rel == 'jcamp' ||
-                    currentCfg[i].rel == 'xArray' ||
-                    currentCfg[i].rel == 'xyArray' ||
-                    currentCfg[i].rel == 'chart' ||
-                    currentCfg[i].rel == 'series_xy1d'
+          currentCfg[i].rel == 'xArray' ||
+          currentCfg[i].rel == 'xyArray' ||
+          currentCfg[i].rel == 'chart' ||
+          currentCfg[i].rel == 'series_xy1d'
         ) {
           vars.push({
             title: currentCfg[i].name,
@@ -466,8 +465,28 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   title: 'Mouse tracking',
                   options: {
                     track: 'Enable mouse tracking',
-                    legend: 'Display tracking legend (mouse tracking must be enabled)'
+                    legend:
+                      'Display tracking legend (mouse tracking must be enabled)'
                   }
+                },
+                trackingAxis: {
+                  type: 'combo',
+                  title: 'Tracking axis',
+                  options: [
+                    {
+                      key: 'x',
+                      title: 'X'
+                    },
+                    {
+                      key: 'y',
+                      title: 'Y'
+                    },
+                    {
+                      key: '',
+                      title: 'XY'
+                    }
+                  ],
+                  default: 'x'
                 },
                 selectScatter: {
                   type: 'checkbox',
@@ -480,7 +499,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   type: 'checkbox',
                   title: 'Independant Y zoom',
                   options: {
-                    yes: 'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)'
+                    yes:
+                      'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)'
                   }
                 }
               }
@@ -767,12 +787,13 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   },
                   default: []
                 },
-                /* degrade: {
-                                                                                                                                                                                                                                                                                                                                                    type: 'float',
-                                                                                                                                                                                                                                                                                                                                                    title: 'Degrade serie (px/pt)',
-                                                                                                                                                                                                                                                                                                                                                    default: 0
-                                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                                */
+                /*
+                degrade: {
+                  type: 'float',
+                  title: 'Degrade serie (px/pt)',
+                  default: 0
+                },
+                */
                 tracking: {
                   type: 'checkbox',
                   title: 'Display tracking info',
@@ -858,6 +879,16 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'wheelbaseline',
+      0
+    ],
+    trackingAxis: [
+      'sections',
+      'graph',
+      0,
+      'groups',
+      'graph',
+      0,
+      'trackingAxis',
       0
     ],
     fullOut: ['sections', 'graph', 0, 'groups', 'graph', 0, 'fullOut', 0],
@@ -1080,7 +1111,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       this.sendActionFromEvent('onZoomChange', 'fromToXY', boundaries);
       this.createDataFromEvent('onZoomChange', 'fromToXY', boundaries);
     },
-    1, {
+    1,
+    {
       leading: false
     }
   );
