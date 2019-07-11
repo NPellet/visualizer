@@ -1187,6 +1187,8 @@ define([
               break;
             }
           }
+          serie.autoAxis();
+
           that.redraw(false, varname);
         }
       },
