@@ -619,7 +619,7 @@ define([
         'stackVerticalSpacing'
       );
       var foundInfo = false;
-
+      serie.autoAxis();
       if (this.serieHiddenState.get(varname)) {
         serie.hidden = true;
       } else {
@@ -1187,7 +1187,6 @@ define([
               break;
             }
           }
-          serie.autoAxis();
 
           that.redraw(false, varname);
         }
