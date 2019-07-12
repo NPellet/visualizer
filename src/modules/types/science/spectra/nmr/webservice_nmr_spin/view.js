@@ -1,11 +1,9 @@
 'use strict';
 
 define(['jquery', 'modules/default/defaultview'], function ($, Default) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       var that = this;
 
@@ -19,6 +17,8 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       selector.push('<option value="4">ABCD</option>');
       selector.push('<option value="5">ABCDE</option>');
       selector.push('<option value="6">ABCDEF</option>');
+      selector.push('<option value="7">ABCDEFG</option>');
+      selector.push('<option value="8">ABCDEFGH</option>');
       selector.push('</select>');
       var selectorSelect = $(selector.join(''));
       selectorSelect.val(this.module.getConfiguration('systemSize')[0]);
@@ -33,7 +33,9 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         that.init();
       });
 
-      this.system = $(this._getTable(this.module.getConfiguration('systemSize')[0]));
+      this.system = $(
+        this._getTable(this.module.getConfiguration('systemSize')[0])
+      );
 
       if (!this.button) {
         this.system.on('keyup', 'input[type=text]', function () {
@@ -50,9 +52,14 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
 
       if (this.button) {
         require(['forms/button'], function (Button) {
-          that.system.append((that.buttonInst = new Button(that.module.getConfiguration('buttonlabel'), function () {
-            that.module.controller.doAnalysis();
-          })).render());
+          that.system.append(
+            (that.buttonInst = new Button(
+              that.module.getConfiguration('buttonlabel'),
+              function () {
+                that.module.controller.doAnalysis();
+              }
+            )).render()
+          );
         });
       }
 
@@ -78,9 +85,13 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       for (i = 0; i < size; i++) {
         content.push('<tr>');
         content.push(`<th>${i + 1}</th>`);
-        content.push(`<td><input type="text" size=4 value=${i + 1} name="delta_${i}">`);
+        content.push(
+          `<td><input type="text" size=4 value=${i + 1} name="delta_${i}">`
+        );
         for (var j = 0; j < i; j++) {
-          content.push(`<td><input type="text" size=4 value=7 name="coupling_${i}_${j}">`);
+          content.push(
+            `<td><input type="text" size=3 value=0 name="coupling_${i}_${j}">`
+          );
         }
         content.push('</tr>');
       }
@@ -101,9 +112,13 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       content.push('<option value="1000">1000 MHz</option>');
       content.push('</select></p>');
 
-      content.push('<p>Line width: <input type="text" value=1 name="lineWidth" size=4 id="lineWidth" /> Hz.</p>');
+      content.push(
+        '<p>Line width: <input type="text" value=1 name="lineWidth" size=4 id="lineWidth" /> Hz.</p>'
+      );
 
-      content.push('<p>Number of points: <select id="nbPoints" name="nbPoints">');
+      content.push(
+        '<p>Number of points: <select id="nbPoints" name="nbPoints">'
+      );
       content.push('<option value="1024">1k</option>');
       content.push('<option value="2048">2k</option>');
       content.push('<option value="4096">4k</option>');
@@ -120,7 +135,9 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
     lock() {
       this.locked = true;
       if (this.buttonInst) {
-        this.buttonInst.setTitle(this.module.getConfiguration('buttonlabel_exec'));
+        this.buttonInst.setTitle(
+          this.module.getConfiguration('buttonlabel_exec')
+        );
         this.buttonInst.disable();
       }
     },
@@ -132,7 +149,6 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         this.buttonInst.enable();
       }
     }
-
   });
 
   return View;

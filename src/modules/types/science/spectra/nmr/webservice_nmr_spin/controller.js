@@ -5,8 +5,7 @@ define([
   'modules/default/defaultcontroller',
   'nmr-simulation'
 ], function ($, Default, simulation) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -59,7 +58,11 @@ define([
       }
     }
 
-    var spinSystem = new simulation.SpinSystem(chemicalShifts, coupling, multiplicity);
+    var spinSystem = new simulation.SpinSystem(
+      chemicalShifts,
+      coupling,
+      multiplicity
+    );
     var spectrum = simulation.simulate1D(spinSystem, options);
 
     var chart = {
@@ -91,7 +94,6 @@ define([
     }
   };
 
-
   Controller.prototype.events = {
     onSearchReturn: {
       label: 'An analysis has been completed',
@@ -116,7 +118,9 @@ define([
                 { key: '3', title: 'ABC' },
                 { key: '4', title: 'ABCD' },
                 { key: '5', title: 'ABCDE' },
-                { key: '6', title: 'ABCDEF' }
+                { key: '6', title: 'ABCDEF' },
+                { key: '7', title: 'ABCDEFG' },
+                { key: '8', title: 'ABCDEFGH' }
               ]
             },
             button: {
