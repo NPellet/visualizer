@@ -1,388 +1,384 @@
 {
-    "version": "2.96.1-0",
-    "grid": {
-        "layers": {
-            "Default layer": {
-                "name": "Default layer"
-            }
-        },
-        "xWidth": 10,
-        "yHeight": 10
+  "version": "2.105.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
     },
-    "modules": [
-        {
-            "url": "modules/types/science/spectra/spectra_displayer/",
-            "configuration": {
-                "sections": {
-                    "graph": [
-                        {
-                            "sections": {},
-                            "groups": {
-                                "graph": [
-                                    {
-                                        "url": [""],
-                                        "zoom": ["x"],
-                                        "wheelAction": ["zoomY"],
-                                        "wheelbaseline": [0],
-                                        "fullOut": ["both"],
-                                        "legend": ["bottom"],
-                                        "legendOptions": [
-                                            [
-                                                "isSerieHideable",
-                                                "isSerieSelectable"
-                                            ]
-                                        ],
-                                        "mouseTracking": [[]],
-                                        "selectScatter": [[]],
-                                        "independantYZoom": [[]]
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "axis": [
-                        {
-                            "sections": {},
-                            "groups": {
-                                "xAxis": [
-                                    {
-                                        "checkboxes": [["display"]],
-                                        "label": [""],
-                                        "beforeSpacing": ["0"],
-                                        "afterSpacing": [0],
-                                        "min": [""],
-                                        "max": [""],
-                                        "nbTicksPrimary": [5],
-                                        "axismodification": ["none"]
-                                    }
-                                ],
-                                "yAxis": [
-                                    {
-                                        "checkboxes": [[]],
-                                        "label": [""],
-                                        "beforeSpacing": ["0.1"],
-                                        "afterSpacing": ["0"],
-                                        "min": [""],
-                                        "max": [""],
-                                        "nbTicksPrimary": [5],
-                                        "fitToAxisOnFromTo": [[]]
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "series": [
-                        {
-                            "sections": {},
-                            "groups": {
-                                "series": [
-                                    {
-                                        "overflow": [[]],
-                                        "stackVerticalSpacing": [0.2]
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "variables": [
-                        {
-                            "sections": {},
-                            "groups": {
-                                "variables": [
-                                    [
-                                        {
-                                            "variable": "jcamp1",
-                                            "axis": "0",
-                                            "adaptTo": "none",
-                                            "plotcolor": [255, 1, 208, 1],
-                                            "strokewidth": "1",
-                                            "strokestyle": "1",
-                                            "plotcontinuous": "continuous",
-                                            "peakpicking": ["picking"],
-                                            "markers": [],
-                                            "markerShape": "1",
-                                            "markerSize": 2,
-                                            "normalize": "none",
-                                            "optimizeSlots": [],
-                                            "tracking": []
-                                        },
-                                        {
-                                            "variable": "jcamp2",
-                                            "axis": "1",
-                                            "adaptTo": "none",
-                                            "plotcolor": [255, 1, 27, 1],
-                                            "strokewidth": "1",
-                                            "strokestyle": "1",
-                                            "plotcontinuous": "continuous",
-                                            "peakpicking": ["picking"],
-                                            "markers": [],
-                                            "markerShape": "1",
-                                            "markerSize": 2,
-                                            "normalize": "none",
-                                            "optimizeSlots": [],
-                                            "tracking": []
-                                        }
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    "misc": [
-                        {
-                            "sections": {},
-                            "groups": {
-                                "misc": [
-                                    {
-                                        "highlightOptions": ["{}"]
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                },
-                "groups": {}
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 0,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 62,
-                        "height": 48
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [255, 255, 255, 0],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
-            },
-            "id": 1,
-            "vars_in": [
-                {
-                    "rel": "jcamp",
-                    "name": "jcamp1"
-                },
-                {
-                    "rel": "jcamp",
-                    "name": "jcamp2"
-                }
-            ],
-            "actions_in": [{}],
-            "vars_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "actions_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "toolbar": {
-                "custom": [
-                    [
-                        {
-                            "title": "",
-                            "icon": "",
-                            "action": "",
-                            "position": "begin",
-                            "color": [100, 100, 100, 1]
-                        }
-                    ]
-                ],
-                "common": [
-                    {
-                        "toolbar": [["Open Preferences", "Show fullscreen"]]
-                    }
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [""],
+                    "zoom": ["x"],
+                    "wheelAction": ["zoomY"],
+                    "wheelbaseline": [0],
+                    "fullOut": ["both"],
+                    "legend": ["bottom"],
+                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
+                    "mouseTracking": [[]],
+                    "trackingAxis": ["x"],
+                    "selectScatter": [[]],
+                    "independantYZoom": [["yes"]]
+                  }
                 ]
-            },
-            "css": [
-                {
-                    "fontSize": [""],
-                    "fontFamily": [""]
-                }
-            ],
-            "title": ""
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "axismodification": ["none"]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [[]],
+                    "label": [""],
+                    "beforeSpacing": ["0.1"],
+                    "afterSpacing": ["0"],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "fitToAxisOnFromTo": [[]]
+                  }
+                ]
+              }
+            }
+          ],
+          "series": [
+            {
+              "sections": {},
+              "groups": {
+                "series": [
+                  {
+                    "overflow": [[]],
+                    "stackVerticalSpacing": [0.2]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "jcamp1",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [255, 1, 208, 1],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": ["picking"],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    },
+                    {
+                      "variable": "jcamp2",
+                      "axis": "1",
+                      "adaptTo": "none",
+                      "plotcolor": [255, 1, 27, 1],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": ["picking"],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ],
+          "misc": [
+            {
+              "sections": {},
+              "groups": {
+                "misc": [
+                  {
+                    "highlightOptions": ["{}"]
+                  }
+                ]
+              }
+            }
+          ]
         },
-        {
-            "url": "modules/types/client_interaction/code_executor/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "display": [["editor", "buttons"]],
-                            "execOnLoad": [["yes"]],
-                            "asyncAwait": [["top"]],
-                            "script": [
-                                "API.createData('jcamp1', {\n    type: 'jcamp',\n    url: '../testcase/data/spectra2D/1h.jdx'\n});\n\nAPI.createData('jcamp2', {\n    type: 'jcamp',\n    url: '../testcase/data/spectra2D/214_1h.jdx'\n});\n\n"
-                            ]
-                        }
-                    ],
-                    "libs": [[{}]],
-                    "buttons": [
-                        [
-                            {
-                                "name": "button1",
-                                "label": "Execute",
-                                "hide": [],
-                                "disable": []
-                            }
-                        ]
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 63,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 51,
-                        "height": 26
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [255, 255, 255, 0],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
-            },
-            "id": 2,
-            "vars_in": [{}],
-            "actions_in": [{}],
-            "vars_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "actions_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "toolbar": {
-                "custom": [
-                    [
-                        {
-                            "title": "",
-                            "icon": "",
-                            "action": "",
-                            "position": "begin"
-                        }
-                    ]
-                ],
-                "common": [
-                    {
-                        "toolbar": [["Open Preferences"]]
-                    }
-                ]
-            },
-            "css": [
-                {
-                    "fontSize": [""],
-                    "fontFamily": [""]
-                }
-            ],
-            "title": ""
-        },
-        {
-            "url": "modules/types/client_interaction/code_executor/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "display": [["editor", "buttons"]],
-                            "execOnLoad": [["yes"]],
-                            "asyncAwait": [["top"]],
-                            "script": [
-                                "\nAPI.createData('jcamp2', {\n    type: 'jcamp',\n    url: '../testcase/data/spectra2D/214_1h.jdx'\n});\n\n"
-                            ]
-                        }
-                    ],
-                    "libs": [[{}]],
-                    "buttons": [
-                        [
-                            {
-                                "name": "button1",
-                                "label": "Execute",
-                                "hide": [],
-                                "disable": []
-                            }
-                        ]
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 63,
-                        "top": 27
-                    },
-                    "size": {
-                        "width": 51,
-                        "height": 26
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [255, 255, 255, 0],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                }
-            },
-            "id": 3,
-            "vars_in": [{}],
-            "actions_in": [{}],
-            "vars_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "actions_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "toolbar": {
-                "custom": [
-                    [
-                        {
-                            "title": "",
-                            "icon": "",
-                            "action": "",
-                            "position": "begin"
-                        }
-                    ]
-                ],
-                "common": [
-                    {
-                        "toolbar": [["Open Preferences"]]
-                    }
-                ]
-            },
-            "css": [
-                {
-                    "fontSize": [""],
-                    "fontFamily": [""]
-                }
-            ],
-            "title": ""
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 62,
+            "height": 48
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
-    ],
-    "variables": [],
-    "aliases": [],
-    "configuration": {
-        "title": "No title"
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "jcamp",
+          "name": "jcamp1"
+        },
+        {
+          "rel": "jcamp",
+          "name": "jcamp2"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences", "Show fullscreen"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.createData('jcamp1', {\n    type: 'jcamp',\n    url: '../testcase/data/spectra2D/1h.jdx'\n});\n\nAPI.createData('jcamp2', {\n    type: 'jcamp',\n    url: '../testcase/data/spectra2D/214_1h.jdx'\n});\n\n"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 63,
+            "top": 0
+          },
+          "size": {
+            "width": 51,
+            "height": 26
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "\nAPI.createData('jcamp2', {\n    type: 'jcamp',\n    url: '../testcase/data/spectra2D/214_1h.jdx'\n});\n\n"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 63,
+            "top": 27
+          },
+          "size": {
+            "width": 51,
+            "height": 26
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
     }
+  ],
+  "variables": [],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
 }

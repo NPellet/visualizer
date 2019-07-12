@@ -354,8 +354,9 @@ define([
 
           if (selectScatterPlugin) {
             var plugin = graph.getPlugin('selectScatter');
+
             plugin.on('selectionEnd', (selectedIndices) => {
-              const serie = plugin.serie;
+              const serie = plugin.options.serie;
               var result = [];
               var info = serie.infos;
               if (info) {
@@ -945,6 +946,7 @@ define([
 
             if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
               var plugin = this.graph.getPlugin('selectScatter');
+              console.log('xxxxx', serie);
               plugin.setSerie(serie);
             }
           } else {
