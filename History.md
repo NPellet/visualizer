@@ -1,3 +1,12 @@
+# [2.106.0](https://github.com/NPellet/visualizer/compare/v2.105.0...v2.106.0) (2019-07-12)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** scale jcamps separately ([d922e9d](https://github.com/NPellet/visualizer/commit/d922e9d))
+
+
+
 # [2.105.0](https://github.com/NPellet/visualizer/compare/v2.104.2...v2.105.0) (2019-07-09)
 
 
