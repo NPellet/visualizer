@@ -1010,13 +1010,10 @@ define(
 
             that.postUpdateCell(cellNode, context.renderOptions);
             $cellNode.css('cursor', 'default');
-            $cellNode
-              .find('a')
-              .css('color', context.renderOptions.color);
 
             var $a = $cellNode.find('a');
             $a.attr('title', context.renderOptions.tooltip);
-
+           
             if (context.renderOptions.action) {
               if (context.renderOptions.clickMode === 'text') {
                 $a.addClass('icon-clickable');
@@ -1031,6 +1028,7 @@ define(
                 $cellNode.on('click.action', sendAction);
               }
             }
+            $a.css('color', Color.array2rgba(context.renderOptions.color));
           }
         };
 

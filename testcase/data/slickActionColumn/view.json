@@ -1,5 +1,5 @@
 {
-  "version": "2.37.1-0",
+  "version": "2.106.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -26,61 +26,47 @@
                   "editable"
                 ]
               ],
-              "autoColumns": [
-                [
-                  "remove"
-                ]
-              ],
-              "toolbar": [
-                [
-                  "update",
-                  "showHide"
-                ]
-              ],
-              "colorjpath": [
-                []
-              ],
-              "slick.defaultColumnWidth": [
-                null
-              ],
-              "slick.rowHeight": [
-                null
-              ],
-              "slick.selectionModel": [
-                "row"
-              ],
-              "filterType": [
-                "invar"
-              ],
-              "filterRow": [
-                ""
-              ]
+              "copyPaste": [[]],
+              "copyPasteOptions": [["newRows"]],
+              "autoColumns": [["remove"]],
+              "toolbar": [["update", "showHide"]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": [null],
+              "slick.headerRowHeight": [30],
+              "slick.selectionModel": ["row"],
+              "idProperty": [""],
+              "filterType": ["invar"],
+              "filterRow": [""],
+              "customJpaths": [""]
             }
           ],
           "cols": [
             [
               {
                 "name": "A",
-                "jpath": [
-                  "a"
-                ],
+                "jpath": ["a"],
                 "editor": "auto",
+                "forceType": "",
                 "formatter": "typerenderer",
+                "copyFormatter": "default",
                 "visibility": "both",
                 "rendererOptions": "",
+                "editorOptions": "",
                 "minWidth": "0",
                 "maxWidth": "1000",
                 "hideColumn": []
               },
               {
                 "name": "B",
-                "jpath": [
-                  "b"
-                ],
+                "jpath": ["b"],
                 "editor": "auto",
+                "forceType": "",
                 "formatter": "typerenderer",
+                "copyFormatter": "default",
                 "visibility": "both",
                 "rendererOptions": "",
+                "editorOptions": "",
                 "minWidth": "0",
                 "maxWidth": "1000",
                 "hideColumn": []
@@ -92,18 +78,26 @@
               {
                 "name": "abc",
                 "tooltip": "abc",
-                "icon": "⬡xyz",
+                "icon": "⬡ xyz",
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [255, 0, 0, 1],
                 "action": "abc",
                 "position": "begin",
+                "clickMode": "text",
                 "minWidth": "0",
-                "maxWidth": "100"
+                "maxWidth": "100",
+                "isAction": true
               },
               {
                 "name": "def",
                 "tooltip": "def",
                 "icon": "fa-external-link",
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [0, 0, 255, 1],
                 "action": "def",
-                "position": "end"
+                "position": "end",
+                "clickMode": "text",
+                "isAction": true
               }
             ]
           ],
@@ -114,10 +108,13 @@
               }
             ]
           ],
-          "actionOutButtons": [
-            [
-              {}
-            ]
+          "actionOutButtons": [[{}]],
+          "data": [
+            {
+              "saveInView": [[]],
+              "varname": [""],
+              "data": ["[]"]
+            }
           ]
         }
       },
@@ -134,12 +131,7 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -156,9 +148,7 @@
           "name": "filterScript"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "",
       "vars_out": [
         {
@@ -169,6 +159,30 @@
         {
           "jpath": []
         }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
       ]
     },
     {
@@ -178,25 +192,15 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                []
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
               "script": [
                 "console.log(\n    this.action.name,\n    this.action.value\n);"
-              ]
+              ],
+              "asyncAwait": [[]]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -220,21 +224,14 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 2,
-      "vars_in": [
-        {}
-      ],
+      "vars_in": [{}],
       "actions_in": [
         {
           "rel": "execute",
@@ -251,7 +248,24 @@
           "jpath": []
         }
       ],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/code_editor/",
@@ -260,31 +274,13 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "javascript"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                [
-                  "button"
-                ]
-              ],
-              "variable": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
+              "mode": ["javascript"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [["button"]],
+              "variable": [[]],
+              "debouncing": [0],
               "script": [
                 "if(this.event === 'renderAction') {\n    console.log('render action');\n    console.log(this.column);\n    if(this.column.name === 'def' && this.row.item && this.row.item.a > 5) {\n        console.log(this.renderOptions.icon);\n        this.renderOptions.icon = 'fa-trash';\n    }\n}\n\nif(this.event === 'cellChanged') {\n    console.log(this.cell);\n    console.log(this.column);\n\n}"
               ]
@@ -305,24 +301,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 3,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -336,22 +323,32 @@
         {
           "jpath": []
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     }
   ],
   "variables": [
     {
-      "jpath": [
-        ""
-      ]
+      "jpath": [""]
     }
   ],
-  "aliases": [
-    {}
-  ],
-  "pouchvariables": [
-    {}
-  ],
+  "aliases": [{}],
   "configuration": {
     "title": "No title"
   },
@@ -361,28 +358,9 @@
       "groups": {
         "action": [
           {
-            "name": [
-              null
-            ],
-            "script": [
-              null
-            ]
+            "name": [null],
+            "script": [null]
           }
-        ]
-      }
-    }
-  ],
-  "couch_replication": [
-    {
-      "sections": {},
-      "groups": {
-        "couch": [
-          [
-            {
-              "direction": "both",
-              "continuous": []
-            }
-          ]
         ]
       }
     }
@@ -393,9 +371,7 @@
       "groups": {
         "general": [
           {
-            "script": [
-              "API.createData('table', [{a:6,b:1},{a:2,b: 2}]);"
-            ]
+            "script": ["API.createData('table', [{a:6,b:1},{a:2,b: 2}]);"]
           }
         ]
       }
@@ -408,11 +384,7 @@
           {
             "sections": {},
             "groups": {
-              "modules": [
-                [
-                  {}
-                ]
-              ]
+              "modules": [[{}]]
             }
           }
         ],
@@ -420,11 +392,7 @@
           {
             "sections": {},
             "groups": {
-              "filters": [
-                [
-                  {}
-                ]
-              ]
+              "filters": [[{}]]
             }
           }
         ],
@@ -434,19 +402,11 @@
             "groups": {
               "filter": [
                 {
-                  "name": [
-                    null
-                  ],
-                  "script": [
-                    null
-                  ]
+                  "name": [null],
+                  "script": [null]
                 }
               ],
-              "libs": [
-                [
-                  {}
-                ]
-              ]
+              "libs": [[{}]]
             }
           }
         ]
@@ -458,11 +418,7 @@
     {
       "sections": {},
       "groups": {
-        "action": [
-          [
-            {}
-          ]
-        ]
+        "action": [[{}]]
       }
     }
   ]
