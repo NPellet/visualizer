@@ -286,7 +286,8 @@ module.exports = function (grunt) {
               './mathjs/dist/math.min.js',
               './mathjs/dist/math.min.map',
               './d3-hierarchy/dist/d3-hierarchy.min.js',
-              './@fortawesome/fontawesome-free/css/all.min.css'
+              './@fortawesome/fontawesome-free/css/all.min.css',
+              './@fortawesome/fontawesome-free/webfonts/*'
             ],
             dest: './build/node_modules/'
           },
