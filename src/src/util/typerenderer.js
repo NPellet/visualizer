@@ -563,7 +563,7 @@ define([
     $element.html(
       value.replace(
         /^(.*)$/,
-        '<a href="$1" target="_blank"><i class="fa fa-external-link"></i></a>'
+        '<a href="$1" target="_blank"><i class="fa fa-external-link-alt"></i></a>'
       )
     );
   };

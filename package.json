@@ -68,6 +68,7 @@
   "private": true,
   "dependencies": {
     "@babel/preset-env": "^7.3.1",
+    "@fortawesome/fontawesome-free": "^5.10.2",
     "angularplasmid": "^1.0.5",
     "babel-preset-minify": "^0.5.0",
     "bio-parsers": "4.2.4",

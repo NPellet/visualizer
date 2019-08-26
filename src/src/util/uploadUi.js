@@ -288,7 +288,7 @@ define([
     var name = dataContext.name.replace(/^.*\//, '');
     return `<div style="width:100%; height: 100%;"><a href="${
       dataContext.downloadUrl
-    }" download="${name}" class="download-attachment"><i class="centered-icon fa fa-download"></i></a></div>`;
+    }" download="${name}" class="download-attachment"><i class="centered-icon fa fa-file-download"></i></a></div>`;
   }
 
   exports.uploadDialog = uploadDialog;

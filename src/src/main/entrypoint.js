@@ -22,8 +22,7 @@ define([
   'src/util/sandbox',
   'src/util/shortcuts',
   'src/util/copyPasteManager',
-  './forceLoad',
-  'fontawesome'
+  './forceLoad'
 ], function (
   $,
   _,
@@ -685,7 +684,8 @@ define([
         'components/jquery-ui/themes/base/jquery-ui.min.css',
         'lib/forms/style.css',
         'components/fancytree/dist/skin-lion/ui.fancytree.css',
-        'css/overwrite_styles.css'
+        'css/overwrite_styles.css',
+        'node_modules/@fortawesome/fontawesome-free/css/all.min.css'
       ];
 
       css.forEach(function (css) {

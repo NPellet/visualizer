@@ -24,7 +24,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
         }
       },
       title: 'Download as SVG vector file',
-      cssClass: 'fa fa-file-image-o',
+      cssClass: 'fa fa-file-image',
       ifLocked: true
     });
     return base;

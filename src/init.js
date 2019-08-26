@@ -31,7 +31,6 @@ require.config({
     eventEmitter: 'components/eventEmitter/EventEmitter.min',
     fancytree: 'components/fancytree/dist/jquery.fancytree-all',
     fetch: 'components/fetch/fetch',
-    fontawesome: 'components/font-awesome/svg-with-js/js/fontawesome.min',
     'file-saver': 'components/file-saver.js/FileSaver',
     forms: 'lib/forms',
     highlightjs: 'lib/highlight.js/highlight.pack',
@@ -181,10 +180,6 @@ require.config({
       'jquery-ui/ui/widgets/draggable'
     ],
     'moment-duration-format': ['moment'],
-    fontawesome: [
-      'components/font-awesome/svg-with-js/js/fa-solid.min',
-      'components/font-awesome/svg-with-js/js/fa-v4-shims.min'
-    ],
     BiojsCore: {
       exports: 'Biojs'
     },
