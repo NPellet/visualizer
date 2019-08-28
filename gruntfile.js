@@ -87,6 +87,16 @@ module.exports = function (grunt) {
             standalone: 'RxnRenderer'
           }
         }
+      },
+      MFParser: {
+        files: {
+          'src/browserified/MFParser/index.js': ['./node_modules/mf-parser/src/index.js']
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'MFParser'
+          }
+        }
       }
     },
     pkg: grunt.file.readJSON('package.json'),

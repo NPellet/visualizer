@@ -446,52 +446,14 @@ define([
   };
 
   functions.mf = {};
-  functions.mf.toscreen = function ($element, value) {
+  functions.mf.toscreen = async function ($element, value) {
     if (value) {
-      // need to deal with charge in parenthesis
-      value = value.replace(/\(([0-9+-]+)\)/g, function (match) {
-        var number = match.replace(/[^0-9]/g, '') * 1;
-        var charge = match.replace(/[()0-9]/g, '');
-        return charge.repeat(number);
-      });
-
-      value = value.replace(/([+-])([0-9]+)/g, function (match) {
-        var number = match.replace(/[^0-9]/g, '') * 1;
-        var charge = match.replace(/[()0-9]/g, '');
-        return charge.repeat(number);
-      });
-
-      // need to deal with isotopes
-      value = value.replace(/\[([0-9]+)/g, '[<sup>$1</sup>');
-
-      // replace number following parenthesis or letter
-      value = value.replace(/([a-zA-Z)\]])([0-9.]+)/g, '$1<sub>$2</sub>');
-
-      value = value.replace(/([+-]+)/g, function (match) {
-        var charge = 0;
-        for (var i = 0; i < match.length; i++) {
-          if (match.charAt(i) === '+') charge++;
-          else charge--;
-        }
-        if (charge > 1) {
-          return `<sup>${charge}+</sup>`;
-        } else if (charge < -1) {
-          return `<sup>${-charge}‒</sup>`;
-        } else if (charge === 1) {
-          return '<sup>+</sup>';
-        } else if (charge === -1) {
-          return '<sup>‒</sup>';
-        }
-        return '';
-      });
-
-      // overlap sub and sup
-      value = value.replace(
-        /(<sub>[0-9.]+<\/sub>)(<sup>[0-9]*[+‒]<\/sup>)/g,
-        '<span class="superimpose">$2$1</span>'
-      );
-
-      $element.html(value);
+      const { parseToHtml } = await asyncRequire('MFParser');
+      try {
+        $element.html(parseToHtml(String(value)));
+      } catch (error) {
+        $element.html(value.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+      }
     } else {
       $element.html('');
     }
