@@ -1,3 +1,12 @@
+# [2.108.0](https://github.com/NPellet/visualizer/compare/v2.107.0...v2.108.0) (2019-08-28)
+
+
+### Features
+
+* use mf-parser for molecular formula rendering ([c6353e0](https://github.com/NPellet/visualizer/commit/c6353e0))
+
+
+
 # [2.107.0](https://github.com/NPellet/visualizer/compare/v2.106.0...v2.107.0) (2019-08-27)
 
 
