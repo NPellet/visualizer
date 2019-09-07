@@ -249,13 +249,12 @@ define([
   functions.svg = {};
   functions.svg.toscreen = function ($element, val) {
     var dom = $(String(val));
-    var viewbox = [
-      0,
-      0,
-      parseInt(dom.attr('width')),
-      parseInt(dom.attr('height'))
-    ];
-    dom[0].setAttribute('viewBox', viewbox.join(' '));
+    let width = dom.attr('width');
+    let height = dom.attr('height');
+    if (width && height) {
+      let viewbox = [0, 0, parseInt(width), parseInt(height)];
+      dom[0].setAttribute('viewBox', viewbox.join(' '));
+    }
     dom.removeAttr('id');
     dom.attr('width', '100%');
     dom.attr('height', '100%');
