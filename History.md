@@ -1,3 +1,12 @@
+## [2.108.1](https://github.com/NPellet/visualizer/compare/v2.108.0...v2.108.1) (2019-09-07)
+
+
+### Features
+
+* add setInitialLayerName in grid ([b728ae2](https://github.com/NPellet/visualizer/commit/b728ae2))
+
+
+
 # [2.108.0](https://github.com/NPellet/visualizer/compare/v2.107.0...v2.108.0) (2019-08-28)
 
 
