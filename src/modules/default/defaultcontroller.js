@@ -38,7 +38,7 @@ define(
               this.exportData();
             },
             title: 'Export Data',
-            cssClass: 'fa fa-sign-out',
+            cssClass: 'fa fa-sign-out-alt',
             ifLocked: true
           },
           {
@@ -65,28 +65,6 @@ define(
             cssClass: 'fa fa-wrench',
             ifLocked: false
           }
-          // {
-          //    onClick() {
-          //        this.doConfig(3);
-          //    },
-          //    title: "Variables in",
-          //    cssClass: 'fa fa-sign-in fa-lg',
-          //    ifLocked: true
-          // }
-          // {
-          //    onClick() {
-          //        this.doConfig(4)
-          //    },
-          //    title: "Variables out",
-          //    cssClass: 'fa fa-sign-out fa-lg'
-          // },
-          // {
-          //    onClick() {
-          //        Grid.removeModule(this);
-          //    },
-          //    title: "Remove module",
-          //    cssClass: 'fa fa-close fa-lg'
-          // }
         ];
 
         if (common) {

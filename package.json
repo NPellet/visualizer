@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.106.0",
+  "version": "2.108.0",
   "description": "Data visualization framework",
   "keywords": [
     "data",
@@ -68,6 +68,7 @@
   "private": true,
   "dependencies": {
     "@babel/preset-env": "^7.3.1",
+    "@fortawesome/fontawesome-free": "^5.10.2",
     "angularplasmid": "^1.0.5",
     "babel-preset-minify": "^0.5.0",
     "bio-parsers": "4.2.4",
@@ -76,6 +77,7 @@
     "eslint-plugin-import": "^2.15.0",
     "katex": "^0.10.0",
     "mathjs": "^5.4.1",
+    "mf-parser": "^0.9.1",
     "mime-types": "^2.1.21",
     "node-jsgraph": "2.1.12",
     "quill-image-drop-module": "github:cheminfo/quill-image-drop-module#4cdc591cfddec42a22ab25b635f34de9e973c86d",

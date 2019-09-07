@@ -1,5 +1,5 @@
 {
-	"version": "2.103.1-0",
+	"version": "2.106.1-0",
 	"grid": {
 	  "layers": {
 		"Default layer": {
@@ -74,7 +74,7 @@
 			},
 			"size": {
 			  "width": 47,
-			  "height": 62
+			  "height": 48
 			},
 			"zIndex": 0,
 			"display": true,
@@ -117,7 +117,13 @@
 				"title": "",
 				"icon": "",
 				"action": "",
-				"position": "begin"
+				"position": "begin",
+				"color": [
+				  100,
+				  100,
+				  100,
+				  1
+				]
 			  }
 			]
 		  ],
@@ -293,7 +299,7 @@
 			},
 			"size": {
 			  "width": 40,
-			  "height": 62
+			  "height": 48
 			},
 			"zIndex": 0,
 			"display": true,
@@ -318,7 +324,136 @@
 		  {
 			"rel": "tpl",
 			"name": "template"
+		  },
+		  {
+			"rel": "value",
+			"name": "kinds"
 		  }
+		],
+		"actions_in": [
+		  {}
+		],
+		"vars_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"actions_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"toolbar": {
+		  "custom": [
+			[
+			  {
+				"title": "",
+				"icon": "",
+				"action": "",
+				"position": "begin",
+				"color": [
+				  100,
+				  100,
+				  100,
+				  1
+				]
+			  }
+			]
+		  ],
+		  "common": [
+			{
+			  "toolbar": [
+				[
+				  "Open Preferences"
+				]
+			  ]
+			}
+		  ]
+		},
+		"css": [
+		  {
+			"fontSize": [
+			  ""
+			],
+			"fontFamily": [
+			  ""
+			]
+		  }
+		],
+		"title": ""
+	  },
+	  {
+		"url": "modules/types/client_interaction/code_executor/",
+		"configuration": {
+		  "sections": {},
+		  "groups": {
+			"group": [
+			  {
+				"display": [
+				  [
+					"editor",
+					"buttons"
+				  ]
+				],
+				"execOnLoad": [
+				  [
+					"yes"
+				  ]
+				],
+				"asyncAwait": [
+				  [
+					"top"
+				  ]
+				],
+				"script": [
+				  "API.createData('data', {\n    title:'abc',\n    authors:[\n        {firstname:'ab', lastname:'cd', nationalities: ['belgian']},\n        {firstname:'gh', lastname:'ij', nationalities: []},\n        {firstname:'kl', lastname:'mn'},\n        {firstname:'op', lastname:'qr', nationalities: ['belgian','swiss']},\n    ],\n    info: {\n        keywords:['kwd1','kw2'],\n        parameters: [\n            {\n              \"description\": \"asdf\",\n              \"value\": \"asdf\"\n            },\n            {\n              \"description\": \"fds\",\n              \"value\": \"asdff\"\n            }\n        ]\n    }\n});\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
+				]
+			  }
+			],
+			"libs": [
+			  [
+				{}
+			  ]
+			],
+			"buttons": [
+			  [
+				{
+				  "name": "button1",
+				  "label": "Execute",
+				  "hide": [],
+				  "disable": []
+				}
+			  ]
+			]
+		  }
+		},
+		"layers": {
+		  "Default layer": {
+			"position": {
+			  "left": 89,
+			  "top": 31
+			},
+			"size": {
+			  "width": 49,
+			  "height": 31
+			},
+			"zIndex": 0,
+			"display": true,
+			"title": "",
+			"bgColor": [
+			  255,
+			  255,
+			  255,
+			  0
+			],
+			"wrapper": true,
+			"created": true,
+			"name": "Default layer"
+		  }
+		},
+		"id": 4,
+		"vars_in": [
+		  {}
 		],
 		"actions_in": [
 		  {}
@@ -394,7 +529,7 @@
 				  ]
 				],
 				"script": [
-				  "API.createData('data', {\n    title:'abc',\n    authors:[\n        {firstname:'ab', lastname:'cd', nationalities: ['belgian']},\n        {firstname:'gh', lastname:'ij', nationalities: []},\n        {firstname:'kl', lastname:'mn'},\n        {firstname:'op', lastname:'qr', nationalities: ['belgian','swiss']},\n    ],\n    info: {\n        keywords:['kwd1','kw2'],\n        parameters: [\n            {\n              \"description\": \"asdf\",\n              \"value\": \"asdf\"\n            },\n            {\n              \"description\": \"fds\",\n              \"value\": \"asdff\"\n            }\n        ]\n    }\n});\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
+				  "let data=API.getData('data');\nfor (let key of Object.keys(data)) {\n    data[key]=undefined;\n}\ndata.triggerChange();\nAPI.getData('kinds').triggerChange();\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
 				]
 			  }
 			],
@@ -417,128 +552,12 @@
 		"layers": {
 		  "Default layer": {
 			"position": {
-			  "left": 89,
-			  "top": 31
+			  "left": 48,
+			  "top": 49
 			},
 			"size": {
-			  "width": 49,
-			  "height": 31
-			},
-			"zIndex": 0,
-			"display": true,
-			"title": "",
-			"bgColor": [
-			  255,
-			  255,
-			  255,
-			  0
-			],
-			"wrapper": true,
-			"created": true,
-			"name": "Default layer"
-		  }
-		},
-		"id": 4,
-		"vars_in": [
-		  {}
-		],
-		"actions_in": [
-		  {}
-		],
-		"vars_out": [
-		  {
-			"jpath": []
-		  }
-		],
-		"actions_out": [
-		  {
-			"jpath": []
-		  }
-		],
-		"toolbar": {
-		  "custom": [
-			[
-			  {
-				"title": "",
-				"icon": "",
-				"action": "",
-				"position": "begin"
-			  }
-			]
-		  ],
-		  "common": [
-			{
-			  "toolbar": [
-				[
-				  "Open Preferences"
-				]
-			  ]
-			}
-		  ]
-		},
-		"css": [
-		  {
-			"fontSize": [
-			  ""
-			],
-			"fontFamily": [
-			  ""
-			]
-		  }
-		],
-		"title": ""
-	  },
-	  {
-		"url": "modules/types/client_interaction/code_executor/",
-		"configuration": {
-		  "sections": {},
-		  "groups": {
-			"group": [
-			  {
-				"display": [
-				  [
-					"editor",
-					"buttons"
-				  ]
-				],
-				"execOnLoad": [
-				  []
-				],
-				"asyncAwait": [
-				  [
-					"top"
-				  ]
-				],
-				"script": [
-				  "let data=API.getData('data');\nfor (let key of Object.keys(data)) {\n    data[key]=undefined;\n}\ndata.triggerChange();\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
-				]
-			  }
-			],
-			"libs": [
-			  [
-				{}
-			  ]
-			],
-			"buttons": [
-			  [
-				{
-				  "name": "button1",
-				  "label": "Execute",
-				  "hide": []
-				}
-			  ]
-			]
-		  }
-		},
-		"layers": {
-		  "Default layer": {
-			"position": {
-			  "left": 58,
-			  "top": 63
-			},
-			"size": {
-			  "width": 47,
-			  "height": 14
+			  "width": 40,
+			  "height": 20
 			},
 			"zIndex": 0,
 			"display": true,
@@ -603,6 +622,131 @@
 		  }
 		],
 		"title": ""
+	  },
+	  {
+		"url": "modules/types/client_interaction/code_executor/",
+		"configuration": {
+		  "sections": {},
+		  "groups": {
+			"group": [
+			  {
+				"display": [
+				  [
+					"editor",
+					"buttons"
+				  ]
+				],
+				"execOnLoad": [
+				  [
+					"yes"
+				  ]
+				],
+				"asyncAwait": [
+				  [
+					"top"
+				  ]
+				],
+				"script": [
+				  "let kinds=[\"Author\",\"Editor\",\"Test\"];\nAPI.createData('kinds', kinds);\n"
+				]
+			  }
+			],
+			"libs": [
+			  [
+				{}
+			  ]
+			],
+			"buttons": [
+			  [
+				{
+				  "name": "button1",
+				  "label": "Execute",
+				  "hide": [],
+				  "disable": []
+				}
+			  ]
+			]
+		  }
+		},
+		"layers": {
+		  "Default layer": {
+			"position": {
+			  "left": 1,
+			  "top": 49
+			},
+			"size": {
+			  "width": 46,
+			  "height": 11
+			},
+			"zIndex": 0,
+			"display": true,
+			"title": "",
+			"bgColor": [
+			  255,
+			  255,
+			  255,
+			  0
+			],
+			"wrapper": true,
+			"created": true,
+			"name": "Default layer"
+		  }
+		},
+		"id": 6,
+		"vars_in": [
+		  {}
+		],
+		"actions_in": [
+		  {}
+		],
+		"vars_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"actions_out": [
+		  {
+			"jpath": []
+		  }
+		],
+		"toolbar": {
+		  "custom": [
+			[
+			  {
+				"title": "",
+				"icon": "",
+				"action": "",
+				"position": "begin",
+				"color": [
+				  100,
+				  100,
+				  100,
+				  1
+				]
+			  }
+			]
+		  ],
+		  "common": [
+			{
+			  "toolbar": [
+				[
+				  "Open Preferences"
+				]
+			  ]
+			}
+		  ]
+		},
+		"css": [
+		  {
+			"fontSize": [
+			  ""
+			],
+			"fontFamily": [
+			  ""
+			]
+		  }
+		],
+		"title": ""
 	  }
 	],
 	"variables": [
@@ -615,11 +759,11 @@
 	"aliases": [
 	  {
 		"path": "https://www.lactame.com/github/cheminfo-js/visualizer-helper/80a37e7d7ac398e8ba6961c373bbea98590d2449",
-		"alias": "vh"
+		"alias": "vhxx"
 	  },
 	  {
 		"path": "http://localhost:9898/cheminfo-js/visualizer-helper",
-		"alias": "vhxx"
+		"alias": "vh"
 	  }
 	],
 	"configuration": {

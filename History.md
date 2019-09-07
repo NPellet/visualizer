@@ -1,3 +1,24 @@
+# [2.108.0](https://github.com/NPellet/visualizer/compare/v2.107.0...v2.108.0) (2019-08-28)
+
+
+### Features
+
+* use mf-parser for molecular formula rendering ([c6353e0](https://github.com/NPellet/visualizer/commit/c6353e0))
+
+
+
+# [2.107.0](https://github.com/NPellet/visualizer/compare/v2.106.0...v2.107.0) (2019-08-27)
+
+
+* upgrade fontawesome and stop using the js version ([0186ed3](https://github.com/NPellet/visualizer/commit/0186ed3))
+
+
+### BREAKING CHANGES
+
+* there is no shim anymore so icon classNames can have changed and will break views
+
+
+
 # [2.106.0](https://github.com/NPellet/visualizer/compare/v2.105.0...v2.106.0) (2019-07-12)
 
 

@@ -87,6 +87,16 @@ module.exports = function (grunt) {
             standalone: 'RxnRenderer'
           }
         }
+      },
+      MFParser: {
+        files: {
+          'src/browserified/MFParser/index.js': ['./node_modules/mf-parser/src/index.js']
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'MFParser'
+          }
+        }
       }
     },
     pkg: grunt.file.readJSON('package.json'),
@@ -218,11 +228,6 @@ module.exports = function (grunt) {
               './jit/Jit/**/*',
               './ui-contextmenu/jquery.ui-contextmenu*',
               './papa-parse/papaparse*',
-              [
-                './font-awesome/svg-with-js/js/fontawesome.min.js',
-                './font-awesome/svg-with-js/js/fa-solid.min.js',
-                './font-awesome/svg-with-js/js/fa-v4-shims.min.js'
-              ],
               './colors/css/colors.min.css',
               './pouchdb/dist/**',
               './uri.js/src/*.js',
@@ -290,7 +295,9 @@ module.exports = function (grunt) {
               './quill-image-resize-module/image-resize.min.js',
               './mathjs/dist/math.min.js',
               './mathjs/dist/math.min.map',
-              './d3-hierarchy/dist/d3-hierarchy.min.js'
+              './d3-hierarchy/dist/d3-hierarchy.min.js',
+              './@fortawesome/fontawesome-free/css/all.min.css',
+              './@fortawesome/fontawesome-free/webfonts/*'
             ],
             dest: './build/node_modules/'
           },

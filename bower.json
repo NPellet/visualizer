@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.106.0",
+  "version": "2.108.0",
   "description": "Data visualization framework",
   "main": "src/init.js",
   "keywords": ["data", "visualization", "framework"],
@@ -28,7 +28,6 @@
     "fetch": "2.0.1",
     "file-saver.js": "1.20150507.2",
     "flag-icon-css": "2.8.0",
-    "font-awesome": "5.0.13",
     "jcampconverter": "3.0.4",
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
