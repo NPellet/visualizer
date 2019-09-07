@@ -108,6 +108,11 @@ define([
     addModuleFromJSON(def);
   }
 
+  // this should only be called in the init script.
+  function setInitialLayerName(layerName) {
+    activeLayer = layerName;
+  }
+
   function setModuleSize(module) {
     const modulePos = module.getPosition(getActiveLayer());
     const moduleSize = module.getSize(getActiveLayer());
@@ -1237,6 +1242,7 @@ define([
       }
     },
     getLayerNames,
+    setInitialLayerName,
     getActiveLayerName: getActiveLayer,
     addModule: addModule,
     newModule: newModule,
