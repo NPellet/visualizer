@@ -1,3 +1,18 @@
+# [2.109.0](https://github.com/NPellet/visualizer/compare/v2.108.1...v2.109.0) (2019-09-23)
+
+
+### Bug Fixes
+
+* **tpyeRenderer:** correct svg renderer if width or height not specified ([7b782c5](https://github.com/NPellet/visualizer/commit/7b782c5))
+
+
+### Features
+
+* wait for modules domWrapper when switchToLayer ([cbadd4a](https://github.com/NPellet/visualizer/commit/cbadd4a))
+* **quill:** allow number in shortcuts ([b99dcda](https://github.com/NPellet/visualizer/commit/b99dcda))
+
+
+
 ## [2.108.1](https://github.com/NPellet/visualizer/compare/v2.108.0...v2.108.1) (2019-09-07)
 
 
