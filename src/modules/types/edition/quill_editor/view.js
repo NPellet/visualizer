@@ -163,7 +163,7 @@ define([
     },
     _listenForShortcuts: function (event) {
       if (!this.module.shortcuts || this.module.shortcuts.length < 1) return;
-      if (event.key < 'a' || event.key > 'z') {
+      if ((event.key < 'a' || event.key > 'z') && (event.key < '0' || event.key > '9')) {
         let matching = this.module.shortcuts.filter(
           (entry) => entry.key === this.module.currentWord
         )[0];
