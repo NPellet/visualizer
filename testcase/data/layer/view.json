@@ -1,0 +1,222 @@
+{
+  "version": "2.108.2-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      },
+      "Test": {
+        "name": "Test"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": ["API.switchToLayer('Test');\n\n"]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 34,
+            "top": 9
+          },
+          "size": {
+            "width": 48,
+            "height": 32
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Test": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Test"
+        }
+      },
+      "id": 1,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/quill_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [["isEditable"]],
+              "toolbarMode": ["light"],
+              "debouncing": [0],
+              "storeInView": [["yes"]],
+              "modifyVarIn": [[]],
+              "className": ["quill"],
+              "css": [".quill {}"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Test": {
+          "position": {
+            "left": 32,
+            "top": 8
+          },
+          "size": {
+            "width": 45,
+            "height": 31
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Test"
+        }
+      },
+      "id": 2,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "",
+      "richtext": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "results",
+      "jpath": ["results"]
+    }
+  ],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}

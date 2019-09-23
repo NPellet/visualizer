@@ -12,7 +12,8 @@ define([
   'src/main/variables',
   'src/util/debug',
   'version',
-  'src/util/config'
+  'src/util/config',
+  'delay'
 ], function (
   $,
   ui,
@@ -25,7 +26,8 @@ define([
   Variables,
   Debug,
   Version,
-  Config
+  Config,
+  delay
 ) {
   var definition, jqdom, moduleMove;
   var isInit = false;
@@ -921,7 +923,10 @@ define([
       if (getActiveLayer() === layer.name) return;
       activeLayer = layer.name;
 
-      eachModules(function (moduleInstance) {
+      eachModules(async function (moduleInstance) {
+        while (!moduleInstance.domWrapper) {
+          await delay(10);
+        }
         var layer3 = moduleInstance.toggleLayer(layer.name);
 
         if (!layer3) {

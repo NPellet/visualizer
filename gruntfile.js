@@ -38,6 +38,16 @@ module.exports = function (grunt) {
           }
         }
       },
+      delay: {
+        files: {
+          'src/browserified/delay/index.js': ['./node_modules/delay/index.js']
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'Delay'
+          }
+        }
+      },
       mimeTypes: {
         files: {
           'src/browserified/mime-types/index.js': ['./node_modules/mime-types/index.js']
