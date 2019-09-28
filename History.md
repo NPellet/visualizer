@@ -1,3 +1,12 @@
+# [2.110.0](https://github.com/NPellet/visualizer/compare/v2.109.0...v2.110.0) (2019-09-28)
+
+
+### Features
+
+* change algorithm for isContinuous ([d7ecc24](https://github.com/NPellet/visualizer/commit/d7ecc24))
+
+
+
 # [2.109.0](https://github.com/NPellet/visualizer/compare/v2.108.1...v2.109.0) (2019-09-23)
 
 
