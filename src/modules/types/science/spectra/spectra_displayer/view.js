@@ -1446,27 +1446,44 @@ define([
     }
   }
 
-  function isContinuous(data) {
-    // from molecular-formula/ms-spectrum/iscontinuous
+  // Code is largely copied from :
+  // https://github.com/cheminfo-js/molecular-formula/blob/master/packages/ms-spectrum/src/isContinuous.js
+  function isContinuous(data, options = {}) {
+    const { minLength = 100, maxDeltaRatio = 3 } = options;
+    const minRadio = 1 / maxDeltaRatio;
+    const maxRatio = 1 * maxDeltaRatio;
 
     let xs = data.x;
     let ys = data.y;
-    if (xs.length < 100) {
+    if (xs.length < minLength) {
       return false;
     } else {
       let previousDelta = xs[1] - xs[0];
-
+      let success = 0;
+      let failed = 0;
       for (let i = 0; i < xs.length - 1; i++) {
+        if (ys[i] === 0 || ys[i + 1] === 0) {
+          previousDelta = 0;
+          continue;
+        }
         let delta = xs[i + 1] - xs[i];
-        let ratio = delta / previousDelta;
-        if (
-          (Math.abs(delta) > 0.1 || ratio < 0.5 || ratio > 2) &&
-          ys[i] !== 0 &&
-          ys[i + 1] !== 0
-        ) {
-          return false;
+        if (previousDelta) {
+          let ratio = delta / previousDelta;
+          if (
+            (Math.abs(delta) > 0.1 || ratio < minRadio || ratio > maxRatio) &&
+            ys[i] !== 0 &&
+            ys[i + 1] !== 0
+          ) {
+            failed++;
+            break;
+          } else {
+            success++;
+          }
         }
         previousDelta = delta;
+      }
+      if (success / failed < 10) {
+        return false;
       }
     }
     return true;
