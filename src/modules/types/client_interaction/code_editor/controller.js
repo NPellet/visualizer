@@ -69,7 +69,8 @@ define([
                 { title: 'YAML', key: 'yaml' },
                 { title: 'HTML', key: 'html' },
                 { title: 'XML', key: 'xml' },
-                { title: 'Markdown', key: 'markdown' }
+                { title: 'Markdown', key: 'markdown' },
+                { title: 'LaTeX', key: 'latex' },
               ],
               default: 'text'
             },

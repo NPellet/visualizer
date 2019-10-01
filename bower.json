@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ace": "ajaxorg/ace-builds#0d62c26de7b2e1922d8dd95ba587c9845c018c51",
+    "ace": "ajaxorg/ace-builds#v1.4.6",
     "async": "2.1.4",
     "babel-standalone": "6.19.0",
     "bluebird": "3.5.3",
