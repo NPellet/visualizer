@@ -8,8 +8,7 @@ define([
   'jquery',
   'forms/button'
 ], function (Default, Util, ace, Context, $, Button) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default);
 
@@ -17,16 +16,24 @@ define([
     this._id = Util.getNextUniqueId();
     this._code = '';
 
-    var table = this.table = $('<table>').css({
+    var table = (this.table = $('<table>').css({
       height: '100%',
       width: '100%',
       bottom: 0
-    });
-    var editorRow = $('<tr>').appendTo(table).css('height', 'auto');
+    }));
+    var editorRow = $('<tr>')
+      .appendTo(table)
+      .css('height', 'auto');
     this.editorRow = editorRow;
-    this.buttonRow = $('<tr>').appendTo(table).css('height', '30px');
-    this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
-    this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
+    this.buttonRow = $('<tr>')
+      .appendTo(table)
+      .css('height', '30px');
+    this.editorCell = $('<td>')
+      .css('height', '100%')
+      .appendTo(editorRow);
+    this.buttonCell = $('<td>')
+      .appendTo(this.buttonRow)
+      .css('text-align', 'center');
     this._input = {};
     this.buttons = [];
     this.module.getDomContent().html(table);
@@ -39,7 +46,10 @@ define([
     this._code = initVal;
 
     if (this.module.getConfigurationCheckbox('display', 'editor')) {
-      $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%').appendTo(this.editorCell);
+      $(`<div id="${this._id}"></div>`)
+        .css('height', '100%')
+        .css('width', '100%')
+        .appendTo(this.editorCell);
       this.editor = ace.edit(this._id);
       this.editor.$blockScrolling = Infinity;
       this.editor.getSession().setOption('useWorker', false);
@@ -55,18 +65,20 @@ define([
       var buttons = this.module.getConfiguration('buttons');
       if (buttons) {
         buttons.forEach(function (button, idx) {
-          var onclick = that.module.controller.onButtonClick.bind(that.module.controller, button.name);
-          var b = new Button(
-            button.label,
-            onclick,
-            {
-              color: 'Grey',
-              disabled: false
-            }
+          var onclick = that.module.controller.onButtonClick.bind(
+            that.module.controller,
+            button.name
           );
+          var b = new Button(button.label, onclick, {
+            color: 'Grey',
+            disabled: false
+          });
           b.name = button.name;
           if (button.hide && button.hide.indexOf('hide') > -1) {
             b.hide();
+          }
+          if (button.disable && button.disable.indexOf('disable') > -1) {
+            b.disable();
           }
           that.buttonCell.append(b.render());
           that.buttons.push(b);

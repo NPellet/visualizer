@@ -21,7 +21,8 @@ define([
 
   Controller.prototype.moduleInformation = {
     name: 'Code executor',
-    description: 'Write code that can be executed on input variable, action or just the push of a button',
+    description:
+      'Write code that can be executed on input variable, action or just the push of a button',
     author: 'Michaël Zasso',
     date: '12.01.2015',
     license: 'MIT'
@@ -45,7 +46,11 @@ define([
 
   Controller.prototype.variablesIn = ['inputValue'];
 
-  Controller.prototype.actionsIn = $.extend({}, Controller.prototype.actionsIn, { execute: 'Execute the code' });
+  Controller.prototype.actionsIn = $.extend(
+    {},
+    Controller.prototype.actionsIn,
+    { execute: 'Execute the code' }
+  );
 
   Controller.prototype.configurationStructure = function () {
     return {
@@ -289,7 +294,6 @@ define([
     }
   };
 
-
   Controller.prototype._getButton = function (name) {
     return this.module.view.buttons.find((b) => b.name === name);
   };
@@ -386,7 +390,9 @@ define([
       enableButton,
       disableButton,
       getButton,
-      moduleTriggerChange: executor.controller.module.model.dataTriggerChange.bind(executor.controller.module.model)
+      moduleTriggerChange: executor.controller.module.model.dataTriggerChange.bind(
+        executor.controller.module.model
+      )
     };
 
     var ctx = {
@@ -479,7 +485,9 @@ define([
     this._done = Promise.resolve();
 
     try {
-      var result = Promise.resolve(this.theFunction.apply(this.context, this.libs));
+      var result = Promise.resolve(
+        this.theFunction.apply(this.context, this.libs)
+      );
       if (!this._async) {
         this._done = result;
       }
@@ -492,16 +500,25 @@ define([
 
   ScriptExecutor.prototype.setOutput = function () {
     var that = this;
-    this._done.then(function () {
-      if (that.wasSet) {
-        that.controller.createDataFromEvent('onScriptEnded', 'outputValue', that.controller.outputObject);
-      }
-      return null;
-    }, function (e) {
-      reportError(that.title, e);
-    }).then(function () {
-      that.controller.stopExecution();
-    });
+    this._done
+      .then(
+        function () {
+          if (that.wasSet) {
+            that.controller.createDataFromEvent(
+              'onScriptEnded',
+              'outputValue',
+              that.controller.outputObject
+            );
+          }
+          return null;
+        },
+        function (e) {
+          reportError(that.title, e);
+        }
+      )
+      .then(function () {
+        that.controller.stopExecution();
+      });
   };
 
   ScriptExecutor.prototype.async = function () {
@@ -519,8 +536,7 @@ define([
     });
   };
 
-  ScriptExecutor.prototype.done = function () {
-  };
+  ScriptExecutor.prototype.done = function () {};
 
   function reportError(title, e) {
     var message = '';

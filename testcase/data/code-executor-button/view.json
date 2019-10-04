@@ -1,5 +1,5 @@
 {
-  "version": "2.106.1-0",
+  "version": "2.110.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -21,9 +21,11 @@
           "group": [
             {
               "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
+              "execOnLoad": [[]],
               "asyncAwait": [["top"]],
-              "script": [""]
+              "script": [
+                "this.showButton('hidden');\n\nthis.enableButton('disable');\n\n"
+              ]
             }
           ],
           "libs": [[{}]],
@@ -71,12 +73,12 @@
         },
         "Test": {
           "position": {
-            "left": 34,
-            "top": 5
+            "left": 37,
+            "top": 9
           },
           "size": {
-            "width": 70,
-            "height": 49
+            "width": 66,
+            "height": 46
           },
           "zIndex": 0,
           "display": true,
