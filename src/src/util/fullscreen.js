@@ -7,16 +7,27 @@ define(['src/util/ui'], function (ui) {
     oldViewDimensions;
 
   function fullScreenChange() {
-    var fullscreenElement = (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    var fullscreenElement =
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement;
     var view = currentFullscreenModule.view;
-    if (fullscreenElement) { // New element is now fullscreen
+    if (fullscreenElement) {
+      // New element is now fullscreen
       oldStyle = fullscreenElement.getAttribute('style');
-      fullscreenElement.setAttribute('style', 'height:100%; width:100%; background-color:white;');
+      fullscreenElement.setAttribute(
+        'style',
+        'height:100%; width:100%; background-color:white;'
+      );
       currentFullscreenElement = fullscreenElement;
       oldViewDimensions = { height: view.height, width: view.width };
-      view.height = screen.height / window.devicePixelRatio;
-      view.width = screen.width / window.devicePixelRatio;
-    } else { // Stopping fullscreen
+      view.height = currentFullscreenModule.getDomContent().height();
+      view.width = currentFullscreenModule.getDomContent().width();
+      // view.height = screen.height / window.devicePixelRatio;
+      // view.width = screen.width / window.devicePixelRatio;
+    } else {
+      // Stopping fullscreen
       currentFullscreenElement.setAttribute('style', oldStyle);
       view.height = oldViewDimensions.height;
       view.width = oldViewDimensions.width;
@@ -32,7 +43,12 @@ define(['src/util/ui'], function (ui) {
 
   return {
     requestFullscreen: function (module) {
-      if (document.fullscreenEnabled || document.webkitFullscreenEnabled || document.mozFullScreenEnabled || document.msFullscreenEnabled) {
+      if (
+        document.fullscreenEnabled ||
+        document.webkitFullscreenEnabled ||
+        document.mozFullScreenEnabled ||
+        document.msFullscreenEnabled
+      ) {
         currentFullscreenModule = module;
         var dom = module.getDomContent()[0];
         if (dom.requestFullscreen) {
@@ -45,7 +61,10 @@ define(['src/util/ui'], function (ui) {
           dom.msRequestFullscreen();
         }
       } else {
-        ui.showNotification('Sorry, fullscreen not available in this context', 'info');
+        ui.showNotification(
+          'Sorry, fullscreen not available in this context',
+          'info'
+        );
       }
     }
   };
