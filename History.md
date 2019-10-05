@@ -1,3 +1,17 @@
+# [2.111.0](https://github.com/NPellet/visualizer/compare/v2.110.1...v2.111.0) (2019-10-05)
+
+
+### Bug Fixes
+
+* **code_executor:** fix disable button on load ([5cb314c](https://github.com/NPellet/visualizer/commit/5cb314c))
+
+
+### Features
+
+* **code_editor:** add latex color syntaxing ([18c9727](https://github.com/NPellet/visualizer/commit/18c9727))
+
+
+
 ## [2.110.1](https://github.com/NPellet/visualizer/compare/v2.110.0...v2.110.1) (2019-09-28)
 
 
