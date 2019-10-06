@@ -946,7 +946,6 @@ define([
 
             if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
               var plugin = this.graph.getPlugin('selectScatter');
-              console.log('xxxxx', serie);
               plugin.setSerie(serie);
             }
           } else {
