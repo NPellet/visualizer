@@ -666,7 +666,7 @@ define([
             serie.setLineWidth(lineWidth);
 
             
-            plotinfosStyle.lineStyle= parseInt(plotinfos[i].strokestyle) || 1
+            plotinfosStyle.lineStyle = parseInt(plotinfos[i].strokestyle) || 1;
          
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
