@@ -949,7 +949,11 @@ define([
               plugin.setSerie(serie);
             }
           } else {
-            if (aData.style) {
+            if (aData.styles && aData.styles instanceof Object) {
+              for (let selectionType in aData.styles) {
+                serie.setStyle(aData.styles[selectionType], selectionType);
+              }
+            } else if (aData.style) {
               serie.setStyle(aData.style);
             } else {
               var color =
@@ -1219,6 +1223,7 @@ define([
 
             // serie.setLabel( data[ i ].label.toString( ) );
             serie.setLineWidth(data[i].lineWidth || opts.strokeWidth || 1);
+
             serie.setLineColor(
               data[i].lineColor || `rgb(${colors[i].join()})`,
               false,
