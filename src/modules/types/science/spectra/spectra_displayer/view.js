@@ -614,7 +614,12 @@ define([
       return { options: options, others: others };
     },
 
-    setSerieParameters(serie, varname, highlight, forceColor) {
+    setSerieParameters(serie, varname, options = {}) {
+      const {
+        highlight,
+        style = {},
+        styles = { unselected: {}, selected: {} }
+      } = options;
       var plotinfos = this.module.getConfiguration('plotinfos');
       const stackVerticalSpacing = this.module.getConfiguration(
         'stackVerticalSpacing'
@@ -627,6 +632,7 @@ define([
         serie.hidden = false;
       }
 
+      let plotinfosStyle = {};
       if (plotinfos) {
         const axes = new Set();
         for (var plotinfo of plotinfos) {
@@ -653,21 +659,18 @@ define([
               axis.adaptTo(other, 0, 0);
             }
 
-            var color = forceColor ? forceColor : plotinfos[i].plotcolor;
-
-            serie.setLineColor(Color.getColor(color), false, true);
+            plotinfosStyle.lineColor = Color.getColor(plotinfos[i].plotcolor);
 
             var lineWidth = parseFloat(plotinfos[i].strokewidth);
             if (isNaN(lineWidth)) lineWidth = 1;
-
             serie.setLineWidth(lineWidth);
-            serie.setLineStyle(
-              parseInt(plotinfos[i].strokestyle, 10) || 1,
-              false,
-              true
-            );
+
+            
+            plotinfosStyle.lineStyle= parseInt(plotinfos[i].strokestyle) || 1
+         
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
+              var color = style.lineColor || plotinfos[i].plotcolor;
               serie.showMarkers();
               serie.setMarkers([
                 {
@@ -692,6 +695,23 @@ define([
           }
         }
       }
+
+      let newUnselectedStyle = Object.assign(
+        {},
+        serie.getStyle(),
+        plotinfosStyle,
+        style,
+        styles.unselected
+      );
+      serie.setStyle(newUnselectedStyle, 'unselected');
+      let newSelectedStyle = Object.assign(
+        {},
+        serie.getStyle(),
+        plotinfosStyle,
+        style,
+        styles.selected
+      );
+      serie.setStyle(newSelectedStyle, 'selected');
 
       if (!foundInfo) {
         serie.setYAxis(this.getYAxis(0));
@@ -950,18 +970,27 @@ define([
             }
           } else {
             if (aData.styles && aData.styles instanceof Object) {
-              for (let selectionType in aData.styles) {
-                serie.setStyle(aData.styles[selectionType], selectionType);
-              }
+              this.setSerieParameters(serie, varname, {
+                styles: aData.styles
+              });
             } else if (aData.style) {
-              serie.setStyle(aData.style);
+              this.setSerieParameters(serie, varname, {
+                style: aData.style
+              });
             } else {
               var color =
                 defaultStyle.lineColor ||
                 (data.length > 1
                   ? Color.getNextColorRGB(i, data.length)
                   : null);
-              this.setSerieParameters(serie, varname, aData._highlight, color);
+              let style = {};
+              if (color) {
+                style.lineColor = Color.getColor(color);
+              }
+              this.setSerieParameters(serie, varname, {
+                highlight: aData._highlight,
+                style
+              });
             }
           }
 

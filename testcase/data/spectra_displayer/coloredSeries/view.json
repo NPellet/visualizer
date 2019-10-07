@@ -39,7 +39,7 @@
           },
           "size": {
             "width": 41,
-            "height": 80
+            "height": 88
           },
           "zIndex": 0,
           "display": true,
@@ -109,7 +109,7 @@
                     "fullOut": ["both"],
                     "legend": ["bottom"],
                     "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [[]],
+                    "mouseTracking": [["track"]],
                     "trackingAxis": ["x"],
                     "selectScatter": [[]],
                     "independantYZoom": [[]]
@@ -182,7 +182,7 @@
                       "markerSize": 2,
                       "normalize": "none",
                       "optimizeSlots": [],
-                      "tracking": []
+                      "tracking": ["yes"]
                     }
                   ]
                 ]
@@ -207,12 +207,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 44,
+            "left": 42,
             "top": 0
           },
           "size": {
-            "width": 99,
-            "height": 66
+            "width": 61,
+            "height": 41
           },
           "zIndex": 0,
           "display": true,
@@ -228,6 +228,91 @@
         {
           "rel": "chart",
           "name": "chart"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["view"],
+              "expanded": [["expand"]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 42,
+            "top": 42
+          },
+          "size": {
+            "width": 61,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "track"
         }
       ],
       "actions_in": [{}],
