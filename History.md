@@ -1,3 +1,17 @@
+## [2.111.1](https://github.com/NPellet/visualizer/compare/v2.111.0...v2.111.1) (2019-10-07)
+
+
+### Bug Fixes
+
+* **spectraDisplayer:** can track even with styles ([19e3085](https://github.com/NPellet/visualizer/commit/19e3085))
+
+
+### Features
+
+* **spectraDisplayer:** deal correctly with line style ([b10f759](https://github.com/NPellet/visualizer/commit/b10f759))
+
+
+
 # [2.111.0](https://github.com/NPellet/visualizer/compare/v2.110.1...v2.111.0) (2019-10-05)
 
 
