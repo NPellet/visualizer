@@ -504,6 +504,7 @@ define([
         return;
       }
       this.graph.resize(this.width, this.height);
+      this.graph.updateLegend();
     },
 
     shouldAutoscale(varName) {
@@ -665,9 +666,7 @@ define([
             if (isNaN(lineWidth)) lineWidth = 1;
             serie.setLineWidth(lineWidth);
 
-            
             plotinfosStyle.lineStyle = parseInt(plotinfos[i].strokestyle) || 1;
-         
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
               var color = style.lineColor || plotinfos[i].plotcolor;
