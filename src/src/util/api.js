@@ -34,7 +34,10 @@ define([
   var loadingHtml = $('<div>', { id: 'ci-loading' })
     .append(loadingSVG)
     .append(
-      $('<div>', { id: 'ci-loading-message', class: 'ci-loading-subtitle' })
+      $('<div>', {
+        id: 'ci-loading-message',
+        class: 'ci-loading-subtitle'
+      })
     );
   var loading = {};
   var loadingNumber = 0;
@@ -69,7 +72,10 @@ define([
     },
 
     listenHighlight: function () {
-      if (!arguments[0] || typeof arguments[0]._highlight == 'undefined') {
+      if (
+        !arguments[0] ||
+                typeof arguments[0]._highlight == 'undefined'
+      ) {
         return;
       }
 
@@ -124,23 +130,23 @@ define([
   };
 
   /**
-   * Check if a variable is defined
-   * @param {string} varName - Name of the variable
-   * @return {boolean}
-   */
+     * Check if a variable is defined
+     * @param {string} varName - Name of the variable
+     * @return {boolean}
+     */
   exports.existVariable = function existVariable(varName) {
     return Variables.exist(varName);
   };
   exports.existVar = exports.existVariable;
 
   /**
-   * Set a variable using a jpath
-   * @param {string} name - Name of the variable
-   * @param {Variable} [sourceVariable] - Source variable. If set, the new variable will be created relative to its jpath
-   * @param {string[]} jpath
-   * @param {string} [filter] - Url of the filter to use with this variable
-   * @return {Promise}
-   */
+     * Set a variable using a jpath
+     * @param {string} name - Name of the variable
+     * @param {Variable} [sourceVariable] - Source variable. If set, the new variable will be created relative to its jpath
+     * @param {string[]} jpath
+     * @param {string} [filter] - Url of the filter to use with this variable
+     * @return {Promise}
+     */
   exports.setVariable = function setVariable(
     name,
     sourceVariable,
@@ -162,12 +168,12 @@ define([
   exports.setVar = exports.setVariable;
 
   /**
-   * Create new data and set a variable to it
-   * @param {string} name - Name of the variable
-   * @param {*} data - Data to set
-   * @param {string} [filter] - Url of the filter to use with this variable
-   * @return {Promise}
-   */
+     * Create new data and set a variable to it
+     * @param {string} name - Name of the variable
+     * @param {*} data - Data to set
+     * @param {string} [filter] - Url of the filter to use with this variable
+     * @return {Promise}
+     */
   exports.createData = function createData(name, data, filter) {
     return exports.createDataJpath(name, data, [], filter);
   };
@@ -182,36 +188,38 @@ define([
     if (data && data.trace) {
       return data
         .trace(jpath)
-        .then((data) => Variables.setVariable(name, false, data, filter));
+        .then((data) =>
+          Variables.setVariable(name, false, data, filter)
+        );
     } else {
       return Variables.setVariable(name, false, data, filter);
     }
   };
 
   /**
-   * Get a variable by name
-   * @param {string} name - Name of the variable
-   * @return {Variable}
-   */
+     * Get a variable by name
+     * @param {string} name - Name of the variable
+     * @return {Variable}
+     */
   exports.getVariable = function getVariable(name) {
     return Variables.getVariable(name);
   };
   exports.getVar = exports.getVariable;
 
   /**
-   * Get the DataObject associated to a variable
-   * @param {string} varName - Name of the variable
-   * @return {*} - DataObject or undefined
-   */
+     * Get the DataObject associated to a variable
+     * @param {string} varName - Name of the variable
+     * @return {*} - DataObject or undefined
+     */
   exports.getData = function getData(varName) {
     return exports.getVariable(varName).getData();
   };
 
   /**
-   * Change the state of a highlight
-   * @param {object|Array} element - Object with a _highlight property or array of highlight IDs
-   * @param {boolean} onOff
-   */
+     * Change the state of a highlight
+     * @param {object|Array} element - Object with a _highlight property or array of highlight IDs
+     * @param {boolean} onOff
+     */
   exports.setHighlight = function setHighlight(element, onOff) {
     if (!element) return;
 
@@ -228,10 +236,10 @@ define([
   exports.highlight = exports.setHighlight;
 
   /**
-   * Set a loading message or change the value of an existing message
-   * @param {string} id - ID of the message
-   * @param {string} [message] - Message content (default: value of the ID)
-   */
+     * Set a loading message or change the value of an existing message
+     * @param {string} id - ID of the message
+     * @param {string} [message] - Message content (default: value of the ID)
+     */
   exports.loading = function setLoading(id, message) {
     if (!message) {
       message = id;
@@ -252,9 +260,9 @@ define([
   };
 
   /**
-   * Remove a loading message
-   * @param {string} id - ID of the message
-   */
+     * Remove a loading message
+     * @param {string} id - ID of the message
+     */
   exports.stopLoading = function stopLoading(id) {
     if (loading[id]) {
       loadingNumber--;
@@ -268,10 +276,10 @@ define([
   };
 
   /**
-   * Send an action to all modules and global action scripts
-   * @param {string} name - Action name
-   * @param {*} [value] - Action value
-   */
+     * Send an action to all modules and global action scripts
+     * @param {string} name - Action name
+     * @param {*} [value] - Action value
+     */
   exports.doAction = function doAction(name, value) {
     if (Data.isSpecialObject(value)) {
       value = value.get();
@@ -280,22 +288,52 @@ define([
     ActionManager.execute(name, value);
   };
 
+  exports.setPreferences = function setPreferences(module, values) {
+    var currentPreferences = module.definition.configuration;
+    var aliases = module.controller.configAliases;
+
+    var cfgEl;
+
+    function getCfgEl(alias) {
+      var cfgEl = currentPreferences;
+      for (var i = 0, l = alias.length - 1; i < l; i++) {
+        cfgEl = cfgEl[alias[i]];
+        if (typeof cfgEl === 'undefined') {
+          break;
+        }
+      }
+      return cfgEl;
+    }
+
+    for (var i in values) {
+      if (values.hasOwnProperty(i)) {
+        var alias = aliases[i];
+        if (alias) {
+          cfgEl = getCfgEl(aliases[i]);
+          cfgEl[0] = values[i];
+        }
+      }
+    }
+
+    module.reload();
+  };
+
   /**
-   * @deprecated
-   * Execute a global visualizer action. This is deprecated. Use API.doAction instead.
-   * @param {string} name - Action name
-   * @param {*} value - Action value
-   */
+     * @deprecated
+     * Execute a global visualizer action. This is deprecated. Use API.doAction instead.
+     * @param {string} name - Action name
+     * @param {*} value - Action value
+     */
   exports.executeAction = Util.deprecate(function executeAction(name, value) {
     ActionManager.execute(name, value);
   }, 'API.doAction is the recommended method.');
 
   /**
-   * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
-   * @param {string} name - Name of the cached value
-   * @param {*} [value] - New value to set
-   * @return {*} The cached value or undefined if used as a setter
-   */
+     * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
+     * @param {string} name - Name of the cached value
+     * @param {*} [value] - New value to set
+     * @return {*} The cached value or undefined if used as a setter
+     */
   exports.cache = function cacheHandler(name, value) {
     if (arguments.length === 1) {
       return Cache.get(name);

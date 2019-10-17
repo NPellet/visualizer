@@ -8,6 +8,7 @@
 define([
   'src/util/util',
   'src/util/debug',
+  'src/util/datatraversing',
   'lodash',
   'jquery',
   'src/util/typerenderer',
@@ -15,8 +16,9 @@ define([
   'src/util/Form',
   'lib/twigjs/twig',
   'notifyjs',
+  'fancytree',
   'jquery-ui/ui/widgets/dialog'
-], function (Util, Debug, _, $, Renderer, Button, Form, Twig) {
+], function (Util, Debug, Traversing, _, $, Renderer, Button, Form, Twig) {
   // On load add the style for the progress notification
   $.notify.addStyle('inprogress', {
     html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(
@@ -522,7 +524,7 @@ define([
     });
   };
 
-  exports.confirm = function (html, okLabel, cancelLabel, dialogOptions) {
+  exports.confirm = function confirm(html, okLabel, cancelLabel, dialogOptions) {
     if (_.isUndefined(okLabel)) okLabel = 'Ok';
     if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
     return new Promise(function (resolve) {
@@ -572,7 +574,7 @@ define([
     noHeader: false,
     noWrap: false
   };
-  exports.dialog = function (div, options) {
+  exports.dialog = function dialog(div, options) {
     if (typeof div === 'object' && !div.jquery) {
       options = div;
       div = null;
@@ -601,6 +603,29 @@ define([
       $dialog.prev().remove();
     }
     return $dialog;
+  };
+
+  exports.selectJpath = async function selectJpath(data, dialogOptions) {
+    let selected = null;
+    const jpaths = [];
+    Traversing.getJPathsFromElement(data, jpaths);
+
+    const div = $('<div />');
+    div.fancytree({
+      source: { children: jpaths, id: 'element' },
+      activate: function (event, data) {
+        selected = data.node.key;
+      }
+    });
+    const confirmed = await exports.confirm(div,
+      'Ok', 'Cancel', Object.assign({ title: 'Select a jpath' }, dialogOptions)
+    );
+    
+    if (confirmed) {
+      return selected;
+    } else {
+      return null;
+    }
   };
 
   exports.copyToClipboard = function (str, options = {}) {
