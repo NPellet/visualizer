@@ -288,7 +288,7 @@ define([
     ActionManager.execute(name, value);
   };
 
-  exports.setPreferences = function setPreferences(module, values) {
+  exports.updatePreferences = function updatePreferences(module, values) {
     var currentPreferences = module.definition.configuration;
     var aliases = module.controller.configAliases;
 

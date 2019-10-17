@@ -22,7 +22,7 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
 
     onActionReceive: {
       _editPreferences(values) {
-        API.setPreferences(this.module, values);
+        API.updatePreferences(this.module, values);
       },
       _print(values) {
         this.module.printView(values);
