@@ -497,6 +497,9 @@ define([
 
   exports.evalOptions = function (options) {
     var result;
+    if (typeof options !== 'string') {
+      return options;
+    }
     if (!options) return undefined;
     if (!options.match(/^\s*\{/)) {
       options = `{${options}}`;

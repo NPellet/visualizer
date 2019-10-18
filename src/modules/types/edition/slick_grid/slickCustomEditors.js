@@ -13,7 +13,7 @@ define([
   'src/data/structures',
   'components/spectrum/spectrum',
   'jquery',
-  'jquery-ui/ui/widgets/datepicker',
+  'jquery-ui/ui/widgets/datepicker'
 ], function (_, Util, UI, structures) {
   Util.loadCss('./components/spectrum/spectrum.css');
   (function ($) {
@@ -24,7 +24,7 @@ define([
         typeEditors[key] = typeEditors[structures[key]];
       }
     }
-  
+
     typeEditors.string = TextValueEditor;
     typeEditors.number = NumberValueEditor;
     typeEditors.boolean = BooleanValueEditor;
@@ -34,7 +34,7 @@ define([
     typeEditors.select = SelectEditor;
     typeEditors.unit = UnitEditor;
     typeEditors.jpath = JPathEditorFactory();
-  
+
     // register namespace
     $.extend(true, window, {
       Slick: {
@@ -50,10 +50,10 @@ define([
           LongText: LongTextEditor,
           SimpleLongText: SimpleLongTextEditor,
           Select: SelectEditor,
-          Unit: UnitEditor,
+          Unit: UnitEditor
         },
         typeEditors
-      },
+      }
     });
 
     function DateEditor(args) {
@@ -77,7 +77,7 @@ define([
           },
           onClose: function () {
             calendarOpen = false;
-          },
+          }
         });
         $input.width($input.width() - 18);
       };
@@ -132,25 +132,20 @@ define([
       };
 
       this.applyValue = function (item, state) {
-        defaultApplyValue.call(
-          this,
-          item,
-          state,
-          this.args.column.dataType
-        );
+        defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
       this.isValueChanged = function () {
         return (
           !($input.val() == '' && defaultValue == null) &&
-                    $input.val() != defaultValue
+          $input.val() != defaultValue
         );
       };
 
       this.validate = function () {
         return {
           valid: true,
-          msg: null,
+          msg: null
         };
       };
 
@@ -167,7 +162,7 @@ define([
         this.$div = $('<div>').css({
           position: 'fixed',
           left: box.left,
-          top: box.top,
+          top: box.top
         });
         $('body').append(this.$div);
         this.$input
@@ -175,7 +170,7 @@ define([
           .bind('keydown.nav', function (e) {
             if (
               e.keyCode === $.ui.keyCode.LEFT ||
-                            e.keyCode === $.ui.keyCode.RIGHT
+              e.keyCode === $.ui.keyCode.RIGHT
             ) {
               e.stopImmediatePropagation();
             }
@@ -184,11 +179,11 @@ define([
           .select();
         this.$input.spectrum({
           color:
-                        args.item &&
-                        args.item.getChildSync &&
-                        args.item.getChildSync(args.column.jpath)
-                          ? args.item.getChildSync(args.column.jpath).get()
-                          : undefined,
+            args.item &&
+            args.item.getChildSync &&
+            args.item.getChildSync(args.column.jpath)
+              ? args.item.getChildSync(args.column.jpath).get()
+              : undefined,
           appendTo: 'body',
           showInitial: true,
           showInput: true,
@@ -207,7 +202,7 @@ define([
               'rgba(74,  134,  232, 1)',
               'rgba(0,  0,  255, 1)',
               'rgba(153,  0,  255, 1)',
-              'rgba(255,  0,  255, 1)',
+              'rgba(255,  0,  255, 1)'
             ],
             [
               'rgba(230,  184,  175, 1)',
@@ -219,7 +214,7 @@ define([
               'rgba(201,  218,  248, 1)',
               'rgba(207,  226,  243, 1)',
               'rgba(217,  210,  233, 1)',
-              'rgba(234,  209,  220, 1)',
+              'rgba(234,  209,  220, 1)'
             ],
             [
               'rgba(221,  126,  107, 1)',
@@ -231,7 +226,7 @@ define([
               'rgba(164,  194,  244, 1)',
               'rgba(159,  197,  232, 1)',
               'rgba(180,  167,  214, 1)',
-              'rgba(213,  166,  189, 1)',
+              'rgba(213,  166,  189, 1)'
             ],
             [
               'rgba(204,  65,  37, 1)',
@@ -243,7 +238,7 @@ define([
               'rgba(109,  158,  235, 1)',
               'rgba(111,  168,  220, 1)',
               'rgba(142,  124,  195, 1)',
-              'rgba(194,  123,  160, 1)',
+              'rgba(194,  123,  160, 1)'
             ],
             [
               'rgba(166,  28,  0, 1)',
@@ -255,7 +250,7 @@ define([
               'rgba(60,  120,  216, 1)',
               'rgba(61,  133,  198, 1)',
               'rgba(103,  78,  167, 1)',
-              'rgba(166,  77,  121, 1)',
+              'rgba(166,  77,  121, 1)'
             ],
             [
               'rgba(133,  32,  12, 1)',
@@ -267,7 +262,7 @@ define([
               'rgba(17,  85,  204, 1)',
               'rgba(11,  83,  148, 1)',
               'rgba(53,  28,  117, 1)',
-              'rgba(116,  27,  71, 1)',
+              'rgba(116,  27,  71, 1)'
             ],
             [
               'rgba(91,  15,  0, 1)',
@@ -279,8 +274,8 @@ define([
               'rgba(28,  69,  135, 1)',
               'rgba(7,  55,  99, 1)',
               'rgba(32,  18,  77, 1)',
-              'rgba(76,  17,  48, 1)',
-            ],
+              'rgba(76,  17,  48, 1)'
+            ]
           ],
           preferredFormat: 'rgba',
           change: function (color) {
@@ -295,7 +290,7 @@ define([
               args.cancelChanges();
             }
           },
-          localStorageKey: 'visualizer-spectrum',
+          localStorageKey: 'visualizer-spectrum'
         });
 
         this.$input
@@ -345,26 +340,19 @@ define([
       };
 
       this.applyValue = function (item, state) {
-        defaultApplyValue.call(
-          this,
-          item,
-          state,
-          this.args.column.dataType
-        );
+        defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
       this.isValueChanged = function () {
         return (
           !(this.$input.val() == '' && defaultValue == null) &&
-                    this.$input.val() != defaultValue
+          this.$input.val() != defaultValue
         );
       };
 
       this.validate = function () {
         if (args.column.validator) {
-          var validationResults = args.column.validator(
-            this.$input.val()
-          );
+          var validationResults = args.column.validator(this.$input.val());
           if (!validationResults.valid) {
             return validationResults;
           }
@@ -372,7 +360,7 @@ define([
 
         return {
           valid: true,
-          msg: null,
+          msg: null
         };
       };
 
@@ -393,12 +381,7 @@ define([
       this.validate = defaultValidate;
 
       this.applyValue = function (item, state) {
-        defaultApplyValue.call(
-          this,
-          item,
-          state,
-          this.args.column.dataType
-        );
+        defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
       this.init();
@@ -407,13 +390,10 @@ define([
     function JPathEditorFactory(inspectData) {
       let editing = false;
 
-
       function jPathInit() {
         const that = this;
         function commitChanges(next) {
-          if (
-            next
-          ) {
+          if (next) {
             if (that.args.commitChanges) {
               that.args.commitChanges('next');
             }
@@ -428,16 +408,20 @@ define([
         var editorOptions = getEditorOptions(
           this.args.column.colDef.editorOptions
         );
-        this.$input = $('<input type="text" class="editor-text" style="width: 100%" class=""/>');
+        this.$input = $(
+          '<input type="text" class="editor-text" style="width: 100%" class=""/>'
+        );
         if (editorOptions.choices) {
           this.$input.attr('list', 'choices');
         }
         this.$input.appendTo($wrapper);
         if (inspectData) {
-          const $link = $('<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-pencil-alt"></i></a>');
+          const $link = $(
+            '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-pencil-alt"></i></a>'
+          );
           $link.appendTo($wrapper);
           // eslint-disable-next-line
-          $link.on('mousedown', async function (e) {
+          $link.on('mousedown', async function(e) {
             editing = true;
             const jpath = await UI.selectJpath(inspectData);
             editing = false;
@@ -449,13 +433,13 @@ define([
             }
           });
         }
-        
+
         $wrapper
           .appendTo(this.args.container)
           .bind('keydown.nav', function (e) {
             if (
               e.keyCode === $.ui.keyCode.LEFT ||
-                        e.keyCode === $.ui.keyCode.RIGHT
+              e.keyCode === $.ui.keyCode.RIGHT
             ) {
               e.stopImmediatePropagation();
             }
@@ -467,7 +451,7 @@ define([
           if (!editing) {
             commitChanges(
               that.args.grid.module &&
-              !that.args.grid.module.view.slick.options.autoEdit
+                !that.args.grid.module.view.slick.options.autoEdit
             );
           }
         });
@@ -484,21 +468,14 @@ define([
         this.isValueChanged = defaultIsValueChanged;
         this.validate = defaultValidate;
         this.applyValue = function (item, state) {
-          defaultApplyValue.call(
-            this,
-            item,
-            state,
-            this.args.column.dataType
-          );
+          defaultApplyValue.call(this, item, state, this.args.column.dataType);
         };
-  
+
         this.init();
       }
 
       return JPathEditor;
     }
-
-
 
     function NumberValueEditor(args) {
       this.args = args;
@@ -512,12 +489,7 @@ define([
       this.isValueChanged = defaultIsValueChanged;
       this.validate = defaultValidate;
       this.applyValue = function (item, state) {
-        numberApplyValue.call(
-          this,
-          item,
-          state,
-          this.args.column.dataType
-        );
+        numberApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
       this.init();
@@ -536,12 +508,7 @@ define([
       this.validate = defaultValidate;
 
       this.applyValue = function (item, state) {
-        booleanApplyValue.call(
-          this,
-          item,
-          state,
-          this.args.column.dataType
-        );
+        booleanApplyValue.call(this, item, state, this.args.column.dataType);
       };
       this.init();
     }
@@ -583,13 +550,9 @@ define([
               val = `${val} ${editorOptions.base}`;
             }
           }
-          const unit = UnitEditor.mathjs.unit(
-            UnitEditor.mathjs.eval(val)
-          );
+          const unit = UnitEditor.mathjs.unit(UnitEditor.mathjs.eval(val));
           if (editorOptions.base) {
-            const baseUnit = UnitEditor.mathjs.unit(
-              editorOptions.base
-            );
+            const baseUnit = UnitEditor.mathjs.unit(editorOptions.base);
             if (!baseUnit.equalBase(unit)) {
               throw new Error(
                 `${unit.formatUnits()} is not the same base as ${
@@ -600,7 +563,7 @@ define([
           }
           return {
             unit: unit.formatUnits(),
-            SI: unit.value,
+            SI: unit.value
           };
         } catch (e) {
           UI.showNotification(e.message, 'warning');
@@ -612,12 +575,7 @@ define([
       };
       this.validate = defaultValidate;
       this.applyValue = function (item, state) {
-        defaultApplyValue.call(
-          this,
-          item,
-          state,
-          this.args.column.dataType
-        );
+        defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
       this.init();
     }
@@ -631,9 +589,7 @@ define([
   // ======== DEFAULT EDITOR FUNCTIONS ===============
   function defaultValidate() {
     if (this.args.column.validator) {
-      var validationResults = this.args.column.validator(
-        this.serializeValue()
-      );
+      var validationResults = this.args.column.validator(this.serializeValue());
       if (!validationResults.valid) {
         return validationResults;
       }
@@ -641,14 +597,14 @@ define([
 
     return {
       valid: true,
-      msg: null,
+      msg: null
     };
   }
 
   function defaultIsValueChanged() {
     return (
       !(this.$input.val() == '' && this.defaultValue == null) &&
-            this.$input.val() != this.defaultValue
+      this.$input.val() != this.defaultValue
     );
   }
 
@@ -658,7 +614,7 @@ define([
     if (type) {
       newState = {
         type: type,
-        value: state,
+        value: state
       };
     } else {
       newState = state;
@@ -690,9 +646,7 @@ define([
   function defaultLoadValue(item) {
     DataObject.check(item, true);
     this.defaultValue = item.getChildSync(this.args.column.jpath);
-    this.defaultValue = this.defaultValue
-      ? this.defaultValue.get() || ''
-      : '';
+    this.defaultValue = this.defaultValue ? this.defaultValue.get() || '' : '';
     this.$input.val(this.defaultValue);
     this.$input[0].defaultValue = this.defaultValue;
     this.$input.select();
@@ -701,9 +655,7 @@ define([
   function jPathLoadValue(item) {
     DataObject.check(item, true);
     this.defaultValue = item.getChildSync(this.args.column.jpath);
-    this.defaultValue = this.defaultValue
-      ? this.defaultValue.get() || ''
-      : '';
+    this.defaultValue = this.defaultValue ? this.defaultValue.get() || '' : '';
     this.$input.val(Util.jpathToString(this.defaultValue));
     this.$input[0].defaultValue = this.defaultValue;
     this.$input.select();
@@ -720,9 +672,7 @@ define([
   function defaultInit() {
     var that = this;
     this.initOptions = this.initOptions || {};
-    var editorOptions = getEditorOptions(
-      this.args.column.colDef.editorOptions
-    );
+    var editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
     if (this.initOptions.textarea) {
       $('<div>').appendTo(this.args.container);
       this.$input = $(
@@ -744,7 +694,7 @@ define([
       .bind('keydown.nav', function (e) {
         if (
           e.keyCode === $.ui.keyCode.LEFT ||
-                    e.keyCode === $.ui.keyCode.RIGHT
+          e.keyCode === $.ui.keyCode.RIGHT
         ) {
           e.stopImmediatePropagation();
         }
@@ -754,7 +704,7 @@ define([
       .focusout(function () {
         if (
           that.args.grid.module &&
-                    !that.args.grid.module.view.slick.options.autoEdit
+          !that.args.grid.module.view.slick.options.autoEdit
         ) {
           if (that.args.commitChanges) {
             that.args.commitChanges('next');
@@ -897,9 +847,7 @@ define([
   }
 
   function detachedPosition(position) {
-    this.$wrapper
-      .css('top', position.top - 5)
-      .css('left', position.left - 5);
+    this.$wrapper.css('top', position.top - 5).css('left', position.left - 5);
   }
 
   function detachedDestroy() {
@@ -922,12 +870,7 @@ define([
     this.loadValue = defaultLoadValue;
     this.serializeValue = defaultSerializeValue;
     this.applyValue = function (item, state) {
-      defaultApplyValue.call(
-        this,
-        item,
-        state,
-        this.args.column.dataType
-      );
+      defaultApplyValue.call(this, item, state, this.args.column.dataType);
     };
     this.isValueChanged = defaultIsValueChanged;
     this.validate = defaultValidate;
@@ -942,7 +885,7 @@ define([
   function SimpleLongTextEditor(args) {
     this.args = args;
     this.initOptions = {
-      textarea: true,
+      textarea: true
     };
     this.init = defaultInit;
     this.destroy = defaultDestroy;
@@ -955,12 +898,7 @@ define([
     this.validate = defaultValidate;
 
     this.applyValue = function (item, state) {
-      defaultApplyValue.call(
-        this,
-        item,
-        state,
-        this.args.column.dataType
-      );
+      defaultApplyValue.call(this, item, state, this.args.column.dataType);
     };
 
     this.init();
@@ -968,7 +906,7 @@ define([
 
   // ========== SELECT ===================
   function selectInit() {
-    var options = this.args.column.colDef.editorOptions;
+    var options = this.args.column.editorOptions;
     var editorOptions = getEditorOptions(options);
     var $wrapper = $(this.args.container);
     this.initOptions = this.initOptions || {};
@@ -1007,25 +945,26 @@ define([
     this.isValueChanged = defaultIsValueChanged;
     this.validate = defaultValidate;
     this.applyValue = function (item, state) {
-      defaultApplyValue.call(
-        this,
-        item,
-        state,
-        this.args.column.dataType
-      );
+      defaultApplyValue.call(this, item, state, this.args.column.dataType);
     };
 
     this.init();
   }
 
-  function getSelectOptions(editorOptions) {
-    if (!editorOptions) {
-      editorOptions = [];
+  function getSelectOptions(choices) {
+    let obj = {};
+    if (!choices) {
+      return [];
+    } else if (typeof choices !== 'string') {
+      obj = choices;
     } else {
-      editorOptions = editorOptions.split(';').map((o) => o.split(':'));
+      choices.split(';').forEach((o) => {
+        const [key, value] = o.split(':');
+        obj[key] = value || key;
+      });
     }
-    return editorOptions
-      .map((o) => `<option value="${o[0]}">${o[1] || o[0]}</option>`)
+    return [...Object.entries(obj)]
+      .map(([key, value]) => `<option value="${key}">${value}</option>`)
       .join('');
   }
 
@@ -1033,7 +972,7 @@ define([
     const options = Util.evalOptions(editorOptions);
     if (editorOptions && options === undefined) {
       return {
-        choices: editorOptions,
+        choices: editorOptions
       };
     }
     return options || {};

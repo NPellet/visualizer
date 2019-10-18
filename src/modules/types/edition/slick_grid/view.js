@@ -1158,6 +1158,7 @@ define(
               dataType: type,
               renderType: row.forceType,
               colDef: row,
+              editorOptions: row.editorOptions,
               rendererOptions: rendererOptions
             };
           });
