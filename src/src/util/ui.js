@@ -764,6 +764,8 @@ define([
     const confirmed = await exports.confirm(div,
       'Ok', 'Cancel', Object.assign({ title: 'Select a jpath' }, dialogOptions)
     );
+
+    if (selected) selected = Util.jpathToArray(selected);
     
     if (confirmed) {
       return selected;
