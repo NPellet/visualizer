@@ -18,12 +18,25 @@
         PercentComplete: PercentCompleteFormatter,
         PercentCompleteBar: PercentCompleteBarFormatter,
         YesNo: YesNoFormatter,
-        Checkmark: CheckmarkFormatter
-      }
-    }
+        Checkmark: CheckmarkFormatter,
+        JPath: JPathFormatter,
+      },
+    },
   });
 
-  function PercentCompleteFormatter(row, cell, value, columnDef, dataContext) {
+  function JPathFormatter(row, cell, value, columnDef) {
+    const val = DataObject.check(value).getChildSync(columnDef.jpath);
+    if (!Array.isArray(val)) return '#error';
+    return val.join('.');
+  }
+
+  function PercentCompleteFormatter(
+    row,
+    cell,
+    value,
+    columnDef,
+    dataContext
+  ) {
     if (value == null || value === '') {
       return '-';
     } else if (value < 50) {
@@ -33,7 +46,13 @@
     }
   }
 
-  function PercentCompleteBarFormatter(row, cell, value, columnDef, dataContext) {
+  function PercentCompleteBarFormatter(
+    row,
+    cell,
+    value,
+    columnDef,
+    dataContext
+  ) {
     if (value == null || value === '') {
       return '';
     }
@@ -56,6 +75,8 @@
   }
 
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
-    return value ? '<span style="color: green;">&#10004;</span>' : '<span style="color: red;">&#10008;</span>';
+    return value
+      ? '<span style="color: green;">&#10004;</span>'
+      : '<span style="color: red;">&#10008;</span>';
   }
 })(jQuery);

@@ -659,8 +659,9 @@ define([
 
   function jPathSerializeValue() {
     let val = this.$input.val();
-    if (!val.startsWith('element.'));
-    val = `element.${val}`;
+    if (!val.startsWith('element.') && val !== 'element') {
+      val = `element.${val}`;
+    }
     return Util.jpathToArray(val);
   }
 
