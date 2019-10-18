@@ -133,9 +133,6 @@ td.ci-expand {
   padding: 6px;
 }
 
-#ci-left {
-}
-
 /*
 
 .ci-message-grey {
@@ -182,18 +179,12 @@ div.ci-module-wrapper .ci-module {
   height: 100%;
 }
 
-#modules-grid > div.ci-module-wrapper .ci-module-content {
-  /*	background: transparent !important;*/
-}
-
 #modules-grid > div.ci-module-wrapper.ci-module-displaywrapper {
   border: 1px solid #444444;
-  /*background: white;*/
   box-shadow: 0px 0px 5px rgba(40, 40, 40, 0.2);
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
-  /*background: inherit !important;*/
 }
 
 .ci-module-jsme iframe {
@@ -329,9 +320,6 @@ div.ci-module-wrapper .ci-module-content {
   cursor: pointer;
 }
 
-.ci-module-expand {
-}
-
 .ci-label {
   font-weight: bold;
 }
@@ -376,10 +364,6 @@ div.ci-module-wrapper.ci-module-jqgrid
   tr.ui-state-highlight
   td {
   border-bottom-color: inherit;
-}
-
-.ci-displaylist-list > div {
-  /*margin-bottom: 10px;*/
 }
 
 .ci-chemical-display .ci-chemical-img {
@@ -697,9 +681,6 @@ div.ci-module-display_value div.ci-module-content img {
 .ci-display-grid-selector td .ci-rangebar-min {
   display: table-cell;
   width: 55px;
-}
-
-.ci-rangebar {
 }
 
 .ci-display-grid-selector th {

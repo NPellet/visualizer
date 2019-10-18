@@ -412,16 +412,12 @@ define([
               grid.init();
               grid.resizeCanvas();
               grid.render();
-  
-              // wire up model events to drive the grid
-  
             }
           }
         );
         exports.dialog($dialog, dialogOptions);
       });
-    })
-    
+    });
   };
 
   function typeRenderer(cellNode, row, dataContext, colDef) {
