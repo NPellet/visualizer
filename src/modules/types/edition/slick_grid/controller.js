@@ -206,11 +206,12 @@ define(
                   { key: 'string', title: 'String' },
                   { key: 'number', title: 'Number' },
                   { key: 'boolean', title: 'Boolean' },
+                  { key: 'jpath', title: 'JPath' },
                   { key: 'color', title: 'Color' },
                   { key: 'date', title: 'Date' },
                   { key: 'longtext', title: 'Long Text' },
                   { key: 'select', title: 'Select' },
-                  { key: 'unit', title: 'Unit' }
+                  { key: 'unit', title: 'Unit' },
                 ]
               },
               forceType: {

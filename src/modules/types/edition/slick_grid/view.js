@@ -65,6 +65,7 @@ define(
     typeEditors.select = Slick.CustomEditors.Select;
     typeEditors.ocl = Slick.CustomEditors.OCL;
     typeEditors.unit = Slick.CustomEditors.Unit;
+    typeEditors.jpath = Slick.CustomEditors.JPath;
 
     function isSpecialColumn(col) {
       return !col.colDef;

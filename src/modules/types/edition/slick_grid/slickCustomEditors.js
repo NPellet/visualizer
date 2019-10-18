@@ -21,6 +21,7 @@ define([
       Slick: {
         CustomEditors: {
           TextValue: TextValueEditor,
+          JPath: JPathEditorFactory(),
           NumberValue: NumberValueEditor,
           BooleanValue: BooleanValueEditor,
           ColorValue: ColorEditor,
@@ -382,6 +383,102 @@ define([
       this.init();
     }
 
+    function JPathEditorFactory(inspectData) {
+      let editing = false;
+
+
+      function jPathInit() {
+        const that = this;
+        function commitChanges(next) {
+          if (
+            next
+          ) {
+            if (that.args.commitChanges) {
+              that.args.commitChanges('next');
+            }
+          } else {
+            if (that.args.commitChanges) {
+              that.args.commitChanges('none');
+            }
+          }
+        }
+        const $wrapper = $('<div style="position: relative;" />');
+        this.initOptions = this.initOptions || {};
+        var editorOptions = getEditorOptions(
+          this.args.column.colDef.editorOptions
+        );
+        this.$input = $('<input type="text" class="editor-text" style="width: 100%" class=""/>');
+        if (editorOptions.choices) {
+          this.$input.attr('list', 'choices');
+        }
+        this.$input.appendTo($wrapper);
+        if (inspectData) {
+          const $link = $('<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-pencil-alt"></i></a>');
+          $link.appendTo($wrapper);
+          // eslint-disable-next-line
+          $link.on('mousedown', async function (e) {
+            editing = true;
+            const jpath = await UI.selectJpath(inspectData);
+            editing = false;
+            if (jpath === null) {
+              commitChanges();
+            } else {
+              that.$input.val(Util.jpathToString(jpath));
+              commitChanges(true);
+            }
+          });
+        }
+        
+        $wrapper
+          .appendTo(this.args.container)
+          .bind('keydown.nav', function (e) {
+            if (
+              e.keyCode === $.ui.keyCode.LEFT ||
+                        e.keyCode === $.ui.keyCode.RIGHT
+            ) {
+              e.stopImmediatePropagation();
+            }
+          })
+          .focus()
+          .select();
+
+        this.$input.focusout(function () {
+          if (!editing) {
+            commitChanges(
+              that.args.grid.module &&
+              !that.args.grid.module.view.slick.options.autoEdit
+            );
+          }
+        });
+      }
+      function JPathEditor(args) {
+        this.args = args;
+        this.init = jPathInit;
+        this.destroy = defaultDestroy;
+        this.focus = defaultFocus;
+        this.getValue = numberGetValue;
+        this.setValue = defaultSetValue;
+        this.loadValue = jPathLoadValue;
+        this.serializeValue = jPathSerializeValue;
+        this.isValueChanged = defaultIsValueChanged;
+        this.validate = defaultValidate;
+        this.applyValue = function (item, state) {
+          defaultApplyValue.call(
+            this,
+            item,
+            state,
+            this.args.column.dataType
+          );
+        };
+  
+        this.init();
+      }
+
+      return JPathEditor;
+    }
+
+
+
     function NumberValueEditor(args) {
       this.args = args;
       this.init = defaultInit;
@@ -560,6 +657,13 @@ define([
     return this.$input.val();
   }
 
+  function jPathSerializeValue() {
+    let val = this.$input.val();
+    if (!val.startsWith('element.'));
+    val = `element.${val}`;
+    return Util.jpathToArray(val);
+  }
+
   function defaultLoadValue(item) {
     DataObject.check(item, true);
     this.defaultValue = item.getChildSync(this.args.column.jpath);
@@ -567,6 +671,17 @@ define([
       ? this.defaultValue.get() || ''
       : '';
     this.$input.val(this.defaultValue);
+    this.$input[0].defaultValue = this.defaultValue;
+    this.$input.select();
+  }
+
+  function jPathLoadValue(item) {
+    DataObject.check(item, true);
+    this.defaultValue = item.getChildSync(this.args.column.jpath);
+    this.defaultValue = this.defaultValue
+      ? this.defaultValue.get() || ''
+      : '';
+    this.$input.val(Util.jpathToString(this.defaultValue));
     this.$input[0].defaultValue = this.defaultValue;
     this.$input.select();
   }
@@ -581,7 +696,6 @@ define([
 
   function defaultInit() {
     var that = this;
-    var $wrapper = this.args.container;
     this.initOptions = this.initOptions || {};
     var editorOptions = getEditorOptions(
       this.args.column.colDef.editorOptions
