@@ -227,10 +227,6 @@ define(
                   {
                     key: 'typerenderer',
                     title: 'Type Renderer'
-                  },
-                  {
-                    key: 'slick.jpath',
-                    title: 'JPath'
                   }
                 ],
                 default: 'typerenderer'

@@ -19,16 +19,9 @@
         PercentCompleteBar: PercentCompleteBarFormatter,
         YesNo: YesNoFormatter,
         Checkmark: CheckmarkFormatter,
-        JPath: JPathFormatter,
       },
     },
   });
-
-  function JPathFormatter(row, cell, value, columnDef) {
-    const val = DataObject.check(value).getChildSync(columnDef.jpath);
-    if (!Array.isArray(val)) return '#error';
-    return val.join('.');
-  }
 
   function PercentCompleteFormatter(
     row,

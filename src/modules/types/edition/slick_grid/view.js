@@ -45,8 +45,7 @@ define(
       'slick.text': Slick.Formatters.Text,
       'slick.percent': Slick.Formatters.PercentComplete,
       'slick.percentbar': Slick.Formatters.PercentCompleteBar,
-      'slick.yesno': Slick.Formatters.YesNoSelect,
-      'slick.jpath': Slick.Formatters.JPath
+      'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
     var typeEditors = {};
