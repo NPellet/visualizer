@@ -276,6 +276,161 @@ define([
     return promise;
   };
 
+
+  function binFormatter() {
+    return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
+  }
+  exports.editTable = async function editTable(list, options) {
+    const Slick = await Util.require('slickgrid');
+    options = Object.assign({
+      idField: 'id'
+    }, options);
+    const slickDefaultOptions = {
+      autoEdit: true,
+      enableCellNavigation: true,
+      editable: true,
+      enableAddRow: true,
+      enableTextSelectionOnCells: true,
+      forceFitColumns: true,
+      explicitInitialization: true,
+      rowHeight: 20,
+      enableAsyncPostRender: true,
+      asyncEditorLoading: true,
+      asyncEditorLoadDelay: 30,
+      asyncPostRenderDelay: 0,
+    };
+
+    function waitFormatter() {
+      return '...';
+    }
+
+    var slickDefaultColumn = {
+      formatter: waitFormatter,
+      asyncPostRender: typeRenderer,
+      colDef: {}
+    };
+
+    var grid,
+      data;
+
+    const columns = options.columns.map((column) => Object.assign({}, slickDefaultColumn, column));
+    if (options.remove) {
+      columns.unshift({
+        id: 'rowDeletion',
+        width: 20,
+        field: 'rowDeletion',
+        selectable: false,
+        resizable: false,
+        focusable: false,
+        sortable: false,
+        formatter: binFormatter
+      });
+    }
+    const defaultDialogOptions = {
+      width: 700,
+      height: 500
+    };
+
+    var slickOptions = _.defaults(options.slick, slickDefaultOptions);
+
+    function getItemInfoFromRow(data, row) {
+      if (_.isUndefined(row)) return null;
+      var id = data.mapRowsToIds([row])[0];
+      if (!id) return null;
+      return {
+        id: id,
+        idx: data.getIdxById(id),
+        item: data.getItemById(id)
+      };
+    }
+
+    return new Promise((resolve) => {
+      return Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
+        var $dialog = $('<div>');
+        var $slick = $('<div>').css('height', '100%').css('width', '100%');
+        var $container = $('<div>').css('height', 410);
+        const dialogOptions = Object.assign(
+          {},
+          defaultDialogOptions,
+          options.dialog,
+          {
+            noWrap: true,
+            closeOnEscape: false,
+            buttons: {
+              close: function () {
+                $(this).dialog('close');
+                resolve();
+              }
+            },
+            close: function () {
+              resolve();
+            },
+            resize: function () {
+              grid.resizeCanvas();
+            },
+            open: function () {
+              $container.addClass('flex-main-container');
+              $container.append($slick);
+              $dialog.append($container);
+              data = new Slick.Data.DataView();
+              $container.on('click', 'a.recycle-bin', function (e) {
+                var columns = grid.getColumns();
+                var args = grid.getCellFromEvent(e);
+                if (
+                  columns[args.cell] &&
+                              columns[args.cell].id === 'rowDeletion'
+                ) {
+                  // delete the row...
+                  var itemInfo = getItemInfoFromRow(data, args.row);
+                  data.deleteItem(itemInfo.id);
+                  grid.invalidateAllRows();
+                  grid.render();
+                }
+              });
+              data.setItems(list, options.idField);
+              data.onRowCountChanged.subscribe(function (event, args) {
+                grid.updateRowCount();
+                grid.render();
+              });
+              grid = new Slick.Grid($slick, data, columns, slickOptions);
+              // :(
+              grid.module = {
+                view: {
+                  slick: {
+                    options: slickOptions
+                  }
+                }
+              };
+              grid.setSelectionModel(new Slick.CellSelectionModel());
+              grid.onAddNewRow.subscribe(function (event, args) {
+                const item = args.item;
+                if (!item[options.idField]) {
+                  item.setChildSync([options.idField], Math.random().toString(36).slice(2));
+                }
+                data.addItem(item);
+              });
+              grid.init();
+              grid.resizeCanvas();
+              grid.render();
+  
+              // wire up model events to drive the grid
+  
+            }
+          }
+        );
+        exports.dialog($dialog, dialogOptions);
+      });
+    })
+    
+  };
+
+  function typeRenderer(cellNode, row, dataContext, colDef) {
+    if (cellNode) {
+      var val = DataObject.check(dataContext).getChildSync(colDef.jpath);
+      Renderer.render(cellNode, val, colDef.rendererOptions);
+    }
+  }
+
   exports.choose = async function (list, options) {
     const Slick = await Util.require('slickgrid');
     options = Object.assign({ slick: {} }, options);
@@ -284,13 +439,6 @@ define([
     // Slick Rendering
     function waitFormatter() {
       return '...';
-    }
-
-    function typeRenderer(cellNode, row, dataContext, colDef) {
-      if (cellNode) {
-        var val = DataObject.check(dataContext).getChildSync(colDef.jpath);
-        Renderer.render(cellNode, val, colDef.rendererOptions);
-      }
     }
 
     var _ready = new Promise((resolve) => {
@@ -607,10 +755,9 @@ define([
 
   exports.selectJpath = async function selectJpath(data, dialogOptions) {
     let selected = null;
-    const jpaths = [];
-    Traversing.getJPathsFromElement(data, jpaths);
+    const jpaths = Traversing.getJPathsFromElement(data);
 
-    const div = $('<div />');
+    const div = $('<div style="overflow: auto;"/>');
     div.fancytree({
       source: { children: jpaths, id: 'element' },
       activate: function (event, data) {
