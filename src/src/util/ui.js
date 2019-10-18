@@ -753,17 +753,18 @@ define([
     return $dialog;
   };
 
-  exports.selectJpath = async function selectJpath(data, dialogOptions) {
+  exports.selectJpath = async function selectJpath(data, fancytreeOptions, dialogOptions) {
     let selected = null;
     const jpaths = Traversing.getJPathsFromElement(data);
 
     const div = $('<div style="overflow: auto;"/>');
-    div.fancytree({
+    div.fancytree(Object.assign({}, fancytreeOptions, {
       source: { children: jpaths, id: 'element' },
       activate: function (event, data) {
         selected = data.node.key;
-      }
-    });
+      },
+      toggleEffect: false
+    }));
     const confirmed = await exports.confirm(div,
       'Ok', 'Cancel', Object.assign({ title: 'Select a jpath' }, dialogOptions)
     );
