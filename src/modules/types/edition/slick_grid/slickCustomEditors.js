@@ -10,18 +10,38 @@ define([
   'lodash',
   'src/util/util',
   'src/util/ui',
+  'src/data/structures',
   'components/spectrum/spectrum',
   'jquery',
   'jquery-ui/ui/widgets/datepicker',
-], function (_, Util, UI) {
+], function (_, Util, UI, structures) {
   Util.loadCss('./components/spectrum/spectrum.css');
   (function ($) {
+    var typeEditors = {};
+
+    for (var key in structures) {
+      if (typeof structures[key] === 'string') {
+        typeEditors[key] = typeEditors[structures[key]];
+      }
+    }
+  
+    typeEditors.string = TextValueEditor;
+    typeEditors.number = NumberValueEditor;
+    typeEditors.boolean = BooleanValueEditor;
+    typeEditors.color = ColorEditor;
+    typeEditors.date = DateEditor;
+    typeEditors.longtext = LongTextEditor;
+    typeEditors.select = SelectEditor;
+    typeEditors.unit = UnitEditor;
+    typeEditors.jpath = JPathEditorFactory();
+  
     // register namespace
     $.extend(true, window, {
       Slick: {
         CustomEditors: {
           TextValue: TextValueEditor,
           JPath: JPathEditorFactory(),
+          JPathFactory: JPathEditorFactory,
           NumberValue: NumberValueEditor,
           BooleanValue: BooleanValueEditor,
           ColorValue: ColorEditor,
@@ -32,6 +52,7 @@ define([
           Select: SelectEditor,
           Unit: UnitEditor,
         },
+        typeEditors
       },
     });
 

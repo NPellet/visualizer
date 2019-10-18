@@ -313,7 +313,13 @@ define([
     var grid,
       data;
 
-    const columns = options.columns.map((column) => Object.assign({}, slickDefaultColumn, column));
+    
+    const columns = options.columns.map((column) => {
+      if (column.editor === 'auto') {
+        column.editor = Slick.typeEditors[column.forceType];
+      }
+      return Object.assign({}, slickDefaultColumn, column);
+    });
     if (options.remove) {
       columns.unshift({
         id: 'rowDeletion',
@@ -347,7 +353,7 @@ define([
     return new Promise((resolve) => {
       return Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
         var $dialog = $('<div>');
-        var $slick = $('<div>').css('height', '100%').css('width', '100%');
+        var $slick = $('<div>').css('height', '100%').css('width', '100%').addClass('visualizer-slickgrid');
         var $container = $('<div>').css('height', 410);
         const dialogOptions = Object.assign(
           {},

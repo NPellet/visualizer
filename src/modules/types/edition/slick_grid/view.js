@@ -13,7 +13,6 @@ define(
     'src/util/api',
     'src/util/typerenderer',
     'src/util/sandbox',
-    'src/data/structures',
     './copyFormatters'
   ],
   function (
@@ -28,7 +27,6 @@ define(
     API,
     Renderer,
     Sandbox,
-    structures,
     copyFormatters
   ) {
     function View() {}
@@ -48,24 +46,7 @@ define(
       'slick.yesno': Slick.Formatters.YesNoSelect
     };
 
-    var typeEditors = {};
-
-    for (var key in structures) {
-      if (typeof structures[key] === 'string') {
-        typeEditors[key] = typeEditors[structures[key]];
-      }
-    }
-
-    typeEditors.string = Slick.CustomEditors.TextValue;
-    typeEditors.number = Slick.CustomEditors.NumberValue;
-    typeEditors.boolean = Slick.CustomEditors.BooleanValue;
-    typeEditors.color = Slick.CustomEditors.ColorValue;
-    typeEditors.date = Slick.CustomEditors.Date;
-    typeEditors.longtext = Slick.CustomEditors.LongText;
-    typeEditors.select = Slick.CustomEditors.Select;
-    typeEditors.ocl = Slick.CustomEditors.OCL;
-    typeEditors.unit = Slick.CustomEditors.Unit;
-    typeEditors.jpath = Slick.CustomEditors.JPath;
+    const typeEditors = Slick.typeEditors;
 
     function isSpecialColumn(col) {
       return !col.colDef;
@@ -211,7 +192,7 @@ define(
         ctx.$rowToolbar.remove();
       }
 
-      ctx.$slickgrid = $('<div>').addClass('flex-1');
+      ctx.$slickgrid = $('<div>').addClass('flex-1').addClass('visualizer-slickgrid');
       ctx.$container.append(ctx.$slickgrid);
       ctx.slick.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
       ctx.slick.plugins.push(ctx.slick.groupItemMetadataProvider);
