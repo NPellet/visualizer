@@ -21,7 +21,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "var n = 25;\nconst arr = [];\nfor(let i = 0; i<n; i++) {\n    arr.push({\n        n: Math.round(Math.random() * 100),\n        id: Math.random().toString(36).slice(2)\n    });\n}\n\nawait UI.editTable(arr, {\n    remove: true,\n    columns: [\n        {\n            id: 'id',\n            name: 'id',\n            jpath: ['id'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'n',\n            name: 'n',\n            jpath: ['n'],\n            editor: Slick.CustomEditors.NumberValue\n        }\n    ]\n});\n\nconsole.log(arr);\n\nAPI.createData('arr', arr);"
+                "var n = 25;\nconst arr = [];\nfor(let i = 0; i<n; i++) {\n    arr.push({\n        n: Math.round(Math.random() * 100),\n        id: Math.random().toString(36).slice(2)\n    });\n}\n\nawait UI.editTable(arr, {\n    remove: true,\n    columns: [\n        {\n            id: 'id',\n            name: 'id',\n            jpath: ['id'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'n',\n            name: 'n',\n            jpath: ['n'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory({x: 'test'}),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n            \n        }\n    ]\n});\n\nconsole.log(arr);\n\nAPI.createData('arr', arr);"
               ]
             }
           ],
@@ -68,7 +68,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 4,
       "vars_in": [{}],
       "actions_in": [{}],
       "vars_out": [
@@ -145,7 +145,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 5,
       "vars_in": [
         {
           "rel": "value",
