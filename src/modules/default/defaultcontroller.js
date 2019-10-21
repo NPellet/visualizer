@@ -5,7 +5,7 @@ define([
   'src/util/api',
   'src/util/util',
   'src/util/color',
-  'src/main/grid'
+  'src/main/grid',
 ], function ($, API, Util, Color, Grid) {
   return {
     setModule(module) {
@@ -37,7 +37,7 @@ define([
           },
           title: 'Export Data',
           cssClass: 'fa fa-sign-out-alt',
-          ifLocked: true
+          ifLocked: true,
         },
         {
           onClick() {
@@ -45,7 +45,7 @@ define([
           },
           title: 'Print',
           cssClass: 'fa fa-print',
-          ifLocked: true
+          ifLocked: true,
         },
         {
           onClick() {
@@ -53,7 +53,7 @@ define([
           },
           title: 'Show fullscreen',
           cssClass: 'fa fa-expand',
-          ifLocked: true
+          ifLocked: true,
         },
         {
           onClick() {
@@ -61,8 +61,8 @@ define([
           },
           title: 'Open Preferences',
           cssClass: 'fa fa-wrench',
-          ifLocked: false
-        }
+          ifLocked: false,
+        },
       ];
 
       if (common) {
@@ -84,8 +84,8 @@ define([
             cssClass: `fa ${custom[i].icon}`,
             color: Color.array2rgba(custom[i].color),
             onClick: function () {
-              API.doAction(custom[i].action, this);
-            }
+              API.doAction(custom[i].action, this.getId());
+            },
           };
           if (custom[i].position === 'begin') {
             customB.push(el);
@@ -241,16 +241,19 @@ define([
     configAliases: {},
 
     defaultReferences: {
+      _moduleId: {
+        label: 'Module id',
+      },
       _loadTime: {
-        label: 'Loading time'
+        label: 'Loading time',
       },
       _moduleUrl: {
-        label: 'Module URL'
+        label: 'Module URL',
       },
       _varName: {
         label: 'Variable name',
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
 
     references: {},
@@ -258,12 +261,12 @@ define([
     defaultEvents: {
       _onLoaded: {
         label: 'Module loaded',
-        refAction: ['_loadTime', '_moduleUrl']
+        refAction: ['_loadTime', '_moduleUrl', '_moduleId'],
       },
       _onVarUpdated: {
         label: 'Variable updated',
-        refAction: ['_varName']
-      }
+        refAction: ['_varName'],
+      },
     },
 
     events: {},
@@ -272,7 +275,7 @@ define([
 
     defaultActionsIn: {
       _editPreferences: 'Edit preferences',
-      _print: 'Print module content'
+      _print: 'Print module content',
     },
     actionsIn: {},
 
@@ -284,6 +287,6 @@ define([
       return true;
     },
 
-    onRemove: Util.noop
+    onRemove: Util.noop,
   };
 });

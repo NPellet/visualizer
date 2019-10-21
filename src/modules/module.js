@@ -73,6 +73,11 @@ define(
               '_loadTime',
               Date.now() - start
             );
+            module.controller.sendActionFromEvent(
+              '_onLoaded',
+              '_moduleId',
+              module.getId()
+            );
             return module.updateAllView();
           },
           function (err) {
