@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/module',
   'src/util/debug',
-  'src/util/util'
+  'src/util/util',
 ], function ($, Module, Debug, Util) {
   let incrementalId = 0;
 
@@ -15,25 +15,37 @@ define([
   function getSubFoldersFrom(folder) {
     return new Promise(function (resolve) {
       const result = {
-        folders: {}
+        folders: {},
       };
-      $.getJSON(require.toUrl(`${folder}/folder.json`)).then(function (folderContent) {
+      $.getJSON(require.toUrl(`${folder}/folder.json`)).then(function (
+        folderContent
+      ) {
         result.name = folderContent.name;
         result.modules = folderContent.modules;
-        if (folderContent.folders && Array.isArray(folderContent.folders)) {
+        if (
+          folderContent.folders &&
+                    Array.isArray(folderContent.folders)
+        ) {
           const prom = [];
           for (let i = 0; i < folderContent.folders.length; i++) {
-            prom.push(getSubFoldersFrom(`${folder}/${folderContent.folders[i]}`));
+            prom.push(
+              getSubFoldersFrom(
+                `${folder}/${folderContent.folders[i]}`
+              )
+            );
           }
-          Promise.all(prom).then(function (results) {
-            for (let i = 0; i < results.length; i++) {
-              const res = results[i];
-              result.folders[res.name] = res;
+          Promise.all(prom).then(
+            function (results) {
+              for (let i = 0; i < results.length; i++) {
+                const res = results[i];
+                result.folders[res.name] = res;
+              }
+              resolve(result);
+            },
+            function (err) {
+              Debug.error('Caught error in ModuleFactory', err);
             }
-            resolve(result);
-          }, function (err) {
-            Debug.error('Caught error in ModuleFactory', err);
-          });
+          );
         } else {
           if (typeof folderContent.folders === 'object')
             result.folders = folderContent.folders;
@@ -64,10 +76,13 @@ define([
     setModules: function (list) {
       const prom = [];
       if (Array.isArray(list)) {
-        throw new Error('Module configuration error : list of folders must be defined in a "folders" array.');
+        throw new Error(
+          'Module configuration error : list of folders must be defined in a "folders" array.'
+        );
       }
 
-      if (Array.isArray(list.folders)) { // folders to retreive
+      if (Array.isArray(list.folders)) {
+        // folders to retreive
         const finalList = allModules;
 
         if (list.modules) {
@@ -79,13 +94,22 @@ define([
           if (typeof list.folders[i] === 'object') {
             const folder = list.folders[i];
             $.extend(true, finalList.folders, folder.folders);
-          } else { // Folder is a string, start recursive lookup
-            prom.push(getSubFoldersFrom(list.folders[i]).then(function (folder) {
-              $.extend(true, finalList, folder);
-              // $.extend(true, allModules, finalList);
-            }, function (err) {
-              Debug.error('Caught error in ModuleFactory', err);
-            }));
+          } else {
+            // Folder is a string, start recursive lookup
+            prom.push(
+              getSubFoldersFrom(list.folders[i]).then(
+                function (folder) {
+                  $.extend(true, finalList, folder);
+                  // $.extend(true, allModules, finalList);
+                },
+                function (err) {
+                  Debug.error(
+                    'Caught error in ModuleFactory',
+                    err
+                  );
+                }
+              )
+            );
           }
         }
 
@@ -129,6 +153,14 @@ define([
       return modules;
     },
 
+    getModule(moduleId) {
+      var modules = this.getModules();
+      modules = modules.filter(function (m) {
+        return Number(m.getId()) === moduleId;
+      });
+      return modules[0];
+    },
+
     getDefinitions() {
       return definitions;
     },
@@ -137,6 +169,6 @@ define([
       const modulesById = {};
       this.traverseModules((mod) => (modulesById[mod.id] = mod));
       return modulesById;
-    }
+    },
   };
 });

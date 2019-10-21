@@ -8,7 +8,6 @@
  */
 define([
   './cache',
-  './datatraversing',
   './actionmanager',
   './util',
   './versioning',
@@ -16,10 +15,9 @@ define([
   'src/main/variables',
   'src/main/datas',
   'lodash',
-  'src/main/grid'
+  'src/main/grid',
 ], function (
   Cache,
-  Traversing,
   ActionManager,
   Util,
   Versioning,
@@ -36,7 +34,7 @@ define([
     .append(
       $('<div>', {
         id: 'ci-loading-message',
-        class: 'ci-loading-subtitle'
+        class: 'ci-loading-subtitle',
       })
     );
   var loading = {};
@@ -106,7 +104,7 @@ define([
         .uniq((v) => v.file)
         .unshift({
           file: '',
-          name: 'No filter'
+          name: 'No filter',
         })
         .value();
     },
@@ -126,7 +124,7 @@ define([
     /* Extra functions used in filter testsuite. Allows compatibility of filters */
     dev_fctCalled: function (fct) {},
     dev_fctUncalled: function (fct) {},
-    dev_assert: function (family, script, value) {}
+    dev_assert: function (family, script, value) {},
   };
 
   /**
@@ -288,7 +286,9 @@ define([
     ActionManager.execute(name, value);
   };
 
-  exports.updatePreferences = function updatePreferences(module, values) {
+  exports.updatePreferences = function updatePreferences(moduleId, values) {
+    const ModuleFactory = require('modules/modulefactory');
+    const module = ModuleFactory.getModule(moduleId);
     var currentPreferences = module.definition.configuration;
     var aliases = module.controller.configAliases;
 
