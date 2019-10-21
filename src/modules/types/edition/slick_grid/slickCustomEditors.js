@@ -417,7 +417,7 @@ define([
         this.$input.appendTo($wrapper);
         if (inspectData) {
           const $link = $(
-            '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-pencil-alt"></i></a>'
+            '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-tree"></i></a>'
           );
           $link.appendTo($wrapper);
           // eslint-disable-next-line
@@ -656,7 +656,9 @@ define([
     DataObject.check(item, true);
     this.defaultValue = item.getChildSync(this.args.column.jpath);
     this.defaultValue = this.defaultValue ? this.defaultValue.get() || '' : '';
-    this.$input.val(Util.jpathToString(this.defaultValue));
+    const val = this.defaultValue || [];
+    const str = val.join('.');
+    this.$input.val(str);
     this.$input[0].defaultValue = this.defaultValue;
     this.$input.select();
   }
