@@ -31,16 +31,18 @@ define([
 
   class CouchdbAttachments {
     /**
-         * @param {string} url - Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
-         * @constructor
-         * @exports src/util/couchdbAttachments
-         */
+     * @param {string} url - Set the docUrl. If none specified, will attempt to use the viewURL to set the docURL
+     * @constructor
+     * @exports src/util/couchdbAttachments
+     */
     constructor(url) {
       // get the document url from the view url
       if (arguments.length === 0) {
         const viewUrl = Versioning.lastLoaded.view.url;
         if (!viewUrl) {
-          throw new Error('couchdb attachments initialization failed: No view url');
+          throw new Error(
+            'couchdb attachments initialization failed: No view url'
+          );
         }
         this.docUrl = viewUrl.replace(/\/[^/]+$/, '');
       } else {
@@ -49,23 +51,23 @@ define([
     }
 
     /**
-         * Set the document. Useful if another library is already manipulating this document
-         * and you don't want to make a duplicate GET request
-         * @param {object} doc - The document object.
-         */
+     * Set the document. Useful if another library is already manipulating this document
+     * and you don't want to make a duplicate GET request
+     * @param {object} doc - The document object.
+     */
     setDoc(doc) {
       this.lastDoc = doc;
     }
 
     /**
-         * @param {boolean} [secondRound]
-         * @return {object} attachments - An array with the attachments metadata
-         * @return {number} attachments[].name - The name of the resource
-         * @return {string} attachments[].content_type - Resource's mime-type
-         * @return {string} attachments[].digest - base64 md5 digest of the resource
-         * @return {number} attachments[].length - Length in bytes of the resource
-         * @return {number} attachments[].url - The url of the resource
-         */
+     * @param {boolean} [secondRound]
+     * @return {object} attachments - An array with the attachments metadata
+     * @return {number} attachments[].name - The name of the resource
+     * @return {string} attachments[].content_type - Resource's mime-type
+     * @return {string} attachments[].digest - base64 md5 digest of the resource
+     * @return {number} attachments[].length - Length in bytes of the resource
+     * @return {number} attachments[].url - The url of the resource
+     */
     async list(secondRound) {
       const hasAtt = this.lastDoc && this.lastDoc._attachments;
       if (!this.lastDoc && secondRound) {
@@ -81,39 +83,39 @@ define([
     }
 
     /**
-         * Upload several attachments in one revision
-         * @param {object[]} items
-         * @param {string} items[].name - The name of the attachment
-         * @param {string} items[].contentType - The contentType of the uploaded data
-         * @param {string} items[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
-         * @param {string} items[].content - The attachment data to upload. Alias of data.
-         * @param {Blob|string} items[].file - The attachment data to upload. Alias of data.
-         * @param {object} options
-         * @example
-         * // With dataurl
-         * cdb.inlineUploads([{
-         *   name: 'example.png',
-         *   file: 'data:image/png;base64,ORK5CYII='
-         * }]);
-         * // With Blob
-         * cdb.inlineUploads([{
-         *   name: 'example.txt',
-         *   file: new Blob(['example'], {content_type: 'text/plain'});
-         * }]);
-         * // With data
-         * cdb.inlineUploads([{
-         *   name: 'example.txt',
-         *   contentType: 'text/plain',
-         *   data: 'example'
-         * }]);
-         * @return {Promise.<object>} The new list of attachments
-         */
+     * Upload several attachments in one revision
+     * @param {object[]} items
+     * @param {string} items[].name - The name of the attachment
+     * @param {string} items[].contentType - The contentType of the uploaded data
+     * @param {string} items[].data - The attachment data to upload. If string, must be a valid base64 encoded dataURL.
+     * @param {string} items[].content - The attachment data to upload. Alias of data.
+     * @param {Blob|string} items[].file - The attachment data to upload. Alias of data.
+     * @param {object} options
+     * @example
+     * // With dataurl
+     * cdb.inlineUploads([{
+     *   name: 'example.png',
+     *   file: 'data:image/png;base64,ORK5CYII='
+     * }]);
+     * // With Blob
+     * cdb.inlineUploads([{
+     *   name: 'example.txt',
+     *   file: new Blob(['example'], {content_type: 'text/plain'});
+     * }]);
+     * // With data
+     * cdb.inlineUploads([{
+     *   name: 'example.txt',
+     *   contentType: 'text/plain',
+     *   data: 'example'
+     * }]);
+     * @return {Promise.<object>} The new list of attachments
+     */
     async inlineUploads(items, options = {}) {
       await this.list();
       if (!items) {
         return attachmentsAsArray(this, this.lastAttachmentsResult);
       } else {
-        if (!(Array.isArray(items))) {
+        if (!Array.isArray(items)) {
           throw new TypeError('options must be an array');
         }
 
@@ -175,12 +177,18 @@ define([
           };
         }
 
-        await superagent
-          .put(this.docUrl)
-          .withCredentials()
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .send(this.lastDoc);
+        let response = await fetch(this.docUrl, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            "Content-Type": "application/json"
+            "Accept": "application/json"
+          },
+          body: this.lastDoc
+        });
+
+        let result=await response.json();
+        console.log(result);
 
         if (options.noRefresh) {
           return attachmentsAsArray(this, this.lastDoc._attachments);
@@ -191,17 +199,17 @@ define([
     }
 
     /**
-         *
-         * @param {object} item
-         * @param {string} item.name - Name of the attachment to upload
-         * @param {string} item.filename - Alias for name
-         * @param {string} item.contentType - Content-Type of the attachment to upload
-         * @param {string|Blob} item.data -  The attachment's content to upload
-         * @param {string|Blob} item.file - The attachments's content to upload
-         * @param {string|Blob} item.content - The attachments's content to upload
-         * @param {object} options
-         * @return {Promise.<object>} The new list of attachments
-         */
+     *
+     * @param {object} item
+     * @param {string} item.name - Name of the attachment to upload
+     * @param {string} item.filename - Alias for name
+     * @param {string} item.contentType - Content-Type of the attachment to upload
+     * @param {string|Blob} item.data -  The attachment's content to upload
+     * @param {string|Blob} item.file - The attachments's content to upload
+     * @param {string|Blob} item.content - The attachments's content to upload
+     * @param {object} options
+     * @return {Promise.<object>} The new list of attachments
+     */
     async upload(item, options = {}) {
       if (!item) {
         throw new Error('Invalid arguments');
@@ -230,7 +238,9 @@ define([
       }
 
       if (!contentType) {
-        throw new Error('Content-Type unresolved. Cannot upload document without content-type');
+        throw new Error(
+          'Content-Type unresolved. Cannot upload document without content-type'
+        );
       }
 
       const res = await superagent
@@ -253,11 +263,11 @@ define([
     }
 
     /**
-         * Get the content of an attachment
-         * @param {string} name - The name of the attachment to get
-         * @param {object} options
-         * @return {Promise} The parsed content of the attachment
-         */
+     * Get the content of an attachment
+     * @param {string} name - The name of the attachment to get
+     * @param {object} options
+     * @return {Promise} The parsed content of the attachment
+     */
     async get(name, options) {
       options = options || {};
 
@@ -269,7 +279,8 @@ define([
       const url = `${this.docUrl}/${name}`;
       if (!options.responseType) {
         const req = superagent.get(url).withCredentials();
-        if (_att) req.set('Accept', this.lastDoc._attachments[name].content_type);
+        if (_att)
+          req.set('Accept', this.lastDoc._attachments[name].content_type);
         const res = await req.query({ rev: this.lastDoc._rev });
         if (options.raw) return res.text;
         else if (options.responseType) return res.xhr.response;
@@ -290,11 +301,11 @@ define([
     }
 
     /**
-         * Remove an attachment
-         * @param {string} name - The name of the attachment to remove.
-         * @param {object} options
-         * @return {Promise.<object>} The new list of attachments
-         */
+     * Remove an attachment
+     * @param {string} name - The name of the attachment to remove.
+     * @param {object} options
+     * @return {Promise.<object>} The new list of attachments
+     */
     async remove(name, options = {}) {
       if (Array.isArray(name)) {
         return inlineRemove(this, name, options);
@@ -321,9 +332,9 @@ define([
     }
 
     /**
-         * Refreshes the list of attachment from couchdb.
-         * @returns {Promise.<Object>} attachments - The new list of attachments
-         */
+     * Refreshes the list of attachment from couchdb.
+     * @returns {Promise.<Object>} attachments - The new list of attachments
+     */
     // Get documents with latest attachements' rev ids
     async refresh() {
       const res = await superagent
@@ -335,10 +346,10 @@ define([
     }
 
     /**
-         * An alias for refresh
-         * Refreshes the list of attachment from couchdb.
-         * @return {Promise.<object>} attachments - The new list of attachments
-         */
+     * An alias for refresh
+     * Refreshes the list of attachment from couchdb.
+     * @return {Promise.<object>} attachments - The new list of attachments
+     */
     fetchList() {
       return this.refresh();
     }
@@ -374,7 +385,11 @@ define([
       req.field('_rev', this.lastDoc._rev);
       const res = await req;
       if (res.status !== 201) {
-        throw new Error(`Error uploading attachments, couchdb returned status code ${res.status}`);
+        throw new Error(
+          `Error uploading attachments, couchdb returned status code ${
+            res.status
+          }`
+        );
       }
       if (options.noRefresh) {
         return attachmentsAsArray(this, this.lastDoc._attachments);
@@ -384,11 +399,11 @@ define([
     }
   }
 
-
   // Private function
   async function inlineRemove(ctx, names, options = {}) {
     await ctx.list();
-    if (!Array.isArray(names)) throw new TypeError('Argument should be an array');
+    if (!Array.isArray(names))
+      throw new TypeError('Argument should be an array');
     if (names.length === 0) return ctx.list();
     for (let i = 0; i < names.length; i++) {
       delete ctx.lastDoc._attachments[names[i]];
