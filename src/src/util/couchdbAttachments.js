@@ -181,13 +181,13 @@ define([
           method: 'PUT',
           credentials: 'include',
           headers: {
-            "Content-Type": "application/json"
-            "Accept": "application/json"
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
           },
           body: this.lastDoc
         });
 
-        let result=await response.json();
+        let result = await response.json();
         console.log(result);
 
         if (options.noRefresh) {
@@ -337,10 +337,10 @@ define([
      */
     // Get documents with latest attachements' rev ids
     async refresh() {
-      let json= await (await fetch(this.docUrl, {
-        credentials:'include',
+      let json = await (await fetch(this.docUrl, {
+        credentials: 'include',
         headers: {
-          "Accept": "application/json"
+          Accept: 'application/json'
         }
       })).json();
       this.lastDoc = json;
