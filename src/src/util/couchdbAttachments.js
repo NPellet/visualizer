@@ -337,12 +337,14 @@ define([
      */
     // Get documents with latest attachements' rev ids
     async refresh() {
-      const res = await superagent
-        .get(this.docUrl)
-        .withCredentials()
-        .set('Accept', 'application/json');
-      this.lastDoc = res.body;
-      return attachmentsAsArray(this, res.body._attachments);
+      let json= await (await fetch(this.docUrl, {
+        credentials:'include',
+        headers: {
+          "Accept": "application/json"
+        }
+      })).json();
+      this.lastDoc = json;
+      return attachmentsAsArray(this, json._attachments);
     }
 
     /**
