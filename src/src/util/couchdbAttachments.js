@@ -184,7 +184,7 @@ define([
             'Content-Type': 'application/json',
             Accept: 'application/json'
           },
-          body: this.lastDoc
+          body: JSON.stringify(this.lastDoc)
         });
 
         let result = await response.json();
