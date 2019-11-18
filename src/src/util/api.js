@@ -15,7 +15,7 @@ define([
   'src/main/variables',
   'src/main/datas',
   'lodash',
-  'src/main/grid',
+  'src/main/grid'
 ], function (
   Cache,
   ActionManager,
@@ -34,7 +34,7 @@ define([
     .append(
       $('<div>', {
         id: 'ci-loading-message',
-        class: 'ci-loading-subtitle',
+        class: 'ci-loading-subtitle'
       })
     );
   var loading = {};
@@ -104,7 +104,7 @@ define([
         .uniq((v) => v.file)
         .unshift({
           file: '',
-          name: 'No filter',
+          name: 'No filter'
         })
         .value();
     },
@@ -124,7 +124,7 @@ define([
     /* Extra functions used in filter testsuite. Allows compatibility of filters */
     dev_fctCalled: function (fct) {},
     dev_fctUncalled: function (fct) {},
-    dev_assert: function (family, script, value) {},
+    dev_assert: function (family, script, value) {}
   };
 
   /**
@@ -186,9 +186,7 @@ define([
     if (data && data.trace) {
       return data
         .trace(jpath)
-        .then((data) =>
-          Variables.setVariable(name, false, data, filter)
-        );
+        .then((data) => Variables.setVariable(name, false, data, filter));
     } else {
       return Variables.setVariable(name, false, data, filter);
     }

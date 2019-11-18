@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/module',
   'src/util/debug',
-  'src/util/util',
+  'src/util/util'
 ], function ($, Module, Debug, Util) {
   let incrementalId = 0;
 
@@ -15,7 +15,7 @@ define([
   function getSubFoldersFrom(folder) {
     return new Promise(function (resolve) {
       const result = {
-        folders: {},
+        folders: {}
       };
       $.getJSON(require.toUrl(`${folder}/folder.json`)).then(function (
         folderContent
@@ -154,6 +154,7 @@ define([
     },
 
     getModule(moduleId) {
+      moduleId = Number(moduleId);
       var modules = this.getModules();
       modules = modules.filter(function (m) {
         return Number(m.getId()) === moduleId;
@@ -169,6 +170,6 @@ define([
       const modulesById = {};
       this.traverseModules((mod) => (modulesById[mod.id] = mod));
       return modulesById;
-    },
+    }
   };
 });
