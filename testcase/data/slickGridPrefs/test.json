@@ -1,0 +1,13 @@
+console.log(this.action);
+
+{
+     "cols": [
+        {
+            "name": "test",
+            "jpath": ["a"],
+            "forceType": "latex",
+            "formatter": "typerenderer",
+            "rendererOptions": ""
+        }
+    ]
+}
