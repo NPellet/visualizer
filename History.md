@@ -1,3 +1,23 @@
+# [2.112.0](https://github.com/NPellet/visualizer/compare/v2.111.1...v2.112.0) (2019-12-02)
+
+
+### Bug Fixes
+
+* don't add the element prefix when editing jpaths in slickgrid ([#1137](https://github.com/NPellet/visualizer/issues/1137)) ([8df1e1f](https://github.com/NPellet/visualizer/commit/8df1e1f))
+* lazy load fancy tree and fix deps problem in build ([#1135](https://github.com/NPellet/visualizer/issues/1135)) ([99d1b22](https://github.com/NPellet/visualizer/commit/99d1b22))
+* legend position on zoom in spectra-displayer ([5c6bea4](https://github.com/NPellet/visualizer/commit/5c6bea4))
+* twig-form testcase ([729b40e](https://github.com/NPellet/visualizer/commit/729b40e))
+
+
+### Features
+
+* add onLoad rel with module id ([#1136](https://github.com/NPellet/visualizer/issues/1136)) ([e114414](https://github.com/NPellet/visualizer/commit/e114414))
+* allow select choices to be passed as an object ([b60e02c](https://github.com/NPellet/visualizer/commit/b60e02c))
+* **slick_grid:** add jpath editor ([3aae8e0](https://github.com/NPellet/visualizer/commit/3aae8e0))
+* ui.editTable ([1547621](https://github.com/NPellet/visualizer/commit/1547621))
+
+
+
 ## [2.111.1](https://github.com/NPellet/visualizer/compare/v2.111.0...v2.111.1) (2019-10-07)
 
 
