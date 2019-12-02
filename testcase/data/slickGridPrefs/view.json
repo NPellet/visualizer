@@ -21,7 +21,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "var n = 25;\nconst arr = [];\nfor(let i = 0; i<n; i++) {\n    arr.push({\n        n: Math.round(Math.random() * 100),\n        id: Math.random().toString(36).slice(2)\n    });\n}\n\nawait UI.editTable(arr, {\n    remove: true,\n    columns: [\n        {\n            id: 'id',\n            name: 'id',\n            jpath: ['id'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'n',\n            name: 'n',\n            jpath: ['n'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory({x: 'test'}),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n            \n        }\n    ]\n});\n\nconsole.log(arr);\n\nAPI.createData('arr', arr);"
+                "const objectStructure=DataObject.resurrect(API.getData('data')[0]);\n\nconst prefs=API.cache('prefs');\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random()\n})\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\nAPI.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
               ]
             }
           ],
@@ -52,16 +52,16 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 60,
-            "top": 22
+            "left": 67,
+            "top": 0
           },
           "size": {
             "width": 50,
-            "height": 32
+            "height": 61
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "Edit the jpath of the columns to display",
           "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
@@ -105,7 +105,7 @@
           "fontFamily": [""]
         }
       ],
-      "title": ""
+      "title": "Edit the jpath of the columns to display"
     },
     {
       "url": "modules/types/edition/object_editor/",
@@ -115,7 +115,7 @@
           "group": [
             {
               "editable": ["view"],
-              "expanded": [[]],
+              "expanded": [["expand"]],
               "storeObject": [[]],
               "displayValue": [[]],
               "searchBox": [["search"]],
@@ -129,16 +129,16 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 60,
+            "left": 118,
             "top": 0
           },
           "size": {
-            "width": 50,
-            "height": 21
+            "width": 37,
+            "height": 61
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "New preferences to add in the slick",
           "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
@@ -149,7 +149,7 @@
       "vars_in": [
         {
           "rel": "value",
-          "name": "arr"
+          "name": "cols"
         }
       ],
       "actions_in": [{}],
@@ -187,7 +187,7 @@
           "fontFamily": [""]
         }
       ],
-      "title": ""
+      "title": "New preferences to add in the slick"
     },
     {
       "url": "modules/types/edition/object_editor/",
@@ -204,7 +204,7 @@
               "sendButton": [[]],
               "output": ["new"],
               "storedObject": [
-                "[{\"a\":11,\"b\":{\"c\":2,\"d\":3,\"e\":{\"f\":4}}},{\"a\":11,\"b\":{\"c\":2,\"d\":3,\"e\":{\"f\":4,\"h\":5,\"i\":6}}},{\"a\":11,\"b\":{\"c\":2}}]"
+                "[{\"a\":11,\"b\":{\"c\":2.3,\"d\":3,\"e\":{\"f\":4}}},{\"a\":12,\"b\":{\"c\":2.4,\"d\":3,\"e\":{\"f\":4.1,\"h\":5,\"i\":6}}},{\"a\":13,\"b\":{\"c\":2.5}}]"
               ]
             }
           ]
@@ -217,8 +217,8 @@
             "top": 0
           },
           "size": {
-            "width": 23,
-            "height": 56
+            "width": 20,
+            "height": 61
           },
           "zIndex": 0,
           "display": true,
@@ -308,28 +308,30 @@
           "cols": [
             [
               {
-                "name": "A",
-                "jpath": ["a"],
-                "editor": "none",
-                "forceType": "",
+                "name": "Test",
+                "jpath": ["b", "c"],
                 "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "",
-                "editorOptions": "",
-                "hideColumn": []
+                "width": 100,
+                "rendererOptions": "toPrecision:6",
+                "id": 0.6970306237353225
               },
               {
-                "name": "C",
-                "jpath": ["b", "c"],
-                "editor": "none",
-                "forceType": "",
-                "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "",
-                "editorOptions": "",
-                "hideColumn": []
+                "name": "2",
+                "id": "lphog9g3iur",
+                "rendererOptions": "toPrecision:2",
+                "width": 150,
+                "x": null,
+                "jpath": ["a"],
+                "formatter": "typerenderer"
+              },
+              {
+                "name": "ABC",
+                "id": "ni47e3ziic",
+                "rendererOptions": "numeral:'#.###'",
+                "width": 50,
+                "x": null,
+                "jpath": ["b", "e", "f"],
+                "formatter": "typerenderer"
               }
             ]
           ],
@@ -363,12 +365,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 24,
+            "left": 21,
             "top": 0
           },
           "size": {
-            "width": 35,
-            "height": 18
+            "width": 45,
+            "height": 20
           },
           "zIndex": 0,
           "display": true,
@@ -390,11 +392,15 @@
         {
           "rel": "_editPreferences",
           "name": "SetColumnPreferences"
-        }
+        },
+        {}
       ],
       "actions_out": [
         {
-          "jpath": []
+          "event": "_onLoaded",
+          "rel": "_moduleId",
+          "jpath": [],
+          "name": "SlickLoaded"
         }
       ],
       "vars_out": [
@@ -436,10 +442,10 @@
           "group": [
             {
               "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
+              "execOnLoad": [["yes"]],
               "asyncAwait": [["top"]],
               "script": [
-                "let prefs={\n     \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.doAction('SetColumnPreferences', prefs);\n"
+                "// there is an action in the general preferences\n\nreturn;\n\nlet storedPrefs=localStorage.getItem('prefsSlick');\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.doAction('SetColumnPreferences', prefs);\n"
               ]
             }
           ],
@@ -459,16 +465,16 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 24,
-            "top": 19
+            "left": 21,
+            "top": 21
           },
           "size": {
-            "width": 35,
-            "height": 35
+            "width": 45,
+            "height": 40
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "Extract preferences from localstorage",
           "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
@@ -476,12 +482,7 @@
         }
       },
       "id": 5,
-      "vars_in": [
-        {
-          "rel": "inputValue",
-          "name": ""
-        }
-      ],
+      "vars_in": [{}],
       "actions_in": [
         {
           "rel": "execute",
@@ -522,12 +523,88 @@
           "fontFamily": [""]
         }
       ],
-      "title": ""
+      "title": "Extract preferences from localstorage"
     }
   ],
-  "variables": [],
-  "aliases": [],
+  "variables": [
+    {
+      "jpath": [""]
+    }
+  ],
+  "aliases": [{}],
   "configuration": {
     "title": "UI.editTable"
-  }
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": ["SlickLoaded"],
+            "script": [
+              "let storedPrefs=localStorage.getItem('prefsSlick');\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.doAction('SetColumnPreferences', prefs);\n"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
+  ]
 }
