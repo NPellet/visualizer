@@ -21,7 +21,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "const objectStructure=DataObject.resurrect(API.getData('data')[0]);\n\nlet moduleID=this.action.value;\n\n\nconst prefs=API.cache('prefs');\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random()\n})\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\n\nAPI.updatePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
+                "const objectStructure=DataObject.resurrect(API.getData('data')[0]);\n\nlet moduleID=this.action.value;\n\n\nconst prefs=API.cache('prefs');\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random()\n})\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\n\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
               ]
             }
           ],
@@ -321,14 +321,6 @@
                 "id": 0.6970306237353225
               },
               {
-                "name": "DEF",
-                "id": "74ct3w6jjfk",
-                "width": 100,
-                "x": null,
-                "jpath": ["b", "c"],
-                "formatter": "typerenderer"
-              },
-              {
                 "name": "adsf",
                 "id": "di8f28utiee",
                 "jpath": ["a"],
@@ -437,7 +429,7 @@
           "group": [
             {
               "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
+              "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
                 "// there is an action in the general preferences\n\n// and an action in the slick grid to retrieve the\n// preferences when module is loaded"
@@ -465,7 +457,7 @@
           },
           "size": {
             "width": 45,
-            "height": 40
+            "height": 20
           },
           "zIndex": 0,
           "display": true,
@@ -519,6 +511,97 @@
         }
       ],
       "title": "Extract preferences from localstorage"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "let prefs=API.getModulePreferences(4);\nconsole.log(prefs.cols);\n\nprefs.cols.splice(1);\n\n// API.updateModulePreferences(4, {cols: prefs.cols});"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 21,
+            "top": 42
+          },
+          "size": {
+            "width": 45,
+            "height": 19
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Extract preferences from a module",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [{}],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "SetPrefs"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "Extract preferences from a module"
     }
   ],
   "variables": [
@@ -538,7 +621,7 @@
           {
             "name": ["SlickLoaded"],
             "script": [
-              "let storedPrefs=localStorage.getItem('prefsSlick');\n\nlet moduleID=value;\nconsole.log('Module loaded: ', moduleID);\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.updatePreferences(moduleID, prefs);\n\n// API.doAction('SetColumnPreferences', prefs);\n"
+              "let storedPrefs=localStorage.getItem('prefsSlick');\n\nlet moduleID=value;\nconsole.log('Module loaded: ', moduleID);\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.updateModulePreferences(moduleID, prefs);\n\n// API.doAction('SetColumnPreferences', prefs);\n"
             ]
           }
         ]

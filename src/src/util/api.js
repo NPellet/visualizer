@@ -284,7 +284,39 @@ define([
     ActionManager.execute(name, value);
   };
 
-  exports.updatePreferences = function updatePreferences(moduleId, values) {
+  exports.getModulePreferences = function getModulePreferences(
+    moduleId,
+    values
+  ) {
+    const ModuleFactory = require('modules/modulefactory');
+    const module = ModuleFactory.getModule(moduleId);
+    const currentPreferences = module.definition.configuration;
+    const aliases = module.controller.configAliases;
+
+    function getValue(alias) {
+      let path = aliases[alias];
+      var currentElement = currentPreferences;
+      for (let i = 0; i < path.length; i++) {
+        currentElement = currentElement[path[i]];
+        if (typeof currentElement === 'undefined') {
+          break;
+        }
+      }
+      return currentElement;
+    }
+
+    const preferences = {};
+    for (let alias in aliases) {
+      preferences[alias] = getValue(alias);
+    }
+
+    return preferences;
+  };
+
+  exports.updateModulePreferences = function updateModulePreferences(
+    moduleId,
+    values
+  ) {
     const ModuleFactory = require('modules/modulefactory');
     const module = ModuleFactory.getModule(moduleId);
     var currentPreferences = module.definition.configuration;
