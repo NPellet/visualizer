@@ -1,3 +1,13 @@
+# [2.113.0](https://github.com/NPellet/visualizer/compare/v2.112.0...v2.113.0) (2019-12-03)
+
+
+### Features
+
+* add API.getModule(moduleID) ([315e36d](https://github.com/NPellet/visualizer/commit/315e36d))
+* add getModulePreferences(moduleID) and rename getPreferences to getModulePreferences ([f1ea3ba](https://github.com/NPellet/visualizer/commit/f1ea3ba))
+
+
+
 # [2.112.0](https://github.com/NPellet/visualizer/compare/v2.111.1...v2.112.0) (2019-12-02)
 
 
