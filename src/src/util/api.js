@@ -284,10 +284,12 @@ define([
     ActionManager.execute(name, value);
   };
 
-  exports.getModulePreferences = function getModulePreferences(
-    moduleId,
-    values
-  ) {
+  exports.getModule = function getModule(moduleId) {
+    const ModuleFactory = require('modules/modulefactory');
+    return ModuleFactory.getModule(moduleId);
+  };
+
+  exports.getModulePreferences = function getModulePreferences(moduleId) {
     const ModuleFactory = require('modules/modulefactory');
     const module = ModuleFactory.getModule(moduleId);
     const currentPreferences = module.definition.configuration;

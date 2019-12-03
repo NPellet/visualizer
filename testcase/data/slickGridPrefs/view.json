@@ -21,7 +21,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "const objectStructure=DataObject.resurrect(API.getData('data')[0]);\n\nlet moduleID=this.action.value;\n\n\nconst prefs=API.cache('prefs');\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random()\n})\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\n\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
+                "\nlet moduleID=this.action.value;\n\nconst objectStructure=DataObject.resurrect(API.getModule(moduleID).data[0]);\n\nconst prefs=API.cache('prefs');\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random()\n})\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\n\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
               ]
             }
           ],
@@ -319,12 +319,6 @@
                 "width": 100,
                 "rendererOptions": "toPrecision:6",
                 "id": 0.6970306237353225
-              },
-              {
-                "name": "adsf",
-                "id": "di8f28utiee",
-                "jpath": ["a"],
-                "formatter": "typerenderer"
               }
             ]
           ],
