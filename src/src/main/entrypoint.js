@@ -135,7 +135,10 @@ define([
       .then(doInitScript)
       .then(
         function () {
+          console.log('has changed');
           ActionManager.viewHasChanged(view);
+          console.log(ActionManager.listActions())
+          console.log('finished changed');
           ModuleFactory.getModules().forEach(function (module) {
             if (
               module.controller &&

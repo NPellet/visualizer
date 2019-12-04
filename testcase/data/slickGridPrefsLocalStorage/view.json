@@ -1,0 +1,446 @@
+{
+  "version": "2.113.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "const modulePrefsManager = API.cache('modulePrefsManager');\n\n\nconsole.log(modulePrefsManager);"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 55,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [[]],
+              "copyPasteOptions": [["newRows"]],
+              "autoColumns": [[]],
+              "toolbar": [[]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": [null],
+              "slick.headerRowHeight": [30],
+              "slick.selectionModel": ["row"],
+              "idProperty": [""],
+              "filterType": ["pref"],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [""]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "a",
+                "jpath": ["a"],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": [],
+                "id": 0.8234284925822375
+              },
+              {
+                "name": "xxx",
+                "jpath": ["c"],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": [],
+                "id": 0.7325150504935085
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [0, 0, 0, 1],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [[{}]],
+          "data": [
+            {
+              "saveInView": [[]],
+              "varname": [""],
+              "data": ["[]"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 37
+          },
+          "size": {
+            "width": 55,
+            "height": 28
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "data"
+        }
+      ],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "event": "_onLoaded",
+          "rel": "_moduleId",
+          "jpath": [],
+          "name": "LoadPrefs"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "Prefs",
+              "icon": "fa-cogs",
+              "action": "ModulePrefs",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            },
+            {
+              "title": "Load",
+              "icon": "fa-cloud-download-alt",
+              "action": "LoadPrefs",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [["send"]],
+              "output": ["new"],
+              "storedObject": [
+                "[\n  {\"a\":1,\"b\":2,\"c\":3},\n   {\"a\":2,\"b\":3,\"c\":4},\n    {\"a\":3,\"b\":4,\"c\":5}\n  ]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 56,
+            "top": 0
+          },
+          "size": {
+            "width": 46,
+            "height": 39
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "data"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "jpath": [""]
+    }
+  ],
+  "aliases": [
+    {
+      "path": "http://localhost:9898/cheminfo-js/visualizer-helper/",
+      "alias": "vh"
+    }
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": ["ModulePrefs"],
+            "script": [
+              "const modulePrefsManager=API.cache('modulePrefsManager');\nmodulePrefsManager.updateSlickGridPrefs(value);"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": ["LoadPrefs"],
+            "script": [
+              "console.log('Load prefs', value);\nconst modulePrefsManager=API.cache('modulePrefsManager');\nmodulePrefsManager.reloadModulePrefs(value);"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              "const ModulePrefsManager=await API.require('vh/util/ModulePrefsManager');\nconsole.log(ModulePrefsManager)\nconst modulePrefsManager=new ModulePrefsManager();\nAPI.cache('modulePrefsManager',modulePrefsManager);\n\nmodulePrefsManager.initialized();"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
+  ]
+}

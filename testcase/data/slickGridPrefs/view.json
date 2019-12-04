@@ -1,5 +1,5 @@
 {
-  "version": "2.112.1-0",
+  "version": "2.113.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -315,10 +315,15 @@
               {
                 "name": "Test",
                 "jpath": ["b", "c"],
+                "editor": "none",
+                "forceType": "",
                 "formatter": "typerenderer",
-                "width": 100,
+                "copyFormatter": "default",
+                "visibility": "both",
                 "rendererOptions": "toPrecision:6",
-                "id": 0.6970306237353225
+                "editorOptions": "",
+                "width": 100,
+                "hideColumn": []
               }
             ]
           ],
@@ -615,7 +620,7 @@
           {
             "name": ["SlickLoaded"],
             "script": [
-              "let storedPrefs=localStorage.getItem('prefsSlick');\n\nlet moduleID=value;\nconsole.log('Module loaded: ', moduleID);\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.updateModulePreferences(moduleID, prefs);\n\n// API.doAction('SetColumnPreferences', prefs);\n"
+              "console.log('Slick Loaded from the general actions');\n\nlet storedPrefs=localStorage.getItem('prefsSlick');\n\nlet moduleID=value;\nconsole.log('Module loaded: ', moduleID);\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.updateModulePreferences(moduleID, prefs);\n\n// API.doAction('SetColumnPreferences', prefs);\n"
             ]
           }
         ]
