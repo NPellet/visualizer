@@ -1,3 +1,13 @@
+## [2.114.1](https://github.com/NPellet/visualizer/compare/v2.114.0...v2.114.1) (2019-12-05)
+
+
+### Bug Fixes
+
+* eslint ([425c236](https://github.com/NPellet/visualizer/commit/425c236))
+* fix bug introduced with updateModulePreferences ([fca4357](https://github.com/NPellet/visualizer/commit/fca4357))
+
+
+
 # [2.114.0](https://github.com/NPellet/visualizer/compare/v2.113.0...v2.114.0) (2019-12-04)
 
 
