@@ -1,5 +1,5 @@
 {
-  "version": "2.113.1-0",
+  "version": "2.114.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -57,7 +57,7 @@
           "name": "Default layer"
         }
       },
-      "id": 1,
+      "id": 4,
       "vars_in": [{}],
       "actions_in": [{}],
       "vars_out": [
@@ -156,6 +156,12 @@
                 "editorOptions": "",
                 "hideColumn": [],
                 "id": 0.7325150504935085
+              },
+              {
+                "name": "bbbbb",
+                "id": "04nmbjba1lw7",
+                "jpath": ["b"],
+                "formatter": "typerenderer"
               }
             ]
           ],
@@ -205,7 +211,7 @@
           "name": "Default layer"
         }
       },
-      "id": 2,
+      "id": 5,
       "vars_in": [
         {
           "rel": "list",
@@ -299,7 +305,7 @@
           "name": "Default layer"
         }
       },
-      "id": 3,
+      "id": 6,
       "vars_in": [{}],
       "actions_in": [{}],
       "vars_out": [
@@ -364,7 +370,7 @@
           {
             "name": ["ModulePrefs"],
             "script": [
-              "const modulePrefsManager=API.cache('modulePrefsManager');\nmodulePrefsManager.updateSlickGridPrefs(value);"
+              "\nconst modulePrefsManager=API.cache('modulePrefsManager');\nmodulePrefsManager.updateSlickGridPrefs(value);"
             ]
           }
         ]
@@ -377,7 +383,7 @@
           {
             "name": ["LoadPrefs"],
             "script": [
-              "console.log('Load prefs', value);\nconst modulePrefsManager=API.cache('modulePrefsManager');\nmodulePrefsManager.reloadModulePrefs(value);"
+              "console.log('Load prefs', value);\n\nrequire(['src/util/ui'], (UI)=>console.log(UI));\n\n\nconst modulePrefsManager=API.cache('modulePrefsManager');\nmodulePrefsManager.reloadModulePrefs(value);"
             ]
           }
         ]

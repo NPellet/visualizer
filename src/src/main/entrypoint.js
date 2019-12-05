@@ -138,7 +138,7 @@ define([
       .then(doInitScript)
       .then(
         function () {
-         // ActionManager.viewHasChanged(view);
+          // ActionManager.viewHasChanged(view);
           ModuleFactory.getModules().forEach(function (module) {
             if (
               module.controller &&
