@@ -126,6 +126,9 @@ define([
 
     var view = Versioning.getView();
     var data = Versioning.getData();
+
+    ActionManager.viewHasChanged(view);
+
     Promise.all([
       loadCustomFilters(),
       loadMainVariables(),
@@ -135,7 +138,7 @@ define([
       .then(doInitScript)
       .then(
         function () {
-          ActionManager.viewHasChanged(view);
+         // ActionManager.viewHasChanged(view);
           ModuleFactory.getModules().forEach(function (module) {
             if (
               module.controller &&
