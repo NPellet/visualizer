@@ -787,9 +787,20 @@ define([
         var existingNames = new Set();
 
         var data = moduleValue.data;
+
+        if (moduleValue.axes) {
+          if (moduleValue.axes.x) setAxisOptions(this.xAxis, moduleValue.axes.x);
+          if (moduleValue.axes.y) setAxisOptions(this.yAxis, moduleValue.axes.y);
+        }
+
+        function setAxisOptions(axis, options) {
+          console.log(axis, options);
+          if (options.label) axis.setLabel(options.label);
+          if (options.flipped) axis.flip(options.flipped);
+        }
+
         for (let i = 0; i < data.length; i++) {
           var aData = data[i];
-
           if (i === 0 && moduleValue.axis) {
             if (moduleValue.axis[aData.xAxis]) {
               this.xAxis.setLabel(moduleValue.axis[aData.xAxis].label);
