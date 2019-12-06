@@ -274,7 +274,7 @@
               "sendButton": [["send"]],
               "output": ["new"],
               "storedObject": [
-                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\"\n    }\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      }\n    }\n  ]\n}"
+                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\"\n    }\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      },\n      \"style\": {\n        \"line\": {\n          \"style\": 3,\n          \"width\": 4,\n          \"color\": \"green\",\n          \"autoPeakPickingNb\": 4\n        },\n        \"marker\": {\n          \"default\": {\n            \"fill\": \"blue\"\n          }\n        }\n      }\n    }\n  ]\n}"
               ]
             }
           ]

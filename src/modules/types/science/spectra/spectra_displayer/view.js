@@ -794,7 +794,6 @@ define([
         }
 
         function setAxisOptions(axis, options) {
-          console.log(axis, options);
           if (options.label) axis.setLabel(options.label);
           if (options.flipped) axis.flip(options.flipped);
         }
