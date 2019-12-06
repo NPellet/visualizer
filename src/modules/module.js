@@ -54,11 +54,16 @@ define(
         module._resolveModel = res;
       });
 
+      module.globalInitializationReady = new Promise(function (res, rej) {
+        module.resolveGlobal = res;
+      });
+
       const start = Date.now();
       module._onReady = Promise.all([
         module.viewReady,
         module.controllerReady,
-        module.modelReady
+        module.modelReady,
+        module.globalInitializationReady,
       ]);
       module._onReady
         .then(
