@@ -23,21 +23,56 @@
         "groups": {
           "group": [
             {
-              "append": [[]],
-              "maxEntries": [1],
-              "editable": [[]],
-              "debounce": [0],
-              "defaultvalue": [null],
-              "font": [null],
-              "fontcolor": [[0, 0, 0, 1]],
-              "fontsize": [null],
-              "align": [null],
-              "valign": [null],
-              "rendererOptions": [""],
-              "forceType": ["chart"],
-              "sprintf": [null],
-              "sprintfOrder": [null],
-              "preformatted": [[]]
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                "chart"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
             }
           ]
         }
@@ -55,7 +90,12 @@
           "zIndex": 0,
           "display": true,
           "title": "Display value chart rendering",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -72,7 +112,12 @@
           "zIndex": 0,
           "display": false,
           "title": "Display value chart rendering",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -89,7 +134,12 @@
           "zIndex": 0,
           "display": false,
           "title": "Display value chart rendering",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -102,7 +152,9 @@
           "name": "chart"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "title": "Display value chart rendering",
       "vars_out": [],
       "actions_out": [
@@ -123,14 +175,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -141,15 +201,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "let {\n    username,\n    password\n} = API.getData('prefs').resurrect();\n\nlet headers = new Headers();\nheaders.set('Authorization', 'Basic ' + btoa(username + \":\" + password));\n\n\n\nlet dataURL=get('dataURL');\nconsole.log(dataURL);\nlet chart=JSON.parse(atob((await getJSON(dataURL)).content));\n\n\nAPI.createData('chart', chart);\n\n\nasync function getJSON(url) {\n    let response=await fetch(url,{headers});\n    return response.json();\n}\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -175,7 +250,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -192,7 +272,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -209,7 +294,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -222,7 +312,9 @@
           "name": "dataURL"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -241,20 +333,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -266,15 +371,35 @@
         "groups": {
           "group": [
             {
-              "editable": ["text"],
-              "expanded": [[]],
-              "storeObject": [[]],
-              "displayValue": [["display"]],
-              "searchBox": [["search"]],
-              "sendButton": [["send"]],
-              "output": ["new"],
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                [
+                  "display"
+                ]
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                [
+                  "send"
+                ]
+              ],
+              "output": [
+                "new"
+              ],
               "storedObject": [
-                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\"\n    }\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      },\n      \"style\": {\n        \"line\": {\n          \"style\": 3,\n          \"width\": 4,\n          \"color\": \"green\",\n          \"autoPeakPickingNb\": 4\n        },\n        \"marker\": {\n          \"default\": {\n            \"fill\": \"blue\"\n          }\n        }\n      }\n    }\n  ]\n}"
+                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"display\": false\n    }\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      },\n      \"style\": {\n        \"line\": {\n          \"style\": 3,\n          \"width\": 4,\n          \"color\": \"green\",\n          \"autoPeakPickingNb\": 4\n        },\n        \"marker\": {\n          \"default\": {\n            \"fill\": \"blue\"\n          }\n        }\n      }\n    }\n  ]\n}"
               ]
             }
           ]
@@ -293,7 +418,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -310,7 +440,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -327,15 +462,24 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 3,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onObjectSend",
@@ -357,20 +501,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -382,14 +539,36 @@
         "groups": {
           "group": [
             {
-              "mode": ["text"],
-              "outputType": [null],
-              "btnvalue": ["Send script"],
-              "iseditable": [["editable"]],
-              "hasButton": [["button"]],
-              "variable": [[]],
-              "storeOnChange": [["store"]],
-              "debouncing": [0],
+              "mode": [
+                "text"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                [
+                  "store"
+                ]
+              ],
+              "debouncing": [
+                0
+              ],
               "script": [
                 "<style>\n  #prefs {\n    zoom: 1.5\n  }\n</style>\n\n<div id=\"prefs\">\nIn order to test this page you need to often access to github API\nand you may have to enter your github username / password.<p>\n\nUsername: <input type=\"text\" name=\"username\"><br>\nPassowrd: <input type=\"password\" name=\"password\">\n</div>\n"
               ]
@@ -397,8 +576,14 @@
           ],
           "ace": [
             {
-              "useSoftTabs": [["yes"]],
-              "tabSize": [4]
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
             }
           ]
         }
@@ -416,7 +601,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -433,7 +623,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Admin"
@@ -450,15 +645,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Prefs"
         }
       },
       "id": 4,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -480,20 +684,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -508,17 +725,42 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [""],
-                    "zoom": ["none"],
-                    "wheelAction": ["none"],
-                    "wheelbaseline": [0],
-                    "fullOut": ["both"],
-                    "legend": [null],
-                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [[]],
-                    "selectScatter": [[]],
-                    "independantYZoom": [[]],
-                    "trackingAxis": [null]
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ],
+                    "trackingAxis": [
+                      null
+                    ]
                   }
                 ]
               }
@@ -530,26 +772,62 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [["display"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "axismodification": ["none"]
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [["display"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "fitToAxisOnFromTo": [[]]
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -561,8 +839,12 @@
               "groups": {
                 "series": [
                   {
-                    "overflow": [[]],
-                    "stackVerticalSpacing": [0]
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
                   }
                 ]
               }
@@ -578,7 +860,12 @@
                       "variable": "",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [1, 1, 255, 1],
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -601,7 +888,9 @@
               "groups": {
                 "misc": [
                   {
-                    "highlightOptions": ["{}"]
+                    "highlightOptions": [
+                      "{}"
+                    ]
                   }
                 ]
               }
@@ -623,7 +912,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -640,7 +934,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Admin"
@@ -657,7 +956,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Prefs"
@@ -670,7 +974,9 @@
           "name": "chart"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -689,20 +995,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -714,15 +1033,35 @@
         "groups": {
           "group": [
             {
-              "editable": ["text"],
-              "expanded": [[]],
-              "storeObject": [[]],
-              "displayValue": [["display"]],
-              "searchBox": [["search"]],
-              "sendButton": [["send"]],
-              "output": ["new"],
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                [
+                  "display"
+                ]
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                [
+                  "send"
+                ]
+              ],
+              "output": [
+                "new"
+              ],
               "storedObject": [
-                "{\n    \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\"\n    }\n  },\n    \"title\": \"Multi charts\",\n    \"data\": [\n      {\n        \"y\": [\n          0.04695,\n          0.92235,\n          0.23304,\n          0.18811,\n          0.37288,\n          0.22087,\n          0.95161,\n          0.30119,\n          0.00326,\n          0.81202\n        ],\n        \"style\": {\n          \"lineStyle\": 3,\n          \"lineWidth\": 4,\n          \"lineColor\": \"green\",\n          \"autoPeakPickingNb\": 4,\n          \"markers\": {\n            \"fillColor\": \"blue\",\n            \"zoom\": 2,\n            \"type\": 1,\n            \"strokeColor\": \"yellow\",\n            \"strokeWidth\": 3\n          }\n        },\n        \"x\": [\n          0,\n          1,\n          2,\n          3,\n          4,\n          5,\n          6,\n          7,\n          8,\n          9\n        ]\n      },\n      {\n        \"label\": \"customLabel\",\n        \"y\": [\n          0.06252,\n          0.29886,\n          0.29234,\n          0.78914,\n          0.98178,\n          0.32066,\n          0.12801,\n          0.62031,\n          0.54239,\n          0.46619\n        ],\n        \"style\": {\n          \"lineColor\": \"red\",\n          \"lineStyle\": 5,\n          \"lineWidth\": 1,\n          \"markers\": {\n            \"fillColor\": \"pink\",\n            \"zoom\": 1,\n            \"type\": 1,\n            \"strokeColor\": false,\n            \"strokeWidth\": 1\n          }\n        },\n        \"x\": [\n          0,\n          1,\n          2,\n          3,\n          4,\n          5,\n          6,\n          7,\n          8,\n          9\n        ]\n      }\n    ]\n}"
+                "{\n    \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"display\": false\n    }\n  },\n    \"title\": \"Multi charts\",\n    \"data\": [\n      {\n        \"y\": [\n          0.04695,\n          0.92235,\n          0.23304,\n          0.18811,\n          0.37288,\n          0.22087,\n          0.95161,\n          0.30119,\n          0.00326,\n          0.81202\n        ],\n        \"style\": {\n          \"lineStyle\": 3,\n          \"lineWidth\": 4,\n          \"lineColor\": \"green\",\n          \"autoPeakPickingNb\": 4,\n          \"markers\": {\n            \"fillColor\": \"blue\",\n            \"zoom\": 2,\n            \"type\": 1,\n            \"strokeColor\": \"yellow\",\n            \"strokeWidth\": 3\n          }\n        },\n        \"x\": [\n          0,\n          1,\n          2,\n          3,\n          4,\n          5,\n          6,\n          7,\n          8,\n          9\n        ]\n      },\n      {\n        \"label\": \"customLabel\",\n        \"y\": [\n          0.06252,\n          0.29886,\n          0.29234,\n          0.78914,\n          0.98178,\n          0.32066,\n          0.12801,\n          0.62031,\n          0.54239,\n          0.46619\n        ],\n        \"style\": {\n          \"lineColor\": \"red\",\n          \"lineStyle\": 5,\n          \"lineWidth\": 1,\n          \"markers\": {\n            \"fillColor\": \"pink\",\n            \"zoom\": 1,\n            \"type\": 1,\n            \"strokeColor\": false,\n            \"strokeWidth\": 1\n          }\n        },\n        \"x\": [\n          0,\n          1,\n          2,\n          3,\n          4,\n          5,\n          6,\n          7,\n          8,\n          9\n        ]\n      }\n    ]\n}"
               ]
             }
           ]
@@ -741,7 +1080,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -758,7 +1102,12 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -775,15 +1124,24 @@
           "zIndex": 0,
           "display": false,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 6,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onObjectSend",
@@ -805,20 +1163,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -827,22 +1198,32 @@
   "variables": [
     {
       "varname": "twigTpl",
-      "jpath": ["twigTpl"]
+      "jpath": [
+        "twigTpl"
+      ]
     },
     {
       "varname": "entries",
-      "jpath": ["entries"]
+      "jpath": [
+        "entries"
+      ]
     },
     {
       "varname": "files",
-      "jpath": ["files"]
+      "jpath": [
+        "files"
+      ]
     },
     {
       "varname": "droppedImages",
-      "jpath": ["droppedImages"]
+      "jpath": [
+        "droppedImages"
+      ]
     }
   ],
-  "aliases": [{}],
+  "aliases": [
+    {}
+  ],
   "configuration": {
     "title": "JsGraph github test cases"
   },
@@ -852,8 +1233,12 @@
       "groups": {
         "action": [
           {
-            "name": [null],
-            "script": [null]
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -880,7 +1265,11 @@
           {
             "sections": {},
             "groups": {
-              "modules": [[{}]]
+              "modules": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -888,7 +1277,11 @@
           {
             "sections": {},
             "groups": {
-              "filters": [[{}]]
+              "filters": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -898,11 +1291,19 @@
             "groups": {
               "filter": [
                 {
-                  "name": [null],
-                  "script": [null]
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
                 }
               ],
-              "libs": [[{}]]
+              "libs": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ]
@@ -914,7 +1315,11 @@
     {
       "sections": {},
       "groups": {
-        "action": [[{}]]
+        "action": [
+          [
+            {}
+          ]
+        ]
       }
     }
   ]

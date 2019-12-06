@@ -796,6 +796,8 @@ define([
         function setAxisOptions(axis, options) {
           if (options.label) axis.setLabel(options.label);
           if (options.flipped) axis.flip(options.flipped);
+          if (options.display === false) axis.hide();
+          if (options.display === true) axis.show();
         }
 
         for (let i = 0; i < data.length; i++) {
