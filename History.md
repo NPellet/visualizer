@@ -1,3 +1,18 @@
+## [2.114.2](https://github.com/NPellet/visualizer/compare/v2.114.1...v2.114.2) (2019-12-06)
+
+
+### Bug Fixes
+
+* module on ready waits that the view is initialized ([b698188](https://github.com/NPellet/visualizer/commit/b698188))
+
+
+### Features
+
+* **spectra_displayer:** show / hide axis from chart json ([83dbbec](https://github.com/NPellet/visualizer/commit/83dbbec))
+* allow to define label and flip is chart format ([078fcf9](https://github.com/NPellet/visualizer/commit/078fcf9))
+
+
+
 ## [2.114.1](https://github.com/NPellet/visualizer/compare/v2.114.0...v2.114.1) (2019-12-05)
 
 
