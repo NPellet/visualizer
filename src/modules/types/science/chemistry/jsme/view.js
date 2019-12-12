@@ -5,8 +5,9 @@ define([
   'modules/default/defaultview',
   'src/util/api',
   'src/util/ui',
-  'src/util/debug'
-], function (require, Default, API, ui, Debug) {
+  'src/util/debug',
+  'openchemlib/openchemlib-core'
+], function (require, Default, API, ui, Debug, OCL) {
   function View() {}
 
   var views = {};
@@ -75,7 +76,9 @@ define([
           highlightColor: that.getHighlightColor(),
           bondwidth: that.module.getConfiguration('bondwidth'),
           labelsize: that.module.getConfiguration('labelsize'),
-          defaultaction: that.module.getConfiguration('defaultaction'),
+          defaultaction: that.module.getConfiguration(
+            'defaultaction'
+          ),
           id: id
         });
       });
@@ -141,11 +144,9 @@ define([
         let molfile = String(moduleValue.get());
         if (molfile.includes('V3000')) {
           let that = this;
-          require(['openchemlib/openchemlib-core'], function (OCL) {
-            let mol = OCL.Molecule.fromMolfile(molfile);
-            that.postMessage('setMolFile', mol.toMolfile());
-            that._initHighlight(moduleValue);
-          });
+          let mol = OCL.Molecule.fromMolfile(molfile);
+          that.postMessage('setMolFile', mol.toMolfile());
+          that._initHighlight(moduleValue);
         } else {
           this.postMessage('setMolFile', molfile);
           this._initHighlight(moduleValue);
@@ -187,11 +188,21 @@ define([
         function (onOff, highlightId) {
           var atoms = [];
           for (var i = 0, l = highlightId.length; i < l; i++) {
-            if (!(moduleValue._atoms[highlightId[i]] instanceof Array))
+            if (
+              !(
+                moduleValue._atoms[highlightId[i]] instanceof
+                                Array
+              )
+            )
               moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]]];
-            atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
+            atoms = atoms.concat(
+              moduleValue._atoms[highlightId[i]]
+            );
           }
-          that.postMessage('setHighlight', { atoms: atoms, onOff: onOff });
+          that.postMessage('setHighlight', {
+            atoms: atoms,
+            onOff: onOff
+          });
         },
         false,
         this.module.getId()
@@ -204,7 +215,10 @@ define([
       // there is a problem with overlapping atoms, there is no event out
       // we therefore systematically unhighlight
       for (var i in this._currentValue._atoms) {
-        if (this._currentValue._atoms[i].indexOf(this.highlightedAtom) > -1) {
+        if (
+          this._currentValue._atoms[i].indexOf(this.highlightedAtom) >
+                    -1
+        ) {
           API.highlightId(i, false);
         }
       }
