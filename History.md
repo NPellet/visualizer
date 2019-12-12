@@ -1,3 +1,12 @@
+## [2.114.3](https://github.com/NPellet/visualizer/compare/v2.114.2...v2.114.3) (2019-12-12)
+
+
+### Bug Fixes
+
+* load openchemlib in jsme component to prevent race conditions ([114d2fa](https://github.com/NPellet/visualizer/commit/114d2fa))
+
+
+
 ## [2.114.2](https://github.com/NPellet/visualizer/compare/v2.114.1...v2.114.2) (2019-12-06)
 
 
