@@ -17,7 +17,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "\nlet moduleID=this.action.value;\n\nconst objectStructure=DataObject.resurrect(API.getModule(moduleID).data[0]);\n\nconst prefs=API.cache('prefs');\n\nconsole.log(prefs.cols);\n\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=item.name;\n})\n\n\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    reorder: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['id'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n    item.name = item.id;\n})\n\nconsole.log('update slick prefs', prefs);\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
+                "\nlet moduleID=this.action.value;\n\nconst objectStructure=DataObject.resurrect(API.getModule(moduleID).data[0]);\n\nconst prefs=API.cache('prefs');\n\nconsole.log(prefs.cols);\n\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random().toString(36).slice(2);\n})\n\n\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    reorder: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'name',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\nconsole.log('update slick prefs', prefs);\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
               ]
             }
           ],
@@ -243,6 +243,13 @@
                 "jpath": ["b", "c"],
                 "formatter": "typerenderer",
                 "name": "Test 2"
+              },
+              {
+                "name": "Test 3",
+                "id": "x9i5twhljir",
+                "x": null,
+                "jpath": ["b", "d"],
+                "formatter": "typerenderer"
               }
             ]
           ],
