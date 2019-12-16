@@ -279,11 +279,11 @@ define([
   function binFormatter() {
     return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
   }
-  exports.editTable = async function editTable(list, options) {
+  exports.editTable = async function editTable(list, slickOptions, options) {
     const Slick = await Util.require('slickgrid');
-    options = Object.assign({
+    slickOptions = Object.assign({
       idField: 'id'
-    }, options);
+    }, slickOptions);
     const slickDefaultOptions = {
       autoEdit: true,
       enableCellNavigation: true,
@@ -313,13 +313,13 @@ define([
       data;
 
     
-    const columns = options.columns.map((column) => {
+    const columns = slickOptions.columns.map((column) => {
       if (column.editor === 'auto') {
         column.editor = Slick.typeEditors[column.forceType];
       }
       return Object.assign({}, slickDefaultColumn, column);
     });
-    if (options.remove) {
+    if (slickOptions.remove) {
       columns.unshift({
         id: 'rowDeletion',
         width: 20,
@@ -331,12 +331,26 @@ define([
         formatter: binFormatter
       });
     }
+    if (slickOptions.reorder) {
+      columns.unshift({
+        id: '__selectAndMove',
+        name: '',
+        width: 40,
+        behavior: 'selectAndMove',
+        selectable: false,
+        resizable: false,
+        cssClass: 'cell-reorder dnd',
+        formatter: function () {
+          return '';
+        }
+      });
+    }
     const defaultDialogOptions = {
       width: 700,
       height: 500
     };
 
-    var slickOptions = _.defaults(options.slick, slickDefaultOptions);
+    var slickOptions = _.defaults(slickOptions.slick, slickDefaultOptions);
 
     function getItemInfoFromRow(data, row) {
       if (_.isUndefined(row)) return null;
@@ -357,7 +371,7 @@ define([
         const dialogOptions = Object.assign(
           {},
           defaultDialogOptions,
-          options.dialog,
+          slickOptions.dialog,
           {
             noWrap: true,
             closeOnEscape: false,
@@ -392,12 +406,65 @@ define([
                   grid.render();
                 }
               });
-              data.setItems(list, options.idField);
+              data.setItems(list, slickOptions.idField);
               data.onRowCountChanged.subscribe(function (event, args) {
                 grid.updateRowCount();
                 grid.render();
               });
               grid = new Slick.Grid($slick, data, columns, slickOptions);
+
+              function compMove(a, b) {
+                return a.__pos - b.__pos;
+              }
+
+              const moveRowsPlugin = new Slick.RowMoveManager({
+                cancelEditOnDrag: true
+              });
+              moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
+                for (var i = 0; i < data.rows.length; i++) {
+                  // no point in moving before or after itself
+                  if (
+                    data.rows[i] == data.insertBefore ||
+                                  data.rows[i] == data.insertBefore - 1
+                  ) {
+                    e.stopPropagation();
+                    return false;
+                  }
+                }
+                return true;
+              });
+        
+              moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
+                var rows = args.rows;
+                rows = rows.map(function (r) {
+                  return getItemInfoFromRow(data, r).idx;
+                });
+                var insertBefore = getItemInfoFromRow(
+                  data,
+                  args.insertBefore
+                );
+                if (insertBefore !== null) insertBefore = insertBefore.idx;
+        
+                var items = data.getItems();
+                // Add a position indicatior ==> for stable sort
+                for (var i = 0; i < items.length; i++) {
+                  if (rows.indexOf(i) !== -1) items[i].__pos = 2;
+                  else if (i < insertBefore || insertBefore === null)
+                    items[i].__pos = 1;
+                  else items[i].__pos = 3;
+                }
+
+                data.sort(compMove);
+                
+                for (var i = 0; i < items.length; i++) {
+                  delete items[i].__pos;
+                }
+        
+                grid.invalidateAllRows();
+                grid.render();
+              });
+              grid.registerPlugin(moveRowsPlugin);
+
               // :(
               grid.module = {
                 view: {
@@ -409,8 +476,8 @@ define([
               grid.setSelectionModel(new Slick.CellSelectionModel());
               grid.onAddNewRow.subscribe(function (event, args) {
                 const item = args.item;
-                if (!item[options.idField]) {
-                  item.setChildSync([options.idField], Math.random().toString(36).slice(2));
+                if (!item[slickOptions.idField]) {
+                  item.setChildSync([slickOptions.idField], Math.random().toString(36).slice(2));
                 }
                 data.addItem(item);
               });
