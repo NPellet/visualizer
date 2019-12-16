@@ -283,9 +283,6 @@ define([
     // Keep original list in case of cancellation
     const originalList = list.slice();
     const Slick = await Util.require('slickgrid');
-    slickOptions = Object.assign({
-      idField: 'id'
-    }, slickOptions);
     const slickDefaultOptions = {
       autoEdit: true,
       enableCellNavigation: true,
@@ -299,6 +296,7 @@ define([
       asyncEditorLoading: true,
       asyncEditorLoadDelay: 30,
       asyncPostRenderDelay: 0,
+      idField: 'id',
     };
 
     function waitFormatter() {
