@@ -1,11 +1,7 @@
 {
-  "version": "2.113.1-0",
+  "version": "2.114.4-0",
   "grid": {
-    "layers": {
-      "Default layer": {
-        "name": "Default layer"
-      }
-    },
+    "layers": { "Default layer": { "name": "Default layer" } },
     "xWidth": 10,
     "yHeight": 10
   },
@@ -21,20 +17,14 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "\nlet moduleID=this.action.value;\n\nconst objectStructure=DataObject.resurrect(API.getModule(moduleID).data[0]);\n\nconst prefs=API.cache('prefs');\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=Math.random()\n})\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['name'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n})\n\n\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
+                "\nlet moduleID=this.action.value;\n\nconst objectStructure=DataObject.resurrect(API.getModule(moduleID).data[0]);\n\nconst prefs=API.cache('prefs');\n\nconsole.log(prefs.cols);\n\nprefs.cols.forEach( item => {\n    if (! item.id) item.id=item.name;\n})\n\n\n\nlet result = await UI.editTable(prefs.cols, {\n    remove: true,\n    reorder: true,\n    dialog: {\n        title: 'Configure the columns of the module'\n    },\n    columns: [\n        {\n            id: 'id',\n            name: 'name',\n            jpath: ['id'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'rendererOptions',\n            name: 'rendererOptions',\n            jpath: ['rendererOptions'],\n            editor: Slick.CustomEditors.TextValue\n        },\n        {\n            id: 'width',\n            name: 'width',\n            jpath: ['width'],\n            editor: Slick.CustomEditors.NumberValue\n        },\n        {\n            id: 'x',\n            name: 'x',\n            jpath: ['x'],\n            editor: Slick.CustomEditors.Select,\n            editorOptions: {choices: 'ab:cd;ef:gh'}\n        },\n        {\n            id: 'jpath',\n            name: 'jpath',\n            jpath: ['jpath'],\n            editor: Slick.CustomEditors.JPathFactory(objectStructure),\n            forceType: 'jpath',\n            rendererOptions: {\n                forceType: 'jpath'\n            }\n        }\n    ]\n});\n\nprefs.cols.forEach( (item) => {\n    item.formatter=\"typerenderer\";\n    item.name = item.id;\n})\n\nconsole.log('update slick prefs', prefs);\nAPI.updateModulePreferences(moduleID, JSON.parse(JSON.stringify(prefs)));\n\n// API.doAction('SetColumnPreferences', JSON.parse(JSON.stringify(prefs)));\n\nlocalStorage.setItem('prefsSlick', JSON.stringify(prefs));\n\nAPI.createData('cols', JSON.parse(JSON.stringify(prefs)))"
               ]
             }
           ],
           "libs": [
             [
-              {
-                "lib": "src/util/ui",
-                "alias": "UI"
-              },
-              {
-                "lib": "slickgrid",
-                "alias": "Slick"
-              }
+              { "lib": "src/util/ui", "alias": "UI" },
+              { "lib": "slickgrid", "alias": "Slick" }
             ]
           ],
           "buttons": [
@@ -51,14 +41,8 @@
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 67,
-            "top": 0
-          },
-          "size": {
-            "width": 50,
-            "height": 61
-          },
+          "position": { "left": 67, "top": 0 },
+          "size": { "width": 50, "height": 61 },
           "zIndex": 0,
           "display": true,
           "title": "Edit the jpath of the columns to display",
@@ -70,22 +54,9 @@
       },
       "id": 1,
       "vars_in": [{}],
-      "actions_in": [
-        {
-          "rel": "execute",
-          "name": "SetPrefs"
-        }
-      ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "actions_in": [{ "rel": "execute", "name": "SetPrefs" }],
+      "vars_out": [{ "jpath": [] }],
+      "actions_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -98,18 +69,9 @@
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ],
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": "Edit the jpath of the columns to display"
     },
     {
@@ -133,14 +95,8 @@
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 118,
-            "top": 0
-          },
-          "size": {
-            "width": 37,
-            "height": 61
-          },
+          "position": { "left": 118, "top": 0 },
+          "size": { "width": 37, "height": 61 },
           "zIndex": 0,
           "display": true,
           "title": "New preferences to add in the slick",
@@ -151,23 +107,10 @@
         }
       },
       "id": 2,
-      "vars_in": [
-        {
-          "rel": "value",
-          "name": "cols"
-        }
-      ],
+      "vars_in": [{ "rel": "value", "name": "cols" }],
       "actions_in": [{}],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "vars_out": [{ "jpath": [] }],
+      "actions_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -180,18 +123,9 @@
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ],
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": "New preferences to add in the slick"
     },
     {
@@ -217,14 +151,8 @@
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 20,
-            "height": 61
-          },
+          "position": { "left": 0, "top": 0 },
+          "size": { "width": 20, "height": 61 },
           "zIndex": 0,
           "display": true,
           "title": "Some data",
@@ -245,11 +173,7 @@
           "name": "data"
         }
       ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "actions_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -262,18 +186,9 @@
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ],
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": "Some data"
     },
     {
@@ -314,16 +229,20 @@
             [
               {
                 "name": "Test",
-                "jpath": ["b", "c"],
-                "editor": "none",
-                "forceType": "",
+                "jpath": ["a"],
                 "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "toPrecision:6",
-                "editorOptions": "",
                 "width": 100,
-                "hideColumn": []
+                "rendererOptions": "toPrecision:6",
+                "id": "Test",
+                "x": null
+              },
+              {
+                "id": "Test 2",
+                "undefined": "zp2iy33xuz",
+                "x": null,
+                "jpath": ["b", "c"],
+                "formatter": "typerenderer",
+                "name": "Test 2"
               }
             ]
           ],
@@ -337,33 +256,15 @@
               }
             ]
           ],
-          "groupings": [
-            [
-              {
-                "getter": []
-              }
-            ]
-          ],
+          "groupings": [[{ "getter": [] }]],
           "actionOutButtons": [[{}]],
-          "data": [
-            {
-              "saveInView": [[]],
-              "varname": [""],
-              "data": ["[]"]
-            }
-          ]
+          "data": [{ "saveInView": [[]], "varname": [""], "data": ["[]"] }]
         }
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 21,
-            "top": 0
-          },
-          "size": {
-            "width": 45,
-            "height": 20
-          },
+          "position": { "left": 21, "top": 0 },
+          "size": { "width": 45, "height": 20 },
           "zIndex": 0,
           "display": true,
           "title": "",
@@ -374,12 +275,7 @@
         }
       },
       "id": 4,
-      "vars_in": [
-        {
-          "rel": "list",
-          "name": "data"
-        }
-      ],
+      "vars_in": [{ "rel": "list", "name": "data" }],
       "actions_in": [{}],
       "actions_out": [
         {
@@ -389,11 +285,7 @@
           "name": "SlickLoaded"
         }
       ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "vars_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -406,18 +298,9 @@
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ],
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": ""
     },
     {
@@ -450,14 +333,8 @@
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 21,
-            "top": 21
-          },
-          "size": {
-            "width": 45,
-            "height": 20
-          },
+          "position": { "left": 21, "top": 21 },
+          "size": { "width": 45, "height": 20 },
           "zIndex": 0,
           "display": true,
           "title": "Extract preferences from localstorage",
@@ -469,22 +346,9 @@
       },
       "id": 5,
       "vars_in": [{}],
-      "actions_in": [
-        {
-          "rel": "execute",
-          "name": "SetPrefs"
-        }
-      ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "actions_in": [{ "rel": "execute", "name": "SetPrefs" }],
+      "vars_out": [{ "jpath": [] }],
+      "actions_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -497,18 +361,9 @@
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ],
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": "Extract preferences from localstorage"
     },
     {
@@ -541,14 +396,8 @@
       },
       "layers": {
         "Default layer": {
-          "position": {
-            "left": 21,
-            "top": 42
-          },
-          "size": {
-            "width": 45,
-            "height": 19
-          },
+          "position": { "left": 21, "top": 42 },
+          "size": { "width": 45, "height": 19 },
           "zIndex": 0,
           "display": true,
           "title": "Extract preferences from a module",
@@ -560,22 +409,9 @@
       },
       "id": 6,
       "vars_in": [{}],
-      "actions_in": [
-        {
-          "rel": "execute",
-          "name": "SetPrefs"
-        }
-      ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
+      "actions_in": [{ "rel": "execute", "name": "SetPrefs" }],
+      "vars_out": [{ "jpath": [] }],
+      "actions_out": [{ "jpath": [] }],
       "toolbar": {
         "custom": [
           [
@@ -588,30 +424,15 @@
             }
           ]
         ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
+        "common": [{ "toolbar": [["Open Preferences"]] }]
       },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ],
+      "css": [{ "fontSize": [""], "fontFamily": [""] }],
       "title": "Extract preferences from a module"
     }
   ],
-  "variables": [
-    {
-      "jpath": [""]
-    }
-  ],
+  "variables": [{ "jpath": [""] }],
   "aliases": [{}],
-  "configuration": {
-    "title": "UI.editTable"
-  },
+  "configuration": { "title": "UI.editTable" },
   "actionscripts": [
     {
       "sections": {},
@@ -620,7 +441,7 @@
           {
             "name": ["SlickLoaded"],
             "script": [
-              "console.log('Slick Loaded from the general actions');\n\nlet storedPrefs=localStorage.getItem('prefsSlick');\n\nlet moduleID=value;\nconsole.log('Module loaded: ', moduleID);\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        }\n    ]\n};\n\nAPI.cache('prefs', prefs);\n\nAPI.updateModulePreferences(moduleID, prefs);\n\n// API.doAction('SetColumnPreferences', prefs);\n"
+              "console.log('Slick Loaded from the general actions');\n\nlet storedPrefs=localStorage.getItem('prefsSlick');\n\nlet moduleID=value;\nconsole.log('Module loaded: ', moduleID);\n\nlet prefs=storedPrefs ? JSON.parse(storedPrefs) : {\n    \"cols\": [\n        {\n            \"name\": \"Test\",\n            \"jpath\": [\n              \"a\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100,\n            \"rendererOptions\": \"toPrecision:6\",\n        },\n        {\n            \"name\": \"Test 2\",\n            \"jpath\": [\n              \"b\", \"c\"\n            ],\n            \"formatter\": \"typerenderer\",\n            \"width\": 100\n        },\n        \n    ]\n};\n\nAPI.cache('prefs', JSON.parse(JSON.stringify(prefs)));\n\nconsole.log('init slick prefs', prefs);\nAPI.updateModulePreferences(moduleID, prefs);\n\n"
             ]
           }
         ]
@@ -628,46 +449,18 @@
     }
   ],
   "init_script": [
-    {
-      "sections": {},
-      "groups": {
-        "general": [
-          {
-            "script": [null]
-          }
-        ]
-      }
-    }
+    { "sections": {}, "groups": { "general": [{ "script": [null] }] } }
   ],
   "custom_filters": [
     {
       "sections": {
-        "modules": [
-          {
-            "sections": {},
-            "groups": {
-              "modules": [[{}]]
-            }
-          }
-        ],
-        "filtersLib": [
-          {
-            "sections": {},
-            "groups": {
-              "filters": [[{}]]
-            }
-          }
-        ],
+        "modules": [{ "sections": {}, "groups": { "modules": [[{}]] } }],
+        "filtersLib": [{ "sections": {}, "groups": { "filters": [[{}]] } }],
         "filters": [
           {
             "sections": {},
             "groups": {
-              "filter": [
-                {
-                  "name": [null],
-                  "script": [null]
-                }
-              ],
+              "filter": [{ "name": [null], "script": [null] }],
               "libs": [[{}]]
             }
           }
@@ -676,12 +469,5 @@
       "groups": {}
     }
   ],
-  "actionfiles": [
-    {
-      "sections": {},
-      "groups": {
-        "action": [[{}]]
-      }
-    }
-  ]
+  "actionfiles": [{ "sections": {}, "groups": { "action": [[{}]] } }]
 }
