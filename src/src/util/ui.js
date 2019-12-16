@@ -280,6 +280,8 @@ define([
     return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
   }
   exports.editTable = async function editTable(list, slickOptions, options) {
+    // Keep original list in case of cancellation
+    const originalList = list.slice();
     const Slick = await Util.require('slickgrid');
     slickOptions = Object.assign({
       idField: 'id'
@@ -376,10 +378,18 @@ define([
             noWrap: true,
             closeOnEscape: false,
             buttons: {
-              close: function () {
+              cancel: function () {
+                $(this).dialog('close');
+                list.length = 0;
+                for (let idx = 0; idx < originalList.length; idx++) {
+                  list[idx] = originalList[idx];
+                }
+                list.triggerChange();
+              },
+              confirm: function () {
                 $(this).dialog('close');
                 resolve();
-              }
+              },
             },
             close: function () {
               resolve();
@@ -455,7 +465,7 @@ define([
                 }
 
                 data.sort(compMove);
-                
+
                 for (var i = 0; i < items.length; i++) {
                   delete items[i].__pos;
                 }
