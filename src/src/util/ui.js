@@ -281,7 +281,7 @@ define([
   }
   exports.editTable = async function editTable(list, slickOptions, options) {
     // Keep original list in case of cancellation
-    const originalList = list.slice();
+    let currentList = JSON.parse(JSON.stringify(list));
     const Slick = await Util.require('slickgrid');
     const slickDefaultOptions = {
       autoEdit: true,
@@ -309,8 +309,8 @@ define([
       colDef: {}
     };
 
-    var grid,
-      data;
+    var grid;
+    var data;
 
     
     const columns = slickOptions.columns.map((column) => {
@@ -374,22 +374,24 @@ define([
           slickOptions.dialog,
           {
             noWrap: true,
-            closeOnEscape: false,
+            closeOnEscape: true,
             buttons: {
               cancel: function () {
+                console.log('CANCEL');
                 $(this).dialog('close');
-                list.length = 0;
-                for (let idx = 0; idx < originalList.length; idx++) {
-                  list[idx] = originalList[idx];
-                }
-                list.triggerChange();
               },
               confirm: function () {
+                currentList = JSON.parse(JSON.stringify(list));
                 $(this).dialog('close');
                 resolve();
               },
             },
-            close: function () {
+
+            close: () => {
+              list.length = 0;
+              for (let idx = 0; idx < currentList.length; idx++) {
+                list[idx] = currentList[idx];
+              }
               resolve();
             },
             resize: function () {
