@@ -1,3 +1,12 @@
+## [2.114.5](https://github.com/NPellet/visualizer/compare/v2.114.4...v2.114.5) (2019-12-18)
+
+
+### Bug Fixes
+
+* editTable and cancelEvents ([2be162f](https://github.com/NPellet/visualizer/commit/2be162f))
+
+
+
 ## [2.114.4](https://github.com/NPellet/visualizer/compare/v2.114.3...v2.114.4) (2019-12-18)
 
 
