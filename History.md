@@ -1,3 +1,18 @@
+## [2.114.4](https://github.com/NPellet/visualizer/compare/v2.114.3...v2.114.4) (2019-12-18)
+
+
+### Bug Fixes
+
+* issue with id field in editTable ([e662e36](https://github.com/NPellet/visualizer/commit/e662e36))
+
+
+### Features
+
+* add reorder option to ui.editTable ([a0225b4](https://github.com/NPellet/visualizer/commit/a0225b4))
+* edit table can be cancelled ([679cd79](https://github.com/NPellet/visualizer/commit/679cd79))
+
+
+
 ## [2.114.3](https://github.com/NPellet/visualizer/compare/v2.114.2...v2.114.3) (2019-12-12)
 
 
