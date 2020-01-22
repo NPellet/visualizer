@@ -1,3 +1,12 @@
+## [2.114.6](https://github.com/NPellet/visualizer/compare/v2.114.5...v2.114.6) (2020-01-22)
+
+
+### Features
+
+* use bluebird and not bluebird.core to have allSettled ([4cf76ea](https://github.com/NPellet/visualizer/commit/4cf76ea960374bbe03a4d85dc087b991cf933db8))
+
+
+
 ## [2.114.5](https://github.com/NPellet/visualizer/compare/v2.114.4...v2.114.5) (2019-12-18)
 
 
