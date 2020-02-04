@@ -83,7 +83,7 @@
     "node-jsgraph": "2.1.12",
     "quill-image-drop-module": "github:cheminfo/quill-image-drop-module#4cdc591cfddec42a22ab25b635f34de9e973c86d",
     "quill-image-resize-module": "^3.0.0",
-    "rxn-renderer": "0.0.2",
+    "rxn-renderer": "0.1.0",
     "superagent": "^3.8.3",
     "twig": "^1.13.2"
   }
