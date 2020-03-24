@@ -1,5 +1,5 @@
 {
-  "version": "2.111.2-0",
+  "version": "2.114.9-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -21,7 +21,7 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "const element = {\n    a: 1,\n    b: 'abc',\n    node: {\n        x: 2,\n        nested: {\n            y: 'paw'\n        }\n    }\n}\n\n\n// Returns undefined if nothing was selected\n// Returs null if action was cancelled by user\nconst jpath = await UI.selectJpath(element);\nconsole.log(jpath);\n\nAPI.createData('jpath', jpath);\n"
+                "const element = {\n    a: 1,\n    b: 'abc',\n    node: {\n        x: 2,\n        nested: {\n            y: 'paw'\n        }\n    }\n}\n\n\n// Returns undefined if nothing was selected\n// Returs null if action was cancelled by user\nconst jpath = await UI.selectJpath(element, undefined, {\n    height: 200\n});\nconsole.log(jpath);\n\nAPI.createData('jpath', jpath);\n"
               ]
             }
           ],
