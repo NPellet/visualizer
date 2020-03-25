@@ -1,3 +1,12 @@
+## [2.114.9](https://github.com/NPellet/visualizer/compare/v2.114.8...v2.114.9) (2020-03-25)
+
+
+### Bug Fixes
+
+* ui dialog content is set to auto ([df81e48](https://github.com/NPellet/visualizer/commit/df81e48ecbba9bac8ca9780c17e7a2ded15795d8))
+
+
+
 ## [2.114.8](https://github.com/NPellet/visualizer/compare/v2.114.7...v2.114.8) (2020-03-02)
 
 
