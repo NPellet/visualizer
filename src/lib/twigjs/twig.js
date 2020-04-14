@@ -40,7 +40,7 @@ define([
     }
 
     var id = Util.getNextUniqueId();
-    this.waiting.push([id, value, options]);
+    this.template.waiting.push([id, value, options]);
 
     if (type === 'inline') {
       return `<span id="${id}"></span>`;
