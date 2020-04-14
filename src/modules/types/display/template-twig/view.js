@@ -7,8 +7,8 @@ define([
   'src/util/debug',
   'lodash',
   'src/util/Form',
-  'src/util/util'
-], function ($, Default, Twig, Debug, _, Form, Util) {
+  'src/util/util',
+], function($, Default, Twig, Debug, _, Form, Util) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
@@ -26,7 +26,7 @@ define([
         width: '100%',
         'user-select': this.module.getConfigurationCheckbox('selectable', 'yes')
           ? 'text'
-          : 'none'
+          : 'none',
       });
 
       var debouncing = this.module.getConfiguration('debouncing');
@@ -42,8 +42,8 @@ define([
       this.form = new Form(this.dom, {
         keepFormValueIfDataUndefined: this.module.getConfigurationCheckbox(
           'formOptions',
-          'keepFormValueIfDataUndefined'
-        )
+          'keepFormValueIfDataUndefined',
+        ),
       });
 
       this.form.onChange(submitChange);
@@ -57,7 +57,7 @@ define([
 
       this.renderPromise.then(() => {
         this.template = Twig.twig({
-          data: this.module.getConfiguration('template')
+          data: this.module.getConfiguration('template'),
         });
       });
     },
@@ -94,9 +94,7 @@ define([
 
       for (let i = 0; i < style.length; i++) {
         if (style[i].input) {
-          var selector = `input[name="${style[i].input}"],textarea[name="${
-            style[i].input
-          }"],select[name="${style[i].input}"]`;
+          var selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"],select[name="${style[i].input}"]`;
         } else {
           selector = style[i].selector;
         }
@@ -117,7 +115,7 @@ define([
     submitChange(event, noChange) {
       event = event || { target: {} };
       const toSend = {
-        data: this.getForm()
+        data: this.getForm(),
       };
 
       if (this._lastChanged) {
@@ -137,7 +135,7 @@ define([
     submit() {
       const toSend = {
         data: this.getForm(),
-        jpaths: Array.from(this._changedJpaths).map((j) => j.split('.'))
+        jpaths: Array.from(this._changedJpaths).map((j) => j.split('.')),
       };
 
       this._changedJpaths.clear();
@@ -164,13 +162,13 @@ define([
           this.dom.hide();
           this.getForm();
           this.template = Twig.twig({
-            data: ''
+            data: '',
           });
         });
         return null;
       },
       form: Util.noop,
-      style: Util.noop
+      style: Util.noop,
     },
     update: {
       value(value, name) {
@@ -187,7 +185,7 @@ define([
         return this.renderPromise
           .then(() => {
             this.template = Twig.twig({
-              data: tpl
+              data: tpl,
             });
             this.rerender();
             return null;
@@ -210,26 +208,26 @@ define([
       style(value) {
         this.styleObject = value.resurrect();
         this.rerender();
-      }
+      },
     },
 
     onActionReceive: {
-      clearForm: function (submitChange) {
+      clearForm: function(submitChange) {
         this.clearForm();
         if (submitChange) {
           this.submitChange();
         }
       },
-      setForm: function (options) {
+      setForm: function(options) {
         if (!options.data)
           throw new Error(
-            'setForm invalid arguments. Must be object with data property.'
+            'setForm invalid arguments. Must be object with data property.',
           );
         this.setForm(options.data);
         if (options.submitChange) {
           this.submitChange();
         }
-      }
+      },
     },
 
     fillForm(noChange) {
@@ -247,7 +245,7 @@ define([
           }
           var render = this.template.renderAsync(this._values);
           this.dom.html(render.html);
-          const renderProm = render.render().then(function () {
+          const renderProm = render.render().then(function() {
             if (cb) cb();
             that.setStyle();
             that.module.controller.onRendered(that.dom.html());
@@ -260,7 +258,7 @@ define([
           Debug.warn('Error rendering twig template', e);
         });
       return this.renderPromise;
-    }
+    },
   });
 
   return View;
