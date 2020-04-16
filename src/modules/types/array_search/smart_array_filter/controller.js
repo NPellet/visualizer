@@ -1,40 +1,44 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], function ($, Default, filter) {
-  function Controller() {
-  }
+define([
+  'jquery',
+  'modules/default/defaultcontroller',
+  'smart-array-filter',
+], function($, Default, filter) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.moduleInformation = {
     name: 'Smart array filter',
-    description: 'Use simple text queries to search in an array of complex objects.',
+    description:
+      'Use simple text queries to search in an array of complex objects.',
     author: 'Michaël Zasso',
     date: '06.11.2015',
     license: 'MIT',
-    cssClass: 'smart_array_filter'
+    cssClass: 'smart_array_filter',
   };
 
   Controller.prototype.references = {
     input: {
       label: 'Input array',
-      type: 'array'
+      type: 'array',
     },
     output: {
       label: 'Output array',
-      type: 'array'
+      type: 'array',
     },
     search: {
       label: 'Search string',
-      type: 'string'
-    }
+      type: 'string',
+    },
   };
 
   Controller.prototype.events = {
     onQuery: {
       label: 'Query is changed',
-      refVariable: ['output', 'search']
-    }
+      refVariable: ['output', 'search'],
+    },
   };
 
   Controller.prototype.variablesIn = ['input'];
@@ -42,45 +46,45 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
   Controller.prototype.actionsIn = {
     clearQuery: 'Clear current query',
     setQuery: 'Set query',
-    appendQuery: 'Append to current query'
+    appendQuery: 'Append to current query',
   };
 
-  Controller.prototype.configurationStructure = function () {
+  Controller.prototype.configurationStructure = function() {
     return {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             debounce: {
               type: 'float',
               title: 'Search debouncing (ms)',
-              default: 100
+              default: 100,
             },
             limit: {
               type: 'float',
               title: 'Limit output length (0 to disable)',
-              default: 0
+              default: 0,
             },
             initialValue: {
               type: 'text',
               title: 'Initial value',
-              default: ''
+              default: '',
             },
             placeholder: {
               type: 'text',
               title: 'Placeholder',
-              default: ''
+              default: '',
             },
             fontSize: {
               type: 'float',
               title: 'Font size',
-              default: 20
-            }
-          }
-        }
-      }
+              default: 20,
+            },
+          },
+        },
+      },
     };
   };
 
@@ -89,16 +93,16 @@ define(['jquery', 'modules/default/defaultcontroller', 'smart-array-filter'], fu
     limit: ['groups', 'group', 0, 'limit', 0],
     initialValue: ['groups', 'group', 0, 'initialValue', 0],
     placeholder: ['groups', 'group', 0, 'placeholder', 0],
-    fontSize: ['groups', 'group', 0, 'fontSize', 0]
+    fontSize: ['groups', 'group', 0, 'fontSize', 0],
   };
 
-  Controller.prototype.onQuery = function (query) {
-    var array = this.module.view._data;
-    if (!array) return;
+  Controller.prototype.onQuery = function(query) {
+    if (!this.module.view._data) return;
+    var array = DataObject.resurrect(this.module.view._data);
     var result = filter(array, {
       keywords: query,
       index: true,
-      limit: this.module.getConfiguration('limit', 0)
+      limit: this.module.getConfiguration('limit', 0),
     });
     var original = this.module.view._originalData;
     var toSend = new Array(result.length);
