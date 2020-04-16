@@ -1,3 +1,19 @@
+# [2.115.0](https://github.com/NPellet/visualizer/compare/v2.114.9...v2.115.0) (2020-04-16)
+
+
+### Bug Fixes
+
+* correct broken twig type renderer because of regression in twig dependency ([ffbd72d](https://github.com/NPellet/visualizer/commit/ffbd72db09b4a75a502bdef000b660df952177aa))
+* force version of twig ([10ab093](https://github.com/NPellet/visualizer/commit/10ab0933c369f520976b01537166d0140b698718))
+
+
+### Features
+
+* add light twig form ([8cde8f3](https://github.com/NPellet/visualizer/commit/8cde8f32bb74cc6cb342aae22f92a3f9d4f8e10e))
+* allow to filter extremely big array ([864f2a4](https://github.com/NPellet/visualizer/commit/864f2a49311dbb16e6066cb69bffec189a8112df))
+
+
+
 ## [2.114.9](https://github.com/NPellet/visualizer/compare/v2.114.8...v2.114.9) (2020-03-25)
 
 
