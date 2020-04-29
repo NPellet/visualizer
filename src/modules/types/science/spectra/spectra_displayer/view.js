@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -258,7 +258,7 @@ define([
           };
           xAxis.on('zoom', xZoomHandler).on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -1547,18 +1547,41 @@ define([
 function convertSeries(series) {
   let data = [];
   for (let serie of series) {
-    let style = {};
-    if (serie.style && serie.style.line) {
-      style.lineStyle = serie.style.line.dash;
-      style.lineWidth = serie.style.line.width;
-      style.lineColor = serie.style.line.color;
-    }
     data.push({
       x: serie.data.x,
       y: serie.data.y,
-      style,
+      styles: convertStyle(serie.style),
       label: serie.name,
     });
   }
   return data;
+}
+
+function convertStyle(styles) {
+  if (!Array.isArray(styles)) {
+    styles = [
+      {
+        name: 'unselected',
+        style: styles,
+      },
+    ];
+  }
+  let newStyles = {};
+
+  for (let style of styles) {
+    let newStyle = {};
+    if (style.style && style.style.line) {
+      newStyle.lineStyle = style.style.line.dash;
+      newStyle.lineWidth = style.style.line.width;
+      newStyle.lineColor = style.style.line.color;
+    }
+    newStyles[style.name || 'unselected'] = newStyle;
+  }
+  if (!newStyles.selected && newStyles.unselected) {
+    newStyles.selected = Object.assign({}, newStyles.unselected, {
+      lineWidth: 3,
+    });
+  }
+  console.log(newStyles);
+  return newStyles;
 }

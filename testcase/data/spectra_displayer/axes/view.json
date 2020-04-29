@@ -1,5 +1,5 @@
 {
-  "version": "2.115.1-0",
+  "version": "2.116.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -277,7 +277,7 @@
               "sendButton": [["send"]],
               "output": ["new"],
               "storedObject": [
-                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"display\": false\n    }\n  },\n  \"legend\": {\n    \"position\": \"bottom\",\n    \"seriesHideable\": true,\n    \"seriesSelectable\": true\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"name\": \"my chart\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      },\n      \"style\": {\n        \"line\": {\n          \"dash\": 3,\n          \"width\": 4,\n          \"color\": \"green\",\n          \"autoPeakPickingNb\": 4\n        },\n        \"marker\": {\n          \"default\": {\n            \"fill\": \"blue\"\n          }\n        }\n      }\n    }\n  ]\n}"
+                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"display\": false\n    }\n  },\n  \"legend\": {\n    \"position\": \"bottom\",\n    \"seriesHideable\": true,\n    \"seriesSelectable\": true\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"name\": \"my chart\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      },\n      \"style\": [\n        {\n          \"name\": \"unselected\",\n          \"style\": {\n            \"line\": {\n              \"dash\": 3,\n              \"width\": 4,\n              \"color\": \"green\",\n              \"autoPeakPickingNb\": 4\n            },\n            \"marker\": {\n              \"default\": {\n                \"fill\": \"blue\"\n              }\n            }\n          }\n        },\n        {\n          \"name\": \"selected\",\n          \"style\": {\n            \"line\": {\n              \"dash\": 3,\n              \"width\": 4,\n              \"color\": \"red\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n}"
               ]
             }
           ]
@@ -291,7 +291,7 @@
           },
           "size": {
             "width": 38,
-            "height": 65
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
@@ -825,6 +825,122 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [[]],
+              "displayValue": [["display"]],
+              "searchBox": [["search"]],
+              "sendButton": [["send"]],
+              "output": ["new"],
+              "storedObject": [
+                "{\n  \"axes\": {\n    \"x\": {\n      \"label\": \"Wavelength\",\n      \"unit\": \"nm\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"flipped\": true\n    },\n    \"y\": {\n      \"label\": \"Transmission\",\n      \"unit\": \"%\",\n      \"unitWrapperBefore\": \"[\",\n      \"unitWrapperAfter\": \"]\",\n      \"display\": false\n    }\n  },\n  \"legend\": {\n    \"position\": \"bottom\",\n    \"seriesHideable\": true,\n    \"seriesSelectable\": true\n  },\n  \"series\": [\n    {\n      \"type\": \"line\",\n      \"name\": \"my chart\",\n      \"data\": {\n        \"x\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ],\n        \"y\": [\n          1,\n          2,\n          3,\n          2,\n          1\n        ]\n      },\n          \"style\": {\n            \"line\": {\n              \"dash\": 3,\n              \"width\": 4,\n              \"color\": \"green\",\n              \"autoPeakPickingNb\": 4\n            },\n            \"marker\": {\n              \"default\": {\n                \"fill\": \"blue\"\n              }\n            }\n          }\n    }\n  ]\n}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 44
+          },
+          "size": {
+            "width": 38,
+            "height": 43
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Only unselected style",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 48,
+            "top": 51
+          },
+          "size": {
+            "width": 56,
+            "height": 33
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Prefs": {
+          "position": {
+            "left": 97,
+            "top": 0
+          },
+          "size": {
+            "width": 53,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectSend",
+          "rel": "output",
+          "jpath": [],
+          "name": "chart"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "Only unselected style"
     }
   ],
   "variables": [
