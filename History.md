@@ -1,3 +1,12 @@
+## [2.116.1](https://github.com/NPellet/visualizer/compare/v2.116.0...v2.116.1) (2020-04-29)
+
+
+### Features
+
+* allow custom selected line style in spectra displayer ([602e2ff](https://github.com/NPellet/visualizer/commit/602e2ffb8e20773bcbe353afde8edf623161f089))
+
+
+
 # [2.116.0](https://github.com/NPellet/visualizer/compare/v2.115.0...v2.116.0) (2020-04-29)
 
 
