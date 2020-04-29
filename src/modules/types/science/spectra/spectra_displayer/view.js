@@ -8,8 +8,8 @@ define([
   'src/util/api',
   'src/util/color',
   'src/util/debug',
-  'src/util/util'
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+  'src/util/util',
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -18,13 +18,13 @@ define([
     height: '5px',
     width: '5px',
     stroke: 'transparent',
-    fill: 'black'
+    fill: 'black',
   };
 
   const fullOutMap = {
     x: 'xAxis',
     y: 'yAxis',
-    xy: 'both'
+    xy: 'both',
   };
 
   const svgDoctype =
@@ -48,9 +48,9 @@ define([
       this.onchanges = {};
       this.highlightOptions = Object.assign(
         {
-          fill: 'black'
+          fill: 'black',
         },
-        Util.evalOptions(this.module.getConfiguration('highlightOptions'))
+        Util.evalOptions(this.module.getConfiguration('highlightOptions')),
       );
 
       this.serieHiddenState = new Map();
@@ -76,17 +76,17 @@ define([
               top: false,
               right: false,
               bottom: false,
-              left: false
+              left: false,
             },
             plugins: {},
-            mouseActions: []
+            mouseActions: [],
           };
 
           options.plugins.drag = {};
           options.mouseActions.push({
             plugin: 'drag',
             shift: true,
-            ctrl: false
+            ctrl: false,
           });
 
           var zoom = cfg('zoom');
@@ -105,16 +105,16 @@ define([
             plugin: 'zoom',
             type: 'dblclick',
             options: {
-              mode: 'total'
-            }
+              mode: 'total',
+            },
           });
           options.mouseActions.push({
             plugin: 'zoom',
             type: 'dblclick',
             shift: true,
             options: {
-              mode: dezoomMode
-            }
+              mode: dezoomMode,
+            },
           });
 
           options.plugins.peakPicking = {};
@@ -135,7 +135,7 @@ define([
             options.mouseActions.push({
               plugin: 'zoom',
               shift: false,
-              ctrl: false
+              ctrl: false,
             });
           }
           var wheel = cfg('wheelAction');
@@ -144,7 +144,7 @@ define([
               baseline:
                 wheel == 'zoomYMousePos'
                   ? 'mousePosition'
-                  : cfg('wheelbaseline', 0)
+                  : cfg('wheelbaseline', 0),
             };
 
             if (wheel === 'zoomX') {
@@ -156,7 +156,7 @@ define([
             options.mouseActions.push({
               plugin: 'zoom',
               type: 'mousewheel',
-              options: wheelOptions
+              options: wheelOptions,
             });
           }
 
@@ -165,15 +165,15 @@ define([
               this.module.controller.sendActionFromEvent(
                 'onMouseWheel',
                 'mouseEvent',
-                event
+                event,
               );
               this.module.controller.sendActionFromEvent(
                 'onMouseWheel',
                 'wheelDelta',
-                wheelDelta
+                wheelDelta,
               );
             },
-            type: 'mousewheel'
+            type: 'mousewheel',
           });
 
           options.mouseActions.push({
@@ -181,23 +181,23 @@ define([
               this.module.controller.sendActionFromEvent(
                 'onMouseWheelShift',
                 'mouseEvent',
-                event
+                event,
               );
               this.module.controller.sendActionFromEvent(
                 'onMouseWheelShift',
                 'wheelDelta',
-                wheelDelta
+                wheelDelta,
               );
             },
             shift: true,
-            type: 'mousewheel'
+            type: 'mousewheel',
           });
 
           const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
           if (useMouseTracking) {
             options.mouseMoveData = true;
             options.mouseMoveDataOptions = {
-              useAxis: cfg('trackingAxis')
+              useAxis: cfg('trackingAxis'),
             };
           }
 
@@ -206,12 +206,12 @@ define([
             options.plugins.selectScatter = {};
             options.mouseActions.push({
               plugin: 'selectScatter',
-              alt: true
+              alt: true,
             });
           }
 
           var xOptions = {
-            nbTicksPrimary: cfg('xnbTicksPrimary', 5)
+            nbTicksPrimary: cfg('xnbTicksPrimary', 5),
           };
 
           if (cfg('xaxismodification') == 'timestamptotime') {
@@ -223,11 +223,11 @@ define([
           }
 
           options.mouseMoveDataOptions = {
-            useAxis: cfg('trackingAxis')
+            useAxis: cfg('trackingAxis'),
           };
 
           var graph = new Graph(this.dom.get(0), options, {
-            bottom: [xOptions]
+            bottom: [xOptions],
           });
           this.graph = graph;
 
@@ -248,7 +248,7 @@ define([
             .forceMax(cfg('maxX', false))
             .setAxisDataSpacing(
               cfg('xLeftSpacing', 0),
-              cfg('xRightSpacing', 0)
+              cfg('xRightSpacing', 0),
             );
           if (!cfg('displayXAxis', true)) {
             xAxis.hide();
@@ -258,7 +258,7 @@ define([
           };
           xAxis.on('zoom', xZoomHandler).on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -278,8 +278,8 @@ define([
               isSerieHideable: cfgCheckbox('legendOptions', 'isSerieHideable'),
               isSerieSelectable: cfgCheckbox(
                 'legendOptions',
-                'isSerieSelectable'
-              )
+                'isSerieSelectable',
+              ),
             });
             theLegend.setAutoPosition(legend);
           }
@@ -287,13 +287,13 @@ define([
           if (useMouseTracking) {
             const trackLineOptions = {
               useAxis: cfg('trackingAxis'),
-              mode: 'individual'
+              mode: 'individual',
             };
             const showTracingLegend = cfgCheckbox('mouseTracking', 'legend');
             if (showTracingLegend) {
               Object.assign(trackLineOptions, {
                 legend: true,
-                legendType: 'common'
+                legendType: 'common',
               });
             }
             graph.trackingLine(trackLineOptions);
@@ -302,25 +302,25 @@ define([
               this.module.controller.sendActionFromEvent(
                 'onTrackMouse',
                 'trackData',
-                result
+                result,
               );
               this.module.controller.sendActionFromEvent(
                 'onTrackMouse',
                 'mouseEvent',
-                event
+                event,
               );
               this.module.controller.sendActionFromEvent(
                 'onTrackMouse',
                 'dataAndEvent',
                 {
                   data: result,
-                  event: event
-                }
+                  event: event,
+                },
               );
               this.module.controller.createDataFromEvent(
                 'onTrackMouse',
                 'trackData',
-                result
+                result,
               );
             });
             graph.on('click', (e) => {
@@ -328,25 +328,25 @@ define([
                 this.module.controller.sendActionFromEvent(
                   'onTrackClick',
                   'trackData',
-                  this.module.model.trackData
+                  this.module.model.trackData,
                 );
                 this.module.controller.sendActionFromEvent(
                   'onTrackClick',
                   'mouseEvent',
-                  e[3]
+                  e[3],
                 );
                 this.module.controller.sendActionFromEvent(
                   'onTrackClick',
                   'dataAndEvent',
                   {
                     data: this.module.model.trackData,
-                    event: e[3]
-                  }
+                    event: e[3],
+                  },
                 );
                 this.module.controller.createDataFromEvent(
                   'onTrackClick',
                   'trackData',
-                  this.module.model.trackData
+                  this.module.model.trackData,
                 );
               }
             });
@@ -381,12 +381,12 @@ define([
             this.module.controller.createDataFromEvent(
               'onMouseOverShape',
               'shapeProperties',
-              shape.getProperties()
+              shape.getProperties(),
             );
             this.module.controller.createDataFromEvent(
               'onMouseOverShape',
               'shapeInfos',
-              shape.getData()
+              shape.getData(),
             );
             API.highlight(shape.getData(), 1);
           });
@@ -407,25 +407,25 @@ define([
             this.module.controller.createDataFromEvent(
               'onShapeClick',
               'shapeProperties',
-              shape.getProperties()
+              shape.getProperties(),
             );
             this.module.controller.createDataFromEvent(
               'onShapeClick',
               'shapeInfos',
-              shape.getData()
+              shape.getData(),
             );
             this.module.controller.sendActionFromEvent(
               'onShapeClick',
               'shapeInfos',
-              shape.getData()
+              shape.getData(),
             );
             this.module.controller.sendActionFromEvent(
               'onShapeClick',
               'dataAndEvent',
               {
                 data: shape.getData(),
-                event: event
-              }
+                event: event,
+              },
             );
           });
 
@@ -433,14 +433,14 @@ define([
             this.module.controller.sendActionFromEvent(
               'onShapeSelect',
               'selectedShape',
-              shape.getData()
+              shape.getData(),
             );
           });
           graph.on('shapeUnselected', (shape) => {
             this.module.controller.sendActionFromEvent(
               'onShapeUnselect',
               'shapeInfos',
-              shape.getData()
+              shape.getData(),
             );
           });
 
@@ -462,7 +462,7 @@ define([
       var yAxis;
       for (var i = this.numberOfYAxes; i <= index; i++) {
         var yOptions = {
-          nbTicksPrimary: cfg('ynbTicksPrimary', 5)
+          nbTicksPrimary: cfg('ynbTicksPrimary', 5),
         };
         yAxis = this.graph.getYAxis(i, yOptions);
         if (i === 0) {
@@ -563,7 +563,7 @@ define([
       let plotinfos = this.module.getConfiguration('plotinfos'),
         others = {},
         options = {
-          trackMouse: true
+          trackMouse: true,
         };
 
       highlight = highlight || [];
@@ -605,11 +605,11 @@ define([
 
       options.overflowY = this.module.getConfigurationCheckbox(
         'overflow',
-        'overflowY'
+        'overflowY',
       );
       options.overflowX = this.module.getConfigurationCheckbox(
         'overflow',
-        'overflowX'
+        'overflowX',
       );
 
       return { options: options, others: others };
@@ -619,11 +619,11 @@ define([
       const {
         highlight,
         style = {},
-        styles = { unselected: {}, selected: {} }
+        styles = { unselected: {}, selected: {} },
       } = options;
       var plotinfos = this.module.getConfiguration('plotinfos');
       const stackVerticalSpacing = this.module.getConfiguration(
-        'stackVerticalSpacing'
+        'stackVerticalSpacing',
       );
       var foundInfo = false;
       serie.autoAxis();
@@ -677,8 +677,8 @@ define([
                   zoom: plotinfos[i].markerSize,
                   strokeColor: Color.getColor(color),
                   fillColor: Color.getColor(color),
-                  points: 'all'
-                }
+                  points: 'all',
+                },
               ]);
             }
 
@@ -688,7 +688,7 @@ define([
 
             if (plotinfos[i].tracking && plotinfos[i].tracking[0] === 'yes') {
               serie.allowTrackingLine({
-                useAxis: this.module.getConfiguration('trackingAxis')
+                useAxis: this.module.getConfiguration('trackingAxis'),
               });
             }
           }
@@ -700,7 +700,7 @@ define([
         serie.getStyle(),
         plotinfosStyle,
         style,
-        styles.unselected
+        styles.unselected,
       );
       serie.setStyle(newUnselectedStyle, 'unselected');
       let newSelectedStyle = Object.assign(
@@ -708,7 +708,7 @@ define([
         serie.getStyle(),
         plotinfosStyle,
         style,
-        styles.selected
+        styles.selected,
       );
       serie.setStyle(newSelectedStyle, 'selected');
 
@@ -737,7 +737,7 @@ define([
             }
           },
           false,
-          this.module.getId()
+          this.module.getId(),
         );
       }
     },
@@ -775,7 +775,7 @@ define([
 
       annotations(varName) {
         this.removeAnnotations(varName);
-      }
+      },
     },
 
     update: {
@@ -784,13 +784,21 @@ define([
         this.removeSerie(varname);
 
         moduleValue = JSONChart.check(moduleValue.get());
+
         var existingNames = new Set();
 
-        var data = moduleValue.data;
+        // in spectra diplayer we don't have the correct format currently. still need to change it for now
+        if (moduleValue.series) {
+          moduleValue.data = convertSeries(moduleValue.series);
+        }
+
+        let data = moduleValue.data;
 
         if (moduleValue.axes) {
-          if (moduleValue.axes.x) setAxisOptions(this.xAxis, moduleValue.axes.x);
-          if (moduleValue.axes.y) setAxisOptions(this.yAxis, moduleValue.axes.y);
+          if (moduleValue.axes.x)
+            setAxisOptions(this.xAxis, moduleValue.axes.x);
+          if (moduleValue.axes.y)
+            setAxisOptions(this.yAxis, moduleValue.axes.y);
         }
 
         function setAxisOptions(axis, options) {
@@ -863,13 +871,13 @@ define([
 
           let serieOptions = this.getSerieOptions(varname, aData._highlight, [
             valFinalX,
-            valFinalY
+            valFinalY,
           ]);
 
           var serie = this.graph.newSerie(
             serieName,
             serieOptions.options,
-            serieType
+            serieType,
           );
 
           this.registerSerieEvents(serie, serieName);
@@ -907,12 +915,12 @@ define([
                 {
                   lineWidth: styleName === 'selected' ? 2 : 1,
                   lineColor: 'black',
-                  lineStyle: 0
+                  lineStyle: 0,
                 },
                 styleName === 'unselected' ? defaultStyle : undefined,
                 (defaultStyles || {})[styleName],
                 styleName === 'unselected' ? aData.style : undefined,
-                (aData.styles || {})[styleName]
+                (aData.styles || {})[styleName],
               );
               serie.setStyle(style, styleName);
             }
@@ -960,7 +968,7 @@ define([
               */
 
             let keys = new Set(
-              Object.keys(defaultStyles).concat(Object.keys(modifiers))
+              Object.keys(defaultStyles).concat(Object.keys(modifiers)),
             );
             for (const styleName of keys) {
               serie.setMarkerStyle(
@@ -968,10 +976,10 @@ define([
                   {},
                   defaultScatterStyle,
                   defaultStyle,
-                  defaultStyles[styleName] || {}
+                  defaultStyles[styleName] || {},
                 ),
                 modifiers[styleName] || [],
-                styleName
+                styleName,
               );
             }
 
@@ -982,11 +990,11 @@ define([
           } else {
             if (aData.styles && aData.styles instanceof Object) {
               this.setSerieParameters(serie, varname, {
-                styles: aData.styles
+                styles: aData.styles,
               });
             } else if (aData.style) {
               this.setSerieParameters(serie, varname, {
-                style: aData.style
+                style: aData.style,
               });
             } else {
               var color =
@@ -1000,7 +1008,7 @@ define([
               }
               this.setSerieParameters(serie, varname, {
                 highlight: aData._highlight,
-                style
+                style,
               });
             }
           }
@@ -1102,7 +1110,7 @@ define([
             String(annotation.type),
             annotation,
             false,
-            annotation.properties
+            annotation.properties,
           );
 
           if (!shape) {
@@ -1123,7 +1131,7 @@ define([
               }
             },
             false,
-            this.module.getId() + varName
+            this.module.getId() + varName,
           );
 
           this.module.model.dataListenChange(
@@ -1131,7 +1139,7 @@ define([
             (v) => {
               shape.redraw();
             },
-            'annotations'
+            'annotations',
           );
 
           shape.draw();
@@ -1161,7 +1169,7 @@ define([
         if (valueType === 'string') {
           require(['jcampconverter'], (JcampConverter) => {
             JcampConverter.convert(String(value), options, true).then(
-              displaySpectra
+              displaySpectra,
             );
           });
         } else {
@@ -1181,7 +1189,7 @@ define([
             serie = that.graph.newSerie(
               varname,
               that.getSerieOptions(varname).options,
-              'contour'
+              'contour',
             );
 
             that.registerSerieEvents(serie, varname);
@@ -1267,7 +1275,7 @@ define([
             serie.setLineColor(
               data[i].lineColor || `rgb(${colors[i].join()})`,
               false,
-              true
+              true,
             );
             serie.setLineWidth(3, 'selected');
             serie.extendStyles();
@@ -1275,7 +1283,7 @@ define([
 
           this.redraw();
         });
-      }
+      },
     },
 
     setOnChange(id, varname, obj) {
@@ -1406,7 +1414,7 @@ define([
 
       exportSVG() {
         this.doSVGExport();
-      }
+      },
     },
 
     doSVGExport() {
@@ -1442,7 +1450,7 @@ define([
       if (!normalize) return;
 
       waveform.normalize(normalize);
-    }
+    },
   });
 
   function analyzeContinuous(data, continuous) {
@@ -1535,3 +1543,22 @@ define([
 
   return View;
 });
+
+function convertSeries(series) {
+  let data = [];
+  for (let serie of series) {
+    let style = {};
+    if (serie.style && serie.style.line) {
+      style.lineStyle = serie.style.line.dash;
+      style.lineWidth = serie.style.line.width;
+      style.lineColor = serie.style.line.color;
+    }
+    data.push({
+      x: serie.data.x,
+      y: serie.data.y,
+      style,
+      label: serie.name,
+    });
+  }
+  return data;
+}
