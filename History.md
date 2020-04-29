@@ -1,3 +1,12 @@
+# [2.116.0](https://github.com/NPellet/visualizer/compare/v2.115.0...v2.116.0) (2020-04-29)
+
+
+### Features
+
+* improve compabiility between json chart and spectra-displayer ([b15eaa5](https://github.com/NPellet/visualizer/commit/b15eaa5d4c6ffaf951a016b2cd20bde168b21ff8))
+
+
+
 # [2.115.0](https://github.com/NPellet/visualizer/compare/v2.114.9...v2.115.0) (2020-04-16)
 
 
