@@ -1,0 +1,10 @@
+{
+  "modules": [
+    {
+      "moduleName": "Growth plate",
+      "url": "modules/types/science/biology/growth_plate/"
+    }
+  ],
+  "name": "Biology",
+  "folders": []
+}

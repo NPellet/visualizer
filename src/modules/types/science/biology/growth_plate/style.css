@@ -1,0 +1,16 @@
+.cell-bottom {
+    height:33px;
+    width: 33px;
+    background-color: #ddd; 
+    border-radius: 30px;
+    margin: 0px;
+    text-align: center;
+    border-style: dotted;
+  }
+.cell-top {
+    height: 90%;
+    width: 90%;
+    border-radius: 50%;
+    margin: 2px 2px 2px 2px;
+    text-align: center;
+}
