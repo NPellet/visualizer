@@ -66,6 +66,14 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
             type: 'list'
           },
           fields: {
+            colorBySample: {
+              type: 'checkbox',
+              title: 'Color by sample',
+              options: {
+                yes: 'Yes'
+              },
+              default: []
+            },
             colnumber: {
               type: 'text',
               default: 10,
@@ -85,7 +93,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                 { title: 'Vertical', key: 'vertical' },
               ]
             },
-            mode: {
+            random: {
               type: 'combo',
               default: 'sequential',
               title: 'Filling mode',
@@ -111,10 +119,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
   };
 
   Controller.prototype.configAliases = {
+    colorBySample: ['groups', 'group', 0, 'colorBySample', 0],
     colnumber: ['groups', 'group', 0, 'colnumber', 0],
     rownumber: ['groups', 'group', 0, 'rownumber', 0],
     direction: ['groups', 'group', 0, 'direction', 0],
-    mode: ['groups', 'group', 0, 'mode', 0],
+    random: ['groups', 'group', 0, 'random', 0],
     shape: ['groups', 'group', 0, 'shape', 0]
   };
   return Controller;

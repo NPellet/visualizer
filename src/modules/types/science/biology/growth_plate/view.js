@@ -1,5 +1,7 @@
 'use strict';
 
+const { findIndex } = require('lodash');
+
 define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 'src/util/util', 'src/util/color'], function (Default, Renderer, API, Util, Color) {
   function View() {
   }
@@ -24,16 +26,16 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     inDom: function () {
       var that = this;
       this.dom.on('mouseenter mouseleave click', 'td', function (e) {
-        var plateVar = that.plateVar;
-        var plate = $(this).parents(':eq(3)').index();
-        var trIndex = $(this).parent().index();
-        var tdIndex = $(this).index();
-        var cols = that.cols;
-        var rows = that.rows;
-        var direction = that.module.getConfiguration('direction', 'vertical') || 'vertical';
-        let elementId = direction === 'vertical' ?
-          (plate * cols * rows) + tdIndex * rows + trIndex :
-          (plate * cols * rows) + trIndex * cols + tdIndex;
+        var plateVar = that.plateVar,
+          plate = $(this).parents(':eq(3)').index(),
+          trIndex = $(this).parent().index(),
+          tdIndex = $(this).index(),
+          cols = that.cols,
+          rows = that.rows,
+          direction = that.module.getConfiguration('direction', 'vertical') || 'vertical',
+          elementId = direction === 'vertical' ?
+            (plate * cols * rows) + tdIndex * rows + trIndex :
+            (plate * cols * rows) + trIndex * cols + tdIndex;
         if (!plateVar[elementId]) return;
         let highlight = plateVar[elementId]._highlight;
         if (e.type === 'mouseenter') {
@@ -53,9 +55,11 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           rows = cfg('rownumber', 4) || 4,
           style = cfg('shape', 'style2') || 'style2',
           direction = cfg('direction', 'vertical') || 'vertical',
-          val = moduleValue.get();
-        var replicates = val.replicates;
+          random = cfg('random', 'sequential') || 'sequential',
+          val = moduleValue.get(),
+          replicates = val.replicates;
         this.plate = val;
+        let mode = random === 'random' ? true : false;
         let shape;
         switch (style) {
           case 'style1': {
@@ -80,12 +84,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             break;
           }
         }
+  
         var parameters = val.parameters,
           nestedList = this.buildList(parameters),
           cellLabels = createCellLabels({
             cols: cols,
             rows: rows
-          }, 2, { direction: direction }),
+          }, 2, { direction: direction }), /* Here is something to fix */
           color = Color.getDistinctColorsAsString(nestedList.length),
           labelsList = cellLabels.cellLabels,
           axis = cellLabels.axis,
@@ -94,14 +99,14 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         this.nestedList = nestedList;
         this.rows = nbRows;
         this.cols = nbColumns;
-        addReplicates(nestedList, labelsList, color, replicates);
+        var order = sortArray(nestedList.length * replicates);
+        addReplicates(nestedList, labelsList, color, replicates, order, mode);
         this.module.controller.createDataFromEvent('onSample', 'list', nestedList);
-        var plateVar = builtPlate(nestedList, labelsList, replicates);
-        var nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
+        var plateVar = builtPlate(nestedList, labelsList, replicates, nbRows, nbColumns),
+          nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
           tables = this.buildGrid(plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.module.controller.createDataFromEvent('onList', 'list', plateVar);
         this.plateVar = plateVar;
-        this.plates = nbPlate;
         this.dom.html(tables);
         var tableNodes = this.dom.find(':eq(0)').children();
         let grid = [];
@@ -121,17 +126,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             }
           }
         }
+        grid = mode ? grid.map((item, index, array) => array[order[index]]) : grid;
         let highlightList = nestedList.map((item) => item._highlight);
-        for (var i = 0; i < highlightList.length; i++) {
-          this.listenHighlight(grid, highlightList[i], i);
+        for (let i = 0; i < highlightList.length; i++) {
+          this.listenHighlight(grid, highlightList[i]);
         }
       }
     },
 
     listenHighlight: function (grid, highlightList) {
-      var that = this;
-      var replicates = that.plate.replicates;
-      var nestedList = that.nestedList;
+      var that = this,
+        replicates = that.plate.replicates,
+        nestedList = that.nestedList;
       API.listenHighlight({ _highlight: highlightList }, function (onOff, key) {
         let rowIndex = nestedList.findIndex((x) => x._highlight === key[0]);
         let gridIndex = new Array(replicates).fill(rowIndex * replicates)
@@ -154,9 +160,10 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       }, false, that.module.getId());
     },
 
-    buildGrid: function (plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape) {
+    buildGrid: function (plateVar, labelsList, nbPlates, nbRows, nbColumns, direction, shape) {
+      let colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
       let plateGrid = $('<div>');
-      for (let u = 0; u < nbPlate; u++) {
+      for (let u = 0; u < nbPlates; u++) {
         var table = $('<table>');
         for (let i = 0; i < nbRows; i++) {
           let row = $('<tr>').attr({ name: `row${String(i)}` }).css({
@@ -164,15 +171,16 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           });
           for (let j = 0; j < nbColumns; j++) {
             let index = direction === 'vertical' ?
-              (u * nbRows * nbColumns) + (j * nbRows) + i :
-              (u * nbRows * nbColumns) + (i * nbColumns) + j;
-            let td = $('<td>');
-            let cellBottom = $('<div>').addClass('cell-bottom');
-            let cellTop = $('<div>').addClass('cell-top');
-            let label = $('<div>').text(typeof labelsList[index] === 'string' ? labelsList[index] : index + 1);
+                (u * nbRows * nbColumns) + (j * nbRows) + i :
+                (u * nbRows * nbColumns) + (i * nbColumns) + j,
+              td = $('<td>'),
+              cellBottom = $('<div>').addClass('cell-bottom'),
+              cellTop = $('<div>').addClass('cell-top'),
+              label = $('<div>').text(typeof labelsList[index] === 'string' ? labelsList[index].replace() : index + 1);
             if (shape.margin && (j + shape.index) % 2 !== 0) cellBottom.css({ margin: '30px 0px 0px 0px' });
+            let element = colorMode ? plateVar : new Array(plateVar.length).fill({ color: 'rgba(141, 234, 106)' });
             cellTop.css({
-              'background-color': `${plateVar[index] !== undefined ? plateVar[index].color : '#ddd'}`
+              'background-color': `${element[index] !== undefined ? element[index].color : '#ddd'}`
             });
             cellTop.append(label);
             cellBottom.append(cellTop);
@@ -209,6 +217,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         }
         currentList.push(calculatedVariable);
       }
+      nestedList.map((x) => x.valueOf());
       return nestedList;
     }
   });
@@ -216,8 +225,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
   return View;
 });
 
-function sortArray(array) {
-  var currentIndex, currentElement,
+function sortArray(length) {
+  var array = new Array(length).fill().map((item, index) => index),
+    currentIndex, currentElement,
     top = array.length;
   while (top--) {
     currentIndex = Math.ceil(Math.random() * top);
@@ -249,23 +259,23 @@ function createCellLabels(config, nbPlates, options = {}) {
   let [rows, columns] = [entries[0][1], entries[1][1]];
   if (Number.isInteger(rows[0]) && Number.isInteger(columns[0])) {
     let rod = direction === 'vertical' ? rows : columns;
-    for (let u = 0; u < 1; u++) { // Here there is some thing to fix //
+    for (let u = 0; u < nbPlates; u++) {
       for (let i = 0; i < rows.length; i++) {
         let row = [];
         for (let j = 0; j < columns.length; j++) {
           let [rowIndex, columnIndex] = direction === 'vertical' ? [i, j] : [j, i];
-          row[j] = columnIndex * rod.length + rod[rowIndex];
+          row[j] = `${columnIndex * rod.length + rod[rowIndex]}-${u + 1}`;
         }
         cellLabels.push(...row);
       }
     }
   } else {
     [rows, columns] = direction === 'vertical' ? [rows, columns] : [columns, rows];
-    for (let u = 0; u < nbPlates; u++) { // Here there is some thing to fix //
+    for (let u = 0; u < nbPlates; u++) {
       for (let i = 0; i < rows.length; i++) {
         let row = [];
         for (let j = 0; j < columns.length; j++) {
-          row[j] = rows[i] + columns[j];
+          row[j] = `${rows[i] + columns[j]}-${u + 1}`;
         }
         cellLabels.push(...row);
       }
@@ -277,31 +287,42 @@ function createCellLabels(config, nbPlates, options = {}) {
   };
 }
 
-function builtPlate(nestedList, labelsList, replicates) {
+function builtPlate(nestedList, labelsList, replicates, rows, cols) {
   let result = [];
   let iterations = nestedList.length;
+  
   for (let i = 0; i < iterations; i++) {
     let block = []; let obj = {};
-    let replicates = nestedList[i] ? nestedList[0].cells.length : 1;
     for (let j = 0; j < replicates; j++) {
+      let nbPlate = Math.ceil((i * replicates + j + 1) / (rows * cols));
+      let label = nestedList[i] && typeof nestedList[i].cells[j] === 'string' ?
+        nestedList[i].cells[j] : nestedList[i].cells[j];
       obj = Object.assign({}, {
-        pos: nestedList[i] ? nestedList[i].cells[j] : labelsList[i],
-        label: '--',
+        pos: nestedList[i] ? `${label}` : labelsList[i],
+        plate: nbPlate,
       }, nestedList[i] ? nestedList[i] : {});
       block.push(obj);
     }
     result.push(...block);
   }
+  
+  result = result.map((item, index, array) =>
+    array[array.findIndex(function (x) {
+      let element = typeof x.pos == 'string' ? `${String(labelsList[index])}` : index;
+      return element === x.pos;
+    })]
+  );
   return result;
 }
 
-function addReplicates(list, labelsList, color, replicates) {
+function addReplicates(list, labelsList, color, replicates, order, mode) {
   let counter = 0;
   let samples = [];
   for (let i = 0; i < list.length; i++) {
     for (let j = 0; j < replicates; j++) {
+      let element = mode ? order[counter] : counter;
       let item = typeof labelsList[0] === 'string' ?
-        labelsList[counter] : counter + 1;
+        labelsList[element] : element;
       samples.push(item);
       counter++;
     }
