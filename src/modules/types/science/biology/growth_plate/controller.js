@@ -27,22 +27,25 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
       label: 'The array of data to display',
       type: 'array'
     },
+    sampleList: {
+      label: 'The array of samples to display',
+      type: 'array'
+    },
+    cellList: {
+      label: 'The array of cells to display',
+      type: 'array'
+    },
     plate: {
       label: 'Plate setup information',
+      type: 'object'
+    },
+    trackData: {
+      label: 'Tracking data',
       type: 'object'
     }
   };
 
   Controller.prototype.events = {
-    onHover: {
-      label: 'Hover a cell',
-      refVariable: ['cell']
-    },
-    onClick: {
-      label: 'Click a cell',
-      refVariable: ['cell'],
-      refAction: ['cell']
-    },
     onSample: {
       label: 'Sample list',
       refVariable: ['list'],
@@ -50,7 +53,17 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     onList: {
       label: 'Plate list',
       refVariable: ['list'],
-    }
+    },
+    onTrackMouse: {
+      label: 'Mouse tracking (move)',
+      refVariable: ['trackData'],
+      refAction: ['trackData']
+    },
+    onTrackClick: {
+      label: 'Mouse tracking (click)',
+      refVariable: ['trackData'],
+      refAction: ['trackData']
+    },
   };
 
   Controller.prototype.variablesIn = ['list', 'plate'];
@@ -59,6 +72,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     addElement: 'Add an element'
   };
   Controller.prototype.configurationStructure = function () {
+    var jpaths = this.module.model.getjPath()[0].children[0].children;
     return {
       groups: {
         group: {
@@ -74,6 +88,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
               },
               default: []
             },
+            cellSize: {
+              type: 'text',
+              default: 35,
+              title: 'Size of cells (px)'
+            },
             colnumber: {
               type: 'text',
               default: 10,
@@ -83,6 +102,16 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
               type: 'text',
               default: 10,
               title: 'Number of rows'
+            },
+            cellBorderStyle: {
+              type: 'combo',
+              default: 'solid',
+              title: 'Border style',
+              options: [
+                { title: 'None', key: 'solid' },
+                { title: 'Dotted', key: 'dotted' },
+                { title: 'Dashed', key: 'dashed' }
+              ]
             },
             direction: {
               type: 'combo',
@@ -102,6 +131,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
                 { title: 'Random', key: 'random' },
               ]
             },
+            colorjPath: {
+              type: 'combo',
+              title: 'Color jPath',
+              options: jpaths
+            },
             shape: {
               type: 'combo',
               default: 'style1',
@@ -119,12 +153,15 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
   };
 
   Controller.prototype.configAliases = {
+    cellBorderStyle: ['groups', 'group', 0, 'cellBorderStyle', 0],
     colorBySample: ['groups', 'group', 0, 'colorBySample', 0],
+    cellSize: ['groups', 'group', 0, 'cellSize', 0],
     colnumber: ['groups', 'group', 0, 'colnumber', 0],
     rownumber: ['groups', 'group', 0, 'rownumber', 0],
     direction: ['groups', 'group', 0, 'direction', 0],
     random: ['groups', 'group', 0, 'random', 0],
-    shape: ['groups', 'group', 0, 'shape', 0]
+    colorjpath: ['groups', 'group', 0, 'colorjPath', 0],
+    shape: ['groups', 'group', 0, 'shape', 0],
   };
   return Controller;
 });

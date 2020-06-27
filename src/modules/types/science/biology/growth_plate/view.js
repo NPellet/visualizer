@@ -1,6 +1,6 @@
 'use strict';
 
-const { findIndex } = require('lodash');
+const _ = require('lodash');
 
 define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 'src/util/util', 'src/util/color'], function (Default, Renderer, API, Util, Color) {
   function View() {
@@ -20,7 +20,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         this.plate = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
-      }
+      },
     },
 
     inDom: function () {
@@ -39,16 +39,116 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         if (!plateVar[elementId]) return;
         let highlight = plateVar[elementId]._highlight;
         if (e.type === 'mouseenter') {
-          that.module.controller.createDataFromEvent('onHover', 'cell', plateVar[elementId]);
+          that.module.controller.createDataFromEvent(
+            'onTrackMouse',
+            'trackData',
+            plateVar[elementId],
+          );
+          that.module.controller.sendActionFromEvent(
+            'onTrackMouse',
+            'trackData',
+            plateVar[elementId],
+          );
           API.highlight([highlight], 1);
         } else if (e.type === 'mouseleave') {
           API.highlight([highlight], 0);
+        } else if (e.type === 'click') {
+          that.module.controller.sendActionFromEvent(
+            'onTrackClick',
+            'trackData',
+            plateVar[elementId],
+          );
         }
       });
       this.resolveReady();
     },
 
     update: {
+
+      cellList: function (moduleValue) {
+        var cfg = this.module.getConfiguration,
+          cols = cfg('colnumber', 4) || 4,
+          rows = cfg('rownumber', 4) || 4,
+          style = cfg('shape', 'style2') || 'style2',
+          direction = cfg('direction', 'vertical') || 'vertical',
+          random = cfg('random', 'sequential') || 'sequential',
+          colorJpath = cfg('colorjpath', false),
+          val = moduleValue.get(),
+          plateVar = moduleValue.get(),
+          mode = random === 'random' ? true : false,
+          tables = plateVar,
+          labelsList = plateVar.map((x) => x.pos);
+        this.plateVar = plateVar;
+        let shape;
+        switch (style) {
+          case 'style1': {
+            shape = {
+              shift: false,
+              margin: undefined,
+            };
+            break;
+          }
+          case 'style2': {
+            shape = {
+              margin: true,
+              index: 0,
+            };
+            break;
+          }
+          case 'style3': {
+            shape = {
+              margin: true,
+              index: 1,
+            };
+            break;
+          }
+        }
+        let entries = Object.entries({
+          cols: cols,
+          rows: rows
+        });
+        for (let i = 0; i < entries.length; i++) {
+          if (Number.isNaN(parseInt(entries[i][1]))) {
+            entries[i][1] = entries[i][1].toUpperCase().charCodeAt(0) - 64;
+          } else {
+            entries[i][1] = parseInt(entries[i][1]);
+          }
+        }
+        var nbRows = entries[0][1],
+          nbColumns = entries[0][1];
+        var nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
+          tables = this.buildGrid(plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        this.dom.html(tables);
+        var tableNodes = this.dom.find(':eq(0)').children();
+        let grid = [];
+        for (let u = 0; u < tableNodes.length; u++) {
+          let tr = $(tableNodes[u]).find(':eq(1)').children();
+          let td = $(tr[0]).children();
+          let [rows, columns] = direction === 'vertical' ?
+            [td.length, tr.length] : [tr.length, td.length];
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+              let [a, b] = direction === 'vertical' ?
+                [j, i] : [i, j];
+              grid.push({
+                index: (a * rows) + b,
+                value: tr[a].childNodes[b]
+              });
+            }
+          }
+        }
+        grid = mode ? grid.map((item, index, array) => array[index]) : grid;
+        let jpathItems = moduleValue[0];
+        for (let i = 0; i < grid.length; i++) {
+          this.addConfigs(grid, i, colorJpath, jpathItems);
+        }
+      },
+
+      sampleList: function (moduleValue) {
+        var val = moduleValue.get();
+        this.sampleList = val;
+      },
+      
       plate: function (moduleValue) {
         var cfg = this.module.getConfiguration,
           cols = cfg('colnumber', 4) || 4,
@@ -56,7 +156,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           style = cfg('shape', 'style2') || 'style2',
           direction = cfg('direction', 'vertical') || 'vertical',
           random = cfg('random', 'sequential') || 'sequential',
+          colorJpath = cfg('colorjpath', false),
           val = moduleValue.get(),
+          colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
           replicates = val.replicates;
         this.plate = val;
         let mode = random === 'random' ? true : false;
@@ -90,7 +192,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           cellLabels = createCellLabels({
             cols: cols,
             rows: rows
-          }, 2, { direction: direction }), /* Here is something to fix */
+          }, 2, { direction: direction }),
           color = Color.getDistinctColorsAsString(nestedList.length),
           labelsList = cellLabels.cellLabels,
           axis = cellLabels.axis,
@@ -126,12 +228,37 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             }
           }
         }
+
+        if (!colorMode) {
+          let arrayPath = colorJpath.split('.').splice(1, 2);
+          let jpathItems = moduleValue[`${arrayPath[0]}`][`${arrayPath[1]}`];
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigs(grid, i, colorJpath, jpathItems);
+          }
+        }
+
         grid = mode ? grid.map((item, index, array) => array[order[index]]) : grid;
         let highlightList = nestedList.map((item) => item._highlight);
         for (let i = 0; i < highlightList.length; i++) {
           this.listenHighlight(grid, highlightList[i]);
         }
       }
+    },
+
+    addConfigs: function (grid, currentItem, colorJpath, jpathItems) {
+      var that = this,
+        color = Color.getDistinctColorsAsString(jpathItems.length);
+      this.plateVar.getChild([currentItem]).then(function (element) {
+        if (colorJpath) {
+          if (!element) return;
+          element.getChild(colorJpath.split('.').splice(1).join('.'), true).then(function (val) {
+            let index = jpathItems.findIndex((item) => item === val.get());
+            $(grid[currentItem].value).find(':eq(1)').css(
+              { 'background-color': color[index] }
+            );
+          });
+        }
+      });
     },
 
     listenHighlight: function (grid, highlightList) {
@@ -146,14 +273,14 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           for (let i = 0; i < gridIndex.length; i++) {
             if (!grid[gridIndex[i]]) return;
             $(grid[gridIndex[i]].value).find(':eq(0)').css({
-              'background-color': '#F74949'
+              'border-color': '#F74949'
             });
           }
         } else if (onOff === 0) {
           for (let i = 0; i < gridIndex.length; i++) {
             if (!grid[gridIndex[i]]) return;
             $(grid[gridIndex[i]].value).find(':eq(0)').css({
-              'background-color': '#FFFFFF'
+              'border-color': '#ddd'
             });
           }
         }
@@ -162,6 +289,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 
     buildGrid: function (plateVar, labelsList, nbPlates, nbRows, nbColumns, direction, shape) {
       let colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
+      let cellBorderStyle = this.module.getConfiguration('cellBorderStyle', 'solid');
+      let cellSize = this.module.getConfiguration('cellSize', 30);
       let plateGrid = $('<div>');
       for (let u = 0; u < nbPlates; u++) {
         var table = $('<table>');
@@ -174,13 +303,19 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
                 (u * nbRows * nbColumns) + (j * nbRows) + i :
                 (u * nbRows * nbColumns) + (i * nbColumns) + j,
               td = $('<td>'),
-              cellBottom = $('<div>').addClass('cell-bottom'),
+              cellBottom = $('<div>').addClass('cell-bottom').css({
+                'border-style': cellBorderStyle,
+                'border-radius': `${cellSize}px`,
+                height: `${cellSize}px`,
+                width: `${cellSize}px`,
+              }),
               cellTop = $('<div>').addClass('cell-top'),
-              label = $('<div>').text(typeof labelsList[index] === 'string' ? labelsList[index].replace() : index + 1);
+              label = $('<div>').text(typeof labelsList[index] === 'string' ? labelsList[index].slice(0, -2) : index + 1);
+            label.addClass('cell-top');
             if (shape.margin && (j + shape.index) % 2 !== 0) cellBottom.css({ margin: '30px 0px 0px 0px' });
             let element = colorMode ? plateVar : new Array(plateVar.length).fill({ color: 'rgba(141, 234, 106)' });
             cellTop.css({
-              'background-color': `${element[index] !== undefined ? element[index].color : '#ddd'}`
+              'background-color': `${element[index] !== undefined ? element[index].color : '#FFFFFF'}`
             });
             cellTop.append(label);
             cellBottom.append(cellTop);
@@ -275,7 +410,9 @@ function createCellLabels(config, nbPlates, options = {}) {
       for (let i = 0; i < rows.length; i++) {
         let row = [];
         for (let j = 0; j < columns.length; j++) {
-          row[j] = `${rows[i] + columns[j]}-${u + 1}`;
+          let element = typeof rows[i] === 'string' ?
+            rows[i] + columns[j] : columns[j] + rows[i];
+          row[j] = `${element}-${u + 1}`;
         }
         cellLabels.push(...row);
       }
