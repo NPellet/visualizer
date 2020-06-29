@@ -66,13 +66,19 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     },
   };
 
-  Controller.prototype.variablesIn = ['list', 'plate'];
+  Controller.prototype.variablesIn = ['sampleList', 'cellList', 'plate'];
 
   Controller.prototype.actionsIn = {
     addElement: 'Add an element'
   };
   Controller.prototype.configurationStructure = function () {
-    var jpaths = this.module.model.getjPath()[0].children[0].children;
+    let removeList = ['pos', 'plate', 'cells', 'color'];
+    var jpaths = this.module.model.getjPath();
+    if (jpaths.length !== 0) {
+      jpaths[0].children = jpaths[0].children
+        .filter((item) => !removeList.find((x) => x === item.title));
+    }
+
     return {
       groups: {
         group: {

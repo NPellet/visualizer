@@ -11,147 +11,6 @@
   },
   "modules": [
     {
-      "url": "modules/types/science/biology/growth_plate/",
-      "id": 1,
-      "title": "",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "colorBySample": [
-                [
-                  "yes"
-                ]
-              ],
-              "cellSize": [
-                "35"
-              ],
-              "colnumber": [
-                "H"
-              ],
-              "rownumber": [
-                "10"
-              ],
-              "cellBorderStyle": [
-                "solid"
-              ],
-              "direction": [
-                "horizontal"
-              ],
-              "random": [
-                "random"
-              ],
-              "colorjPath": [
-                "element.parameters.extracts"
-              ],
-              "shape": [
-                "style1"
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "position": {
-            "left": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 50,
-            "height": 71
-          },
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ]
-        }
-      },
-      "vars_in": [
-        {
-          "rel": "plate",
-          "name": "preferences"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "event": "onSample",
-          "rel": "list",
-          "jpath": [],
-          "name": "samples"
-        },
-        {
-          "event": "onList",
-          "rel": "list",
-          "jpath": [],
-          "name": "plate"
-        },
-        {
-          "event": "onTrackMouse",
-          "rel": "trackData",
-          "jpath": [],
-          "name": "track"
-        }
-      ],
-      "actions_out": [
-        {
-          "event": "onTrackMouse",
-          "rel": "trackData",
-          "jpath": [],
-          "name": "click"
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
-        }
-      ]
-    },
-    {
       "url": "modules/types/client_interaction/code_executor/",
       "id": 2,
       "title": "",
@@ -543,6 +402,136 @@
       "vars_out": [
         {
           "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/science/biology/growth_plate/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colorBySample": [
+                []
+              ],
+              "cellSize": [
+                35
+              ],
+              "colnumber": [
+                10
+              ],
+              "rownumber": [
+                10
+              ],
+              "cellBorderStyle": [
+                "solid"
+              ],
+              "direction": [
+                "vertical"
+              ],
+              "random": [
+                "sequential"
+              ],
+              "colorjPath": [
+                null
+              ],
+              "shape": [
+                "style1"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 50,
+            "height": 71
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "plate",
+          "name": "preferences"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onSample",
+          "rel": "list",
+          "jpath": [],
+          "name": "samples"
+        },
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
         }
       ],
       "actions_out": [

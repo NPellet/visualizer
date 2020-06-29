@@ -18,6 +18,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     blank: {
       plate: function () {
         this.plate = null;
+        this.plateVar = null;
+        API.killHighlight(this.module.getId());
+        this.dom.empty();
+      },
+      cellList: function () {
+        this.plate = null;
+        this.plateVar = null;
+        API.killHighlight(this.module.getId());
+        this.dom.empty();
+      },
+      sampleList: function () {
+        this.plateVar = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
@@ -64,91 +76,6 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     },
 
     update: {
-
-      cellList: function (moduleValue) {
-        var cfg = this.module.getConfiguration,
-          cols = cfg('colnumber', 4) || 4,
-          rows = cfg('rownumber', 4) || 4,
-          style = cfg('shape', 'style2') || 'style2',
-          direction = cfg('direction', 'vertical') || 'vertical',
-          random = cfg('random', 'sequential') || 'sequential',
-          colorJpath = cfg('colorjpath', false),
-          val = moduleValue.get(),
-          plateVar = moduleValue.get(),
-          mode = random === 'random' ? true : false,
-          tables = plateVar,
-          labelsList = plateVar.map((x) => x.pos);
-        this.plateVar = plateVar;
-        let shape;
-        switch (style) {
-          case 'style1': {
-            shape = {
-              shift: false,
-              margin: undefined,
-            };
-            break;
-          }
-          case 'style2': {
-            shape = {
-              margin: true,
-              index: 0,
-            };
-            break;
-          }
-          case 'style3': {
-            shape = {
-              margin: true,
-              index: 1,
-            };
-            break;
-          }
-        }
-        let entries = Object.entries({
-          cols: cols,
-          rows: rows
-        });
-        for (let i = 0; i < entries.length; i++) {
-          if (Number.isNaN(parseInt(entries[i][1]))) {
-            entries[i][1] = entries[i][1].toUpperCase().charCodeAt(0) - 64;
-          } else {
-            entries[i][1] = parseInt(entries[i][1]);
-          }
-        }
-        var nbRows = entries[0][1],
-          nbColumns = entries[0][1];
-        var nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
-        this.dom.html(tables);
-        var tableNodes = this.dom.find(':eq(0)').children();
-        let grid = [];
-        for (let u = 0; u < tableNodes.length; u++) {
-          let tr = $(tableNodes[u]).find(':eq(1)').children();
-          let td = $(tr[0]).children();
-          let [rows, columns] = direction === 'vertical' ?
-            [td.length, tr.length] : [tr.length, td.length];
-          for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
-              let [a, b] = direction === 'vertical' ?
-                [j, i] : [i, j];
-              grid.push({
-                index: (a * rows) + b,
-                value: tr[a].childNodes[b]
-              });
-            }
-          }
-        }
-        grid = mode ? grid.map((item, index, array) => array[index]) : grid;
-        let jpathItems = moduleValue[0];
-        for (let i = 0; i < grid.length; i++) {
-          this.addConfigs(grid, i, colorJpath, jpathItems);
-        }
-      },
-
-      sampleList: function (moduleValue) {
-        var val = moduleValue.get();
-        this.sampleList = val;
-      },
-      
       plate: function (moduleValue) {
         var cfg = this.module.getConfiguration,
           cols = cfg('colnumber', 4) || 4,
@@ -229,42 +156,250 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
 
-        if (!colorMode) {
-          let arrayPath = colorJpath.split('.').splice(1, 2);
-          let jpathItems = moduleValue[`${arrayPath[0]}`][`${arrayPath[1]}`];
+        if (!colorMode && colorJpath) {
+          let arrayPath = colorJpath ? colorJpath.split('.') : undefined;
+          arrayPath = arrayPath[arrayPath.length - 1];
+          let jpathItems = moduleValue.parameters[`${arrayPath}`].map((x) => x.substr());
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, colorJpath, jpathItems);
+            this.addConfigs(grid, i, arrayPath, jpathItems);
           }
         }
-
+        
         grid = mode ? grid.map((item, index, array) => array[order[index]]) : grid;
         let highlightList = nestedList.map((item) => item._highlight);
         for (let i = 0; i < highlightList.length; i++) {
-          this.listenHighlight(grid, highlightList[i]);
+          this.listenHighlight(grid, highlightList[i], nestedList);
         }
-      }
+      },
+
+      cellList: function (moduleValue) {
+        this.cellList = val;
+        var cfg = this.module.getConfiguration,
+          cols = cfg('colnumber', 4) || 4,
+          rows = cfg('rownumber', 4) || 4,
+          style = cfg('shape', 'style2') || 'style2',
+          direction = cfg('direction', 'vertical') || 'vertical',
+          random = cfg('random', 'sequential') || 'sequential',
+          colorJpath = cfg('colorjpath', false),
+          val = moduleValue.get(),
+          plateVar = moduleValue.get(),
+          mode = random === 'random' ? true : false,
+          tables = plateVar,
+          labelsList = plateVar.map((x) => x.pos),
+          colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
+        this.plateVar = plateVar;
+        this.module.controller.createDataFromEvent('onList', 'list', plateVar);
+        let shape;
+        switch (style) {
+          case 'style1': {
+            shape = {
+              shift: false,
+              margin: undefined,
+            };
+            break;
+          }
+          case 'style2': {
+            shape = {
+              margin: true,
+              index: 0,
+            };
+            break;
+          }
+          case 'style3': {
+            shape = {
+              margin: true,
+              index: 1,
+            };
+            break;
+          }
+        }
+        let entries = Object.entries({
+          cols: cols,
+          rows: rows
+        });
+        for (let i = 0; i < entries.length; i++) {
+          if (Number.isNaN(parseInt(entries[i][1]))) {
+            entries[i][1] = entries[i][1].toUpperCase().charCodeAt(0) - 64;
+          } else {
+            entries[i][1] = parseInt(entries[i][1]);
+          }
+        }
+        let nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
+          nbColumns = entries.filter((x) => x[0] === 'cols')[0][1];
+        this.rows = nbRows;
+        this.cols = nbColumns;
+        var nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
+          tables = this.buildGrid(plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        this.dom.html(tables);
+        var tableNodes = this.dom.find(':eq(0)').children();
+        let grid = [];
+        for (let u = 0; u < tableNodes.length; u++) {
+          let tr = $(tableNodes[u]).find(':eq(1)').children();
+          let td = $(tr[0]).children();
+          let [rows, columns] = direction === 'vertical' ?
+            [td.length, tr.length] : [tr.length, td.length];
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+              let [a, b] = direction === 'vertical' ?
+                [j, i] : [i, j];
+              grid.push({
+                index: (a * rows) + b,
+                value: tr[a].childNodes[b]
+              });
+            }
+          }
+        }
+
+        let getData = {
+          highlightList: [],
+          nestedList: []
+        };
+        moduleValue.filter(function (item) {
+          let element = this.highlightList.find((x) => x === item._highlight.substr());
+          if (element === undefined) {
+            this.nestedList.push(item);
+            this.highlightList.push(item._highlight.substr());
+          }
+        }, getData);
+        if (!colorMode && colorJpath) {
+          let arrayPath = colorJpath.split('.');
+          arrayPath = arrayPath[arrayPath.length - 1];
+          let jpathItems = [];
+          moduleValue.filter(function (item) {
+            let element = this.find((x) => x === item[`${arrayPath}`].substr());
+            if (element === undefined) this.push(item[`${arrayPath}`].substr());
+          }, jpathItems);
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigs(grid, i, arrayPath, jpathItems);
+          }
+        }
+        for (let i = 0; i < getData.highlightList.length; i++) {
+          this.listenHighlight(grid, getData.highlightList[i], getData.nestedList);
+        }
+      },
+
+      sampleList: function (moduleValue) {
+        this.sampleList = val;
+        var cfg = this.module.getConfiguration,
+          cols = cfg('colnumber', 4) || 4,
+          rows = cfg('rownumber', 4) || 4,
+          style = cfg('shape', 'style2') || 'style2',
+          direction = cfg('direction', 'vertical') || 'vertical',
+          random = cfg('random', 'sequential') || 'sequential',
+          colorJpath = cfg('colorjpath', false),
+          val = moduleValue.get(),
+          nestedList = moduleValue.get(),
+          mode = random === 'random' ? true : false,
+          labels = nestedList.map((element) => element.cells),
+          colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
+        let replicates = labels[0].length;
+        let labelsList = [];
+        for (let i = 0; i < labels.length; i++) {
+          labelsList.push(...labels[i]);
+        }
+        this.cellList = val;
+        this.nestedList = nestedList;
+        let shape;
+        switch (style) {
+          case 'style1': {
+            shape = {
+              shift: false,
+              margin: undefined,
+            };
+            break;
+          }
+          case 'style2': {
+            shape = {
+              margin: true,
+              index: 0,
+            };
+            break;
+          }
+          case 'style3': {
+            shape = {
+              margin: true,
+              index: 1,
+            };
+            break;
+          }
+        }
+        let entries = Object.entries({
+          cols: cols,
+          rows: rows
+        });
+        for (let i = 0; i < entries.length; i++) {
+          if (Number.isNaN(parseInt(entries[i][1]))) {
+            entries[i][1] = entries[i][1].toUpperCase().charCodeAt(0) - 64;
+          } else {
+            entries[i][1] = parseInt(entries[i][1]);
+          }
+        }
+        let nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
+          nbColumns = entries.filter((x) => x[0] === 'cols')[0][1],
+          plateVar = builtPlate(nestedList, labelsList, replicates, nbRows, nbColumns);
+        this.module.controller.createDataFromEvent('onList', 'list', plateVar);
+        this.plateVar = plateVar;
+        var order = sortArray(nestedList.length * replicates);
+        let nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
+          tables = this.buildGrid(this.plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        this.dom.html(tables);
+        this.rows = nbRows;
+        this.cols = nbColumns;
+        var tableNodes = this.dom.find(':eq(0)').children();
+        let grid = [];
+        for (let u = 0; u < tableNodes.length; u++) {
+          let tr = $(tableNodes[u]).find(':eq(1)').children();
+          let td = $(tr[0]).children();
+          let [rows, columns] = direction === 'vertical' ?
+            [td.length, tr.length] : [tr.length, td.length];
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+              let [a, b] = direction === 'vertical' ?
+                [j, i] : [i, j];
+              grid.push({
+                index: (a * rows) + b,
+                value: tr[a].childNodes[b]
+              });
+            }
+          }
+        }
+
+        if (!colorMode && colorJpath) {
+          let arrayPath = colorJpath.split('.');
+          arrayPath = arrayPath[arrayPath.length - 1];
+          let jpathItems = [];
+          moduleValue.filter(function (item) {
+            let element = this.find((x) => x === item[`${arrayPath}`].substr());
+            if (element === undefined) this.push(item[`${arrayPath}`].substr());
+          }, jpathItems);
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigs(grid, i, arrayPath, jpathItems);
+          }
+        }
+        let highlightList = nestedList.map((item) => item._highlight);
+        for (let i = 0; i < highlightList.length; i++) {
+          this.listenHighlight(grid, highlightList[i], nestedList);
+        }
+      },
     },
 
     addConfigs: function (grid, currentItem, colorJpath, jpathItems) {
       var that = this,
         color = Color.getDistinctColorsAsString(jpathItems.length);
-      this.plateVar.getChild([currentItem]).then(function (element) {
-        if (colorJpath) {
-          if (!element) return;
-          element.getChild(colorJpath.split('.').splice(1).join('.'), true).then(function (val) {
-            let index = jpathItems.findIndex((item) => item === val.get());
-            $(grid[currentItem].value).find(':eq(1)').css(
-              { 'background-color': color[index] }
-            );
-          });
-        }
-      });
+      let element = this.plateVar[currentItem];
+      if (colorJpath) {
+        if (!element) return;
+        let val = element[`${colorJpath}`];
+        let index = jpathItems.findIndex((item) => item == val);
+        $(grid[currentItem].value).find(':eq(1)').css(
+          { 'background-color': color[index] }
+        );
+      }
     },
 
-    listenHighlight: function (grid, highlightList) {
+    listenHighlight: function (grid, highlightList, nestedList) {
       var that = this,
-        replicates = that.plate.replicates,
-        nestedList = that.nestedList;
+        replicates = that.plate ? that.plate.replicates : 3;
       API.listenHighlight({ _highlight: highlightList }, function (onOff, key) {
         let rowIndex = nestedList.findIndex((x) => x._highlight === key[0]);
         let gridIndex = new Array(replicates).fill(rowIndex * replicates)
@@ -427,7 +562,6 @@ function createCellLabels(config, nbPlates, options = {}) {
 function builtPlate(nestedList, labelsList, replicates, rows, cols) {
   let result = [];
   let iterations = nestedList.length;
-  
   for (let i = 0; i < iterations; i++) {
     let block = []; let obj = {};
     for (let j = 0; j < replicates; j++) {
