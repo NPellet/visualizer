@@ -19,6 +19,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       plate: function () {
         this.plate = null;
         this.plateVar = null;
+        this.nestedList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
@@ -29,7 +30,9 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         this.dom.empty();
       },
       sampleList: function () {
+        this.plate = null;
         this.plateVar = null;
+        this.nestedList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
@@ -85,7 +88,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           random = cfg('random', 'sequential') || 'sequential',
           colorJpath = cfg('colorjpath', false),
           val = moduleValue.get(),
-          colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
+          colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
+          colorByJpathValue = this.module.getConfigurationCheckbox('colorByJpathValue', 'yes'),
           replicates = val.replicates;
         this.plate = val;
         let mode = random === 'random' ? true : false;
@@ -156,12 +160,21 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
 
-        if (!colorMode && colorJpath) {
+        if (!colorBySample && colorJpath) {
           let arrayPath = colorJpath ? colorJpath.split('.') : undefined;
           arrayPath = arrayPath[arrayPath.length - 1];
           let jpathItems = moduleValue.parameters[`${arrayPath}`].map((x) => x.substr());
           for (let i = 0; i < grid.length; i++) {
             this.addConfigs(grid, i, arrayPath, jpathItems);
+          }
+        }
+
+        if (!colorBySample && colorByJpathValue) {
+          let jpathValue = cfg('jpathValue', 4) || 4;
+          let arrayPath = jpathValue.split('.');
+          arrayPath = arrayPath[arrayPath.length - 1];
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigs(grid, i, arrayPath);
           }
         }
         
@@ -186,7 +199,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           mode = random === 'random' ? true : false,
           tables = plateVar,
           labelsList = plateVar.map((x) => x.pos),
-          colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
+          colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
+          colorByJpathValue = this.module.getConfigurationCheckbox('colorByJpathValue', 'yes');
         this.plateVar = plateVar;
         this.module.controller.createDataFromEvent('onList', 'list', plateVar);
         let shape;
@@ -261,7 +275,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             this.highlightList.push(item._highlight.substr());
           }
         }, getData);
-        if (!colorMode && colorJpath) {
+        if (!colorBySample && colorJpath) {
           let arrayPath = colorJpath.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           let jpathItems = [];
@@ -273,6 +287,16 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             this.addConfigs(grid, i, arrayPath, jpathItems);
           }
         }
+
+        if (!colorBySample && colorByJpathValue) {
+          let jpathValue = cfg('jpathValue', 4) || 4;
+          let arrayPath = jpathValue.split('.');
+          arrayPath = arrayPath[arrayPath.length - 1];
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigs(grid, i, arrayPath);
+          }
+        }
+
         for (let i = 0; i < getData.highlightList.length; i++) {
           this.listenHighlight(grid, getData.highlightList[i], getData.nestedList);
         }
@@ -285,13 +309,12 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           rows = cfg('rownumber', 4) || 4,
           style = cfg('shape', 'style2') || 'style2',
           direction = cfg('direction', 'vertical') || 'vertical',
-          random = cfg('random', 'sequential') || 'sequential',
           colorJpath = cfg('colorjpath', false),
           val = moduleValue.get(),
           nestedList = moduleValue.get(),
-          mode = random === 'random' ? true : false,
           labels = nestedList.map((element) => element.cells),
-          colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
+          colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
+          colorByJpathValue = this.module.getConfigurationCheckbox('colorByJpathValue', 'yes');
         let replicates = labels[0].length;
         let labelsList = [];
         for (let i = 0; i < labels.length; i++) {
@@ -339,7 +362,6 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           plateVar = builtPlate(nestedList, labelsList, replicates, nbRows, nbColumns);
         this.module.controller.createDataFromEvent('onList', 'list', plateVar);
         this.plateVar = plateVar;
-        var order = sortArray(nestedList.length * replicates);
         let nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
           tables = this.buildGrid(this.plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.dom.html(tables);
@@ -364,7 +386,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
 
-        if (!colorMode && colorJpath) {
+        if (!colorBySample && colorJpath) {
           let arrayPath = colorJpath.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           let jpathItems = [];
@@ -376,6 +398,16 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             this.addConfigs(grid, i, arrayPath, jpathItems);
           }
         }
+
+        if (!colorBySample && colorByJpathValue) {
+          let jpathValue = cfg('jpathValue', 4) || 4;
+          let arrayPath = jpathValue.split('.');
+          arrayPath = arrayPath[arrayPath.length - 1];
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigs(grid, i, arrayPath);
+          }
+        }
+
         let highlightList = nestedList.map((item) => item._highlight);
         for (let i = 0; i < highlightList.length; i++) {
           this.listenHighlight(grid, highlightList[i], nestedList);
@@ -384,16 +416,34 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     },
 
     addConfigs: function (grid, currentItem, colorJpath, jpathItems) {
-      var that = this,
-        color = Color.getDistinctColorsAsString(jpathItems.length);
+      var that = this;
+      let color;
+      if (jpathItems) color = Color.getDistinctColorsAsString(jpathItems.length);
       let element = this.plateVar[currentItem];
       if (colorJpath) {
         if (!element) return;
         let val = element[`${colorJpath}`];
-        let index = jpathItems.findIndex((item) => item == val);
-        $(grid[currentItem].value).find(':eq(1)').css(
-          { 'background-color': color[index] }
-        );
+        if (jpathItems) {
+          let index = jpathItems.findIndex((item) => item == val);
+          $(grid[currentItem].value).find(':eq(1)').css(
+            { 'background-color': color[index] }
+          );
+        } else {
+          let cfg = this.module.getConfiguration,
+            min = cfg('min', 4) || 4,
+            max = cfg('max', 4) || 4,
+            color = cfg('color', 4) || 4;
+          max = parseFloat(max);
+          min = parseFloat(min);
+          let array = new Array(10).fill(min)
+            .map((item, index, array) => item + ((max - min) / 10) * index);
+          let index = array.findIndex((x) => x > val);
+          if (index) {
+            $(grid[currentItem].value).find(':eq(1)').css(
+              { 'background-color': `rgba(${color},${String(index / 10)})` }
+            );
+          }
+        }
       }
     },
 
