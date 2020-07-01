@@ -9,11 +9,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
       return this.dataValue;
     },
     getjPath: function () {
-      const plate = this.module.getDataFromRel('plate'),
-        cellsList = this.module.getDataFromRel('cellsList'),
-        samplesList = this.module.getDataFromRel('samplesList');
-      let data = cellsList ? cellsList : samplesList ? samplesList : plate.parameters,
-        jpaths = [];
+      const plate = this.module.getDataFromRel('plate');
+      const cellsList = this.module.getDataFromRel('cellsList');
+      const samplesList = this.module.getDataFromRel('samplesList');
+      let data = cellsList ? cellsList : samplesList ? samplesList : plate.parameters;
+      let jpaths = [];
       data = !Array.isArray(data) ? data : data[0];
       if (!data || data == null) {
         return jpaths;

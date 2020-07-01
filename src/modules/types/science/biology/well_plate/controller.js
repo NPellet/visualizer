@@ -7,8 +7,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.moduleInformation = {
-    name: 'Plates for growth strains',
-    description: 'Builds and display plates for strains growth',
+    name: 'Well plate manager',
+    description: 'Builds and display well plates',
     author: 'Javier I. Osorio M.',
     date: '23.06.2020',
     license: 'MIT',
@@ -132,12 +132,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
             },
             shape: {
               type: 'combo',
-              default: 'style1',
+              default: 'aligned',
               title: 'Shape',
               options: [
-                { title: 'Style 1', key: 'style1' },
-                { title: 'Style 2', key: 'style2' },
-                { title: 'Style 3', key: 'style3' },
+                { title: 'Aligned', key: 'aligned' },
+                { title: 'Pair shifted', key: 'pairShifted' },
+                { title: 'Odd shifted', key: 'oddShifted' },
               ]
             }
           }

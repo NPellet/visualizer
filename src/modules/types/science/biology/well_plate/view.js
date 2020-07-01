@@ -40,16 +40,16 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     inDom: function () {
       const that = this;
       this.dom.on('mouseenter mouseleave click', 'td', function (e) {
-        const cellsList = that.cellsList,
-          plate = $(this).parents(':eq(3)').index(),
-          trIndex = $(this).parent().index(),
-          tdIndex = $(this).index(),
-          cols = that.cols,
-          rows = that.rows,
-          direction = that.module.getConfiguration('direction', 'vertical') || 'vertical',
-          elementId = direction === 'vertical' ?
-            (plate * cols * rows) + tdIndex * rows + trIndex :
-            (plate * cols * rows) + trIndex * cols + tdIndex;
+        const cellsList = that.cellsList;
+        const plate = $(this).parents(':eq(3)').index();
+        const trIndex = $(this).parent().index();
+        const tdIndex = $(this).index();
+        const cols = that.cols;
+        const rows = that.rows;
+        const direction = that.module.getConfiguration('direction', 'vertical') || 'vertical';
+        const elementId = direction === 'vertical' ?
+          (plate * cols * rows) + tdIndex * rows + trIndex :
+          (plate * cols * rows) + trIndex * cols + tdIndex;
         if (!cellsList[elementId]) return;
         let highlight = cellsList[elementId]._highlight;
         if (e.type === 'mouseenter') {
@@ -79,39 +79,39 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
 
     update: {
       plate: function (moduleValue) {
-        const cfg = this.module.getConfiguration,
-          cfgc = this.module.getConfigurationCheckbox,
-          cols = cfg('colnumber', 4) || 4,
-          rows = cfg('rownumber', 4) || 4,
-          style = cfg('shape', 'style2') || 'style2',
-          direction = cfg('direction', 'vertical') || 'vertical',
-          random = cfg('random', 'sequential') || 'sequential',
-          colorJpath = cfg('colorjpath', false),
-          val = moduleValue.get(),
-          colorBySample = cfgc('colorBySample', 'yes'),
-          colorByJpathValue = cfgc('colorByJpathValue', 'yes'),
-          colorByJpath = cfgc('colorByJpath', 'yes'),
-          replicates = val.replicates,
-          mode = random === 'random' ? true : false,
-          control = val.control ? Object.entries(val.control) : false;
+        const cfg = this.module.getConfiguration;
+        const cfgc = this.module.getConfigurationCheckbox;
+        const cols = cfg('colnumber', 4) || 4;
+        const rows = cfg('rownumber', 4) || 4;
+        const style = cfg('shape', 'aligned') || 'aligned';
+        const direction = cfg('direction', 'vertical') || 'vertical';
+        const random = cfg('random', 'sequential') || 'sequential';
+        const colorJpath = cfg('colorjpath', false);
+        const val = moduleValue.get();
+        const colorBySample = cfgc('colorBySample', 'yes');
+        const colorByJpathValue = cfgc('colorByJpathValue', 'yes');
+        const colorByJpath = cfgc('colorByJpath', 'yes');
+        const replicates = val.replicates;
+        const mode = random === 'random' ? true : false;
+        const control = val.control ? Object.entries(val.control) : false;
         this.plate = val;
         let shape;
         switch (style) {
-          case 'style1': {
+          case 'aligned': {
             shape = {
               shift: false,
               margin: undefined,
             };
             break;
           }
-          case 'style2': {
+          case 'pairShifted': {
             shape = {
               margin: true,
               index: 0,
             };
             break;
           }
-          case 'style3': {
+          case 'oddShifted': {
             shape = {
               margin: true,
               index: 1,
@@ -119,28 +119,28 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             break;
           }
         }
-  
-        const parameters = val.parameters,
-          samplesList = this.buildList(parameters),
-          cellLabels = createCellLabels({
-            cols: cols,
-            rows: rows
-          }, 2, { direction: direction }),
-          color = Color.getDistinctColorsAsString(samplesList.length);
+        const parameters = val.parameters;
+        const samplesList = this.buildList(parameters);
+        const nbSamples = samplesList.length * replicates;
+        const cellLabels = createCellLabels({
+          cols: cols,
+          rows: rows
+        }, 2, { direction: direction });
+        const color = Color.getDistinctColorsAsString(samplesList.length);
         let labelsList = cellLabels.cellLabels;
-        const axis = cellLabels.axis,
-          nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length,
-          nbColumns = axis.filter((x) => x[0] === 'cols')[0][1].length;
+        const axis = cellLabels.axis;
+        const nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length;
+        const nbColumns = axis.filter((x) => x[0] === 'cols')[0][1].length;
         this.samplesList = samplesList;
         this.rows = nbRows;
         this.cols = nbColumns;
         let controlItems = addControls(samplesList, labelsList, control, replicates);
-        const order = sortArray(94);
+        const order = sortArray(nbSamples + controlItems.length);
         addReplicates(samplesList, labelsList, color, replicates, order, mode);
         this.module.controller.createDataFromEvent('onSample', 'list', samplesList);
         const cellsList = builtPlate(samplesList, labelsList, replicates, nbRows, nbColumns);
-        const nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        const nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns));
+        const tables = this.buildGrid(cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.module.controller.createDataFromEvent('onList', 'list', cellsList);
         this.cellsList = cellsList;
         this.dom.html(tables);
@@ -168,7 +168,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           arrayPath = arrayPath[arrayPath.length - 1];
           const jpathItems = moduleValue.parameters[`${arrayPath}`].map((x) => x.substr());
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, arrayPath, jpathItems);
+            this.addConfigurations(grid, i, arrayPath, jpathItems);
           }
         }
 
@@ -177,7 +177,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           let arrayPath = jpathValue.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, arrayPath);
+            this.addConfigurations(grid, i, arrayPath);
           }
         }
         
@@ -189,37 +189,37 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
       },
 
       cellsList: function (moduleValue) {
-        const cfg = this.module.getConfiguration,
-          cfgc = this.module.getConfigurationCheckbox,
-          cols = cfg('colnumber', 4) || 4,
-          rows = cfg('rownumber', 4) || 4,
-          style = cfg('shape', 'style2') || 'style2',
-          direction = cfg('direction', 'vertical') || 'vertical',
-          colorJpath = cfg('colorjpath', false),
-          cellsList = moduleValue.get(),
-          labelsList = cellsList.map((x) => x.pos),
-          colorBySample = cfgc('colorBySample', 'yes'),
-          colorByJpathValue = cfgc('colorByJpathValue', 'yes'),
-          colorByJpath = cfgc('colorByJpath', 'yes');
+        const cfg = this.module.getConfiguration;
+        const cfgc = this.module.getConfigurationCheckbox;
+        const cols = cfg('colnumber', 4) || 4;
+        const rows = cfg('rownumber', 4) || 4;
+        const style = cfg('shape', 'aligned') || 'aligned';
+        const direction = cfg('direction', 'vertical') || 'vertical';
+        const colorJpath = cfg('colorjpath', false);
+        const cellsList = moduleValue.get();
+        const labelsList = cellsList.map((x) => x.cell);
+        const colorBySample = cfgc('colorBySample', 'yes');
+        const colorByJpathValue = cfgc('colorByJpathValue', 'yes');
+        const colorByJpath = cfgc('colorByJpath', 'yes');
         this.cellsList = cellsList;
         this.module.controller.createDataFromEvent('onList', 'list', cellsList);
         let shape;
         switch (style) {
-          case 'style1': {
+          case 'aligned': {
             shape = {
               shift: false,
               margin: undefined,
             };
             break;
           }
-          case 'style2': {
+          case 'pairShifted': {
             shape = {
               margin: true,
               index: 0,
             };
             break;
           }
-          case 'style3': {
+          case 'oddShifted': {
             shape = {
               margin: true,
               index: 1,
@@ -238,12 +238,12 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             entries[i][1] = parseInt(entries[i][1]);
           }
         }
-        const nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
-          nbColumns = entries.filter((x) => x[0] === 'cols')[0][1];
+        const nbRows = entries.filter((x) => x[0] === 'rows')[0][1];
+        const nbColumns = entries.filter((x) => x[0] === 'cols')[0][1];
         this.rows = nbRows;
         this.cols = nbColumns;
-        const nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        const nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns));
+        const tables = this.buildGrid(cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.dom.html(tables);
         const tableNodes = this.dom.find(':eq(0)').children();
         let grid = [];
@@ -284,7 +284,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             if (element === undefined) this.push(item[`${arrayPath}`].substr());
           }, jpathItems);
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, arrayPath, jpathItems);
+            this.addConfigurations(grid, i, arrayPath, jpathItems);
           }
         }
 
@@ -293,7 +293,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           let arrayPath = jpathValue.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, arrayPath);
+            this.addConfigurations(grid, i, arrayPath);
           }
         }
 
@@ -303,18 +303,18 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
       },
 
       samplesList: function (moduleValue) {
-        const cfg = this.module.getConfiguration,
-          cfgc = this.module.getConfigurationCheckbox,
-          cols = cfg('colnumber', 4) || 4,
-          rows = cfg('rownumber', 4) || 4,
-          style = cfg('shape', 'style2') || 'style2',
-          direction = cfg('direction', 'vertical') || 'vertical',
-          colorJpath = cfg('colorjpath', false),
-          samplesList = moduleValue.get(),
-          labels = samplesList.map((element) => element.cells),
-          colorBySample = cfgc('colorBySample', 'yes'),
-          colorByJpathValue = cfgc('colorByJpathValue', 'yes'),
-          colorByJpath = cfgc('colorByJpath', 'yes');
+        const cfg = this.module.getConfiguration;
+        const cfgc = this.module.getConfigurationCheckbox;
+        const cols = cfg('colnumber', 4) || 4;
+        const rows = cfg('rownumber', 4) || 4;
+        const style = cfg('shape', 'aligned') || 'aligned';
+        const direction = cfg('direction', 'vertical') || 'vertical';
+        const colorJpath = cfg('colorjpath', false);
+        const samplesList = moduleValue.get();
+        const labels = samplesList.map((element) => element.cells);
+        const colorBySample = cfgc('colorBySample', 'yes');
+        const colorByJpathValue = cfgc('colorByJpathValue', 'yes');
+        const colorByJpath = cfgc('colorByJpath', 'yes');
         const replicates = labels[0].length;
         let labelsList = [];
         for (let i = 0; i < labels.length; i++) {
@@ -322,22 +322,23 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
         }
         this.samplesList = samplesList;
         let shape;
+        
         switch (style) {
-          case 'style1': {
+          case 'aligned': {
             shape = {
               shift: false,
               margin: undefined,
             };
             break;
           }
-          case 'style2': {
+          case 'pairShifted': {
             shape = {
               margin: true,
               index: 0,
             };
             break;
           }
-          case 'style3': {
+          case 'oddShifted': {
             shape = {
               margin: true,
               index: 1,
@@ -356,14 +357,13 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             entries[i][1] = parseInt(entries[i][1]);
           }
         }
-        let nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
-          nbColumns = entries.filter((x) => x[0] === 'cols')[0][1],
-          cellsList = builtPlate(samplesList, labelsList, replicates, nbRows, nbColumns);
-        
+        const nbRows = entries.filter((x) => x[0] === 'rows')[0][1];
+        const nbColumns = entries.filter((x) => x[0] === 'cols')[0][1];
+        const cellsList = builtPlate(samplesList, labelsList, replicates, nbRows, nbColumns);
         this.module.controller.createDataFromEvent('onList', 'list', cellsList);
         this.cellsList = cellsList;
-        let nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(this.cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        let nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns));
+        let tables = this.buildGrid(this.cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.dom.html(tables);
         this.rows = nbRows;
         this.cols = nbColumns;
@@ -396,7 +396,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             if (element === undefined) this.push(item[`${arrayPath}`].substr());
           }, jpathItems);
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, arrayPath, jpathItems);
+            this.addConfigurations(grid, i, arrayPath, jpathItems);
           }
         }
 
@@ -405,7 +405,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           let arrayPath = jpathValue.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           for (let i = 0; i < grid.length; i++) {
-            this.addConfigs(grid, i, arrayPath);
+            this.addConfigurations(grid, i, arrayPath);
           }
         }
 
@@ -416,7 +416,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
       },
     },
 
-    addConfigs: function (grid, currentItem, colorJpath, jpathItems) {
+    addConfigurations: function (grid, currentItem, colorJpath, jpathItems) {
       let color;
       if (jpathItems) color = Color.getDistinctColorsAsString(jpathItems.length);
       const element = this.cellsList[currentItem];
@@ -449,8 +449,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     },
 
     listenHighlight: function (grid, highlightList, samplesList, i) {
-      const that = this,
-        replicates = samplesList[i].cells.length;
+      const that = this;
+      const replicates = samplesList[i].cells.length;
       API.listenHighlight({ _highlight: highlightList }, function (onOff, key) {
         const sampleIndex = samplesList.findIndex((x) => x._highlight === key[0]);
         let counter = 0;
@@ -495,16 +495,16 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
                 (u * nbRows * nbColumns) + (j * nbRows) + i :
                 (u * nbRows * nbColumns) + (i * nbColumns) + j,
               td = $('<td>'),
-              cellBottom = $('<div>').addClass('cell-bottom').css({
+              cellBottom = $('<div>').addClass('well-plate-cell-bottom').css({
                 'border-style': cellBorderStyle,
                 'border-radius': `${cellSize}px`,
                 height: `${cellSize}px`,
                 width: `${cellSize}px`,
               }),
-              cellTop = $('<div>').addClass('cell-top'),
+              cellTop = $('<div>').addClass('well-plate-cell-top'),
               label = $('<div>').text(typeof labelsList[index] === 'object' || typeof labelsList[index] === 'string' ?
                 labelsList[index].slice(0, -2) : index + 1);
-            label.addClass('cell-top');
+            label.addClass('well-plate-cell-top');
             if (shape.margin && (j + shape.index) % 2 !== 0) cellBottom.css({ margin: '30px 0px 0px 0px' });
             let element = colorBySample ? cellsList : new Array(cellsList.length).fill({ color: 'rgba(141, 234, 106)' });
             cellTop.css({
@@ -526,7 +526,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     buildList: function (parameters) {
       let variables = Object.entries(parameters);
       variables = variables.filter((x) => Array.isArray(x[1]));
-      let currentList = []; let samplesList = [];
+      let currentList = [];
+      let samplesList = [];
       for (let i = 0; i < variables.length; i++) {
         let calculatedVariable = []; let obj = {};
         if (!Array.isArray(variables[i][1])) {
@@ -549,7 +550,6 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
       return samplesList;
     }
   });
-
   return View;
 });
 
@@ -620,7 +620,6 @@ function createCellLabels(config, nbPlates, options = {}) {
 function builtPlate(samplesList, labelsList, replicates2, rows, cols) {
   let result = [];
   let iterations = samplesList.length;
-  
   for (let i = 0; i < iterations; i++) {
     let block = [];
     let obj = {};
@@ -685,10 +684,11 @@ function addControls(list, labelsList, control, replicates) {
     }
     let newItem = {
       cells: samples,
-      color: 'rgba(175, 175, 175, 1)',
+      color: 'rgba(100, 100, 100, 1)',
       [`${label}`]: control[i][1]
     };
     list.push(newItem);
+    items.push(...samples);
     samples = [];
   }
   return items;

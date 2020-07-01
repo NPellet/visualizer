@@ -1,19 +1,176 @@
 {
   "version": "2.116.2-0",
   "grid": {
-    "xWidth": 10,
-    "yHeight": 10,
     "layers": {
       "Default layer": {
         "name": "Default layer"
       }
-    }
+    },
+    "xWidth": 10,
+    "yHeight": 10
   },
   "modules": [
     {
-      "url": "modules/types/client_interaction/code_executor/",
+      "url": "modules/types/science/biology/well_plate/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "cellSize": [
+                35
+              ],
+              "colnumber": [
+                10
+              ],
+              "rownumber": [
+                "H"
+              ],
+              "cellBorderStyle": [
+                "solid"
+              ],
+              "direction": [
+                "vertical"
+              ],
+              "random": [
+                "sequential"
+              ],
+              "shape": [
+                "aligned"
+              ]
+            }
+          ],
+          "colorOptions": [
+            {
+              "colorBySample": [
+                [
+                  "yes"
+                ]
+              ],
+              "colorByJpath": [
+                []
+              ],
+              "colorjPath": [
+                null
+              ],
+              "colorByJpathValue": [
+                []
+              ],
+              "color": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "jpathValue": [
+                ""
+              ],
+              "max": [
+                ""
+              ],
+              "min": [
+                ""
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 3
+          },
+          "size": {
+            "width": 58,
+            "height": 69
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
       "id": 1,
-      "title": "",
+      "vars_in": [
+        {
+          "rel": "plate",
+          "name": "preferences"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onSample",
+          "rel": "list",
+          "jpath": [],
+          "name": "samples"
+        },
+        {
+          "event": "onTrackMouse",
+          "rel": "trackData",
+          "jpath": [],
+          "name": "track"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
       "configuration": {
         "sections": {},
         "groups": {
@@ -34,7 +191,7 @@
                 ]
               ],
               "script": [
-                "let preferences = {\n    \"parameters\": {\n        \"extracts\":[\"Peptide61\",\"Peptide96\",\"Peptide102\",\"Peptide103\",\"Peptide104\"],\n        \"concentration\":[\"0.666\",\"0.333\",\"0.165\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\"],\n    },\n    \"control\":{\n        \"extracts\":[\"Peptide61\",\"Peptide96\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\"]\n    },\n    \"replicates\": 3\n}\n\nAPI.createData('preferences', preferences);\n"
+                "let preferences = {\n    \"parameters\": {\n        \"extracts\":[\"Peptide61\",\"Peptide96\",\"Peptide102\",\"Peptide103\",\"Peptide104\"],\n        \"concentration\":[\"0.666\",\"0.333\",\"0.165\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\"],\n    },\n    \"control\":{\n        \"extracts\":[\"Peptide61\",\"Peptide96\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\", \"C_albicans_5316\"]\n    },\n    \"replicates\": 3\n}\n\nAPI.createData('preferences', preferences);\n"
               ]
             }
           ],
@@ -57,234 +214,31 @@
       },
       "layers": {
         "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 73
+          },
+          "size": {
+            "width": 58,
+            "height": 18
+          },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "position": {
-            "left": 0,
-            "top": 72
-          },
-          "size": {
-            "width": 50,
-            "height": 28
-          },
           "bgColor": [
             255,
             255,
             255,
             0
-          ]
-        }
-      },
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [
-            ""
           ],
-          "fontFamily": [
-            ""
-          ]
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
         }
-      ]
-    },
-    {
-      "url": "modules/types/edition/slick_grid/",
+      },
       "id": 2,
-      "title": "",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "slickCheck": [
-                [
-                  "enableCellNavigation",
-                  "rowNumbering",
-                  "forceFitColumns",
-                  "highlightScroll",
-                  "forgetLastActive"
-                ]
-              ],
-              "copyPaste": [
-                []
-              ],
-              "copyPasteOptions": [
-                [
-                  "newRows"
-                ]
-              ],
-              "autoColumns": [
-                []
-              ],
-              "toolbar": [
-                []
-              ],
-              "colorjpath": [
-                []
-              ],
-              "slick.defaultColumnWidth": [
-                null
-              ],
-              "slick.rowHeight": [
-                null
-              ],
-              "slick.headerRowHeight": [
-                30
-              ],
-              "slick.selectionModel": [
-                "row"
-              ],
-              "idProperty": [
-                ""
-              ],
-              "filterType": [
-                "pref"
-              ],
-              "filterRow": [
-                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
-              ],
-              "customJpaths": [
-                ""
-              ]
-            }
-          ],
-          "cols": [
-            [
-              {
-                "editor": "none",
-                "forceType": "",
-                "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "",
-                "editorOptions": "",
-                "jpath": [],
-                "hideColumn": []
-              }
-            ]
-          ],
-          "actionCols": [
-            [
-              {
-                "position": "end",
-                "clickMode": "text",
-                "backgroundColor": [
-                  255,
-                  255,
-                  255,
-                  0
-                ],
-                "color": [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              }
-            ]
-          ],
-          "groupings": [
-            [
-              {
-                "getter": []
-              }
-            ]
-          ],
-          "actionOutButtons": [
-            [
-              {}
-            ]
-          ],
-          "data": [
-            {
-              "saveInView": [
-                []
-              ],
-              "varname": [
-                ""
-              ],
-              "data": [
-                "[]"
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "position": {
-            "left": 51,
-            "top": 15
-          },
-          "size": {
-            "width": 31,
-            "height": 56
-          },
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ]
-        }
-      },
       "vars_in": [
-        {
-          "rel": "list",
-          "name": "samples"
-        }
+        {}
       ],
       "actions_in": [
         {}
@@ -335,7 +289,8 @@
             ""
           ]
         }
-      ]
+      ],
+      "title": ""
     },
     {
       "url": "modules/types/display/template-twig/",
@@ -368,12 +323,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 51,
-            "top": 0
+            "left": 60,
+            "top": 3
           },
           "size": {
-            "width": 31,
-            "height": 14
+            "width": 35,
+            "height": 16
           },
           "zIndex": 0,
           "display": true,
@@ -449,67 +404,121 @@
       "title": ""
     },
     {
-      "url": "modules/types/science/biology/growth_plate/",
+      "url": "modules/types/edition/slick_grid/",
       "configuration": {
         "sections": {},
         "groups": {
           "group": [
             {
-              "cellSize": [
-                35
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
               ],
-              "colnumber": [
-                10
+              "copyPaste": [
+                []
               ],
-              "rownumber": [
-                "H"
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
               ],
-              "cellBorderStyle": [
-                "solid"
+              "autoColumns": [
+                []
               ],
-              "direction": [
-                "vertical"
+              "toolbar": [
+                []
               ],
-              "random": [
-                "sequential"
+              "colorjpath": [
+                []
               ],
-              "shape": [
-                "style1"
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
               ]
             }
           ],
-          "colorOptions": [
-            {
-              "colorBySample": [
-                [
-                  "yes"
-                ]
-              ],
-              "colorByJpath": [
-                []
-              ],
-              "colorjPath": [
-                null
-              ],
-              "colorByJpathValue": [
-                []
-              ],
-              "color": [
-                [
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
                   0,
                   0,
                   0,
                   1
-                ]
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
               ],
-              "jpathValue": [
+              "varname": [
                 ""
               ],
-              "max": [
-                ""
-              ],
-              "min": [
-                ""
+              "data": [
+                "[]"
               ]
             }
           ]
@@ -518,12 +527,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 60,
+            "top": 20
           },
           "size": {
-            "width": 50,
-            "height": 71
+            "width": 35,
+            "height": 52
           },
           "zIndex": 0,
           "display": true,
@@ -539,11 +548,11 @@
           "name": "Default layer"
         }
       },
-      "id": 6,
+      "id": 4,
       "vars_in": [
         {
-          "rel": "plate",
-          "name": "preferences"
+          "rel": "list",
+          "name": "samples"
         }
       ],
       "actions_in": [
@@ -551,16 +560,7 @@
       ],
       "vars_out": [
         {
-          "event": "onTrackMouse",
-          "rel": "trackData",
-          "jpath": [],
-          "name": "track"
-        },
-        {
-          "event": "onSample",
-          "rel": "list",
-          "jpath": [],
-          "name": "samples"
+          "jpath": []
         }
       ],
       "actions_out": [
@@ -608,32 +608,7 @@
       "title": ""
     }
   ],
-  "variables": [
-    {
-      "varname": "preferences",
-      "jpath": [
-        "preferences"
-      ]
-    },
-    {
-      "varname": "samples",
-      "jpath": [
-        "samples"
-      ]
-    },
-    {
-      "varname": "plate",
-      "jpath": [
-        "plate"
-      ]
-    },
-    {
-      "varname": "hover",
-      "jpath": [
-        "hover"
-      ]
-    }
-  ],
+  "variables": [],
   "aliases": [],
   "configuration": {
     "title": "No title"
