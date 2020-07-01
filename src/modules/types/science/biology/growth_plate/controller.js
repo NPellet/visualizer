@@ -1,8 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
-  var typeList = Util.getStructuresComboOptions();
-
+define(['modules/default/defaultcontroller'], function (Default) {
   function Controller() {
   }
   
@@ -10,7 +8,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
 
   Controller.prototype.moduleInformation = {
     name: 'Plates for growth strains',
-    description: 'Build your growth strains data manager',
+    description: 'Builds and display plates for strains growth',
     author: 'Javier I. Osorio M.',
     date: '23.06.2020',
     license: 'MIT',
@@ -27,11 +25,11 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
       label: 'The array of data to display',
       type: 'array'
     },
-    sampleList: {
+    samplesList: {
       label: 'The array of samples to display',
       type: 'array'
     },
-    cellList: {
+    cellsList: {
       label: 'The array of cells to display',
       type: 'array'
     },
@@ -66,19 +64,19 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     },
   };
 
-  Controller.prototype.variablesIn = ['sampleList', 'cellList', 'plate'];
+  Controller.prototype.variablesIn = ['samplesList', 'cellsList', 'plate'];
 
   Controller.prototype.actionsIn = {
     addElement: 'Add an element'
   };
   Controller.prototype.configurationStructure = function () {
-    let removeList = ['pos', 'plate', 'cells', 'color'],
+    const removeList = ['pos', 'plate', 'cells', 'color'],
       jpaths = this.module.model.getjPath();
     if (jpaths.length !== 0) {
       jpaths[0].children = jpaths[0].children
         .filter((item) => !removeList.find((x) => x === item.title));
     }
-    let currentVariable = this.module.model.listRels[0],
+    const currentVariable = this.module.model.listRels[0],
       display = currentVariable === 'plate' ? true : false;
     
     return {
@@ -132,6 +130,33 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
               ],
               displayed: display
             },
+            shape: {
+              type: 'combo',
+              default: 'style1',
+              title: 'Shape',
+              options: [
+                { title: 'Style 1', key: 'style1' },
+                { title: 'Style 2', key: 'style2' },
+                { title: 'Style 3', key: 'style3' },
+              ]
+            }
+          }
+        },
+        colorOptions: {
+          options: {
+            type: 'list',
+            multiple: true,
+            title: 'Color bar options'
+          },
+          fields: {
+            colorBySample: {
+              type: 'checkbox',
+              title: 'Color by sample',
+              options: {
+                yes: 'Yes'
+              },
+              default: [],
+            },
             colorByJpath: {
               type: 'checkbox',
               title: 'Color by jpath',
@@ -145,14 +170,6 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
               options: jpaths,
               displayTarget: ['x']
             },
-            colorBySample: {
-              type: 'checkbox',
-              title: 'Color by sample',
-              options: {
-                yes: 'Yes'
-              },
-              default: [],
-            },
             colorByJpathValue: {
               type: 'checkbox',
               title: 'Color by jpath value',
@@ -161,8 +178,8 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
               displaySource: { yes: 'y' }
             },
             color: {
-              type: 'text',
-              default: '255, 0, 0',
+              type: 'spectrum',
+              default: '',
               title: 'Background color',
               displayTarget: ['y']
             },
@@ -186,37 +203,28 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
               title: 'Min value',
               displayTarget: ['y']
             },
-            shape: {
-              type: 'combo',
-              default: 'style1',
-              title: 'Shape',
-              options: [
-                { title: 'Style 1', key: 'style1' },
-                { title: 'Style 2', key: 'style2' },
-                { title: 'Style 3', key: 'style3' },
-              ]
-            }
           }
-        }
+        },
       }
     };
   };
 
   Controller.prototype.configAliases = {
     cellBorderStyle: ['groups', 'group', 0, 'cellBorderStyle', 0],
-    colorBySample: ['groups', 'group', 0, 'colorBySample', 0],
+    colorBySample: ['groups', 'colorOptions', 0, 'colorBySample', 0],
     cellSize: ['groups', 'group', 0, 'cellSize', 0],
     colnumber: ['groups', 'group', 0, 'colnumber', 0],
     rownumber: ['groups', 'group', 0, 'rownumber', 0],
     direction: ['groups', 'group', 0, 'direction', 0],
     random: ['groups', 'group', 0, 'random', 0],
-    colorjpath: ['groups', 'group', 0, 'colorjPath', 0],
+    colorjpath: ['groups', 'colorOptions', 0, 'colorjPath', 0],
     shape: ['groups', 'group', 0, 'shape', 0],
-    colorByJpathValue: ['groups', 'group', 0, 'colorByJpathValue', 0],
-    color: ['groups', 'group', 0, 'color', 0],
-    jpathValue: ['groups', 'group', 0, 'jpathValue', 0],
-    max: ['groups', 'group', 0, 'max', 0],
-    min: ['groups', 'group', 0, 'min', 0],
+    colorByJpathValue: ['groups', 'colorOptions', 0, 'colorByJpathValue', 0],
+    colorByJpath: ['groups', 'colorOptions', 0, 'colorByJpath', 0],
+    color: ['groups', 'colorOptions', 0, 'color', 0],
+    jpathValue: ['groups', 'colorOptions', 0, 'jpathValue', 0],
+    max: ['groups', 'colorOptions', 0, 'max', 0],
+    min: ['groups', 'colorOptions', 0, 'min', 0],
   };
   return Controller;
 });

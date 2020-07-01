@@ -12,7 +12,7 @@
   "modules": [
     {
       "url": "modules/types/client_interaction/code_executor/",
-      "id": 2,
+      "id": 1,
       "title": "",
       "configuration": {
         "sections": {},
@@ -34,7 +34,7 @@
                 ]
               ],
               "script": [
-                "let preferences = {\n    \"parameters\": {\n        \"extracts\":[\"Peptide61\",\"Peptide96\",\"Peptide102\",\"Peptide103\",\"Peptide104\"],\n        \"concentration\":[\"0.666\",\"0.333\",\"0.165\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\"],\n    },\n    \"setup\":{\n        \"control\":[],\n        \"blank\":[]\n    },\n    \"replicates\": 3\n}\n\nAPI.createData('preferences', preferences);\n\n\n"
+                "let preferences = {\n    \"parameters\": {\n        \"extracts\":[\"Peptide61\",\"Peptide96\",\"Peptide102\",\"Peptide103\",\"Peptide104\"],\n        \"concentration\":[\"0.666\",\"0.333\",\"0.165\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\"],\n    },\n    \"control\":{\n        \"extracts\":[\"Peptide61\",\"Peptide96\"],\n        \"strain\":[\"C_albicans_5314\", \"C_albicans_5315\"]\n    },\n    \"replicates\": 3\n}\n\nAPI.createData('preferences', preferences);\n"
               ]
             }
           ],
@@ -69,7 +69,7 @@
           },
           "size": {
             "width": 50,
-            "height": 14
+            "height": 28
           },
           "bgColor": [
             255,
@@ -135,7 +135,7 @@
     },
     {
       "url": "modules/types/edition/slick_grid/",
-      "id": 3,
+      "id": 2,
       "title": "",
       "configuration": {
         "sections": {},
@@ -348,7 +348,7 @@
                 []
               ],
               "template": [
-                "<div align='center'>\n    <h1>{{track.strain}}</h1>\n    \n    <table>\n\n        {% if track.cells %}\n            <tr>\n                <th>Number of pozos:</th>\n                <td>{{track.cells}}</td>           \n            </tr>\n        {% endif %}\n        {% if track.concentration %}\n            <tr>\n                <th>Concentration:</th>\n                <td>{{track.concentration}}</td>           \n            </tr>\n        {% endif %}\n\n        {% if track.extracts %}\n            <tr>\n                <th> Extract:</th>\n                <td>{{track.extracts}}</td>           \n            </tr>\n        {% endif %}\n        {% if track.color %}\n            <tr>\n                <th>Color:</th>\n                <td style=\"background-color: {{track.color}}\"></td>           \n            </tr>\n        {% endif %}\n        {% if track.pos %}\n            <tr>\n                <th> Date:</th>\n                <td>{{track.pos}}</td>           \n            </tr>\n        {% endif %}\n    </table>\n</div>"
+                "<div align='center'>\n    <h1>{{track.strain}}</h1>\n    \n    <table>\n\n        {% if track.cells %}\n            <tr>\n                <th>Number of pozos:</th>\n                <td>{{track.cells}}</td>           \n            </tr>\n        {% endif %}\n        {% if track.concentration %}\n            <tr>\n                <th>Concentration:</th>\n                <td>{{track.concentration}}</td>           \n            </tr>\n        {% endif %}\n\n        {% if track.extracts %}\n            <tr>\n                <th> Extract:</th>\n                <td>{{track.extracts}}</td>           \n            </tr>\n        {% endif %}\n        {% if track.color %}\n            <tr>\n                <th>Color:</th>\n                <td style=\"background-color: {{track.color}}\"></td>           \n            </tr>\n        {% endif %}\n        {% if track.cell %}\n            <tr>\n                <th> Date:</th>\n                <td>{{track.cell}}</td>           \n            </tr>\n        {% endif %}\n    </table>\n</div>"
               ],
               "modifyInForm": [
                 []
@@ -389,7 +389,7 @@
           "name": "Default layer"
         }
       },
-      "id": 4,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
@@ -455,9 +455,6 @@
         "groups": {
           "group": [
             {
-              "colorBySample": [
-                []
-              ],
               "cellSize": [
                 35
               ],
@@ -465,7 +462,7 @@
                 10
               ],
               "rownumber": [
-                10
+                "H"
               ],
               "cellBorderStyle": [
                 "solid"
@@ -476,11 +473,43 @@
               "random": [
                 "sequential"
               ],
+              "shape": [
+                "style1"
+              ]
+            }
+          ],
+          "colorOptions": [
+            {
+              "colorBySample": [
+                [
+                  "yes"
+                ]
+              ],
+              "colorByJpath": [
+                []
+              ],
               "colorjPath": [
                 null
               ],
-              "shape": [
-                "style1"
+              "colorByJpathValue": [
+                []
+              ],
+              "color": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "jpathValue": [
+                ""
+              ],
+              "max": [
+                ""
+              ],
+              "min": [
+                ""
               ]
             }
           ]
@@ -522,16 +551,16 @@
       ],
       "vars_out": [
         {
-          "event": "onSample",
-          "rel": "list",
-          "jpath": [],
-          "name": "samples"
-        },
-        {
           "event": "onTrackMouse",
           "rel": "trackData",
           "jpath": [],
           "name": "track"
+        },
+        {
+          "event": "onSample",
+          "rel": "list",
+          "jpath": [],
+          "name": "samples"
         }
       ],
       "actions_out": [

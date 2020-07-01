@@ -1,15 +1,14 @@
 'use strict';
 
-const _ = require('lodash');
 
-define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 'src/util/util', 'src/util/color'], function (Default, Renderer, API, Util, Color) {
+define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], function (Default, API, Color) {
   function View() {
   }
   
   $.extend(true, View.prototype, Default, {
     
     init: function () {
-      var html = [];
+      let html = [];
       html.push('<div></div>');
       this.dom = $(html.join(''));
       this.module.getDomContent().html(this.dom);
@@ -18,30 +17,30 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     blank: {
       plate: function () {
         this.plate = null;
-        this.plateVar = null;
-        this.nestedList = null;
+        this.cellsList = null;
+        this.samplesList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
-      cellList: function () {
+      cellsList: function () {
         this.plate = null;
-        this.plateVar = null;
+        this.cellsList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
-      sampleList: function () {
+      samplesList: function () {
         this.plate = null;
-        this.plateVar = null;
-        this.nestedList = null;
+        this.cellsList = null;
+        this.samplesList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
     },
 
     inDom: function () {
-      var that = this;
+      const that = this;
       this.dom.on('mouseenter mouseleave click', 'td', function (e) {
-        var plateVar = that.plateVar,
+        const cellsList = that.cellsList,
           plate = $(this).parents(':eq(3)').index(),
           trIndex = $(this).parent().index(),
           tdIndex = $(this).index(),
@@ -51,18 +50,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           elementId = direction === 'vertical' ?
             (plate * cols * rows) + tdIndex * rows + trIndex :
             (plate * cols * rows) + trIndex * cols + tdIndex;
-        if (!plateVar[elementId]) return;
-        let highlight = plateVar[elementId]._highlight;
+        if (!cellsList[elementId]) return;
+        let highlight = cellsList[elementId]._highlight;
         if (e.type === 'mouseenter') {
           that.module.controller.createDataFromEvent(
             'onTrackMouse',
             'trackData',
-            plateVar[elementId],
+            cellsList[elementId],
           );
           that.module.controller.sendActionFromEvent(
             'onTrackMouse',
             'trackData',
-            plateVar[elementId],
+            cellsList[elementId],
           );
           API.highlight([highlight], 1);
         } else if (e.type === 'mouseleave') {
@@ -71,7 +70,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           that.module.controller.sendActionFromEvent(
             'onTrackClick',
             'trackData',
-            plateVar[elementId],
+            cellsList[elementId],
           );
         }
       });
@@ -80,7 +79,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 
     update: {
       plate: function (moduleValue) {
-        var cfg = this.module.getConfiguration,
+        const cfg = this.module.getConfiguration,
+          cfgc = this.module.getConfigurationCheckbox,
           cols = cfg('colnumber', 4) || 4,
           rows = cfg('rownumber', 4) || 4,
           style = cfg('shape', 'style2') || 'style2',
@@ -88,11 +88,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           random = cfg('random', 'sequential') || 'sequential',
           colorJpath = cfg('colorjpath', false),
           val = moduleValue.get(),
-          colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
-          colorByJpathValue = this.module.getConfigurationCheckbox('colorByJpathValue', 'yes'),
-          replicates = val.replicates;
+          colorBySample = cfgc('colorBySample', 'yes'),
+          colorByJpathValue = cfgc('colorByJpathValue', 'yes'),
+          colorByJpath = cfgc('colorByJpath', 'yes'),
+          replicates = val.replicates,
+          mode = random === 'random' ? true : false,
+          control = val.control ? Object.entries(val.control) : false;
         this.plate = val;
-        let mode = random === 'random' ? true : false;
         let shape;
         switch (style) {
           case 'style1': {
@@ -118,30 +120,31 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
   
-        var parameters = val.parameters,
-          nestedList = this.buildList(parameters),
+        const parameters = val.parameters,
+          samplesList = this.buildList(parameters),
           cellLabels = createCellLabels({
             cols: cols,
             rows: rows
           }, 2, { direction: direction }),
-          color = Color.getDistinctColorsAsString(nestedList.length),
-          labelsList = cellLabels.cellLabels,
-          axis = cellLabels.axis,
+          color = Color.getDistinctColorsAsString(samplesList.length);
+        let labelsList = cellLabels.cellLabels;
+        const axis = cellLabels.axis,
           nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length,
           nbColumns = axis.filter((x) => x[0] === 'cols')[0][1].length;
-        this.nestedList = nestedList;
+        this.samplesList = samplesList;
         this.rows = nbRows;
         this.cols = nbColumns;
-        var order = sortArray(nestedList.length * replicates);
-        addReplicates(nestedList, labelsList, color, replicates, order, mode);
-        this.module.controller.createDataFromEvent('onSample', 'list', nestedList);
-        var plateVar = builtPlate(nestedList, labelsList, replicates, nbRows, nbColumns),
-          nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
-        this.module.controller.createDataFromEvent('onList', 'list', plateVar);
-        this.plateVar = plateVar;
+        let controlItems = addControls(samplesList, labelsList, control, replicates);
+        const order = sortArray(94);
+        addReplicates(samplesList, labelsList, color, replicates, order, mode);
+        this.module.controller.createDataFromEvent('onSample', 'list', samplesList);
+        const cellsList = builtPlate(samplesList, labelsList, replicates, nbRows, nbColumns);
+        const nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns)),
+          tables = this.buildGrid(cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        this.module.controller.createDataFromEvent('onList', 'list', cellsList);
+        this.cellsList = cellsList;
         this.dom.html(tables);
-        var tableNodes = this.dom.find(':eq(0)').children();
+        const tableNodes = this.dom.find(':eq(0)').children();
         let grid = [];
         for (let u = 0; u < tableNodes.length; u++) {
           let tr = $(tableNodes[u]).find(':eq(1)').children();
@@ -160,17 +163,17 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
 
-        if (!colorBySample && colorJpath) {
+        if (!colorBySample && colorByJpath) {
           let arrayPath = colorJpath ? colorJpath.split('.') : undefined;
           arrayPath = arrayPath[arrayPath.length - 1];
-          let jpathItems = moduleValue.parameters[`${arrayPath}`].map((x) => x.substr());
+          const jpathItems = moduleValue.parameters[`${arrayPath}`].map((x) => x.substr());
           for (let i = 0; i < grid.length; i++) {
             this.addConfigs(grid, i, arrayPath, jpathItems);
           }
         }
 
         if (!colorBySample && colorByJpathValue) {
-          let jpathValue = cfg('jpathValue', 4) || 4;
+          const jpathValue = cfg('jpathValue', 4) || 4;
           let arrayPath = jpathValue.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           for (let i = 0; i < grid.length; i++) {
@@ -179,30 +182,27 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         }
         
         grid = mode ? grid.map((item, index, array) => array[order[index]]) : grid;
-        let highlightList = nestedList.map((item) => item._highlight);
+        const highlightList = samplesList.map((item) => item._highlight);
         for (let i = 0; i < highlightList.length; i++) {
-          this.listenHighlight(grid, highlightList[i], nestedList);
+          this.listenHighlight(grid, highlightList[i], samplesList, i);
         }
       },
 
-      cellList: function (moduleValue) {
-        this.cellList = val;
-        var cfg = this.module.getConfiguration,
+      cellsList: function (moduleValue) {
+        const cfg = this.module.getConfiguration,
+          cfgc = this.module.getConfigurationCheckbox,
           cols = cfg('colnumber', 4) || 4,
           rows = cfg('rownumber', 4) || 4,
           style = cfg('shape', 'style2') || 'style2',
           direction = cfg('direction', 'vertical') || 'vertical',
-          random = cfg('random', 'sequential') || 'sequential',
           colorJpath = cfg('colorjpath', false),
-          val = moduleValue.get(),
-          plateVar = moduleValue.get(),
-          mode = random === 'random' ? true : false,
-          tables = plateVar,
-          labelsList = plateVar.map((x) => x.pos),
-          colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
-          colorByJpathValue = this.module.getConfigurationCheckbox('colorByJpathValue', 'yes');
-        this.plateVar = plateVar;
-        this.module.controller.createDataFromEvent('onList', 'list', plateVar);
+          cellsList = moduleValue.get(),
+          labelsList = cellsList.map((x) => x.pos),
+          colorBySample = cfgc('colorBySample', 'yes'),
+          colorByJpathValue = cfgc('colorByJpathValue', 'yes'),
+          colorByJpath = cfgc('colorByJpath', 'yes');
+        this.cellsList = cellsList;
+        this.module.controller.createDataFromEvent('onList', 'list', cellsList);
         let shape;
         switch (style) {
           case 'style1': {
@@ -227,7 +227,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             break;
           }
         }
-        let entries = Object.entries({
+        const entries = Object.entries({
           cols: cols,
           rows: rows
         });
@@ -238,14 +238,14 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             entries[i][1] = parseInt(entries[i][1]);
           }
         }
-        let nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
+        const nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
           nbColumns = entries.filter((x) => x[0] === 'cols')[0][1];
         this.rows = nbRows;
         this.cols = nbColumns;
-        var nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        const nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns)),
+          tables = this.buildGrid(cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.dom.html(tables);
-        var tableNodes = this.dom.find(':eq(0)').children();
+        const tableNodes = this.dom.find(':eq(0)').children();
         let grid = [];
         for (let u = 0; u < tableNodes.length; u++) {
           let tr = $(tableNodes[u]).find(':eq(1)').children();
@@ -266,16 +266,16 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 
         let getData = {
           highlightList: [],
-          nestedList: []
+          samplesList: []
         };
         moduleValue.filter(function (item) {
           let element = this.highlightList.find((x) => x === item._highlight.substr());
           if (element === undefined) {
-            this.nestedList.push(item);
+            this.samplesList.push(item);
             this.highlightList.push(item._highlight.substr());
           }
         }, getData);
-        if (!colorBySample && colorJpath) {
+        if (!colorBySample && colorByJpath) {
           let arrayPath = colorJpath.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           let jpathItems = [];
@@ -298,30 +298,29 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         }
 
         for (let i = 0; i < getData.highlightList.length; i++) {
-          this.listenHighlight(grid, getData.highlightList[i], getData.nestedList);
+          this.listenHighlight(grid, getData.highlightList[i], getData.samplesList, i);
         }
       },
 
-      sampleList: function (moduleValue) {
-        this.sampleList = val;
-        var cfg = this.module.getConfiguration,
+      samplesList: function (moduleValue) {
+        const cfg = this.module.getConfiguration,
+          cfgc = this.module.getConfigurationCheckbox,
           cols = cfg('colnumber', 4) || 4,
           rows = cfg('rownumber', 4) || 4,
           style = cfg('shape', 'style2') || 'style2',
           direction = cfg('direction', 'vertical') || 'vertical',
           colorJpath = cfg('colorjpath', false),
-          val = moduleValue.get(),
-          nestedList = moduleValue.get(),
-          labels = nestedList.map((element) => element.cells),
-          colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes'),
-          colorByJpathValue = this.module.getConfigurationCheckbox('colorByJpathValue', 'yes');
-        let replicates = labels[0].length;
+          samplesList = moduleValue.get(),
+          labels = samplesList.map((element) => element.cells),
+          colorBySample = cfgc('colorBySample', 'yes'),
+          colorByJpathValue = cfgc('colorByJpathValue', 'yes'),
+          colorByJpath = cfgc('colorByJpath', 'yes');
+        const replicates = labels[0].length;
         let labelsList = [];
         for (let i = 0; i < labels.length; i++) {
           labelsList.push(...labels[i]);
         }
-        this.cellList = val;
-        this.nestedList = nestedList;
+        this.samplesList = samplesList;
         let shape;
         switch (style) {
           case 'style1': {
@@ -359,15 +358,17 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         }
         let nbRows = entries.filter((x) => x[0] === 'rows')[0][1],
           nbColumns = entries.filter((x) => x[0] === 'cols')[0][1],
-          plateVar = builtPlate(nestedList, labelsList, replicates, nbRows, nbColumns);
-        this.module.controller.createDataFromEvent('onList', 'list', plateVar);
-        this.plateVar = plateVar;
-        let nbPlate = Math.ceil(plateVar.length / (nbRows * nbColumns)),
-          tables = this.buildGrid(this.plateVar, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+          cellsList = builtPlate(samplesList, labelsList, replicates, nbRows, nbColumns);
+        
+        this.module.controller.createDataFromEvent('onList', 'list', cellsList);
+        this.cellsList = cellsList;
+        let nbPlate = Math.ceil(cellsList.length / (nbRows * nbColumns)),
+          tables = this.buildGrid(this.cellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
         this.dom.html(tables);
         this.rows = nbRows;
         this.cols = nbColumns;
-        var tableNodes = this.dom.find(':eq(0)').children();
+        const tableNodes = this.dom.find(':eq(0)').children();
+        
         let grid = [];
         for (let u = 0; u < tableNodes.length; u++) {
           let tr = $(tableNodes[u]).find(':eq(1)').children();
@@ -386,7 +387,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
 
-        if (!colorBySample && colorJpath) {
+        if (!colorBySample && colorByJpath) {
           let arrayPath = colorJpath.split('.');
           arrayPath = arrayPath[arrayPath.length - 1];
           let jpathItems = [];
@@ -408,23 +409,22 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           }
         }
 
-        let highlightList = nestedList.map((item) => item._highlight);
+        let highlightList = samplesList.map((item) => item._highlight);
         for (let i = 0; i < highlightList.length; i++) {
-          this.listenHighlight(grid, highlightList[i], nestedList);
+          this.listenHighlight(grid, highlightList[i], samplesList, i);
         }
       },
     },
 
     addConfigs: function (grid, currentItem, colorJpath, jpathItems) {
-      var that = this;
       let color;
       if (jpathItems) color = Color.getDistinctColorsAsString(jpathItems.length);
-      let element = this.plateVar[currentItem];
+      const element = this.cellsList[currentItem];
       if (colorJpath) {
         if (!element) return;
-        let val = element[`${colorJpath}`];
+        const val = element[`${colorJpath}`];
         if (jpathItems) {
-          let index = jpathItems.findIndex((item) => item == val);
+          const index = jpathItems.findIndex((item) => item == val);
           $(grid[currentItem].value).find(':eq(1)').css(
             { 'background-color': color[index] }
           );
@@ -435,24 +435,31 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
             color = cfg('color', 4) || 4;
           max = parseFloat(max);
           min = parseFloat(min);
-          let array = new Array(10).fill(min)
+          let arrayColor = new Array(10).fill(min)
             .map((item, index, array) => item + ((max - min) / 10) * index);
-          let index = array.findIndex((x) => x > val);
+          const index = arrayColor.findIndex((x) => x > val);
+          color[3] = index / 10;
           if (index) {
             $(grid[currentItem].value).find(':eq(1)').css(
-              { 'background-color': `rgba(${color},${String(index / 10)})` }
+              { 'background-color': `rgba(${color})` }
             );
           }
         }
       }
     },
 
-    listenHighlight: function (grid, highlightList, nestedList) {
-      var that = this,
-        replicates = that.plate ? that.plate.replicates : 3;
+    listenHighlight: function (grid, highlightList, samplesList, i) {
+      const that = this,
+        replicates = samplesList[i].cells.length;
       API.listenHighlight({ _highlight: highlightList }, function (onOff, key) {
-        let rowIndex = nestedList.findIndex((x) => x._highlight === key[0]);
-        let gridIndex = new Array(replicates).fill(rowIndex * replicates)
+        const sampleIndex = samplesList.findIndex((x) => x._highlight === key[0]);
+        let counter = 0;
+        for (let i = 0; i < sampleIndex; i++) {
+          for (let j = 0; j < samplesList[i].cells.length; j++) {
+            counter++;
+          }
+        }
+        const gridIndex = new Array(replicates).fill(counter)
           .map((item, index) => item + index);
         if (onOff === 1) {
           for (let i = 0; i < gridIndex.length; i++) {
@@ -472,13 +479,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       }, false, that.module.getId());
     },
 
-    buildGrid: function (plateVar, labelsList, nbPlates, nbRows, nbColumns, direction, shape) {
-      let colorMode = this.module.getConfigurationCheckbox('colorBySample', 'yes');
+    buildGrid: function (cellsList, labelsList, nbPlates, nbRows, nbColumns, direction, shape) {
+      let colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes');
       let cellBorderStyle = this.module.getConfiguration('cellBorderStyle', 'solid');
       let cellSize = this.module.getConfiguration('cellSize', 30);
       let plateGrid = $('<div>');
       for (let u = 0; u < nbPlates; u++) {
-        var table = $('<table>');
+        let table = $('<table>');
         for (let i = 0; i < nbRows; i++) {
           let row = $('<tr>').attr({ name: `row${String(i)}` }).css({
             'vertical-align': 'top'
@@ -495,10 +502,11 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
                 width: `${cellSize}px`,
               }),
               cellTop = $('<div>').addClass('cell-top'),
-              label = $('<div>').text(typeof labelsList[index] === 'string' ? labelsList[index].slice(0, -2) : index + 1);
+              label = $('<div>').text(typeof labelsList[index] === 'object' || typeof labelsList[index] === 'string' ?
+                labelsList[index].slice(0, -2) : index + 1);
             label.addClass('cell-top');
             if (shape.margin && (j + shape.index) % 2 !== 0) cellBottom.css({ margin: '30px 0px 0px 0px' });
-            let element = colorMode ? plateVar : new Array(plateVar.length).fill({ color: 'rgba(141, 234, 106)' });
+            let element = colorBySample ? cellsList : new Array(cellsList.length).fill({ color: 'rgba(141, 234, 106)' });
             cellTop.css({
               'background-color': `${element[index] !== undefined ? element[index].color : '#FFFFFF'}`
             });
@@ -518,14 +526,14 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     buildList: function (parameters) {
       let variables = Object.entries(parameters);
       variables = variables.filter((x) => Array.isArray(x[1]));
-      let currentList = []; let nestedList = [];
+      let currentList = []; let samplesList = [];
       for (let i = 0; i < variables.length; i++) {
         let calculatedVariable = []; let obj = {};
         if (!Array.isArray(variables[i][1])) {
           throw new RangeError(`Variable ${variables[i][0]} is not an array`);
         }
-        let currentVariable = nestedList.length !== 0 ? nestedList :
-          currentList[i - 1]; nestedList = [];
+        let currentVariable = samplesList.length !== 0 ? samplesList :
+          currentList[i - 1]; samplesList = [];
         for (let j = 0; j < variables[i][1].length; j++) {
           obj[`${variables[i][0]}`] = variables[i][1][j];
           calculatedVariable.push(Object.assign({}, obj));
@@ -533,12 +541,12 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           for (let k = 0; k < currentVariable.length; k++) {
             currentVariable[k][`${variables[i][0]}`] = String(variables[i][1][j]);
           }
-          nestedList.push(...JSON.parse(JSON.stringify(currentVariable)));
+          samplesList.push(...JSON.parse(JSON.stringify(currentVariable)));
         }
         currentList.push(calculatedVariable);
       }
-      nestedList.map((x) => x.valueOf());
-      return nestedList;
+      samplesList.map((x) => x.valueOf());
+      return samplesList;
     }
   });
 
@@ -546,7 +554,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 });
 
 function sortArray(length) {
-  var array = new Array(length).fill().map((item, index) => index),
+  let array = new Array(length).fill().map((item, index) => index),
     currentIndex, currentElement,
     top = array.length;
   while (top--) {
@@ -609,28 +617,32 @@ function createCellLabels(config, nbPlates, options = {}) {
   };
 }
 
-function builtPlate(nestedList, labelsList, replicates, rows, cols) {
+function builtPlate(samplesList, labelsList, replicates2, rows, cols) {
   let result = [];
-  let iterations = nestedList.length;
+  let iterations = samplesList.length;
+  
   for (let i = 0; i < iterations; i++) {
-    let block = []; let obj = {};
+    let block = [];
+    let obj = {};
+    let replicates = samplesList[i].cells.length;
     for (let j = 0; j < replicates; j++) {
-      let nbPlate = Math.ceil((i * replicates + j + 1) / (rows * cols));
-      let label = nestedList[i] && typeof nestedList[i].cells[j] === 'string' ?
-        nestedList[i].cells[j] : nestedList[i].cells[j];
+      let nbPlate = Math.ceil((i * replicates2 + j + 1) / (rows * cols));
+      let label = samplesList[i] && typeof samplesList[i].cells[j] === 'string' ?
+        samplesList[i].cells[j] : samplesList[i].cells[j];
       obj = Object.assign({}, {
-        pos: nestedList[i] ? `${label}` : labelsList[i],
+        cell: samplesList[i] ? `${label}` : labelsList[i],
         plate: nbPlate,
-      }, nestedList[i] ? nestedList[i] : {});
+      }, samplesList[i] ? samplesList[i] : {});
       block.push(obj);
     }
     result.push(...block);
   }
-  
+
   result = result.map((item, index, array) =>
     array[array.findIndex(function (x) {
-      let element = typeof x.pos == 'string' ? `${String(labelsList[index])}` : index;
-      return element === x.pos;
+      let element = typeof x.cell == 'string' ?
+        `${String(labelsList[index])}` : index;
+      return element == x.cell;
     })]
   );
   return result;
@@ -640,6 +652,7 @@ function addReplicates(list, labelsList, color, replicates, order, mode) {
   let counter = 0;
   let samples = [];
   for (let i = 0; i < list.length; i++) {
+    replicates = list[i].cells ? list[i].cells.length : replicates;
     for (let j = 0; j < replicates; j++) {
       let element = mode ? order[counter] : counter;
       let item = typeof labelsList[0] === 'string' ?
@@ -647,11 +660,36 @@ function addReplicates(list, labelsList, color, replicates, order, mode) {
       samples.push(item);
       counter++;
     }
-    list[i] = Object.assign({}, {
-      cells: samples,
-      color: color[i],
-      _highlight: String(Math.random())
-    }, list[i]);
+    list[i] = Object.assign({}, list[i],
+      {
+        cells: samples,
+        color: color[i],
+        _highlight: String(Math.random())
+      });
     samples = [];
   }
+}
+
+function addControls(list, labelsList, control, replicates) {
+  let counter = 0;
+  let items = [];
+  let samples = [];
+  let pivot = list.length * replicates;
+  for (let i = 0; i < control.length; i++) {
+    let label = control[i][0];
+    for (let j = 0; j < control[i][1].length; j++) {
+      let item = typeof labelsList[0] === 'string' ?
+        labelsList[pivot + counter] : pivot + counter;
+      samples.push(item);
+      counter++;
+    }
+    let newItem = {
+      cells: samples,
+      color: 'rgba(175, 175, 175, 1)',
+      [`${label}`]: control[i][1]
+    };
+    list.push(newItem);
+    samples = [];
+  }
+  return items;
 }
