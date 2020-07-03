@@ -10,13 +10,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
     getjPath: function () {
       const wellsList = this.module.getDataFromRel('wellsList');
-      let data = wellsList[0];
       let jpaths = [];
-      data = wellsList;
-      if (!data || data == null) {
+      if (!wellsList || wellsList == null) {
         return jpaths;
       }
-      Traversing.getJPathsFromElement(data, jpaths);
+      Traversing.getJPathsFromElement(wellsList, jpaths);
       if (jpaths.length !== 0) jpaths = jpaths[0].children[0].children;
       return jpaths;
     }
