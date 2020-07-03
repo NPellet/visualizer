@@ -1,0 +1,10 @@
+{
+  "modules": [
+    {
+      "moduleName": "Well plate",
+      "url": "modules/types/science/biology/well_plate/"
+    }
+  ],
+  "name": "Biology",
+  "folders": []
+}
