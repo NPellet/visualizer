@@ -1,4 +1,4 @@
-.well-plate-cell-bottom {
+.well-plate-well-bottom {
     height:35px;
     width: 35px;
     background-color: #ddd; 
@@ -8,7 +8,7 @@
     text-align: center;
     border-color: #ddd;
   }
-  .well-plate-cell-top {
+  .well-plate-well-top {
     height: 90%;
     width: 90%;
     border-radius: 50%;

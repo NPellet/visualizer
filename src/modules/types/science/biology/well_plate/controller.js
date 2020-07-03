@@ -17,25 +17,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.references = {
-    cell: {
-      label: 'Data of the cell',
-      type: 'object'
-    },
     list: {
       label: 'The array of data to display',
       type: 'array'
     },
-    samplesList: {
-      label: 'The array of samples to display',
+    wellsList: {
+      label: 'The array of wells to display',
       type: 'array'
-    },
-    cellsList: {
-      label: 'The array of cells to display',
-      type: 'array'
-    },
-    plate: {
-      label: 'Plate setup information',
-      type: 'object'
     },
     trackData: {
       label: 'Tracking data',
@@ -44,12 +32,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.events = {
-    onSample: {
-      label: 'Sample list',
-      refVariable: ['list'],
-    },
     onList: {
-      label: 'Plate list',
+      label: 'Wells list',
       refVariable: ['list'],
     },
     onTrackMouse: {
@@ -64,20 +48,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
     },
   };
 
-  Controller.prototype.variablesIn = ['samplesList', 'cellsList', 'plate'];
+  Controller.prototype.variablesIn = ['wellsList'];
 
   Controller.prototype.actionsIn = {
     addElement: 'Add an element'
   };
+
+  
   Controller.prototype.configurationStructure = function () {
-    const removeList = ['pos', 'plate', 'cells', 'color'],
-      jpaths = this.module.model.getjPath();
-    if (jpaths.length !== 0) {
-      jpaths[0].children = jpaths[0].children
-        .filter((item) => !removeList.find((x) => x === item.title));
-    }
-    const currentVariable = this.module.model.listRels[0],
-      display = currentVariable === 'plate' ? true : false;
+    let jpaths = this.module.model.getjPath();
+    jpaths = jpaths.filter((x) => x.title === 'experiment');
     
     return {
       groups: {
@@ -86,10 +66,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
             type: 'list'
           },
           fields: {
-            cellSize: {
+            wellSize: {
               type: 'text',
               default: 35,
-              title: 'Size of cells (px)',
+              title: 'Size of wells (px)',
             },
             colnumber: {
               type: 'text',
@@ -101,7 +81,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
               default: 10,
               title: 'Number of rows'
             },
-            cellBorderStyle: {
+            wellBorderStyle: {
               type: 'combo',
               default: 'solid',
               title: 'Border style',
@@ -119,16 +99,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
                 { title: 'Horizontal', key: 'horizontal' },
                 { title: 'Vertical', key: 'vertical' },
               ]
-            },
-            random: {
-              type: 'combo',
-              default: 'sequential',
-              title: 'Filling mode',
-              options: [
-                { title: 'Sequential', key: 'sequential' },
-                { title: 'Random', key: 'random' },
-              ],
-              displayed: display
             },
             shape: {
               type: 'combo',
@@ -210,13 +180,12 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.configAliases = {
-    cellBorderStyle: ['groups', 'group', 0, 'cellBorderStyle', 0],
+    wellBorderStyle: ['groups', 'group', 0, 'wellBorderStyle', 0],
     colorBySample: ['groups', 'colorOptions', 0, 'colorBySample', 0],
-    cellSize: ['groups', 'group', 0, 'cellSize', 0],
+    wellSize: ['groups', 'group', 0, 'wellSize', 0],
     colnumber: ['groups', 'group', 0, 'colnumber', 0],
     rownumber: ['groups', 'group', 0, 'rownumber', 0],
     direction: ['groups', 'group', 0, 'direction', 0],
-    random: ['groups', 'group', 0, 'random', 0],
     colorjpath: ['groups', 'colorOptions', 0, 'colorjPath', 0],
     shape: ['groups', 'group', 0, 'shape', 0],
     colorByJpathValue: ['groups', 'colorOptions', 0, 'colorByJpathValue', 0],
