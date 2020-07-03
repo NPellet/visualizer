@@ -17,7 +17,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     blank: {
       wellsList: function () {
         this.plate = null;
-        this.cwllsList = null;
+        this.wellsList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
