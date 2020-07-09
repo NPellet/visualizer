@@ -25,6 +25,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
       label: 'The array of wells to display',
       type: 'array'
     },
+    plateSetup: {
+      label: 'Setup of the plate',
+      type: 'object'
+    },
     trackData: {
       label: 'Tracking data',
       type: 'object'
@@ -32,10 +36,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.events = {
-    onList: {
-      label: 'Wells list',
-      refVariable: ['list'],
-    },
     onTrackMouse: {
       label: 'Mouse tracking (move)',
       refVariable: ['trackData'],
@@ -48,7 +48,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     },
   };
 
-  Controller.prototype.variablesIn = ['wellsList'];
+  Controller.prototype.variablesIn = ['wellsList', 'plateSetup'];
 
   Controller.prototype.actionsIn = {
     addElement: 'Add an element'
@@ -57,7 +57,6 @@ define(['modules/default/defaultcontroller'], function (Default) {
   
   Controller.prototype.configurationStructure = function () {
     let jpaths = this.module.model.getjPath();
-    jpaths = jpaths.filter((x) => x.title === 'experiment');
     
     return {
       groups: {
@@ -81,15 +80,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
               default: 10,
               title: 'Number of rows'
             },
-            wellBorderStyle: {
-              type: 'combo',
-              default: 'solid',
-              title: 'Border style',
-              options: [
-                { title: 'None', key: 'solid' },
-                { title: 'Dotted', key: 'dotted' },
-                { title: 'Dashed', key: 'dashed' }
-              ]
+            plateIndex: {
+              type: 'text',
+              default: 0,
+              title: 'Index of the first plate'
             },
             direction: {
               type: 'combo',
@@ -112,27 +106,25 @@ define(['modules/default/defaultcontroller'], function (Default) {
             }
           }
         },
-        colorOptions: {
+        color: {
           options: {
             type: 'list',
             multiple: true,
             title: 'Color bar options'
           },
           fields: {
-            colorBySample: {
-              type: 'checkbox',
-              title: 'Color by sample',
-              options: {
-                yes: 'Yes'
-              },
-              default: [],
-            },
-            colorByJpath: {
-              type: 'checkbox',
-              title: 'Color by jpath',
-              options: { yes: 'Yes' },
-              default: [],
-              displaySource: { yes: 'x' }
+            colorOptions: {
+              type: 'combo',
+              title: 'Color options',
+              options: [
+                { key: 'colorByJpath', title: 'Color by jpath' },
+                { key: 'colorByJpathValue', title: 'Color by jpath value' },
+              ],
+              default: undefined,
+              displaySource: {
+                colorByJpath: 'x',
+                colorByJpathValue: 'y'
+              }
             },
             colorjPath: {
               type: 'combo',
@@ -140,14 +132,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
               options: jpaths,
               displayTarget: ['x']
             },
-            colorByJpathValue: {
-              type: 'checkbox',
-              title: 'Color by jpath value',
-              options: { yes: 'Yes' },
-              default: [],
-              displaySource: { yes: 'y' }
-            },
-            color: {
+            spectrumColors: {
               type: 'spectrum',
               default: '',
               title: 'Background color',
@@ -160,17 +145,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
               options: jpaths,
               displayTarget: ['y']
             },
+            min: {
+              type: 'text',
+              default: '',
+              title: 'Min value',
+              displayTarget: ['y']
+            },
             max: {
               type: 'text',
               default: '',
               title: 'Max value',
               options: jpaths,
-              displayTarget: ['y']
-            },
-            min: {
-              type: 'text',
-              default: '',
-              title: 'Min value',
               displayTarget: ['y']
             },
           }
@@ -180,20 +165,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.configAliases = {
-    wellBorderStyle: ['groups', 'group', 0, 'wellBorderStyle', 0],
-    colorBySample: ['groups', 'colorOptions', 0, 'colorBySample', 0],
+    plateIndex: ['groups', 'group', 0, 'plateIndex', 0],
+    colorOptions: ['groups', 'color', 0, 'colorOptions', 0],
     wellSize: ['groups', 'group', 0, 'wellSize', 0],
     colnumber: ['groups', 'group', 0, 'colnumber', 0],
     rownumber: ['groups', 'group', 0, 'rownumber', 0],
     direction: ['groups', 'group', 0, 'direction', 0],
-    colorjpath: ['groups', 'colorOptions', 0, 'colorjPath', 0],
+    colorjpath: ['groups', 'color', 0, 'colorjPath', 0],
     shape: ['groups', 'group', 0, 'shape', 0],
-    colorByJpathValue: ['groups', 'colorOptions', 0, 'colorByJpathValue', 0],
-    colorByJpath: ['groups', 'colorOptions', 0, 'colorByJpath', 0],
-    color: ['groups', 'colorOptions', 0, 'color', 0],
-    jpathValue: ['groups', 'colorOptions', 0, 'jpathValue', 0],
-    max: ['groups', 'colorOptions', 0, 'max', 0],
-    min: ['groups', 'colorOptions', 0, 'min', 0],
+    spectrumColors: ['groups', 'color', 0, 'spectrumColors', 0],
+    jpathValue: ['groups', 'color', 0, 'jpathValue', 0],
+    max: ['groups', 'color', 0, 'max', 0],
+    min: ['groups', 'color', 0, 'min', 0],
   };
   return Controller;
 });
