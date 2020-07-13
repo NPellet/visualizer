@@ -21,6 +21,11 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
+      plateSetup: function () {
+        this.plateSetup = null;
+        API.killHighlight(this.module.getId());
+        this.dom.empty();
+      }
     },
 
     inDom: function () {
@@ -53,6 +58,11 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
         } else if (e.type === 'mouseleave') {
           API.highlight([highlight], 0);
         } else if (e.type === 'click') {
+          that.module.controller.createDataFromEvent(
+            'onTrackClick',
+            'trackData',
+            wellsList[elementId],
+          );
           that.module.controller.sendActionFromEvent(
             'onTrackClick',
             'trackData',
@@ -66,18 +76,14 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     update: {
       wellsList: function (moduleValue) {
         const cfg = this.module.getConfiguration;
-        const cfgc = this.module.getConfigurationCheckbox;
-        const cols = cfg('colnumber', 4) || 4;
-        const rows = cfg('rownumber', 4) || 4;
-        const style = cfg('shape', 'aligned') || 'aligned';
-        const direction = cfg('direction', 'vertical') || 'vertical';
+        let cols = cfg('colnumber') || 10;
+        let rows = cfg('rownumber') || 10;
+        let style = cfg('shape') || 'aligned';
+        let direction = cfg('direction') || 'vertical';
         const colorJpath = cfg('colorjpath', false);
         const wellsList = moduleValue.get();
-        const colorBySample = cfgc('colorBySample', 'yes');
-        const colorByJpathValue = cfgc('colorByJpathValue', 'yes');
-        const colorByJpath = cfgc('colorByJpath', 'yes');
+        const colorOptions = cfg('colorOptions');
         this.wellsList = wellsList;
-        this.module.controller.createDataFromEvent('onList', 'list', wellsList);
         let shape;
         switch (style) {
           case 'aligned': {
@@ -105,7 +111,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
         const wellLabels = createWellLabels({
           cols: cols,
           rows: rows
-        }, 2, { direction: direction });
+        }, 10, { direction: direction });
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
         const nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length;
@@ -133,13 +139,19 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             }
           }
         }
-        
-        if (!colorBySample && colorByJpath) {
+        if (colorOptions === 'colorByJpath') {
           let arrayPath = colorJpath.split('.');
-          arrayPath = arrayPath[arrayPath.length - 1];
+          arrayPath.shift();
+          arrayPath = arrayPath.join('.');
           let jpathItems = [];
           moduleValue.filter(function (item) {
-            let value = item.experiment[arrayPath] ? item.experiment[arrayPath].value : null;
+            let previous = arrayPath.split('.');
+            if (previous.length !== 1) {
+              previous.pop();
+              previous = previous.join('.');
+            }
+            let value = eval(`item.${previous}`) ? eval(`item.${arrayPath}`) : null;
+            value = DataObject.resurrect(value);
             let element = this.find((x) => x === value);
             if (element === undefined && value !== null && typeof value !== 'object') this.push(value);
           }, jpathItems);
@@ -148,10 +160,11 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           }
         }
 
-        if (!colorBySample && colorByJpathValue) {
-          let jpathValue = cfg('jpathValue', 4) || 4;
+        if (colorOptions === 'colorByJpathValue') {
+          let jpathValue = cfg('jpathValue');
           let arrayPath = jpathValue.split('.');
-          arrayPath = arrayPath[arrayPath.length - 1];
+          arrayPath.shift();
+          arrayPath = arrayPath.join('.');
           for (let i = 0; i < grid.length; i++) {
             this.addConfigurations(grid, i, arrayPath);
           }
@@ -160,6 +173,116 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           this.listenHighlight(grid, wellsList[i]._highlight, i);
         }
       },
+
+      plateSetup: function (moduleValue) {
+        var list = moduleValue.get();
+        let path = list.color ? 'color' : 'group';
+        if (path) {
+          delete list.color;
+        }
+        let configurations = this.module.definition.configuration.groups[path][0];
+        this.plateSetup = list;
+        const plateSetup = this.plateSetup;
+        if (plateSetup !== undefined) {
+          this.module.definition.configuration.groups[path][0] = Object.assign({}, configurations, plateSetup);
+        }
+        const cfg = this.module.getConfiguration;
+        let cols = cfg('colnumber') || 10;
+        let rows = cfg('rownumber') || 10;
+        let style = cfg('shape') || 'aligned';
+        let direction = cfg('direction') || 'vertical';
+        const colorJpath = cfg('colorjpath', false);
+        const wellsList = this.wellsList;
+        const colorOptions = cfg('colorOptions');
+        let shape;
+        switch (style) {
+          case 'aligned': {
+            shape = {
+              shift: false,
+              margin: undefined,
+            };
+            break;
+          }
+          case 'pairShifted': {
+            shape = {
+              margin: true,
+              index: 0,
+            };
+            break;
+          }
+          case 'oddShifted': {
+            shape = {
+              margin: true,
+              index: 1,
+            };
+            break;
+          }
+        }
+        const wellLabels = createWellLabels({
+          cols: cols,
+          rows: rows
+        }, 10, { direction: direction });
+        const labelsList = wellLabels.wellLabels;
+        const axis = wellLabels.axis;
+        const nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length;
+        const nbColumns = axis.filter((x) => x[0] === 'cols')[0][1].length;
+        this.rows = nbRows;
+        this.cols = nbColumns;
+        const nbPlate = Math.ceil(wellsList.length / (nbRows * nbColumns));
+        const tables = this.buildGrid(wellsList, labelsList, nbPlate, nbRows, nbColumns, direction, shape);
+        this.dom.html(tables);
+        const tableNodes = this.dom.find(':eq(0)').children();
+        let grid = [];
+        for (let u = 0; u < tableNodes.length; u++) {
+          let tr = $(tableNodes[u]).find(':eq(1)').children();
+          let td = $(tr[0]).children();
+          let [rows, columns] = direction === 'vertical' ?
+            [td.length, tr.length] : [tr.length, td.length];
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+              let [a, b] = direction === 'vertical' ?
+                [j, i] : [i, j];
+              grid.push({
+                index: (a * rows) + b,
+                value: tr[a].childNodes[b]
+              });
+            }
+          }
+        }
+        if (colorOptions === 'colorByJpath') {
+          let arrayPath = colorJpath.split('.');
+          arrayPath.shift();
+          arrayPath = arrayPath.join('.');
+          let jpathItems = [];
+          this.wellsList.filter(function (item) {
+            let previous = arrayPath.split('.');
+            if (previous.length !== 1) {
+              previous.pop();
+              previous = previous.join('.');
+            }
+            let value = eval(`item.${previous}`) ? eval(`item.${arrayPath}`) : null;
+            value = DataObject.resurrect(value);
+            let element = this.find((x) => x === value);
+            if (element === undefined && value !== null && typeof value !== 'object') this.push(value);
+          }, jpathItems);
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigurations(grid, i, arrayPath, jpathItems);
+          }
+        }
+
+        if (colorOptions === 'colorByJpathValue') {
+          let jpathValue = cfg('jpathValue');
+          let arrayPath = jpathValue.split('.');
+          arrayPath.shift();
+          arrayPath = arrayPath.join('.');
+          for (let i = 0; i < grid.length; i++) {
+            this.addConfigurations(grid, i, arrayPath);
+          }
+        }
+        for (let i = 0; i < wellsList.length; i++) {
+          this.listenHighlight(grid, wellsList[i]._highlight, i);
+        }
+      }
     },
 
     addConfigurations: function (grid, currentItem, colorJpath, jpathItems) {
@@ -167,31 +290,33 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
       if (jpathItems) color = Color.getDistinctColorsAsString(jpathItems.length);
       const element = this.wellsList[currentItem];
       if (colorJpath) {
-        if (!element) return;
-        const val = element.experiment[colorJpath];
+        let previous = colorJpath.split('.');
+        if (previous.length !== 1) {
+          previous.pop();
+          previous = previous.join('.');
+        }
+        if (element === undefined) return;
+        if (eval(`element.${previous}`) === undefined) return;
+        const val = DataObject.resurrect(eval(`element.${colorJpath}`));
         if (jpathItems) {
-          for (let i = 0; i < jpathItems.length; i++) {
-            jpathItems[i] = typeof jpathItems[i] === 'object' ?
-              jpathItems[i].label : jpathItems[i];
-          }
-          const index = typeof val === 'object' ?
-            jpathItems.findIndex((item) => item == val.value) : val;
+          const index = jpathItems.findIndex((item) => item == val);
           $(grid[currentItem].value).find(':eq(1)').css(
             { 'background-color': color[index] }
           );
         } else {
-          if (Number.isNaN(parseInt(val ? val.value : NaN, 10))) return;
+          if (Number.isNaN(parseInt(val, 10))) return;
           let cfg = this.module.getConfiguration;
-          let min = cfg('min', 4) || 4;
-          let max = cfg('max', 4) || 4;
-          let color = cfg('color', 4) || 4;
+          let min = cfg('min');
+          let max = cfg('max');
+          let color = cfg('spectrumColors');
           max = parseFloat(max);
           min = parseFloat(min);
+          if (val < min || val > max) return;
           let arrayColor = new Array(10).fill(min)
             .map((item, index, array) => item + ((max - min) / 10) * index);
           const index = typeof val === 'object' ?
-            arrayColor.findIndex((x) => x > val.value) : val;
-          color[3] = index / 10;
+            arrayColor.findIndex((x) => x > val) : val;
+          color[3] = parseFloat(index) / max;
           if (index) {
             $(grid[currentItem].value).find(':eq(1)').css(
               { 'background-color': `rgba(${color})` }
@@ -219,8 +344,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     },
 
     buildGrid: function (wellsList, labelsList, nbPlates, nbRows, nbColumns, direction, shape) {
-      let colorBySample = this.module.getConfigurationCheckbox('colorBySample', 'yes');
-      let wellBorderStyle = this.module.getConfiguration('wellBorderStyle', 'solid');
+      let plateIndex = this.module.getConfiguration('plateIndex', 0);
+      let colorOptions = this.module.getConfiguration('colorOptions', undefined);
       let wellSize = this.module.getConfiguration('wellSize', 30);
       let plateGrid = $('<div>');
       for (let u = 0; u < nbPlates; u++) {
@@ -235,21 +360,21 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
               (u * nbRows * nbColumns) + (i * nbColumns) + j;
             let td = $('<td>');
             let wellBottom = $('<div>').addClass('well-plate-well-bottom').css({
-              'border-style': wellBorderStyle,
               'border-radius': `${wellSize}px`,
               height: `${wellSize}px`,
               width: `${wellSize}px`,
             });
             let wellTop = $('<div>').addClass('well-plate-well-top');
-            let label = $('<div>').text(Number.isNaN(parseInt(labelsList[index].slice(0, -2)[0])) ?
-              labelsList[index].slice(0, -2) : index + 1);
-            label.addClass('well-plate-well-top');
+            let label = Number.isNaN(parseInt(labelsList[index][0])) ?
+              labelsList[index] : (plateIndex * nbColumns * nbRows) + index + 1;
+            wellTop.text('<div>').text(label);
             if (shape.margin && (j + shape.index) % 2 !== 0) wellBottom.css({ margin: '30px 0px 0px 0px' });
-            let element = colorBySample ? wellsList : new Array(wellsList.length).fill({ color: 'rgba(141, 234, 106)' });
+            let element = (colorOptions === 'colorBySample') ?
+              wellsList : new Array(wellsList.length).fill({ color: 'rgba(141, 234, 106)' });
             wellTop.css({
-              'background-color': `${element[index] !== undefined ? element[index].color : '#FFFFFF'}`
+              'background-color': `${element[index] !== undefined ? element[index].color : '#FFFFFF'}`,
+              'line-height': `${wellSize}px`
             });
-            wellTop.append(label);
             wellBottom.append(wellTop);
             td.append(wellBottom);
             row.append(td);
@@ -291,7 +416,7 @@ function createWellLabels(config, nbPlates, options = {}) {
         let row = [];
         for (let j = 0; j < columns.length; j++) {
           let [rowIndex, columnIndex] = direction === 'vertical' ? [i, j] : [j, i];
-          row[j] = `${columnIndex * rod.length + rod[rowIndex]}-${u + 1}`;
+          row[j] = `${columnIndex * rod.length + rod[rowIndex]}`;
         }
         wellLabels.push(...row);
       }
@@ -304,7 +429,7 @@ function createWellLabels(config, nbPlates, options = {}) {
         for (let j = 0; j < columns.length; j++) {
           let element = typeof rows[i] === 'string' ?
             rows[i] + columns[j] : columns[j] + rows[i];
-          row[j] = `${element}-${u + 1}`;
+          row[j] = `${element}`;
         }
         wellLabels.push(...row);
       }

@@ -14,8 +14,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
       if (!wellsList || wellsList == null) {
         return jpaths;
       }
-      Traversing.getJPathsFromElement(wellsList, jpaths);
-      if (jpaths.length !== 0) jpaths = jpaths[0].children[0].children;
+      Traversing.getJPathsFromElement(wellsList[0], jpaths);
       return jpaths;
     }
   });
