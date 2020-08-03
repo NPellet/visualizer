@@ -7,8 +7,8 @@ define([
   'src/util/versioning',
   'superagent',
   'src/util/util',
-  'fetch'
-], function (Versioning, superagent, util, fetch) {
+  'fetch',
+], function(Versioning, superagent, util, fetch) {
   const base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
   function dataURLtoBase64(data) {
@@ -41,7 +41,7 @@ define([
         const viewUrl = Versioning.lastLoaded.view.url;
         if (!viewUrl) {
           throw new Error(
-            'couchdb attachments initialization failed: No view url'
+            'couchdb attachments initialization failed: No view url',
           );
         }
         this.docUrl = viewUrl.replace(/\/[^/]+$/, '');
@@ -128,35 +128,38 @@ define([
             if (item.encoding === 'base64') {
               this.lastDoc._attachments[name] = {
                 content_type: item.contentType,
-                data: data
+                data: data,
               };
             } else {
               let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
               if (!dataUrl) {
                 this.lastDoc._attachments[name] = {
                   content_type: item.contentType,
-                  data: btoa(unescape(encodeURIComponent(data)))
+                  data: btoa(unescape(encodeURIComponent(data))),
                 };
               } else {
                 this.lastDoc._attachments[name] = {
                   content_type: item.contentType || dataUrl[1],
-                  data: data.slice(dataUrl[0].length)
+                  data: data.slice(dataUrl[0].length),
                 };
               }
             }
-          } else if (data instanceof Blob) {
+          } else if (data instanceof Blob || data instanceof ArrayBuffer) {
+            if (data instanceof ArrayBuffer) {
+              data = new Blob([data]);
+            }
             if (!item.contentType && data.type) {
               item.contentType = data.type;
             }
             let p = new Promise((resolve, reject) => {
               let reader = new FileReader();
-              reader.onload = function (e) {
+              reader.onload = function(e) {
                 return resolve({
                   item: item,
-                  base64data: dataURLtoBase64(e.target.result)
+                  base64data: dataURLtoBase64(e.target.result),
                 });
               };
-              reader.onerror = function () {
+              reader.onerror = function() {
                 return reject(new Error('Error while reading file'));
               };
               reader.readAsDataURL(data);
@@ -173,7 +176,7 @@ define([
           const c = toChange[i];
           this.lastDoc._attachments[getName(c.item)] = {
             content_type: c.item.contentType,
-            data: c.base64data
+            data: c.base64data,
           };
         }
 
@@ -182,9 +185,9 @@ define([
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json'
+            Accept: 'application/json',
           },
-          body: JSON.stringify(this.lastDoc)
+          body: JSON.stringify(this.lastDoc),
         });
 
         let result = await response.json();
@@ -239,7 +242,7 @@ define([
 
       if (!contentType) {
         throw new Error(
-          'Content-Type unresolved. Cannot upload document without content-type'
+          'Content-Type unresolved. Cannot upload document without content-type',
         );
       }
 
@@ -337,12 +340,14 @@ define([
      */
     // Get documents with latest attachements' rev ids
     async refresh() {
-      let json = await (await fetch(this.docUrl, {
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json'
-        }
-      })).json();
+      let json = await (
+        await fetch(this.docUrl, {
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+          },
+        })
+      ).json();
       this.lastDoc = json;
       return attachmentsAsArray(this, json._attachments);
     }
@@ -388,9 +393,7 @@ define([
       const res = await req;
       if (res.status !== 201) {
         throw new Error(
-          `Error uploading attachments, couchdb returned status code ${
-            res.status
-          }`
+          `Error uploading attachments, couchdb returned status code ${res.status}`,
         );
       }
       if (options.noRefresh) {
