@@ -1,3 +1,12 @@
+# [2.118.0](https://github.com/NPellet/visualizer/compare/v2.117.0...v2.118.0) (2020-08-04)
+
+
+### Features
+
+* couchdbAttachments allows ArrayBuffer as inline attachment ([19db045](https://github.com/NPellet/visualizer/commit/19db0454288568383c77138930d2fc3aa39608bc))
+
+
+
 # [2.117.0](https://github.com/NPellet/visualizer/compare/v2.116.1...v2.117.0) (2020-07-17)
 
 
