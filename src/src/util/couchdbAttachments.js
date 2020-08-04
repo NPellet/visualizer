@@ -8,7 +8,7 @@ define([
   'superagent',
   'src/util/util',
   'fetch',
-], function(Versioning, superagent, util, fetch) {
+], function (Versioning, superagent, util, fetch) {
   const base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
   function dataURLtoBase64(data) {
@@ -153,13 +153,13 @@ define([
             }
             let p = new Promise((resolve, reject) => {
               let reader = new FileReader();
-              reader.onload = function(e) {
+              reader.onload = function (e) {
                 return resolve({
                   item: item,
                   base64data: dataURLtoBase64(e.target.result),
                 });
               };
-              reader.onerror = function() {
+              reader.onerror = function () {
                 return reject(new Error('Error while reading file'));
               };
               reader.readAsDataURL(data);
