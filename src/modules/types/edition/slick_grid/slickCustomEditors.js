@@ -13,10 +13,10 @@ define([
   'src/data/structures',
   'components/spectrum/spectrum',
   'jquery',
-  'jquery-ui/ui/widgets/datepicker'
-], function (_, Util, UI, structures) {
+  'jquery-ui/ui/widgets/datepicker',
+], function(_, Util, UI, structures) {
   Util.loadCss('./components/spectrum/spectrum.css');
-  (function ($) {
+  (function($) {
     var typeEditors = {};
 
     for (var key in structures) {
@@ -50,10 +50,10 @@ define([
           LongText: LongTextEditor,
           SimpleLongText: SimpleLongTextEditor,
           Select: SelectEditor,
-          Unit: UnitEditor
+          Unit: UnitEditor,
         },
-        typeEditors
-      }
+        typeEditors,
+      },
     });
 
     function DateEditor(args) {
@@ -62,7 +62,7 @@ define([
       var defaultValue;
       var calendarOpen = false;
 
-      this.init = function () {
+      this.init = function() {
         $input = $('<INPUT type="text" class="editor-text" />');
         $input.appendTo(args.container);
         $input.focus().select();
@@ -70,38 +70,38 @@ define([
           showOn: 'button',
           buttonImageOnly: true,
           buttonImage: require.toUrl(
-            'components/slickgrid/images/calendar.gif'
+            'components/slickgrid/images/calendar.gif',
           ),
-          beforeShow: function () {
+          beforeShow: function() {
             calendarOpen = true;
           },
-          onClose: function () {
+          onClose: function() {
             calendarOpen = false;
-          }
+          },
         });
         $input.width($input.width() - 18);
       };
 
-      this.destroy = function () {
+      this.destroy = function() {
         $.datepicker.dpDiv.stop(true, true);
         $input.datepicker('hide');
         $input.datepicker('destroy');
         $input.remove();
       };
 
-      this.show = function () {
+      this.show = function() {
         if (calendarOpen) {
           $.datepicker.dpDiv.stop(true, true).show();
         }
       };
 
-      this.hide = function () {
+      this.hide = function() {
         if (calendarOpen) {
           $.datepicker.dpDiv.stop(true, true).hide();
         }
       };
 
-      this.position = function (position) {
+      this.position = function(position) {
         if (!calendarOpen) {
           return;
         }
@@ -110,11 +110,11 @@ define([
           .css('left', position.left);
       };
 
-      this.focus = function () {
+      this.focus = function() {
         $input.focus();
       };
 
-      this.loadValue = function (item) {
+      this.loadValue = function(item) {
         DataObject.check(item, true);
         defaultValue = item.getChildSync(args.column.jpath);
         if (defaultValue) {
@@ -127,25 +127,25 @@ define([
         $input.select();
       };
 
-      this.serializeValue = function () {
+      this.serializeValue = function() {
         return $input.val();
       };
 
-      this.applyValue = function (item, state) {
+      this.applyValue = function(item, state) {
         defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
-      this.isValueChanged = function () {
+      this.isValueChanged = function() {
         return (
           !($input.val() == '' && defaultValue == null) &&
           $input.val() != defaultValue
         );
       };
 
-      this.validate = function () {
+      this.validate = function() {
         return {
           valid: true,
-          msg: null
+          msg: null,
         };
       };
 
@@ -155,19 +155,19 @@ define([
     function ColorEditor(args) {
       this.args = args;
       var defaultValue;
-      this.init = function () {
+      this.init = function() {
         var that = this;
         this.$input = $('<input type="text">');
         var box = args.container.getBoundingClientRect();
         this.$div = $('<div>').css({
           position: 'fixed',
           left: box.left,
-          top: box.top
+          top: box.top,
         });
         $('body').append(this.$div);
         this.$input
           .appendTo(this.$div)
-          .bind('keydown.nav', function (e) {
+          .bind('keydown.nav', function(e) {
             if (
               e.keyCode === $.ui.keyCode.LEFT ||
               e.keyCode === $.ui.keyCode.RIGHT
@@ -202,7 +202,7 @@ define([
               'rgba(74,  134,  232, 1)',
               'rgba(0,  0,  255, 1)',
               'rgba(153,  0,  255, 1)',
-              'rgba(255,  0,  255, 1)'
+              'rgba(255,  0,  255, 1)',
             ],
             [
               'rgba(230,  184,  175, 1)',
@@ -214,7 +214,7 @@ define([
               'rgba(201,  218,  248, 1)',
               'rgba(207,  226,  243, 1)',
               'rgba(217,  210,  233, 1)',
-              'rgba(234,  209,  220, 1)'
+              'rgba(234,  209,  220, 1)',
             ],
             [
               'rgba(221,  126,  107, 1)',
@@ -226,7 +226,7 @@ define([
               'rgba(164,  194,  244, 1)',
               'rgba(159,  197,  232, 1)',
               'rgba(180,  167,  214, 1)',
-              'rgba(213,  166,  189, 1)'
+              'rgba(213,  166,  189, 1)',
             ],
             [
               'rgba(204,  65,  37, 1)',
@@ -238,7 +238,7 @@ define([
               'rgba(109,  158,  235, 1)',
               'rgba(111,  168,  220, 1)',
               'rgba(142,  124,  195, 1)',
-              'rgba(194,  123,  160, 1)'
+              'rgba(194,  123,  160, 1)',
             ],
             [
               'rgba(166,  28,  0, 1)',
@@ -250,7 +250,7 @@ define([
               'rgba(60,  120,  216, 1)',
               'rgba(61,  133,  198, 1)',
               'rgba(103,  78,  167, 1)',
-              'rgba(166,  77,  121, 1)'
+              'rgba(166,  77,  121, 1)',
             ],
             [
               'rgba(133,  32,  12, 1)',
@@ -262,7 +262,7 @@ define([
               'rgba(17,  85,  204, 1)',
               'rgba(11,  83,  148, 1)',
               'rgba(53,  28,  117, 1)',
-              'rgba(116,  27,  71, 1)'
+              'rgba(116,  27,  71, 1)',
             ],
             [
               'rgba(91,  15,  0, 1)',
@@ -274,23 +274,23 @@ define([
               'rgba(28,  69,  135, 1)',
               'rgba(7,  55,  99, 1)',
               'rgba(32,  18,  77, 1)',
-              'rgba(76,  17,  48, 1)'
-            ]
+              'rgba(76,  17,  48, 1)',
+            ],
           ],
           preferredFormat: 'rgba',
-          change: function (color) {
+          change: function(color) {
             that.color = color;
             that.changed = true;
             args.commitChanges('next');
           },
-          move: function (color) {},
-          show: function () {},
-          hide: function () {
+          move: function(color) {},
+          show: function() {},
+          hide: function() {
             if (!that.changed) {
               args.cancelChanges();
             }
           },
-          localStorageKey: 'visualizer-spectrum'
+          localStorageKey: 'visualizer-spectrum',
         });
 
         this.$input
@@ -299,26 +299,26 @@ define([
           .click();
       };
 
-      this.destroy = function () {
+      this.destroy = function() {
         var d = this.$input.data();
         this.$input.spectrum('destroy');
         this.$div.remove();
         // this.$input.remove();
       };
 
-      this.focus = function () {
+      this.focus = function() {
         this.$input.focus();
       };
 
-      this.getValue = function () {
+      this.getValue = function() {
         this.$input.val();
       };
 
-      this.setValue = function (val) {
+      this.setValue = function(val) {
         this.$input.val(val);
       };
 
-      this.loadValue = function (item) {
+      this.loadValue = function(item) {
         DataObject.check(item, true);
         defaultValue = item.getChildSync(args.column.jpath);
         if (defaultValue) {
@@ -332,25 +332,25 @@ define([
         this.$input.select();
       };
 
-      this.serializeValue = function () {
+      this.serializeValue = function() {
         if (this.color) {
           return this.color.toRgbString();
         }
         return this.$input.val();
       };
 
-      this.applyValue = function (item, state) {
+      this.applyValue = function(item, state) {
         defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
-      this.isValueChanged = function () {
+      this.isValueChanged = function() {
         return (
           !(this.$input.val() == '' && defaultValue == null) &&
           this.$input.val() != defaultValue
         );
       };
 
-      this.validate = function () {
+      this.validate = function() {
         if (args.column.validator) {
           var validationResults = args.column.validator(this.$input.val());
           if (!validationResults.valid) {
@@ -360,7 +360,7 @@ define([
 
         return {
           valid: true,
-          msg: null
+          msg: null,
         };
       };
 
@@ -380,7 +380,7 @@ define([
       this.isValueChanged = defaultIsValueChanged;
       this.validate = defaultValidate;
 
-      this.applyValue = function (item, state) {
+      this.applyValue = function(item, state) {
         defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
@@ -406,10 +406,10 @@ define([
         const $wrapper = $('<div style="position: relative;" />');
         this.initOptions = this.initOptions || {};
         var editorOptions = getEditorOptions(
-          this.args.column.colDef.editorOptions
+          this.args.column.colDef.editorOptions,
         );
         this.$input = $(
-          '<input type="text" class="editor-text" style="width: 100%" class=""/>'
+          '<input type="text" class="editor-text" style="width: 100%" class=""/>',
         );
         if (editorOptions.choices) {
           this.$input.attr('list', 'choices');
@@ -417,7 +417,7 @@ define([
         this.$input.appendTo($wrapper);
         if (inspectData) {
           const $link = $(
-            '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-tree"></i></a>'
+            '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-tree"></i></a>',
           );
           $link.appendTo($wrapper);
           // eslint-disable-next-line
@@ -436,7 +436,7 @@ define([
 
         $wrapper
           .appendTo(this.args.container)
-          .bind('keydown.nav', function (e) {
+          .bind('keydown.nav', function(e) {
             if (
               e.keyCode === $.ui.keyCode.LEFT ||
               e.keyCode === $.ui.keyCode.RIGHT
@@ -447,11 +447,11 @@ define([
           .focus()
           .select();
 
-        this.$input.focusout(function () {
+        this.$input.focusout(function() {
           if (!editing) {
             commitChanges(
               that.args.grid.module &&
-                !that.args.grid.module.view.slick.options.autoEdit
+                !that.args.grid.module.view.slick.options.autoEdit,
             );
           }
         });
@@ -467,7 +467,7 @@ define([
         this.serializeValue = jPathSerializeValue;
         this.isValueChanged = defaultIsValueChanged;
         this.validate = defaultValidate;
-        this.applyValue = function (item, state) {
+        this.applyValue = function(item, state) {
           defaultApplyValue.call(this, item, state, this.args.column.dataType);
         };
 
@@ -488,7 +488,7 @@ define([
       this.serializeValue = defaultSerializeValue;
       this.isValueChanged = defaultIsValueChanged;
       this.validate = defaultValidate;
-      this.applyValue = function (item, state) {
+      this.applyValue = function(item, state) {
         numberApplyValue.call(this, item, state, this.args.column.dataType);
       };
 
@@ -507,7 +507,7 @@ define([
       this.isValueChanged = booleanIsValueChanged;
       this.validate = defaultValidate;
 
-      this.applyValue = function (item, state) {
+      this.applyValue = function(item, state) {
         booleanApplyValue.call(this, item, state, this.args.column.dataType);
       };
       this.init();
@@ -520,7 +520,7 @@ define([
       this.focus = defaultFocus;
       this.getValue = defaultGetValue;
       this.setValue = defaultSetValue;
-      this.loadValue = function (item) {
+      this.loadValue = function(item) {
         DataObject.check(item, true);
         const value = item.getChildSync(this.args.column.jpath);
         this.item = value;
@@ -535,12 +535,12 @@ define([
         this.$input[0].defaultValue = this.defaultValue;
         this.$input.select();
       };
-      this.serializeValue = function () {
+      this.serializeValue = function() {
         let val = this.$input.val();
         if (!val) return undefined;
         try {
           const editorOptions = getEditorOptions(
-            this.args.column.colDef.editorOptions
+            this.args.column.colDef.editorOptions,
           );
           const valNumber = +val;
           if (!Number.isNaN(valNumber)) {
@@ -548,6 +548,9 @@ define([
               val = `${val} ${this.item.unit}`;
             } else if (editorOptions.base) {
               val = `${val} ${editorOptions.base}`;
+            } else {
+              // we have a number but no units
+              throw new Error('You need to specify the unit');
             }
           }
           const unit = UnitEditor.mathjs.unit(UnitEditor.mathjs.eval(val));
@@ -557,13 +560,13 @@ define([
               throw new Error(
                 `${unit.formatUnits()} is not the same base as ${
                   editorOptions.base
-                }`
+                }`,
               );
             }
           }
           return {
             unit: unit.formatUnits(),
-            SI: unit.value
+            SI: unit.value,
           };
         } catch (e) {
           UI.showNotification(e.message, 'warning');
@@ -574,13 +577,13 @@ define([
         return this.serializeValue() !== null;
       };
       this.validate = defaultValidate;
-      this.applyValue = function (item, state) {
+      this.applyValue = function(item, state) {
         defaultApplyValue.call(this, item, state, this.args.column.dataType);
       };
       this.init();
     }
 
-    UnitEditor.load = async function () {
+    UnitEditor.load = async function() {
       const mathjs = await Util.require('mathjs');
       UnitEditor.mathjs = mathjs;
     };
@@ -597,7 +600,7 @@ define([
 
     return {
       valid: true,
-      msg: null
+      msg: null,
     };
   }
 
@@ -614,7 +617,7 @@ define([
     if (type) {
       newState = {
         type: type,
-        value: state
+        value: state,
       };
     } else {
       newState = state;
@@ -623,7 +626,7 @@ define([
       this.args.grid.module.model.dataSetChildSync(
         item,
         this.args.column.jpath,
-        newState
+        newState,
       );
     } else {
       item.setChildSync(this.args.column.jpath, newState);
@@ -678,7 +681,7 @@ define([
     if (this.initOptions.textarea) {
       $('<div>').appendTo(this.args.container);
       this.$input = $(
-        '<textarea  class="editor-text" rows="10" cols="60" style="z-index:10000; position: relative;"/>'
+        '<textarea  class="editor-text" rows="10" cols="60" style="z-index:10000; position: relative;"/>',
       );
     } else {
       this.$input = $('<input type="text" class="editor-text" />');
@@ -690,10 +693,10 @@ define([
       .appendTo(this.args.container)
       .after(
         `<datalist id="choices">${getSelectOptions(
-          editorOptions.choices
-        )}</datalist>`
+          editorOptions.choices,
+        )}</datalist>`,
       )
-      .bind('keydown.nav', function (e) {
+      .bind('keydown.nav', function(e) {
         if (
           e.keyCode === $.ui.keyCode.LEFT ||
           e.keyCode === $.ui.keyCode.RIGHT
@@ -703,7 +706,7 @@ define([
       })
       .focus()
       .select()
-      .focusout(function () {
+      .focusout(function() {
         if (
           that.args.grid.module &&
           !that.args.grid.module.view.slick.options.autoEdit
@@ -738,7 +741,7 @@ define([
       this,
       item,
       _.isNaN(state) ? 'NaN' : state,
-      type
+      type,
     );
   }
 
@@ -746,11 +749,11 @@ define([
   function booleanInit() {
     var that = this;
     this.$input = $(
-      '<input type="checkbox" value="true" class="editor-checkbox" hideFocus>'
+      '<input type="checkbox" value="true" class="editor-checkbox" hideFocus>',
     );
     this.$input.appendTo(this.args.container);
     this.$input.focus();
-    this.$input.change(function () {
+    this.$input.change(function() {
       that.args.commitChanges('next');
     });
   }
@@ -791,20 +794,20 @@ define([
     this.$container = $('body');
 
     this.$wrapper = $(
-      '<DIV style="z-index:10000; position:absolute;background:white; padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;"/>'
+      '<DIV style="z-index:10000; position:absolute;background:white; padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;"/>',
     ).appendTo(this.$container);
 
     this.$input = $(
-      '<textarea hidefocus rows=5 style="backround:white; width:250px; height:80px;border:0; outline:0">'
+      '<textarea hidefocus rows=5 style="backround:white; width:250px; height:80px;border:0; outline:0">',
     ).appendTo(this.$wrapper);
 
     $(
-      '<div style="text-align:right"><button>Save</button><button>Cancel</button></div>'
+      '<div style="text-align:right"><button>Save</button><button>Cancel</button></div>',
     ).appendTo(this.$wrapper);
 
     this.$wrapper.find('button:first').bind('click', this.save);
     this.$wrapper.find('button:last').bind('click', this.cancel);
-    this.$input.bind('keydown', function (e) {
+    this.$input.bind('keydown', function(e) {
       if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
         that.save();
       } else if (e.which == $.ui.keyCode.ESCAPE) {
@@ -824,7 +827,7 @@ define([
     this.$input
       .focus()
       .select()
-      .focusout(function () {
+      .focusout(function() {
         // Shouldn't do this if auto-edit
         if (!that.args.grid.module.view.slick.options.autoEdit)
           that.args.commitChanges('next');
@@ -871,7 +874,7 @@ define([
     this.setValue = defaultSetValue;
     this.loadValue = defaultLoadValue;
     this.serializeValue = defaultSerializeValue;
-    this.applyValue = function (item, state) {
+    this.applyValue = function(item, state) {
       defaultApplyValue.call(this, item, state, this.args.column.dataType);
     };
     this.isValueChanged = defaultIsValueChanged;
@@ -887,7 +890,7 @@ define([
   function SimpleLongTextEditor(args) {
     this.args = args;
     this.initOptions = {
-      textarea: true
+      textarea: true,
     };
     this.init = defaultInit;
     this.destroy = defaultDestroy;
@@ -899,7 +902,7 @@ define([
     this.isValueChanged = defaultIsValueChanged;
     this.validate = defaultValidate;
 
-    this.applyValue = function (item, state) {
+    this.applyValue = function(item, state) {
       defaultApplyValue.call(this, item, state, this.args.column.dataType);
     };
 
@@ -914,7 +917,7 @@ define([
     this.initOptions = this.initOptions || {};
 
     this.$input = $(
-      `<select>${getSelectOptions(editorOptions.choices)}</select>`
+      `<select>${getSelectOptions(editorOptions.choices)}</select>`,
     );
 
     this.$input
@@ -946,7 +949,7 @@ define([
     this.serializeValue = defaultSerializeValue;
     this.isValueChanged = defaultIsValueChanged;
     this.validate = defaultValidate;
-    this.applyValue = function (item, state) {
+    this.applyValue = function(item, state) {
       defaultApplyValue.call(this, item, state, this.args.column.dataType);
     };
 
@@ -974,7 +977,7 @@ define([
     const options = Util.evalOptions(editorOptions);
     if (editorOptions && options === undefined) {
       return {
-        choices: editorOptions
+        choices: editorOptions,
       };
     }
     return options || {};

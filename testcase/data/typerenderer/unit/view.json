@@ -1,5 +1,5 @@
 {
-  "version": "2.98.4-0",
+  "version": "2.118.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,32 +17,15 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                [
-                  "yes"
-                ]
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
               "script": [
                 "API.createData('test',\n    {\n        SI: 100,\n        unit: 'degC'\n    }\n);\n"
               ]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -62,30 +45,21 @@
             "top": 0
           },
           "size": {
-            "width": 55,
-            "height": 26
+            "width": 37,
+            "height": 18
           },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "title": "",
       "actions_out": [
         {
@@ -105,33 +79,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -142,62 +103,23 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "editSearchRegexp": [
-                null
-              ],
-              "editReplace": [
-                null
-              ],
-              "debounce": [
-                0
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                ""
-              ],
-              "forceType": [
-                "unit"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["unit"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -205,22 +127,17 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 56,
+            "left": 38,
             "top": 0
           },
           "size": {
-            "width": 52,
-            "height": 11
+            "width": 31,
+            "height": 9
           },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -233,9 +150,7 @@
           "name": "test"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "actions_out": [
         {
           "jpath": []
@@ -251,33 +166,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -288,62 +190,23 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "editSearchRegexp": [
-                null
-              ],
-              "editReplace": [
-                null
-              ],
-              "debounce": [
-                0
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                "numeral:'0.00'"
-              ],
-              "forceType": [
-                "unit"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": ["numeral:'0.00'"],
+              "forceType": ["unit"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -351,22 +214,17 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 56,
-            "top": 12
+            "left": 38,
+            "top": 10
           },
           "size": {
-            "width": 52,
-            "height": 11
+            "width": 31,
+            "height": 8
           },
           "zIndex": 0,
           "display": true,
           "title": "numeral:'0.00'",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -379,9 +237,7 @@
           "name": "test"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "actions_out": [
         {
           "jpath": []
@@ -397,33 +253,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -434,62 +277,23 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "editSearchRegexp": [
-                null
-              ],
-              "editReplace": [
-                null
-              ],
-              "debounce": [
-                0
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                "numeral:'0.00', unit:'K'"
-              ],
-              "forceType": [
-                "unit"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": ["numeral:'0.00', unit:'K'"],
+              "forceType": ["unit"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -497,22 +301,17 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 56,
-            "top": 24
+            "left": 70,
+            "top": 0
           },
           "size": {
-            "width": 52,
-            "height": 11
+            "width": 31,
+            "height": 9
           },
           "zIndex": 0,
           "display": true,
           "title": "numeral:'0.00', unit:'K'",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -525,9 +324,7 @@
           "name": "test"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "actions_out": [
         {
           "jpath": []
@@ -543,33 +340,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -580,62 +364,25 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "editSearchRegexp": [
-                null
-              ],
-              "editReplace": [
-                null
-              ],
-              "debounce": [
-                0
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
               "rendererOptions": [
                 "numeral:'0.00', unit:'degF', hideUnit: true"
               ],
-              "forceType": [
-                "unit"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "forceType": ["unit"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -643,22 +390,17 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 56,
-            "top": 36
+            "left": 70,
+            "top": 10
           },
           "size": {
-            "width": 52,
-            "height": 11
+            "width": 31,
+            "height": 8
           },
           "zIndex": 0,
           "display": true,
           "title": "numeral:'0.00', unit:'degF', hideUnit: true",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -671,9 +413,7 @@
           "name": "test"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "actions_out": [
         {
           "jpath": []
@@ -689,47 +429,375 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable",
+                  "enableAddRow"
+                ]
+              ],
+              "copyPaste": [[]],
+              "copyPasteOptions": [["newRows"]],
+              "autoColumns": [[]],
+              "toolbar": [[]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": [null],
+              "slick.headerRowHeight": [30],
+              "slick.selectionModel": ["row"],
+              "idProperty": [""],
+              "filterType": ["pref"],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [""]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "value",
+                "jpath": ["value"],
+                "editor": "unit",
+                "forceType": "unit",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "value2",
+                "jpath": ["value2"],
+                "editor": "unit",
+                "forceType": "unit",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "{base: 'degC'}",
+                "hideColumn": []
+              },
+              {
+                "name": "value3",
+                "jpath": ["value3"],
+                "editor": "unit",
+                "forceType": "unit",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "hideUnit:true",
+                "editorOptions": "{base: 'degC'}",
+                "hideColumn": []
+              },
+              {
+                "name": "value4",
+                "jpath": ["value4"],
+                "editor": "unit",
+                "forceType": "unit",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "unit: 'degF'",
+                "editorOptions": "{base: 'degC'}",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [0, 0, 0, 1],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [[{}]],
+          "data": [
+            {
+              "saveInView": [[]],
+              "varname": [""],
+              "data": ["[]"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 38,
+            "top": 19
+          },
+          "size": {
+            "width": 63,
+            "height": 53
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Test table and edition",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "Test table and edition"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.createData('table',\n    [\n        {\n            value: {\n                SI: 100,\n                unit: 'degC'\n            },\n            value2: {\n                SI: 100,\n                unit: 'degC'\n            },\n            value3: {\n                SI: 100,\n                unit: 'degC'\n            },\n            value4: {\n                SI: 100,\n                unit: 'degC'\n            },\n        }\n    ]\n   \n);\n"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 19
+          },
+          "size": {
+            "width": 37,
+            "height": 53
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "title": "",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["view"],
+              "expanded": [["expand"]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 102,
+            "top": 19
+          },
+          "size": {
+            "width": 39,
+            "height": 53
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "table"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
     {
-      "jpath": [
-        ""
-      ]
+      "jpath": [""]
     }
   ],
-  "aliases": [
-    {}
-  ],
+  "aliases": [{}],
   "configuration": {
     "title": "No title"
   },
@@ -739,12 +807,8 @@
       "groups": {
         "action": [
           {
-            "name": [
-              null
-            ],
-            "script": [
-              null
-            ]
+            "name": [null],
+            "script": [null]
           }
         ]
       }
@@ -756,9 +820,7 @@
       "groups": {
         "general": [
           {
-            "script": [
-              ""
-            ]
+            "script": [""]
           }
         ]
       }
@@ -771,11 +833,7 @@
           {
             "sections": {},
             "groups": {
-              "modules": [
-                [
-                  {}
-                ]
-              ]
+              "modules": [[{}]]
             }
           }
         ],
@@ -783,11 +841,7 @@
           {
             "sections": {},
             "groups": {
-              "filters": [
-                [
-                  {}
-                ]
-              ]
+              "filters": [[{}]]
             }
           }
         ],
@@ -797,19 +851,11 @@
             "groups": {
               "filter": [
                 {
-                  "name": [
-                    null
-                  ],
-                  "script": [
-                    null
-                  ]
+                  "name": [null],
+                  "script": [null]
                 }
               ],
-              "libs": [
-                [
-                  {}
-                ]
-              ]
+              "libs": [[{}]]
             }
           }
         ]
@@ -821,11 +867,7 @@
     {
       "sections": {},
       "groups": {
-        "action": [
-          [
-            {}
-          ]
-        ]
+        "action": [[{}]]
       }
     }
   ]
