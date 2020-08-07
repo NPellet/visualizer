@@ -3,8 +3,7 @@
 define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
   var transformChanged;
 
-  function Controller() {
-  }
+  function Controller() { }
 
   $.extend(true, Controller.prototype, Default);
 
@@ -14,49 +13,49 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     author: 'Daniel Kostro',
     date: '15.06.2014',
     license: 'MIT',
-    cssClass: 'panzoom'
+    cssClass: 'panzoom',
   };
 
   Controller.prototype.references = {
     picture: {
       type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'svg', 'string'],
-      label: 'A picture (image url or typed svg)'
+      label: 'A picture (image url or typed svg)',
     },
     svg: {
-      label: 'An svg'
+      label: 'An svg',
     },
     image: {
       type: ['picture', 'png', 'jpeg', 'jpg', 'gif', 'string'],
-      label: 'An image url'
+      label: 'An image url',
     },
     pixel: {
-      label: 'A pixel'
+      label: 'A pixel',
     },
     allpixel: {
-      label: 'A hash map of pixels by varname'
+      label: 'A hash map of pixels by varname',
     },
     transform: {
       label: 'A transform matrix (as a 6-element array)',
-      type: 'array'
-    }
+      type: 'array',
+    },
   };
 
   Controller.prototype.events = {
     click: {
       label: 'The image was clicked',
       refVariable: ['pixel', 'allpixel'],
-      refAction: ['pixel']
+      refAction: ['pixel'],
     },
     hover: {
       label: 'A pixel was hovered',
       refVariable: ['pixel', 'allpixel'],
-      refAction: ['pixel']
+      refAction: ['pixel'],
     },
     transformChanged: {
       label: 'The image pan or zoom changed',
       refVariable: ['transform'],
-      refAction: ['transform']
-    }
+      refAction: ['transform'],
+    },
   };
 
   Controller.prototype.variablesIn = ['picture', 'image', 'svg'];
@@ -64,7 +63,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
   Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
     hide: 'Hide an image',
     show: 'Show an image',
-    transform: 'Set image transform'
+    transform: 'Set image transform',
   });
 
   Controller.prototype.configurationStructure = function () {
@@ -78,7 +77,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
       for (; i < l; i++) {
         vars.push({
           title: currentCfg[i].name,
-          key: currentCfg[i].name
+          key: currentCfg[i].name,
         });
       }
     }
@@ -87,7 +86,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
 
           fields: {
@@ -97,22 +96,22 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
               options: [
                 { title: 'No highlights', key: 'none' },
                 { title: 'Pan to center', key: 'pan' },
-                { title: 'Pan to center and zoom', key: 'panzoom' }
+                { title: 'Pan to center and zoom', key: 'panzoom' },
               ],
-              default: 'none'
+              default: 'none',
             },
             transformThrottling: {
               type: 'float',
               title: 'Throttle send transform',
-              default: 0
-            }
-          }
+              default: 0,
+            },
+          },
         },
 
         img: {
           options: {
             type: 'table',
-            multiple: true
+            multiple: true,
           },
 
           fields: {
@@ -120,28 +119,28 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
               type: 'combo',
               title: 'Variable In',
               options: vars,
-              default: ''
+              default: '',
             },
 
             opacity: {
               type: 'text',
               title: 'Opacity [0,1]',
-              default: '1'
+              default: '1',
             },
 
             order: {
               type: 'text',
               title: 'z-index',
-              default: ''
+              default: '',
             },
             rendering: {
               type: 'combo',
               title: 'Rendering',
               options: [
                 { key: 'default', title: 'Normal' },
-                { key: 'crisp-edges', title: 'Crisp edges / Pixelated' }
+                { key: 'crisp-edges', title: 'Crisp edges / Pixelated' },
               ],
-              default: 'default'
+              default: 'default',
             },
             scaling: {
               type: 'combo',
@@ -149,42 +148,43 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
               options: [
                 {
                   key: 'max',
-                  title: 'Extend to 100% of available space'
+                  title: 'Extend to 100% of available space',
                 },
                 {
                   key: 'no',
-                  title: 'Keep original image size'
+                  title: 'Keep original image size',
                 },
                 {
                   key: 'maxIfLarge',
-                  title: 'Normal if picture smaller than available space, 100% if not'
-                }
+                  title:
+                    'Normal if picture smaller than available space, 100% if not',
+                },
               ],
-              default: 'max'
+              default: 'max',
             },
             rerender: {
               type: 'checkbox',
               title: 'Re-render on zoom',
               options: {
-                yes: 'Yes'
+                yes: 'Yes',
               },
-              default: []
-            }
-          }
-        }
-      }
+              default: [],
+            },
+          },
+        },
+      },
     };
   };
-
 
   Controller.prototype.configAliases = {
     img: ['groups', 'img', 0],
     highlightStrategy: ['groups', 'group', 0, 'highlightStrategy', 0],
-    transformThrottling: ['groups', 'group', 0, 'transformThrottling', 0]
+    transformThrottling: ['groups', 'group', 0, 'transformThrottling', 0],
   };
 
   Controller.prototype.clickedPixel = function (clickedPixel) {
     this.createDataFromEvent('click', 'pixel', clickedPixel);
+    this.sendActionFromEvent('click', 'pixel', clickedPixel);
   };
 
   Controller.prototype.allClickedPixels = function (allClickedPixels) {
@@ -193,6 +193,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
 
   Controller.prototype.hoverPixel = function (hoverPixel) {
     this.createDataFromEvent('hover', 'pixel', hoverPixel);
+    this.sendActionFromEvent('hover', 'pixel', hoverPixel);
   };
 
   Controller.prototype.allHoverPixels = function (allHoverPixels) {
