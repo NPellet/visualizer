@@ -1,3 +1,12 @@
+# [2.119.0](https://github.com/NPellet/visualizer/compare/v2.118.1...v2.119.0) (2020-08-26)
+
+
+### Features
+
+* add panzoom reset transform action in ([cf2d639](https://github.com/NPellet/visualizer/commit/cf2d63957dbbdb232ae700c4764cd14c3cda0bb7))
+
+
+
 ## [2.118.1](https://github.com/NPellet/visualizer/compare/v2.118.0...v2.118.1) (2020-08-26)
 
 
