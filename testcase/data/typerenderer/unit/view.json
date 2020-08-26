@@ -790,6 +790,177 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": ["API.createData('testValue', 100);\n"]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 73
+          },
+          "size": {
+            "width": 37,
+            "height": 10
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "title": "",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["unit"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 38,
+            "top": 73
+          },
+          "size": {
+            "width": 31,
+            "height": 10
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 11,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "testValue"
+        }
+      ],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "",
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
     }
   ],
   "variables": [
