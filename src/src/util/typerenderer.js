@@ -203,27 +203,35 @@ define([
 
   functions.unit = {};
   functions.unit.toscreen = async function($element, val, rootVal, options) {
-    if (!val || !val.unit) return;
-    const mathjs = await asyncRequire('mathjs');
-    let unit = mathjs.unit(String(val.unit));
-    unit.value = Number(val.SI);
+    if (!val) return;
     let displayValue;
-    if (options.format) {
-      const str = unit.toString();
-      const [number, ...unitParts] = str.split(/\s+/);
-      displayValue = `${formatNumber(number, options)} ${unitParts.join(' ')}`;
+    if (typeof val === 'number') {
+      displayValue = formatNumber(val, options);
     } else {
-      let number;
-      if (options.unit) {
-        unit = unit.to(options.unit);
-        number = unit.toNumber(options.unit);
+      if (!val.unit) return;
+      const mathjs = await asyncRequire('mathjs');
+      let unit = mathjs.unit(String(val.unit));
+      unit.value = Number(val.SI);
+
+      if (options.format) {
+        const str = unit.toString();
+        const [number, ...unitParts] = str.split(/\s+/);
+        displayValue = `${formatNumber(number, options)} ${unitParts.join(
+          ' ',
+        )}`;
       } else {
-        const unitStr = String(val.unit);
-        number = unit.toNumber(unitStr);
+        let number;
+        if (options.unit) {
+          unit = unit.to(options.unit);
+          number = unit.toNumber(options.unit);
+        } else {
+          const unitStr = String(val.unit);
+          number = unit.toNumber(unitStr);
+        }
+        displayValue = `${formatNumber(number, options)} ${
+          options.hideUnit ? '' : unit.formatUnits()
+        }`;
       }
-      displayValue = `${formatNumber(number, options)} ${
-        options.hideUnit ? '' : unit.formatUnits()
-      }`;
     }
 
     $element.html(displayValue);
