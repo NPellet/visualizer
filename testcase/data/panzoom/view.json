@@ -1,5 +1,5 @@
 {
-  "version": "2.116.2-0",
+  "version": "2.118.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -150,7 +150,12 @@
           "name": "svg"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {
+          "rel": "reset",
+          "name": "Reset"
+        }
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -159,6 +164,97 @@
       "actions_out": [
         {
           "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": ["click"],
+              "label": ["Action"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "title": [""],
+              "css": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;"
+              ],
+              "cssOn": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;"
+              ],
+              "cssOff": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;"
+              ],
+              "startState": ["off"],
+              "text": [null],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "contentType": ["content"],
+              "content": [""],
+              "maskOpacity": [0.6]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 7,
+            "top": 66
+          },
+          "size": {
+            "width": 40,
+            "height": 10
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [],
+      "actions_in": [{}],
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "Reset"
         }
       ],
       "toolbar": {

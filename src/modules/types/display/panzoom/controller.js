@@ -1,9 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
+define(['modules/default/defaultcontroller', 'lodash'], function(Default, _) {
   var transformChanged;
 
-  function Controller() { }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -64,9 +64,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     hide: 'Hide an image',
     show: 'Show an image',
     transform: 'Set image transform',
+    reset: 'Reset transform',
   });
 
-  Controller.prototype.configurationStructure = function () {
+  Controller.prototype.configurationStructure = function() {
     var vars = [];
     var currentCfg = this.module.definition.vars_in;
 
@@ -182,31 +183,31 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     transformThrottling: ['groups', 'group', 0, 'transformThrottling', 0],
   };
 
-  Controller.prototype.clickedPixel = function (clickedPixel) {
+  Controller.prototype.clickedPixel = function(clickedPixel) {
     this.createDataFromEvent('click', 'pixel', clickedPixel);
     this.sendActionFromEvent('click', 'pixel', clickedPixel);
   };
 
-  Controller.prototype.allClickedPixels = function (allClickedPixels) {
+  Controller.prototype.allClickedPixels = function(allClickedPixels) {
     this.createDataFromEvent('click', 'allpixel', allClickedPixels);
   };
 
-  Controller.prototype.hoverPixel = function (hoverPixel) {
+  Controller.prototype.hoverPixel = function(hoverPixel) {
     this.createDataFromEvent('hover', 'pixel', hoverPixel);
     this.sendActionFromEvent('hover', 'pixel', hoverPixel);
   };
 
-  Controller.prototype.allHoverPixels = function (allHoverPixels) {
+  Controller.prototype.allHoverPixels = function(allHoverPixels) {
     this.lastHoverPixels = allHoverPixels;
     this.createDataFromEvent('hover', 'allpixel', allHoverPixels);
   };
 
-  Controller.prototype.transformChanged = function (transformMatrix) {
+  Controller.prototype.transformChanged = function(transformMatrix) {
     transformMatrix = transformMatrix.slice(0, 6);
     transformChanged(this, transformMatrix);
   };
 
-  Controller.prototype.setTransformThrottling = function (throttling) {
+  Controller.prototype.setTransformThrottling = function(throttling) {
     if (throttling > 0) {
       transformChanged = _.throttle(transformMatrix, throttling);
     } else {
@@ -214,7 +215,7 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     }
   };
 
-  Controller.prototype.export = function () {
+  Controller.prototype.export = function() {
     return this.module.view.export();
   };
 
