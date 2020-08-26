@@ -1,3 +1,21 @@
+## [2.118.1](https://github.com/NPellet/visualizer/compare/v2.118.0...v2.118.1) (2020-08-26)
+
+
+### Bug Fixes
+
+* deal with undefined units in slick grid edition of Unit types ([6a39bc1](https://github.com/NPellet/visualizer/commit/6a39bc1a6a13e12676392f25e5ca78e2077d96e4))
+* revert changes done on panzoom by mistake ([42c00ec](https://github.com/NPellet/visualizer/commit/42c00ecdc57dabfc9d50b85ebeced32b156d7bab))
+* send actions from panzoom ([c92dd3d](https://github.com/NPellet/visualizer/commit/c92dd3da93343f151813483ee5c4159e93b5a2bb))
+* unit type renderer when no value ([2716ff2](https://github.com/NPellet/visualizer/commit/2716ff274fa1c6bfe5294a3c5cfa1c2a8c3027bd))
+* unit type renderer when no value ([cec2689](https://github.com/NPellet/visualizer/commit/cec2689c77b9c80e246c37ddc3fc08df19ed3024))
+
+
+### Features
+
+* if unit is a number just return the number ([6a27380](https://github.com/NPellet/visualizer/commit/6a273807f0bc8caaf5f6c390ce494e03d144246b))
+
+
+
 # [2.118.0](https://github.com/NPellet/visualizer/compare/v2.117.0...v2.118.0) (2020-08-04)
 
 
