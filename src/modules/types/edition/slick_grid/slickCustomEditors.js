@@ -529,7 +529,7 @@ define([
           const unitStr = String(value.unit);
           let unit = UnitEditor.mathjs.unit(unitStr);
           unit.value = Number(value.SI);
-          this.defaultValue = `${unit.toNumber(unitStr)} ${unitStr}`;
+          this.defaultValue = unitStr ? `${unit.toNumber(unitStr)}` : value.SI;
         }
         this.$input.val(this.defaultValue);
         this.$input[0].defaultValue = this.defaultValue;
