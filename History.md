@@ -1,3 +1,12 @@
+# [2.120.0](https://github.com/NPellet/visualizer/compare/v2.119.0...v2.120.0) (2020-09-04)
+
+
+### Features
+
+* allow empty units ([67e6655](https://github.com/NPellet/visualizer/commit/67e6655a085a67a881d50ef374e69ee3b2dc3e20))
+
+
+
 # [2.119.0](https://github.com/NPellet/visualizer/compare/v2.118.1...v2.119.0) (2020-08-26)
 
 
