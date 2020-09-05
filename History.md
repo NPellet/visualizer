@@ -1,3 +1,12 @@
+## [2.120.1](https://github.com/NPellet/visualizer/compare/v2.120.0...v2.120.1) (2020-09-05)
+
+
+### Bug Fixes
+
+* unit without dimension in slick grid ([efe0fb9](https://github.com/NPellet/visualizer/commit/efe0fb9c16bd58e9fe7ad472c81af7864bc0f7ec))
+
+
+
 # [2.120.0](https://github.com/NPellet/visualizer/compare/v2.119.0...v2.120.0) (2020-09-04)
 
 
