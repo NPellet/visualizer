@@ -4,7 +4,8 @@ define([
   'jquery',
   'modules/default/defaultcontroller',
   'smart-array-filter',
-], function ($, Default, filter) {
+], function($, Default, SAF) {
+  const filter = SAF.filter;
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
@@ -49,7 +50,7 @@ define([
     appendQuery: 'Append to current query',
   };
 
-  Controller.prototype.configurationStructure = function () {
+  Controller.prototype.configurationStructure = function() {
     return {
       groups: {
         group: {
@@ -96,7 +97,7 @@ define([
     fontSize: ['groups', 'group', 0, 'fontSize', 0],
   };
 
-  Controller.prototype.onQuery = function (query) {
+  Controller.prototype.onQuery = function(query) {
     if (!this.module.view._data) return;
     var array = DataObject.resurrect(this.module.view._data);
     var result = filter(array, {
