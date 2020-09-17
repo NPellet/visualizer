@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -258,7 +258,7 @@ define([
           };
           xAxis.on('zoom', xZoomHandler).on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -1168,9 +1168,9 @@ define([
         var valueType = DataObject.getType(value);
         if (valueType === 'string') {
           require(['jcampconverter'], (JcampConverter) => {
-            JcampConverter.convert(String(value), options, true).then(
-              displaySpectra,
-            );
+            let parsed = JcampConverter.convert(String(value), options)
+              .flatten[0];
+            displaySpectra(parsed);
           });
         } else {
           displaySpectra(value);
@@ -1185,6 +1185,11 @@ define([
           that.series[varname] = that.series[varname] || [];
           that.series[varname] = [];
 
+          console.log(spectra);
+          if (spectra.flatten && spectra.flatten[0]) {
+            spectra = spectra.flatten[0];
+          }
+
           if (spectra.contourLines) {
             serie = that.graph.newSerie(
               varname,
@@ -1198,25 +1203,12 @@ define([
             that.setSerieParameters(serie, varname);
             that.series[varname].push(serie);
           } else {
-            spectra = spectra.spectra;
-            for (var i = 0, l = spectra.length; i < l; i++) {
-              var data = spectra[i].data[spectra[i].data.length - 1];
-
-              let dataX = [];
-              let dataY = [];
-
-              if (data.x && data.y) {
-                dataX = data.x;
-                dataY = data.y;
-              } else if (Array.isArray(data[0])) {
-                dataX = data[0];
-                dataY = data[1];
-              } else {
-                for (var i = 0; i < data.length; i += 2) {
-                  dataX.push(data[i]);
-                  dataY.push(data[i + 1]);
-                }
-              }
+            if (spectra.spectra) {
+              spectra = spectra.spectra;
+            }
+            if (!Array.isArray(spectra)) return;
+            for (let spectrum of spectra) {
+              let data = spectrum.data;
 
               let serieOptions = that.getSerieOptions(varname, null, data);
               serie = that.graph.newSerie(varname, serieOptions.options);
@@ -1227,7 +1219,7 @@ define([
               }
 
               var waveform = Graph.newWaveform();
-              waveform.setData(dataY, dataX);
+              waveform.setData(data.y, data.x);
               that.normalize(waveform, varname);
               if (serieOptions.useSlots) {
                 waveform.aggregate();
@@ -1582,6 +1574,5 @@ function convertStyle(styles) {
       lineWidth: 3,
     });
   }
-  console.log(newStyles);
   return newStyles;
 }
