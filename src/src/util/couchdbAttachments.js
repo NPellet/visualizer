@@ -180,7 +180,7 @@ define([
           };
         }
 
-        let response = await fetch(this.docUrl, {
+        await fetch(this.docUrl, {
           method: 'PUT',
           credentials: 'include',
           headers: {
@@ -189,9 +189,6 @@ define([
           },
           body: JSON.stringify(this.lastDoc),
         });
-
-        let result = await response.json();
-        console.log(result);
 
         if (options.noRefresh) {
           return attachmentsAsArray(this, this.lastDoc._attachments);

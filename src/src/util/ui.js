@@ -16,13 +16,13 @@ define([
   'src/util/Form',
   'lib/twigjs/twig',
   'notifyjs',
-  'jquery-ui/ui/widgets/dialog'
+  'jquery-ui/ui/widgets/dialog',
 ], function (Util, Debug, Traversing, _, $, Renderer, Button, Form, Twig) {
   // On load add the style for the progress notification
   $.notify.addStyle('inprogress', {
     html: `<div><span data-notify-text/>   &nbsp; &nbsp; ${Util.getLoadingAnimation(
       24,
-      'black'
+      'black',
     )
       .css('vertical-align', 'middle')
       .wrap('<div/>')
@@ -41,9 +41,9 @@ define([
         'background-position': '3px 7px',
         color: '#3A87AD',
         'background-color': '#D9EDF7',
-        'border-color': '#BCE8F1'
-      }
-    }
+        'border-color': '#BCE8F1',
+      },
+    },
   });
 
   var exports = {};
@@ -56,15 +56,15 @@ define([
         mode: 'json',
         content: '',
         width: 800,
-        height: 600
+        height: 600,
       },
-      opts
+      opts,
     );
     require(['ace/ace'], function (ace) {
       var id = Util.getNextUniqueId(true);
       exports.dialog(
         $(`<div style="width: 100%; height: 100%;" id="${id}"></div>`),
-        opts
+        opts,
       );
       var editor = ace.edit(id);
       var mode = `./mode/${opts.mode}`;
@@ -81,7 +81,7 @@ define([
       buttonLabel: 'Submit',
       validationMessage: 'What you entered is not valid',
       value: '',
-      validation: () => true
+      validation: () => true,
     };
 
     opts = Object.assign({}, defaultOptions, opts);
@@ -105,12 +105,12 @@ define([
 
       const dialogOptions = Object.assign({}, opts.dialog, {
         buttons: {
-          [opts.buttonLabel]: done
+          [opts.buttonLabel]: done,
         },
         close: function () {
           resolve(null);
           dialog.dialog('destroy');
-        }
+        },
       });
       var dialog = exports.dialog(div, dialogOptions);
     });
@@ -121,7 +121,7 @@ define([
 
     if (opts.twig) {
       var template = Twig.twig({
-        data: DataObject.resurrect(div)
+        data: DataObject.resurrect(div),
       });
       var render = template.renderAsync(DataObject.resurrect(opts.twig));
       render.render();
@@ -153,7 +153,7 @@ define([
           form.unbind();
           resolve(null);
           dialog.dialog('destroy');
-        }
+        },
       });
 
       if (opts.buttonLabels) {
@@ -183,24 +183,26 @@ define([
         template: (element) => element.text || element.id,
         id: (el) => el.id,
         text: (el) => el.text,
-        groupBy: null
+        groupBy: null,
       },
-      options
+      options,
     );
 
     let searchList = list.map((el) => ({
       original: el,
       text: options.text(el),
-      id: options.id(el)
+      id: options.id(el),
     }));
 
     if (options.groupBy) {
-      const grouped = _.groupBy(searchList, (el) => options.groupBy(el.original));
+      const grouped = _.groupBy(searchList, (el) =>
+        options.groupBy(el.original),
+      );
       const keys = Object.keys(grouped);
       searchList = keys.map((key) => ({
         id: `group-${key}`,
         text: key,
-        children: grouped[key]
+        children: grouped[key],
       }));
     }
 
@@ -212,11 +214,11 @@ define([
 
     var ww = Math.max(
       document.documentElement.clientWidth,
-      window.innerWidth || 0
+      window.innerWidth || 0,
     );
     var wh = Math.max(
       document.documentElement.clientHeight,
-      window.innerHeight || 0
+      window.innerHeight || 0,
     );
 
     $select2 += '</select></div>';
@@ -235,21 +237,21 @@ define([
         margin: 0,
         'box-sizing': 'border-box',
         opacity: 0.7,
-        backgroundColor: '#262b33'
+        backgroundColor: '#262b33',
       })
       .appendTo('body')
       .find('select')
       .addClass('js-example-basic-single')
       .css({
         width: selectWidth,
-        zIndex: 5000
+        zIndex: 5000,
       });
 
     $select2
       .select2({
         placeholder: options.title,
         data: searchList,
-        templateResult: options.template
+        templateResult: options.template,
       })
       .select2('open')
       .val(null)
@@ -274,7 +276,6 @@ define([
     });
     return promise;
   };
-
 
   function binFormatter() {
     return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
@@ -306,13 +307,12 @@ define([
     var slickDefaultColumn = {
       formatter: waitFormatter,
       asyncPostRender: typeRenderer,
-      colDef: {}
+      colDef: {},
     };
 
     var grid;
     var data;
 
-    
     const columns = slickOptions.columns.map((column) => {
       if (column.editor === 'auto') {
         column.editor = Slick.typeEditors[column.forceType];
@@ -328,7 +328,7 @@ define([
         resizable: false,
         focusable: false,
         sortable: false,
-        formatter: binFormatter
+        formatter: binFormatter,
       });
     }
     if (slickOptions.reorder) {
@@ -342,12 +342,12 @@ define([
         cssClass: 'cell-reorder dnd',
         formatter: function () {
           return '';
-        }
+        },
       });
     }
     const defaultDialogOptions = {
       width: 700,
-      height: 500
+      height: 500,
     };
 
     var slickOptions = _.defaults(slickOptions.slick, slickDefaultOptions);
@@ -359,146 +359,153 @@ define([
       return {
         id: id,
         idx: data.getIdxById(id),
-        item: data.getItemById(id)
+        item: data.getItemById(id),
       };
     }
 
     return new Promise((resolve) => {
-      return Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
-        var $dialog = $('<div>');
-        var $slick = $('<div>').css('height', '100%').css('width', '100%').addClass('visualizer-slickgrid');
-        var $container = $('<div>').css('height', 410);
-        const dialogOptions = Object.assign(
-          {},
-          defaultDialogOptions,
-          slickOptions.dialog,
-          {
-            noWrap: true,
-            closeOnEscape: true,
-            buttons: {
-              cancel: function () {
-                console.log('CANCEL');
-                $(this).dialog('close');
+      return Util.loadCss('components/slickgrid/slick.grid.css').then(
+        function () {
+          var $dialog = $('<div>');
+          var $slick = $('<div>')
+            .css('height', '100%')
+            .css('width', '100%')
+            .addClass('visualizer-slickgrid');
+          var $container = $('<div>').css('height', 410);
+          const dialogOptions = Object.assign(
+            {},
+            defaultDialogOptions,
+            slickOptions.dialog,
+            {
+              noWrap: true,
+              closeOnEscape: true,
+              buttons: {
+                cancel: function () {
+                  $(this).dialog('close');
+                },
+                confirm: function () {
+                  currentList = JSON.parse(JSON.stringify(list));
+                  $(this).dialog('close');
+                  resolve();
+                },
               },
-              confirm: function () {
-                currentList = JSON.parse(JSON.stringify(list));
-                $(this).dialog('close');
+
+              close: () => {
+                list.length = 0;
+                for (let idx = 0; idx < currentList.length; idx++) {
+                  list[idx] = currentList[idx];
+                }
                 resolve();
               },
-            },
+              resize: function () {
+                grid.resizeCanvas();
+              },
+              open: function () {
+                $container.addClass('flex-main-container');
+                $container.append($slick);
+                $dialog.append($container);
+                data = new Slick.Data.DataView();
+                $container.on('click', 'a.recycle-bin', function (e) {
+                  var columns = grid.getColumns();
+                  var args = grid.getCellFromEvent(e);
+                  if (
+                    columns[args.cell] &&
+                    columns[args.cell].id === 'rowDeletion'
+                  ) {
+                    // delete the row...
+                    var itemInfo = getItemInfoFromRow(data, args.row);
+                    data.deleteItem(itemInfo.id);
+                    grid.invalidateAllRows();
+                    grid.render();
+                  }
+                });
+                data.setItems(list, slickOptions.idField);
+                data.onRowCountChanged.subscribe(function (event, args) {
+                  grid.updateRowCount();
+                  grid.render();
+                });
+                grid = new Slick.Grid($slick, data, columns, slickOptions);
 
-            close: () => {
-              list.length = 0;
-              for (let idx = 0; idx < currentList.length; idx++) {
-                list[idx] = currentList[idx];
-              }
-              resolve();
-            },
-            resize: function () {
-              grid.resizeCanvas();
-            },
-            open: function () {
-              $container.addClass('flex-main-container');
-              $container.append($slick);
-              $dialog.append($container);
-              data = new Slick.Data.DataView();
-              $container.on('click', 'a.recycle-bin', function (e) {
-                var columns = grid.getColumns();
-                var args = grid.getCellFromEvent(e);
-                if (
-                  columns[args.cell] &&
-                              columns[args.cell].id === 'rowDeletion'
-                ) {
-                  // delete the row...
-                  var itemInfo = getItemInfoFromRow(data, args.row);
-                  data.deleteItem(itemInfo.id);
+                function compMove(a, b) {
+                  return a.__pos - b.__pos;
+                }
+
+                const moveRowsPlugin = new Slick.RowMoveManager({
+                  cancelEditOnDrag: true,
+                });
+                moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
+                  for (var i = 0; i < data.rows.length; i++) {
+                    // no point in moving before or after itself
+                    if (
+                      data.rows[i] == data.insertBefore ||
+                      data.rows[i] == data.insertBefore - 1
+                    ) {
+                      e.stopPropagation();
+                      return false;
+                    }
+                  }
+                  return true;
+                });
+
+                moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
+                  var rows = args.rows;
+                  rows = rows.map(function (r) {
+                    return getItemInfoFromRow(data, r).idx;
+                  });
+                  var insertBefore = getItemInfoFromRow(
+                    data,
+                    args.insertBefore,
+                  );
+                  if (insertBefore !== null) insertBefore = insertBefore.idx;
+
+                  var items = data.getItems();
+                  // Add a position indicatior ==> for stable sort
+                  for (var i = 0; i < items.length; i++) {
+                    if (rows.indexOf(i) !== -1) items[i].__pos = 2;
+                    else if (i < insertBefore || insertBefore === null)
+                      items[i].__pos = 1;
+                    else items[i].__pos = 3;
+                  }
+
+                  data.sort(compMove);
+
+                  for (var i = 0; i < items.length; i++) {
+                    delete items[i].__pos;
+                  }
+
                   grid.invalidateAllRows();
                   grid.render();
-                }
-              });
-              data.setItems(list, slickOptions.idField);
-              data.onRowCountChanged.subscribe(function (event, args) {
-                grid.updateRowCount();
-                grid.render();
-              });
-              grid = new Slick.Grid($slick, data, columns, slickOptions);
-
-              function compMove(a, b) {
-                return a.__pos - b.__pos;
-              }
-
-              const moveRowsPlugin = new Slick.RowMoveManager({
-                cancelEditOnDrag: true
-              });
-              moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
-                for (var i = 0; i < data.rows.length; i++) {
-                  // no point in moving before or after itself
-                  if (
-                    data.rows[i] == data.insertBefore ||
-                                  data.rows[i] == data.insertBefore - 1
-                  ) {
-                    e.stopPropagation();
-                    return false;
-                  }
-                }
-                return true;
-              });
-        
-              moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
-                var rows = args.rows;
-                rows = rows.map(function (r) {
-                  return getItemInfoFromRow(data, r).idx;
                 });
-                var insertBefore = getItemInfoFromRow(
-                  data,
-                  args.insertBefore
-                );
-                if (insertBefore !== null) insertBefore = insertBefore.idx;
-        
-                var items = data.getItems();
-                // Add a position indicatior ==> for stable sort
-                for (var i = 0; i < items.length; i++) {
-                  if (rows.indexOf(i) !== -1) items[i].__pos = 2;
-                  else if (i < insertBefore || insertBefore === null)
-                    items[i].__pos = 1;
-                  else items[i].__pos = 3;
-                }
+                grid.registerPlugin(moveRowsPlugin);
 
-                data.sort(compMove);
-
-                for (var i = 0; i < items.length; i++) {
-                  delete items[i].__pos;
-                }
-        
-                grid.invalidateAllRows();
-                grid.render();
-              });
-              grid.registerPlugin(moveRowsPlugin);
-
-              // :(
-              grid.module = {
-                view: {
-                  slick: {
-                    options: slickOptions
+                // :(
+                grid.module = {
+                  view: {
+                    slick: {
+                      options: slickOptions,
+                    },
+                  },
+                };
+                grid.setSelectionModel(new Slick.CellSelectionModel());
+                grid.onAddNewRow.subscribe(function (event, args) {
+                  const item = args.item;
+                  if (!item[slickOptions.idField]) {
+                    item.setChildSync(
+                      [slickOptions.idField],
+                      Math.random().toString(36).slice(2),
+                    );
                   }
-                }
-              };
-              grid.setSelectionModel(new Slick.CellSelectionModel());
-              grid.onAddNewRow.subscribe(function (event, args) {
-                const item = args.item;
-                if (!item[slickOptions.idField]) {
-                  item.setChildSync([slickOptions.idField], Math.random().toString(36).slice(2));
-                }
-                data.addItem(item);
-              });
-              grid.init();
-              grid.resizeCanvas();
-              grid.render();
-            }
-          }
-        );
-        exports.dialog($dialog, dialogOptions);
-      });
+                  data.addItem(item);
+                });
+                grid.init();
+                grid.resizeCanvas();
+                grid.render();
+              },
+            },
+          );
+          exports.dialog($dialog, dialogOptions);
+        },
+      );
     });
   };
 
@@ -528,12 +535,12 @@ define([
       $header.html(`
                 <table><tr><td>
                 ${
-  sources
-    ? `${sources} sources left`
-    : `Sources loaded.${
-      failedSources ? ` (${failedSources} failed)` : ''
-    }`
-}
+                  sources
+                    ? `${sources} sources left`
+                    : `Sources loaded.${
+                        failedSources ? ` (${failedSources} failed)` : ''
+                      }`
+                }
                 </td>
                 <td id="abc">
                 </td></tr>
@@ -569,12 +576,12 @@ define([
       forceFitColumns: true,
       explicitInitialization: true,
       rowHeight: 20,
-      enableAsyncPostRender: true
+      enableAsyncPostRender: true,
     };
 
     var slickDefaultColumn = {
       formatter: waitFormatter,
-      asyncPostRender: typeRenderer
+      asyncPostRender: typeRenderer,
     };
 
     var grid,
@@ -597,7 +604,7 @@ define([
         for (var i = 0; i < arr.length; i++) {
           arr[i] = {
             key: keys[i],
-            description: list[keys[i]]
+            description: list[keys[i]],
           };
         }
       }
@@ -628,13 +635,13 @@ define([
         {
           id: 'key',
           name: 'key',
-          field: 'key'
+          field: 'key',
         },
         {
           id: 'description',
           name: 'description',
-          field: 'description'
-        }
+          field: 'description',
+        },
       ];
     }
 
@@ -683,13 +690,13 @@ define([
             Select: function () {
               resolve(lastClickedId);
               $(this).dialog('close');
-            }
+            },
           };
         }
 
         const defaultDialogOptions = {
           width: 700,
-          height: 500
+          height: 500,
         };
 
         const dialogOptions = Object.assign(
@@ -730,11 +737,11 @@ define([
               grid.init();
               readyToAddItems({
                 data,
-                grid
+                grid,
               });
               updateHeader();
-            }
-          }
+            },
+          },
         );
 
         exports.dialog($dialog, dialogOptions);
@@ -750,7 +757,12 @@ define([
     });
   };
 
-  exports.confirm = function confirm(html, okLabel, cancelLabel, dialogOptions) {
+  exports.confirm = function confirm(
+    html,
+    okLabel,
+    cancelLabel,
+    dialogOptions,
+  ) {
     if (_.isUndefined(okLabel)) okLabel = 'Ok';
     if (_.isUndefined(cancelLabel)) cancelLabel = 'Cancel';
     return new Promise(function (resolve) {
@@ -765,15 +777,15 @@ define([
       dialogOptions = Object.assign(
         {
           modal: true,
-          width: 400
+          width: 400,
         },
         dialogOptions,
         {
           close: function () {
             resolve(false);
           },
-          buttons: {}
-        }
+          buttons: {},
+        },
       );
 
       if (okLabel !== null && okLabel !== '')
@@ -798,7 +810,7 @@ define([
     autoDestroy: true,
     autoPosition: false,
     noHeader: false,
-    noWrap: false
+    noWrap: false,
   };
   exports.dialog = function dialog(div, options) {
     if (typeof div === 'object' && !div.jquery) {
@@ -821,7 +833,7 @@ define([
       options.position = {
         my: 'top+50',
         at: 'center top',
-        of: '#ci-visualizer'
+        of: '#ci-visualizer',
       };
     }
     $dialog.dialog(options);
@@ -831,25 +843,34 @@ define([
     return $dialog;
   };
 
-  exports.selectJpath = async function selectJpath(data, fancytreeOptions, dialogOptions) {
+  exports.selectJpath = async function selectJpath(
+    data,
+    fancytreeOptions,
+    dialogOptions,
+  ) {
     await Util.require('fancytree');
     let selected = null;
     const jpaths = Traversing.getJPathsFromElement(data);
 
     const div = $('<div style="overflow: auto;"/>');
-    div.fancytree(Object.assign({}, fancytreeOptions, {
-      source: { children: jpaths, id: 'element' },
-      activate: function (event, data) {
-        selected = data.node.key;
-      },
-      toggleEffect: false
-    }));
-    const confirmed = await exports.confirm(div,
-      'Ok', 'Cancel', Object.assign({ title: 'Select a jpath' }, dialogOptions)
+    div.fancytree(
+      Object.assign({}, fancytreeOptions, {
+        source: { children: jpaths, id: 'element' },
+        activate: function (event, data) {
+          selected = data.node.key;
+        },
+        toggleEffect: false,
+      }),
+    );
+    const confirmed = await exports.confirm(
+      div,
+      'Ok',
+      'Cancel',
+      Object.assign({ title: 'Select a jpath' }, dialogOptions),
     );
 
     if (selected) selected = Util.jpathToArray(selected);
-    
+
     if (confirmed) {
       return selected;
     } else {
@@ -860,16 +881,14 @@ define([
   exports.copyToClipboard = function (str, options = {}) {
     const {
       successMessage = 'Copy success',
-      failureMessage = 'Copy failure'
+      failureMessage = 'Copy failure',
     } = options;
     var strlen = str.length;
-    var txtarea = $('<textarea/>')
-      .text(str)
-      .css({
-        width: 0,
-        height: 0,
-        position: 'fixed'
-      });
+    var txtarea = $('<textarea/>').text(str).css({
+      width: 0,
+      height: 0,
+      position: 'fixed',
+    });
 
     $('body').append(txtarea);
 
@@ -892,11 +911,11 @@ define([
     const {
       mimeType = typeof data === 'string'
         ? 'text/plain'
-        : 'application/octet-stream'
+        : 'application/octet-stream',
     } = options;
     require(['file-saver'], (fileSaver) => {
       var blob = new Blob(typeof data === 'string' ? [data] : data, {
-        type: mimeType
+        type: mimeType,
       });
       fileSaver(blob, filename);
     });
@@ -908,7 +927,7 @@ define([
     if (args[1] && typeof args[1] === 'string') {
       args[1] = {
         className: args[1],
-        autoHide: args[1] !== 'error'
+        autoHide: args[1] !== 'error',
       };
     } else if (args[1] && args[1].className === 'error') {
       args[1] = Object.assign({ autoHide: false }, args[1]);
@@ -921,7 +940,7 @@ define([
     exports.showNotification(text, {
       style: 'inprogress',
       autoHide: false,
-      className: 'xxx'
+      className: 'xxx',
     });
     inProgress[id] = $('.notifyjs-inprogress-xxx').last();
     return id;
@@ -943,7 +962,7 @@ define([
       height: '100%',
       margin: 0,
       padding: 0,
-      border: 'none'
+      border: 'none',
     });
   };
 
