@@ -535,12 +535,12 @@ define([
       $header.html(`
                 <table><tr><td>
                 ${
-                  sources
-                    ? `${sources} sources left`
-                    : `Sources loaded.${
-                        failedSources ? ` (${failedSources} failed)` : ''
-                      }`
-                }
+  sources
+    ? `${sources} sources left`
+    : `Sources loaded.${
+      failedSources ? ` (${failedSources} failed)` : ''
+    }`
+}
                 </td>
                 <td id="abc">
                 </td></tr>
