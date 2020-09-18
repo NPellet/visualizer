@@ -1168,8 +1168,12 @@ define([
         var valueType = DataObject.getType(value);
         if (valueType === 'string') {
           require(['jcampconverter'], (JcampConverter) => {
-            let parsed = JcampConverter.convert(String(value), options)
-              .flatten[0];
+            let parsed = JcampConverter.convert(
+              String(value),
+              options,
+            ).flatten.filter(
+              (entry) => entry.spectra && entry.spectra.length > 0,
+            )[0];
             displaySpectra(parsed);
           });
         } else {

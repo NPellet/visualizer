@@ -27,6 +27,13 @@
         "type": "jcamp",
         "url": "../testcase/data/jcampViewer/data/ntuples.jdx"
       }
+    },
+    {
+      "name": "UV link",
+      "jcamp": {
+        "type": "jcamp",
+        "url": "../testcase/data/jcampViewer/data/uv.jdx"
+      }
     }
   ]
 }
