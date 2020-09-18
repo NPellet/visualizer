@@ -1,3 +1,13 @@
+## [2.121.1](https://github.com/NPellet/visualizer/compare/v2.121.0...v2.121.1) (2020-09-18)
+
+
+### Bug Fixes
+
+* deal with possibility of uppercase or lowercase jcamp variable symbol ([a6c85c4](https://github.com/NPellet/visualizer/commit/a6c85c4752468bbc3bb688932cf5af7b75404ef8))
+* testcase for 2D NMR wheel ([a8e1b4c](https://github.com/NPellet/visualizer/commit/a8e1b4c9e72bf0bd45f0335591ef19f44778c235))
+
+
+
 # [2.121.0](https://github.com/NPellet/visualizer/compare/v2.120.1...v2.121.0) (2020-09-11)
 
 
