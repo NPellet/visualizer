@@ -1185,7 +1185,6 @@ define([
           that.series[varname] = that.series[varname] || [];
           that.series[varname] = [];
 
-          console.log(spectra);
           if (spectra.flatten && spectra.flatten[0]) {
             spectra = spectra.flatten[0];
           }
@@ -1206,6 +1205,7 @@ define([
             if (spectra.spectra) {
               spectra = spectra.spectra;
             }
+
             if (!Array.isArray(spectra)) return;
             for (let spectrum of spectra) {
               let data = spectrum.data;
@@ -1219,7 +1219,7 @@ define([
               }
 
               var waveform = Graph.newWaveform();
-              waveform.setData(data.y, data.x);
+              waveform.setData(data.Y || data.y, data.X || data.x);
               that.normalize(waveform, varname);
               if (serieOptions.useSlots) {
                 waveform.aggregate();
