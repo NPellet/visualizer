@@ -1,3 +1,12 @@
+## [2.121.2](https://github.com/NPellet/visualizer/compare/v2.121.1...v2.121.2) (2020-09-18)
+
+
+### Bug Fixes
+
+* filter empty data in jcamp flatten result ([8847085](https://github.com/NPellet/visualizer/commit/8847085e336f47174b18580beccf1e3778922674))
+
+
+
 ## [2.121.1](https://github.com/NPellet/visualizer/compare/v2.121.0...v2.121.1) (2020-09-18)
 
 
