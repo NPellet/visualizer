@@ -43,8 +43,6 @@ define([
 
       this.colorId = 0;
       this.colors = ['red', 'blue', 'green', 'black'];
-
-      this.deferreds = {};
       this.onchanges = {};
       this.highlightOptions = Object.assign(
         {
@@ -1155,13 +1153,6 @@ define([
           return;
         }
 
-        if (this.deferreds[varname]) {
-          this.deferreds[varname].reject();
-        }
-
-        this.deferreds[varname] = $.Deferred();
-        var def = this.deferreds[varname];
-
         var options = moduleValue._options || {};
 
         var value = moduleValue.get();
@@ -1181,11 +1172,6 @@ define([
         }
 
         function displaySpectra(spectra) {
-          if (def.state() == 'rejected') {
-            return;
-          }
-
-          that.deferreds[varname] = false;
           that.series[varname] = that.series[varname] || [];
           that.series[varname] = [];
 
