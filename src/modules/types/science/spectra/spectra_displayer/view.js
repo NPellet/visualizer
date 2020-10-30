@@ -768,6 +768,7 @@ define([
       },
 
       chart(varName) {
+        this.removeAnnotations(varName);
         this.removeSerie(varName);
       },
 
@@ -778,6 +779,7 @@ define([
 
     update: {
       chart(moduleValue, varname) {
+        this.annotations[varname] = [];
         this.series[varname] = this.series[varname] || [];
         this.removeSerie(varname);
 
@@ -791,6 +793,22 @@ define([
         }
 
         let data = moduleValue.data;
+
+        if (moduleValue.annotations) {
+          for (const annotation of moduleValue.annotations) {
+            let shape = this.graph.newShape(
+              String(annotation.type),
+              annotation,
+              false,
+              annotation.properties,
+            );
+            if (!shape) {
+              continue;
+            }
+            shape.draw();
+            this.annotations[varname].push(shape);
+          }
+        }
 
         if (moduleValue.axes) {
           if (moduleValue.axes.x)
@@ -861,7 +879,6 @@ define([
             serieType = 'line.color';
           }
           var hasColor = false;
-
           if (Array.isArray(aData.color)) {
             hasColor = true;
             serieType = 'line.color';
@@ -1008,6 +1025,22 @@ define([
                 highlight: aData._highlight,
                 style,
               });
+            }
+          }
+
+          if (aData.annotations) {
+            for (const annotation of aData.annotations) {
+              let shape = this.graph.newShape(
+                String(annotation.type),
+                annotation,
+                false,
+                annotation.properties,
+              );
+              if (!shape) {
+                continue;
+              }
+              shape.draw();
+              this.annotations[varname].push(shape);
             }
           }
 
@@ -1532,8 +1565,10 @@ function convertSeries(series) {
     data.push({
       x: serie.data.x,
       y: serie.data.y,
+      color: serie.data.color,
       styles: convertStyle(serie.style),
       label: serie.name,
+      annotations: serie.annotations,
     });
   }
   return data;

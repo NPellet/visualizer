@@ -1,5 +1,5 @@
 {
-  "version": "2.104.2-0",
+  "version": "2.121.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -453,7 +453,7 @@
                 "new"
               ],
               "storedObject": [
-                "{\"axes\":{\"x\":{\"label\":\"Wavelength\",\"unit\":\"nm\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"},\"y\":{\"label\":\"Transmission\",\"unit\":\"%\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"}},\"series\":[{\"type\":\"line\",\"data\":{\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1]},\"style\":{\"line\":{\"color\":\"red\"},\"marker\":{\"shape\":\"rect\",\"x\":-2,\"y\":-2,\"width\":4,\"height\":4,\"fill\":\"white\",\"fill-opacity\":0.9,\"stroke\":\"blue\",\"stroke-opacity\":0.7}}}]}"
+                "{\"axes\":{\"x\":{\"label\":\"Wavelength\",\"unit\":\"nm\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"},\"y\":{\"label\":\"Transmission\",\"unit\":\"%\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"}},\"series\":[{\"type\":\"color\",\"data\":{\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1],\"color\":[\"green\",\"red\",\"blue\",\"yellow\",\"pink\"]},\"style\":{\"line\":{\"color\":\"red\"},\"marker\":{\"shape\":\"rect\",\"x\":-2,\"y\":-2,\"width\":4,\"height\":4,\"fill\":\"white\",\"fill-opacity\":0.9,\"stroke\":\"blue\",\"stroke-opacity\":0.7}},\"annotations\":[{\"type\":\"rectangle\",\"properties\":{\"strokeColor\":\"#F00\",\"fillColor\":\"#FF0\",\"fillOpacity\":0.5,\"strokeWidth\":2,\"strokeDasharray\":[3,2,1,1],\"position\":[{\"x\":1,\"y\":1},{\"x\":1.5,\"y\":1.5}]}},{\"type\":\"ellipse\",\"properties\":{\"strokeColor\":\"#F00\",\"fillColor\":\"#FF0\",\"fillOpacity\":0.5,\"strokeWidth\":2,\"strokeDasharray\":[3,2,1,1],\"rx\":0.1,\"ry\":0.2,\"position\":{\"x\":2,\"y\":2}}}]}]}"
               ]
             }
           ]

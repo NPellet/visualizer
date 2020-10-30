@@ -12,20 +12,19 @@ define(['../util'], function (Util) {
       top: false,
       right: false,
       bottom: false,
-      left: false
-    }
+      left: false,
+    },
   };
 
   const close = {
     top: true,
     right: true,
     bottom: true,
-    left: true
+    left: true,
   };
 
   function renderChart(el, options, rootVal, _options) {
     el.empty();
-
     const graph = Graph.fromJSON(options.resurrect(), el.get(0));
     graph.resize(Math.max(el.width() - 15, 20), Math.max(el.height() - 15, 20));
     graph.draw();
@@ -35,6 +34,6 @@ define(['../util'], function (Util) {
 
   return {
     init: loadJsgraph,
-    toscreen: renderChart
+    toscreen: renderChart,
   };
 });
