@@ -1,3 +1,12 @@
+# [2.122.0](https://github.com/NPellet/visualizer/compare/v2.121.2...v2.122.0) (2020-10-30)
+
+
+### Features
+
+* **spectraDisplayer:** deal with annotations in chart format ([6b80bbc](https://github.com/NPellet/visualizer/commit/6b80bbca01d0cc64e573bb01491eb58029cda693))
+
+
+
 ## [2.121.2](https://github.com/NPellet/visualizer/compare/v2.121.1...v2.121.2) (2020-09-18)
 
 
