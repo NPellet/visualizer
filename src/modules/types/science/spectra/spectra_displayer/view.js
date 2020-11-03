@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -254,9 +254,10 @@ define([
           const xZoomHandler = ([min, max]) => {
             this.module.model.setXBoundaries(min, max);
           };
-          xAxis.on('zoom', xZoomHandler).on('zoomOutFull', xZoomHandler);
+          xAxis.on('zoom', xZoomHandler);
+          xAxis.on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -477,7 +478,8 @@ define([
           const yZoomHandler = ([min, max]) => {
             this.module.model.setYBoundaries(min, max);
           };
-          yAxis.on('zoom', yZoomHandler).on('zoomOutFull', yZoomHandler);
+          yAxis.on('zoom', yZoomHandler);
+          yAxis.on('zoomOutFull', yZoomHandler);
         } else {
           yAxis
             .setPrimaryGrid(false)

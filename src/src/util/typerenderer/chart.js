@@ -1,6 +1,6 @@
 'use strict';
 
-define(['../util'], function (Util) {
+define(['../util'], function(Util) {
   let Graph;
 
   async function loadJsgraph() {
@@ -25,7 +25,7 @@ define(['../util'], function (Util) {
 
   function renderChart(el, options, rootVal, _options) {
     el.empty();
-    const graph = Graph.fromJSON(options.resurrect(), el.get(0));
+    const graph = Graph.fromJSON(options.resurrect(), el.get(0), () => {});
     graph.resize(Math.max(el.width() - 15, 20), Math.max(el.height() - 15, 20));
     graph.draw();
 
