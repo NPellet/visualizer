@@ -633,20 +633,26 @@ define([
         serie.hidden = false;
       }
 
-      let plotinfosStyle = {};
+      let plotinfosStyle = {
+        line: {
+          color: 'black',
+          width: 1,
+          style: 1,
+        },
+      };
       if (plotinfos) {
         const axes = new Set();
-        for (var plotinfo of plotinfos) {
+        for (const plotinfo of plotinfos) {
           axes.add(plotinfo.axis ? Number(plotinfo.axis) : 0);
         }
         const minAxis = Math.min(...axes);
         const nbAxes = axes.size || 1;
-        for (var i = 0, l = plotinfos.length; i < l; i++) {
+        for (let i = 0, l = plotinfos.length; i < l; i++) {
           if (varname == plotinfos[i].variable) {
             foundInfo = true;
             const axisIdx =
               (plotinfos[i].axis ? Number(plotinfos[i].axis) : 0) - minAxis;
-            var axis = this.getYAxis(axisIdx);
+            const axis = this.getYAxis(axisIdx);
             const startSpan = axisIdx * stackVerticalSpacing || 0;
             const endSpan = 1 - stackVerticalSpacing * (nbAxes - 1 - axisIdx);
             axis.setSpan(startSpan, endSpan);
@@ -656,17 +662,18 @@ define([
               plotinfos[i].adaptTo &&
               String(plotinfos[i].adaptTo) !== 'none'
             ) {
-              var other = this.getYAxis(Number(plotinfos[i].adaptTo));
+              const other = this.getYAxis(Number(plotinfos[i].adaptTo));
               axis.adaptTo(other, 0, 0);
             }
 
-            plotinfosStyle.lineColor = Color.getColor(plotinfos[i].plotcolor);
+            plotinfosStyle.line.color = Color.getColor(plotinfos[i].plotcolor);
 
             var lineWidth = parseFloat(plotinfos[i].strokewidth);
             if (isNaN(lineWidth)) lineWidth = 1;
-            serie.setLineWidth(lineWidth);
+            //  serie.setLineWidth(lineWidth);
 
-            plotinfosStyle.lineStyle = parseInt(plotinfos[i].strokestyle) || 1;
+            plotinfosStyle.line.width = lineWidth;
+            plotinfosStyle.line.style = parseInt(plotinfos[i].strokestyle) || 1;
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
               var color = style.lineColor || plotinfos[i].plotcolor;
@@ -702,7 +709,12 @@ define([
         style,
         styles.unselected,
       );
+      console.log({ newUnselectedStyle });
       serie.setStyle(newUnselectedStyle, 'unselected');
+
+      plotinfosStyle = JSON.parse(JSON.stringify(plotinfosStyle));
+      plotinfosStyle.line.width++; // by default selecdted style is slighly larger
+
       let newSelectedStyle = Object.assign(
         {},
         serie.getStyle(),
@@ -710,6 +722,7 @@ define([
         style,
         styles.selected,
       );
+
       serie.setStyle(newSelectedStyle, 'selected');
 
       if (!foundInfo) {
@@ -891,6 +904,8 @@ define([
             valFinalY,
           ]);
 
+          console.log({ serieOptions });
+
           var serie = this.graph.newSerie(
             serieName,
             serieOptions.options,
@@ -930,9 +945,11 @@ define([
             for (let styleName of ['selected', 'unselected']) {
               let style = Object.assign(
                 {
-                  lineWidth: styleName === 'selected' ? 2 : 1,
-                  lineColor: 'black',
-                  lineStyle: 0,
+                  line: {
+                    width: styleName === 'selected' ? 2 : 1,
+                    color: 'black',
+                    style: 0,
+                  },
                 },
                 styleName === 'unselected' ? defaultStyle : undefined,
                 (defaultStyles || {})[styleName],
@@ -966,23 +983,6 @@ define([
             } else if (typeof aData.styles == 'object') {
               modifiers = aData.styles;
             }
-
-            /* Demo of how to change the style */
-            /*
-              serie.setMarkerStyle(
-                {
-                  fill: 'red'
-                },
-                [{ fill: 'yellow' }],
-                'unselected'
-              );
-              serie.setMarkerStyle(
-                {
-                  fill: 'pink'
-                },[],
-                'selected'
-              );
-              */
 
             let keys = new Set(
               Object.keys(defaultStyles).concat(Object.keys(modifiers)),
@@ -1198,7 +1198,9 @@ define([
               String(value),
               options,
             ).flatten.filter(
-              (entry) => entry.spectra && entry.spectra.length > 0,
+              (entry) =>
+                (entry.spectra && entry.spectra.length > 0) ||
+                entry.contourLines,
             )[0];
             displaySpectra(parsed);
           });

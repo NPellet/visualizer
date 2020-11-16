@@ -1,5 +1,5 @@
 {
-  "version": "2.121.1-0",
+  "version": "2.122.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,15 +17,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "const createContours = API.cache('createContours');\n\nlet zoomPos = API.cache('currentZoomPos');\nlet zoomNeg = API.cache('currentZoomNeg');\n\nconst sign = Math.sign(this.action.value);\n\nif(this.action.name === 'wheelPos') {\n    if (zoomPos === 0 && sign === -1) return;\n    zoomPos += sign;\n    zoomNeg += sign;\n} else {\n    if (zoomNeg === 0 && sign === -1) return;\n    zoomNeg += sign;\n}\n\nconsole.log({zoomPos, zoomNeg})\n\ncreateContours(zoomPos, zoomNeg);\n\nAPI.cache('currentZoomPos', zoomPos);\nAPI.cache('currentZoomNeg', zoomNeg);"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -51,14 +66,21 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [{}],
+      "vars_in": [
+        {}
+      ],
       "actions_in": [
         {
           "rel": "execute",
@@ -87,20 +109,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -112,11 +147,24 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
-                "const Conrec = API.cache('conrec-lib');\n\nconst filenames=[\n    'hmbc.jdx',\n    'hsqc.jdx',\n    'cosy.jdx',\n    'cosy-dqf.jdx'\n];\nconst fileID=3;\n\nconst req = await fetch('../testcase/data/spectra2D/'+filenames[fileID])\nconst jcamp = await req.text();\nAPI.createData('jcamp', jcamp);\n\n\nconst parsed = await Converter.convert(jcamp, {\n    noContour: true,\n    xy: true\n}).flatten[0]\n\n\nconst minMax = parsed.minMax;\n\nconst ys = getRange(minMax.minY, minMax.maxY, minMax.z.length);\nconst xs = getRange(minMax.minX, minMax.maxX, minMax.z[0].length);\nconst conrec = new Conrec(minMax.z, {xs, ys});\n\nconst median = minMax.noise\nAPI.cache('createContours', createContours);\n\nAPI.cache('currentZoomPos', 10)\nAPI.cache('currentZoomNeg', 10)\ncreateContours(10, 10);\n\nwindow.setTimeout(\n    () => API.doAction('FullOut', 'xy')\n)\n\nfunction createContours(zoomPos, zoomNeg) {\n    zoomPos /= 2;\n    zoomNeg /= 2;\n    const positive = getContours(zoomPos, false);\n    const negative = getContours(zoomNeg, true);\n    const chart = {\n        data: [\n            {\n                type: 'contour',\n                contourLines: positive\n            },\n            {\n                type: 'contour',\n                contourLines: negative\n            }\n        ]\n    }\n    API.createData('chart', chart);\n}\n\nfunction getContours(zoomLevel, negative = false) {\n    console.log({minZ: minMax.minZ, maxZ: minMax.maxZ})\n    const max = Math.max(Math.abs(minMax.maxZ), Math.abs(minMax.minZ));\n    let range = getRange(median * 3 * Math.pow(2, zoomLevel), max, 10, 2);\n    if (negative) {\n        range = range.map( value => -value);\n    }\n    const contours = conrec.drawContour({\n        levels: range,\n        timeout: 1000\n    });\n    return {\n        minY: minMax.minY,\n        maxY: minMax.maxY,\n        minX: minMax.minX,\n        maxX: minMax.maxX,\n        segments: contours\n    };\n}\n\nfunction getRange(min, max, length, exp) {\n    if (exp) {\n        var factors = [];\n        factors[0] = 0;\n        for (var i = 1; i <= length; i++) {\n            factors[i] = factors[i - 1] + (exp - 1) / Math.pow(exp, i);\n        }\n        const lastFactor = factors[i - 1];\n\n        var result = new Array(length);\n        for (var i = 0; i < length; i++) {\n            result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;\n        }\n        return result;\n    } else {\n        const step = (max - min) / (length - 1);\n        return range(min, max + step, step);\n    }\n}\n\nfunction range(from, to, step) {\n  const result = [];\n  for (let i = from; i < to; i += step) result.push(i);\n  return result;\n}\n"
+                "const Conrec = API.cache('conrec-lib');\n\nconst filenames=[\n    'hmbc.jdx',\n    'hsqc.jdx',\n    'cosy.jdx',\n    'cosy-dqf.jdx'\n];\nconst fileID=3;\n\nconst req = await fetch('../testcase/data/spectra2D/'+filenames[fileID])\nconst jcamp = await req.text();\nAPI.createData('jcamp', jcamp);\n\n\nconst parsed = await Converter.convert(jcamp, {\n    noContour: true,\n    xy: true\n}).flatten[0]\n\nconsole.log(parsed);\n\nconst minMax = parsed.minMax;\n\nconst ys = getRange(minMax.minY, minMax.maxY, minMax.z.length);\nconst xs = getRange(minMax.minX, minMax.maxX, minMax.z[0].length);\nconst conrec = new Conrec(minMax.z, {xs, ys});\n\nconst median = minMax.noise\nAPI.cache('createContours', createContours);\n\nAPI.cache('currentZoomPos', 10)\nAPI.cache('currentZoomNeg', 10)\ncreateContours(10, 10);\n\nwindow.setTimeout(\n    () => API.doAction('FullOut', 'xy')\n)\n\nfunction createContours(zoomPos, zoomNeg) {\n    zoomPos /= 2;\n    zoomNeg /= 2;\n    const positive = getContours(zoomPos, false);\n    const negative = getContours(zoomNeg, true);\n    const chart = {\n        data: [\n            {\n                type: 'contour',\n                contourLines: positive\n            },\n            {\n                type: 'contour',\n                contourLines: negative\n            }\n        ]\n    }\n    API.createData('chart', chart);\n}\n\nfunction getContours(zoomLevel, negative = false) {\n    console.log({minZ: minMax.minZ, maxZ: minMax.maxZ})\n    const max = Math.max(Math.abs(minMax.maxZ), Math.abs(minMax.minZ));\n    let range = getRange(median * 3 * Math.pow(2, zoomLevel), max, 10, 2);\n    if (negative) {\n        range = range.map( value => -value);\n    }\n    const contours = conrec.drawContour({\n        levels: range,\n        timeout: 1000\n    });\n    return {\n        minY: minMax.minY,\n        maxY: minMax.maxY,\n        minX: minMax.minX,\n        maxX: minMax.maxX,\n        segments: contours\n    };\n}\n\nfunction getRange(min, max, length, exp) {\n    if (exp) {\n        var factors = [];\n        factors[0] = 0;\n        for (var i = 1; i <= length; i++) {\n            factors[i] = factors[i - 1] + (exp - 1) / Math.pow(exp, i);\n        }\n        const lastFactor = factors[i - 1];\n\n        var result = new Array(length);\n        for (var i = 0; i < length; i++) {\n            result[i] = (max - min) * (1 - factors[i + 1] / lastFactor) + min;\n        }\n        return result;\n    } else {\n        const step = (max - min) / (length - 1);\n        return range(min, max + step, step);\n    }\n}\n\nfunction range(from, to, step) {\n  const result = [];\n  for (let i = from; i < to; i += step) result.push(i);\n  return result;\n}\n"
               ]
             }
           ],
@@ -153,14 +201,21 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 2,
-      "vars_in": [{}],
+      "vars_in": [
+        {}
+      ],
       "actions_in": [
         {
           "rel": "execute",
@@ -185,20 +240,34 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences", "Show fullscreen"]]
+            "toolbar": [
+              [
+                "Open Preferences",
+                "Show fullscreen"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -210,15 +279,32 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "\n// https://github.com/jasondavies/conrec.js\n\n/**\n * Copyright (c) 2010, Jason Davies.\n *\n * All rights reserved.  This code is based on Bradley White's Java version,\n * which is in turn based on Nicholas Yue's C++ version, which in turn is based\n * on Paul D. Bourke's original Fortran version.  See below for the respective\n * copyright notices.\n *\n * See http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/ for the original\n * paper by Paul D. Bourke.\n *\n * The vector conversion code is based on http://apptree.net/conrec.htm by\n * Graham Cox.\n *\n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n *     * Redistributions of source code must retain the above copyright\n *       notice, this list of conditions and the following disclaimer.\n *     * Redistributions in binary form must reproduce the above copyright\n *       notice, this list of conditions and the following disclaimer in the\n *       documentation and/or other materials provided with the distribution.\n *     * Neither the name of the <organization> nor the\n *       names of its contributors may be used to endorse or promote products\n *       derived from this software without specific prior written permission.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY\n * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF\n * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n\n/*\n * Copyright (c) 1996-1997 Nicholas Yue\n *\n * This software is copyrighted by Nicholas Yue. This code is based on Paul D.\n * Bourke's CONREC.F routine.\n *\n * The authors hereby grant permission to use, copy, and distribute this\n * software and its documentation for any purpose, provided that existing\n * copyright notices are retained in all copies and that this notice is\n * included verbatim in any distributions. Additionally, the authors grant\n * permission to modify this software and its documentation for any purpose,\n * provided that such modifications are not distributed without the explicit\n * consent of the authors and that existing copyright notices are retained in\n * all copies. Some of the algorithms implemented by this software are\n * patented, observe all applicable patent law.\n *\n * IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY FOR\n * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT\n * OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY DERIVATIVES THEREOF,\n * EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n *\n * THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,\n * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE IS\n * PROVIDED ON AN \"AS IS\" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE NO\n * OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR\n * MODIFICATIONS.\n */\n\nconst EPSILON = Number.EPSILON;\nconst MINUSEPSILON = 0 - EPSILON;\n\n/**\n * Implements CONREC.\n * @private\n * @param {function} drawContour function for drawing contour.  Defaults to a\n *                               custom \"contour builder\", which populates the\n *                               contours property.\n */\nclass ConrecLib {\n  constructor(drawContour, timeout) {\n    this.drawContour = drawContour;\n    this.h = new Array(5);\n    this.sh = new Array(5);\n    this.xh = new Array(5);\n    this.yh = new Array(5);\n    this.timeout = timeout;\n  }\n  /**\n   * contour is a contouring subroutine for rectangularily spaced data\n   *\n   * It emits calls to a line drawing subroutine supplied by the user which\n   * draws a contour map corresponding to real*4data on a randomly spaced\n   * rectangular grid. The coordinates emitted are in the same units given in\n   * the x() and y() arrays.\n   *\n   * Any number of contour levels may be specified but they must be in order of\n   * increasing value.\n   *\n   * @private\n   * @param {number[][]} d - matrix of data to contour\n   * @param {number} ilb,iub,jlb,jub - index bounds of data matrix\n   *\n   *             The following two, one dimensional arrays (x and y) contain\n   *             the horizontal and vertical coordinates of each sample points.\n   * @param {number[]} x  - data matrix column coordinates\n   * @param {number[]} y  - data matrix row coordinates\n   * @param {number} nc   - number of contour levels\n   * @param {number[]} z  - contour levels in increasing order.\n   */\n  contour(d, ilb, iub, jlb, jub, x, y, nc, z) {\n    var h = this.h;\n    var sh = this.sh;\n    var xh = this.xh;\n    var yh = this.yh;\n    var drawContour = this.drawContour;\n    var timeout = this.timeout;\n    var start = Date.now();\n    /** private */\n    function xsect(p1, p2) {\n      return (h[p2] * xh[p1] - h[p1] * xh[p2]) / (h[p2] - h[p1]);\n    }\n    function ysect(p1, p2) {\n      return (h[p2] * yh[p1] - h[p1] * yh[p2]) / (h[p2] - h[p1]);\n    }\n    var m1;\n    var m2;\n    var m3;\n    var case_value;\n    var dmin;\n    var dmax;\n    var x1 = 0.0;\n    var x2 = 0.0;\n    var y1 = 0.0;\n    var y2 = 0.0;\n    // The indexing of im and jm should be noted as it has to start from zero\n    // unlike the fortran counter part\n    var im = [0, 1, 1, 0];\n    var jm = [0, 0, 1, 1];\n    // Note that castab is arranged differently from the FORTRAN code because\n    // Fortran and C/C++ arrays are transposed of each other, in this case\n    // it is more tricky as castab is in 3 dimensions\n    var castab = [\n      [[0, 0, 8], [0, 2, 5], [7, 6, 9]],\n      [[0, 3, 4], [1, 3, 1], [4, 3, 0]],\n      [[9, 6, 7], [5, 2, 0], [8, 0, 0]]\n    ];\n    for (var j = jub - 1; j >= jlb; j--) {\n      if (timeout && Date.now() - start > timeout) {\n        throw new Error(\n          `timeout: contour generation could not finish in less than ${timeout}ms`\n        );\n      }\n      for (var i = ilb; i <= iub - 1; i++) {\n        var temp1, temp2;\n        temp1 = Math.min(d[i][j], d[i][j + 1]);\n        temp2 = Math.min(d[i + 1][j], d[i + 1][j + 1]);\n        dmin = Math.min(temp1, temp2);\n        temp1 = Math.max(d[i][j], d[i][j + 1]);\n        temp2 = Math.max(d[i + 1][j], d[i + 1][j + 1]);\n        dmax = Math.max(temp1, temp2);\n        if (dmax >= z[0] && dmin <= z[nc - 1]) {\n          for (var k = 0; k < nc; k++) {\n            if (z[k] >= dmin && z[k] <= dmax) {\n              for (var m = 4; m >= 0; m--) {\n                if (m > 0) {\n                  // The indexing of im and jm should be noted as it has to\n                  // start from zero\n                  h[m] = d[i + im[m - 1]][j + jm[m - 1]] - z[k];\n                  xh[m] = x[i + im[m - 1]];\n                  yh[m] = y[j + jm[m - 1]];\n                } else {\n                  h[0] = 0.25 * (h[1] + h[2] + h[3] + h[4]);\n                  xh[0] = 0.5 * (x[i] + x[i + 1]);\n                  yh[0] = 0.5 * (y[j] + y[j + 1]);\n                }\n                if (h[m] > EPSILON) {\n                  sh[m] = 1;\n                } else if (h[m] < MINUSEPSILON) {\n                  sh[m] = -1;\n                } else {\n                  sh[m] = 0;\n                }\n              }\n              //\n              // Note: at this stage the relative heights of the corners and the\n              // centre are in the h array, and the corresponding coordinates are\n              // in the xh and yh arrays. The centre of the box is indexed by 0\n              // and the 4 corners by 1 to 4 as shown below.\n              // Each triangle is then indexed by the parameter m, and the 3\n              // vertices of each triangle are indexed by parameters m1,m2,and\n              // m3.\n              // It is assumed that the centre of the box is always vertex 2\n              // though this isimportant only when all 3 vertices lie exactly on\n              // the same contour level, in which case only the side of the box\n              // is drawn.\n              //\n              //\n              //      vertex 4 +-------------------+ vertex 3\n              //               | \\               / |\n              //               |   \\    m-3    /   |\n              //               |     \\       /     |\n              //               |       \\   /       |\n              //               |  m=2    X   m=2   |       the centre is vertex 0\n              //               |       /   \\       |\n              //               |     /       \\     |\n              //               |   /    m=1    \\   |\n              //               | /               \\ |\n              //      vertex 1 +-------------------+ vertex 2\n              //\n              //\n              //\n              //               Scan each triangle in the box\n              //\n              for (m = 1; m <= 4; m++) {\n                m1 = m;\n                m2 = 0;\n                if (m != 4) {\n                  m3 = m + 1;\n                } else {\n                  m3 = 1;\n                }\n                case_value = castab[sh[m1] + 1][sh[m2] + 1][sh[m3] + 1];\n                if (case_value != 0) {\n                  switch (case_value) {\n                    case 1: // Line between vertices 1 and 2\n                      x1 = xh[m1];\n                      y1 = yh[m1];\n                      x2 = xh[m2];\n                      y2 = yh[m2];\n                      break;\n                    case 2: // Line between vertices 2 and 3\n                      x1 = xh[m2];\n                      y1 = yh[m2];\n                      x2 = xh[m3];\n                      y2 = yh[m3];\n                      break;\n                    case 3: // Line between vertices 3 and 1\n                      x1 = xh[m3];\n                      y1 = yh[m3];\n                      x2 = xh[m1];\n                      y2 = yh[m1];\n                      break;\n                    case 4: // Line between vertex 1 and side 2-3\n                      x1 = xh[m1];\n                      y1 = yh[m1];\n                      x2 = xsect(m2, m3);\n                      y2 = ysect(m2, m3);\n                      break;\n                    case 5: // Line between vertex 2 and side 3-1\n                      x1 = xh[m2];\n                      y1 = yh[m2];\n                      x2 = xsect(m3, m1);\n                      y2 = ysect(m3, m1);\n                      break;\n                    case 6: //  Line between vertex 3 and side 1-2\n                      x1 = xh[m3];\n                      y1 = yh[m3];\n                      x2 = xsect(m1, m2);\n                      y2 = ysect(m1, m2);\n                      break;\n                    case 7: // Line between sides 1-2 and 2-3\n                      x1 = xsect(m1, m2);\n                      y1 = ysect(m1, m2);\n                      x2 = xsect(m2, m3);\n                      y2 = ysect(m2, m3);\n                      break;\n                    case 8: // Line between sides 2-3 and 3-1\n                      x1 = xsect(m2, m3);\n                      y1 = ysect(m2, m3);\n                      x2 = xsect(m3, m1);\n                      y2 = ysect(m3, m1);\n                      break;\n                    case 9: // Line between sides 3-1 and 1-2\n                      x1 = xsect(m3, m1);\n                      y1 = ysect(m3, m1);\n                      x2 = xsect(m1, m2);\n                      y2 = ysect(m1, m2);\n                      break;\n                    default:\n                      break;\n                  }\n                  // Put your processing code here and comment out the printf\n                  // printf(\"%f %f %f %f %f\\n\",x1,y1,x2,y2,z[k]);\n                  drawContour(x1, y1, x2, y2, z[k], k);\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nclass BasicContourDrawer {\n  constructor(levels, swapAxes) {\n    this.contour = new Array(levels.length);\n    for (var i = 0; i < levels.length; i++) {\n      this.contour[i] = {\n        zValue: levels[i],\n        lines: [],\n      };\n    }\n    this.swapAxes = swapAxes;\n  }\n\n  drawContour(x1, y1, x2, y2, z, k) {\n    if (!this.swapAxes) {\n      this.contour[k].lines.push(y1, x1, y2, x2);\n    } else {\n      this.contour[k].lines.push(x1, y1, x2, y2);\n    }\n  }\n\n  getContour() {\n    return this.contour;\n  }\n}\n\n// Based on the code from https://github.com/jasondavies/conrec.js\n/**\n * Copyright (c) 2010, Jason Davies.\n *\n * All rights reserved.  This code is based on Bradley White's Java version,\n * which is in turn based on Nicholas Yue's C++ version, which in turn is based\n * on Paul D. Bourke's original Fortran version.  See below for the respective\n * copyright notices.\n *\n * See http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/ for the original\n * paper by Paul D. Bourke.\n *\n * The vector conversion code is based on http://apptree.net/conrec.htm by\n * Graham Cox.\n *\n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n *     * Redistributions of source code must retain the above copyright\n *       notice, this list of conditions and the following disclaimer.\n *     * Redistributions in binary form must reproduce the above copyright\n *       notice, this list of conditions and the following disclaimer in the\n *       documentation and/or other materials provided with the distribution.\n *     * Neither the name of the <organization> nor the\n *       names of its contributors may be used to endorse or promote products\n *       derived from this software without specific prior written permission.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY\n * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF\n * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n/*\n * Copyright (c) 1996-1997 Nicholas Yue\n *\n * This software is copyrighted by Nicholas Yue. This code is based on Paul D.\n * Bourke's CONREC.F routine.\n *\n * The authors hereby grant permission to use, copy, and distribute this\n * software and its documentation for any purpose, provided that existing\n * copyright notices are retained in all copies and that this notice is\n * included verbatim in any distributions. Additionally, the authors grant\n * permission to modify this software and its documentation for any purpose,\n * provided that such modifications are not distributed without the explicit\n * consent of the authors and that existing copyright notices are retained in\n * all copies. Some of the algorithms implemented by this software are\n * patented, observe all applicable patent law.\n *\n * IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY FOR\n * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT\n * OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY DERIVATIVES THEREOF,\n * EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n *\n * THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,\n * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE IS\n * PROVIDED ON AN \"AS IS\" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE NO\n * OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR\n * MODIFICATIONS.\n */\n// Based on the code from https://github.com/jasondavies/conrec.js\n/**\n * Copyright (c) 2010, Jason Davies.\n *\n * All rights reserved.  This code is based on Bradley White's Java version,\n * which is in turn based on Nicholas Yue's C++ version, which in turn is based\n * on Paul D. Bourke's original Fortran version.  See below for the respective\n * copyright notices.\n *\n * See http://local.wasp.uwa.edu.au/~pbourke/papers/conrec/ for the original\n * paper by Paul D. Bourke.\n *\n * The vector conversion code is based on http://apptree.net/conrec.htm by\n * Graham Cox.\n *\n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n *     * Redistributions of source code must retain the above copyright\n *       notice, this list of conditions and the following disclaimer.\n *     * Redistributions in binary form must reproduce the above copyright\n *       notice, this list of conditions and the following disclaimer in the\n *       documentation and/or other materials provided with the distribution.\n *     * Neither the name of the <organization> nor the\n *       names of its contributors may be used to endorse or promote products\n *       derived from this software without specific prior written permission.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY\n * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF\n * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n/*\n * Copyright (c) 1996-1997 Nicholas Yue\n *\n * This software is copyrighted by Nicholas Yue. This code is based on Paul D.\n * Bourke's CONREC.F routine.\n *\n * The authors hereby grant permission to use, copy, and distribute this\n * software and its documentation for any purpose, provided that existing\n * copyright notices are retained in all copies and that this notice is\n * included verbatim in any distributions. Additionally, the authors grant\n * permission to modify this software and its documentation for any purpose,\n * provided that such modifications are not distributed without the explicit\n * consent of the authors and that existing copyright notices are retained in\n * all copies. Some of the algorithms implemented by this software are\n * patented, observe all applicable patent law.\n *\n * IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY FOR\n * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT\n * OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY DERIVATIVES THEREOF,\n * EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n *\n * THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,\n * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE IS\n * PROVIDED ON AN \"AS IS\" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE NO\n * OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR\n * MODIFICATIONS.\n */\nclass ContourBuilder {\n  constructor(level) {\n    this.level = level;\n    this.s = null;\n    this.count = 0;\n  }\n  removeSeq(list) {\n    // if list is the first item, static ptr s is updated\n    if (list.prev) {\n      list.prev.next = list.next;\n    } else {\n      this.s = list.next;\n    }\n    if (list.next) {\n      list.next.prev = list.prev;\n    }\n    --this.count;\n  }\n  addSegment(a, b) {\n    var ss = this.s;\n    var ma = null;\n    var mb = null;\n    var prependA = false;\n    var prependB = false;\n    while (ss) {\n      if (ma === null) {\n        // no match for a yet\n        if (pointsEqual(a, ss.head.p)) {\n          ma = ss;\n          prependA = true;\n        } else if (pointsEqual(a, ss.tail.p)) {\n          ma = ss;\n        }\n      }\n      if (mb === null) {\n        // no match for b yet\n        if (pointsEqual(b, ss.head.p)) {\n          mb = ss;\n          prependB = true;\n        } else if (pointsEqual(b, ss.tail.p)) {\n          mb = ss;\n        }\n      }\n      // if we matched both no need to continue searching\n      if (mb !== null && ma !== null) {\n        break;\n      } else {\n        ss = ss.next;\n      }\n    }\n    // c is the case selector based on which of ma and/or mb are set\n    var c = (ma !== null ? 1 : 0) | (mb !== null ? 2 : 0);\n    var pp;\n    switch (c) {\n      case 0: {\n        // both unmatched, add as new sequence\n        var aa = { p: a, prev: null };\n        var bb = { p: b, next: null };\n        aa.next = bb;\n        bb.prev = aa;\n        // create sequence element and push onto head of main list. The order\n        // of items in this list is unimportant\n        ma = { head: aa, tail: bb, next: this.s, prev: null, closed: false };\n        if (this.s) {\n          this.s.prev = ma;\n        }\n        this.s = ma;\n        ++this.count; // not essential - tracks number of unmerged sequences\n        break;\n      }\n      case 1: {\n        // a matched, b did not - thus b extends sequence ma\n        pp = { p: b };\n        if (prependA) {\n          pp.next = ma.head;\n          pp.prev = null;\n          ma.head.prev = pp;\n          ma.head = pp;\n        } else {\n          pp.next = null;\n          pp.prev = ma.tail;\n          ma.tail.next = pp;\n          ma.tail = pp;\n        }\n        break;\n      }\n      case 2: {\n        // b matched, a did not - thus a extends sequence mb\n        pp = { p: a };\n        if (prependB) {\n          pp.next = mb.head;\n          pp.prev = null;\n          mb.head.prev = pp;\n          mb.head = pp;\n        } else {\n          pp.next = null;\n          pp.prev = mb.tail;\n          mb.tail.next = pp;\n          mb.tail = pp;\n        }\n        break;\n      }\n      case 3: {\n        // both matched, can merge sequences\n        // if the sequences are the same, do nothing, as we are simply closing this path (could set a flag)\n        if (ma === mb) {\n          pp = { p: ma.tail.p, next: ma.head, prev: null };\n          ma.head.prev = pp;\n          ma.head = pp;\n          ma.closed = true;\n          break;\n        }\n        // there are 4 ways the sequence pair can be joined. The current setting of prependA and\n        // prependB will tell us which type of join is needed. For head/head and tail/tail joins\n        // one sequence needs to be reversed\n        switch ((prependA ? 1 : 0) | (prependB ? 2 : 0)) {\n          case 0: // tail-tail\n            // reverse ma and append to mb\n            reverseList(ma);\n          // fall through to head/tail case\n          case 1: // head-tail\n            // ma is appended to mb and ma discarded\n            mb.tail.next = ma.head;\n            ma.head.prev = mb.tail;\n            mb.tail = ma.tail;\n            // discard ma sequence record\n            this.removeSeq(ma);\n            break;\n          case 3: // head-head\n            // reverse ma and append mb to it\n            reverseList(ma);\n          // fall through to tail/head case\n          case 2: // tail-head\n            // mb is appended to ma and mb is discarded\n            ma.tail.next = mb.head;\n            mb.head.prev = ma.tail;\n            ma.tail = mb.tail;\n            // discard mb sequence record\n            this.removeSeq(mb);\n            break;\n          default:\n            throw new Error('UNREACHABLE');\n        }\n        break;\n      }\n      default:\n        throw new Error('UNREACHABLE');\n    }\n  }\n}\n\nfunction pointsEqual(a, b) {\n  var x = a.x - b.x;\n  var y = a.y - b.y;\n  return x * x + y * y < Number.EPSILON;\n}\n\nfunction reverseList(list) {\n  var pp = list.head;\n  var temp;\n  while (pp) {\n    // swap prev/next pointers\n    temp = pp.next;\n    pp.next = pp.prev;\n    pp.prev = temp;\n\n    // continue through the list\n    pp = temp;\n  }\n\n  // swap head/tail pointers\n  temp = list.head;\n  list.head = list.tail;\n  list.tail = temp;\n}\n\n// Based on the code from https://github.com/jasondavies/conrec.js\n\nclass ShapeContourDrawer {\n  constructor(levels, swapAxes) {\n    this.contours = new Array(levels.length);\n    for (var i = 0; i < levels.length; i++) {\n      this.contours[i] = new ContourBuilder(levels[i]);\n    }\n    this.swapAxes = swapAxes;\n  }\n\n  drawContour(x1, y1, x2, y2, z, k) {\n    if (!this.swapAxes) {\n      this.contours[k].addSegment({ x: y1, y: x1 }, { x: y2, y: x2 });\n    } else {\n      this.contours[k].addSegment({ x: x1, y: y1 }, { x: x2, y: y2 });\n    }\n  }\n\n  getContour() {\n    var l = [];\n    var a = this.contours;\n    for (var k = 0; k < a.length; k++) {\n      var s = a[k].s;\n      var level = a[k].level;\n      while (s) {\n        var h = s.head;\n        var l2 = [];\n        l2.level = level;\n        l2.k = k;\n        while (h && h.p) {\n          l2.push(h.p);\n          h = h.next;\n        }\n        l.push(l2);\n        s = s.next;\n      }\n    }\n    return l;\n  }\n}\n\nconst defaultOptions = {\n  nbLevels: 10,\n  timeout: 0,\n};\n\n/**\n *\n * @class Conrec\n * @param {number[][]} matrix\n * @param {number[]} [options.xs]\n * @param {number[]} [options.ys]\n * @param {boolean} [options.swapAxes]\n */\nclass Conrec {\n  constructor(matrix, options = {}) {\n    const { swapAxes = false } = options;\n    this.matrix = matrix;\n    this.rows = matrix.length;\n    this.columns = matrix[0].length;\n\n    const optionsHasXs = options.xs !== undefined;\n    const optionsHasYs = options.ys !== undefined;\n    if (swapAxes) {\n      // We swap axes, which means xs are in the rows direction. This is the normal\n      // way for the conrec library.\n      this.xs = optionsHasXs ? options.xs : range(0, this.rows, 1);\n      this.ys = optionsHasYs ? options.ys : range(0, this.columns, 1);\n    } else {\n      // We do not swap axes, so if the user provided xs or ys, we must swap the\n      // internal values so the algorithm can still work.\n      this.xs = optionsHasYs ? options.ys : range(0, this.rows, 1);\n      this.ys = optionsHasXs ? options.xs : range(0, this.columns, 1);\n    }\n\n    this.swapAxes = swapAxes;\n    this.hasMinMax = false;\n  }\n\n  /**\n   *\n   * @param {number[]} [options.levels]\n   * @param {number} [options.nbLevels=10]\n   * @param {string} [options.contourDrawer='basic'] - 'basic' or 'shape'\n   * @param {number} [options.timeout=0]\n   * @return {any}\n   */\n  drawContour(options) {\n    options = Object.assign({}, defaultOptions, options);\n\n    var levels;\n    if (options.levels) {\n      levels = options.levels.slice();\n    } else {\n      this._computeMinMax();\n      const interval = (this.max - this.min) / (options.nbLevels - 1);\n      levels = range(this.min, this.max + interval, interval);\n    }\n    levels.sort((a, b) => a - b);\n\n    let contourDrawer = options.contourDrawer || 'basic';\n    if (typeof contourDrawer === 'string') {\n      if (contourDrawer === 'basic') {\n        contourDrawer = new BasicContourDrawer(levels, this.swapAxes);\n      } else if (contourDrawer === 'shape') {\n        contourDrawer = new ShapeContourDrawer(levels, this.swapAxes);\n      } else {\n        throw new Error(`unknown contour drawer: ${contourDrawer}`);\n      }\n    } else {\n      throw new TypeError('contourDrawer must be a string');\n    }\n\n    const conrec = new ConrecLib(\n      contourDrawer.drawContour.bind(contourDrawer),\n      options.timeout,\n    );\n    conrec.contour(\n      this.matrix,\n      0,\n      this.rows - 1,\n      0,\n      this.columns - 1,\n      this.xs,\n      this.ys,\n      levels.length,\n      levels,\n    );\n    return contourDrawer.getContour();\n  }\n\n  _computeMinMax() {\n    if (!this.hasMinMax) {\n      const r = minMax(this.matrix);\n      this.min = r.min;\n      this.max = r.max;\n      this.hasMinMax = true;\n    }\n  }\n}\n\nfunction range(from, to, step) {\n  const result = [];\n  for (let i = from; i < to; i += step) result.push(i);\n  return result;\n}\n\nfunction minMax(matrix) {\n  let min = Number.POSITIVE_INFINITY;\n  let max = Number.NEGATIVE_INFINITY;\n  for (let i = 0; i < matrix.length; i++) {\n    const row = matrix[i];\n    for (let j = 0; j < row.length; j++) {\n      if (row[j] < min) min = row[j];\n      if (row[j] > max) max = row[j];\n    }\n  }\n  return {\n    min,\n    max,\n  };\n}\n\nAPI.cache('conrec-lib', Conrec)\n;\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -244,15 +330,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 3,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -271,20 +366,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -299,16 +407,39 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [""],
-                    "zoom": ["xy"],
-                    "wheelAction": ["none"],
-                    "wheelbaseline": [0],
-                    "fullOut": ["once"],
-                    "legend": [null],
-                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [[]],
-                    "selectScatter": [[]],
-                    "independantYZoom": [[]]
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "xy"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "once"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -320,26 +451,64 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [["display", "flip"]],
-                    "label": ["ppm"],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "axismodification": ["none"]
+                    "checkboxes": [
+                      [
+                        "display",
+                        "flip"
+                      ]
+                    ],
+                    "label": [
+                      "ppm"
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [["display", "flip"]],
-                    "label": ["ppm"],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "fitToAxisOnFromTo": [[]]
+                    "checkboxes": [
+                      [
+                        "display",
+                        "flip"
+                      ]
+                    ],
+                    "label": [
+                      "ppm"
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -351,8 +520,12 @@
               "groups": {
                 "series": [
                   {
-                    "overflow": [[]],
-                    "stackVerticalSpacing": [0]
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
                   }
                 ]
               }
@@ -368,7 +541,12 @@
                       "variable": "chart",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [1, 1, 255, 1],
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -391,7 +569,9 @@
               "groups": {
                 "misc": [
                   {
-                    "highlightOptions": ["{}"]
+                    "highlightOptions": [
+                      "{}"
+                    ]
                   }
                 ]
               }
@@ -413,7 +593,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -459,20 +644,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -487,16 +685,42 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [""],
-                    "zoom": ["none"],
-                    "wheelAction": ["none"],
-                    "wheelbaseline": [0],
-                    "fullOut": ["both"],
-                    "legend": [null],
-                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [[]],
-                    "selectScatter": [[]],
-                    "independantYZoom": [[]]
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "xy"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "trackingAxis": [
+                      "x"
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -508,26 +732,64 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [["display", "flip"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "axismodification": ["none"]
+                    "checkboxes": [
+                      [
+                        "display",
+                        "flip"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [["display", "flip"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "fitToAxisOnFromTo": [[]]
+                    "checkboxes": [
+                      [
+                        "display",
+                        "flip"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -539,8 +801,12 @@
               "groups": {
                 "series": [
                   {
-                    "overflow": [[]],
-                    "stackVerticalSpacing": [0]
+                    "overflow": [
+                      []
+                    ],
+                    "stackVerticalSpacing": [
+                      0
+                    ]
                   }
                 ]
               }
@@ -553,10 +819,15 @@
                 "variables": [
                   [
                     {
-                      "variable": "",
+                      "variable": "jcamp",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [1, 1, 255, 1],
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -579,7 +850,9 @@
               "groups": {
                 "misc": [
                   {
-                    "highlightOptions": ["{}"]
+                    "highlightOptions": [
+                      "{}"
+                    ]
                   }
                 ]
               }
@@ -601,7 +874,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -614,7 +892,9 @@
           "name": "jcamp"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -633,20 +913,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -654,10 +947,14 @@
   ],
   "variables": [
     {
-      "jpath": [""]
+      "jpath": [
+        ""
+      ]
     }
   ],
-  "aliases": [{}],
+  "aliases": [
+    {}
+  ],
   "configuration": {
     "title": "No title"
   },
@@ -667,8 +964,12 @@
       "groups": {
         "action": [
           {
-            "name": [null],
-            "script": [null]
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -695,7 +996,11 @@
           {
             "sections": {},
             "groups": {
-              "modules": [[{}]]
+              "modules": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -703,7 +1008,11 @@
           {
             "sections": {},
             "groups": {
-              "filters": [[{}]]
+              "filters": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -713,11 +1022,19 @@
             "groups": {
               "filter": [
                 {
-                  "name": [null],
-                  "script": [null]
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
                 }
               ],
-              "libs": [[{}]]
+              "libs": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ]
@@ -729,7 +1046,11 @@
     {
       "sections": {},
       "groups": {
-        "action": [[{}]]
+        "action": [
+          [
+            {}
+          ]
+        ]
       }
     }
   ]
