@@ -78,7 +78,7 @@
     "eslint-plugin-import": "^2.15.0",
     "katex": "^0.10.0",
     "mathjs": "^5.4.1",
-    "mf-parser": "^0.9.1",
+    "mf-parser": "^1.1.6",
     "mime-types": "^2.1.21",
     "node-jsgraph": "2.1.12",
     "quill-image-drop-module": "github:cheminfo/quill-image-drop-module#4cdc591cfddec42a22ab25b635f34de9e973c86d",
