@@ -1198,7 +1198,9 @@ define([
               String(value),
               options,
             ).flatten.filter(
-              (entry) => entry.spectra && entry.spectra.length > 0,
+              (entry) =>
+                (entry.spectra && entry.spectra.length > 0) ||
+                entry.contourLines,
             )[0];
             displaySpectra(parsed);
           });
