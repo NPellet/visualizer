@@ -116,6 +116,23 @@ define([
     });
   };
 
+  exports.renderTwig = async function renderTwig(template, data) {
+    var template = Twig.twig({
+      data: DataObject.resurrect(template),
+    });
+    var renderer = await template.renderAsync(DataObject.resurrect(data));
+    const div = document.createElement('div');
+    // div.style = "position: absolute; top: 0; left: 0;"
+    // div.style = "display: none;";
+    const body = document.getElementsByTagName('body')[0];
+    div.innerHTML = renderer.html;
+    body.append(div);
+    await renderer.render(); // we render the async typerenderer
+    const html = div.innerHTML;
+    body.removeChild(div);
+    return html;
+  };
+
   exports.form = function (div, inputObject, opts) {
     opts = Object.assign({}, opts);
 
@@ -534,13 +551,11 @@ define([
     function updateHeader() {
       $header.html(`
                 <table><tr><td>
-                ${
-  sources
-    ? `${sources} sources left`
-    : `Sources loaded.${
-      failedSources ? ` (${failedSources} failed)` : ''
-    }`
-}
+                ${sources
+          ? `${sources} sources left`
+          : `Sources loaded.${failedSources ? ` (${failedSources} failed)` : ''
+          }`
+        }
                 </td>
                 <td id="abc">
                 </td></tr>
