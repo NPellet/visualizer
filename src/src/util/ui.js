@@ -122,8 +122,7 @@ define([
     });
     var renderer = await template.renderAsync(DataObject.resurrect(data));
     const div = document.createElement('div');
-    // div.style = "position: absolute; top: 0; left: 0;"
-    // div.style = "display: none;";
+    div.style = "position: absolute; width: 1; height: 1; visibility: none"
     const body = document.getElementsByTagName('body')[0];
     div.innerHTML = renderer.html;
     body.append(div);
