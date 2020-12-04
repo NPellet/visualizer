@@ -1,3 +1,20 @@
+# [2.123.0](https://github.com/NPellet/visualizer/compare/v2.122.0...v2.123.0) (2020-12-04)
+
+
+### Bug Fixes
+
+* 2d nmr ([0e6210a](https://github.com/NPellet/visualizer/commit/0e6210ab2066eaf5b50862f5ab92a65e639218b2))
+* change div size and visibitlity with renderTwig ([b37d087](https://github.com/NPellet/visualizer/commit/b37d08750330058e09bf99a206e242c888967596))
+* upde jsgraph to 2.3.3 ([83691aa](https://github.com/NPellet/visualizer/commit/83691aab9a6429df47e1fcd122cc4db445dd6af4))
+
+
+### Features
+
+* add UI.renderTwig ([3d545e5](https://github.com/NPellet/visualizer/commit/3d545e5a7cf315319e650704ad144fbca9fbe94b))
+* update mf-parser to improve mf type renderer ([6a9a3d5](https://github.com/NPellet/visualizer/commit/6a9a3d54cfd3aa563c6f665048d88c510ba27ee6))
+
+
+
 # [2.122.0](https://github.com/NPellet/visualizer/compare/v2.121.2...v2.122.0) (2020-10-30)
 
 
