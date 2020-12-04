@@ -1,6 +1,6 @@
 'use strict';
 
-define(['../util'], function(Util) {
+define(['../util'], function (Util) {
   let Graph;
 
   async function loadJsgraph() {
