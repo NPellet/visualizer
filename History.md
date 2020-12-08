@@ -1,3 +1,7 @@
+## [2.123.2](https://github.com/NPellet/visualizer/compare/v2.123.1...v2.123.2) (2020-12-08)
+
+
+
 ## [2.123.1](https://github.com/NPellet/visualizer/compare/v2.123.0...v2.123.1) (2020-12-04)
 
 
