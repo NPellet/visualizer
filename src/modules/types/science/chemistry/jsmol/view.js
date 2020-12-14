@@ -7,7 +7,7 @@ define([
   'src/util/api',
   'src/util/debug'
 ], function (require, _, Default, API, Debug) {
-  function View() {}
+  function View() { }
 
   var views = {};
 
@@ -58,7 +58,7 @@ define([
   $.extend(true, View.prototype, Default, {
     init: function () {
       var that = this;
-
+      this.actionOnloadScript = '';
       var id = this.module.getId();
       views[id] = this;
       let webgl = (this.module.getConfiguration('prefs') || []).includes(
@@ -131,6 +131,9 @@ define([
         if (that.module.getConfiguration('script')) {
           that.postMessage('executeScript', [that.module.getConfiguration('script')]);
         }
+        if (that.actionOnloadScript) {
+          that.postMessage('executeScript', [that.actionOnloadScript]);
+        }
         if (that.module.getConfiguration('syncScript')) {
           that.postMessage('executeScriptSync', [that.module.getConfiguration('syncScript')]);
         }
@@ -146,7 +149,10 @@ define([
       },
       jsmolscriptSync: function (a) {
         this.executeScriptSync(a);
-      }
+      },
+      setTempJsmolScript: function (value) {
+        this.actionOnloadScript = value;
+      },
     },
 
     executeScriptSync: function (src) {

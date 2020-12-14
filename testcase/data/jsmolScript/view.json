@@ -1,268 +1,437 @@
 {
-	"modules": [
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 54,
-				"height": 53
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"script": [
-								"wireframe 0;\nribbon on;\n"
-							]
-						}
-					]
-				}
-			},
-			"id": 2,
-			"vars_in": [
-				{
-					"rel": "data",
-					"name": "pdb"
-				}
-			],
-			"actions_in": [
-				{
-					"rel": "jsmolscript",
-					"name": "test"
-				}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/science/chemistry/jsmol/"
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 97,
-				"top": 0
-			},
-			"size": {
-				"width": 19,
-				"height": 23
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							],
-							"displaySearch": []
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "ID",
-								"jpath": "element.id",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 3,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "result"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onSelect",
-					"rel": "row",
-					"jpath": "element.pdb",
-					"name": "pdb"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/display/fasttable/"
-		},
-		{
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 97,
-				"top": 24
-			},
-			"size": {
-				"width": 30,
-				"height": 17
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"label": [
-								"Drop .pdb or .magres file"
-							],
-							"filter": [
-								null
-							]
-						}
-					],
-					"vars": [
-						[
-							{
-								"extension": "magres",
-								"filetype": "text",
-								"type": "magres",
-								"variable": "pdb"
-							},
-							{
-								"extension": "pdb",
-								"filetype": "text",
-								"type": "pdb",
-								"variable": "pdb"
-							}
-						]
-					]
-				}
-			},
-			"id": 4,
-			"vars_in": [
-				{}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onDropped",
-					"rel": "object",
-					"jpath": "_2",
-					"name": "pdb"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			],
-			"url": "./modules/types/client_interaction/dragdrop/"
-		},
-		{
-			"url": "modules/types/client_interaction/code_editor/",
-			"title": "JSMol script",
-			"displayWrapper": true,
-			"position": {
-				"left": 54,
-				"top": 0
-			},
-			"size": {
-				"width": 43,
-				"height": 53
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"mode": [
-								"text"
-							],
-							"btnvalue": [
-								"Execute script"
-							],
-							"iseditable": [
-								[
-									"editable"
-								]
-							],
-							"script": [
-								"cpk 0 ;"
-							]
-						}
-					]
-				}
-			},
-			"id": 5,
-			"vars_in": [
-				{}
-			],
-			"actions_in": [],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{
-					"event": "onButtonClick",
-					"rel": "value",
-					"name": "test"
-				}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		}
-	],
-	"variables": [
-		{
-			"varname": "result",
-			"jpath": "element.result.pdbs",
-			"url": ""
-		},
-		{
-			"varname": "pdb",
-			"jpath": "element.result.pdbs.0.pdb",
-			"url": ""
-		}
-	],
-	"configuration": {
-		"title": "JSMol Scripting"
-	},
-	"title": "Scripting JSMol",
-	"_version": "2.2.2"
+  "modules": [
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [[]],
+              "script": ["wireframe 0;\nribbon on;\n"],
+              "syncScript": [null]
+            }
+          ]
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "pdb"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "jsmolscript",
+          "name": "test"
+        },
+        {
+          "rel": "setTempJsmolScript",
+          "name": "changeAfterLoadScript"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/science/chemistry/jsmol/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 54,
+            "height": 53
+          },
+          "display": true,
+          "title": "Untitled module",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "title": "Untitled module",
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "nblines": [20],
+              "toggle": [null],
+              "colorjpath": [null],
+              "filterRow": [null],
+              "displaySearch": []
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "ID",
+                "jpath": "element.id",
+                "number": [],
+                "editable": "none"
+              }
+            ]
+          ]
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "result"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onSelect",
+          "rel": "row",
+          "jpath": ["pdb"],
+          "name": "pdb"
+        }
+      ],
+      "actions_out": [{}],
+      "url": "modules/types/display/fasttable/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 97,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 19,
+            "height": 23
+          },
+          "display": true,
+          "title": "Untitled module",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "title": "Untitled module"
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "label": ["Drop .pdb or .magres file"],
+              "filter": [null]
+            }
+          ],
+          "vars": [
+            [
+              {
+                "extension": "magres",
+                "filetype": "text",
+                "type": "magres",
+                "variable": "pdb"
+              },
+              {
+                "extension": "pdb",
+                "filetype": "text",
+                "type": "pdb",
+                "variable": "pdb"
+              }
+            ]
+          ]
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onRead",
+          "rel": "object",
+          "jpath": [],
+          "name": "pdb"
+        }
+      ],
+      "actions_out": [{}],
+      "url": "modules/types/client_interaction/dragdrop/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 97,
+            "top": 24,
+            "right": 0
+          },
+          "size": {
+            "width": 30,
+            "height": 17
+          },
+          "display": true,
+          "title": "Untitled module",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "title": "Untitled module"
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "btnvalue": ["Execute script"],
+              "iseditable": [["editable"]],
+              "script": ["cpk 0 ;"],
+              "outputType": [null],
+              "hasButton": [null],
+              "variable": [null],
+              "storeOnChange": [null],
+              "debouncing": [null]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [null],
+              "tabSize": [null]
+            }
+          ]
+        }
+      },
+      "id": 4,
+      "vars_in": [{}],
+      "actions_in": [],
+      "vars_out": [{}],
+      "actions_out": [
+        {
+          "event": "onButtonClick",
+          "rel": "data",
+          "name": "test"
+        }
+      ],
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 54,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 43,
+            "height": 53
+          },
+          "display": true,
+          "title": "JSMol script",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "title": "JSMol script"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "const commands=\"wireframe 0; select all; color atoms pink\";\n\nAPI.doAction('changeAfterLoadScript', commands);"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 131,
+            "top": 11
+          },
+          "size": {
+            "width": 44,
+            "height": 48
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "result",
+      "jpath": ["result", "pdbs"],
+      "url": ""
+    },
+    {
+      "varname": "pdb",
+      "jpath": ["result", "pdbs", "0", "pdb"],
+      "url": ""
+    }
+  ],
+  "configuration": {
+    "title": "Scripting JSMol"
+  },
+  "version": "2.123.3-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "aliases": []
 }

@@ -107,7 +107,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
   Controller.prototype.actionsIn = {
     jsmolscript: 'Some JSMol Script received',
-    jsmolscriptSync: 'Sync jsmol Script to execute'
+    jsmolscriptSync: 'Sync jsmol Script to execute',
+    setTempJsmolScript: 'Add temporary after load script',
   };
 
   Controller.prototype.onRemove = function () {
