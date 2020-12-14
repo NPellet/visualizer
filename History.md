@@ -1,3 +1,12 @@
+# [2.124.0](https://github.com/NPellet/visualizer/compare/v2.123.2...v2.124.0) (2020-12-14)
+
+
+### Features
+
+* **jsmol:** add temporary load script using actions ([32e36af](https://github.com/NPellet/visualizer/commit/32e36af99cc5f9e6ed6d62c87623e62d1acde5b7))
+
+
+
 ## [2.123.2](https://github.com/NPellet/visualizer/compare/v2.123.1...v2.123.2) (2020-12-08)
 
 
