@@ -773,7 +773,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         };
       }
 
-      this._fetching = urlData.get(this.url, false, this.timeout, headers).then(
+      this._fetching = urlData.get(this.url, false, this.timeout, headers, {
+        withCredentials: this.withCredentials,
+      }).then(
         (data) => {
           delete this._fetching;
           data = DataObject.check(data, true); // Transform the input into a DataObject

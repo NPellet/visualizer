@@ -1,13 +1,13 @@
 'use strict';
 
 define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, LRU, Debug) {
-  var pendings = {};
-  var credentials = {};
-  var DEFAULT_STORE_NAME = 'urlData';
-  var DEFAULT_STORE_DB_LIMIT = 500;
+  const pendings = {};
+  const credentials = {};
+  const DEFAULT_STORE_NAME = 'urlData';
+  const DEFAULT_STORE_DB_LIMIT = 500;
 
   function doByUrl(url, headers, options) {
-    var host, withCredentials;
+    let host;
     var storeName = options.storeName || DEFAULT_STORE_NAME;
     try {
       host = new URL(url).host;
@@ -15,7 +15,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
       // `new URL()` can fail with relative URLs. Use current host in that case.
       host = window.location.host;
     }
-    withCredentials = credentials[host];
+    const withCredentials = options.withCredentials || credentials[host];
 
     Debug.debug(`DataURL: Looking for ${url} by AJAX`);
     var req = superagent.get(url)
@@ -37,7 +37,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
         return data;
       }
     }, function (err) {
-      if (err.status === 401 && credentials[host] === undefined) {
+      if (err.status === 401 && !withCredentials && credentials[host] === undefined) {
         credentials[host] = true;
         return doByUrl(url, headers, options);
       }
