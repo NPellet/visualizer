@@ -1,3 +1,12 @@
+# [2.125.0](https://github.com/NPellet/visualizer/compare/v2.124.0...v2.125.0) (2021-01-20)
+
+
+### Features
+
+* allow to configure withCredentials in type-url data object ([a657cc3](https://github.com/NPellet/visualizer/commit/a657cc3f8b70927b904bbd51ebe65a838bfbf0a7))
+
+
+
 # [2.124.0](https://github.com/NPellet/visualizer/compare/v2.123.2...v2.124.0) (2020-12-14)
 
 
