@@ -36,7 +36,9 @@ define(['../util'], function (Util) {
     ]
   };
 
-  function renderJcamp(el, jcamp, rootVal, _options) {
+  async function renderJcamp(el, value, rootVal, _options) {
+    let jcamp = await rootVal.get();
+
     el.empty();
     let chart = JSON.parse(JSON.stringify(defaultChart));
     let options = JSON.parse(JSON.stringify(_options));
