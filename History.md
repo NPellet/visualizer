@@ -1,3 +1,12 @@
+# [2.126.0](https://github.com/NPellet/visualizer/compare/v2.125.0...v2.126.0) (2021-01-22)
+
+
+### Features
+
+* add jcamp type renderer ([2dae01d](https://github.com/NPellet/visualizer/commit/2dae01d8054fccd49fae11d40fdaa9c0334d286d))
+
+
+
 # [2.125.0](https://github.com/NPellet/visualizer/compare/v2.124.0...v2.125.0) (2021-01-20)
 
 
