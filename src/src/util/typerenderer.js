@@ -9,7 +9,8 @@ define([
   'sprintf',
   './util',
   './typerenderer/chart',
-], function (require, $, _, moment, numeral, sprintf, Util, chartRenderer) {
+  './typerenderer/jcamp',
+], function (require, $, _, moment, numeral, sprintf, Util, chartRenderer, jcampRenderer) {
   const asyncRequire = Util.require;
 
   const functions = {};
@@ -48,8 +49,7 @@ define([
     }
     if (country) {
       $element.html(
-        `<span title="${
-          country.name
+        `<span title="${country.name
         }" class="flag-icon flag-icon-${country.alpha2.toLowerCase()}"></span>`,
       );
     } else {
@@ -227,9 +227,8 @@ define([
         } else {
           number = stringUnit ? unit.toNumber(stringUnit) : unit.value;
         }
-        displayValue = `${formatNumber(number, options)} ${
-          options.hideUnit ? '' : unit.formatUnits()
-        }`;
+        displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '' : unit.formatUnits()
+          }`;
       }
     }
 
@@ -528,8 +527,7 @@ define([
     title = title || 'Download resource';
 
     $element.html(
-      `<a download${
-        options.filename ? `=${options.filename}` : ''
+      `<a download${options.filename ? `=${options.filename}` : ''
       } title="${title}" href="${value}">⤵</a>`,
     );
   };
@@ -722,6 +720,8 @@ define([
   };
 
   functions.chart = chartRenderer;
+
+  functions.jcamp = jcampRenderer;
 
   const typeInit = new Map();
   const renderingMap = new WeakMap();
