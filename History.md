@@ -1,3 +1,12 @@
+## [2.126.2](https://github.com/NPellet/visualizer/compare/v2.126.1...v2.126.2) (2021-01-23)
+
+
+### Bug Fixes
+
+* jcamp renderer axis labels ([ad4a511](https://github.com/NPellet/visualizer/commit/ad4a5113a5ef900c9e0e421d8027ef99d71f699a))
+
+
+
 ## [2.126.1](https://github.com/NPellet/visualizer/compare/v2.126.0...v2.126.1) (2021-01-23)
 
 
