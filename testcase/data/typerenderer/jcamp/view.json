@@ -1,5 +1,5 @@
 {
-  "version": "2.126.1-0",
+  "version": "2.126.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -289,7 +289,7 @@
               "storeOnChange": [["store"]],
               "debouncing": [300],
               "script": [
-                "<div style=\"text-align: center; width: 100%; height: 300px\">\n    {{rendertypeBlock(remote.data)}}\n</div>\n\n<div style=\"text-align: center; width: 100%; height: 300px\">\n    {{rendertypeBlock(remote.data,  {\n        chart: {\n            axes: {\n                y: {\n                    display: false,\n                },\n                x: {\n                    label: 'ABC',\n                    flipped: true,\n                }\n            },\n            series: [{\n                style: {\n                    line: {\n                        color: 'red'\n                    }\n                },\n            }]\n        }\n    })}}\n</div>\n\n<div style=\"text-align: center; width: 100%; height: 300px\">\n    {{rendertypeBlock(jcamp, {\n        chart: {\n            axes: {\n                y: {\n                    display: false,\n                },\n                x: {\n                    label: 'ABC',\n                    flipped: true,\n                }\n            },\n            series: [{\n                style: {\n                    line: {\n                        color: 'red'\n                    }\n                },\n            }]\n        }\n    }, 'jcamp')}}\n</div>\n "
+                "<div style=\"text-align: center; width: 100%; height: 300px\">\n    {{rendertypeBlock(remote.data)}}\n</div>\n\n<div style=\"text-align: center; width: 100%; height: 300px\">\n    {{rendertypeBlock(remote.data,  {\n        chart: {\n            axes: {\n                y: {\n                    display: false,\n                },\n                x: {\n                    label: 'ppm',\n                    flipped: true,\n                }\n            },\n            series: [{\n                style: {\n                    line: {\n                        color: 'red'\n                    }\n                },\n            }]\n        }\n    })}}\n</div>\n\n<div style=\"text-align: center; width: 100%; height: 300px\">\n    {{rendertypeBlock(jcamp, {\n        chart: {\n            axes: {\n                y: {\n                    display: false,\n                },\n                x: {\n                    flipped: true,\n                }\n            },\n            series: [{\n                style: {\n                    line: {\n                        color: 'red'\n                    }\n                },\n            }]\n        }\n    }, 'jcamp')}}\n</div>\n "
               ]
             }
           ],
