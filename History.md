@@ -1,3 +1,12 @@
+## [2.126.1](https://github.com/NPellet/visualizer/compare/v2.126.0...v2.126.1) (2021-01-23)
+
+
+### Features
+
+* allow to retrieve jcamp from URL for type renderer ([ca75d0c](https://github.com/NPellet/visualizer/commit/ca75d0cfe4ae7e036ab03024d6c54d1dc80bce07))
+
+
+
 # [2.126.0](https://github.com/NPellet/visualizer/compare/v2.125.0...v2.126.0) (2021-01-22)
 
 
