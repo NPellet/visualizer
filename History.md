@@ -1,3 +1,12 @@
+## [2.126.3](https://github.com/NPellet/visualizer/compare/v2.126.2...v2.126.3) (2021-01-25)
+
+
+### Bug Fixes
+
+* resurrect keeps non-enumerable properties ([6d5d3d9](https://github.com/NPellet/visualizer/commit/6d5d3d9e0ce9eed3b50e0651cd9d0a21b5638a2d))
+
+
+
 ## [2.126.2](https://github.com/NPellet/visualizer/compare/v2.126.1...v2.126.2) (2021-01-23)
 
 
