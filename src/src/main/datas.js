@@ -267,7 +267,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   var resurrectObject = {
     value: function () {
       var obj = {};
-      for (var i in this) {
+
+      var enumerableKeys = Object.keys(this);
+      var ownKeys = Object.getOwnPropertyNames(this).filter((key) => !key.startsWith('__'));
+      var keys = enumerableKeys.concat(ownKeys);
+      keys = keys.filter((item, pos) => keys.indexOf(item) === pos);
+
+      for (var i of keys) {
         if (isSpecialObject(this[i])) {
           obj[i] = this[i].resurrect();
         } else {

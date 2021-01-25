@@ -1,5 +1,5 @@
 {
-  "version": "2.126.2-0",
+  "version": "2.126.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -42,7 +42,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 23
+            "top": 28
           },
           "size": {
             "width": 50,
@@ -373,7 +373,7 @@
               "execOnLoad": [["yes"]],
               "asyncAwait": [["top"]],
               "script": [
-                "API.createData('remote', {\n    data: {\n        type: 'jcamp',\n        url: 'https://www.lactame.com/files/spectra/nmr/urina.jdx'\n    }\n})"
+                "const remote={};\nObject.defineProperty(remote, 'data', {\n  value: {\n        type: 'jcamp',\n        url: 'https://www.lactame.com/files/spectra/nmr/urina.jdx'\n  },\n  writable: true,\n  enumerable: false,\n});\n\nlet result = await API.createData('remote', remote);\n\n"
               ]
             }
           ],
@@ -398,7 +398,7 @@
           },
           "size": {
             "width": 50,
-            "height": 22
+            "height": 27
           },
           "zIndex": 0,
           "display": true,
