@@ -228,7 +228,7 @@ define([
           number = stringUnit ? unit.toNumber(stringUnit) : unit.value;
         }
         displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '' : unit.formatUnits()
-        }`;
+          }`;
       }
     }
 
@@ -296,7 +296,7 @@ define([
           src: ghs[ghsValue],
         });
         $img.css({
-          height: height - 5,
+          height: '100%',
         });
         $element.append($img);
       }
