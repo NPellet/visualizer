@@ -228,7 +228,7 @@ define([
           number = stringUnit ? unit.toNumber(stringUnit) : unit.value;
         }
         displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '' : unit.formatUnits()
-          }`;
+        }`;
       }
     }
 
