@@ -1,3 +1,12 @@
+## [2.126.4](https://github.com/NPellet/visualizer/compare/v2.126.3...v2.126.4) (2021-01-27)
+
+
+### Bug Fixes
+
+* ghs type renderer should have height 100% ([7aa3994](https://github.com/NPellet/visualizer/commit/7aa3994f3c34244546cba003b443ae7fa9ebe2ad))
+
+
+
 ## [2.126.3](https://github.com/NPellet/visualizer/compare/v2.126.2...v2.126.3) (2021-01-25)
 
 
