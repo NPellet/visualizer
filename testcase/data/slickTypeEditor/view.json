@@ -1,0 +1,254 @@
+{
+  "version": "2.126.5-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.createData('table', [\n    {\n        ghs: '1,2,3'\n    }    \n])"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 1
+          },
+          "size": {
+            "width": 36,
+            "height": 31
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [[]],
+              "copyPasteOptions": [["newRows"]],
+              "autoColumns": [[]],
+              "toolbar": [[]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": [null],
+              "slick.headerRowHeight": [30],
+              "slick.selectionModel": ["row"],
+              "idProperty": [""],
+              "filterType": ["pref"],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [""]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "GHS",
+                "jpath": ["ghs"],
+                "editor": "longtext",
+                "forceType": "ghs",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [0, 0, 0, 1],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [[{}]],
+          "data": [
+            {
+              "saveInView": [[]],
+              "varname": [""],
+              "data": ["[]"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 39,
+            "top": 1
+          },
+          "size": {
+            "width": 51,
+            "height": 32
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "table",
+      "jpath": ["table"]
+    },
+    {
+      "varname": "filterScript",
+      "jpath": ["filterScript"]
+    }
+  ],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
