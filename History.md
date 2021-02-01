@@ -1,3 +1,13 @@
+## [2.126.5](https://github.com/NPellet/visualizer/compare/v2.126.4...v2.126.5) (2021-02-01)
+
+
+### Bug Fixes
+
+* eslint ([bd77a60](https://github.com/NPellet/visualizer/commit/bd77a60897e232d0beb7bcb0b42139e22670e8bc))
+* improve ghs typerenderer ([c26024a](https://github.com/NPellet/visualizer/commit/c26024a9b5987148c5db2d0aa4c69c7b5cd6a834))
+
+
+
 ## [2.126.4](https://github.com/NPellet/visualizer/compare/v2.126.3...v2.126.4) (2021-01-27)
 
 
