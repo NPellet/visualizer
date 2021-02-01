@@ -228,7 +228,7 @@ define([
           number = stringUnit ? unit.toNumber(stringUnit) : unit.value;
         }
         displayValue = `${formatNumber(number, options)} ${options.hideUnit ? '' : unit.formatUnits()
-        }`;
+          }`;
       }
     }
 
@@ -276,9 +276,7 @@ define([
 
   functions.ghs = {};
   functions.ghs.toscreen = function ($element, val) {
-    var height = $element.height();
-
-    var ghs = {};
+    const ghs = {};
     for (var i = 1; i <= 9; i++) {
       ghs[i] = require.toUrl(`./typerenderer/svg/${i}.svg`);
     }
@@ -290,7 +288,8 @@ define([
       if (!Array.isArray(val)) {
         val = val.split(/[\r\n\t,; ]+/);
       }
-      for (var ghsValue of val) {
+      for (let ghsValue of val) {
+        ghsValue = String(ghsValue).replace(/[^1-9]/g, '');
         var $img = $('<img>');
         $img.attr({
           src: ghs[ghsValue],
