@@ -1,5 +1,5 @@
 {
-  "version": "2.121.3-0",
+  "version": "2.126.6-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,62 +17,23 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "editSearchRegexp": [
-                null
-              ],
-              "editReplace": [
-                null
-              ],
-              "debounce": [
-                0
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                ""
-              ],
-              "forceType": [
-                "chart"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["chart"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -90,12 +51,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Display value chart rendering",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -108,9 +64,7 @@
           "name": "chart"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "Display value chart rendering",
       "vars_out": [],
       "actions_out": [
@@ -126,33 +80,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -166,39 +107,16 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [
-                      ""
-                    ],
-                    "zoom": [
-                      "xy"
-                    ],
-                    "wheelAction": [
-                      "none"
-                    ],
-                    "wheelbaseline": [
-                      0
-                    ],
-                    "fullOut": [
-                      "both"
-                    ],
-                    "legend": [
-                      "bottom"
-                    ],
-                    "legendOptions": [
-                      [
-                        "isSerieHideable",
-                        "isSerieSelectable"
-                      ]
-                    ],
-                    "mouseTracking": [
-                      []
-                    ],
-                    "selectScatter": [
-                      []
-                    ],
-                    "independantYZoom": [
-                      []
-                    ]
+                    "url": [""],
+                    "zoom": ["xy"],
+                    "wheelAction": ["none"],
+                    "wheelbaseline": [0],
+                    "fullOut": ["both"],
+                    "legend": ["bottom"],
+                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
+                    "mouseTracking": [[]],
+                    "selectScatter": [[]],
+                    "independantYZoom": [[]]
                   }
                 ]
               }
@@ -210,62 +128,26 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [
-                      [
-                        "display"
-                      ]
-                    ],
-                    "label": [
-                      ""
-                    ],
-                    "beforeSpacing": [
-                      "0"
-                    ],
-                    "afterSpacing": [
-                      0
-                    ],
-                    "min": [
-                      ""
-                    ],
-                    "max": [
-                      ""
-                    ],
-                    "nbTicksPrimary": [
-                      5
-                    ],
-                    "axismodification": [
-                      "none"
-                    ]
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "axismodification": ["none"]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [
-                      [
-                        "display"
-                      ]
-                    ],
-                    "label": [
-                      ""
-                    ],
-                    "beforeSpacing": [
-                      "0"
-                    ],
-                    "afterSpacing": [
-                      0
-                    ],
-                    "min": [
-                      ""
-                    ],
-                    "max": [
-                      ""
-                    ],
-                    "nbTicksPrimary": [
-                      5
-                    ],
-                    "fitToAxisOnFromTo": [
-                      []
-                    ]
+                    "checkboxes": [["display"]],
+                    "label": [""],
+                    "beforeSpacing": ["0"],
+                    "afterSpacing": [0],
+                    "min": [""],
+                    "max": [""],
+                    "nbTicksPrimary": [5],
+                    "fitToAxisOnFromTo": [[]]
                   }
                 ]
               }
@@ -277,12 +159,8 @@
               "groups": {
                 "series": [
                   {
-                    "overflow": [
-                      []
-                    ],
-                    "stackVerticalSpacing": [
-                      0
-                    ]
+                    "overflow": [[]],
+                    "stackVerticalSpacing": [0]
                   }
                 ]
               }
@@ -298,12 +176,7 @@
                       "variable": "",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [
-                        1,
-                        1,
-                        255,
-                        1
-                      ],
+                      "plotcolor": [1, 1, 255, 1],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -326,9 +199,7 @@
               "groups": {
                 "misc": [
                   {
-                    "highlightOptions": [
-                      "{}"
-                    ]
+                    "highlightOptions": ["{}"]
                   }
                 ]
               }
@@ -350,12 +221,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Show chart using spectraDisplayer",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -368,9 +234,7 @@
           "name": "chart"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "Show chart using spectraDisplayer",
       "vars_out": [
         {
@@ -390,33 +254,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -427,33 +278,15 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "searchBox": [
-                [
-                  "search"
-                ]
-              ],
-              "sendButton": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
               "storedObject": [
-                "{\"axes\":{\"x\":{\"label\":\"Wavelength\",\"unit\":\"nm\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"},\"y\":{\"label\":\"Transmission\",\"unit\":\"%\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"}},\"series\":[{\"type\":\"color\",\"data\":{\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1],\"color\":[\"green\",\"red\",\"blue\",\"yellow\",\"pink\"]},\"style\":{\"line\":{\"color\":\"red\"},\"marker\":{\"shape\":\"rect\",\"x\":-2,\"y\":-2,\"width\":4,\"height\":4,\"fill\":\"white\",\"fill-opacity\":0.9,\"stroke\":\"blue\",\"stroke-opacity\":0.7}},\"annotations\":[{\"type\":\"rectangle\",\"properties\":{\"strokeColor\":\"#F00\",\"fillColor\":\"#FF0\",\"fillOpacity\":0.5,\"strokeWidth\":2,\"strokeDasharray\":[3,2,1,1],\"position\":[{\"x\":1,\"y\":1},{\"x\":1.5,\"y\":1.5}]}},{\"type\":\"ellipse\",\"properties\":{\"strokeColor\":\"#F00\",\"fillColor\":\"#FF0\",\"fillOpacity\":0.5,\"strokeWidth\":2,\"strokeDasharray\":[3,2,1,1],\"rx\":0.1,\"ry\":0.2,\"position\":{\"x\":2,\"y\":2}}}]}]}"
+                "{\"axes\":{\"x\":{\"label\":\"Wavelength\",\"unit\":\"nm\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\",\"logScale\":true},\"y\":{\"label\":\"Transmission\",\"unit\":\"%\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\"}},\"series\":[{\"type\":\"color\",\"data\":{\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1],\"color\":[\"green\",\"red\",\"blue\",\"yellow\",\"pink\"]},\"style\":{\"line\":{\"color\":\"red\"},\"marker\":{\"shape\":\"rect\",\"x\":-2,\"y\":-2,\"width\":4,\"height\":4,\"fill\":\"white\",\"fill-opacity\":0.9,\"stroke\":\"blue\",\"stroke-opacity\":0.7}},\"annotations\":[{\"type\":\"rectangle\",\"properties\":{\"strokeColor\":\"#F00\",\"fillColor\":\"#FF0\",\"fillOpacity\":0.5,\"strokeWidth\":2,\"strokeDasharray\":[3,2,1,1],\"position\":[{\"x\":1,\"y\":1},{\"x\":1.5,\"y\":1.5}]}},{\"type\":\"ellipse\",\"properties\":{\"strokeColor\":\"#F00\",\"fillColor\":\"#FF0\",\"fillOpacity\":0.5,\"strokeWidth\":2,\"strokeDasharray\":[3,2,1,1],\"rx\":0.1,\"ry\":0.2,\"position\":{\"x\":2,\"y\":2}}}]}]}"
               ]
             }
           ]
@@ -472,24 +305,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 3,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -511,33 +335,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -546,27 +357,19 @@
   "variables": [
     {
       "varname": "twigTpl",
-      "jpath": [
-        "twigTpl"
-      ]
+      "jpath": ["twigTpl"]
     },
     {
       "varname": "entries",
-      "jpath": [
-        "entries"
-      ]
+      "jpath": ["entries"]
     },
     {
       "varname": "files",
-      "jpath": [
-        "files"
-      ]
+      "jpath": ["files"]
     },
     {
       "varname": "droppedImages",
-      "jpath": [
-        "droppedImages"
-      ]
+      "jpath": ["droppedImages"]
     }
   ],
   "aliases": [],

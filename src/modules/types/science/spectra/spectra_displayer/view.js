@@ -30,7 +30,7 @@ define([
   const svgDoctype =
     '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
-  function View() {}
+  function View() { }
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -824,6 +824,7 @@ define([
           if (options.flipped) axis.flip(options.flipped);
           if (options.display === false) axis.hide();
           if (options.display === true) axis.show();
+          if (options.logScale === true) axis.setLogScale(true);
         }
 
         for (let i = 0; i < data.length; i++) {
