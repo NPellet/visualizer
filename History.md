@@ -1,3 +1,12 @@
+# [2.127.0](https://github.com/NPellet/visualizer/compare/v2.126.5...v2.127.0) (2021-03-04)
+
+
+### Features
+
+* allow to have logScale in spectra-displayer ([daf0b19](https://github.com/NPellet/visualizer/commit/daf0b190dd22d3e1c1237e96362df34af355405b))
+
+
+
 ## [2.126.5](https://github.com/NPellet/visualizer/compare/v2.126.4...v2.126.5) (2021-02-01)
 
 
