@@ -1,5 +1,5 @@
 {
-  "version": "2.114.10-0",
+  "version": "2.127.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -25,7 +25,9 @@
               "variable": [[]],
               "storeOnChange": [["store"]],
               "debouncing": [250],
-              "script": ["Title: <input name=\"title\"><br> \n\n"]
+              "script": [
+                "Title: <input name=\"title\"><br> \n\n<select name=\"kind\">\n    <option value=\"\"> -- select an option -- </option>\n    <option value=\"A\">A</option>\n    <option value=\"B\">B</option>\n</select>\n"
+              ]
             }
           ],
           "ace": [
@@ -44,7 +46,7 @@
           },
           "size": {
             "width": 47,
-            "height": 48
+            "height": 32
           },
           "zIndex": 0,
           "display": true,
@@ -111,7 +113,7 @@
               "searchBox": [["search"]],
               "sendButton": [["send"]],
               "output": ["new"],
-              "storedObject": ["{\"title\":\"abfddc\"}"]
+              "storedObject": ["{\"title\":\"abfddc\",\"kind\":\"A\"}"]
             }
           ]
         }
@@ -221,10 +223,6 @@
         {
           "rel": "form",
           "name": "data"
-        },
-        {
-          "rel": "value",
-          "name": "data"
         }
       ],
       "actions_in": [{}],
@@ -278,7 +276,7 @@
               "searchBox": [["search"]],
               "sendButton": [[]],
               "output": ["new"],
-              "storedObject": ["{\"title\":\"abfddc\"}"]
+              "storedObject": ["{\"title\":\"abfddc\",\"kind\":\"\"}"]
             }
           ]
         }
@@ -392,6 +390,92 @@
         }
       },
       "id": 5,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "const data = API.getData('data');\ndata.kind= \"\";\ndata.triggerChange();"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 4,
+            "top": 35
+          },
+          "size": {
+            "width": 40,
+            "height": 27
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
       "vars_in": [{}],
       "actions_in": [{}],
       "vars_out": [
