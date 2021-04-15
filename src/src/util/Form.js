@@ -162,7 +162,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function($, _, Debug) {
             });
           break;
         case 'select-one':
-          if (transform(value) === undefined) return;
+          if (transform(value) == undefined) return;
         // fallthrough
         default:
           el.value = transform(value);
