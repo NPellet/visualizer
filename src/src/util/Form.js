@@ -2,10 +2,10 @@
 
 const dataTransform = {
   exponential10: {
-    forward: function(input) {
+    forward: function (input) {
       return Math.pow(10, input);
     },
-    backward: function(input) {
+    backward: function (input) {
       return Math.log10(input);
     },
   },
@@ -16,7 +16,7 @@ const defaultOptions = {
   // if false will set the input to a default value (default value depends on type of input)
 };
 
-define(['jquery', 'lodash', 'src/util/debug'], function($, _, Debug) {
+define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
   class Form {
     constructor(dom, options) {
       this.options = Object.assign({}, defaultOptions, options);
@@ -34,7 +34,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function($, _, Debug) {
       const inputs = this.dom.find('input,textarea,select');
       let radios = [];
       const out = inputs
-        .map(function() {
+        .map(function () {
           const { name, value, type } = this;
           return {
             name,
@@ -152,12 +152,12 @@ define(['jquery', 'lodash', 'src/util/debug'], function($, _, Debug) {
 
         case 'radio':
           var name = el.name;
-          this.dom.find(`input[name="${name}"]`).each(function() {
+          this.dom.find(`input[name="${name}"]`).each(function () {
             this.checked = false;
           });
           this.dom
             .find(`input[name="${name}"][value="${transform(value)}"]`)
-            .each(function() {
+            .each(function () {
               this.checked = true;
             });
           break;
@@ -193,13 +193,13 @@ define(['jquery', 'lodash', 'src/util/debug'], function($, _, Debug) {
   }
 
   function onChange(ctx) {
-    return function(e) {
+    return function (e) {
       if (ctx.changeCb) ctx.changeCb(e);
     };
   }
 
   function onSubmit(ctx) {
-    return function(e) {
+    return function (e) {
       e.preventDefault();
       if (ctx.submitCb) ctx.submitCb(e);
     };
