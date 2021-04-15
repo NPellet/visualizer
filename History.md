@@ -1,3 +1,21 @@
+## [2.127.2](https://github.com/NPellet/visualizer/compare/v2.127.0...v2.127.2) (2021-04-15)
+
+
+### Bug Fixes
+
+* **twig:** use default behaviour when select value is empty string ([8b9b46b](https://github.com/NPellet/visualizer/commit/8b9b46b62e2469e923611f75c2919156fefee032))
+
+
+
+## [2.127.1](https://github.com/NPellet/visualizer/compare/v2.127.0...v2.127.1) (2021-04-15)
+
+
+### Bug Fixes
+
+* **twig:** use default behaviour when select value is empty string ([8b9b46b](https://github.com/NPellet/visualizer/commit/8b9b46b62e2469e923611f75c2919156fefee032))
+
+
+
 # [2.127.0](https://github.com/NPellet/visualizer/compare/v2.126.5...v2.127.0) (2021-03-04)
 
 
