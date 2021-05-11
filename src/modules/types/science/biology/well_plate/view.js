@@ -30,7 +30,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
 
     inDom: function () {
       const that = this;
-      this.dom.on('mouseenter mouseleave click', 'td', function (e) {
+      this.dom.on('mouseenter mouseleave click', 'td', function (event) {
         const wellsList = that.wellsList;
         const plate = $(this).parents(':eq(3)').index();
         const trIndex = $(this).parent().index();
@@ -43,7 +43,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           (plate * cols * rows) + trIndex * cols + tdIndex;
         if (!wellsList[elementId]) return;
         let highlight = wellsList[elementId]._highlight;
-        if (e.type === 'mouseenter') {
+        if (event.type === 'mouseenter') {
           that.module.controller.createDataFromEvent(
             'onTrackMouse',
             'trackData',
@@ -53,11 +53,24 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             'onTrackMouse',
             'trackData',
             wellsList[elementId],
+          );
+          that.module.controller.sendActionFromEvent(
+            'onTrackMouse',
+            'mouseEvent',
+            event,
+          );
+          that.module.controller.sendActionFromEvent(
+            'onTrackMouse',
+            'dataAndEvent',
+            {
+              data: wellsList[elementId],
+              event: event,
+            },
           );
           API.highlight([highlight], 1);
-        } else if (e.type === 'mouseleave') {
+        } else if (event.type === 'mouseleave') {
           API.highlight([highlight], 0);
-        } else if (e.type === 'click') {
+        } else if (event.type === 'click') {
           that.module.controller.createDataFromEvent(
             'onTrackClick',
             'trackData',
@@ -67,6 +80,19 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
             'onTrackClick',
             'trackData',
             wellsList[elementId],
+          );
+          that.module.controller.sendActionFromEvent(
+            'onTrackClick',
+            'mouseEvent',
+            event,
+          );
+          that.module.controller.sendActionFromEvent(
+            'onTrackClick',
+            'dataAndEvent',
+            {
+              data: wellsList[elementId],
+              event: event,
+            },
           );
         }
       });

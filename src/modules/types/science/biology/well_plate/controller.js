@@ -32,19 +32,27 @@ define(['modules/default/defaultcontroller'], function (Default) {
     trackData: {
       label: 'Tracking data',
       type: 'object'
-    }
+    },
+    mouseEvent: {
+      label: 'jQuery mouse event',
+      type: 'object'
+    },
+    dataAndEvent: {
+      label: 'Mouse event and data',
+      type: 'object'
+    },
   };
 
   Controller.prototype.events = {
     onTrackMouse: {
       label: 'Mouse tracking (move)',
       refVariable: ['trackData'],
-      refAction: ['trackData']
+      refAction: ['trackData', 'mouseEvent', 'dataAndEvent']
     },
     onTrackClick: {
       label: 'Mouse tracking (click)',
       refVariable: ['trackData'],
-      refAction: ['trackData']
+      refAction: ['trackData', 'mouseEvent', 'dataAndEvent']
     },
   };
 
