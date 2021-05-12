@@ -102,8 +102,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
     update: {
       wellsList: function (moduleValue) {
         const cfg = this.module.getConfiguration;
-        let cols = cfg('colnumber') || 10;
-        let rows = cfg('rownumber') || 10;
+        let colNumber = cfg('colnumber') || 10;
+        let rowNumber = cfg('rownumber') || 10;
         let style = cfg('shape') || 'aligned';
         let direction = cfg('direction') || 'vertical';
         const colorJpath = cfg('colorjpath', false);
@@ -135,8 +135,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           }
         }
         const wellLabels = createWellLabels({
-          cols: cols,
-          rows: rows
+          cols: colNumber,
+          rows: rowNumber
         }, 10, { direction: direction });
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
@@ -202,6 +202,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
 
       plateSetup: function (moduleValue) {
         var list = moduleValue.get();
+        checkJpath(list);
         let path = list.color ? 'color' : 'group';
         if (path) {
           delete list.color;
@@ -213,8 +214,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           this.module.definition.configuration.groups[path][0] = Object.assign({}, configurations, plateSetup);
         }
         const cfg = this.module.getConfiguration;
-        let cols = cfg('colnumber') || 10;
-        let rows = cfg('rownumber') || 10;
+        let colNumber = cfg('colnumber') || 10;
+        let rowNumber = cfg('rownumber') || 10;
         let style = cfg('shape') || 'aligned';
         let direction = cfg('direction') || 'vertical';
         const colorJpath = cfg('colorjpath', false);
@@ -245,8 +246,8 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           }
         }
         const wellLabels = createWellLabels({
-          cols: cols,
-          rows: rows
+          cols: colNumber,
+          rows: rowNumber
         }, 10, { direction: direction });
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
@@ -334,18 +335,18 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
           let cfg = this.module.getConfiguration;
           let min = cfg('min');
           let max = cfg('max');
-          let color = cfg('spectrumColors');
+          let spectrumColors = cfg('spectrumColors');
           max = parseFloat(max);
           min = parseFloat(min);
           if (val < min || val > max) return;
           let arrayColor = new Array(10).fill(min)
-            .map((item, index, array) => item + ((max - min) / 10) * index);
+            .map((item, idx) => item + ((max - min) / 10) * idx);
           const index = typeof val === 'object' ?
             arrayColor.findIndex((x) => x > val) : val;
-          color[3] = parseFloat(index) / max;
+          spectrumColors[3] = parseFloat(index) / max;
           if (index) {
             $(grid[currentItem].value).find(':eq(1)').css(
-              { 'background-color': `rgba(${color})` }
+              { 'background-color': `rgba(${spectrumColors})` }
             );
           }
         }
@@ -391,7 +392,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
               width: `${wellSize}px`,
             });
             let wellTop = $('<div>').addClass('well-plate-well-top');
-            let label = Number.isNaN(parseInt(labelsList[index][0])) ?
+            let label = Number.isNaN(parseInt(labelsList[index][0], 10)) ?
               labelsList[index] : (plateIndex * nbColumns * nbRows) + index + 1;
             wellTop.text('<div>').text(label);
             if (shape.margin && (j + shape.index) % 2 !== 0) wellBottom.css({ margin: '30px 0px 0px 0px' });
@@ -422,13 +423,13 @@ function createWellLabels(config, nbPlates, options = {}) {
   } = options;
   let entries = Object.entries(config);
   for (let i = 0; i < entries.length; i++) {
-    if (Number.isNaN(parseInt(entries[i][1]))) {
+    if (Number.isNaN(parseInt(entries[i][1], 10))) {
       let label = entries[i][1].toUpperCase().charCodeAt(0);
       let axis = new Array(label - 64).fill()
         .map((item, index) => String.fromCharCode(index + 65));
       entries[i][1] = axis;
     } else {
-      let axis = new Array(parseInt(entries[i][1])).fill()
+      let axis = new Array(parseInt(entries[i][1], 10)).fill()
         .map((item, index) => index + 1);
       entries[i][1] = axis;
     }
@@ -467,3 +468,9 @@ function createWellLabels(config, nbPlates, options = {}) {
   };
 }
 
+function checkJpath(setup) {
+  const entries = Object.entries(setup);
+  for (let i = 0; i < entries.length; i++) {
+    setup[entries[i][0]] = Array.isArray(entries[i][1]) ? entries[i][1] : [entries[i][1]];
+  }
+}
