@@ -59,7 +59,7 @@
     "notifyjs": "0.4.2",
     "numeral": "1.5.6",
     "onde": "cheminfo/onde#126c1571a3b212abbefb5351ad9b192cef35e7a1",
-    "openchemlib": "7.2.3",
+    "openchemlib": "7.4.0",
     "papa-parse": "4.1.2",
     "pouchdb": "3.3.1",
     "requirejs": "2.3.6",
