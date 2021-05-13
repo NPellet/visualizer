@@ -1,12 +1,12 @@
 'use strict';
 
-(function () {
+(function() {
   try {
     eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
   } catch (e) {
     // eslint-disable-next-line no-alert
     alert(
-      'Your browser is not supported by this application.\nPlease upgrade to a more modern browser like Microsoft Edge, Google Chrome or Firefox.'
+      'Your browser is not supported by this application.\nPlease upgrade to a more modern browser like Microsoft Edge, Google Chrome or Firefox.',
     );
   }
 })();
@@ -16,7 +16,7 @@ require.config({
   paths: {
     ace: 'components/ace/src',
     angularplasmid:
-            'node_modules/angularplasmid/dist/angularplasmid.complete.min',
+      'node_modules/angularplasmid/dist/angularplasmid.complete.min',
     async: 'components/async/dist/async',
     babel: 'components/babel-standalone/babel.min',
     bioParsers: 'browserified/bioParsers/index',
@@ -57,29 +57,28 @@ require.config({
     'mime-types': 'browserified/mime-types/index',
     moment: 'components/moment/moment',
     'moment-duration-format':
-            'components/moment-duration-format/lib/moment-duration-format',
+      'components/moment-duration-format/lib/moment-duration-format',
     notifyjs: 'components/notifyjs/dist/notify',
     modernizr: 'components/modernizr/modernizr',
     msa: 'lib/msa/msa.min',
     'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
     numeral: 'components/numeral/numeral',
-    openchemlib: 'components/openchemlib/dist',
+    openchemlib: 'node_modules/openchemlib/dist',
     papaparse: 'components/papa-parse/papaparse.min',
     plot: 'lib/plot/plot',
     pouchdb: 'components/pouchdb/dist/pouchdb.min',
     quillPrivate: 'src/quillPrivate',
     quill: 'components/quill/quill.min',
     quillImageResizeModule:
-            'node_modules/quill-image-resize-module/image-resize.min',
-    quillImageDropModule:
-            'node_modules/quill-image-drop-module/image-drop.min',
+      'node_modules/quill-image-resize-module/image-resize.min',
+    quillImageDropModule: 'node_modules/quill-image-drop-module/image-drop.min',
     RxnRenderer: 'browserified/RxnRenderer/index',
     MFParser: 'browserified/MFParser/index',
     select2: 'components/select2/dist/js/select2.full',
     slickgrid: 'components/slickgrid/slick.grid',
     slickgrid_core: 'components/slickgrid/slick.core',
     'smart-array-filter':
-            'components/smart-array-filter/dist/smart-array-filter.min',
+      'components/smart-array-filter/dist/smart-array-filter.min',
     sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
     sprintf: 'components/sprintf/dist/sprintf.min',
     superagent: 'browserified/superagent/index',
@@ -89,23 +88,22 @@ require.config({
     x2js: 'components/x2js/xml2json.min',
     BiojsSequence: 'lib/biojs-1.0/src/main/javascript/Biojs.Sequence',
     BiojsTooltip: 'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
-    BiojsFeatureViewer:
-            'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
+    BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
     BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
     BiojsMyFeatureViewer:
-            'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
+      'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
     BiojsDasProteinFeatureViewer:
-            'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer'
+      'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer',
   },
   shim: {
     canvg: {
-      exports: 'canvg'
+      exports: 'canvg',
     },
     katex: {
-      exports: 'katex'
+      exports: 'katex',
     },
     fetch: {
-      exports: 'fetch'
+      exports: 'fetch',
     },
     // mathjax: {
     // exports: 'MathJax',
@@ -117,28 +115,28 @@ require.config({
     // },
     threejs: {
       exports: 'THREE',
-      init: function () {
+      init: function() {
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
-      }
+      },
     },
     msa: {
-      exports: 'msa'
+      exports: 'msa',
     },
     x2js: {
-      exports: 'X2JS'
+      exports: 'X2JS',
     },
     'components/jit/Jit/jit': {
-      exports: '$jit'
+      exports: '$jit',
     },
     ckeditor: {
-      exports: 'CKEDITOR'
+      exports: 'CKEDITOR',
     },
     modernizr: {
-      exports: 'Modernizr'
+      exports: 'Modernizr',
     },
     'lib/parser/Parser': {
-      exports: 'Parser'
+      exports: 'Parser',
     },
     quillImageResizeModule: ['quillPrivate', 'quill'],
     quillImageDropModule: ['quillPrivate', 'quill'],
@@ -148,11 +146,7 @@ require.config({
     'lib/threejs/TrackballControls': ['threejs'],
     jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
     'lib/couchdb/jquery.couch': ['jquery'],
-    slickgrid_core: [
-      'jquery',
-      'jquery-ui/ui/widgets/sortable',
-      'jquery-tmpl'
-    ],
+    slickgrid_core: ['jquery', 'jquery-ui/ui/widgets/sortable', 'jquery-tmpl'],
     slickgrid: {
       deps: [
         'slickgrid_core',
@@ -172,24 +166,24 @@ require.config({
         'modules/types/edition/slick_grid/slickCustomFormatters',
         'components/slickgrid/plugins/slick.checkboxselectcolumn',
         'components/slickgrid/controls/slick.columnpicker',
-        'components/slickgrid/examples/slick.compositeeditor'
+        'components/slickgrid/examples/slick.compositeeditor',
       ],
-      exports: 'Slick'
+      exports: 'Slick',
     },
     'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
     'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
     'lib/pixastic/pixastic': {
       deps: ['lib/pixastic/pixastic/pixastic.core'],
-      exports: 'Pixastic'
+      exports: 'Pixastic',
     },
     fancytree: [
       'jquery-ui/ui/effects/effect-blind',
       'jquery-ui/ui/widgets/droppable',
-      'jquery-ui/ui/widgets/draggable'
+      'jquery-ui/ui/widgets/draggable',
     ],
     'moment-duration-format': ['moment'],
     BiojsCore: {
-      exports: 'Biojs'
+      exports: 'Biojs',
     },
     BiojsSequence: ['BiojsCore'],
     BiojsTooltip: ['BiojsCore'],
@@ -199,18 +193,18 @@ require.config({
       'lib/biojs-1.0/src/main/resources/dependencies/jquery/jquery.tooltip',
       'lib/biojs-1.0/src/main/resources/dependencies/graphics/raphael-2.1.2',
       'lib/biojs-1.0/src/main/resources/dependencies/graphics/canvg',
-      'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor'
+      'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor',
     ],
-    BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer']
+    BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer'],
   },
   map: {
     '*': {
-      quill: 'quillPrivate'
+      quill: 'quillPrivate',
     },
     quillPrivate: {
-      quill: 'quill'
-    }
-  }
+      quill: 'quill',
+    },
+  },
 });
 
 window.CKEDITOR_BASEPATH = require.toUrl('components/ckeditor/');
@@ -223,23 +217,23 @@ require([
   'uri/URI.fragmentQuery',
   'bluebird',
   'components/setImmediate/setImmediate',
-  'lib/regenerator/regenerator-runtime'
-], function (Version, $, Datas, EntryPoint, URI, Promise) {
+  'lib/regenerator/regenerator-runtime',
+], function(Version, $, Datas, EntryPoint, URI, Promise) {
   window.Promise = Promise;
   Promise.config({
     warnings: Version.head,
     longStackTraces: Version.head,
-    monitoring: false
+    monitoring: false,
   });
   $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);
     const type =
-            url.search().length > 0
-              ? 'search'
-              : url.fragment()[0] === '?'
-                ? 'fragment'
-                : 'search';
+      url.search().length > 0
+        ? 'search'
+        : url.fragment()[0] === '?'
+        ? 'fragment'
+        : 'search';
     const query = new URI(url[type]()).query(true);
     EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
   });
