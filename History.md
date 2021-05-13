@@ -1,3 +1,13 @@
+# [2.128.0](https://github.com/NPellet/visualizer/compare/v2.127.2...v2.128.0) (2021-05-13)
+
+
+### Features
+
+* update openchemlib to 7.4.0 ([bd6d485](https://github.com/NPellet/visualizer/commit/bd6d48536bb3b0728370b4b6913480c7a6736f38))
+* use openchemlib 7.4.0 ([e23ddd9](https://github.com/NPellet/visualizer/commit/e23ddd9fe1ed0c52be2737b2e7aaa5b18ab1c64f))
+
+
+
 ## [2.127.2](https://github.com/NPellet/visualizer/compare/v2.127.0...v2.127.2) (2021-04-15)
 
 
