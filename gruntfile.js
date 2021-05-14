@@ -1,7 +1,7 @@
 /* eslint-env node*/
 'use strict';
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   var walk = require('walk');
   var fs = require('fs');
   var _ = require('lodash');
@@ -30,84 +30,96 @@ module.exports = function (grunt) {
     browserify: {
       countries: {
         files: {
-          'src/browserified/country-data/index.js': ['./node_modules/country-data/index.js']
+          'src/browserified/country-data/index.js': [
+            './node_modules/country-data/index.js',
+          ],
         },
         options: {
           browserifyOptions: {
-            standalone: 'CountryData'
-          }
-        }
+            standalone: 'CountryData',
+          },
+        },
       },
       delay: {
         files: {
-          'src/browserified/delay/index.js': ['./node_modules/delay/index.js']
+          'src/browserified/delay/index.js': ['./node_modules/delay/index.js'],
         },
         options: {
           browserifyOptions: {
-            standalone: 'Delay'
-          }
-        }
+            standalone: 'Delay',
+          },
+        },
       },
       mimeTypes: {
         files: {
-          'src/browserified/mime-types/index.js': ['./node_modules/mime-types/index.js']
+          'src/browserified/mime-types/index.js': [
+            './node_modules/mime-types/index.js',
+          ],
         },
         options: {
           browserifyOptions: {
-            standalone: 'mimeTypes'
-          }
-        }
+            standalone: 'mimeTypes',
+          },
+        },
       },
       superagent: {
         files: {
-          'src/browserified/superagent/index.js': ['./node_modules/superagent/lib/client.js']
+          'src/browserified/superagent/index.js': [
+            './node_modules/superagent/lib/client.js',
+          ],
         },
         options: {
           browserifyOptions: {
-            standalone: 'superagent'
-          }
-        }
+            standalone: 'superagent',
+          },
+        },
       },
       twig: {
         files: {
-          'src/browserified/twig/twig.js': ['./node_modules/twig/twig.min.js']
+          'src/browserified/twig/twig.js': ['./node_modules/twig/twig.min.js'],
         },
         options: {
           browserifyOptions: {
-            standalone: 'Twig'
-          }
-        }
+            standalone: 'Twig',
+          },
+        },
       },
       bioParsers: {
         files: {
-          'src/browserified/bioParsers/index.js': ['./node_modules/bio-parsers/parsers/index.js']
+          'src/browserified/bioParsers/index.js': [
+            './node_modules/bio-parsers/parsers/index.js',
+          ],
         },
         options: {
           browserifyOptions: {
-            standalone: 'bioParsers'
-          }
-        }
+            standalone: 'bioParsers',
+          },
+        },
       },
       RxnRenderer: {
         files: {
-          'src/browserified/RxnRenderer/index.js': ['./node_modules/rxn-renderer/lib/index.js']
+          'src/browserified/RxnRenderer/index.js': [
+            './node_modules/rxn-renderer/lib/index.js',
+          ],
         },
         options: {
           browserifyOptions: {
-            standalone: 'RxnRenderer'
-          }
-        }
+            standalone: 'RxnRenderer',
+          },
+        },
       },
       MFParser: {
         files: {
-          'src/browserified/MFParser/index.js': ['./node_modules/mf-parser/src/index.js']
+          'src/browserified/MFParser/index.js': [
+            './node_modules/mf-parser/src/index.js',
+          ],
         },
         options: {
           browserifyOptions: {
-            standalone: 'MFParser'
-          }
-        }
-      }
+            standalone: 'MFParser',
+          },
+        },
+      },
     },
     pkg: grunt.file.readJSON('package.json'),
     babel: {
@@ -123,12 +135,12 @@ module.exports = function (grunt) {
                     'chrome >= 65',
                     'firefox >= 60',
                     'last 2 safari versions',
-                    'last 2 edge versions'
-                  ]
-                }
-              }
-            ]
-          ]
+                    'last 2 edge versions',
+                  ],
+                },
+              },
+            ],
+          ],
         },
         files: [
           {
@@ -144,13 +156,13 @@ module.exports = function (grunt) {
               '!lib/**/*',
               'lib/forms/**/*.js',
               'lib/chemistry/*.js',
-              'lib/twigjs/*.js'
+              'lib/twigjs/*.js',
             ], // Actual pattern(s) to match.
             dest: './build/', // Destination path prefix.
             // overwrite: true,
-            ext: '.js' // Dest filepaths will have this extension.
-          }
-        ]
+            ext: '.js', // Dest filepaths will have this extension.
+          },
+        ],
       },
       minify: {
         options: {
@@ -161,10 +173,10 @@ module.exports = function (grunt) {
               'minify',
               {
                 builtIns: false, // https://github.com/babel/minify/issues/904
-                evaluate: false // https://github.com/babel/minify/issues/936
-              }
-            ]
-          ]
+                evaluate: false, // https://github.com/babel/minify/issues/936
+              },
+            ],
+          ],
         },
         files: [
           {
@@ -180,14 +192,14 @@ module.exports = function (grunt) {
               'lib/forms/**/*.js',
               'lib/twigjs/*.js',
               'lib/chemistry/*.js',
-              'lib/loadingplot/*.js'
+              'lib/loadingplot/*.js',
             ], // Actual pattern(s) to match.
             dest: './build2/', // Destination path prefix.
             // overwrite: true,
-            ext: '.js' // Dest filepaths will have this extension.
-          }
-        ]
-      }
+            ext: '.js', // Dest filepaths will have this extension.
+          },
+        ],
+      },
     },
     copy: {
       buildLib: {
@@ -199,19 +211,19 @@ module.exports = function (grunt) {
               './d3/d3*',
               [
                 './fancytree/dist/jquery.fancytree*.js',
-                './fancytree/dist/skin-lion/*'
+                './fancytree/dist/skin-lion/*',
               ],
               [
                 './jqgrid_edit/js/*.js',
                 './jqgrid_edit/js/i18n/grid.locale-en.js',
-                './jqgrid_edit/css/*.css'
+                './jqgrid_edit/css/*.css',
               ],
               './jquery/dist/*',
               [
                 './jquery-ui/ui/*.js',
                 './jquery-ui/ui/effects/*.js',
                 './jquery-ui/ui/widgets/*.js',
-                './jquery-ui/themes/base/**'
+                './jquery-ui/themes/base/**',
               ],
               './threejs/build/three.min.js',
               './ace/src/**',
@@ -223,7 +235,7 @@ module.exports = function (grunt) {
                 './ckeditor/adapters/jquery.js',
                 './ckeditor/lang/en.js',
                 './ckeditor/plugins/**',
-                './ckeditor/config.js'
+                './ckeditor/config.js',
               ],
               './farbtastic/src/farbtastic.js',
               './jquery.threedubmedia/event.drag/jquery.event.drag.js',
@@ -232,7 +244,7 @@ module.exports = function (grunt) {
               './x2js/xml2json*',
               [
                 './leaflet/dist/**',
-                './leaflet-omnivore/leaflet-omnivore.min.js'
+                './leaflet-omnivore/leaflet-omnivore.min.js',
               ],
               './jsoneditor/dist/**',
               './jit/Jit/**/*',
@@ -263,7 +275,6 @@ module.exports = function (grunt) {
               './loglevel/dist/**',
               './marked/lib/marked.js',
               './highlight.js/build/highlight.pack.js',
-              './openchemlib/dist/*.js',
               './jquery.panzoom/dist/*.js',
               './jquery-mousewheel/*.js',
               './select2/dist/**',
@@ -291,9 +302,9 @@ module.exports = function (grunt) {
               './js-yaml/dist/**',
               './canvg/dist/**',
               './eventEmitter/*.js',
-              ['./quill/*.min.js*', './quill/*.css']
+              ['./quill/*.min.js*', './quill/*.css'],
             ],
-            dest: './build/components/'
+            dest: './build/components/',
           },
           {
             expand: true,
@@ -305,19 +316,20 @@ module.exports = function (grunt) {
               './quill-image-resize-module/image-resize.min.js',
               './mathjs/dist/math.min.js',
               './mathjs/dist/math.min.map',
+              './openchemlib/dist/**',
               './d3-hierarchy/dist/d3-hierarchy.min.js',
               './@fortawesome/fontawesome-free/css/all.min.css',
-              './@fortawesome/fontawesome-free/webfonts/*'
+              './@fortawesome/fontawesome-free/webfonts/*',
             ],
-            dest: './build/node_modules/'
+            dest: './build/node_modules/',
           },
           {
             expand: true,
             cwd: './src/browserified',
             src: ['**'],
-            dest: './build/browserified'
-          }
-        ]
+            dest: './build/browserified',
+          },
+        ],
       },
 
       build: {
@@ -333,11 +345,11 @@ module.exports = function (grunt) {
               'bin/**',
               'lib/**',
               'src/**',
-              'data/**'
+              'data/**',
             ],
-            dest: './build/'
-          }
-        ]
+            dest: './build/',
+          },
+        ],
       },
 
       buildUsr: {
@@ -346,7 +358,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: `${usrPath}/filters/`,
             src: '**',
-            filter: function (filePath) {
+            filter: function(filePath) {
               var files = grunt.option('filterFiles');
               for (var i = 0, l = files.length; i < l; i++) {
                 if (path.relative(mapPath(files[i]), filePath) == '') {
@@ -356,16 +368,16 @@ module.exports = function (grunt) {
 
               return false;
             },
-            dest: './build/usr/filters/'
+            dest: './build/usr/filters/',
           },
 
           {
             expand: true,
             cwd: usrPath,
             src: ['**', '!config/**', '!filters/**', '!modules/**'],
-            dest: './build/usr/'
-          }
-        ]
+            dest: './build/usr/',
+          },
+        ],
       },
 
       buildModules: {
@@ -376,7 +388,7 @@ module.exports = function (grunt) {
             cwd: usrPath,
             src: ['./modules/**'],
             dest: './build/usr/',
-            filter: function (filepath) {
+            filter: function(filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
               for (var i in modulesStack) {
@@ -385,14 +397,14 @@ module.exports = function (grunt) {
                 }
               }
               return false;
-            }
+            },
           },
           {
             expand: true,
             cwd: './src/',
             src: ['./modules/**'],
             dest: './build/',
-            filter: function (filepath) {
+            filter: function(filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
               for (var i in modulesStack) {
@@ -401,7 +413,7 @@ module.exports = function (grunt) {
                 }
               }
               return false;
-            }
+            },
           },
           {
             expand: true,
@@ -410,47 +422,47 @@ module.exports = function (grunt) {
               './modules/module.js',
               './modules/modulefactory.js',
               './default/**',
-              './modules/default/**'
+              './modules/default/**',
             ],
-            dest: './build/'
-          }
-        ]
-      }
+            dest: './build/',
+          },
+        ],
+      },
     },
 
     clean: {
       build: {
-        src: ['build']
+        src: ['build'],
       },
 
       buildTemp: {
-        src: ['build2']
+        src: ['build2'],
       },
 
       modules: {
-        src: ['build/modules/**/.DS_Store']
+        src: ['build/modules/**/.DS_Store'],
       },
 
       modulesJson: {
         src: ['build/modules/**/*.json'],
-        filter: function (filepath) {
+        filter: function(filepath) {
           return !filepath.match('/lib/') && !filepath.match(/folder\.json$/);
-        }
+        },
       },
 
       modulesJsonErase: {
         src: ['src/modules/**/*.json'],
-        filter: function (filepath) {
+        filter: function(filepath) {
           return !filepath.match('/lib/');
-        }
-      }
+        },
+      },
     },
 
     rename: {
       afterBuild: {
         src: 'build2',
-        dest: 'build'
-      }
+        dest: 'build',
+      },
     },
 
     requirejs: {
@@ -467,12 +479,12 @@ module.exports = function (grunt) {
           modules: [
             {
               name: 'init',
-              exclude: ['babel', 'lodash']
-            }
-          ]
-        }
-      }
-    }
+              exclude: ['babel', 'lodash'],
+            },
+          ],
+        },
+      },
+    },
   });
 
   grunt.loadNpmTasks('grunt-babel');
@@ -482,7 +494,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-rename');
   grunt.loadNpmTasks('grunt-browserify');
 
-  grunt.registerTask('manifest:generate', function () {
+  grunt.registerTask('manifest:generate', function() {
     var files = recursivelyLookupDirectory('build', true);
     fs.writeFileSync('build/cache.appcache', 'CACHE MANIFEST\n\nCACHE:\n\n');
     for (var i = 0; i < files.length; i++) {
@@ -514,7 +526,7 @@ module.exports = function (grunt) {
     // var stats = fs.lstatSync(relPath);
     var options = {
       listeners: {
-        file: function (root, fileStats, next) {
+        file: function(root, fileStats, next) {
           // console.log(root, fileStats);
           var p;
           if (root === '.') {
@@ -527,11 +539,11 @@ module.exports = function (grunt) {
           files.push(p);
           next();
         },
-        errors: function (root, nodeStatsArray, next) {
+        errors: function(root, nodeStatsArray, next) {
           console.log('An error occured in walk', root, nodeStatsArray);
           next();
-        }
-      }
+        },
+      },
     };
     walk.walkSync(relPath, options);
     process.chdir(cd);
@@ -552,7 +564,7 @@ module.exports = function (grunt) {
     'babel:minify',
     'clean:build',
     'rename:afterBuild',
-    'buildTime:unset'
+    'buildTime:unset',
   ];
 
   if (grunt.option('manifest')) {
@@ -561,7 +573,7 @@ module.exports = function (grunt) {
   }
   grunt.registerTask('build', buildTasks);
 
-  grunt.registerTask('buildProject', 'Build project', function () {
+  grunt.registerTask('buildProject', 'Build project', function() {
     if (!fs.existsSync('./build/')) {
       fs.mkdirSync('build/');
     }
@@ -624,17 +636,17 @@ module.exports = function (grunt) {
       for (var k in file.folders) {
         if (arguments.length === 1) {
           jsonStructure.folders[k] = oldLoadFile(
-            `${file.folders[k]}folder.json`
+            `${file.folders[k]}folder.json`,
           );
         } else {
           console.log(
             'load file:',
             `${file.folders[k]}folder.json`,
-            arguments[1]
+            arguments[1],
           );
           jsonStructure.folders[k] = oldLoadFile(
             `${file.folders[k]}folder.json`,
-            arguments[1]
+            arguments[1],
           );
         }
         // jsonStructure.folders[ k ] = oldLoadFile( './src/' + file.folders[ k ] + 'folder.json');
@@ -741,13 +753,13 @@ module.exports = function (grunt) {
     mkpath.sync('./build/modules/types/');
     fs.writeFileSync(
       './build/modules/types/folder.json',
-      JSON.stringify(cfg.modules)
+      JSON.stringify(cfg.modules),
     );
 
     mkpath.sync('./build/usr/config/');
     fs.writeFileSync(
       './build/usr/config/default.json',
-      JSON.stringify(cfg, false, '\t')
+      JSON.stringify(cfg, false, '\t'),
     );
     // grunt.task.run('clean:buildTemp');
   });
@@ -757,13 +769,13 @@ module.exports = function (grunt) {
   grunt.registerTask(
     'createJSONModules',
     'Create all modules json',
-    function () {
+    function() {
       recurseFolder('./src/modules/types', 'modules/types');
       recurseFolder('./src/usr/modules', 'usr/modules');
-    }
+    },
   );
 
-  grunt.registerTask('recurseFolder', 'Recurse Folder', function () {
+  grunt.registerTask('recurseFolder', 'Recurse Folder', function() {
     var from = grunt.option('recurseFolderFrom');
     var to = grunt.option('recurseFolderTo');
 
@@ -805,20 +817,20 @@ module.exports = function (grunt) {
     target.modules = [];
     for (var i = 0, l = allModules.length; i < l; i++) {
       var moduleInfo = /moduleInformation[^{]+(\{[^}]+})/.exec(
-        grunt.file.read(`${basePath}/${allModules[i]}/controller.js`)
+        grunt.file.read(`${basePath}/${allModules[i]}/controller.js`),
       );
 
       try {
         eval(`moduleInfo = ${moduleInfo[1]}`);
       } catch (e) {
         throw new Error(
-          `Could not find module information for ${basePath}/${allModules[i]}`
+          `Could not find module information for ${basePath}/${allModules[i]}`,
         );
       }
 
       var info = {
         moduleName: moduleInfo.name || allModules[i],
-        url: `${relPath}/${allModules[i]}/`
+        url: `${relPath}/${allModules[i]}/`,
       };
 
       if (moduleInfo.hidden) {
@@ -832,12 +844,12 @@ module.exports = function (grunt) {
     for (var i = 0, l = allFolders.length; i < l; i++) {
       recurseFolder(
         `${basePath}/${allFolders[i]}`,
-        `${relPath}/${allFolders[i]}`
+        `${relPath}/${allFolders[i]}`,
       );
 
       if (fs.existsSync(`${basePath}/${allFolders[i]}/folder.json`)) {
         subFolder = grunt.file.readJSON(
-          `${basePath}/${allFolders[i]}/folder.json`
+          `${basePath}/${allFolders[i]}/folder.json`,
         );
         target.folders.push(allFolders[i]);
       }
@@ -853,7 +865,7 @@ module.exports = function (grunt) {
       target.name = basePath.split('/').pop();
     }
 
-    target.modules.sort(function (module1, module2) {
+    target.modules.sort(function(module1, module2) {
       return module1.moduleName
         .toLowerCase()
         .localeCompare(module2.moduleName.toLowerCase());
@@ -861,11 +873,11 @@ module.exports = function (grunt) {
 
     fs.writeFileSync(
       `${basePath}/folder.json`,
-      JSON.stringify(target, null, 2)
+      JSON.stringify(target, null, 2),
     );
   }
 
-  grunt.registerTask('bump', function (version) {
+  grunt.registerTask('bump', function(version) {
     var done = this.async();
 
     var versionJS = fs.readFileSync('./src/version.js', 'utf8');
@@ -894,7 +906,7 @@ module.exports = function (grunt) {
     versionJS = setVersionValue(
       versionJS,
       'PRERELEASE',
-      semVersion.prerelease.length ? semVersion.prerelease[0] : 'false'
+      semVersion.prerelease.length ? semVersion.prerelease[0] : 'false',
     );
 
     if (grunt.option('release')) {
@@ -914,14 +926,14 @@ module.exports = function (grunt) {
 
       console.log('Writing changelog');
       var changelogStream = changelog({
-        preset: 'angular'
+        preset: 'angular',
       });
       var tmp = tempfile();
 
       changelogStream
         .pipe(addStream(fs.createReadStream('History.md')))
         .pipe(fs.createWriteStream(tmp))
-        .on('finish', function () {
+        .on('finish', function() {
           fs.createReadStream(tmp)
             .pipe(fs.createWriteStream('History.md'))
             .on('finish', publish);
@@ -941,19 +953,19 @@ module.exports = function (grunt) {
         'src/version.js',
         'bower.json',
         'package.json',
-        'History.md'
+        'History.md',
       ]);
       child_process.execFileSync('git', [
         'commit',
         '-m',
-        `Release v${semVersion}`
+        `Release v${semVersion}`,
       ]);
       child_process.execFileSync('git', [
         'tag',
         '-a',
         `v${semVersion}`,
         '-m',
-        `Release v${semVersion}`
+        `Release v${semVersion}`,
       ]);
 
       // Bump version to prepatch and reset IS_RELEASE to false
@@ -963,7 +975,7 @@ module.exports = function (grunt) {
       versionJS = setVersionValue(
         versionJS,
         'PRERELEASE',
-        semVersion.prerelease.length ? semVersion.prerelease[0] : 'false'
+        semVersion.prerelease.length ? semVersion.prerelease[0] : 'false',
       );
 
       fs.writeFileSync('./src/version.js', versionJS);
@@ -975,7 +987,7 @@ module.exports = function (grunt) {
       child_process.execFileSync('git', [
         'commit',
         '-m',
-        `Working on v${semVersion}`
+        `Working on v${semVersion}`,
       ]);
 
       // Push commits and tag
@@ -983,14 +995,14 @@ module.exports = function (grunt) {
         'push',
         'origin',
         'master',
-        '--follow-tags'
+        '--follow-tags',
       ]);
 
       done();
     }
   });
 
-  grunt.registerTask('buildTime', function (setting) {
+  grunt.registerTask('buildTime', function(setting) {
     var versionJS = fs.readFileSync('./src/version.js', 'utf8');
     if (setting === 'set') {
       versionJS = setVersionValue(versionJS, 'BUILD_TIME', Date.now());
@@ -1010,18 +1022,18 @@ module.exports = function (grunt) {
     return str.replace(reg, `const ${name} = ${value};\n`);
   }
 
-  grunt.registerTask('css:modules', function () {
+  grunt.registerTask('css:modules', function() {
     var folderJson = JSON.parse(
-      fs.readFileSync('./build/modules/types/folder.json')
+      fs.readFileSync('./build/modules/types/folder.json'),
     );
-    var mIds = applyModules(folderJson, moduleProcessCss).filter(function (v) {
+    var mIds = applyModules(folderJson, moduleProcessCss).filter(function(v) {
       return v !== undefined;
     });
     var versionJS = fs.readFileSync('./build/version.js', 'utf8');
     var newVersionJS = setVersionValue(
       versionJS,
       'INCLUDED_MODULE_CSS',
-      JSON.stringify(mIds)
+      JSON.stringify(mIds),
     );
     fs.writeFileSync('./build/version.js', newVersionJS);
   });
