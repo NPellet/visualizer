@@ -1,3 +1,12 @@
+## [2.128.1](https://github.com/NPellet/visualizer/compare/v2.128.0...v2.128.1) (2021-05-14)
+
+
+### Bug Fixes
+
+* add missing openchemlib in build ([393223e](https://github.com/NPellet/visualizer/commit/393223e8da7103ef8016f04c14115ae5d389ffeb))
+
+
+
 # [2.128.0](https://github.com/NPellet/visualizer/compare/v2.127.2...v2.128.0) (2021-05-13)
 
 
