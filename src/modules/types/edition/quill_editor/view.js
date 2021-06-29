@@ -8,8 +8,8 @@ define([
   'quillImageResizeModule',
   'lodash',
   'src/main/grid',
-  'quillImageDropModule'
-], function ($, Default, Util, Quill, ImageResize, _, Grid) {
+  'quillImageDropModule',
+], function($, Default, Util, Quill, ImageResize, _, Grid) {
   Quill.register('modules/ImageResize', ImageResize.default);
   function View() {
     this._id = Util.getNextUniqueId();
@@ -19,26 +19,26 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init: function() {
       var that = this;
       this.debounce = this.module.getConfiguration('debouncing');
       this.storeInView = this.module.getConfigurationCheckbox(
         'storeInView',
-        'yes'
+        'yes',
       );
       this.module.currentWord = ''; // used for shortcut expansion
       this.module.shortcuts = [];
-      this.valueChanged = _.debounce(function () {
+      this.valueChanged = _.debounce(function() {
         that.module.controller.valueChanged.apply(
           that.module.controller,
-          arguments
+          arguments,
         );
       }, this.debounce);
     },
-    inDom: function () {
+    inDom: function() {
       this.initEditor();
     },
-    initEditor: function () {
+    initEditor: function() {
       Util.loadCss('./components/quill/quill.core.css')
         .then(() => {
           return Util.loadCss('./components/quill/quill.snow.css');
@@ -53,10 +53,10 @@ define([
               ${this.module.getConfiguration('css')}
             </style>
             <div id="${
-  this._id
-}" class="quill_editor ${this.module.getConfiguration(
-  'className'
-)}" />
+              this._id
+            }" class="quill_editor ${this.module.getConfiguration(
+            'className',
+          )}" />
           `);
 
           this.dom = $('<div class="quill_wrapper" />');
@@ -67,23 +67,23 @@ define([
 
           const readOnly = !this.module.getConfigurationCheckbox(
             'editable',
-            'isEditable'
+            'isEditable',
           );
           this.instance = new Quill(`#${this._id}`, {
             modules: {
               clipboard: {
-                matchVisual: false
+                matchVisual: false,
               },
               imageDrop: true,
               ImageResize: {},
               formula: true,
               toolbar: readOnly
                 ? false
-                : getToolbar(this.module.getConfiguration('toolbarMode'))
+                : getToolbar(this.module.getConfiguration('toolbarMode')),
             },
             placeholder: 'Start composing here...',
             readOnly,
-            theme: 'snow' // or 'bubble'
+            theme: 'snow', // or 'bubble'
           });
 
           //      this.$content.find('[data-toggle="tooltip"]').tooltip();
@@ -99,55 +99,55 @@ define([
         });
     },
     update: {
-      html: function (moduleValue) {
+      html: function(moduleValue) {
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'html';
         this.instance.setContents(
-          this.instance.clipboard.convert(moduleValue.get())
+          this.instance.clipboard.convert(moduleValue.get()),
         );
       },
-      quill: function (moduleValue) {
+      quill: function(moduleValue) {
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'quill';
         this.instance.setContents(moduleValue.get());
       },
-      shortcuts: function (value) {
+      shortcuts: function(value) {
         if (!value || value.length < 1) {
           this.module.shortcuts = [];
         }
         value = JSON.parse(JSON.stringify(value));
         if (!Array.isArray(value)) return;
         this.module.shortcuts = value.filter(
-          (entry) => entry.key && (entry.html || entry.text)
+          (entry) => entry.key && (entry.html || entry.text),
         );
-      }
+      },
     },
     blank: {
-      html: function () {
+      html: function() {
         this.clear();
       },
-      quill: function () {
+      quill: function() {
         this.clear();
       },
-      shortcuts: function () {
+      shortcuts: function() {
         this.module.shortcuts = [];
-      }
+      },
     },
     clear() {
       const len = this.instance.getLength();
       this.instance.deleteText(0, len);
     },
     onActionReceive: {
-      insertHtml: function (html) {
+      insertHtml: function(html) {
         this.instance.focus();
         html = String(html);
         const range = this.instance.getSelection();
         this.instance.deleteText(range.index, range.length);
         this.instance.clipboard.dangerouslyPasteHTML(range.index, html);
       },
-      insertText: function (text) {
+      insertText: function(text) {
         this.instance.focus();
         text = String(text);
         const range = this.instance.getSelection();
@@ -157,15 +157,20 @@ define([
         div.appendChild(document.createTextNode(text));
         this.instance.clipboard.dangerouslyPasteHTML(
           range.index,
-          div.innerHTML
+          div.innerHTML,
         );
-      }
+      },
     },
-    _listenForShortcuts: function (event) {
+    _listenForShortcuts: function(event) {
       if (!this.module.shortcuts || this.module.shortcuts.length < 1) return;
-      if ((event.key < 'a' || event.key > 'z') && (event.key < '0' || event.key > '9')) {
+      if (
+        event.key !== '_' &&
+        (event.key < 'A' || event.key > 'Z') &&
+        (event.key < 'a' || event.key > 'z') &&
+        (event.key < '0' || event.key > '9')
+      ) {
         let matching = this.module.shortcuts.filter(
-          (entry) => entry.key === this.module.currentWord
+          (entry) => entry.key === this.module.currentWord,
         )[0];
         this.module.currentWord = '';
         if (!matching) return;
@@ -179,14 +184,16 @@ define([
         } else if (matching.html) {
           this.instance.clipboard.dangerouslyPasteHTML(
             insertPosition,
-            matching.html
+            matching.html,
           );
           this.instance.setSelection(this.instance.getSelection().index + 1, 0);
         }
       } else {
-        this.module.currentWord += event.key;
+        if (event.key.length === 1) {
+          this.module.currentWord += event.key;
+        }
       }
-    }
+    },
   });
 
   function getToolbar(mode) {
@@ -205,7 +212,7 @@ define([
           [{ indent: '-1' }, { indent: '+1' }],
           [{ direction: 'rtl' }],
           ['formula'],
-          ['clean']
+          ['clean'],
         ];
       }
       case 'light': {
@@ -216,7 +223,7 @@ define([
           ['link', 'image', 'blockquote'],
           [{ align: [] }],
           [{ list: 'bullet' }],
-          [{ script: 'sub' }, { script: 'super' }]
+          [{ script: 'sub' }, { script: 'super' }],
         ];
       }
       case 'minimal': {
@@ -227,8 +234,8 @@ define([
             'bold',
             'italic',
             { align: [] },
-            { list: 'bullet' }
-          ]
+            { list: 'bullet' },
+          ],
         ];
       }
     }
