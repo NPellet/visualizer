@@ -9,7 +9,7 @@ define([
   'lodash',
   'src/main/grid',
   'quillImageDropModule',
-], function($, Default, Util, Quill, ImageResize, _, Grid) {
+], function ($, Default, Util, Quill, ImageResize, _, Grid) {
   Quill.register('modules/ImageResize', ImageResize.default);
   function View() {
     this._id = Util.getNextUniqueId();
@@ -19,7 +19,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: function() {
+    init: function () {
       var that = this;
       this.debounce = this.module.getConfiguration('debouncing');
       this.storeInView = this.module.getConfigurationCheckbox(
@@ -28,17 +28,17 @@ define([
       );
       this.module.currentWord = ''; // used for shortcut expansion
       this.module.shortcuts = [];
-      this.valueChanged = _.debounce(function() {
+      this.valueChanged = _.debounce(function () {
         that.module.controller.valueChanged.apply(
           that.module.controller,
           arguments,
         );
       }, this.debounce);
     },
-    inDom: function() {
+    inDom: function () {
       this.initEditor();
     },
-    initEditor: function() {
+    initEditor: function () {
       Util.loadCss('./components/quill/quill.core.css')
         .then(() => {
           return Util.loadCss('./components/quill/quill.snow.css');
@@ -53,10 +53,10 @@ define([
               ${this.module.getConfiguration('css')}
             </style>
             <div id="${
-              this._id
-            }" class="quill_editor ${this.module.getConfiguration(
-            'className',
-          )}" />
+  this._id
+}" class="quill_editor ${this.module.getConfiguration(
+  'className',
+)}" />
           `);
 
           this.dom = $('<div class="quill_wrapper" />');
@@ -99,7 +99,7 @@ define([
         });
     },
     update: {
-      html: function(moduleValue) {
+      html: function (moduleValue) {
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'html';
@@ -107,13 +107,13 @@ define([
           this.instance.clipboard.convert(moduleValue.get()),
         );
       },
-      quill: function(moduleValue) {
+      quill: function (moduleValue) {
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'quill';
         this.instance.setContents(moduleValue.get());
       },
-      shortcuts: function(value) {
+      shortcuts: function (value) {
         if (!value || value.length < 1) {
           this.module.shortcuts = [];
         }
@@ -125,13 +125,13 @@ define([
       },
     },
     blank: {
-      html: function() {
+      html: function () {
         this.clear();
       },
-      quill: function() {
+      quill: function () {
         this.clear();
       },
-      shortcuts: function() {
+      shortcuts: function () {
         this.module.shortcuts = [];
       },
     },
@@ -140,14 +140,14 @@ define([
       this.instance.deleteText(0, len);
     },
     onActionReceive: {
-      insertHtml: function(html) {
+      insertHtml: function (html) {
         this.instance.focus();
         html = String(html);
         const range = this.instance.getSelection();
         this.instance.deleteText(range.index, range.length);
         this.instance.clipboard.dangerouslyPasteHTML(range.index, html);
       },
-      insertText: function(text) {
+      insertText: function (text) {
         this.instance.focus();
         text = String(text);
         const range = this.instance.getSelection();
@@ -161,7 +161,7 @@ define([
         );
       },
     },
-    _listenForShortcuts: function(event) {
+    _listenForShortcuts: function (event) {
       if (!this.module.shortcuts || this.module.shortcuts.length < 1) return;
       if (
         event.key !== '_' &&
