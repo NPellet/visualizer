@@ -1,3 +1,13 @@
+# [2.129.0](https://github.com/NPellet/visualizer/compare/v2.128.1...v2.129.0) (2021-06-29)
+
+
+### Features
+
+* allow _ in shortucts ([d9a714b](https://github.com/NPellet/visualizer/commit/d9a714ba6ff46e3aa755f35449a526545dd58a81))
+* allow events as outputs through actions in well-plate ([#1146](https://github.com/NPellet/visualizer/issues/1146)) ([88a5b87](https://github.com/NPellet/visualizer/commit/88a5b877c405eb9b0a239d29e4d85c8107eaf02f))
+
+
+
 ## [2.128.1](https://github.com/NPellet/visualizer/compare/v2.128.0...v2.128.1) (2021-05-14)
 
 
