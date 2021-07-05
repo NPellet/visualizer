@@ -1518,23 +1518,34 @@ define([
     }
   }
 
+
+  function max(array) {
+    let maxValue = array[0];
+    for (let item of array) {
+      if (item > maxValue) maxValue = item;
+    }
+    return maxValue;
+  }
+
   // Code is largely copied from :
   // https://github.com/cheminfo-js/molecular-formula/blob/master/packages/ms-spectrum/src/isContinuous.js
   function isContinuous(data, options = {}) {
-    const { minLength = 100, maxDeltaRatio = 3 } = options;
+    const { minLength = 100, maxDeltaRatio = 3, relativeHeightThreshold = 0.001, } = options;
     const minRadio = 1 / maxDeltaRatio;
     const maxRatio = 1 * maxDeltaRatio;
-
+    
     let xs = data.x;
     let ys = data.y;
     if (xs.length < minLength) {
       return false;
     } else {
+      const minHeight = max(ys) * relativeHeightThreshold;
+
       let previousDelta = xs[1] - xs[0];
       let success = 0;
       let failed = 0;
       for (let i = 0; i < xs.length - 1; i++) {
-        if (ys[i] === 0 || ys[i + 1] === 0) {
+        if (ys[i] < minHeight || ys[i + 1] < minHeight) {
           previousDelta = 0;
           continue;
         }
