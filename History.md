@@ -1,3 +1,12 @@
+## [2.130.1](https://github.com/NPellet/visualizer/compare/v2.130.0...v2.130.1) (2021-07-21)
+
+
+### Bug Fixes
+
+* ocl renderer with coordinates ([d24c7a6](https://github.com/NPellet/visualizer/commit/d24c7a6d51c839d3bd1f7f7848ebefebaafb0c35))
+
+
+
 # [2.130.0](https://github.com/NPellet/visualizer/compare/v2.129.0...v2.130.0) (2021-07-21)
 
 
