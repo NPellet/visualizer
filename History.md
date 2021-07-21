@@ -1,3 +1,19 @@
+# [2.130.0](https://github.com/NPellet/visualizer/compare/v2.129.0...v2.130.0) (2021-07-21)
+
+
+### Bug Fixes
+
+* only force type and extract value in type renderer if type is defined ([9d09885](https://github.com/NPellet/visualizer/commit/9d09885d8116e2970376bee00809177744181663))
+
+
+### Features
+
+* add ValueUnits editor in slick grid ([4e4d74e](https://github.com/NPellet/visualizer/commit/4e4d74e2ef0b21fa9e564e01a7ecb7492000f9a5))
+* add valueunits renderer ([156f6c0](https://github.com/NPellet/visualizer/commit/156f6c0668f0bac2366ff0f32a40142b5ccfdcea))
+* improve automass in spectra displayer ([cd94545](https://github.com/NPellet/visualizer/commit/cd94545bf9275e4a28033d9770e3a2219b93a44d))
+
+
+
 # [2.129.0](https://github.com/NPellet/visualizer/compare/v2.128.1...v2.129.0) (2021-06-29)
 
 
