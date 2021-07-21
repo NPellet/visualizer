@@ -289,96 +289,7 @@
               "fontsize": [null],
               "align": [null],
               "valign": [null],
-              "rendererOptions": ["numeral:'0.00', unit:'K'"],
-              "forceType": ["valueunits"],
-              "sprintf": [null],
-              "sprintfOrder": [null],
-              "preformatted": [[]]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 70,
-            "top": 0
-          },
-          "size": {
-            "width": 31,
-            "height": 9
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "numeral:'0.00', unit:'K'",
-          "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 4,
-      "vars_in": [
-        {
-          "rel": "value",
-          "name": "test"
-        }
-      ],
-      "actions_in": [{}],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "title": "numeral:'0.00', unit:'K'",
-      "vars_out": [],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin",
-              "color": [100, 100, 100, 1]
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ]
-    },
-    {
-      "url": "modules/types/display/single_value/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "append": [[]],
-              "maxEntries": [1],
-              "editable": [[]],
-              "editSearchRegexp": [null],
-              "editReplace": [null],
-              "debounce": [0],
-              "defaultvalue": [null],
-              "font": [null],
-              "fontcolor": [[0, 0, 0, 1]],
-              "fontsize": [null],
-              "align": [null],
-              "valign": [null],
-              "rendererOptions": [
-                "numeral:'0.00', unit:'degF', hideUnit: true"
-              ],
+              "rendererOptions": ["numeral:'0.00', hideUnits: true"],
               "forceType": ["valueunits"],
               "sprintf": [null],
               "sprintfOrder": [null],
@@ -406,7 +317,7 @@
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 4,
       "vars_in": [
         {
           "rel": "value",
@@ -486,7 +397,7 @@
               {
                 "name": "value",
                 "jpath": ["value"],
-                "editor": "unit",
+                "editor": "valueunits",
                 "forceType": "valueunits",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
@@ -498,7 +409,7 @@
               {
                 "name": "value2",
                 "jpath": ["value2"],
-                "editor": "unit",
+                "editor": "valueunits",
                 "forceType": "valueunits",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
@@ -510,24 +421,12 @@
               {
                 "name": "value3",
                 "jpath": ["value3"],
-                "editor": "unit",
+                "editor": "valueunits",
                 "forceType": "valueunits",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
                 "visibility": "both",
-                "rendererOptions": "hideUnit:true",
-                "editorOptions": "{base: 'degC'}",
-                "hideColumn": []
-              },
-              {
-                "name": "value4",
-                "jpath": ["value4"],
-                "editor": "unit",
-                "forceType": "valueunits",
-                "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "unit: 'degF'",
+                "rendererOptions": "hideUnits:true",
                 "editorOptions": "{base: 'degC'}",
                 "hideColumn": []
               }
@@ -579,7 +478,7 @@
           "name": "Default layer"
         }
       },
-      "id": 6,
+      "id": 5,
       "vars_in": [
         {
           "rel": "list",
@@ -634,7 +533,7 @@
               "execOnLoad": [["yes"]],
               "asyncAwait": [["top"]],
               "script": [
-                "API.createData('table',\n    [\n        {\n            value: {\n                value: 100,\n                units: 'degC'\n            },\n            value2: {\n                value: 100,\n                units: 'degC'\n            },\n            value3: {\n                value: 100,\n                units: 'degC'\n            },\n            value4: {\n                value: 100,\n                units: 'degC'\n            },\n        }\n    ]\n   \n);\n"
+                "API.createData('table',\n    [\n        {\n            value: {\n                value: 100,\n                units: 'degC'\n            },\n            value2: {\n                value: 100,\n                units: 'degC'\n            },\n            value3: {\n                value: 100,\n                units: '°C'\n            },\n        }\n    ]\n   \n);\n"
               ]
             }
           ],
@@ -670,7 +569,7 @@
           "name": "Default layer"
         }
       },
-      "id": 7,
+      "id": 6,
       "vars_in": [{}],
       "actions_in": [{}],
       "title": "",
@@ -747,7 +646,7 @@
           "name": "Default layer"
         }
       },
-      "id": 8,
+      "id": 7,
       "vars_in": [
         {
           "rel": "value",
@@ -836,7 +735,7 @@
           "name": "Default layer"
         }
       },
-      "id": 9,
+      "id": 8,
       "vars_in": [{}],
       "actions_in": [{}],
       "title": "",
@@ -922,7 +821,7 @@
           "name": "Default layer"
         }
       },
-      "id": 10,
+      "id": 9,
       "vars_in": [
         {
           "rel": "value",
@@ -1002,7 +901,7 @@
               {
                 "name": "value",
                 "jpath": ["value"],
-                "editor": "unit",
+                "editor": "valueunits",
                 "forceType": "valueunits",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
@@ -1014,7 +913,7 @@
               {
                 "name": "value2",
                 "jpath": ["value2"],
-                "editor": "unit",
+                "editor": "valueunits",
                 "forceType": "valueunits",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
@@ -1026,24 +925,12 @@
               {
                 "name": "value3",
                 "jpath": ["value3"],
-                "editor": "unit",
+                "editor": "valueunits",
                 "forceType": "valueunits",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
                 "visibility": "both",
-                "rendererOptions": "hideUnit:true",
-                "editorOptions": "{base: 'degC'}",
-                "hideColumn": []
-              },
-              {
-                "name": "value4",
-                "jpath": ["value4"],
-                "editor": "unit",
-                "forceType": "valueunits",
-                "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "unit: 'degF'",
+                "rendererOptions": "hideUnits:true",
                 "editorOptions": "{base: 'degC'}",
                 "hideColumn": []
               }
@@ -1095,7 +982,7 @@
           "name": "Default layer"
         }
       },
-      "id": 11,
+      "id": 10,
       "vars_in": [
         {
           "rel": "list",
@@ -1177,7 +1064,7 @@
           "name": "Default layer"
         }
       },
-      "id": 12,
+      "id": 11,
       "vars_in": [
         {
           "rel": "value",

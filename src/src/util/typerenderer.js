@@ -260,7 +260,7 @@ define([
       displayValue = formatNumber(val, options);
     } else {
       displayValue = formatNumber(val.value, options);
-      if (val.units) {
+      if (val.units && !options.hideUnits) {
         displayValue += ` ${val.units}`;
       }
     }
