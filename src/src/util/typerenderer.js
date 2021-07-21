@@ -767,7 +767,7 @@ define([
     let value = await object.get(true);
     let type;
     if (options && options.forceType) {
-      if (value && value.value) {
+      if (value && value.value && value.type) {
         value = value.value;
       }
       type = options.forceType.toLowerCase();
