@@ -4,7 +4,7 @@ env:
   amd: true
   es6: true
 parserOptions:
-  ecmaVersion: 2017
+  ecmaVersion: 2021
 
 rules:
   # Disable those for now
