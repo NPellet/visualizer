@@ -8,8 +8,8 @@ define([
   'lib/d3/d3.parcoords',
   'src/util/api',
   'src/util/ui',
-  'lodash'
-], function (Default, Util, Traversing, Context, d3, API, ui, _) {
+  'lodash',
+], function(Default, Util, Traversing, Context, d3, API, ui, _) {
   function View() {
     this._id = Util.getNextUniqueId();
     this._value = new DataArray();
@@ -21,42 +21,48 @@ define([
   Util.loadCss('lib/d3/d3.parcoords.css');
 
   $.extend(true, View.prototype, Default, {
-    inDom: function () {
+    inDom: function() {
       this.dom = ui.getSafeElement('div').attr({
         id: this._id,
-        class: 'parcoords'
+        class: 'parcoords',
       });
-
       var that = this;
       Context.listen(this.dom[0], [
         [
           '<li><a><span class="ui-icon ui-icon-refresh"></span>Reset selection</a></li>',
-          function () {
+          function() {
             that.resetBrush();
-          }
-        ]
+          },
+        ],
       ]);
 
-      this.jpathConfig = $.extend(true, [], this.module.getConfiguration('colsjPaths'));
+      this.jpathConfig = $.extend(
+        true,
+        [],
+        this.module.getConfiguration('colsjPaths'),
+      );
 
-      this.preventHighlight = this.module.getConfigurationCheckbox('options', 'hide');
+      this.preventHighlight = this.module.getConfigurationCheckbox(
+        'options',
+        'hide',
+      );
 
       this.module.getDomContent().html(this.dom);
       this.resolveReady();
     },
     blank: {
-      value: function () {
-        this.dom.empty();
+      value: function() {
+        if (this.dom) this.dom.empty();
       },
-      columns: function () {
+      columns: function() {
         for (var i = 0; i < this._previousColumns.length; i++) {
           delete this._currentColumns[this._previousColumns[i].name];
         }
         this._previousColumns = [];
-      }
+      },
     },
     update: {
-      value: function (value) {
+      value: function(value) {
         if (!value) {
           this._value = [];
         } else {
@@ -70,36 +76,35 @@ define([
 
         this.redrawChart();
       },
-      columns: function (value) {
-        if (!Array.isArray(value))
-          return;
+      columns: function(value) {
+        if (!Array.isArray(value)) return;
 
         for (var i = 0; i < value.length; i++) {
           this._currentColumns[value[i].name] = value[i];
         }
         this._previousColumns = value;
         this.redrawChart();
-      }
+      },
     },
     onActionReceive: {
-      addColumn: function (value) {
+      addColumn: function(value) {
         if (value && value.name && value.jpath) {
           this._addedColumns[value.name] = value;
           this.redrawChart();
         }
       },
-      removeColumn: function (value) {
+      removeColumn: function(value) {
         if (value && value.name) {
           delete this._addedColumns[value.name];
           this.redrawChart();
         }
-      }
+      },
     },
-    onResize: function () {
+    onResize: function() {
       this.dom.css('width', this.width - 2);
       this.redrawChart();
     },
-    redrawChart: function () {
+    redrawChart: function() {
       var that = this;
       this.createIntermediateData();
       this.dom.empty();
@@ -112,7 +117,7 @@ define([
         var cfg = this.module.getConfiguration;
         var cfgCb = this.module.getConfigurationCheckbox;
 
-        var parcoords = this.parcoords = d3.parcoords()(`#${this._id}`);
+        var parcoords = (this.parcoords = d3.parcoords()(`#${this._id}`));
 
         parcoords.data(this._data);
         parcoords.detectDimensions();
@@ -156,7 +161,7 @@ define([
       }
       this.module.controller.onBrushSelection(this._data);
     },
-    createIntermediateData: function () {
+    createIntermediateData: function() {
       var columns = this.getColumns(),
         l = columns.length,
         colorJpath = this.module.getConfiguration('colorjpath'),
@@ -195,14 +200,22 @@ define([
         val = value[i];
         newValue[i] = newVal;
 
-        API.listenHighlight(val, function (onOff) {
-          if (onOff) { // add highlight
-            that._highlighted.push(that._data[i]);
-          } else {
-            that._highlighted.splice(that._highlighted.indexOf(that._data[i], 1));
-          }
-          that.updateHighlight();
-        }, false, that.module.getId());
+        API.listenHighlight(
+          val,
+          function(onOff) {
+            if (onOff) {
+              // add highlight
+              that._highlighted.push(that._data[i]);
+            } else {
+              that._highlighted.splice(
+                that._highlighted.indexOf(that._data[i], 1),
+              );
+            }
+            that.updateHighlight();
+          },
+          false,
+          that.module.getId(),
+        );
 
         for (var j = 0; j < l; j++) {
           var theVal = columns[j].jpathF(val);
@@ -215,7 +228,7 @@ define([
       }
       this._data = newValue;
     },
-    getColumns: function () {
+    getColumns: function() {
       var totalConfig = [],
         i;
       var objConfig = {};
@@ -235,22 +248,20 @@ define([
       }
 
       for (i = 0; i < totalConfig.length; i++) {
-        if (typeof totalConfig[i].jpathF === 'function')
-          continue;
+        if (typeof totalConfig[i].jpathF === 'function') continue;
         Object.defineProperty(totalConfig[i], 'jpathF', {
-          value: Util.makejPathFunction(totalConfig[i].jpath)
+          value: Util.makejPathFunction(totalConfig[i].jpath),
         });
       }
-
       return totalConfig;
     },
-    resetBrush: function () {
+    resetBrush: function() {
       if (this._parcoords) {
         this._parcoords.brushReset();
         this.module.controller.onBrushSelection(this._data);
       }
     },
-    updateHighlight: _.throttle(function () {
+    updateHighlight: _.throttle(function() {
       var toHighlight = this._highlighted;
       if (this.preventHighlight) {
         toHighlight = [];
@@ -266,7 +277,7 @@ define([
       } else {
         this.parcoords.unhighlight();
       }
-    }, 20)
+    }, 20),
   });
 
   return View;

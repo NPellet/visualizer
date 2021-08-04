@@ -1,479 +1,531 @@
 {
-  "version": "2.27.1-0",
+  "version": "2.130.2-0",
   "modules": [
-	{
-	  "url": "modules/types/chart/statistics/parallel_coordinates/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "colJPath": [
-				"element.color"
-			  ],
-			  "options": [
-				[
-				  "reorder"
-				]
-			  ],
-			  "brushMode": [
-				"1D-axes-multi"
-			  ],
-			  "predicate": [
-				"and"
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.name"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 1,
-	  "vars_in": [
-		{
-		  "rel": "value",
-		  "name": "data"
-		},
-		{
-		  "rel": "columns",
-		  "name": "columns"
-		}
-	  ],
-	  "actions_in": [
-		{
-		  "rel": "addColumn",
-		  "name": "addCol"
-		},
-		{
-		  "rel": "removeColumn",
-		  "name": "removeCol"
-		}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onBrushSelection",
-		  "rel": "value",
-		  "jpath": [],
-		  "name": "out"
-		}
-	  ],
-	  "actions_out": {},
-	  "zindex": 4,
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 21.99999933242798,
-			"top": 1,
-			"right": 0
-		  },
-		  "size": {
-			"width": 116,
-			"height": 66
-		  },
-		  "display": true,
-		  "title": "Chart",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			1
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Chart"
-	},
-	{
-	  "url": "modules/types/display/fasttable/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				null
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.name",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 2,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "out"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "event": "onToggleOn",
-		  "rel": "row",
-		  "jpath": [
-			"name"
-		  ],
-		  "name": "plop"
-		}
-	  ],
-	  "zindex": 2,
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 137.99999780654906,
-			"top": 1,
-			"right": 0
-		  },
-		  "size": {
-			"width": 20,
-			"height": 66
-		  },
-		  "display": true,
-		  "title": "Selection",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Selection"
-	},
-	{
-	  "url": "modules/types/display/jqgrid/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				null
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.name",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 3,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "jpaths"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "event": "onToggleOn",
-		  "rel": "row",
-		  "jpath": [],
-		  "name": "addCol"
-		},
-		{
-		  "event": "onToggleOff",
-		  "rel": "row",
-		  "jpath": [],
-		  "name": "removeCol"
-		}
-	  ],
-	  "zindex": 2,
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0.9985795021057129,
-			"top": 0.9985797882080079,
-			"right": 0
-		  },
-		  "size": {
-			"width": 21,
-			"height": 18
-		  },
-		  "display": true,
-		  "title": "Select individual columns",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Select individual columns"
-	},
-	{
-	  "url": "modules/types/display/jqgrid/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				20
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				null
-			  ],
-			  "filterRow": [
-				""
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.name",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 4,
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "jpaths2"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onSelect",
-		  "rel": "row",
-		  "jpath": [
-			"data"
-		  ],
-		  "name": "columns"
-		}
-	  ],
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 1,
-			"top": 18.9985782623291,
-			"right": 0
-		  },
-		  "size": {
-			"width": 21,
-			"height": 31
-		  },
-		  "display": true,
-		  "title": "Select multiple columns",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "Select multiple columns"
-	}
+    {
+      "url": "modules/types/chart/statistics/parallel_coordinates/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colJPath": ["element.color"],
+              "options": [["reorder"]],
+              "brushMode": ["1D-axes-multi"],
+              "predicate": ["and"]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": "element.name"
+              }
+            ]
+          ]
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "data"
+        },
+        {
+          "rel": "columns",
+          "name": "columns"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "addColumn",
+          "name": "addCol"
+        },
+        {
+          "rel": "removeColumn",
+          "name": "removeCol"
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onBrushSelection",
+          "rel": "value",
+          "jpath": [],
+          "name": "out"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "zindex": 4,
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 22,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 95,
+            "height": 67
+          },
+          "display": true,
+          "title": "Chart",
+          "bgColor": [255, 255, 255, 1],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "Chart",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/display/fasttable/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "nblines": [20],
+              "toggle": [null],
+              "colorjpath": [null],
+              "filterRow": [null]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": "element.name",
+                "number": [],
+                "editable": "none"
+              }
+            ]
+          ]
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "out"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "event": "onToggleOn",
+          "rel": "row",
+          "jpath": ["name"],
+          "name": "plop"
+        }
+      ],
+      "zindex": 2,
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 118,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 67
+          },
+          "display": true,
+          "title": "Selection",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "Selection",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/display/jqgrid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "nblines": [20],
+              "toggle": [null],
+              "colorjpath": [null],
+              "filterRow": [null]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": "element.name",
+                "number": [],
+                "editable": "none"
+              }
+            ]
+          ]
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "jpaths"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "event": "onToggleOn",
+          "rel": "row",
+          "jpath": [],
+          "name": "addCol"
+        },
+        {
+          "event": "onToggleOff",
+          "rel": "row",
+          "jpath": [],
+          "name": "removeCol"
+        }
+      ],
+      "zindex": 2,
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 21,
+            "height": 18
+          },
+          "display": true,
+          "title": "Select individual columns",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "Select individual columns",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/display/jqgrid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "nblines": [20],
+              "toggle": [null],
+              "colorjpath": [null],
+              "filterRow": [""]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": "element.name",
+                "number": [],
+                "editable": "none"
+              }
+            ]
+          ]
+        }
+      },
+      "id": 4,
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "jpaths2"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onSelect",
+          "rel": "row",
+          "jpath": ["data"],
+          "name": "columns"
+        }
+      ],
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 19,
+            "right": 0
+          },
+          "size": {
+            "width": 21,
+            "height": 31
+          },
+          "display": true,
+          "title": "Select multiple columns",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "Select multiple columns",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 139,
+            "top": 0
+          },
+          "size": {
+            "width": 40,
+            "height": 67
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "columns"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
   ],
   "variables": [
-	{
-	  "varname": "data",
-	  "jpath": [
-		"data"
-	  ]
-	},
-	{
-	  "varname": "jpaths",
-	  "jpath": [
-		"jpaths"
-	  ]
-	},
-	{
-	  "varname": "jpaths2",
-	  "jpath": [
-		"jpaths2"
-	  ]
-	}
+    {
+      "varname": "data",
+      "jpath": ["data"]
+    },
+    {
+      "varname": "jpaths",
+      "jpath": ["jpaths"]
+    },
+    {
+      "varname": "jpaths2",
+      "jpath": ["jpaths2"]
+    }
   ],
   "configuration": {
-	"title": "No title"
+    "title": "No title"
   },
-  "pouchvariables": [
-	{}
-  ],
   "actionscripts": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  {
-			"name": [
-			  null
-			],
-			"script": [
-			  ""
-			]
-		  }
-		]
-	  }
-	}
-  ],
-  "crons": [
-	{}
-  ],
-  "couch_replication": [
-	{
-	  "sections": {},
-	  "groups": {
-		"couch": [
-		  [
-			{
-			  "direction": "both",
-			  "continuous": []
-			}
-		  ]
-		]
-	  }
-	}
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [null],
+            "script": [""]
+          }
+        ]
+      }
+    }
   ],
   "actionfiles": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  [
-			{}
-		  ]
-		]
-	  }
-	}
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
   ],
   "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
   },
   "init_script": [
-	{
-	  "sections": {},
-	  "groups": {
-		"general": [
-		  {
-			"script": [
-			  null
-			]
-		  }
-		]
-	  }
-	}
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [null]
+          }
+        ]
+      }
+    }
   ],
   "custom_filters": [
-	{
-	  "sections": {
-		"filters": [
-		  {
-			"sections": {},
-			"groups": {
-			  "filter": [
-				{
-				  "name": [
-					null
-				  ],
-				  "script": [
-					null
-				  ]
-				}
-			  ],
-			  "libs": [
-				[
-				  {}
-				]
-			  ]
-			}
-		  }
-		]
-	  },
-	  "groups": {}
-	}
+    {
+      "sections": {
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
   ],
   "aliases": []
 }
