@@ -3,50 +3,53 @@
 define([
   'modules/default/defaultcontroller',
   'openchemlib/openchemlib-full',
-  'src/util/ui'
-], function (Default, OCL, ui) {
+  'src/util/ui',
+], function(Default, OCL, ui) {
   function Controller() {
     this.currentMol = { idCode: '', coordinates: '' };
   }
 
   $.extend(true, Controller.prototype, Default);
 
-  Controller.prototype.getToolbar = function () {
+  Controller.prototype.getToolbar = function() {
     var base = Default.getToolbar.call(this);
     base.unshift({
-      onClick: function () {
+      onClick: function() {
         var w = $(window).width();
         var h = $(window).height();
         var url = require.toUrl(
-          'modules/types/science/chemistry/ocl_editor/help/index.html'
+          'modules/types/science/chemistry/ocl_editor/help/index.html',
         );
         ui.dialog(
           `<iframe src=${url} width="100%", height="100%" frameBorder="0"></iframe>`,
           {
             width: Math.min(w - 40, 800),
             height: h - 70,
-            title: 'OpenChemLib editor Help'
-          }
+            title: 'OpenChemLib editor Help',
+          },
         );
       },
       title: 'Help',
       cssClass: 'fa fa-question',
-      ifLocked: true
+      ifLocked: true,
     });
     base.unshift({
       onClick: () => {
         if (navigator.clipboard) {
           navigator.clipboard.readText().then((text) => {
+            if (!text.includes('\n')) {
+              text = OCL.Molecule.fromSmiles(text).toMolfile();
+            }
             this.module.view.onActionReceive.setMolfile.call(
               this.module.view,
-              text
+              text,
             );
           });
         }
       },
-      title: 'Import Molfile from clipboard',
+      title: 'Import molfile or SMILES from clipboard',
       cssClass: 'fa fa-paste',
-      ifLocked: true
+      ifLocked: true,
     });
     base.unshift({
       onClick: () => {
@@ -54,7 +57,7 @@ define([
       },
       title: 'Copy Molfile V3 to clipboard',
       cssClass: 'fa fa-copy',
-      ifLocked: true
+      ifLocked: true,
     });
     base.unshift({
       onClick: () => {
@@ -62,7 +65,7 @@ define([
       },
       title: 'Download as SVG vector file',
       cssClass: 'fa fa-download',
-      ifLocked: true
+      ifLocked: true,
     });
     return base;
   };
@@ -73,7 +76,7 @@ define([
     author: 'Michael Zasso',
     date: '11.05.2015',
     license: 'BSD',
-    cssClass: 'ocl_editor'
+    cssClass: 'ocl_editor',
   };
 
   Controller.prototype.references = {
@@ -81,7 +84,7 @@ define([
     molV3: { label: 'Molfile V3 2D' },
     smiles: { label: 'Smiles' },
     actid: { label: 'OCL molecule ID' },
-    actidOrGroup: { label: 'OCL molecule ID. Distinguish racemic OR group.' }
+    actidOrGroup: { label: 'OCL molecule ID. Distinguish racemic OR group.' },
   };
 
   Controller.prototype.variablesIn = ['mol', 'molV3', 'smiles', 'actid'];
@@ -89,17 +92,17 @@ define([
   Controller.prototype.events = {
     onStructureChange: {
       label: 'Molecular structure has changed',
-      refVariable: ['mol', 'molV3', 'smiles', 'actid', 'actidOrGroup']
-    }
+      refVariable: ['mol', 'molV3', 'smiles', 'actid', 'actidOrGroup'],
+    },
   };
 
   Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
     setMolfile: 'Set molecule from molfile',
     downloadSvg: 'Download molecule as SVG',
-    copyMolfile: 'Copy Molfile to clipboard'
+    copyMolfile: 'Copy Molfile to clipboard',
   });
 
-  Controller.prototype.configurationStructure = function () {
+  Controller.prototype.configurationStructure = function() {
     return {
       groups: {
         group: {
@@ -112,20 +115,20 @@ define([
               options: {
                 queryFeatures: 'Enable query features',
                 svg: 'Use SVG toolbar',
-                inPlace: 'Modify input variable'
-              }
-            }
-          }
-        }
-      }
+                inPlace: 'Modify input variable',
+              },
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
-    prefs: ['groups', 'group', 0, 'prefs', 0]
+    prefs: ['groups', 'group', 0, 'prefs', 0],
   };
 
-  Controller.prototype.onChange = function (idCode, molecule) {
+  Controller.prototype.onChange = function(idCode, molecule) {
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
 
     // In modify variable in mode
@@ -138,7 +141,7 @@ define([
     var split = (idCode || ' ').split(' ');
 
     var idCodeOr = molecule.getCanonizedIDCode(
-      OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS
+      OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS,
     );
     var idCode = split[0];
     var coordinates = split[1];
@@ -156,11 +159,11 @@ define([
       this.createDataFromEvent('onStructureChange', 'smiles', smiles);
       this.createDataFromEvent('onStructureChange', 'actid', {
         value: split[0],
-        coordinates: split[1]
+        coordinates: split[1],
       });
       this.createDataFromEvent('onStructureChange', 'actidOrGroup', {
         value: idCodeOr,
-        coordinates: coordinates
+        coordinates: coordinates,
       });
 
       // inplace modification is disabled for now because of unexpected
