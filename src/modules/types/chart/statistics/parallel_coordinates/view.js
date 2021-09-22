@@ -9,7 +9,7 @@ define([
   'src/util/api',
   'src/util/ui',
   'lodash',
-], function(Default, Util, Traversing, Context, d3, API, ui, _) {
+], function (Default, Util, Traversing, Context, d3, API, ui, _) {
   function View() {
     this._id = Util.getNextUniqueId();
     this._value = new DataArray();
@@ -21,7 +21,7 @@ define([
   Util.loadCss('lib/d3/d3.parcoords.css');
 
   $.extend(true, View.prototype, Default, {
-    inDom: function() {
+    inDom: function () {
       this.dom = ui.getSafeElement('div').attr({
         id: this._id,
         class: 'parcoords',
@@ -30,7 +30,7 @@ define([
       Context.listen(this.dom[0], [
         [
           '<li><a><span class="ui-icon ui-icon-refresh"></span>Reset selection</a></li>',
-          function() {
+          function () {
             that.resetBrush();
           },
         ],
@@ -51,10 +51,10 @@ define([
       this.resolveReady();
     },
     blank: {
-      value: function() {
+      value: function () {
         if (this.dom) this.dom.empty();
       },
-      columns: function() {
+      columns: function () {
         for (var i = 0; i < this._previousColumns.length; i++) {
           delete this._currentColumns[this._previousColumns[i].name];
         }
@@ -62,7 +62,7 @@ define([
       },
     },
     update: {
-      value: function(value) {
+      value: function (value) {
         if (!value) {
           this._value = [];
         } else {
@@ -76,7 +76,7 @@ define([
 
         this.redrawChart();
       },
-      columns: function(value) {
+      columns: function (value) {
         if (!Array.isArray(value)) return;
 
         for (var i = 0; i < value.length; i++) {
@@ -87,24 +87,24 @@ define([
       },
     },
     onActionReceive: {
-      addColumn: function(value) {
+      addColumn: function (value) {
         if (value && value.name && value.jpath) {
           this._addedColumns[value.name] = value;
           this.redrawChart();
         }
       },
-      removeColumn: function(value) {
+      removeColumn: function (value) {
         if (value && value.name) {
           delete this._addedColumns[value.name];
           this.redrawChart();
         }
       },
     },
-    onResize: function() {
+    onResize: function () {
       this.dom.css('width', this.width - 2);
       this.redrawChart();
     },
-    redrawChart: function() {
+    redrawChart: function () {
       var that = this;
       this.createIntermediateData();
       this.dom.empty();
@@ -161,7 +161,7 @@ define([
       }
       this.module.controller.onBrushSelection(this._data);
     },
-    createIntermediateData: function() {
+    createIntermediateData: function () {
       var columns = this.getColumns(),
         l = columns.length,
         colorJpath = this.module.getConfiguration('colorjpath'),
@@ -202,7 +202,7 @@ define([
 
         API.listenHighlight(
           val,
-          function(onOff) {
+          function (onOff) {
             if (onOff) {
               // add highlight
               that._highlighted.push(that._data[i]);
@@ -228,7 +228,7 @@ define([
       }
       this._data = newValue;
     },
-    getColumns: function() {
+    getColumns: function () {
       var totalConfig = [],
         i;
       var objConfig = {};
@@ -255,13 +255,13 @@ define([
       }
       return totalConfig;
     },
-    resetBrush: function() {
+    resetBrush: function () {
       if (this._parcoords) {
         this._parcoords.brushReset();
         this.module.controller.onBrushSelection(this._data);
       }
     },
-    updateHighlight: _.throttle(function() {
+    updateHighlight: _.throttle(function () {
       var toHighlight = this._highlighted;
       if (this.preventHighlight) {
         toHighlight = [];
