@@ -1,6 +1,6 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/ui'], function(
+define(['modules/default/defaultcontroller', 'src/util/ui'], function (
   Default,
   ui,
 ) {
@@ -8,10 +8,10 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function(
 
   $.extend(true, Controller.prototype, Default);
 
-  Controller.prototype.getToolbar = function() {
+  Controller.prototype.getToolbar = function () {
     var base = Default.getToolbar.call(this);
     base.unshift({
-      onClick: function() {
+      onClick: function () {
         var w = $(window).width();
         var h = $(window).height();
         var url = require.toUrl(
@@ -104,7 +104,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function(
 
   Controller.prototype.variablesIn = ['mol', 'jme', 'smiles'];
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {
@@ -217,7 +217,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function(
   /*
    * We receive an event from JSME
    */
-  Controller.prototype.onChange = function(message) {
+  Controller.prototype.onChange = function (message) {
     var action = message.action;
     var currentValue = this.module.view._currentValue;
     // check Github History when drag / drop and paste will be another action name
@@ -267,7 +267,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function(
     });
   };
 
-  Controller.prototype.getHighlights = function(atom) {
+  Controller.prototype.getHighlights = function (atom) {
     if (
       !this.module.view._currentValue ||
       !this.module.view._currentValue._atoms
@@ -283,25 +283,25 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function(
     return highlights;
   };
 
-  Controller.prototype.onAtomClick = function(atom) {
+  Controller.prototype.onAtomClick = function (atom) {
     atom.highlights = this.getHighlights(atom.atom - 1);
     this.sendActionFromEvent('onAtomClicked', 'atom', atom);
   };
 
-  Controller.prototype.onAtomHover = function(atom) {
+  Controller.prototype.onAtomHover = function (atom) {
     atom.highlights = this.getHighlights(atom.atom - 1);
     this.sendActionFromEvent('onAtomHover', 'atom', atom);
   };
 
-  Controller.prototype.onBondClick = function(bond) {
+  Controller.prototype.onBondClick = function (bond) {
     this.sendActionFromEvent('onBondClicked', 'bond', bond);
   };
 
-  Controller.prototype.onBondHover = function(bond) {
+  Controller.prototype.onBondHover = function (bond) {
     this.sendActionFromEvent('onBondHover', 'bond', bond);
   };
 
-  Controller.prototype.onMolfileLoaded = function(molfile) {
+  Controller.prototype.onMolfileLoaded = function (molfile) {
     this.sendActionFromEvent('onMolfileLoaded', 'mol', molfile);
   };
 
@@ -314,7 +314,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function(
     outputResult: ['groups', 'group', 0, 'outputResult', 0],
   };
 
-  Controller.prototype.onRemove = function() {
+  Controller.prototype.onRemove = function () {
     this.module.view.remove(this.module.getId());
   };
 

@@ -7,12 +7,12 @@ define([
   'src/util/ui',
   'src/util/debug',
   'openchemlib/openchemlib-core',
-], function(require, Default, API, ui, Debug, OCL) {
+], function (require, Default, API, ui, Debug, OCL) {
   function View() {}
 
   var views = {};
 
-  window.addEventListener('message', function(event) {
+  window.addEventListener('message', function (event) {
     try {
       var message = JSON.parse(event.data);
     } catch (e) {
@@ -56,7 +56,7 @@ define([
   });
 
   $.extend(true, View.prototype, Default, {
-    init: function() {
+    init: function () {
       var that = this;
 
       var id = this.module.getId();
@@ -70,7 +70,7 @@ define([
       this.module.getDomContent().html(this.dom);
       this.module.getDomContent().css('overflow', 'hidden');
 
-      this.dom.bind('load', function() {
+      this.dom.bind('load', function () {
         that.postMessage('init', {
           prefs: that.getPrefs(),
           highlightColor: that.getHighlightColor(),
@@ -82,7 +82,7 @@ define([
       });
     },
 
-    setJSMEOptions: function(options) {
+    setJSMEOptions: function (options) {
       options = Object.assign({}, options, {
         prefs: options.prefs
           ? options.prefs.map((d) => String(d)).join()
@@ -91,15 +91,15 @@ define([
       this.postMessage('setOptions', options);
     },
 
-    getPrefs: function() {
+    getPrefs: function () {
       return this.module.getConfiguration('prefs').join();
     },
 
-    getHighlightColor: function() {
+    getHighlightColor: function () {
       return this.module.getConfiguration('highlightColor', '3');
     },
 
-    onResize: function() {
+    onResize: function () {
       this.dom.attr('width', this.width);
       this.dom.attr('height', this.height);
 
@@ -111,22 +111,22 @@ define([
       this.refresh();
     },
 
-    onProgress: function() {
+    onProgress: function () {
       this.dom.html('Progress. Please wait...');
     },
 
     blank: {
-      mol: function() {
+      mol: function () {
         this._currentValue = null;
         this._currentType = null;
         this.postMessage('clear', '*');
       },
-      jme: function() {
+      jme: function () {
         this._currentValue = null;
         this._currentType = null;
         this.postMessage('clear', '*');
       },
-      smiles: function() {
+      smiles: function () {
         this._currentValue = null;
         this._currentType = null;
         this.postMessage('clear', '*');
@@ -134,7 +134,7 @@ define([
     },
 
     update: {
-      mol: function(moduleValue) {
+      mol: function (moduleValue) {
         this._currentValue = moduleValue;
         this._currentType = 'mol';
         if (!moduleValue.get()) return;
@@ -150,7 +150,7 @@ define([
           this._initHighlight(moduleValue);
         }
       },
-      jme: function(moduleValue) {
+      jme: function (moduleValue) {
         this._currentValue = moduleValue;
         this._currentType = 'jme';
         if (!moduleValue.get()) return;
@@ -158,12 +158,12 @@ define([
         this.postMessage('setJmeFile', String(moduleValue.get()));
         this._initHighlight(moduleValue);
       },
-      smiles: function(moduleValue) {
+      smiles: function (moduleValue) {
         var that = this;
         this._currentValue = moduleValue;
         this._currentType = 'smiles';
 
-        require(['openchemlib/openchemlib-core'], function(OCL) {
+        require(['openchemlib/openchemlib-core'], function (OCL) {
           var smiles = String(moduleValue.get());
           var mol = OCL.Molecule.fromSmiles(smiles);
           that.postMessage('setMolFile', mol.toMolfile());
@@ -173,23 +173,22 @@ define([
     },
 
     onActionReceive: {
-      setOptions: function(val) {
+      setOptions: function (val) {
         this.setJSMEOptions(val);
       },
     },
 
-    _initHighlight: function(moduleValue) {
+    _initHighlight: function (moduleValue) {
       var that = this;
       API.killHighlight(this.module.getId());
       API.listenHighlight(
         moduleValue,
-        function(onOff, highlightId) {
+        function (onOff, highlightId) {
           var atoms = [];
           for (var i = 0, l = highlightId.length; i < l; i++) {
             if (!(moduleValue._atoms[highlightId[i]] instanceof Array))
-              moduleValue._atoms[highlightId[i]] = [
-                moduleValue._atoms[highlightId[i]],
-              ];
+              // eslint-disable-next-line array-bracket-spacing
+              moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]], ];
             atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
           }
           that.postMessage('setHighlight', {
@@ -202,7 +201,7 @@ define([
       );
     },
 
-    _doHighlight: function(mol, id) {
+    _doHighlight: function (mol, id) {
       if (!this._currentValue) return;
 
       // there is a problem with overlapping atoms, there is no event out
@@ -224,7 +223,7 @@ define([
       this.highlightedAtom = id - 1;
     },
 
-    postMessage: function(type, message) {
+    postMessage: function (type, message) {
       var cw = this.dom.get(0).contentWindow;
       if (cw) {
         cw.postMessage(
@@ -237,7 +236,7 @@ define([
       }
     },
 
-    remove: function(id) {
+    remove: function (id) {
       delete views[id];
     },
   });
