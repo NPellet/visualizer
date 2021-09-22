@@ -39,13 +39,13 @@ rules:
   import/no-dynamic-require: off
 
 globals:
-  setImmediate: false,
-  escape: false,
-  unescape: false,
-  $: false,
-  jQuery: false,
-  DataObject: false,
-  DataArray: false,
-  DataString: false,
-  DataNumber: false,
+  setImmediate: false
+  escape: false
+  unescape: false
+  $: false
+  jQuery: false
+  DataObject: false
+  DataArray: false
+  DataString: false
+  DataNumber: false
   DataBoolean: false
