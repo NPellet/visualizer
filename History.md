@@ -1,3 +1,21 @@
+# [2.131.0](https://github.com/NPellet/visualizer/compare/v2.130.1...v2.131.0) (2021-09-22)
+
+
+### Bug Fixes
+
+* jsmol highlight example ([dace015](https://github.com/NPellet/visualizer/commit/dace01532bd248e72dee588791865e8ead13161d))
+* parallel coordinates and clear dom at the beginning ([25a5b94](https://github.com/NPellet/visualizer/commit/25a5b9461dc4e61a0ab03a28833e86eb730ca93c))
+* update ecmaVersion for eslint ([5ba1edf](https://github.com/NPellet/visualizer/commit/5ba1edf5b35e59b56d0a72a99564d903b0f35269))
+
+
+### Features
+
+* add highlight on jsmol ([7809128](https://github.com/NPellet/visualizer/commit/7809128fb42be0a0cc7adddeb6a9a502a283c27e))
+* allow to paste SMILES in OCL editor ([0b439c1](https://github.com/NPellet/visualizer/commit/0b439c1aebbc1ddae043bd26a1adb456be5b7ac4))
+* improve shortcut detection with tab ([30d15e7](https://github.com/NPellet/visualizer/commit/30d15e762a8bfbb5ad31457d146bcb38ac73995d))
+
+
+
 ## [2.130.1](https://github.com/NPellet/visualizer/compare/v2.130.0...v2.130.1) (2021-07-21)
 
 
