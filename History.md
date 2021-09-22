@@ -1,3 +1,12 @@
+## [2.131.1](https://github.com/NPellet/visualizer/compare/v2.131.0...v2.131.1) (2021-09-22)
+
+
+### Bug Fixes
+
+* onBondClicked event in JSME ([0102284](https://github.com/NPellet/visualizer/commit/01022846701845029ba7a29d425eca5670d5f7ca))
+
+
+
 # [2.131.0](https://github.com/NPellet/visualizer/compare/v2.130.1...v2.131.0) (2021-09-22)
 
 
