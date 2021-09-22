@@ -1,1397 +1,487 @@
 {
-	"version": "2.130.2-0",
-	"grid": {
-	  "layers": {
-	    "Default layer": {
-	      "name": "Default layer"
-	    }
-	  },
-	  "xWidth": 10,
-	  "yHeight": 10
-	},
-	"modules": [
-	  {
-	    "url": "modules/types/science/chemistry/jsmol/",
-	    "configuration": {
-	      "sections": {},
-	      "groups": {
-		"group": [
-		  {
-		    "prefs": [
-		      []
-		    ],
-		    "script": [
-		      ""
-		    ],
-		    "syncScript": [
-		      null
-		    ]
-		  }
-		]
-	      }
-	    },
-	    "layers": {
-	      "Default layer": {
-		"position": {
-		  "left": 78,
-		  "top": 0
-		},
-		"size": {
-		  "width": 59,
-		  "height": 51
-		},
-		"zIndex": 0,
-		"display": true,
-		"title": "",
-		"bgColor": [
-		  255,
-		  255,
-		  255,
-		  0
-		],
-		"wrapper": true,
-		"created": true,
-		"name": "Default layer"
-	      }
-	    },
-	    "id": 1,
-	    "vars_in": [
-	      {
-		"rel": "data",
-		"name": "molecule"
-	      }
-	    ],
-	    "actions_in": [
-	      {
-		"rel": "jsmolscript",
-		"name": "testscript"
-	      }
-	    ],
-	    "title": "",
-	    "vars_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "actions_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "toolbar": {
-	      "custom": [
-		[
-		  {
-		    "title": "",
-		    "icon": "",
-		    "action": "",
-		    "position": "begin",
-		    "color": [
-		      100,
-		      100,
-		      100,
-		      1
-		    ]
-		  }
-		]
-	      ],
-	      "common": [
-		{
-		  "toolbar": [
-		    [
-		      "Open Preferences",
-		      "Export Data",
-		      "Show fullscreen",
-		      "Print"
-		    ]
-		  ]
-		}
-	      ]
-	    },
-	    "css": [
-	      {
-		"fontSize": [
-		  ""
-		],
-		"fontFamily": [
-		  ""
-		]
-	      }
-	    ]
-	  },
-	  {
-	    "url": "modules/types/edition/object_editor/",
-	    "configuration": {
-	      "sections": {},
-	      "groups": {
-		"group": [
-		  {
-		    "editable": [
-		      "text"
-		    ],
-		    "expanded": [
-		      []
-		    ],
-		    "storeObject": [
-		      [
-			"expand"
-		      ]
-		    ],
-		    "displayValue": [
-		      []
-		    ],
-		    "searchBox": [
-		      [
-			"search"
-		      ]
-		    ],
-		    "sendButton": [
-		      []
-		    ],
-		    "output": [
-		      "new"
-		    ],
-		    "storedObject": [
-		      "{\"type\":\"mol3d\",\"value\":\"    10\\nMode #23, f = 1795.7  cm^-1, I = 7.1825 (D/Å)^2 amu^-1.\\n C      0.09438     -0.58118     -0.14776     -0.01526     -0.00013     -0.00684\\n C      1.37830      0.12212      0.18064      0.17833     -0.07577      0.11107\\n O      2.29877     -0.35205      0.78313     -0.11955      0.06159     -0.07834\\n C     -1.11491      0.33666     -0.00326     -0.00264      0.00041     -0.00177\\n H      0.17793     -0.91178     -1.18808     -0.01764     -0.00719      0.00558\\n H     -0.00416     -1.46835      0.47979      0.05063      0.00001      0.01210\\n H      1.42202      1.16191     -0.20352     -0.04584     -0.06726      0.00373\\n H     -1.00644      1.21652     -0.63373     -0.00421      0.00278      0.00050\\n H     -2.02166     -0.18647     -0.29555     -0.00129     -0.00425     -0.00062\\n H     -1.22422      0.66262      1.02835      0.00490     -0.00218      0.00101\\n\",\"_atoms\":{\"M0\":[4,5,6,9],\"M1\":[7],\"M2\":[2,9],\"M3\":[],\"M4\":[],\"M5\":[],\"M6\":[6],\"M7\":[7,8,9],\"M8\":[6],\"M9\":[4,5],\"M10\":[4,5,6],\"M11\":[4,6,7,9],\"M12\":[8],\"M13\":[4,6,8],\"M14\":[5,9],\"M15\":[5,7],\"M16\":[4,5,7,9],\"M17\":[4,5,6],\"M18\":[6],\"M19\":[7,8,9],\"M20\":[4,5],\"M21\":[7,8,9],\"M22\":[7,8,9],\"M23\":[1,2],\"M24\":[6],\"M25\":[4],\"M26\":[5],\"M27\":[7],\"M28\":[8,9],\"M29\":[8,9]},\"_highlight\":[\"M0\",\"M1\",\"M2\",\"M3\",\"M4\",\"M5\",\"M6\",\"M7\",\"M8\",\"M9\",\"M10\",\"M11\",\"M12\",\"M13\",\"M14\",\"M15\",\"M16\",\"M17\",\"M18\",\"M19\",\"M20\",\"M21\",\"M22\",\"M23\",\"M24\",\"M25\",\"M26\",\"M27\",\"M28\",\"M29\"]}"
-		    ]
-		  }
-		]
-	      }
-	    },
-	    "layers": {
-	      "Default layer": {
-		"position": {
-		  "left": 0,
-		  "top": 0
-		},
-		"size": {
-		  "width": 53,
-		  "height": 58
-		},
-		"zIndex": 0,
-		"display": true,
-		"title": "",
-		"bgColor": [
-		  255,
-		  255,
-		  255,
-		  0
-		],
-		"wrapper": true,
-		"created": true,
-		"name": "Default layer"
-	      }
-	    },
-	    "id": 2,
-	    "vars_in": [
-	      {}
-	    ],
-	    "actions_in": [
-	      {}
-	    ],
-	    "vars_out": [
-	      {
-		"event": "onObjectChange",
-		"rel": "output",
-		"jpath": [],
-		"name": "molecule"
-	      }
-	    ],
-	    "actions_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "toolbar": {
-	      "custom": [
-		[
-		  {
-		    "title": "",
-		    "icon": "",
-		    "action": "",
-		    "position": "begin",
-		    "color": [
-		      100,
-		      100,
-		      100,
-		      1
-		    ]
-		  }
-		]
-	      ],
-	      "common": [
-		{
-		  "toolbar": [
-		    [
-		      "Open Preferences"
-		    ]
-		  ]
-		}
-	      ]
-	    },
-	    "css": [
-	      {
-		"fontSize": [
-		  ""
-		],
-		"fontFamily": [
-		  ""
-		]
-	      }
-	    ],
-	    "title": ""
-	  },
-	  {
-	    "url": "modules/types/client_interaction/code_executor/",
-	    "configuration": {
-	      "sections": {},
-	      "groups": {
-		"group": [
-		  {
-		    "display": [
-		      [
-			"editor",
-			"buttons"
-		      ]
-		    ],
-		    "execOnLoad": [
-		      []
-		    ],
-		    "asyncAwait": [
-		      [
-			"top"
-		      ]
-		    ],
-		    "script": [
-		      "const molecule = API.getData('molecule');\nconsole.log(molecule);\nconst table=[];\n\nfor (let i=0; i<molecule._highlight.length; i++) {\n    table.push({\n        highlight: molecule._highlight[i],\n        _highlight: molecule._highlight[i],\n    })\n}\n\nAPI.createData('table', table)\n\nconsole.log(table);"
-		    ]
-		  }
-		],
-		"libs": [
-		  [
-		    {}
-		  ]
-		],
-		"buttons": [
-		  [
-		    {
-		      "name": "button1",
-		      "label": "Execute",
-		      "hide": [],
-		      "disable": []
-		    }
-		  ]
-		]
-	      }
-	    },
-	    "layers": {
-	      "Default layer": {
-		"position": {
-		  "left": 0,
-		  "top": 59
-		},
-		"size": {
-		  "width": 53,
-		  "height": 23
-		},
-		"zIndex": 0,
-		"display": true,
-		"title": "",
-		"bgColor": [
-		  255,
-		  255,
-		  255,
-		  0
-		],
-		"wrapper": true,
-		"created": true,
-		"name": "Default layer"
-	      }
-	    },
-	    "id": 3,
-	    "vars_in": [
-	      {
-		"rel": "inputValue",
-		"name": "molecule"
-	      }
-	    ],
-	    "actions_in": [
-	      {}
-	    ],
-	    "vars_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "actions_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "toolbar": {
-	      "custom": [
-		[
-		  {
-		    "title": "",
-		    "icon": "",
-		    "action": "",
-		    "position": "begin",
-		    "color": [
-		      100,
-		      100,
-		      100,
-		      1
-		    ]
-		  }
-		]
-	      ],
-	      "common": [
-		{
-		  "toolbar": [
-		    [
-		      "Open Preferences"
-		    ]
-		  ]
-		}
-	      ]
-	    },
-	    "css": [
-	      {
-		"fontSize": [
-		  ""
-		],
-		"fontFamily": [
-		  ""
-		]
-	      }
-	    ],
-	    "title": ""
-	  },
-	  {
-	    "url": "modules/types/edition/slick_grid/",
-	    "configuration": {
-	      "sections": {},
-	      "groups": {
-		"group": [
-		  {
-		    "slickCheck": [
-		      [
-			"enableCellNavigation",
-			"rowNumbering",
-			"forceFitColumns",
-			"highlightScroll",
-			"forgetLastActive",
-			"editable"
-		      ]
-		    ],
-		    "copyPaste": [
-		      []
-		    ],
-		    "copyPasteOptions": [
-		      [
-			"newRows"
-		      ]
-		    ],
-		    "autoColumns": [
-		      []
-		    ],
-		    "toolbar": [
-		      []
-		    ],
-		    "colorjpath": [
-		      []
-		    ],
-		    "slick.defaultColumnWidth": [
-		      null
-		    ],
-		    "slick.rowHeight": [
-		      null
-		    ],
-		    "slick.headerRowHeight": [
-		      30
-		    ],
-		    "slick.selectionModel": [
-		      "row"
-		    ],
-		    "idProperty": [
-		      ""
-		    ],
-		    "filterType": [
-		      "pref"
-		    ],
-		    "filterRow": [
-		      "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
-		    ],
-		    "customJpaths": [
-		      ""
-		    ]
-		  }
-		],
-		"cols": [
-		  [
-		    {
-		      "name": "Highlight",
-		      "jpath": [
-			"highlight"
-		      ],
-		      "editor": "none",
-		      "forceType": "",
-		      "formatter": "typerenderer",
-		      "copyFormatter": "default",
-		      "visibility": "both",
-		      "rendererOptions": "",
-		      "editorOptions": "",
-		      "hideColumn": []
-		    }
-		  ]
-		],
-		"actionCols": [
-		  [
-		    {
-		      "backgroundColor": [
-			255,
-			255,
-			255,
-			0
-		      ],
-		      "color": [
-			0,
-			0,
-			0,
-			1
-		      ],
-		      "position": "end",
-		      "clickMode": "text"
-		    }
-		  ]
-		],
-		"groupings": [
-		  [
-		    {
-		      "getter": []
-		    }
-		  ]
-		],
-		"actionOutButtons": [
-		  [
-		    {}
-		  ]
-		],
-		"data": [
-		  {
-		    "saveInView": [
-		      []
-		    ],
-		    "varname": [
-		      ""
-		    ],
-		    "data": [
-		      "[]"
-		    ]
-		  }
-		]
-	      }
-	    },
-	    "layers": {
-	      "Default layer": {
-		"position": {
-		  "left": 54,
-		  "top": 0
-		},
-		"size": {
-		  "width": 23,
-		  "height": 82
-		},
-		"zIndex": 0,
-		"display": true,
-		"title": "",
-		"bgColor": [
-		  255,
-		  255,
-		  255,
-		  0
-		],
-		"wrapper": true,
-		"created": true,
-		"name": "Default layer"
-	      }
-	    },
-	    "id": 5,
-	    "vars_in": [
-	      {
-		"rel": "list",
-		"name": "table"
-	      }
-	    ],
-	    "actions_in": [
-	      {}
-	    ],
-	    "vars_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "actions_out": [
-	      {
-		"jpath": []
-	      }
-	    ],
-	    "toolbar": {
-	      "custom": [
-		[
-		  {
-		    "title": "",
-		    "icon": "",
-		    "action": "",
-		    "position": "begin",
-		    "color": [
-		      100,
-		      100,
-		      100,
-		      1
-		    ]
-		  }
-		]
-	      ],
-	      "common": [
-		{
-		  "toolbar": [
-		    [
-		      "Open Preferences"
-		    ]
-		  ]
-		}
-	      ]
-	    },
-	    "css": [
-	      {
-		"fontSize": [
-		  ""
-		],
-		"fontFamily": [
-		  ""
-		]
-	      }
-	    ],
-	    "title": ""
-	  }
-	],
-	"variables": [
-	  {
-	    "varname": "result",
-	    "jpath": [
-	      "result",
-	      "pdbs"
-	    ]
-	  },
-	  {
-	    "varname": "pdb",
-	    "jpath": [
-	      "result",
-	      "pdbs",
-	      "0",
-	      "pdb"
-	    ]
-	  }
-	],
-	"aliases": [
-	  {}
-	],
-	"configuration": {
-	  "title": "No title"
-	},
-	"actionscripts": [
-	  {
-	    "sections": {},
-	    "groups": {
-	      "action": [
-		{
-		  "name": [
-		    null
-		  ],
-		  "script": [
-		    null
-		  ]
-		}
-	      ]
-	    }
-	  }
-	],
-	"init_script": [
-	  {
-	    "sections": {},
-	    "groups": {
-	      "general": [
-		{
-		  "script": [
-		    null
-		  ]
-		}
-	      ]
-	    }
-	  }
-	],
-	"custom_filters": [
-	  {
-	    "sections": {
-	      "modules": [
-		{
-		  "sections": {},
-		  "groups": {
-		    "modules": [
-		      [
-			{}
-		      ]
-		    ]
-		  }
-		}
-	      ],
-	      "filtersLib": [
-		{
-		  "sections": {},
-		  "groups": {
-		    "filters": [
-		      [
-			{}
-		      ]
-		    ]
-		  }
-		}
-	      ],
-	      "filters": [
-		{
-		  "sections": {},
-		  "groups": {
-		    "filter": [
-		      {
-			"name": [
-			  null
-			],
-			"script": [
-			  null
-			]
-		      }
-		    ],
-		    "libs": [
-		      [
-			{}
-		      ]
-		    ]
-		  }
-		}
-	      ]
-	    },
-	    "groups": {}
-	  }
-	],
-	"actionfiles": {
-		"version": "2.130.2-0",
-		"grid": {
-		  "layers": {
-		    "Default layer": {
-		      "name": "Default layer"
-		    }
-		  },
-		  "xWidth": 10,
-		  "yHeight": 10
-		},
-		"modules": [
-		  {
-		    "url": "modules/types/science/chemistry/jsmol/",
-		    "configuration": {
-		      "sections": {},
-		      "groups": {
-			"group": [
-			  {
-			    "prefs": [
-			      []
-			    ],
-			    "script": [
-			      ""
-			    ],
-			    "syncScript": [
-			      null
-			    ]
-			  }
-			]
-		      }
-		    },
-		    "layers": {
-		      "Default layer": {
-			"position": {
-			  "left": 78,
-			  "top": 0
-			},
-			"size": {
-			  "width": 59,
-			  "height": 51
-			},
-			"zIndex": 0,
-			"display": true,
-			"title": "",
-			"bgColor": [
-			  255,
-			  255,
-			  255,
-			  0
-			],
-			"wrapper": true,
-			"created": true,
-			"name": "Default layer"
-		      }
-		    },
-		    "id": 1,
-		    "vars_in": [
-		      {
-			"rel": "data",
-			"name": "molecule"
-		      }
-		    ],
-		    "actions_in": [
-		      {
-			"rel": "jsmolscript",
-			"name": "testscript"
-		      }
-		    ],
-		    "title": "",
-		    "vars_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "actions_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "toolbar": {
-		      "custom": [
-			[
-			  {
-			    "title": "",
-			    "icon": "",
-			    "action": "",
-			    "position": "begin",
-			    "color": [
-			      100,
-			      100,
-			      100,
-			      1
-			    ]
-			  }
-			]
-		      ],
-		      "common": [
-			{
-			  "toolbar": [
-			    [
-			      "Open Preferences",
-			      "Export Data",
-			      "Show fullscreen",
-			      "Print"
-			    ]
-			  ]
-			}
-		      ]
-		    },
-		    "css": [
-		      {
-			"fontSize": [
-			  ""
-			],
-			"fontFamily": [
-			  ""
-			]
-		      }
-		    ]
-		  },
-		  {
-		    "url": "modules/types/edition/object_editor/",
-		    "configuration": {
-		      "sections": {},
-		      "groups": {
-			"group": [
-			  {
-			    "editable": [
-			      "text"
-			    ],
-			    "expanded": [
-			      []
-			    ],
-			    "storeObject": [
-			      [
-				"expand"
-			      ]
-			    ],
-			    "displayValue": [
-			      []
-			    ],
-			    "searchBox": [
-			      [
-				"search"
-			      ]
-			    ],
-			    "sendButton": [
-			      []
-			    ],
-			    "output": [
-			      "new"
-			    ],
-			    "storedObject": [
-			      "{\"type\":\"mol3d\",\"value\":\"    10\\nMode #23, f = 1795.7  cm^-1, I = 7.1825 (D/Å)^2 amu^-1.\\n C      0.09438     -0.58118     -0.14776     -0.01526     -0.00013     -0.00684\\n C      1.37830      0.12212      0.18064      0.17833     -0.07577      0.11107\\n O      2.29877     -0.35205      0.78313     -0.11955      0.06159     -0.07834\\n C     -1.11491      0.33666     -0.00326     -0.00264      0.00041     -0.00177\\n H      0.17793     -0.91178     -1.18808     -0.01764     -0.00719      0.00558\\n H     -0.00416     -1.46835      0.47979      0.05063      0.00001      0.01210\\n H      1.42202      1.16191     -0.20352     -0.04584     -0.06726      0.00373\\n H     -1.00644      1.21652     -0.63373     -0.00421      0.00278      0.00050\\n H     -2.02166     -0.18647     -0.29555     -0.00129     -0.00425     -0.00062\\n H     -1.22422      0.66262      1.02835      0.00490     -0.00218      0.00101\\n\",\"_atoms\":{\"M0\":[4,5,6,9],\"M1\":[7],\"M2\":[2,9],\"M3\":[],\"M4\":[],\"M5\":[],\"M6\":[6],\"M7\":[7,8,9],\"M8\":[6],\"M9\":[4,5],\"M10\":[4,5,6],\"M11\":[4,6,7,9],\"M12\":[8],\"M13\":[4,6,8],\"M14\":[5,9],\"M15\":[5,7],\"M16\":[4,5,7,9],\"M17\":[4,5,6],\"M18\":[6],\"M19\":[7,8,9],\"M20\":[4,5],\"M21\":[7,8,9],\"M22\":[7,8,9],\"M23\":[1,2],\"M24\":[6],\"M25\":[4],\"M26\":[5],\"M27\":[7],\"M28\":[8,9],\"M29\":[8,9]},\"_highlight\":[\"M0\",\"M1\",\"M2\",\"M3\",\"M4\",\"M5\",\"M6\",\"M7\",\"M8\",\"M9\",\"M10\",\"M11\",\"M12\",\"M13\",\"M14\",\"M15\",\"M16\",\"M17\",\"M18\",\"M19\",\"M20\",\"M21\",\"M22\",\"M23\",\"M24\",\"M25\",\"M26\",\"M27\",\"M28\",\"M29\"]}"
-			    ]
-			  }
-			]
-		      }
-		    },
-		    "layers": {
-		      "Default layer": {
-			"position": {
-			  "left": 0,
-			  "top": 0
-			},
-			"size": {
-			  "width": 53,
-			  "height": 58
-			},
-			"zIndex": 0,
-			"display": true,
-			"title": "",
-			"bgColor": [
-			  255,
-			  255,
-			  255,
-			  0
-			],
-			"wrapper": true,
-			"created": true,
-			"name": "Default layer"
-		      }
-		    },
-		    "id": 2,
-		    "vars_in": [
-		      {}
-		    ],
-		    "actions_in": [
-		      {}
-		    ],
-		    "vars_out": [
-		      {
-			"event": "onObjectChange",
-			"rel": "output",
-			"jpath": [],
-			"name": "molecule"
-		      }
-		    ],
-		    "actions_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "toolbar": {
-		      "custom": [
-			[
-			  {
-			    "title": "",
-			    "icon": "",
-			    "action": "",
-			    "position": "begin",
-			    "color": [
-			      100,
-			      100,
-			      100,
-			      1
-			    ]
-			  }
-			]
-		      ],
-		      "common": [
-			{
-			  "toolbar": [
-			    [
-			      "Open Preferences"
-			    ]
-			  ]
-			}
-		      ]
-		    },
-		    "css": [
-		      {
-			"fontSize": [
-			  ""
-			],
-			"fontFamily": [
-			  ""
-			]
-		      }
-		    ],
-		    "title": ""
-		  },
-		  {
-		    "url": "modules/types/client_interaction/code_executor/",
-		    "configuration": {
-		      "sections": {},
-		      "groups": {
-			"group": [
-			  {
-			    "display": [
-			      [
-				"editor",
-				"buttons"
-			      ]
-			    ],
-			    "execOnLoad": [
-			      []
-			    ],
-			    "asyncAwait": [
-			      [
-				"top"
-			      ]
-			    ],
-			    "script": [
-			      "const molecule = API.getData('molecule');\nconsole.log(molecule);\nconst table=[];\n\nfor (let i=0; i<molecule._highlight.length; i++) {\n    table.push({\n        highlight: molecule._highlight[i],\n        _highlight: molecule._highlight[i],\n    })\n}\n\nAPI.createData('table', table)\n\nconsole.log(table);"
-			    ]
-			  }
-			],
-			"libs": [
-			  [
-			    {}
-			  ]
-			],
-			"buttons": [
-			  [
-			    {
-			      "name": "button1",
-			      "label": "Execute",
-			      "hide": [],
-			      "disable": []
-			    }
-			  ]
-			]
-		      }
-		    },
-		    "layers": {
-		      "Default layer": {
-			"position": {
-			  "left": 0,
-			  "top": 59
-			},
-			"size": {
-			  "width": 53,
-			  "height": 23
-			},
-			"zIndex": 0,
-			"display": true,
-			"title": "",
-			"bgColor": [
-			  255,
-			  255,
-			  255,
-			  0
-			],
-			"wrapper": true,
-			"created": true,
-			"name": "Default layer"
-		      }
-		    },
-		    "id": 3,
-		    "vars_in": [
-		      {
-			"rel": "inputValue",
-			"name": "molecule"
-		      }
-		    ],
-		    "actions_in": [
-		      {}
-		    ],
-		    "vars_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "actions_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "toolbar": {
-		      "custom": [
-			[
-			  {
-			    "title": "",
-			    "icon": "",
-			    "action": "",
-			    "position": "begin",
-			    "color": [
-			      100,
-			      100,
-			      100,
-			      1
-			    ]
-			  }
-			]
-		      ],
-		      "common": [
-			{
-			  "toolbar": [
-			    [
-			      "Open Preferences"
-			    ]
-			  ]
-			}
-		      ]
-		    },
-		    "css": [
-		      {
-			"fontSize": [
-			  ""
-			],
-			"fontFamily": [
-			  ""
-			]
-		      }
-		    ],
-		    "title": ""
-		  },
-		  {
-		    "url": "modules/types/edition/slick_grid/",
-		    "configuration": {
-		      "sections": {},
-		      "groups": {
-			"group": [
-			  {
-			    "slickCheck": [
-			      [
-				"enableCellNavigation",
-				"rowNumbering",
-				"forceFitColumns",
-				"highlightScroll",
-				"forgetLastActive",
-				"editable"
-			      ]
-			    ],
-			    "copyPaste": [
-			      []
-			    ],
-			    "copyPasteOptions": [
-			      [
-				"newRows"
-			      ]
-			    ],
-			    "autoColumns": [
-			      []
-			    ],
-			    "toolbar": [
-			      []
-			    ],
-			    "colorjpath": [
-			      []
-			    ],
-			    "slick.defaultColumnWidth": [
-			      null
-			    ],
-			    "slick.rowHeight": [
-			      null
-			    ],
-			    "slick.headerRowHeight": [
-			      30
-			    ],
-			    "slick.selectionModel": [
-			      "row"
-			    ],
-			    "idProperty": [
-			      ""
-			    ],
-			    "filterType": [
-			      "pref"
-			    ],
-			    "filterRow": [
-			      "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
-			    ],
-			    "customJpaths": [
-			      ""
-			    ]
-			  }
-			],
-			"cols": [
-			  [
-			    {
-			      "name": "Highlight",
-			      "jpath": [
-				"highlight"
-			      ],
-			      "editor": "none",
-			      "forceType": "",
-			      "formatter": "typerenderer",
-			      "copyFormatter": "default",
-			      "visibility": "both",
-			      "rendererOptions": "",
-			      "editorOptions": "",
-			      "hideColumn": []
-			    }
-			  ]
-			],
-			"actionCols": [
-			  [
-			    {
-			      "backgroundColor": [
-				255,
-				255,
-				255,
-				0
-			      ],
-			      "color": [
-				0,
-				0,
-				0,
-				1
-			      ],
-			      "position": "end",
-			      "clickMode": "text"
-			    }
-			  ]
-			],
-			"groupings": [
-			  [
-			    {
-			      "getter": []
-			    }
-			  ]
-			],
-			"actionOutButtons": [
-			  [
-			    {}
-			  ]
-			],
-			"data": [
-			  {
-			    "saveInView": [
-			      []
-			    ],
-			    "varname": [
-			      ""
-			    ],
-			    "data": [
-			      "[]"
-			    ]
-			  }
-			]
-		      }
-		    },
-		    "layers": {
-		      "Default layer": {
-			"position": {
-			  "left": 54,
-			  "top": 0
-			},
-			"size": {
-			  "width": 23,
-			  "height": 82
-			},
-			"zIndex": 0,
-			"display": true,
-			"title": "",
-			"bgColor": [
-			  255,
-			  255,
-			  255,
-			  0
-			],
-			"wrapper": true,
-			"created": true,
-			"name": "Default layer"
-		      }
-		    },
-		    "id": 5,
-		    "vars_in": [
-		      {
-			"rel": "list",
-			"name": "table"
-		      }
-		    ],
-		    "actions_in": [
-		      {}
-		    ],
-		    "vars_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "actions_out": [
-		      {
-			"jpath": []
-		      }
-		    ],
-		    "toolbar": {
-		      "custom": [
-			[
-			  {
-			    "title": "",
-			    "icon": "",
-			    "action": "",
-			    "position": "begin",
-			    "color": [
-			      100,
-			      100,
-			      100,
-			      1
-			    ]
-			  }
-			]
-		      ],
-		      "common": [
-			{
-			  "toolbar": [
-			    [
-			      "Open Preferences"
-			    ]
-			  ]
-			}
-		      ]
-		    },
-		    "css": [
-		      {
-			"fontSize": [
-			  ""
-			],
-			"fontFamily": [
-			  ""
-			]
-		      }
-		    ],
-		    "title": ""
-		  }
-		],
-		"variables": [
-		  {
-		    "varname": "result",
-		    "jpath": [
-		      "result",
-		      "pdbs"
-		    ]
-		  },
-		  {
-		    "varname": "pdb",
-		    "jpath": [
-		      "result",
-		      "pdbs",
-		      "0",
-		      "pdb"
-		    ]
-		  }
-		],
-		"aliases": [
-		  {}
-		],
-		"configuration": {
-		  "title": "No title"
-		},
-		"actionscripts": [
-		  {
-		    "sections": {},
-		    "groups": {
-		      "action": [
-			{
-			  "name": [
-			    null
-			  ],
-			  "script": [
-			    null
-			  ]
-			}
-		      ]
-		    }
-		  }
-		],
-		"init_script": [
-		  {
-		    "sections": {},
-		    "groups": {
-		      "general": [
-			{
-			  "script": [
-			    null
-			  ]
-			}
-		      ]
-		    }
-		  }
-		],
-		"custom_filters": [
-		  {
-		    "sections": {
-		      "modules": [
-			{
-			  "sections": {},
-			  "groups": {
-			    "modules": [
-			      [
-				{}
-			      ]
-			    ]
-			  }
-			}
-		      ],
-		      "filtersLib": [
-			{
-			  "sections": {},
-			  "groups": {
-			    "filters": [
-			      [
-				{}
-			      ]
-			    ]
-			  }
-			}
-		      ],
-		      "filters": [
-			{
-			  "sections": {},
-			  "groups": {
-			    "filter": [
-			      {
-				"name": [
-				  null
-				],
-				"script": [
-				  null
-				]
-			      }
-			    ],
-			    "libs": [
-			      [
-				{}
-			      ]
-			    ]
-			  }
-			}
-		      ]
-		    },
-		    "groups": {}
-		  }
-		],
-		"actionfiles": [
-		  {
-		    "sections": {},
-		    "groups": {
-		      "action": [
-			[
-			  {}
-			]
-		      ]
-		    }
-		  }
-		]
-	      }
-	  {
-	    "sections": {},
-	    "groups": {
-	      "action": [
-		[
-		  {}
-		]
-	      ]
-	    }
-	  }
-	]
+  "version": "2.130.2-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
       }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/science/chemistry/jsmol/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [[]],
+              "script": [""],
+              "syncScript": [null]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 78,
+            "top": 0
+          },
+          "size": {
+            "width": 59,
+            "height": 51
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "molecule"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "jsmolscript",
+          "name": "testscript"
+        }
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              ["Open Preferences", "Export Data", "Show fullscreen", "Print"]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": [
+                "{\"type\":\"mol3d\",\"value\":\"    10\\nMode #23, f = 1795.7  cm^-1, I = 7.1825 (D/Å)^2 amu^-1.\\n C      0.09438     -0.58118     -0.14776     -0.01526     -0.00013     -0.00684\\n C      1.37830      0.12212      0.18064      0.17833     -0.07577      0.11107\\n O      2.29877     -0.35205      0.78313     -0.11955      0.06159     -0.07834\\n C     -1.11491      0.33666     -0.00326     -0.00264      0.00041     -0.00177\\n H      0.17793     -0.91178     -1.18808     -0.01764     -0.00719      0.00558\\n H     -0.00416     -1.46835      0.47979      0.05063      0.00001      0.01210\\n H      1.42202      1.16191     -0.20352     -0.04584     -0.06726      0.00373\\n H     -1.00644      1.21652     -0.63373     -0.00421      0.00278      0.00050\\n H     -2.02166     -0.18647     -0.29555     -0.00129     -0.00425     -0.00062\\n H     -1.22422      0.66262      1.02835      0.00490     -0.00218      0.00101\\n\",\"_atoms\":{\"M0\":[4,5,6,9],\"M1\":[7],\"M2\":[2,9],\"M3\":[],\"M4\":[],\"M5\":[],\"M6\":[6],\"M7\":[7,8,9],\"M8\":[6],\"M9\":[4,5],\"M10\":[4,5,6],\"M11\":[4,6,7,9],\"M12\":[8],\"M13\":[4,6,8],\"M14\":[5,9],\"M15\":[5,7],\"M16\":[4,5,7,9],\"M17\":[4,5,6],\"M18\":[6],\"M19\":[7,8,9],\"M20\":[4,5],\"M21\":[7,8,9],\"M22\":[7,8,9],\"M23\":[1,2],\"M24\":[6],\"M25\":[4],\"M26\":[5],\"M27\":[7],\"M28\":[8,9],\"M29\":[8,9]},\"_highlight\":[\"M0\",\"M1\",\"M2\",\"M3\",\"M4\",\"M5\",\"M6\",\"M7\",\"M8\",\"M9\",\"M10\",\"M11\",\"M12\",\"M13\",\"M14\",\"M15\",\"M16\",\"M17\",\"M18\",\"M19\",\"M20\",\"M21\",\"M22\",\"M23\",\"M24\",\"M25\",\"M26\",\"M27\",\"M28\",\"M29\"]}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 53,
+            "height": 58
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "molecule"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "const molecule = API.getData('molecule');\nconsole.log(molecule);\nconst table=[];\n\nfor (let i=0; i<molecule._highlight.length; i++) {\n    table.push({\n        highlight: molecule._highlight[i],\n        _highlight: molecule._highlight[i],\n    })\n}\n\nAPI.createData('table', table)\n\nconsole.log(table);"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 59
+          },
+          "size": {
+            "width": 53,
+            "height": 23
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "molecule"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [[]],
+              "copyPasteOptions": [["newRows"]],
+              "autoColumns": [[]],
+              "toolbar": [[]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": [null],
+              "slick.headerRowHeight": [30],
+              "slick.selectionModel": ["row"],
+              "idProperty": [""],
+              "filterType": ["pref"],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [""]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Highlight",
+                "jpath": ["highlight"],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [0, 0, 0, 1],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [[{}]],
+          "data": [
+            {
+              "saveInView": [[]],
+              "varname": [""],
+              "data": ["[]"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 54,
+            "top": 0
+          },
+          "size": {
+            "width": 23,
+            "height": 82
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "result",
+      "jpath": ["result", "pdbs"]
+    },
+    {
+      "varname": "pdb",
+      "jpath": ["result", "pdbs", "0", "pdb"]
+    }
+  ],
+  "aliases": [{}],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [null],
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ]
+}
