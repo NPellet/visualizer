@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -30,7 +30,7 @@ define([
   const svgDoctype =
     '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
-  function View() { }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -257,7 +257,7 @@ define([
           xAxis.on('zoom', xZoomHandler);
           xAxis.on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -821,7 +821,18 @@ define([
 
         function setAxisOptions(axis, options) {
           if (options.label) axis.setLabel(options.label);
+          if (options.units) axis.setUnit(options.units);
+          if (options.unit) axis.setUnit(options.unit);
           if (options.flipped) axis.flip(options.flipped);
+          axis.setUnitWrapper(
+            options.unitWrapperBefore === undefined
+              ? '('
+              : options.unitWrapperBefore,
+            options.unitWrapperAfter === undefined
+              ? ')'
+              : options.unitWrapperAfter,
+          );
+
           if (options.display === false) axis.hide();
           if (options.display === true) axis.show();
           if (options.logScale === true) axis.setLogScale(true);
@@ -1518,7 +1529,6 @@ define([
     }
   }
 
-
   function max(array) {
     let maxValue = array[0];
     for (let item of array) {
@@ -1530,10 +1540,14 @@ define([
   // Code is largely copied from :
   // https://github.com/cheminfo-js/molecular-formula/blob/master/packages/ms-spectrum/src/isContinuous.js
   function isContinuous(data, options = {}) {
-    const { minLength = 100, maxDeltaRatio = 3, relativeHeightThreshold = 0.001, } = options;
+    const {
+      minLength = 100,
+      maxDeltaRatio = 3,
+      relativeHeightThreshold = 0.001,
+    } = options;
     const minRadio = 1 / maxDeltaRatio;
     const maxRatio = 1 * maxDeltaRatio;
-    
+
     let xs = data.x;
     let ys = data.y;
     if (xs.length < minLength) {

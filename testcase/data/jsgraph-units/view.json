@@ -25,7 +25,7 @@
               "sendButton": [[]],
               "output": ["new"],
               "storedObject": [
-                "{\"axes\":{\"x\":{\"currentAxisMin\":-10,\"currentAxisMax\":100},\"y\":{\"label\":\"Transmission\",\"unit\":\"%\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\",\"flipped\":true,\"primaryGrid\":false,\"secondaryGrid\":false}},\"series\":[{\"type\":\"line\",\"data\":{\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1]}}]}"
+                "{\"axes\":{\"x\":{\"currentAxisMin\":-10,\"currentAxisMax\":100,\"label\":\"Wavenumber\",\"unit\":\"cm-1\",\"unitWrapperBefore\":\"(\",\"unitWrapperAfter\":\")\"},\"y\":{\"label\":\"Transmission\",\"unit\":\"%\",\"unitWrapperBefore\":\"[\",\"unitWrapperAfter\":\"]\",\"flipped\":true,\"primaryGrid\":false,\"secondaryGrid\":false}},\"series\":[{\"type\":\"line\",\"data\":{\"x\":[1,2,3,4,5],\"y\":[1,2,3,2,1]}}]}"
               ]
             }
           ]
@@ -50,7 +50,7 @@
           "name": "Default layer"
         }
       },
-      "id": 12,
+      "id": 1,
       "vars_in": [{}],
       "actions_in": [{}],
       "vars_out": [
@@ -223,7 +223,7 @@
           "name": "Default layer"
         }
       },
-      "id": 13,
+      "id": 2,
       "vars_in": [
         {
           "rel": "chart",
@@ -314,7 +314,7 @@
           "name": "Default layer"
         }
       },
-      "id": 14,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
