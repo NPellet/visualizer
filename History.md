@@ -1,3 +1,12 @@
+# [2.132.0](https://github.com/NPellet/visualizer/compare/v2.131.1...v2.132.0) (2021-09-26)
+
+
+### Features
+
+* deal with axis units option in spectra-displayer ([35d73f5](https://github.com/NPellet/visualizer/commit/35d73f58aa63b4084392ce2fcfe437e38ff9bcdf))
+
+
+
 ## [2.131.1](https://github.com/NPellet/visualizer/compare/v2.131.0...v2.131.1) (2021-09-22)
 
 
