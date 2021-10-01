@@ -1,3 +1,12 @@
+# [2.133.0](https://github.com/NPellet/visualizer/compare/v2.132.0...v2.133.0) (2021-10-01)
+
+
+### Features
+
+* add module id ([d32cc52](https://github.com/NPellet/visualizer/commit/d32cc52d804b94603b6d5a70a54a1be0ce16ede2))
+
+
+
 # [2.132.0](https://github.com/NPellet/visualizer/compare/v2.131.1...v2.132.0) (2021-09-26)
 
 
