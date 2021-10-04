@@ -1,3 +1,12 @@
+## [2.133.1](https://github.com/NPellet/visualizer/compare/v2.133.0...v2.133.1) (2021-10-04)
+
+
+### Bug Fixes
+
+* add deboucing in jsmol highlight ([f4e13de](https://github.com/NPellet/visualizer/commit/f4e13de5d51a3b771795a9335ee1abe4e45e76a9))
+
+
+
 # [2.133.0](https://github.com/NPellet/visualizer/compare/v2.132.0...v2.133.0) (2021-10-01)
 
 
