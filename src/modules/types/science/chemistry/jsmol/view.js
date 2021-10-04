@@ -7,12 +7,12 @@ define([
   'modules/default/defaultview',
   'src/util/api',
   'src/util/debug',
-], function (require, _, Default, API, Debug) {
+], function(require, _, Default, API, Debug) {
   function View() {}
 
   var views = {};
 
-  window.addEventListener('message', function (event) {
+  window.addEventListener('message', function(event) {
     try {
       var message = JSON.parse(event.data);
     } catch (e) {
@@ -57,7 +57,7 @@ define([
   });
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init: function() {
       var that = this;
       this.actionOnloadScript = '';
       var id = this.module.getId();
@@ -85,14 +85,14 @@ define([
 
       this._highlights = this._highlights || [];
 
-      this.dom.bind('load', function () {
+      this.dom.bind('load', function() {
         that.postMessage('init', {
           id: id,
         });
       });
     },
 
-    onResize: function () {
+    onResize: function() {
       /*
             this.dom.height(this.height).width(this.width);
             console.log('resize', this.height, this.width);
@@ -103,9 +103,9 @@ define([
             */
     },
 
-    inDom: function () {
+    inDom: function() {
       var that = this;
-      this.dom.parent().on('mouseleave', function () {
+      this.dom.parent().on('mouseleave', function() {
         if (that.lastHoveredAtom) {
           API.highlightId(that.lastHoveredAtom.label, 0);
           that.lastHoveredAtom = null;
@@ -114,13 +114,13 @@ define([
     },
 
     blank: {
-      data: function () {
+      data: function() {
         this.postMessage('blank', '');
       },
     },
 
     update: {
-      data: function (data) {
+      data: function(data) {
         var that = this;
         this.module.data = data;
         that.postMessage('setMolFile', {
@@ -130,13 +130,17 @@ define([
         });
 
         if (that.module.getConfiguration('script')) {
-          that.postMessage('executeScript', [that.module.getConfiguration('script'), ]);
+          that.postMessage('executeScript', [
+            that.module.getConfiguration('script'),
+          ]);
         }
         if (that.actionOnloadScript) {
           that.postMessage('executeScript', [that.actionOnloadScript]);
         }
         if (that.module.getConfiguration('syncScript')) {
-          that.postMessage('executeScriptSync', [that.module.getConfiguration('syncScript'), ]);
+          that.postMessage('executeScriptSync', [
+            that.module.getConfiguration('syncScript'),
+          ]);
         }
         this._activateHighlights();
 
@@ -145,26 +149,26 @@ define([
     },
 
     onActionReceive: {
-      jsmolscript: function (a) {
+      jsmolscript: function(a) {
         this.executeScript(a);
       },
-      jsmolscriptSync: function (a) {
+      jsmolscriptSync: function(a) {
         this.executeScriptSync(a);
       },
-      setTempJsmolScript: function (value) {
+      setTempJsmolScript: function(value) {
         this.actionOnloadScript = value;
       },
     },
 
-    executeScriptSync: function (src) {
+    executeScriptSync: function(src) {
       this.postMessage('executeScriptSync', [src]);
     },
 
-    executeScript: function (src) {
+    executeScript: function(src) {
       this.postMessage('executeScript', [src]);
     },
 
-    postMessage: function (type, message) {
+    postMessage: function(type, message) {
       var cw = this.dom.get(0).contentWindow;
       if (cw) {
         cw.postMessage(
@@ -177,11 +181,11 @@ define([
       }
     },
 
-    remove: function (id) {
+    remove: function(id) {
       delete views[id];
     },
 
-    parseAtom: function (atom) {
+    parseAtom: function(atom) {
       var reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
       var m = reg.exec(atom);
       return {
@@ -193,7 +197,7 @@ define([
       };
     },
 
-    _doHighlights: function (atom) {
+    _doHighlights: function(atom) {
       if (this.lastHoveredAtom) {
         if (this.lastHoveredAtom.label === atom.label) {
           this._undoHighlightsDebounced();
@@ -207,15 +211,15 @@ define([
       this._undoHighlightsDebounced();
     },
 
-    _undoHighlights: function () {
+    _undoHighlights: function() {
       _undoHighlights.call(this);
     },
 
-    _undoHighlightsDebounced: function () {
+    _undoHighlightsDebounced: function() {
       _undoHighlightsDebounced.call(this);
     },
 
-    _activateHighlights: function () {
+    _activateHighlights: function() {
       var that = this;
       if (!this.module.data._highlight) return;
       if (!this.module.data._atoms) {
@@ -233,10 +237,10 @@ define([
 
       API.killHighlight(this.module.getId());
       for (var i = 0; i < highlight.length; i++) {
-        (function (i) {
+        (function(i) {
           API.listenHighlight(
             { _highlight: highlight[i] },
-            function (onOff, key) {
+            function(onOff, key) {
               if (Array.isArray(key)) {
                 key = [key];
               }
@@ -249,7 +253,7 @@ define([
               } else {
                 that._highlighted = [];
               }
-              that._drawHighlight();
+              _HighlightsDebounced(that);
             },
             false,
             that.module.getId(),
@@ -257,23 +261,23 @@ define([
         })(i);
       }
     },
-
-    _drawHighlight: function () {
-      if (this._highlighted && this._highlighted.length) {
-        let script = 'selectionHalos on;';
-        const toHighlight = this._highlighted.flat();
-        const atoms = toHighlight
-          .map((id) => this.module.data._atoms[id])
-          .flat()
-          .map((id) => id + 1);
-
-        script += `select atomno=[${atoms.join(',')}];`;
-        this.executeScript(script);
-      } else {
-        this.executeScript('selectionHalos off;');
-      }
-    },
   });
+
+  function _drawHighlight(target) {
+    if (target._highlighted && target._highlighted.length) {
+      let script = 'selectionHalos on;';
+      const toHighlight = target._highlighted.flat();
+      const atoms = toHighlight
+        .map((id) => target.module.data._atoms[id])
+        .flat()
+        .map((id) => id + 1);
+
+      script += `select atomno=[${atoms.join(',')}];`;
+      target.executeScript(script);
+    } else {
+      target.executeScript('selectionHalos off;');
+    }
+  }
 
   function _undoHighlights() {
     if (this.lastHoveredAtom) {
@@ -283,6 +287,8 @@ define([
   }
 
   var _undoHighlightsDebounced = _.debounce(_undoHighlights, 250);
+
+  const _HighlightsDebounced = _.debounce((that) => _drawHighlight(that), 100);
 
   return View;
 });
