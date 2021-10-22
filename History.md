@@ -1,3 +1,12 @@
+# [2.134.0](https://github.com/NPellet/visualizer/compare/v2.133.1...v2.134.0) (2021-10-22)
+
+
+### Features
+
+* export from typescript renders values ([6b4e9a1](https://github.com/NPellet/visualizer/commit/6b4e9a1f0dba9f63ad1d223a90f7e45db25c50aa))
+
+
+
 ## [2.133.1](https://github.com/NPellet/visualizer/compare/v2.133.0...v2.133.1) (2021-10-04)
 
 
