@@ -14,7 +14,7 @@ define([
   $.extend(true, View.prototype, Default, {
     init() {
       this._changedJpaths = new Set();
-      var configTemplate = this.module.getConfiguration('template');
+      let configTemplate = this.module.getConfiguration('template');
       this.hasTemplate = new Promise((resolve) => {
         this._resolveTemplate = resolve;
       });
@@ -29,14 +29,14 @@ define([
           : 'none',
       });
 
-      var debouncing = this.module.getConfiguration('debouncing');
+      let debouncing = this.module.getConfiguration('debouncing');
       if (debouncing) {
         var submitChange = _.debounce(this.submitChange, debouncing).bind(this);
       } else {
         submitChange = this.submitChange.bind(this);
       }
 
-      var submit = this.submit.bind(this);
+      let submit = this.submit.bind(this);
 
       if (this.form) this.form.unbind();
       this.form = new Form(this.dom, {
@@ -86,7 +86,7 @@ define([
     },
 
     setStyle() {
-      var style = this.styleObject;
+      let style = this.styleObject;
       if (!style) return;
       if (!(style instanceof Array)) {
         style = [style];
@@ -98,7 +98,7 @@ define([
         } else {
           selector = style[i].selector;
         }
-        var $el = this.dom.find(selector);
+        let $el = this.dom.find(selector);
         if (style[i].attributes) {
           $el.attr(style[i].attributes);
         }
@@ -181,7 +181,7 @@ define([
         this.rerender();
       },
       tpl(value) {
-        var tpl = value.get().toString();
+        let tpl = value.get().toString();
         return this.renderPromise
           .then(() => {
             this.template = Twig.twig({
@@ -237,13 +237,13 @@ define([
     },
 
     render(cb) {
-      var that = this;
+      let that = this;
       this.renderPromise = this.renderPromise
         .then(() => {
           if (this.formName) {
             this._values[this.formName] = this.formObject;
           }
-          var render = this.template.renderAsync(this._values);
+          let render = this.template.renderAsync(this._values);
           this.dom.html(render.html);
           const renderProm = render.render().then(function () {
             if (cb) cb();

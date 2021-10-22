@@ -417,7 +417,7 @@ define([
       .set('Accept', 'application/json')
       .send(ctx.lastDoc);
     if (res && res.body && res.body.rev) {
-      // eslint-disable-next-line require-atomic-updates
+       
       ctx.lastDoc._rev = res.body.rev;
     }
 

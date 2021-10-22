@@ -19,8 +19,8 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
         this.module.getDomContent().html(this.dom);
       }
 
-      var labelColorRGB = this.module.getConfiguration('labelColor');
-      var labelColor;
+      let labelColorRGB = this.module.getConfiguration('labelColor');
+      let labelColor;
       if (labelColorRGB && labelColorRGB[3] !== 0) {
         labelColor = Util.rgbToHex(labelColorRGB[0], labelColorRGB[1], labelColorRGB[2]);
       }
@@ -49,14 +49,14 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
       chart: function (moduleValue) {
         if (!moduleValue)
           return;
-        var chartJson = convertChartToJson(moduleValue.get());
+        let chartJson = convertChartToJson(moduleValue.get());
         this._data = chartJson;
         this.setData(chartJson);
       },
       yArray: function (moduleValue) {
         if (!moduleValue)
           return;
-        var arrayJson = convertSingleArrayToJson(moduleValue.get());
+        let arrayJson = convertSingleArrayToJson(moduleValue.get());
         this._data = arrayJson;
         this.setData(arrayJson);
       }
@@ -71,16 +71,16 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
   });
 
   function convertChartToJson(chart) {
-    var data = chart.data;
-    var json;
+    let data = chart.data;
+    let json;
     if (data.length === 1) { // simple chart
       data = data[0];
       var arr = data.y;
       var ii = arr.length;
       json = { values: new Array(ii) };
 
-      var info = data.info || [];
-      var colors, labels;
+      let info = data.info || [];
+      let colors, labels;
       if (info[0]) {
         if (info[0].color) {
           colors = new Array(ii);
@@ -103,12 +103,12 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
     } else { // stacked chart
       json = {};
       var ii = data.length;
-      var jj = data[0].y.length;
+      let jj = data[0].y.length;
       json.values = new Array(jj);
       json.label = new Array(jj);
       for (var i = 0; i < ii; i++) {
-        for (var j = 0; j < jj; j++) {
-          var serie = data[i];
+        for (let j = 0; j < jj; j++) {
+          let serie = data[i];
           var arr = serie.y;
           if (i === 0) {
             json.values[j] = {
@@ -125,9 +125,9 @@ define(['modules/default/defaultview', 'jquery', 'src/util/api', 'src/util/util'
   }
 
   function convertSingleArrayToJson(array) {
-    var ii = array.length;
-    var json = { values: new Array(ii) };
-    for (var i = 0; i < ii; i++) {
+    let ii = array.length;
+    let json = { values: new Array(ii) };
+    for (let i = 0; i < ii; i++) {
       json.values[i] = { values: [array[i]], label: `label_${i}` };
     }
     return json;

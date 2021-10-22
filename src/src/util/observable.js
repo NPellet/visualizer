@@ -1,7 +1,7 @@
 'use strict';
 
 define(['jquery', 'src/util/event'], function ($, Event) {
-  var Observable = function (name, value) {
+  let Observable = function (name, value) {
     this.set(name, value);
   };
 
@@ -11,7 +11,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     return this._value[name];
   };
 
-  var slicer = Array.prototype.slice;
+  let slicer = Array.prototype.slice;
   Observable.update = function (name, value) {
     this._value = this._value || {};
     this._value[name] = value;
@@ -19,10 +19,10 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   };
 
   Observable.set = function (name, value) {
-    var current = this.get(name);
+    let current = this.get(name);
     if (current == value) return;
     this.update(name, value);
-    var to = this.get(name);
+    let to = this.get(name);
     this.trigger('change', name, to, current);
     return this;
   };
@@ -40,28 +40,28 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   // obs1.pull(obs2);
   // obs2.set('varName', 'varVal'); // ==> obs1.set('varName', 'varVal')
   Observable.prototype.pull = function () {
-    var mySet = this._proxiedSet();
+    let mySet = this._proxiedSet();
     $.each(arguments, function (i, trgt) {
       trgt.on('change', mySet);
     });
   };
 
   Observable.prototype.unpull = function () {
-    var mySet = this._proxiedSet();
+    let mySet = this._proxiedSet();
     $.each(arguments, function (i, trgt) {
       trgt.off('change', mySet);
     });
   };
 
   Observable.prototype.push = function () {
-    var that = this;
+    let that = this;
     $.each(arguments, function (i, trgt) {
       that.on('change', trgt._proxiedSet);
     });
   };
 
   Observable.prototype.unpush = function () {
-    var that = this;
+    let that = this;
     $.each(arguments, function (i, trgt) {
       that.off('change', trgt._proxiedSet);
     });

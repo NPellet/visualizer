@@ -4,7 +4,7 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
   function Element() {
   }
 
-  var currentMenu;
+  let currentMenu;
 
   Util.inherits(Element, Default, {
 
@@ -12,7 +12,7 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
     },
 
     _onClick: function () {
-      var that = this;
+      let that = this;
 
       this.setStyleOpen(this._open);
 
@@ -40,7 +40,7 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
         layers = Grid.getLayerNames();
       }
 
-      var ul = $('<ul />') || this.$_elToOpen.empty(),
+      let ul = $('<ul />') || this.$_elToOpen.empty(),
         i = 0,
         l = layers.length;
 
@@ -53,7 +53,7 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
     },
 
     _buildSubElement: function (el) {
-      var that = this,
+      let that = this,
         dom = $('<li />').text(el);
       dom.addClass('hasEvent').bind('click', function () {
         Grid.switchToLayer(el);

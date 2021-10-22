@@ -11,31 +11,31 @@ define([
 ], function ($, _, Button, Util, UI, Versioning) {
   function share(options) {
     return new Promise(function (resolve, reject) {
-      var urlPrefix = (options.couchUrl || window.location.origin).replace(
+      let urlPrefix = (options.couchUrl || window.location.origin).replace(
         /\/$/,
         ''
       );
-      var database = options.database || 'x';
-      var tinyPrefix = `${(
+      let database = options.database || 'x';
+      let tinyPrefix = `${(
         options.tinyUrl || `${window.location.origin}/x/_design/x/_show/x`
       ).replace(/\/$/, '')}/`;
       $.couch.urlPrefix = urlPrefix;
-      var db = $.couch.db(database);
+      let db = $.couch.db(database);
 
-      var view = Versioning.getView();
+      let view = Versioning.getView();
 
       // https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
 
-      var encodedView = btoa(
+      let encodedView = btoa(
         unescape(encodeURIComponent(JSON.stringify(view)))
       );
-      var encodedData = btoa(
+      let encodedData = btoa(
         unescape(encodeURIComponent(Versioning.getDataJSON()))
       );
 
-      var docid = guid();
+      let docid = guid();
 
-      var doc = {
+      let doc = {
         _id: docid,
         _attachments: {
           'view.json': {
@@ -54,7 +54,7 @@ define([
 
       db.saveDoc(doc, {
         success: function () {
-          var tinyUrl = tinyPrefix + docid;
+          let tinyUrl = tinyPrefix + docid;
           return resolve(tinyUrl);
         },
         error: function (e) {
@@ -64,11 +64,11 @@ define([
     });
   }
 
-  var str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   function guid() {
-    var result = '';
-    for (var i = 0; i < 20; i++) {
+    let result = '';
+    for (let i = 0; i < 20; i++) {
       result += str[Math.floor(Math.random() * 62)];
     }
     return result;
@@ -86,13 +86,13 @@ define([
     if (!options.disabled) {
       share(shareOptions)
         .then(function (tinyUrl) {
-          var description = `\n\nTestcase: ${tinyUrl} ([Original URL](${
+          let description = `\n\nTestcase: ${tinyUrl} ([Original URL](${
             document.location.href
           }))`;
-          var url = `https://github.com/NPellet/visualizer/issues/new?body=${encodeURIComponent(
+          let url = `https://github.com/NPellet/visualizer/issues/new?body=${encodeURIComponent(
             description
           )}`;
-          var win = window.open(url, '_blank');
+          let win = window.open(url, '_blank');
           win.focus();
         })
         .catch(() => {
@@ -105,8 +105,8 @@ define([
   }
 
   function couchShare(options, dialogOptions) {
-    var uniqid = Util.getNextUniqueId();
-    var dialog = $('<div>')
+    let uniqid = Util.getNextUniqueId();
+    let dialog = $('<div>')
       .html(
         '<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>'
       )
@@ -114,7 +114,7 @@ define([
         new Button(
           'Share',
           function () {
-            var that = this;
+            let that = this;
             if (!options.disabled) {
               share(options).then(
                 function (tinyUrl) {

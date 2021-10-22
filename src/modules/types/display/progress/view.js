@@ -18,11 +18,11 @@ define([
       this.curr = 0;
       this.tpl = this.module.getConfiguration('tpl', ':current / :total');
 
-      var progressBar = this.progressBar = $('<div>').css({
+      let progressBar = this.progressBar = $('<div>').css({
         position: 'relative'
       });
 
-      var progressDiv = this.progressDiv = $('<div>').css({
+      let progressDiv = this.progressDiv = $('<div>').css({
         position: 'absolute',
         left: '50%',
         top: '4px',
@@ -76,18 +76,18 @@ define([
     },
 
     render: function () {
-      var ratio = this.curr / this.total;
+      let ratio = this.curr / this.total;
       ratio = Math.min(Math.max(ratio, 0), 1);
 
-      var percent = ratio * 100;
+      let percent = ratio * 100;
 
       if (this.curr === 0)
         this.start = Date.now();
 
-      var elapsed = Date.now() - this.start;
-      var eta = (percent == 100) ? 0 : elapsed * (this.total / this.curr - 1);
+      let elapsed = Date.now() - this.start;
+      let eta = (percent == 100) ? 0 : elapsed * (this.total / this.curr - 1);
 
-      var str = this.tpl
+      let str = this.tpl
         .replace(':current', this.curr)
         .replace(':total', this.total)
         .replace(':elapsed', isNaN(elapsed) ? '0.0' : (elapsed / 1000).toFixed(1))

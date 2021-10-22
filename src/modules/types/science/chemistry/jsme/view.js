@@ -10,7 +10,7 @@ define([
 ], function (require, Default, API, ui, Debug, OCL) {
   function View() {}
 
-  var views = {};
+  let views = {};
 
   window.addEventListener('message', function (event) {
     try {
@@ -21,12 +21,12 @@ define([
     if (message.module !== 'jsme') {
       return;
     }
-    var id = message.id;
+    let id = message.id;
     if (!views[id]) {
       Debug.error(`No view with ID ${id}`);
       return;
     }
-    var view = views[id];
+    let view = views[id];
     switch (message.type) {
       case 'ready':
         view.resolveReady();
@@ -57,9 +57,9 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      var that = this;
+      let that = this;
 
-      var id = this.module.getId();
+      let id = this.module.getId();
       views[id] = this;
 
       this.dom = ui.getSafeElement('iframe').attr({
@@ -159,13 +159,13 @@ define([
         this._initHighlight(moduleValue);
       },
       smiles: function (moduleValue) {
-        var that = this;
+        let that = this;
         this._currentValue = moduleValue;
         this._currentType = 'smiles';
 
         require(['openchemlib/openchemlib-core'], function (OCL) {
-          var smiles = String(moduleValue.get());
-          var mol = OCL.Molecule.fromSmiles(smiles);
+          let smiles = String(moduleValue.get());
+          let mol = OCL.Molecule.fromSmiles(smiles);
           that.postMessage('setMolFile', mol.toMolfile());
           that._initHighlight(moduleValue);
         });
@@ -179,15 +179,15 @@ define([
     },
 
     _initHighlight: function (moduleValue) {
-      var that = this;
+      let that = this;
       API.killHighlight(this.module.getId());
       API.listenHighlight(
         moduleValue,
         function (onOff, highlightId) {
-          var atoms = [];
-          for (var i = 0, l = highlightId.length; i < l; i++) {
+          let atoms = [];
+          for (let i = 0, l = highlightId.length; i < l; i++) {
             if (!(moduleValue._atoms[highlightId[i]] instanceof Array))
-              // eslint-disable-next-line array-bracket-spacing
+               
               moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]], ];
             atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
           }
@@ -224,7 +224,7 @@ define([
     },
 
     postMessage: function (type, message) {
-      var cw = this.dom.get(0).contentWindow;
+      let cw = this.dom.get(0).contentWindow;
       if (cw) {
         cw.postMessage(
           JSON.stringify({

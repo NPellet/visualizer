@@ -121,11 +121,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
       this.module.definition.configuration.groups.group[0].storedObject[0] = JSON.stringify(newValue);
     }
     this.module.model._latestData = newValue;
-    var outputType = this.module.getConfiguration('output');
+    let outputType = this.module.getConfiguration('output');
     if (outputType === 'new') {
       this.createDataFromEvent(eventType, 'output', newValue);
     } else {
-      var input = this.module.view.inputData;
+      let input = this.module.view.inputData;
       if (input) {
         input.mergeWith(newValue, this.module.getId());
         this.setVarFromEvent(eventType, 'output', 'value', []);

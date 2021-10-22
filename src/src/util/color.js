@@ -5,10 +5,10 @@
  * @module src/util/color
  */
 define(function () {
-  var exports = {};
+  let exports = {};
 
   exports.hex2rgb = function hex2rgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? [
       parseInt(result[1], 16),
       parseInt(result[2], 16),
@@ -30,9 +30,9 @@ define(function () {
 
   exports.rgb2hex = function rgb2hex(r, g, b) {
     if (arguments.length === 1) {
-      var x = r.match(/rgba?\(([^(]*)\)/, 'i');
+      let x = r.match(/rgba?\(([^(]*)\)/, 'i');
       if (!x) return null;
-      var rgb = x[1].split(',');
+      let rgb = x[1].split(',');
       if (rgb.length >= 3) {
         r = +rgb[0];
         g = +rgb[1];
@@ -57,7 +57,7 @@ define(function () {
   };
 
   exports.hsl2rgb = function hsl2rgb(h, s, l) {
-    var m1, m2, hue, r, g, b;
+    let m1, m2, hue, r, g, b;
     s /= 100;
     l /= 100;
 
@@ -79,20 +79,20 @@ define(function () {
   };
 
   exports.getDistinctColors = function getDistinctColors(numColors) {
-    var colors = new Array(numColors);
-    var j = 0;
-    for (var i = 0; i < 360; i += 360 / numColors) {
+    let colors = new Array(numColors);
+    let j = 0;
+    for (let i = 0; i < 360; i += 360 / numColors) {
       j++;
-      var color = exports.hsl2rgb(i, 100, 30 + j % 4 * 15);
+      let color = exports.hsl2rgb(i, 100, 30 + j % 4 * 15);
       colors[j - 1] = [Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)];
     }
     return colors;
   };
 
   exports.getDistinctColorsAsString = function getDistinctColorsAsString(numColors) {
-    var colors = exports.getDistinctColors(numColors);
-    var colorsString = new Array(numColors);
-    for (var i = 0; i < numColors; i++) {
+    let colors = exports.getDistinctColors(numColors);
+    let colorsString = new Array(numColors);
+    for (let i = 0; i < numColors; i++) {
       colorsString[i] = exports.getColor(colors[i]);
     }
     return colorsString;
@@ -105,7 +105,7 @@ define(function () {
   exports.getColor = function getColor(color) {
     if (Array.isArray(color)) {
       if (color.length >= 3) {
-        for (var i = 0; i < 3; i++) color[i] = Math.round(color[i]);
+        for (let i = 0; i < 3; i++) color[i] = Math.round(color[i]);
       }
       switch (color.length) {
         case 3:

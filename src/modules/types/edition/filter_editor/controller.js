@@ -72,8 +72,8 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
   };
 
   Controller.prototype.onButtonClick = function (value, object) {
-    var that = this;
-    var result = this.executeFilter(value, object);
+    let that = this;
+    let result = this.executeFilter(value, object);
     result.then(function (data) {
       if (typeof data !== 'undefined')
         that.createDataFromEvent('onButtonClick', 'filteredObject', data);
@@ -83,12 +83,12 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
   };
 
   Controller.prototype.executeFilter = function (filter, object) {
-    var neededLibs = this.module.getConfiguration('libs');
-    var requireStart = `require${getRequireStart(neededLibs)}`;
+    let neededLibs = this.module.getConfiguration('libs');
+    let requireStart = `require${getRequireStart(neededLibs)}`;
 
-    var requireBody = `(function(value, resolve, reject){${filter}\n})(object, resolve, reject);`;
+    let requireBody = `(function(value, resolve, reject){${filter}\n})(object, resolve, reject);`;
 
-    var requireEnd = '});';
+    let requireEnd = '});';
 
 
     return new Promise(function (resolve, reject) {
@@ -97,21 +97,21 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
   };
 
   Controller.prototype.export = function () {
-    var neededLibs = this.module.getConfiguration('libs');
-    var requireStart = `define${getRequireStart(neededLibs)}\n    return {\n    filter: `;
-    var requireBody = `function( value, resolve, reject ) {\n            ${this.module.getConfiguration('script').replace(/(\r\n|\r|\n)/g, '\n            ')}\n        }\n    };`;
-    var requireEnd = '\n});';
+    let neededLibs = this.module.getConfiguration('libs');
+    let requireStart = `define${getRequireStart(neededLibs)}\n    return {\n    filter: `;
+    let requireBody = `function( value, resolve, reject ) {\n            ${this.module.getConfiguration('script').replace(/(\r\n|\r|\n)/g, '\n            ')}\n        }\n    };`;
+    let requireEnd = '\n});';
 
     return requireStart + requireBody + requireEnd;
   };
 
   function getRequireStart(neededLibs) {
-    var required = '( [ "src/util/api"';
-    var callback = 'function( API';
+    let required = '( [ "src/util/api"';
+    let callback = 'function( API';
 
     if (neededLibs) {
-      for (var i = 0; i < neededLibs.length; i++) {
-        var neededLib = neededLibs[i];
+      for (let i = 0; i < neededLibs.length; i++) {
+        let neededLib = neededLibs[i];
         if (neededLib.lib) {
           required += `, "${neededLib.lib}"`;
           callback += `, ${neededLib.alias || `required_anonymous_${i}`}`;

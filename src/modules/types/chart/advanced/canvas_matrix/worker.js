@@ -3,17 +3,17 @@
 var count = 0;
 
 function getColorFromValue(value) {
-  var minValue = min;
-  var maxValue = max;
+  let minValue = min;
+  let maxValue = max;
   if (!highContrast) {
     minValue = 0;
     maxValue = 1;
   }
-  var ratio = 1 / (maxValue - minValue);
-  var diff = maxValue - minValue;
-  var segNb = colors.length - 1;
-  var step = diff / segNb;
-  var color1Id = Math.round((segNb * (value - minValue)) / diff);
+  let ratio = 1 / (maxValue - minValue);
+  let diff = maxValue - minValue;
+  let segNb = colors.length - 1;
+  let step = diff / segNb;
+  let color1Id = Math.round((segNb * (value - minValue)) / diff);
   color1Id = Math.min(Math.max(0, color1Id), colors.length - 2);
 
   return getColorBetween(
@@ -27,7 +27,7 @@ function getColorFromValue(value) {
 
 function getColorBetween(value, color1, color2, color1Val, color2Val) {
   // Between 0 and 1
-  var ratio = (value - color1Val) / (color2Val - color1Val);
+  let ratio = (value - color1Val) / (color2Val - color1Val);
 
   return [
     parseInt(ratio * (color2[0] - color1[0]) + color1[0], 10),
@@ -55,15 +55,15 @@ function getRGB(color) {
 }
 
 function generate(indexX, indexY, buffer, nbValX) {
-  var startX = indexX * squareLoading,
+  let startX = indexX * squareLoading,
     startY = indexY * squareLoading,
     endX = startX + squareLoading,
     endY = startY + squareLoading;
 
-  var x = startX,
+  let x = startX,
     y = startY;
 
-  var bufferData = buffer.data;
+  let bufferData = buffer.data;
 
   for (; x < endX; x++) {
     y = startY;
@@ -76,7 +76,7 @@ function generate(indexX, indexY, buffer, nbValX) {
         if (val.value) val = val.value;
       }
 
-      var color = getColorFromValue(val);
+      let color = getColorFromValue(val);
       drawCell(val, x - startX, y - startY, color, bufferData, nbValX);
     }
   }
@@ -85,9 +85,9 @@ function generate(indexX, indexY, buffer, nbValX) {
 }
 
 function drawCell(value, startX, startY, color, bufferData, nbValX) {
-  var squareWidth = nbValX * pxPerCell;
+  let squareWidth = nbValX * pxPerCell;
 
-  var i = 0,
+  let i = 0,
     j = 0,
     pixelNum;
   while (j < pxPerCell) {
@@ -109,7 +109,7 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
 
 var data, min, max, colors, pxPerCell, squareLoading, highContrast;
 self.onmessage = function (event) {
-  var d = event.data;
+  let d = event.data;
 
   if (d.title == 'init') {
     // pxPerCell = d.message.pxPerCell;

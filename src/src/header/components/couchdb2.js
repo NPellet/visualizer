@@ -22,13 +22,13 @@ define([
   function CouchDBManager() {
   }
 
-  var loadingId = Util.getNextUniqueId();
-  var regAlphaNum = /^[a-zA-Z0-9]+$/;
-  var UPLOAD_LIMIT = 50 * 1024 * 1024;
+  let loadingId = Util.getNextUniqueId();
+  let regAlphaNum = /^[a-zA-Z0-9]+$/;
+  let UPLOAD_LIMIT = 50 * 1024 * 1024;
 
   Util.inherits(CouchDBManager, Default, {
     initImpl: function () {
-      var that = this;
+      let that = this;
 
       $(document).keydown(
         function (event) {
@@ -36,11 +36,11 @@ define([
           // run save function. 83 is the key code for S.
           if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which == 83) {
             event.preventDefault();
-            var viewUrl = Versioning.lastLoaded.view.url;
-            var reg = /\/([^/]+)\/view\.json$/;
-            var m = reg.exec(viewUrl);
-            var loadedDocId = m[1];
-            var nodes = [];
+            let viewUrl = Versioning.lastLoaded.view.url;
+            let reg = /\/([^/]+)\/view\.json$/;
+            let m = reg.exec(viewUrl);
+            let loadedDocId = m[1];
+            let nodes = [];
             if (!that.ftree) {
               ui.showNotification('Cannot save, couchdb tree not loaded yet', 'info');
               return;
@@ -52,7 +52,7 @@ define([
               return !n.folder && n.data.doc && n.data.doc._id === loadedDocId;
             });
             if (!nodes.length) return;
-            var compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= doc._id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
+            let compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= doc._id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
             ui.dialog(compiled({
               doc: nodes[0].data.doc,
               flavor: that.flavor,
@@ -106,7 +106,7 @@ define([
         $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
       }
       this.url = $.couch.urlPrefix;
-      var db = this.db = this.options.database || 'visualizer';
+      let db = this.db = this.options.database || 'visualizer';
       this.dbUrl = `${this.url}/${db}`;
       this.database = $.couch.db(db);
       $.ui.fancytree.debugLevel = 0;
@@ -114,8 +114,8 @@ define([
     },
 
     beforeUrl: function () {
-      var that = this;
-      var url = this.options.beforeUrl;
+      let that = this;
+      let url = this.options.beforeUrl;
       $.ajax({
         type: 'GET',
         url: url,
@@ -131,7 +131,7 @@ define([
     },
 
     getErrorContent: function (e) {
-      var content;
+      let content;
       if (typeof e === 'number') {
         switch (e) {
           case 10:
@@ -168,10 +168,10 @@ define([
     },
 
     showError: function (e, type) {
-      var color = 'red';
+      let color = 'red';
       if (type === 2)
         color = 'green';
-      var content = this.getErrorContent(e, type);
+      let content = this.getErrorContent(e, type);
       this.errorP.text(content).css('color', color).show().delay(3000).fadeOut();
     },
     getFormContent: function (type) {
@@ -181,7 +181,7 @@ define([
       $(`#${this.cssId(type)}`).val(value);
     },
     checkDatabase: function () {
-      var that = this;
+      let that = this;
       $.couch.info({
         success: function (event) {
           that.ok = true;
@@ -226,7 +226,7 @@ define([
       }
 
       if (checkSession) {
-        var that = this;
+        let that = this;
         $.couch.session({
           success: function (data) {
             if (data.userCtx.name === null) {
@@ -261,7 +261,7 @@ define([
       }
     },
     load: function (node, rev) {
-      var result = {};
+      let result = {};
       if (node.data.hasData) {
         result.data = {
           url: `${this.database.uri + node.data.doc._id}/data.json${rev ? `?rev=${rev}` : ''}`
@@ -280,9 +280,9 @@ define([
     },
 
     saveMeta: function (val) {
-      var that = this;
-      var node = that.currentDocument;
-      var doc = node.data.doc;
+      let that = this;
+      let node = that.currentDocument;
+      let doc = node.data.doc;
       if (val && val.keywords && val.keywords.value) {
         doc.keywords = val.keywords.value;
       }
@@ -306,14 +306,14 @@ define([
     },
 
     saveNode: function (type, node) {
-      var that = this;
+      let that = this;
       if (!node) {
-        var msg = 'Cannot save node (undefined)';
+        let msg = 'Cannot save node (undefined)';
         this.showError(msg);
         return Promise.reject(msg);
       }
-      var doc = node.data.doc;
-      var content = Versioning[`get${type}JSON`]();
+      let doc = node.data.doc;
+      let content = Versioning[`get${type}JSON`]();
       doc._attachments[`${type.toLowerCase()}.json`] = {
         content_type: 'application/json',
         data: btoa(unescape(encodeURIComponent(content)))
@@ -338,16 +338,16 @@ define([
       if (name.indexOf(':') !== -1)
         return this.showError(10);
 
-      var content = Versioning[`get${type}JSON`]();
+      let content = Versioning[`get${type}JSON`]();
 
-      var last = this.lastNode;
+      let last = this.lastNode;
       if (typeof last === 'undefined')
         return this.showError(11);
 
-      var children = last.node.getChildren();
-      var child;
+      let children = last.node.getChildren();
+      let child;
       if (children) {
-        for (var i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
           if (children[i].title === name) {
             child = children[i];
             break;
@@ -355,8 +355,8 @@ define([
         }
       }
 
-      var doc;
-      var that = this;
+      let doc;
+      let that = this;
 
       if (child && !child.folder) {
         // This doc has revs which means it has been saved to couchdb already
@@ -382,7 +382,7 @@ define([
       } else {
         // The doc is new so we need to save the whole document
         // With a new uuid
-        var flavors = {},
+        let flavors = {},
           flav = [];
         if (last.key) {
           flav = last.node.key.split(':');
@@ -403,7 +403,7 @@ define([
           success: function (data) {
             doc._id = data.id;
             doc._rev = data.rev;
-            var newNode = {
+            let newNode = {
               doc: doc,
               lazy: true,
               title: name,
@@ -424,26 +424,26 @@ define([
       if (name.indexOf(':') !== -1)
         return this.showError(10);
 
-      var last = this.lastNode;
+      let last = this.lastNode;
       if (typeof last === 'undefined')
         return this.showError(11);
 
-      var folderNode;
+      let folderNode;
       if (last.node.folder)
         folderNode = last.node;
       else
         folderNode = last.node.parent;
 
       // Check if folder already exists
-      var children = folderNode.getChildren();
+      let children = folderNode.getChildren();
       if (children) {
-        for (var i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
           if (children[i].title === name && children[i].folder)
             return this.showError(12);
         }
       }
 
-      var newNode = folderNode.addNode({
+      let newNode = folderNode.addNode({
         folder: true,
         title: name,
         key: `${folderNode.key}:${name}`
@@ -453,7 +453,7 @@ define([
       $(newNode.li).find('.fancytree-title').trigger('click');
     },
     login: function (username, password) {
-      var that = this;
+      let that = this;
       $.couch.login({
         name: username,
         password: password,
@@ -468,8 +468,8 @@ define([
       });
     },
     logout: function () {
-      var that = this;
-      var prom = Promise.resolve($.couch.logout({
+      let that = this;
+      let prom = Promise.resolve($.couch.logout({
         success: function () {
           that.loggedIn = false;
           that.username = null;
@@ -481,15 +481,15 @@ define([
       });
     },
     renderLoginMethods: function () {
-      var that = this;
+      let that = this;
 
       function doLogin() {
         that.login(that.getFormContent('login-username'), that.getFormContent('login-password'));
         return false;
       }
 
-      var openLogin = this.openLogin.bind(this);
-      for (var i = 0; i < this.options.loginMethods.length; i++) {
+      let openLogin = this.openLogin.bind(this);
+      for (let i = 0; i < this.options.loginMethods.length; i++) {
         switch (this.options.loginMethods[i]) {
           case 'google':
             $(`<a href=" ${this.url}/auth/google">Google login</a><br/>`).appendTo(this.loginForm).on('click', openLogin);
@@ -516,10 +516,10 @@ define([
 
     openLogin: function (e) {
       e.preventDefault();
-      var url = e.currentTarget.href;
-      var win = window.open(`${url}?close=true`, 'CI_Couch_Login', 'menubar=no');
+      let url = e.currentTarget.href;
+      let win = window.open(`${url}?close=true`, 'CI_Couch_Login', 'menubar=no');
       clearInterval(this._loginWinI);
-      var that = this;
+      let that = this;
       this._loginWinI = window.setInterval(function () {
         if (win.closed) {
           that.createMenu(true);
@@ -529,17 +529,17 @@ define([
     },
 
     getLoginForm: function () {
-      var loginForm = this.loginForm = $('<div>');
+      let loginForm = this.loginForm = $('<div>');
       loginForm.append('<h1>Login</h1>');
       this.renderLoginMethods();
       loginForm.append(this.errorP);
       return loginForm;
     },
     getMenuContent: function () {
-      var that = this;
-      var dom = this.menuContent = $('<div>');
+      let that = this;
+      let dom = this.menuContent = $('<div>');
 
-      var logout = $('<div>')
+      let logout = $('<div>')
         .append($('<p>')
           .css('display', 'inline-block')
           .css('width', '50%')
@@ -560,10 +560,10 @@ define([
             })));
       dom.append(logout);
 
-      var flavorField = $(`<input type="text" value="${this.flavor}" id="${this.cssId('flavor-input')}">`);
+      let flavorField = $(`<input type="text" value="${this.flavor}" id="${this.cssId('flavor-input')}">`);
 
       function changeFlavor() {
-        var flavor = that.getFormContent('flavor-input');
+        let flavor = that.getFormContent('flavor-input');
         if (that.flavor !== flavor) that.changeFlavor(flavor);
       }
 
@@ -578,7 +578,7 @@ define([
             minLength: 0,
             source: that.flavorList
           }).on('autocompleteselect', function (event, d) {
-            var flavor = d.item.value;
+            let flavor = d.item.value;
             if (that.flavor !== flavor) that.changeFlavor(flavor);
             flavorField.blur();
           }).on('keypress', function (e) {
@@ -598,17 +598,17 @@ define([
         new Button('Switch', changeFlavor, { color: 'red' }).setTooltip('Switch flavor!').render()
       ));
 
-      var treeCSS = {
+      let treeCSS = {
         'overflow-y': 'auto',
         height: '200px',
         width: '300px'
       };
-      var treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
+      let treeContainer = $('<div>').attr('id', this.cssId('tree')).css(treeCSS).appendTo(dom);
       this.makePublicButton = new Button('Make Public', function () {
         ui.confirm('You are about to make your view public. This action is irreversible. It will enable anybody to access the saved view and data. Do you want to proceed?', 'Proceed', 'Cancel').then(function (proceed) {
           if (!proceed || !that.currentDocument) return;
-          var node = that.currentDocument;
-          var doc = node.data.doc;
+          let node = that.currentDocument;
+          let doc = node.data.doc;
           doc.isPublic = true;
           that.database.saveDoc(doc, {
             success: function (data) {
@@ -644,8 +644,8 @@ define([
 
       function uploadFiles() {
         if (!that.currentDocument) return;
-        var docUrl = `${that.dbUrl}/${that.currentDocument.data.doc._id}`;
-        var couchA = new CouchdbAttachments(docUrl);
+        let docUrl = `${that.dbUrl}/${that.currentDocument.data.doc._id}`;
+        let couchA = new CouchdbAttachments(docUrl);
         couchA.fetchList().then(function (attachments) {
           uploadUi.uploadDialog(attachments, {
             mode: 'couch',
@@ -653,17 +653,17 @@ define([
           }).then(function (toUpload) {
             if (!toUpload) return;
             API.loading(loadingId, 'Uploading files...');
-            var parts;
+            let parts;
             parts = _.partition(toUpload, function (v) {
               return v.toDelete;
             });
-            var toDelete = parts[0];
+            let toDelete = parts[0];
             parts = _.partition(parts[1], function (v) {
               return v.size < UPLOAD_LIMIT;
             });
 
-            var largeUploads = parts[1];
-            var smallUploads = parts[0];
+            let largeUploads = parts[1];
+            let smallUploads = parts[0];
 
             // Sort to minimize number of requests
             smallUploads.sort(function (a, b) {
@@ -673,10 +673,10 @@ define([
             });
 
             // Create inline uploads batch
-            var inlineUploads = [];
-            var current = [];
-            var uploadSum = 0;
-            var i;
+            let inlineUploads = [];
+            let current = [];
+            let uploadSum = 0;
+            let i;
             for (i = 0; i < smallUploads.length; i++) {
               uploadSum += smallUploads[i].size;
               if (uploadSum < UPLOAD_LIMIT) {
@@ -692,7 +692,7 @@ define([
               inlineUploads.push(current);
             }
 
-            var prom = Promise.resolve();
+            let prom = Promise.resolve();
 
             prom = prom.then(function () {
               return couchA.remove(_.map(toDelete, 'name'));
@@ -734,8 +734,8 @@ define([
       return dom;
     },
     updateButtons: function () {
-      var node = this.currentDocument;
-      var dom = this.makePublicButton.getDom();
+      let node = this.currentDocument;
+      let dom = this.makePublicButton.getDom();
       if ((node && node.data && !node.data.isPublic && dom)) {
         dom.show();
       } else if (dom) {
@@ -743,8 +743,8 @@ define([
       }
     },
     getMetaForm: function (node) {
-      var that = this;
-      var doc = node.data.doc;
+      let that = this;
+      let doc = node.data.doc;
       return new Promise(function (resolve) {
         $.ajax({
           url: `${that.database.uri + doc._id}/meta.json`, // always the last revision
@@ -810,7 +810,7 @@ define([
       //        }]
       //    }
       // };
-      var result = {
+      let result = {
         sections: {
           metadata: [
             {
@@ -821,8 +821,8 @@ define([
           ]
         }
       };
-      for (var key in obj) {
-        var n = {};
+      for (let key in obj) {
+        let n = {};
         n.contentType = [obj[key].type];
         n.keyword = [key];
         if (obj[key].type === 'text') {
@@ -843,19 +843,19 @@ define([
     },
 
     metaData: function () {
-      var that = this;
+      let that = this;
       if (!this.currentDocument) {
         that.showError('No document selected');
         return;
       }
 
-      var div = ui.dialog({
+      let div = ui.dialog({
         width: '80%',
         autoPosition: true,
         title: 'Edit Metadata'
       });
 
-      var structure = {
+      let structure = {
 
         sections: {
 
@@ -910,7 +910,7 @@ define([
         }
       };
 
-      var form = new Form({});
+      let form = new Form({});
 
       form.init({
         onValueChanged: function (value) {
@@ -919,8 +919,8 @@ define([
 
       form.setStructure(structure);
       form.onStructureLoaded().done(function () {
-        var fill = {};
-        var prom;
+        let fill = {};
+        let prom;
         if (!that.currentDocument.data.hasMeta) {
           prom = Promise.resolve({});
         } else {
@@ -937,7 +937,7 @@ define([
       });
 
       form.addButton('Save', { color: 'green' }, function () {
-        var value = form.getValue();
+        let value = form.getValue();
         that.saveMeta(that.getMetaFromForm(value));
         div.dialog('close');
       });
@@ -950,11 +950,11 @@ define([
 
     getMetaFromForm: function (value) {
       value = DataObject.check(value, true);
-      var result = {};
-      var x = value.getChildSync(['sections', 'metadata', 0, 'sections', 'keywords']);
+      let result = {};
+      let x = value.getChildSync(['sections', 'metadata', 0, 'sections', 'keywords']);
       if (x) {
-        for (var i = 0; i < x.length; i++) {
-          var val = x.getChildSync([i, 'groups', 'group', 0]);
+        for (let i = 0; i < x.length; i++) {
+          let val = x.getChildSync([i, 'groups', 'group', 0]);
           if (val.contentType[0] === 'text') {
             result[val.keyword[0]] = {
               type: 'text',
@@ -971,19 +971,19 @@ define([
       return result;
     },
     lazyLoad: function (event, result) {
-      var id = result.node.data.doc._id;
-      var def = $.Deferred();
+      let id = result.node.data.doc._id;
+      let def = $.Deferred();
       result.result = def.promise();
       this.database.openDoc(id, {
         revs_info: true,
         success: function (data) {
-          var info = data._revs_info,
+          let info = data._revs_info,
             l = info.length,
             revs = [];
-          for (var i = 0; i < l; i++) {
-            var rev = info[i];
+          for (let i = 0; i < l; i++) {
+            let rev = info[i];
             if (rev.status === 'available') {
-              var el = { title: `rev ${l - i}`, id: data._id, rev: rev.rev, key: result.node.key };
+              let el = { title: `rev ${l - i}`, id: data._id, rev: rev.rev, key: result.node.key };
               revs.push(el);
             }
           }
@@ -992,11 +992,11 @@ define([
       });
     },
     clickNode: function (event, data) {
-      var folder;
-      var node = folder = data.node,
+      let folder;
+      let node = folder = data.node,
         last;
 
-      var index = node.key.indexOf(':'),
+      let index = node.key.indexOf(':'),
         keyWithoutFlavor;
       if (index >= 0)
         keyWithoutFlavor = node.key.substring(index + 1);
@@ -1006,7 +1006,7 @@ define([
       if (node.folder) {
         this.currentDocument = null;
       } else {
-        var rev;
+        let rev;
         if (node.data.rev) {
           rev = node.data.rev;
           node = node.parent;
@@ -1032,7 +1032,7 @@ define([
       const proxyClick = this.clickNode.bind(this);
       const that = this;
 
-      var menuOptions = {
+      let menuOptions = {
         delegate: 'span.fancytree-title',
         menu: [
           { title: 'Delete', cmd: 'delete', uiIcon: 'ui-icon-trash' },
@@ -1041,17 +1041,17 @@ define([
           { title: 'Flavors', cmd: 'flavors', children: [] }
         ],
         beforeOpen: function (event, ui) {
-          var node = $.ui.fancytree.getNode(ui.target);
+          let node = $.ui.fancytree.getNode(ui.target);
           if (node.folder)
             return false;
-          var tree = $(`#${that.cssId('tree')}`);
-          var flavors = Object.keys(node.data.doc.flavors);
+          let tree = $(`#${that.cssId('tree')}`);
+          let flavors = Object.keys(node.data.doc.flavors);
           if (flavors.length === 1) {
             tree.contextmenu('setEntry', 'delete', 'Delete');
             tree.contextmenu('showEntry', 'flavors', false);
           } else {
-            var children = new Array(flavors.length);
-            for (var i = 0; i < flavors.length; i++) {
+            let children = new Array(flavors.length);
+            for (let i = 0; i < flavors.length; i++) {
               children[i] = {
                 title: flavors[i],
                 cmd: 'flavor'
@@ -1070,7 +1070,7 @@ define([
           node.setActive();
         },
         select: function (event, ui) {
-          var node = $.ui.fancytree.getNode(ui.target);
+          let node = $.ui.fancytree.getNode(ui.target);
           that.contextClick(node, ui.cmd, ui);
         },
         createMenu: function (event) {
@@ -1078,7 +1078,7 @@ define([
         }
       };
 
-      var dnd = {
+      let dnd = {
         preventVoidMoves: true,
         preventRecursiveMoves: true,
         autoExpandMS: 300,
@@ -1089,12 +1089,12 @@ define([
           return !!target.folder;
         },
         dragDrop: function (target, info) {
-          var theNode = info.otherNode;
+          let theNode = info.otherNode;
           if (target === theNode.parent) // Same folder, nothing to do
             return false;
-          var newKey = target.key.substring(that.flavor.length + 1);
+          let newKey = target.key.substring(that.flavor.length + 1);
           newKey += newKey.length ? `:${theNode.title}` : theNode.title;
-          var newFlavor = newKey.split(':');
+          let newFlavor = newKey.split(':');
           that.database.view('flavor/docs', {
             success: function (data) {
               if (comparePaths(newFlavor, data.rows))
@@ -1127,8 +1127,8 @@ define([
         },
         {
           success: function (data) {
-            var tree = createFullTree(data, that.flavor);
-            var theTree = $(`#${that.cssId('tree')}`);
+            let tree = createFullTree(data, that.flavor);
+            let theTree = $(`#${that.cssId('tree')}`);
             theTree.fancytree({
               toggleEffect: false,
               extensions: ['dnd'],
@@ -1139,7 +1139,7 @@ define([
               debugLevel: 0,
               activate: proxyClick
             }).children('ul').css('box-sizing', 'border-box');
-            var thefTree = theTree.data('ui-fancytree').getTree();
+            let thefTree = theTree.data('ui-fancytree').getTree();
             that.ftree = thefTree;
             thefTree.reload(tree);
             thefTree.getNodeByKey(that.flavor).toggleExpanded();
@@ -1149,12 +1149,12 @@ define([
             if (that.currentDocument) {
               // When switching flavors, if this document is also
               // in the new flavor we select it automatically
-              var id = that.currentDocument.data.doc._id;
-              var d = _.find(data, function (d) {
+              let id = that.currentDocument.data.doc._id;
+              let d = _.find(data, function (d) {
                 return d.id === id;
               });
               if (d) {
-                var key = _.flatten([that.flavor, d.value.flavors]).join(':');
+                let key = _.flatten([that.flavor, d.value.flavors]).join(':');
                 thefTree.activateKey(key);
               }
             }
@@ -1166,7 +1166,7 @@ define([
       );
     },
     contextClick: function (node, action, ctx) {
-      var that = this;
+      let that = this;
 
       if (!node.folder) {
         if (action === 'delete') {
@@ -1200,11 +1200,11 @@ define([
           ui.dialog(`New name : <input type="text" id="${this.cssId('newname')}" value="${node.title}" />`, {
             buttons: {
               Save: function () {
-                var dialog = $(this);
-                var doc = node.data.doc;
-                var name = that.getFormContent('newname');
-                var path = doc.flavors[that.flavor];
-                var oldName = path[path.length - 1];
+                let dialog = $(this);
+                let doc = node.data.doc;
+                let name = that.getFormContent('newname');
+                let path = doc.flavors[that.flavor];
+                let oldName = path[path.length - 1];
                 path[path.length - 1] = name;
                 that.database.view('flavor/docs', {
                   success: function (data) {
@@ -1237,17 +1237,17 @@ define([
             }
           });
         } else if (action === 'newflavor') {
-          var div = $('<div>').html('Flavor :');
+          let div = $('<div>').html('Flavor :');
           ui.dialog(div, {
             buttons: {
               Save: function () {
-                var dialog = $(this);
-                var doc = node.data.doc;
-                var flavor = that.getFormContent('newflavorname');
+                let dialog = $(this);
+                let doc = node.data.doc;
+                let flavor = that.getFormContent('newflavorname');
                 if (doc.flavors[flavor])
                   that.showError(20);
                 else {
-                  var path = doc.flavors[that.flavor];
+                  let path = doc.flavors[that.flavor];
                   that.database.view('flavor/docs', {
                     success: function (data) {
                       if (comparePaths(path, data.rows))
@@ -1308,20 +1308,20 @@ define([
   });
 
   function createFullTree(data, flavor) {
-    var tree = {};
-    for (var i = 0; i < data.length; i++) {
-      var theData = data[i];
-      var structure = getStructure(theData);
+    let tree = {};
+    for (let i = 0; i < data.length; i++) {
+      let theData = data[i];
+      let structure = getStructure(theData);
       $.extend(true, tree, structure);
     }
     return createFancyTree(tree, '', flavor);
   }
 
   function getStructure(data) {
-    var flavors = data.value.flavors;
-    var structure = {},
+    let flavors = data.value.flavors;
+    let structure = {},
       current = structure;
-    for (var i = 0; i < flavors.length - 1; i++) {
+    for (let i = 0; i < flavors.length - 1; i++) {
       current = current[flavors[i]] = { __folder: true };
     }
     current[flavors[flavors.length - 1]] = {
@@ -1336,7 +1336,7 @@ define([
   }
 
   function createFancyTree(object, currentPath, flavor) {
-    var tree, root;
+    let tree, root;
     if (currentPath.length) {
       tree = root = [];
     } else {
@@ -1352,12 +1352,12 @@ define([
       currentPath = `${flavor}:`;
     }
 
-    for (var name in object) {
+    for (let name in object) {
       if (name.indexOf('__') === 0)
         continue;
-      var obj = object[name];
-      var thisPath = currentPath + name;
-      var el = { title: name, key: thisPath };
+      let obj = object[name];
+      let thisPath = currentPath + name;
+      let el = { title: name, key: thisPath };
       if (obj.__folder) {
         if (obj.__name) {
           tree.push({
@@ -1387,11 +1387,11 @@ define([
   }
 
   function comparePaths(path1, paths) {
-    var joinedPath1 = path1.join(':');
-    var i = 0,
+    let joinedPath1 = path1.join(':');
+    let i = 0,
       l = paths.length;
     for (; i < l; i++) {
-      var path2 = paths[i].value.flavors.join(':');
+      let path2 = paths[i].value.flavors.join(':');
       if (joinedPath1 === path2)
         return true;
     }

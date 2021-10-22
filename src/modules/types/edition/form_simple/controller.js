@@ -47,8 +47,8 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src
   Controller.prototype.variablesIn = ['input_object'];
 
   Controller.prototype.configurationStructure = function () {
-    var jpaths = [];
-    var arr = this.module.getDataFromRel('input_object');
+    let jpaths = [];
+    let arr = this.module.getDataFromRel('input_object');
 
     if (arr) {
       arr = arr.get();
@@ -167,7 +167,7 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src
       this.setVarFromEvent('onChange', 'output_object', 'input_object', []);
       this.sendActionFromEvent('onChange', 'output_object', newValue);
     } else {
-      var formattedValue = formatValue(newValue);
+      let formattedValue = formatValue(newValue);
       this.createDataFromEvent('onChange', 'formatted_output', formattedValue);
       this.createDataFromEvent('onChange', 'output_object', newValue);
       this.sendActionFromEvent('onChange', 'formatted_output', formattedValue);
@@ -188,9 +188,9 @@ define(['modules/default/defaultcontroller', 'lib/formcreator/formcreator', 'src
   };
 
   function formatValue(value) {
-    var result = {};
-    var objToFormat = value.sections.main[0].groups.main[0];
-    for (var i in objToFormat) {
+    let result = {};
+    let objToFormat = value.sections.main[0].groups.main[0];
+    for (let i in objToFormat) {
       result[i] = formatFieldValue(objToFormat[i]);
     }
     return result;

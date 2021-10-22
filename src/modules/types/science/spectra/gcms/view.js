@@ -13,10 +13,10 @@ define([
   $.extend(true, View.prototype, Default, {
 
     init: function () {
-      var div1 = document.createElement('div');
-      var div2 = document.createElement('div');
+      let div1 = document.createElement('div');
+      let div2 = document.createElement('div');
 
-      var domGraph = document.createElement('div');
+      let domGraph = document.createElement('div');
 
       domGraph.appendChild(div1);
       domGraph.appendChild(div2);
@@ -36,13 +36,13 @@ define([
     },
 
     inDom: function () {
-      var that = this;
-      var getConfig = (name) => {
-        var value = this.module.getConfiguration(name);
+      let that = this;
+      let getConfig = (name) => {
+        let value = this.module.getConfiguration(name);
         return Color.array2rgba(value);
       };
-      var aucColor = getConfig('auccolor');
-      var autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)');
+      let aucColor = getConfig('auccolor');
+      let autColorT = aucColor.replace(/,[^,]+\)$/, ', 0.3)');
 
       this.gcmsInstance = new GCMS(this.div1, this.div2, {
         gcSize: this.module.getConfiguration('gcsize'),
@@ -140,9 +140,9 @@ define([
     },
 
     addAnnotations: function (a) {
-      var that = this;
+      let that = this;
       a.map(function (source) {
-        var shapeData = that.gcmsInstance.addAUC(source.from, source.to, source);
+        let shapeData = that.gcmsInstance.addAUC(source.from, source.to, source);
         shapeData._originalSource = source;
       });
 
@@ -152,8 +152,8 @@ define([
 
     onActionReceive: {
       fromtoGC: function (value) {
-        var from = value.from - Math.abs(value.to - value.from) * 0.1;
-        var to = value.to + Math.abs(value.to - value.from) * 0.1;
+        let from = value.from - Math.abs(value.to - value.from) * 0.1;
+        let to = value.to + Math.abs(value.to - value.from) * 0.1;
 
         this.gcmsInstance.getGC().getBottomAxis()._doZoomVal(from, to, true);
         this.gcmsInstance.getGC().redraw(true, true, false);
@@ -178,12 +178,12 @@ define([
       },
 
       centerGC: function (value) {
-        var a = this.gcmsInstance.getGC().getBottomAxis();
+        let a = this.gcmsInstance.getGC().getBottomAxis();
 
-        var mi = a.getCurrentMin();
-        var ma = a.getCurrentMax();
+        let mi = a.getCurrentMin();
+        let ma = a.getCurrentMax();
 
-        var interval = Math.abs(ma - mi) / 2;
+        let interval = Math.abs(ma - mi) / 2;
 
         a._doZoomVal(value - interval, value + interval, true);
         this.gcmsInstance.getGC().redraw(true, true, false);

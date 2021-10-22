@@ -1,27 +1,27 @@
 'use strict';
 
 define(['require'], function (require) {
-  var Versioning;
+  let Versioning;
   require(['src/util/versioning'], function (Vers) {
     Versioning = Vers;
   });
 
-  var API;
+  let API;
   require(['src/util/api'], function (A) {
     API = A;
   });
 
   /* RELATED TO SCRIPTING  */
-  var evaluatedScripts;
+  let evaluatedScripts;
 
   function doScripts() {
-    var data = getActionScripts();
+    let data = getActionScripts();
 
     if (!data || evaluatedScripts) {
       return;
     }
 
-    var evaled = {},
+    let evaled = {},
       i = 0,
       l = data.length;
 
@@ -48,7 +48,7 @@ define(['require'], function (require) {
 
   /* Action files */
 
-  var actionsFiles;
+  let actionsFiles;
 
   function setActionFiles(form) {
     Versioning.getView().actionfiles = form;
@@ -56,8 +56,8 @@ define(['require'], function (require) {
   }
 
   function doFiles() {
-    var files = Versioning.getView().actionfiles;
-    var fileName, fileMode, actionName;
+    let files = Versioning.getView().actionfiles;
+    let fileName, fileMode, actionName;
 
     actionsFiles = {};
 
@@ -65,7 +65,7 @@ define(['require'], function (require) {
       return;
     }
 
-    for (var i = 0, l = files[0].groups.action[0].length; i < l; i++) {
+    for (let i = 0, l = files[0].groups.action[0].length; i < l; i++) {
       actionsFiles[files[0].groups.action[0][i].name] =
         actionsFiles[files[0].groups.action[0][i].name] || [];
       actionsFiles[files[0].groups.action[0][i].name].push({
@@ -189,7 +189,7 @@ define(['require'], function (require) {
       }
 
       if (actionsFiles[actionName]) {
-        var i = 0,
+        let i = 0,
           l = actionsFiles[actionName].length;
 
         for (; i < l; i++) {

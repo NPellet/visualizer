@@ -14,7 +14,7 @@ define(['jquery', 'src/util/util'], function ($, Util) {
   Header.prototype.initImpl = Util.noop;
 
   Header.prototype.makeDom = function () {
-    var that = this;
+    let that = this;
     this._dom = document.createElement('li');
     this.$_dom = $(this._dom);
     this.$_dom.text(this.options.label || this.options.title || '');
@@ -48,7 +48,7 @@ define(['jquery', 'src/util/util'], function ($, Util) {
 
     this.$_elToOpen.show();
 
-    var w = this.$_elToOpen.outerWidth(true),
+    let w = this.$_elToOpen.outerWidth(true),
       h = this.$_dom.outerHeight(true),
       pos = this.$_dom.position(),
       fullW = $('#header').outerWidth(true),

@@ -2,7 +2,7 @@
 
 (function () {
   try {
-    eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
+    eval('(function(){ var a = 0; var b = {a}; })()');
   } catch (e) {
     // eslint-disable-next-line no-alert
     alert(

@@ -5,12 +5,12 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      var that = this;
+      let that = this;
 
       this.button = this.module.getConfiguration('button')[0] === 'button';
       this.dom = $('<div>').addClass('ci-module-webservice_nmr_spin');
 
-      var selector = [];
+      let selector = [];
       selector.push('<select name="system">');
       selector.push('<option value="2" selected>AB</option>');
       selector.push('<option value="3">ABC</option>');
@@ -20,7 +20,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       selector.push('<option value="7">ABCDEFG</option>');
       selector.push('<option value="8">ABCDEFGH</option>');
       selector.push('</select>');
-      var selectorSelect = $(selector.join(''));
+      let selectorSelect = $(selector.join(''));
       selectorSelect.val(this.module.getConfiguration('systemSize')[0]);
       this.systemSelector = $('<h1>Select your spin system: </h1>');
       this.systemSelector.append(selectorSelect);
@@ -28,7 +28,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       this.dom.append(this.systemSelector);
 
       this.systemSelector.on('change', 'select', function () {
-        var s = that.module.getConfiguration('systemSize', null, false);
+        let s = that.module.getConfiguration('systemSize', null, false);
         s[0] = $(this).val();
         that.init();
       });
@@ -71,8 +71,8 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
     },
 
     _getTable: function (size) {
-      var content = [];
-      var i;
+      let content = [];
+      let i;
 
       content.push('<table><tbody id="table2"><tr>');
       content.push('<th></th>');
@@ -88,7 +88,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         content.push(
           `<td><input type="text" size=4 value=${i + 1} name="delta_${i}">`
         );
-        for (var j = 0; j < i; j++) {
+        for (let j = 0; j < i; j++) {
           content.push(
             `<td><input type="text" size=3 value=0 name="coupling_${i}_${j}">`
           );

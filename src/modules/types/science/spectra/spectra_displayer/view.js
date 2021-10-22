@@ -55,10 +55,10 @@ define([
     },
 
     inDom() {
-      var prom = new Promise((resolve) => {
-        var cfg = this.module.getConfiguration;
-        var cfgCheckbox = this.module.getConfigurationCheckbox;
-        var graphurl = cfg('graphurl');
+      let prom = new Promise((resolve) => {
+        let cfg = this.module.getConfiguration;
+        let cfgCheckbox = this.module.getConfigurationCheckbox;
+        let graphurl = cfg('graphurl');
 
         if (graphurl) {
           $.getJSON(graphurl, {}, (data) => {
@@ -69,7 +69,7 @@ define([
             resolve(new Graph(this.dom.get(0), data.options, data.axis));
           });
         } else {
-          var options = {
+          let options = {
             close: {
               top: false,
               right: false,
@@ -87,7 +87,7 @@ define([
             ctrl: false,
           });
 
-          var zoom = cfg('zoom');
+          let zoom = cfg('zoom');
 
           let dezoomMode;
           if (zoom === 'x') {
@@ -118,7 +118,7 @@ define([
           options.plugins.peakPicking = {};
 
           if (zoom && zoom !== 'none') {
-            var zoomOptions = {};
+            let zoomOptions = {};
             if (zoom === 'x') {
               zoomOptions.zoomMode = 'x';
             } else if (zoom === 'y') {
@@ -136,9 +136,9 @@ define([
               ctrl: false,
             });
           }
-          var wheel = cfg('wheelAction');
+          let wheel = cfg('wheelAction');
           if (wheel && wheel !== 'none') {
-            var wheelOptions = {
+            let wheelOptions = {
               baseline:
                 wheel == 'zoomYMousePos'
                   ? 'mousePosition'
@@ -208,7 +208,7 @@ define([
             });
           }
 
-          var xOptions = {
+          let xOptions = {
             nbTicksPrimary: cfg('xnbTicksPrimary', 5),
           };
 
@@ -224,12 +224,12 @@ define([
             useAxis: cfg('trackingAxis'),
           };
 
-          var graph = new Graph(this.dom.get(0), options, {
+          let graph = new Graph(this.dom.get(0), options, {
             bottom: [xOptions],
           });
           this.graph = graph;
 
-          var xAxis = graph.getXAxis(0, xOptions);
+          let xAxis = graph.getXAxis(0, xOptions);
           this.xAxis = xAxis;
 
           // Axes
@@ -266,9 +266,9 @@ define([
           var yAxis = this.getYAxis(0);
           this.yAxis = yAxis;
 
-          var legend = cfg('legend', 'none');
+          let legend = cfg('legend', 'none');
           if (legend !== 'none') {
-            var theLegend = graph.makeLegend({
+            let theLegend = graph.makeLegend({
               backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
               frame: true,
               frameWidth: '1',
@@ -352,12 +352,12 @@ define([
           }
 
           if (selectScatterPlugin) {
-            var plugin = graph.getPlugin('selectScatter');
+            let plugin = graph.getPlugin('selectScatter');
 
             plugin.on('selectionEnd', (selectedIndices) => {
               const serie = plugin.options.serie;
-              var result = [];
-              var info = serie.infos;
+              let result = [];
+              let info = serie.infos;
               if (info) {
                 result = selectedIndices.map((index) => info[index]);
               }
@@ -456,11 +456,11 @@ define([
         return this.graph.getYAxis(index);
       }
 
-      var cfg = this.module.getConfiguration;
+      let cfg = this.module.getConfiguration;
 
-      var yAxis;
-      for (var i = this.numberOfYAxes; i <= index; i++) {
-        var yOptions = {
+      let yAxis;
+      for (let i = this.numberOfYAxes; i <= index; i++) {
+        let yOptions = {
           nbTicksPrimary: cfg('ynbTicksPrimary', 5),
         };
         yAxis = this.graph.getYAxis(i, yOptions);
@@ -517,7 +517,7 @@ define([
     },
 
     redraw(forceReacalculateAxis, varName) {
-      var fullOut;
+      let fullOut;
       if (forceReacalculateAxis) {
         fullOut = 'both';
       } else {
@@ -550,10 +550,10 @@ define([
       this.graph.draw();
       this.graph.updateLegend();
 
-      var minX = this.xAxis.getCurrentMin();
-      var maxX = this.xAxis.getCurrentMax();
-      var minY = this.yAxis.getCurrentMin();
-      var maxY = this.yAxis.getCurrentMax();
+      let minX = this.xAxis.getCurrentMin();
+      let maxX = this.xAxis.getCurrentMax();
+      let minY = this.yAxis.getCurrentMin();
+      let maxY = this.yAxis.getCurrentMax();
 
       this.module.model.setXBoundaries(minX, maxX);
       this.module.model.setYBoundaries(minY, maxY);
@@ -569,9 +569,9 @@ define([
       highlight = highlight || [];
 
       if (plotinfos) {
-        for (var i = 0, l = plotinfos.length; i < l; i++) {
+        for (let i = 0, l = plotinfos.length; i < l; i++) {
           if (varname == plotinfos[i].variable) {
-            var continuous = plotinfos[i].plotcontinuous;
+            let continuous = plotinfos[i].plotcontinuous;
             if (continuous.startsWith('auto')) {
               continuous = analyzeContinuous(data, continuous);
             }
@@ -583,7 +583,7 @@ define([
             options.lineToZero = continuous == 'discrete';
             options.strokeWidth = parseInt(plotinfos[i].strokewidth, 10);
 
-            var pp = plotinfos[i].peakpicking[0];
+            let pp = plotinfos[i].peakpicking[0];
             if (pp) {
               others.peakPicking = true;
             }
@@ -621,11 +621,11 @@ define([
         style = {},
         styles = { unselected: {}, selected: {} },
       } = options;
-      var plotinfos = this.module.getConfiguration('plotinfos');
+      let plotinfos = this.module.getConfiguration('plotinfos');
       const stackVerticalSpacing = this.module.getConfiguration(
         'stackVerticalSpacing',
       );
-      var foundInfo = false;
+      let foundInfo = false;
       serie.autoAxis();
       if (this.serieHiddenState.get(varname)) {
         serie.hidden = true;
@@ -636,17 +636,17 @@ define([
       let plotinfosStyle = {};
       if (plotinfos) {
         const axes = new Set();
-        for (var plotinfo of plotinfos) {
+        for (let plotinfo of plotinfos) {
           axes.add(plotinfo.axis ? Number(plotinfo.axis) : 0);
         }
         const minAxis = Math.min(...axes);
         const nbAxes = axes.size || 1;
-        for (var i = 0, l = plotinfos.length; i < l; i++) {
+        for (let i = 0, l = plotinfos.length; i < l; i++) {
           if (varname == plotinfos[i].variable) {
             foundInfo = true;
             const axisIdx =
               (plotinfos[i].axis ? Number(plotinfos[i].axis) : 0) - minAxis;
-            var axis = this.getYAxis(axisIdx);
+            let axis = this.getYAxis(axisIdx);
             const startSpan = axisIdx * stackVerticalSpacing || 0;
             const endSpan = 1 - stackVerticalSpacing * (nbAxes - 1 - axisIdx);
             axis.setSpan(startSpan, endSpan);
@@ -656,20 +656,20 @@ define([
               plotinfos[i].adaptTo &&
               String(plotinfos[i].adaptTo) !== 'none'
             ) {
-              var other = this.getYAxis(Number(plotinfos[i].adaptTo));
+              let other = this.getYAxis(Number(plotinfos[i].adaptTo));
               axis.adaptTo(other, 0, 0);
             }
 
             plotinfosStyle.lineColor = Color.getColor(plotinfos[i].plotcolor);
 
-            var lineWidth = parseFloat(plotinfos[i].strokewidth);
+            let lineWidth = parseFloat(plotinfos[i].strokewidth);
             if (isNaN(lineWidth)) lineWidth = 1;
             serie.setLineWidth(lineWidth);
 
             plotinfosStyle.lineStyle = parseInt(plotinfos[i].strokestyle) || 1;
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
-              var color = style.lineColor || plotinfos[i].plotcolor;
+              let color = style.lineColor || plotinfos[i].plotcolor;
               serie.showMarkers();
               serie.setMarkers([
                 {
@@ -720,12 +720,12 @@ define([
         API.listenHighlight(
           { _highlight: highlight },
           (value, commonKeys) => {
-            for (var i = 0, ii = commonKeys.length; i < ii; i++) {
-              var key = commonKeys[i];
-              for (var j = 0, jj = highlight.length; j < jj; j++) {
-                var high = highlight[j];
+            for (let i = 0, ii = commonKeys.length; i < ii; i++) {
+              let key = commonKeys[i];
+              for (let j = 0, jj = highlight.length; j < jj; j++) {
+                let high = highlight[j];
                 if (Array.isArray(high)) {
-                  for (var k = 0; k < high.length; k++) {
+                  for (let k = 0; k < high.length; k++) {
                     if (high[k] == key) {
                       serie.toggleMarker(j, !!value, true);
                     }
@@ -787,7 +787,7 @@ define([
 
         moduleValue = JSONChart.check(moduleValue.get());
 
-        var existingNames = new Set();
+        let existingNames = new Set();
 
         // in spectra diplayer we don't have the correct format currently. still need to change it for now
         if (moduleValue.series) {
@@ -839,7 +839,7 @@ define([
         }
 
         for (let i = 0; i < data.length; i++) {
-          var aData = data[i];
+          let aData = data[i];
           if (i === 0 && moduleValue.axis) {
             if (moduleValue.axis[aData.xAxis]) {
               this.xAxis.setLabel(moduleValue.axis[aData.xAxis].label);
@@ -849,20 +849,20 @@ define([
             }
           }
 
-          var defaultStyle = aData.defaultStyle || {};
-          var defaultStyles = aData.defaultStyles || {};
+          let defaultStyle = aData.defaultStyle || {};
+          let defaultStyles = aData.defaultStyles || {};
 
-          var serieName = varname;
+          let serieName = varname;
           if (existingNames.has(serieName)) {
             serieName += `-${i}`;
           }
           existingNames.add(serieName);
 
-          var serieLabel = aData.label || serieName;
+          let serieLabel = aData.label || serieName;
 
-          var valFinal = [];
-          var valFinalX = [];
-          var valFinalY = [];
+          let valFinal = [];
+          let valFinalX = [];
+          let valFinalY = [];
 
           switch (String(aData.type)) {
             case 'zone':
@@ -887,12 +887,12 @@ define([
               break;
           }
 
-          var serieType = String(aData.type || 'line');
+          let serieType = String(aData.type || 'line');
 
           if (serieType == 'color') {
             serieType = 'line.color';
           }
-          var hasColor = false;
+          let hasColor = false;
           if (Array.isArray(aData.color)) {
             hasColor = true;
             serieType = 'line.color';
@@ -903,7 +903,7 @@ define([
             valFinalY,
           ]);
 
-          var serie = this.graph.newSerie(
+          let serie = this.graph.newSerie(
             serieName,
             serieOptions.options,
             serieType,
@@ -927,7 +927,7 @@ define([
             serieType == 'scatter' ||
             serieType == 'line.color'
           ) {
-            var wave = Graph.newWaveform();
+            let wave = Graph.newWaveform();
 
             wave.setData(valFinalY, valFinalX);
 
@@ -1013,7 +1013,7 @@ define([
             }
 
             if (this.module.getConfigurationCheckbox('selectScatter', 'yes')) {
-              var plugin = this.graph.getPlugin('selectScatter');
+              let plugin = this.graph.getPlugin('selectScatter');
               plugin.setSerie(serie);
             }
           } else {
@@ -1026,7 +1026,7 @@ define([
                 style: aData.style,
               });
             } else {
-              var color =
+              let color =
                 defaultStyle.lineColor ||
                 (data.length > 1
                   ? Color.getNextColorRGB(i, data.length)
@@ -1086,7 +1086,7 @@ define([
           valY = [],
           wave = Graph.newWaveform();
 
-        for (var i = 0, l = val.length; i < l; i += 2) {
+        for (let i = 0, l = val.length; i < l; i += 2) {
           valX.push(val[i]);
           valY.push(val[i + 1]);
         }
@@ -1109,20 +1109,20 @@ define([
       // in fact it is a Y array ...
       xArray(moduleValue, varname) {
         // Use wave.rescaleX( offset, shift );
-        var val = moduleValue.get();
+        let val = moduleValue.get();
         this.series[varname] = this.series[varname] || [];
         this.removeSerie(varname);
 
-        var minX = this.module.getConfiguration('minX', 0);
-        var maxX = this.module.getConfiguration('maxX', val.length - 1);
-        var step = (maxX - minX) / (val.length - 1);
+        let minX = this.module.getConfiguration('minX', 0);
+        let maxX = this.module.getConfiguration('maxX', val.length - 1);
+        let step = (maxX - minX) / (val.length - 1);
 
-        var waveform = Graph.newWaveform();
+        let waveform = Graph.newWaveform();
         waveform.setData(val);
         waveform.rescaleX(minX, (maxX - minX) / (val.length - 1));
 
         let serieOptions = this.getSerieOptions(varname, null, [null, [val]]);
-        var serie = this.graph.newSerie(varname, serieOptions.options);
+        let serie = this.graph.newSerie(varname, serieOptions.options);
 
         this.registerSerieEvents(serie, varname);
 
@@ -1193,17 +1193,17 @@ define([
       },
 
       jcamp(moduleValue, varname) {
-        var that = this;
-        var serie;
+        let that = this;
+        let serie;
 
         if (!this.graph) {
           return;
         }
 
-        var options = moduleValue._options || {};
+        let options = moduleValue._options || {};
 
-        var value = moduleValue.get();
-        var valueType = DataObject.getType(value);
+        let value = moduleValue.get();
+        let valueType = DataObject.getType(value);
         if (valueType === 'string') {
           require(['jcampconverter'], (JcampConverter) => {
             let parsed = JcampConverter.convert(
@@ -1257,7 +1257,7 @@ define([
                 that.graph.getPlugin('peakPicking').setSerie(serie);
               }
 
-              var waveform = Graph.newWaveform();
+              let waveform = Graph.newWaveform();
               waveform.setData(data.Y || data.y, data.X || data.x);
               that.normalize(waveform, varname);
               if (serieOptions.useSlots) {
@@ -1279,18 +1279,18 @@ define([
       series_xy1d(data, varname) {
         // Receives an array of series. Blank the other ones.
         require(['src/util/color'], (Color) => {
-          var colors = Color.getDistinctColors(data.length);
+          let colors = Color.getDistinctColors(data.length);
           //   self.graph.removeSeries();
 
           // data = data.get();
 
-          var i = 0,
+          let i = 0,
             l = data.length;
 
           for (; i < l; i++) {
-            var opts = this.getSerieOptions(varname, null, data[i].data);
+            let opts = this.getSerieOptions(varname, null, data[i].data);
 
-            var serie = this.graph.newSerie(data[i].name, opts.options);
+            let serie = this.graph.newSerie(data[i].name, opts.options);
             this.graph.registerSerieEvents(serie, data[i].name);
 
             serie.autoAxis();
@@ -1328,7 +1328,7 @@ define([
     removeAnnotations(varName) {
       API.killHighlight(this.module.getId() + varName);
       if (this.annotations[varName]) {
-        for (var i = 0; i < this.annotations[varName].length; i++) {
+        for (let i = 0; i < this.annotations[varName].length; i++) {
           if (this.annotations[varName][i]) {
             this.annotations[varName][i].kill();
           }
@@ -1339,7 +1339,7 @@ define([
 
     removeSerie(serieName) {
       if (this.series[serieName]) {
-        for (var i = 0; i < this.series[serieName].length; i++) {
+        for (let i = 0; i < this.series[serieName].length; i++) {
           this.series[serieName][i].kill(true);
         }
       }
@@ -1348,7 +1348,7 @@ define([
     },
 
     makeSerie(data, value, name) {
-      var serie = this.graph.newSerie(data.name);
+      let serie = this.graph.newSerie(data.name);
 
       this.registerSerieEvents(serie, data.name);
 
@@ -1391,14 +1391,14 @@ define([
         if (value.name) {
           this.makeSerie(value, value, value.name);
         } else {
-          for (var i in value) {
+          for (let i in value) {
             this.makeSerie(value[i], value);
           }
         }
       },
 
       removeSerie(value) {
-        for (var i = 0, l = this.seriesActions.length; i < l; i++) {
+        for (let i = 0, l = this.seriesActions.length; i < l; i++) {
           if (this.seriesActions[i][0] == value) {
             this.seriesActions[i][1].kill();
             this.seriesActions.splice(i, 1);
@@ -1407,7 +1407,7 @@ define([
       },
 
       removeSerieByName(value) {
-        for (var i = 0; i < this.seriesActions.length; i++) {
+        for (let i = 0; i < this.seriesActions.length; i++) {
           if (this.seriesActions[i][2] == value) {
             this.seriesActions[i][1].kill();
             this.seriesActions.splice(i, 1);
@@ -1468,11 +1468,11 @@ define([
     },
 
     normalize(waveform, varname) {
-      var plotinfos = this.module.getConfiguration('plotinfos');
-      var maxValue, minValue, total, ratio, i, l;
+      let plotinfos = this.module.getConfiguration('plotinfos');
+      let maxValue, minValue, total, ratio, i, l;
 
       if (!plotinfos) return;
-      var normalize = '';
+      let normalize = '';
       for (i = 0, l = plotinfos.length; i < l; i++) {
         if (varname == plotinfos[i].variable) {
           normalize = plotinfos[i].normalize;
@@ -1486,10 +1486,10 @@ define([
 
   function analyzeContinuous(data, continuous) {
     if (Array.isArray(data)) {
-      var minInterval = Infinity;
-      var maxInterval = -Infinity;
-      var interval, i, ii;
-      var MIN_FOR_CONTINUOUS = 20;
+      let minInterval = Infinity;
+      let maxInterval = -Infinity;
+      let interval, i, ii;
+      let MIN_FOR_CONTINUOUS = 20;
 
       if (typeof data[0] === 'number') {
         if (data.length < MIN_FOR_CONTINUOUS * 2 - 1) return 'discrete';

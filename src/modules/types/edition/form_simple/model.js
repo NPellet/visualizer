@@ -6,7 +6,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
   $.extend(true, Model.prototype, Default, {
     getjPath: function (rel) {
-      var jpaths = [];
+      let jpaths = [];
 
       switch (rel) {
         case 'formValue':

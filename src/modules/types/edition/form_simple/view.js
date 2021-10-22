@@ -17,7 +17,7 @@ define([
     },
 
     inDom: function () {
-      var that = this,
+      let that = this,
         structure = this.module.getConfiguration('structure') || [],
         tpl_file = this.module.getConfiguration('tpl_file'),
         trigger = this.module.getConfiguration('trigger'),
@@ -53,16 +53,16 @@ define([
           return;
         }
 
-        var i, l;
+        let i, l;
 
-        var val = new DataObject(this.getValue(), true);
+        let val = new DataObject(this.getValue(), true);
         that.formValue = val;
 
-        var input = that.module.getDataFromRel('input_object'),
+        let input = that.module.getDataFromRel('input_object'),
           structure = that.module.getConfiguration('structure') || [],
           jpath;
 
-        var el = new DataObject();
+        let el = new DataObject();
 
         if (input) {
           if (that.module.getConfiguration('replaceObj')) {
@@ -96,19 +96,19 @@ define([
         return el;
       }
 
-      var triggerFunction = function () {
-        var el = triggerCommon.call(this);
+      let triggerFunction = function () {
+        let el = triggerCommon.call(this);
         that.module.controller.formTriggered(el);
       };
 
-      var changedFunction = function () {
-        var el = triggerCommon.call(this);
+      let changedFunction = function () {
+        let el = triggerCommon.call(this);
         that.module.controller.valueChanged(el);
       };
 
       $.when(def).done(function (tpl) {
         tpl = `<form><div style="position: relative;" class="form-sections-wrapper form-section-section-container"><div class="form-section" data-form-sectionname="main"><div class="form-section-group-container"><div class="form-group" data-form-groupname="main">${tpl}</div></div></div></div></form>`;
-        var form = FormCreator.makeForm();
+        let form = FormCreator.makeForm();
 
         switch (trigger) {
           case 'btn':
@@ -152,7 +152,7 @@ define([
 
     update: {
       input_object: function (varValue) {
-        var that = this;
+        let that = this;
         this.newValue(varValue);
 
         this.module.model.dataListenChange(
@@ -166,14 +166,14 @@ define([
     },
 
     newValue: function (varValue) {
-      var that = this,
+      let that = this,
         structure = this.module.getConfiguration('structure') || [],
         jpath;
 
       that.lockEvents = true;
       that.nb = 0;
 
-      for (var i = 0, l = structure.length; i < l; i++) {
+      for (let i = 0, l = structure.length; i < l; i++) {
         jpath = structure[i].groups.general[0].searchOnField[0];
 
         (function (j, jpath) {

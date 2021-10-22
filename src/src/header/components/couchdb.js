@@ -19,7 +19,7 @@ define([
       this.id = Util.getNextUniqueId();
       if (this.options.url)
         $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
-      var db = this.options.database || 'visualizer';
+      let db = this.options.database || 'visualizer';
       this.database = $.couch.db(db);
 
       this.showError = showError.bind(this);
@@ -28,7 +28,7 @@ define([
       this.checkDatabase();
     },
     checkDatabase: function () {
-      var that = this;
+      let that = this;
       $.couch.info({
         success: function (event) {
           that.ok = true;
@@ -65,7 +65,7 @@ define([
         return;
       }
 
-      var that = this;
+      let that = this;
       this.$_elToOpen = $('<div>');
       this.errorP = $(`<p id="${this.cssId('error')}" style="color: red;">`);
 
@@ -82,7 +82,7 @@ define([
       });
     },
     load: function (type, node, rev) {
-      var result = {};
+      let result = {};
       result[type.toLowerCase()] = {
         url: this.database.uri + node.data.id + (rev ? `?rev=${rev}` : '')
       };
@@ -92,12 +92,12 @@ define([
       if (name.length < 1) return;
       if (name.indexOf(':') !== -1) return this.showError(10);
 
-      var content = JSON.parse(Versioning[`get${type}JSON`]());
+      let content = JSON.parse(Versioning[`get${type}JSON`]());
 
-      var last = this[`last${type}Node`];
+      let last = this[`last${type}Node`];
       if (typeof last === 'undefined') return this.showError(11);
 
-      var id, folderNode;
+      let id, folderNode;
       if (last.node.folder) {
         id = `${last.name}:${name}`;
         folderNode = last.node;
@@ -106,14 +106,14 @@ define([
         folderNode = last.node.parent;
       }
 
-      var keys = Object.keys(content);
-      for (var i = 0, ii = keys.length; i < ii; i++) {
+      let keys = Object.keys(content);
+      for (let i = 0, ii = keys.length; i < ii; i++) {
         if (keys[i].charAt(0) === '_') delete content[keys[i]];
       }
 
       content._id = id;
 
-      var update = false;
+      let update = false;
       if (id === last.name) {
         update = true;
         content._rev = last.node.data.lastRev;
@@ -142,23 +142,23 @@ define([
       if (name.length < 1) return;
       if (name.indexOf(':') !== -1) return this.showError(10);
 
-      var last = this[`last${type}Node`];
+      let last = this[`last${type}Node`];
       if (typeof last === 'undefined') return this.showError(11);
 
-      var folderNode;
+      let folderNode;
       if (last.node.folder) folderNode = last.node;
       else folderNode = last.node.parent;
 
       // Check if folder already exists
-      var children = folderNode.getChildren();
+      let children = folderNode.getChildren();
       if (children) {
-        for (var i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
           if (children[i].title === name && children[i].folder)
             return this.showError(12);
         }
       }
 
-      var newNode = folderNode.addNode({
+      let newNode = folderNode.addNode({
         folder: true,
         title: name,
         key: `${folderNode.key}:${name}`
@@ -169,7 +169,7 @@ define([
         .trigger('click');
     },
     login: function (username, password) {
-      var that = this;
+      let that = this;
       $.couch.login({
         name: username,
         password: password,
@@ -182,7 +182,7 @@ define([
       });
     },
     logout: function () {
-      var that = this;
+      let that = this;
       $.couch.logout({
         success: function () {
           that.loggedIn = false;
@@ -192,7 +192,7 @@ define([
       });
     },
     getLoginForm: function () {
-      var that = this;
+      let that = this;
 
       function doLogin() {
         that.login(
@@ -202,7 +202,7 @@ define([
         return false;
       }
 
-      var loginForm = (this.loginForm = $('<div>'));
+      let loginForm = (this.loginForm = $('<div>'));
       loginForm.append('<h1>Login</h1>');
       loginForm.append(
         `<label for="${this.cssId(
@@ -230,10 +230,10 @@ define([
       return loginForm;
     },
     getMenuContent: function () {
-      var that = this;
-      var dom = (this.menuContent = $('<div>'));
+      let that = this;
+      let dom = (this.menuContent = $('<div>'));
 
-      var logout = $('<div>')
+      let logout = $('<div>')
         .append(
           $('<p>')
             .css('display', 'inline-block')
@@ -260,17 +260,17 @@ define([
         );
       dom.append(logout);
 
-      var tableRow = $('<tr>').appendTo($('<table>').appendTo(dom));
-      var treeCSS = {
+      let tableRow = $('<tr>').appendTo($('<table>').appendTo(dom));
+      let treeCSS = {
         'overflow-y': 'auto',
         height: '200px',
         width: '300px'
       };
 
-      var dataCol = $('<td valign="top">').appendTo(tableRow);
+      let dataCol = $('<td valign="top">').appendTo(tableRow);
       dataCol.append('<h1>Data</h1>');
 
-      var dataTree = $('<div>')
+      let dataTree = $('<div>')
         .attr('id', this.cssId('datatree'))
         .css(treeCSS);
       dataCol.append(dataTree);
@@ -300,10 +300,10 @@ define([
       );
       this.lastDataFolder = { name: `${this.username}:data`, node: null };
 
-      var viewCol = $('<td valign="top">').appendTo(tableRow);
+      let viewCol = $('<td valign="top">').appendTo(tableRow);
       viewCol.append('<h1>View</h1>');
 
-      var viewTree = $('<div>')
+      let viewTree = $('<div>')
         .attr('id', this.cssId('viewtree'))
         .css(treeCSS);
       viewCol.append(viewTree);
@@ -340,19 +340,19 @@ define([
       return dom;
     },
     lazyLoad: function (event, result) {
-      var id = result.node.data.id;
-      var def = $.Deferred();
+      let id = result.node.data.id;
+      let def = $.Deferred();
       result.result = def.promise();
       this.database.openDoc(id, {
         revs_info: true,
         success: function (data) {
-          var info = data._revs_info,
+          let info = data._revs_info,
             l = info.length,
             revs = [];
-          for (var i = 0; i < l; i++) {
-            var rev = info[i];
+          for (let i = 0; i < l; i++) {
+            let rev = info[i];
             if (rev.status === 'available') {
-              var el = {
+              let el = {
                 title: `rev ${l - i}`,
                 id: data._id,
                 rev: true,
@@ -368,14 +368,14 @@ define([
     clickNode: function (type, event, data) {
       if (data.targetType !== 'title' && data.targetType !== 'icon') return;
 
-      var node = data.node,
+      let node = data.node,
         divContent = '',
         last;
-      var typeL = type.toLowerCase();
+      let typeL = type.toLowerCase();
 
       if (node.folder) {
         divContent += node.key;
-        var folderName = divContent.substring(5);
+        let folderName = divContent.substring(5);
         last = {
           name: `${this.username}:${typeL}${
             folderName.length > 0 ? `:${folderName}` : ''
@@ -383,7 +383,7 @@ define([
           node: node
         };
       } else {
-        var rev;
+        let rev;
         divContent += node.key.replace(/:?[^:]*$/, '');
         if (node.data.rev) {
           rev = node.key;
@@ -405,16 +405,16 @@ define([
       const proxyClickView = this.clickNode.bind(this, 'View');
       const that = this;
 
-      var menuOptions = {
+      let menuOptions = {
         delegate: 'span.fancytree-title',
         menu: [{ title: 'Delete', cmd: 'delete', uiIcon: 'ui-icon-trash' }],
         beforeOpen(event, ui) {
-          var node = $.ui.fancytree.getNode(ui.target);
+          let node = $.ui.fancytree.getNode(ui.target);
           if (node.folder) return false;
           node.setActive();
         },
         select(event, ui) {
-          var node = $.ui.fancytree.getNode(ui.target);
+          let node = $.ui.fancytree.getNode(ui.target);
           that.contextClick(node, ui.cmd);
         },
         createMenu(event) {
@@ -426,8 +426,8 @@ define([
         startkey: `${this.username}:`,
         endkey: `${this.username}:~`,
         success(data) {
-          var trees = createTrees(data.rows);
-          var datatree = $(`#${that.cssId('datatree')}`);
+          let trees = createTrees(data.rows);
+          let datatree = $(`#${that.cssId('datatree')}`);
           datatree
             .fancytree({
               toggleEffect: false,
@@ -445,7 +445,7 @@ define([
             .toggleExpanded();
           datatree.contextmenu(menuOptions);
 
-          var viewtree = $(`#${that.cssId('viewtree')}`);
+          let viewtree = $(`#${that.cssId('viewtree')}`);
           viewtree
             .fancytree({
               toggleEffect: false,
@@ -468,7 +468,7 @@ define([
     contextClick(node, action) {
       if (action === 'delete' && !node.folder) {
         if (node.data.rev) node = node.parent;
-        var doc = {
+        let doc = {
           _id: node.data.id,
           _rev: node.data.lastRev
         };
@@ -483,7 +483,7 @@ define([
   });
 
   function showError(e) {
-    var content;
+    let content;
     switch (e) {
       case 10:
         content = 'Colons are not allowed in the name.';
@@ -514,11 +514,11 @@ define([
   }
 
   function createTrees(data) {
-    var trees = { data: { __folder: true }, view: { __folder: true } };
-    var trees2 = { data: { __folder: true }, view: { __folder: true } };
-    for (var i = 0, ii = data.length; i < ii; i++) {
-      var info = data[i];
-      var split = info.id.split(':');
+    let trees = { data: { __folder: true }, view: { __folder: true } };
+    let trees2 = { data: { __folder: true }, view: { __folder: true } };
+    for (let i = 0, ii = data.length; i < ii; i++) {
+      let info = data[i];
+      let split = info.id.split(':');
       split.shift();
       if (split.shift() === 'data') addBranch(trees.data, split, info);
       else addBranch(trees.view, split, info);
@@ -535,7 +535,7 @@ define([
       addLeaf(tree, info);
     } else {
       tree.__folder = true;
-      var index = indices.shift();
+      let index = indices.shift();
       if (!tree[index]) tree[index] = {};
       addBranch(tree[index], indices, info);
     }
@@ -547,7 +547,7 @@ define([
   }
 
   function createFancyTree(object, currentPath) {
-    var tree, root;
+    let tree, root;
     if (currentPath.length) {
       tree = root = [];
     } else {
@@ -563,12 +563,12 @@ define([
       currentPath = 'root:';
     }
 
-    for (var name in object) {
+    for (let name in object) {
       if (name === '__folder' || name === '__name' || name === '__rev')
         continue;
-      var obj = object[name];
-      var thisPath = currentPath + name;
-      var el = { title: name, key: thisPath };
+      let obj = object[name];
+      let thisPath = currentPath + name;
+      let el = { title: name, key: thisPath };
       if (obj.__folder) {
         if (obj.__name) {
           tree.push({

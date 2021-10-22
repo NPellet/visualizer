@@ -51,7 +51,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
   };
 
   Controller.prototype.configurationStructure = function () {
-    var all_jpaths = [],
+    let all_jpaths = [],
       arr = this.module.getDataFromRel('array');
 
     if (arr) {

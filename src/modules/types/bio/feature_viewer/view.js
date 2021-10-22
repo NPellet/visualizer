@@ -39,15 +39,15 @@ define([
 
     update: {
       feature: function (data) {
-        var that = this;
-        var myPainter = new Biojs.MyFeatureViewer({
+        let that = this;
+        let myPainter = new Biojs.MyFeatureViewer({
           target: this._id,
           json: data,
           imageWidth: 200
         });
 
-        var dom = this.dom.find('svg').first();
-        var viewbox = [0, 0, dom.attr('width'), dom.attr('height')];
+        let dom = this.dom.find('svg').first();
+        let viewbox = [0, 0, dom.attr('width'), dom.attr('height')];
         dom[0].setAttribute('viewBox', viewbox.join(' '));
         dom.attr('width', '100%');
         dom.attr('height', '100%');

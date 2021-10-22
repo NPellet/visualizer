@@ -13,7 +13,7 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      var that = this;
+      let that = this;
       this.webgl = (function () {
         try {
           return (
@@ -25,10 +25,10 @@ define([
         }
       })();
 
-      var cfg = this.module.getConfiguration;
+      let cfg = this.module.getConfiguration;
 
       this._id = Util.getNextUniqueId();
-      var $block = $('<div>', { Id: this._id });
+      let $block = $('<div>', { Id: this._id });
       $block
         .css('display', 'table')
         .css('height', '100%')
@@ -93,10 +93,10 @@ define([
         Debug.warn('webgl context does not exist');
         return;
       }
-      var that = this;
+      let that = this;
       this.module.viewReady.then(function () {
-        var cfg = that.module.getConfiguration;
-        var segments = cfg('segments');
+        let cfg = that.module.getConfiguration;
+        let segments = cfg('segments');
 
         // /////////////////////
         // end vertex colors //
@@ -108,12 +108,12 @@ define([
           that.scene.remove(that.graphMesh);
         }
 
-        var wireTexture = THREE.ImageUtils.loadTexture(
+        let wireTexture = THREE.ImageUtils.loadTexture(
           require.toUrl('./square.png')
         );
         wireTexture.wrapS = wireTexture.wrapT = THREE.RepeatWrapping;
         wireTexture.repeat.set(40, 40);
-        var wireMaterial = new THREE.MeshBasicMaterial({
+        let wireMaterial = new THREE.MeshBasicMaterial({
           map: wireTexture,
           vertexColors: THREE.VertexColors,
           side: THREE.DoubleSide
@@ -136,12 +136,12 @@ define([
 
     addFloor: function (scene) {
       // scene.add( new THREE.AxisHelper() );
-      var wireframeMaterial = new THREE.MeshBasicMaterial({
+      let wireframeMaterial = new THREE.MeshBasicMaterial({
         color: 0x000088,
         wireframe: true,
         side: THREE.DoubleSide
       });
-      var floorGeometry = new THREE.PlaneBufferGeometry(1000, 1000, 10, 10);
+      let floorGeometry = new THREE.PlaneBufferGeometry(1000, 1000, 10, 10);
       this.floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
       // floor.position.z = 0; // required, otherwise from time to time it is NaN !!!???
       // floor.rotation.x = Math.PI / 2;
@@ -157,7 +157,7 @@ define([
     },
 
     animate: function () {
-      var that = this;
+      let that = this;
       requestAnimationFrame(that.animate.bind(that));
       if (that.doAnimation || that.firstAnimation > 0) {
         if (that.firstAnimation > 0) that.firstAnimation--;
@@ -167,7 +167,7 @@ define([
     },
 
     setCamera: function () {
-      var VIEW_ANGLE = 45,
+      let VIEW_ANGLE = 45,
         ASPECT = this.width / this.height,
         NEAR = 0.1,
         FAR = 20000;
@@ -186,15 +186,15 @@ define([
     },
 
     createGraph: function () {
-      var that = this;
-      var cfg = that.module.getConfiguration;
-      var segments = cfg('segments');
-      var zFunc = Parser.parse(that.zFunctionText).toJSFunction(['x', 'y']);
+      let that = this;
+      let cfg = that.module.getConfiguration;
+      let segments = cfg('segments');
+      let zFunc = Parser.parse(that.zFunctionText).toJSFunction(['x', 'y']);
 
-      var meshFunction = function (x, y) {
+      let meshFunction = function (x, y) {
         x = that.xRange * x + that.xMin;
         y = that.yRange * y + that.yMin;
-        var z = zFunc(x, y); // = Math.cos(x) * Math.sqrt(y);
+        let z = zFunc(x, y); // = Math.cos(x) * Math.sqrt(y);
 
         if (isNaN(z)) return new THREE.Vector3(0, 0, 0);
         // TODO: better fix
@@ -202,7 +202,7 @@ define([
       };
 
       // true => sensible image tile repeat...
-      var graphGeometry = new THREE.ParametricGeometry(
+      let graphGeometry = new THREE.ParametricGeometry(
         meshFunction,
         segments,
         segments,
@@ -217,9 +217,9 @@ define([
       that.zMax = graphGeometry.boundingBox.max.z;
       that.zRange = that.zMax - that.zMin;
 
-      var color, point, face, numberOfSides, vertexIndex;
+      let color, point, face, numberOfSides, vertexIndex;
       // faces are indexed using characters
-      var faceIndices = ['a', 'b', 'c', 'd'];
+      let faceIndices = ['a', 'b', 'c', 'd'];
       // first, assign colors to vertices as desired
       for (var i = 0; i < graphGeometry.vertices.length; i++) {
         point = graphGeometry.vertices[i];
@@ -231,7 +231,7 @@ define([
       for (var i = 0; i < graphGeometry.faces.length; i++) {
         face = graphGeometry.faces[i];
         numberOfSides = face instanceof THREE.Face3 ? 3 : 4;
-        for (var j = 0; j < numberOfSides; j++) {
+        for (let j = 0; j < numberOfSides; j++) {
           vertexIndex = face[faceIndices[j]];
           face.vertexColors[j] = graphGeometry.colors[vertexIndex];
         }

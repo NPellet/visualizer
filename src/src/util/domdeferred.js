@@ -1,7 +1,7 @@
 'use strict';
 
 define(function () {
-  var deferred = $.Deferred();
+  let deferred = $.Deferred();
   return {
     notify: function (dom) {
       deferred.notify(dom);

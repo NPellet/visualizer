@@ -10,12 +10,12 @@ define([
   'src/main/variables',
   'version'
 ], function ($, Cache, VersionHandler, Debug, UI, Button, Variables, Version) {
-  var version = Version.version;
-  var originalVersion = 'none';
-  var viewLocked = false;
+  let version = Version.version;
+  let originalVersion = 'none';
+  let viewLocked = false;
 
 
-  var dataHandler = new VersionHandler(),
+  let dataHandler = new VersionHandler(),
     viewHandler = new VersionHandler(),
     view = new DataObject(),
     data = Variables.getData(),
@@ -46,7 +46,7 @@ define([
 
   function switchView(value, pushstate, options) {
     options = options || {};
-    var def = Promise.resolve();
+    let def = Promise.resolve();
     if (value.data && (lastLoaded.data.url !== value.data.url || (lastLoaded.data.urls !== value.data.urls && lastLoaded.data.branch !== value.data.branch))) {
       if (!options.doNotLoad) {
         def = setData(value.data.urls, value.data.branch, value.data.url, options);
@@ -63,7 +63,7 @@ define([
     }
     if (pushstate) {
       require(['uri/URI.fragmentQuery'], function (URI) {
-        var uri = new URI(window.location.href);
+        let uri = new URI(window.location.href);
         if (value.data) {
           uri[`remove${urlType}`](['dataURL', 'dataBranch', 'results']);
           if (value.data.urls) {
@@ -102,7 +102,7 @@ define([
     if (newView && newView.version) {
       originalVersion = newView.version;
     }
-    var i;
+    let i;
     // clear current view
     for (i in view) {
       delete view[i];
@@ -118,7 +118,7 @@ define([
   }
 
   function updateData(newData) {
-    var i, child;
+    let i, child;
     for (i in data) {
       delete data[i];
     }
@@ -180,7 +180,7 @@ define([
 
     setViewLoadCallback: function (c) {
       this.viewCallback = c;
-      var that = this;
+      let that = this;
 
       viewHandler.onLoaded = function (v) {
         updateView(v);
@@ -194,7 +194,7 @@ define([
 
     setDataLoadCallback: function (c) {
       this.dataCallback = c;
-      var that = this;
+      let that = this;
       dataHandler.onLoaded = function (d) {
         updateData(d);
         c.call(that, data);
@@ -239,9 +239,9 @@ define([
   };
 
   function copyView() {
-    var str = getViewJSON('  ');
-    var strlen = str.length;
-    var txtarea = $('<textarea/>').text(str).css({
+    let str = getViewJSON('  ');
+    let strlen = str.length;
+    let txtarea = $('<textarea/>').text(str).css({
       width: '100%',
       height: '95%'
     });
@@ -250,7 +250,7 @@ define([
       height: $('#ci-visualizer').height() * 0.7
     });
 
-    var txtdom = txtarea.get(0);
+    let txtdom = txtarea.get(0);
 
     txtdom.selectionStart = 0;
     txtdom.selectionEnd = strlen;
@@ -258,14 +258,14 @@ define([
   }
 
   function copyData() {
-    var str = getDataJSON('  ');
-    var strlen = str.length;
-    var txtarea = $('<textarea/>').text(str).css({
+    let str = getDataJSON('  ');
+    let strlen = str.length;
+    let txtarea = $('<textarea/>').text(str).css({
       width: '100%',
       height: '200px'
     });
     UI.dialog(txtarea, { width: '80%' });
-    var txtdom = txtarea.get(0);
+    let txtdom = txtarea.get(0);
 
     txtdom.selectionStart = 0;
     txtdom.selectionEnd = strlen;
@@ -273,7 +273,7 @@ define([
   }
 
   function pasteView() {
-    var txtarea = $('<textarea></textarea>').css({
+    let txtarea = $('<textarea></textarea>').css({
         width: '100%',
         height: '200px'
       }),
@@ -282,7 +282,7 @@ define([
         try {
           val = JSON.parse(txtarea.val());
           keys = Object.keys(val);
-          for (var i = 0, ii = keys.length; i < ii; i++) {
+          for (let i = 0, ii = keys.length; i < ii; i++) {
             if (keys[i].charAt(0) === '_')
               delete val[keys[i]];
           }
@@ -298,7 +298,7 @@ define([
   }
 
   function pasteData() {
-    var txtarea = $('<textarea></textarea>').css({
+    let txtarea = $('<textarea></textarea>').css({
         width: '100%',
         height: '200px'
       }),
@@ -307,7 +307,7 @@ define([
         try {
           val = JSON.parse(txtarea.val());
           keys = Object.keys(val);
-          for (var i = 0, ii = keys.length; i < ii; i++) {
+          for (let i = 0, ii = keys.length; i < ii; i++) {
             if (keys[i].charAt(0) === '_')
               delete val[keys[i]];
           }

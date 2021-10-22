@@ -9,12 +9,12 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.getToolbar = function () {
-    var base = Default.getToolbar.call(this);
+    let base = Default.getToolbar.call(this);
     base.unshift({
       onClick: function () {
-        var w = $(window).width();
-        var h = $(window).height();
-        var url = require.toUrl(
+        let w = $(window).width();
+        let h = $(window).height();
+        let url = require.toUrl(
           'modules/types/science/chemistry/jsme/help/index.html',
         );
         ui.dialog(
@@ -218,8 +218,8 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (
    * We receive an event from JSME
    */
   Controller.prototype.onChange = function (message) {
-    var action = message.action;
-    var currentValue = this.module.view._currentValue;
+    let action = message.action;
+    let currentValue = this.module.view._currentValue;
     // check Github History when drag / drop and paste will be another action name
     if (
       action != null &&
@@ -273,9 +273,9 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (
       !this.module.view._currentValue._atoms
     )
       return;
-    var atoms = this.module.view._currentValue._atoms;
-    var highlights = [];
-    for (var key of Object.keys(atoms)) {
+    let atoms = this.module.view._currentValue._atoms;
+    let highlights = [];
+    for (let key of Object.keys(atoms)) {
       if (atoms[key].includes(atom)) {
         highlights.push(key);
       }

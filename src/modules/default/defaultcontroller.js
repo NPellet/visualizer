@@ -21,7 +21,7 @@ define([
     },
 
     getToolbar() {
-      var tb = this.module.definition.toolbar;
+      let tb = this.module.definition.toolbar;
       if (tb) {
         var common = this.module.definition.toolbar.common[0]
           .toolbar[0];
@@ -30,7 +30,7 @@ define([
 
       if (!common) common = ['Open Preferences'];
 
-      var toolbar = [
+      let toolbar = [
         {
           onClick() {
             this.exportData();

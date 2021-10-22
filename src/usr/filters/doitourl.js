@@ -1,7 +1,7 @@
 'use strict';
 
 define(function () {
-  var reg = /^doi:/i;
+  let reg = /^doi:/i;
 
   return {
     filter: function doiFilter(value, resolve) {

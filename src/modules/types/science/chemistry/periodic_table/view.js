@@ -71,10 +71,10 @@ define([
     },
 
     createTemplateFromPref(name) {
-      var source = `${name}templateSource`;
+      let source = `${name}templateSource`;
       source = this.module.getConfiguration(source);
       if (source === 'pref') {
-        var tpl = this.module.getConfiguration(`${name}template`);
+        let tpl = this.module.getConfiguration(`${name}template`);
         this[`${name}template`] = Twig.twig({
           data: tpl
         });
@@ -86,7 +86,7 @@ define([
     },
 
     createTemplateFromVar(name, tpl) {
-      var source = `${name}templateSource`;
+      let source = `${name}templateSource`;
       source = this.module.getConfiguration(source);
       if (source === 'varin') {
         this[`${name}template`] = Twig.twig({
@@ -108,7 +108,7 @@ define([
         });
       },
       template(value) {
-        var tpl = value.get().toString();
+        let tpl = value.get().toString();
         try {
           this.createTemplateFromVar('', tpl);
           this.render();
@@ -117,7 +117,7 @@ define([
         }
       },
       hltemplate(value) {
-        var tpl = String(value.get());
+        let tpl = String(value.get());
         try {
           this.createTemplateFromVar('hl', tpl);
           this.render();
@@ -129,9 +129,9 @@ define([
 
     getElements(value) {
       return Promise.resolve().then(() => {
-        var source = this.module.getConfiguration('elementsSource');
-        var toParse = this.module.getConfiguration('elementsCode');
-        var sourceUrl = this.module.getConfiguration('elementsUrl');
+        let source = this.module.getConfiguration('elementsSource');
+        let toParse = this.module.getConfiguration('elementsCode');
+        let sourceUrl = this.module.getConfiguration('elementsUrl');
 
         if (source === 'varin' && value) {
           this.setElements(value);
@@ -146,12 +146,12 @@ define([
     },
 
     setElements(value) {
-      var elements = value.filter((el) => {
+      let elements = value.filter((el) => {
         return String(el.label) === 'atom';
       });
 
       if (this.module.getConfigurationCheckbox('useHighlights', 'yes')) {
-        for (var i = 0; i < elements.length; i++) {
+        for (let i = 0; i < elements.length; i++) {
           elements[i]._highlight = elements[i].name;
         }
       }
@@ -160,7 +160,7 @@ define([
         return String(el.label) !== 'atom';
       });
 
-      var varName = this.module.getConfiguration('varName');
+      let varName = this.module.getConfiguration('varName');
       if (
         varName &&
         this.module.getConfiguration('elementsSource') !== 'varin'
@@ -175,7 +175,7 @@ define([
     },
 
     parseElements(toParse) {
-      var obj;
+      let obj;
       if (typeof toParse === 'string') {
         try {
           obj = JSON.parse(toParse);
@@ -203,7 +203,7 @@ define([
     },
 
     render() {
-      var that = this;
+      let that = this;
       that.dom.empty().unbind();
       that.dom.append('<div class="indic-p indic-g"></div>');
       for (let i = 1; i < 19; i++) {
@@ -214,7 +214,7 @@ define([
       }
 
       for (let i = 0; i < this.elements.length; i++) {
-        var $element = $(
+        let $element = $(
           `<div>${this.template.render({ element: this.elements[i] })}</div>`
         ).data('idx', i);
 
@@ -228,12 +228,12 @@ define([
 
         that.dom.append($element);
       }
-      var legend = $('<div class="legend"></div>');
+      let legend = $('<div class="legend"></div>');
       that.dom.find('div.e1').after(legend);
 
       that.defaultLegend = $('<div class="default-legend"></div>');
-      var elementZoom = $('<div class="element-zoom hidden"></div>');
-      var elementDatas = $('<div class="element-datas hidden"></div>');
+      let elementZoom = $('<div class="element-zoom hidden"></div>');
+      let elementDatas = $('<div class="element-datas hidden"></div>');
       legend
         .append(that.defaultLegend)
         .append(elementZoom)
@@ -256,7 +256,7 @@ define([
                 </ul>`);
       that.innerLegend.append(that.colorSerie);
 
-      var $elements = (that.$elements = that.dom.find('.element'));
+      let $elements = (that.$elements = that.dom.find('.element'));
 
       that.innerLegend.append('<div class="stateOfMatter"></div>');
       that.stateOfMatter = that.innerLegend.find('.stateOfMatter');
@@ -295,14 +295,14 @@ define([
         $elements.css('background-color', that.background.fixedcolor);
       }
 
-      var isFixed = false;
+      let isFixed = false;
 
       this.innerLegend.on('click', 'ul.color-serie li', (event) => {
         that.unselectElements(event, $elements);
-        var classes = $(event.target)
+        let classes = $(event.target)
           .attr('class')
           .split(' ');
-        var found = series.find((s) => {
+        let found = series.find((s) => {
           return classes.some((c) => c === s);
         });
 
@@ -333,7 +333,7 @@ define([
           .html(`${event.target.value} ${this.background.unit}`);
       });
 
-      var showDefaultLegend = _.debounce(() => {
+      let showDefaultLegend = _.debounce(() => {
         $('.element-zoom')
           .delay(50000)
           .empty()
@@ -349,8 +349,8 @@ define([
       showDefaultLegend();
 
       $elements.mouseenter(function () {
-        var $el = $(this);
-        var Z = that.getZ($el);
+        let $el = $(this);
+        let Z = that.getZ($el);
         that._doHighlight(Z, true);
         that.module.controller.elementHovered(Z);
         if (isFixed) return;
@@ -359,8 +359,8 @@ define([
       });
 
       $elements.mouseleave(function () {
-        var $el = $(this);
-        var Z = that.getZ($el);
+        let $el = $(this);
+        let Z = that.getZ($el);
         that._doHighlight(Z, false);
         if (isFixed) return;
         showDefaultLegend();
@@ -368,7 +368,7 @@ define([
 
       $elements.click(function (event) {
         that.unselectElements(event, $elements);
-        var $el = $(this);
+        let $el = $(this);
         $el.toggleClass('el-selected');
         that.elementSelected($el);
         renderElement($el);
@@ -378,19 +378,19 @@ define([
       });
 
       $elements.dblclick(function () {
-        var $el = $(this);
+        let $el = $(this);
         $el.removeClass('el-selected');
         isFixed = false;
       });
 
       that.dom.on('click', '.indic-p', function (event) {
         // find period to which it belongs
-        var p = $(this)
+        let p = $(this)
           .attr('class')
           .replace(/^.*(period\d+).*$/, '$1');
-        var pN = p.substr(6);
+        let pN = p.substr(6);
         that.unselectElements(event, $elements);
-        var $selected = $elements.filter(`.${p}`);
+        let $selected = $elements.filter(`.${p}`);
         $selected.toggleClass('el-selected');
         that.module.controller.periodSelected(pN);
         that.elementsSelected();
@@ -406,12 +406,12 @@ define([
 
       that.dom.on('click', '.indic-g', function (event) {
         // find group to which it belongs
-        var g = $(this)
+        let g = $(this)
           .attr('class')
           .replace(/^.*(group\d+).*$/, '$1');
-        var gN = g.substr(5);
+        let gN = g.substr(5);
         that.unselectElements(event, $elements);
-        var $selected = $elements.filter(`.${g}`);
+        let $selected = $elements.filter(`.${g}`);
         $selected.toggleClass('el-selected');
         that.module.controller.groupSelected(gN);
         that.elementsSelected();
@@ -419,8 +419,8 @@ define([
       });
 
       function renderElement($el) {
-        var idx = $el.data('idx');
-        var el = that.elements[idx];
+        let idx = $el.data('idx');
+        let el = that.elements[idx];
         if (!el) return;
         that.defaultLegend.addClass('hidden');
         elementZoom.removeClass('hidden');
@@ -429,12 +429,12 @@ define([
         elementZoom.append(that.hltemplate.render({ element: el }));
       }
 
-      var interactZone =
+      let interactZone =
         '<div class="interactive-zone"><div id="slider"></div>';
       legend.after(interactZone);
 
-      var actinid = '<div class="indic-f period7"><p>89-103</p></div>';
-      var lanthanid = '<div class="indic-f period6"><p>57-71</p></div>';
+      let actinid = '<div class="indic-f period7"><p>89-103</p></div>';
+      let lanthanid = '<div class="indic-f period6"><p>57-71</p></div>';
       that.dom.find('div.e56').after(lanthanid);
       that.dom.find('div.e88').after(actinid);
 
@@ -443,8 +443,8 @@ define([
     },
 
     _getOptions(type) {
-      var cfg = this.module.getConfiguration;
-      var r = {};
+      let cfg = this.module.getConfiguration;
+      let r = {};
       [
         'Min',
         'Max',
@@ -460,7 +460,7 @@ define([
         'Mode',
         'Jpath'
       ].forEach((val) => {
-        var prop = val.toLowerCase();
+        let prop = val.toLowerCase();
         r[prop] = cfg(`${type}${val}`);
         if (val.match(/color/i)) {
           r[prop] = Color.array2rgba(r[prop]);
@@ -476,9 +476,9 @@ define([
     },
 
     _getGradientFunction(type, value) {
-      var width = this.defaultLegend.width(),
+      let width = this.defaultLegend.width(),
         height = 51;
-      var options = {
+      let options = {
         stops: [
           this[type].mincolor,
           this[type].neutralcolor,
@@ -495,7 +495,7 @@ define([
         }
       };
       options.axis.tickValues = options.stopPositions;
-      var $div = this.defaultLegend.find(`#${type}Slider .periodicGradient`);
+      let $div = this.defaultLegend.find(`#${type}Slider .periodicGradient`);
       $div.empty();
       if ($div[0]) {
         Colorbar.renderSvg($div[0], options);
@@ -533,7 +533,7 @@ define([
     },
 
     elementsSelected() {
-      var sel = this.dom
+      let sel = this.dom
         .find('.el-selected')
         .map((idx, el) => {
           return this.getZ($(el));
@@ -544,12 +544,12 @@ define([
 
     onActionReceive: {
       select(val) {
-        var elements = this.dom.find('.element').toArray();
+        let elements = this.dom.find('.element').toArray();
         this._selectElements(elements, val);
       },
 
       setSelected(val) {
-        var $elements = this.dom.find('.element');
+        let $elements = this.dom.find('.element');
         this.unselectElements({}, $elements);
         this._selectElements($elements.toArray(), val);
       }
@@ -560,13 +560,13 @@ define([
       if (Array.isArray(val)) {
         const finder = (element) => element.Z === val[num];
         for (var num = 0; num < val.length; num++) {
-          var z = this.elements.findIndex(finder);
+          let z = this.elements.findIndex(finder);
           if (z >= 0) {
             $(elements[z]).addClass('el-selected');
           }
         }
       } else if (typeof val === 'function') {
-        for (var elm = 0; elm < this.elements.length; elm++) {
+        for (let elm = 0; elm < this.elements.length; elm++) {
           if (val(this.elements[elm])) {
             $(elements[elm]).addClass('el-selected');
           }
@@ -581,12 +581,12 @@ define([
     },
 
     updateColors(type, val) {
-      var fn = this._getGradientFunction(type, val);
-      var $elements = this.dom.find('.element');
+      let fn = this._getGradientFunction(type, val);
+      let $elements = this.dom.find('.element');
       for (let i = 0; i < $elements.length; i++) {
         let $el = $($elements[i]);
-        var idx = $el.data('idx');
-        var elVal = Number(
+        let idx = $el.data('idx');
+        let elVal = Number(
           this.dataElements.getChildSync([idx].concat(this[type].jpath))
         );
         if (isNaN(elVal)) {
@@ -611,10 +611,10 @@ define([
     },
 
     updateElementPhase(temperature) {
-      var $elements = this.dom.find('.element');
+      let $elements = this.dom.find('.element');
       for (let i = 0; i < $elements.length; i++) {
         let $el = $($elements[i]);
-        var idx = $el.data('idx');
+        let idx = $el.data('idx');
         if (idx !== undefined) {
           let el = this.elements[idx];
           let boiling = +el.boiling;
@@ -637,8 +637,8 @@ define([
     },
 
     _activateHighlights: function () {
-      var that = this;
-      var hl = _(that.elements)
+      let that = this;
+      let hl = _(that.elements)
         .map('_highlight')
         .flatten()
         .filter((val) => !_.isUndefined(val))
@@ -678,7 +678,7 @@ define([
 
     _doHighlight(Z, state) {
       if (!this.elements) return;
-      var el = this.elements.find((el) => el.Z == Z);
+      let el = this.elements.find((el) => el.Z == Z);
       if (el) {
         API.highlightId(el.name, state, this.module.getId());
       }
@@ -687,7 +687,7 @@ define([
     _drawHighlight() {
       // find first
       if (!this.elements || !this.$elements) return;
-      var el = this.elements.filter((el) => {
+      let el = this.elements.filter((el) => {
         return this._highlighted.indexOf(el._highlight) > -1;
       });
 
@@ -707,7 +707,7 @@ define([
     },
 
     _highlightElement(Z) {
-      var $el = this.$elements.filter(`.e${Z}`);
+      let $el = this.$elements.filter(`.e${Z}`);
       $el.css({
         border: 'solid 2px red',
         transform: 'scale(1.1)',

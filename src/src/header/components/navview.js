@@ -16,7 +16,7 @@ define([
   Util.inherits(Element, Default, {
 
     initImpl: function () {
-      var that = this;
+      let that = this;
       this.id = Util.getNextUniqueId();
       $.ui.fancytree.debugLevel = 0;
 
@@ -40,7 +40,7 @@ define([
     },
 
     createMenu: function () {
-      var that = this;
+      let that = this;
       if (!this.$_elToOpen) {
         this.$_elToOpen = $('<div/>').css('width', 550);
       }
@@ -82,7 +82,7 @@ define([
         this.reloadTree();
         return;
       }
-      var wasExpanded = node.isExpanded();
+      let wasExpanded = node.isExpanded();
       node.load(true).then(function () {
         if (wasExpanded) {
           node.setExpanded(true, {
@@ -100,15 +100,15 @@ define([
     },
 
     save: function () {
-      var that = this;
-      var dir, name;
+      let that = this;
+      let dir, name;
       if (this.activeNode) {
         dir = this.getDir(this.activeNode.data.path);
         name = this.activeNode.title;
       } else if (this.viewURL) {
         dir = this.getDir(this.viewURL);
         dir = dir.replace(/^\/views/, '.');
-        var idx = this.viewURL.lastIndexOf('/');
+        let idx = this.viewURL.lastIndexOf('/');
         if (idx > -1) {
           name = this.viewURL.slice(idx + 1);
         } else {
@@ -120,7 +120,7 @@ define([
 
       confirm(`You are about to save the current view to: ${dir}${name}<br/>This operation will erase the previous content of this file and cannot be undone.`).then(function (ok) {
         if (!ok) return;
-        var req = $.ajax({
+        let req = $.ajax({
           url: '/navview/save',
           data: {
             dir: dir,
@@ -142,14 +142,14 @@ define([
     },
 
     mkdir: function () {
-      var that = this;
-      var dir = this.activeNode.data.path;
+      let that = this;
+      let dir = this.activeNode.data.path;
       if (!this.activeNode.isFolder()) {
         dir = this.getDir(dir);
       }
-      var name = this.getFormContent(this.$dirnameInput);
+      let name = this.getFormContent(this.$dirnameInput);
       if (dir && name) {
-        var req = $.ajax({
+        let req = $.ajax({
           url: '/navview/mkdir',
           type: 'POST',
           data: {
@@ -169,17 +169,17 @@ define([
     },
 
     remove: function (node) {
-      var that = this;
+      let that = this;
       if (node.isFolder()) {
         return this.log('error-log', 'Failed remove file');
       }
 
-      var dir = this.getDir(node.data.path);
-      var name = node.title;
+      let dir = this.getDir(node.data.path);
+      let name = node.title;
 
       confirm(`<p>You are about to remove the file: <br/>${node.data.path}</p>Do you really want to do this? You cannot undo this operation`).then(function (ok) {
         if (!ok) return;
-        var req = $.ajax({
+        let req = $.ajax({
           url: '/navview/file',
           type: 'DELETE',
           data: {
@@ -201,14 +201,14 @@ define([
     },
 
     removeDir: function (node) {
-      var that = this;
+      let that = this;
       if (!node.isFolder()) {
         return this.log('error-log', 'Failed remove directory');
       }
 
       confirm(`<p>You are about to remove the directory: <br/>${node.data.path}</p>Do you really want to do this? You cannot undo this operation`).then(function (ok) {
         if (!ok) return;
-        var req = $.ajax({
+        let req = $.ajax({
           url: '/navview/dir',
           type: 'DELETE',
           data: {
@@ -229,22 +229,22 @@ define([
     },
 
     rename: function () {
-      var that = this;
-      var reg = new RegExp(/(^.*)\/([^/]+$)/);
+      let that = this;
+      let reg = new RegExp(/(^.*)\/([^/]+$)/);
 
-      var m = reg.exec(this.activeNode.data.path);
+      let m = reg.exec(this.activeNode.data.path);
       if (!m.length === 3) {
         this.log('error-log', 'Invalid path...');
         return;
       }
 
-      var dir = m[1];
-      var newName = this.getFormContent('docName');
-      var newDir = dir;
-      var name = m[2];
+      let dir = m[1];
+      let newName = this.getFormContent('docName');
+      let newDir = dir;
+      let name = m[2];
 
 
-      var req = this.ajaxRename({
+      let req = this.ajaxRename({
         dir: dir,
         newDir: newDir,
         name: name,
@@ -270,14 +270,14 @@ define([
     },
 
     inlineRename: function (node) {
-      var that = this;
-      var data = {
+      let that = this;
+      let data = {
         dir: node.data.dir,
         newDir: node.data.dir,
         newName: node.title,
         name: that.inlineOldTitle
       };
-      var req = this.ajaxRename(data);
+      let req = this.ajaxRename(data);
 
       req.done(function () {
         node.setTitle(node.title);
@@ -291,12 +291,12 @@ define([
     },
 
     newFile: function () {
-      var that = this;
-      var dir = that.activeNode.data.path;
+      let that = this;
+      let dir = that.activeNode.data.path;
       if (!that.activeNode.isFolder()) {
         dir = that.getDir(dir);
       }
-      var req = $.ajax({
+      let req = $.ajax({
         url: '/navview/touch',
         type: 'POST',
         data: {
@@ -323,14 +323,14 @@ define([
       if (!this.activeNode) {
         this.log('error-log', 'Error: you must select a node');
       }
-      var viewURL = location.search.split('viewURL=')[1];
+      let viewURL = location.search.split('viewURL=')[1];
       viewURL = decodeURIComponent(viewURL);
       this.viewURL = viewURL;
     },
 
     log: function (name, text) {
       if (!this.$log) return;
-      var $slog = this.$log.find(`#${this.cssId(name)}`);
+      let $slog = this.$log.find(`#${this.cssId(name)}`);
 
       if ($slog.length > 0) {
         if (this.currentLogTimeout) {
@@ -356,12 +356,12 @@ define([
     },
 
     initTree: function (force) {
-      var that = this;
+      let that = this;
       if (!force && that.fancytreeOk) {
         return Promise.resolve();
       }
       return this.loadRootTree().then(function (res) {
-        var source = fancyTreeDirStructure(res);
+        let source = fancyTreeDirStructure(res);
         that.$tree.fancytree({
           toggleEffect: false,
           extensions: ['edit', 'filter'],
@@ -434,9 +434,9 @@ define([
           }
         });
         that.fancytreeOk = true;
-        var tree = that.$tree.fancytree('getTree');
+        let tree = that.$tree.fancytree('getTree');
         that.$_elToOpen.find('input[name=search]').keyup(function (e) {
-          var n,
+          let n,
             match = $(this).val();
 
           if (e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === '') {
@@ -459,7 +459,7 @@ define([
     },
 
     createButtons: function () {
-      var that = this;
+      let that = this;
       if (this._buttons) return;
 
       this.$log = $('<div/>').attr('id', this.cssId('log')).css('margin-bottom', 10);
@@ -474,13 +474,13 @@ define([
       this.$log.parent().append('<br/><br/><br/><div>\n    <ul>\n        <li style="color:black;">Double-click a view to load it</li>\n        <li style="color: black;">Shift+click to rename a view</li>\n        <li style="color: black;">Press delete key to remove a view or a directory</li>\n    </ul>\n</div>');
 
       // Append buttons
-      var $buttons = $('<div>\n    <table>\n        <tr>\n            <td></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n    </table>\n</div>');
+      let $buttons = $('<div>\n    <table>\n        <tr>\n            <td></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n    </table>\n</div>');
       this.$_elToOpen.append($buttons);
-      var $inputs = $buttons.find('input');
+      let $inputs = $buttons.find('input');
       this.$dirnameInput = $($inputs[0]);
       this.$filenameInput = $($inputs[1]);
 
-      var $tds = $buttons.find('td');
+      let $tds = $buttons.find('td');
       this.$saveViewText = $($tds[0]);
       $($tds[1]).append(new Button('Save view', function () {
         that.checkNode();
@@ -535,7 +535,7 @@ define([
 
   function confirm(message) {
     return new Promise(function (resolve) {
-      var $dialog = $('#ci-dialog');
+      let $dialog = $('#ci-dialog');
       if ($dialog.length === 0) {
         $dialog = $('<div/>').css('id', 'ci-dialog');
         $('body').append($dialog);

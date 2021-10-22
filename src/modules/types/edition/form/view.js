@@ -12,12 +12,12 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function ($, Def
     },
 
     inDom: function () {
-      var that = this;
-      var structure = this.module.getConfiguration('structure');
-      var tpl_file = this.module.getConfiguration('tpl_file');
-      var tpl_html = this.module.getConfiguration('tpl_html');
+      let that = this;
+      let structure = this.module.getConfiguration('structure');
+      let tpl_file = this.module.getConfiguration('tpl_file');
+      let tpl_html = this.module.getConfiguration('tpl_html');
 
-      var json;
+      let json;
       try {
         json = JSON.parse(structure);
       } catch (e) {
@@ -25,7 +25,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function ($, Def
       }
 
       if (this.module.getConfigurationCheckbox('options', 'defaultTpl')) {
-        var form = new Form({});
+        let form = new Form({});
         form.init({ onValueChanged: that.onChange.bind(that) });
         form.setStructure(json);
         form.onStructureLoaded().done(function () {
@@ -39,7 +39,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function ($, Def
         return;
       }
 
-      var def;
+      let def;
       if (tpl_file) {
         def = $.get(tpl_file, {});
       } else {
@@ -47,7 +47,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function ($, Def
       }
 
       $.when(def).done(function (tpl) {
-        var form = new Form({});
+        let form = new Form({});
         form.init({ onValueChanged: that.onChange.bind(that) });
 
         form.setStructure(json);

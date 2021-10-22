@@ -50,11 +50,11 @@ define([
   };
 
   Controller.prototype.sendTreeFromEvent = function (data, name) {
-    var element = new DataObject({ type: 'tree', value: data }, true);
+    let element = new DataObject({ type: 'tree', value: data }, true);
     this.sendActionFromEvent(name, 'tree', element);
     this.createDataFromEvent(name, 'tree', element);
     this.createDataFromEvent(name, 'list', function () {
-      var arr = [];
+      let arr = [];
       treeToArray(arr, data);
       return DataArray(arr);
     });
@@ -62,7 +62,7 @@ define([
 
   function treeToArray(arr, tree) {
     if (tree.children) {
-      for (var i = 0, ii = tree.children.length; i < ii; i++) {
+      for (let i = 0, ii = tree.children.length; i < ii; i++) {
         treeToArray(arr, tree.children[i]);
       }
     } else if (tree.data) {
@@ -71,8 +71,8 @@ define([
   }
 
   Controller.prototype.configurationStructure = function () {
-    var dataJPath = [];
-    var data = this.module.getDataFromRel('data');
+    let dataJPath = [];
+    let data = this.module.getDataFromRel('data');
     if (data) {
       Traversing.getJPathsFromElement(data[0], dataJPath);
     }

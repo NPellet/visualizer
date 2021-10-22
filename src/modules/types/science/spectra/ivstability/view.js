@@ -10,7 +10,7 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      var html = [];
+      let html = [];
       html.push(
         '<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>'
       );
@@ -56,8 +56,8 @@ define([
     },
 
     inDom: function () {
-      var that = this;
-      var options = {
+      let that = this;
+      let options = {
         paddingTop: 5,
         paddingBottom: 0,
         paddingLeft: 20,
@@ -90,11 +90,11 @@ define([
         },
 
         onVerticalTracking: function (lineId, val, dasharray) {
-          for (var i in that.series) {
+          for (let i in that.series) {
             LRU.get(
               `http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=${i}&date=${val}`
             ).done(function (data) {
-              for (var i in data) {
+              for (let i in data) {
                 that.doIv(
                   lineId,
                   i,
@@ -108,7 +108,7 @@ define([
         }
       };
 
-      var axis = {
+      let axis = {
         bottom: [
           {
             labelValue: 'Time (h)',
@@ -198,7 +198,7 @@ define([
     },
 
     onResize: function () {
-      for (var i = 0; i < 4; i++) {
+      for (let i = 0; i < 4; i++) {
         this.graphs[i].resize(650, 175);
         this.graphs[i].drawSeries();
       }
@@ -224,12 +224,12 @@ define([
     },
 
     addLegend: function (id, name, description, color) {
-      var div = $('<div />');
+      let div = $('<div />');
       this.legends[id] = div;
-      var that = this;
-      var defaultText = '(Insert a comment here)';
+      let that = this;
+      let defaultText = '(Insert a comment here)';
 
-      var square = $('<div />').css({
+      let square = $('<div />').css({
         width: 30,
         height: 30,
         backgroundColor: color,
@@ -239,14 +239,14 @@ define([
         marginBottom: '10px'
       });
 
-      var nameDom = $('<div />')
+      let nameDom = $('<div />')
         .css({
           marginLeft: '35px',
           fontSize: '1.1em'
         })
         .text(name);
 
-      var descriptionDom = $('<div />')
+      let descriptionDom = $('<div />')
         .css({
           marginLeft: '35px',
           marginTop: '2px'
@@ -272,7 +272,7 @@ define([
           }
         })
         .bind('blur', function () {
-          var text = $(this).text();
+          let text = $(this).text();
           if (text == '' || text == null || text == defaultText)
             $(this)
               .text(defaultText)
@@ -286,7 +286,7 @@ define([
         })
         .trigger('blur');
 
-      var clearDom = $('<div />').css({
+      let clearDom = $('<div />').css({
         clear: 'both'
       });
 
@@ -308,10 +308,10 @@ define([
     onActionReceive: {
       addSerie: function (value) {
         value = Traversing.getValueIfNeeded(value);
-        var options = { trackMouse: true };
+        let options = { trackMouse: true };
 
         this.onActionReceive.removeSerieByName.call(this, value.id);
-        var color = this.getNextColor();
+        let color = this.getNextColor();
 
         this.series[value.id] = [];
 
@@ -340,7 +340,7 @@ define([
         serie.setData(value.curves.eff);
         this.series[value.id].push(serie);
 
-        for (var i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
           this.graphs[i].redraw();
           this.graphs[i].drawSeries();
         }
@@ -349,7 +349,7 @@ define([
       },
 
       removeSerie: function (serie) {
-        var val = Traversing.getValueIfNeeded(serie);
+        let val = Traversing.getValueIfNeeded(serie);
         this.removeLegend(val.id);
         this.onActionReceive.removeSerieByName.call(this, val.name);
       },

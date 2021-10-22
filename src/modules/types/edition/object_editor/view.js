@@ -32,7 +32,7 @@ define([
     inDom() {
       this.dom.empty();
 
-      var mode = this.module.getConfiguration('editable');
+      let mode = this.module.getConfiguration('editable');
       if (mode === 'text') mode = 'code'; // backward compatibility
       this.expand = !!this.module.getConfiguration('expanded', false)[0];
       this.storeObject = !!this.module.getConfiguration(
@@ -52,7 +52,7 @@ define([
         ace: ace,
         theme: 'ace/theme/textmate',
         onChange: () => {
-          var result;
+          let result;
           try {
             result = this.editor.get();
           } catch (e) {
@@ -74,7 +74,7 @@ define([
     },
 
     setSendButton: function () {
-      var sendButton = this.dom
+      let sendButton = this.dom
         .find('.jsoneditor-menu')
         .prepend(
           '<button class="send" style="width: 45px; float: left; background: none; font-size: small;">\n    <span style="font-size: 10pt; color: black">Send</span>\n</button>'
@@ -99,7 +99,7 @@ define([
           value = value.get();
         }
         this.changeInputData(value);
-        var valNative = this.inputData.resurrect();
+        let valNative = this.inputData.resurrect();
         this.editor.set(JSON.parse(JSON.stringify(valNative))); // TODO more investigation (see issue #513)
         if (this.expand && this.editor.expandAll) this.editor.expandAll();
         this.module.controller.sendValue(valNative, 'onObjectChange');

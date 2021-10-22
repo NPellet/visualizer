@@ -6,7 +6,7 @@ define(function () {
   function Storage(dbName) {
     this.dbName = `kv-${dbName}`;
     this.ready = new Promise((resolve, reject) => {
-      var request = window.indexedDB.open(this.dbName);
+      let request = window.indexedDB.open(this.dbName);
 
       request.onupgradeneeded = (e) => {
         this.db = e.target.result;
@@ -28,7 +28,7 @@ define(function () {
   Storage.prototype.get = function (key) {
     return this.ready.then(() => {
       return new Promise((resolve, reject) => {
-        var request = this.getStore().get(key);
+        let request = this.getStore().get(key);
         request.onsuccess = (e) => resolve(e.target.result);
         request.onerror = reject;
       });
@@ -44,7 +44,7 @@ define(function () {
   Storage.prototype.set = function (key, value) {
     return this.ready.then(() => {
       return new Promise((resolve, reject) => {
-        var request = this.getStore().put(value, key);
+        let request = this.getStore().put(value, key);
         request.onsuccess = resolve;
         request.onerror = reject;
       });
@@ -54,7 +54,7 @@ define(function () {
   Storage.prototype.delete = function (key) {
     return this.ready.then(() => {
       return new Promise((resolve, reject) => {
-        var request = this.getStore().delete(key);
+        let request = this.getStore().delete(key);
         request.onsuccess = resolve;
         request.onerror = reject;
       });

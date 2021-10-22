@@ -8,7 +8,7 @@ define(['modules/default/defaultview'], function (Default) {
     init: function () {
       this.dom = $('<iframe>');
 
-      var that = this;
+      let that = this;
       this.dom.load(function () { // we remove the loading message
         if (that.dom.attr('src') != 'about:blank') {
           if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
@@ -26,7 +26,7 @@ define(['modules/default/defaultview'], function (Default) {
     },
     update: {
       url: function (moduleValue) {
-        var that = this;
+        let that = this;
         if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
         this._loadingTimeout = setTimeout(function () {
           that._loadingTimeout = null;

@@ -49,7 +49,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
   };
 
   Controller.prototype.configurationStructure = function () {
-    var jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
+    let jpaths = Traversing.getJPathsFromElement(this.module.view._value[0]);
     return {
       groups: {
         group: {
@@ -136,17 +136,17 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
   };
 
   Controller.prototype.onBrushSelection = function (value) {
-    var toSend = value,
+    let toSend = value,
       l = value.length;
-    var original = this.module.view._value;
-    var flags = new Array(original.length);
+    let original = this.module.view._value;
+    let flags = new Array(original.length);
 
     if (value[0] && value[0].hasOwnProperty('__id')) {
       original = this.module.view._value;
       toSend = new Array(l);
 
-      var index;
-      for (var i = 0; i < l; i++) {
+      let index;
+      for (let i = 0; i < l; i++) {
         index = value[i].__id;
         toSend[i] = original[index];
         flags[index] = true;

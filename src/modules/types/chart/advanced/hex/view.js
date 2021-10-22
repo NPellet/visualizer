@@ -10,7 +10,7 @@ require.config({
 });
 
 define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/color', 'src/util/colorbar', 'src/util/ui', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorUtil, colorbar, ui) {
-  var DEFAULT_COLOR = 'lightblue';
+  let DEFAULT_COLOR = 'lightblue';
 
 
   function View() {
@@ -37,7 +37,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       chart: function (value) {
         this.ignored = [];
         this.chart = value.get();
-        var data = chartToArray(this.chart);
+        let data = chartToArray(this.chart);
         this.originalData = data;
         this.coordinateSystem = this.module.getConfiguration('coordinateSystem');
         this.axesType = this.module.getConfiguration('axesType');
@@ -74,16 +74,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     },
 
     _substractOrigin: function () {
-      for (var i = 0; i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i] = addArray(this.data[i], multArray(this.origin, -1));
       }
     },
 
     _combinatorialBoundaries: function () {
       // compute boundaries for each axis
-      var x = _.map(this.originalData, 0);
-      var y = _.map(this.originalData, 1);
-      var z = _.map(this.originalData, 2);
+      let x = _.map(this.originalData, 0);
+      let y = _.map(this.originalData, 1);
+      let z = _.map(this.originalData, 2);
 
       this.combXmin = Math.min.apply(null, x);
       this.combYmin = Math.min.apply(null, y);
@@ -111,19 +111,19 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     },
 
     _normalize: function () {
-      var x = _.map(this.data, 0);
-      var y = _.map(this.data, 1);
-      var minX = Math.min.apply(null, x);
-      var minY = Math.min.apply(null, y);
-      var maxX = Math.max.apply(null, x);
-      var maxY = Math.max.apply(null, y);
+      let x = _.map(this.data, 0);
+      let y = _.map(this.data, 1);
+      let minX = Math.min.apply(null, x);
+      let minY = Math.min.apply(null, y);
+      let maxX = Math.max.apply(null, x);
+      let maxY = Math.max.apply(null, y);
       this.lenX = maxX - minX;
       this.lenY = maxY - minY;
-      var min = Math.min(minX, minY);
+      let min = Math.min(minX, minY);
       if (min % 2 !== 0) min = min - 1;
       this.normConstant = -min;
 
-      for (var i = 0; i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i][0] += this.normConstant;
         this.data[i][1] += this.normConstant;
       }
@@ -134,8 +134,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     },
 
     _ignored: function () {
-      var ignored = [];
-      for (var i = 0; i < this.data.length; i++) {
+      let ignored = [];
+      for (let i = 0; i < this.data.length; i++) {
         if (this.data[i] === undefined) {
           ignored.push(i);
         }
@@ -151,8 +151,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     },
 
     _processColors: function () {
-      var gradient = this.module.getConfiguration('gradient');
-      var stopType = this.module.getConfiguration('stopType');
+      let gradient = this.module.getConfiguration('gradient');
+      let stopType = this.module.getConfiguration('stopType');
       gradient = _.filter(gradient, (v) => v.stopPosition !== undefined);
       this.stopPositions = _.map(gradient, 'stopPosition');
 
@@ -171,9 +171,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         domain: this.colorDomain,
         stopType: stopType
       });
-      for (var i = 0; i < this.color.length; i++) {
+      for (let i = 0; i < this.color.length; i++) {
         if (!isNaN(this.color[i])) {
-          var c = this.numberToColor(this.color[i]);
+          let c = this.numberToColor(this.color[i]);
           this.color[i] = c.color;
           this.opacity[i] = c.opacity;
         }
@@ -188,18 +188,18 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     },
 
     _fontSize: function (px) {
-      var maxFontSize = 50;
+      let maxFontSize = 50;
 
       function findFontSize(text) {
-        var arr = text.split('\n');
-        var n = arr.reduce(function (p, c) {
+        let arr = text.split('\n');
+        let n = arr.reduce(function (p, c) {
           return Math.max(p, c.length);
         }, 0);
         n = Math.max(n, arr.length);
         return n ? px / n * 2 : maxFontSize;
       }
 
-      var fontSize;
+      let fontSize;
       if (!(fontSize = this.module.getConfiguration('fontSize'))) {
         fontSize = this.label.reduce(function (prev, current) {
           if (!current) return prev;
@@ -213,8 +213,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       this.color = [];
       this.label = [];
       this.opacity = [];
-      for (var i = 0; i < this.chart.data.length; i++) {
-        var d = this.chart.data[i];
+      for (let i = 0; i < this.chart.data.length; i++) {
+        let d = this.chart.data[i];
         this.color.push(_.map(d.info, 'color'));
         this.label.push(_.map(d.info, 'label'));
         this.opacity.push(_.map(d.info, 'opacity'));
@@ -245,15 +245,15 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         // Generate 6 points;
         // x=0, y=0, z=0
         this.axeData = {};
-        var pointOffset = 3;
+        let pointOffset = 3;
         this.axeData.points = [
           [this.combXmax + pointOffset, 0, 0], [0, this.combYZmax + pointOffset, this.combYZmax + pointOffset],
           [0, this.combYmax + pointOffset, 0], [this.combXZmax + pointOffset, 0, this.combXZmax + pointOffset],
           [0, 0, this.combZmax + pointOffset], [this.combXYmax + pointOffset, this.combXYmax + pointOffset, 0]
         ];
 
-        var startOffset = 1;
-        var endOffset = 2;
+        let startOffset = 1;
+        let endOffset = 2;
         this.axeData.startPoints = [
           [this.combXmax + startOffset, 0, 0], [0, this.combYZmax + startOffset, this.combYZmax + startOffset],
           [0, this.combYmax + startOffset, 0], [this.combXZmax + startOffset, 0, this.combXZmax + startOffset],
@@ -279,7 +279,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         this.axeData.endPoints = combinatorialToCubic(this.axeData.endPoints);
         this.axeData.endPoints = cubicToOddr(this.axeData.endPoints);
 
-        for (var i = 0; i < this.axeData.points.length; i++) {
+        for (let i = 0; i < this.axeData.points.length; i++) {
           this.axeData.points[i] = offsetArray(this.axeData.points[i], this.normConstant);
           this.axeData.startPoints[i] = offsetArray(this.axeData.startPoints[i], this.normConstant);
           this.axeData.endPoints[i] = offsetArray(this.axeData.endPoints[i], this.normConstant);
@@ -292,17 +292,17 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
     redraw: function () {
       if (!this.data || this.data.length === 0) return;
-      var that = this;
+      let that = this;
       this.reset();
-      var r1 = this.dom.width() / (2 + this.lenX * 1.5);
-      var r2 = this.dom.height() / ((this.lenX + 1) * 1.75);
-      var hexRadius = Math.min(r1, r2);
-      var points = [];
+      let r1 = this.dom.width() / (2 + this.lenX * 1.5);
+      let r2 = this.dom.height() / ((this.lenX + 1) * 1.75);
+      let hexRadius = Math.min(r1, r2);
+      let points = [];
       for (var i = 0; i < this.data.length; i++) {
         points.push(toPixel(this.data[i]));
       }
 
-      var boundingBox = _.flatten([toPixel([this.minX - 0.3, this.minY - 0.8]), toPixel([this.lenX + 1.5, this.lenY + 1.5])]);
+      let boundingBox = _.flatten([toPixel([this.minX - 0.3, this.minY - 0.8]), toPixel([this.lenX + 1.5, this.lenY + 1.5])]);
       if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
         boundingBox[0] -= 100; // Keep some room for color bar
         boundingBox[2] += 100;
@@ -312,29 +312,29 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         return [point[0] * hexRadius * 1.75, point[1] * hexRadius * 1.5];
       }
 
-      var width = this.width,
+      let width = this.width,
         height = this.height;
 
-      var motherSvg = d3.select(`#${this.id}`).append('svg')
+      let motherSvg = d3.select(`#${this.id}`).append('svg')
         .attr('viewBox', boundingBox.join(','))
         .attr('width', width)
         .attr('height', height)
         .style('display', 'block');
 
 
-      var svg = motherSvg.append('g');
+      let svg = motherSvg.append('g');
 
-      var tickMode = this.module.getConfiguration('tickMode');
-      var tickNumber = this.module.getConfiguration('tickNumber');
-      var tickValues = (this.module.getConfiguration('tickValues') || '')
+      let tickMode = this.module.getConfiguration('tickMode');
+      let tickNumber = this.module.getConfiguration('tickNumber');
+      let tickValues = (this.module.getConfiguration('tickValues') || '')
         .split(',').map(function (v) {
           return +v;
         });
 
       if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
-        var colorbarx = boundingBox[0];
-        var colorbary = boundingBox[1];
-        var svgMarkup = colorbar.getSvg({
+        let colorbarx = boundingBox[0];
+        let colorbary = boundingBox[1];
+        let svgMarkup = colorbar.getSvg({
           width: 50,
           height: boundingBox[3] * 0.95 - 20,
           axis: {
@@ -354,10 +354,10 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       }
 
 
-      var hexbin = d3.hexbin()
+      let hexbin = d3.hexbin()
         .radius(hexRadius);
 
-      var fontSize = that._fontSize(hexRadius);
+      let fontSize = that._fontSize(hexRadius);
 
       // Generate axes
       // Combinatorial axes
@@ -380,9 +380,9 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
         if (this.axesType === 'graph') {
           // draw coordinates on the graph
-          var axePoints = [];
-          var startAxePoints = [];
-          var endAxePoints = [];
+          let axePoints = [];
+          let startAxePoints = [];
+          let endAxePoints = [];
           for (i = 0; i < this.axeData.points.length; i++) {
             axePoints.push(toPixel(this.axeData.points[i]));
             startAxePoints.push(toPixel(this.axeData.startPoints[i]));
@@ -432,12 +432,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
               return `M${startAxePoints[i].x},${startAxePoints[i].y}L${endAxePoints[i].x} ${endAxePoints[i].y}`;
             });
         } else if (this.axesType === 'legend') {
-          var radText = 30;
-          var radArr = 20;
-          var legendTextPoints = getLegendData(radText);
-          var legendEndPoints = getLegendData(radArr);
-          var legendStartPoints = fillArray({ x: 0, y: 0 }, 6);
-          var legendSize = 20;
+          let radText = 30;
+          let radArr = 20;
+          let legendTextPoints = getLegendData(radText);
+          let legendEndPoints = getLegendData(radArr);
+          let legendStartPoints = fillArray({ x: 0, y: 0 }, 6);
+          let legendSize = 20;
 
           // Legend text
           svg.append('g').attr('class', 'abcd')
@@ -482,7 +482,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       }
 
       // Generate hexgons
-      var hexbinPoints = hexbin(points);
+      let hexbinPoints = hexbin(points);
 
       svg.append('g')
         .selectAll('.hexagon')
@@ -501,7 +501,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
           return that.opacity[i];
         });
 
-      var nodeText = svg.append('g')
+      let nodeText = svg.append('g')
         .selectAll('foreignObject')
         .data(hexbinPoints)
         .enter().append('foreignObject')
@@ -533,7 +533,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
       // Zoom
       if (this.module.getConfigurationCheckbox('enableZoom', 'yes')) {
-        var zoom = d3.behavior.zoom()
+        let zoom = d3.behavior.zoom()
           .scaleExtent([0.2, 10])
           .on('zoom', zoomed);
 
@@ -557,18 +557,18 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
   function chartToArray(chart) {
     try {
-      var x = chart.data[0].x;
+      let x = chart.data[0].x;
     } catch (e) {
       Debug.warn('no chart data');
       return [];
     }
-    var result = [];
+    let result = [];
 
     // Series of the chart object are merged
-    var hasZ = (chart.data[0].z !== undefined);
-    for (var i = 0; i < chart.data.length; i++) {
-      for (var j = 0; j < chart.data[i].x.length; j++) {
-        var r = [chart.data[i].x[j], chart.data[i].y[j]];
+    let hasZ = (chart.data[0].z !== undefined);
+    for (let i = 0; i < chart.data.length; i++) {
+      for (let j = 0; j < chart.data[i].x.length; j++) {
+        let r = [chart.data[i].x[j], chart.data[i].y[j]];
         if (hasZ) r.push(chart.data[i].z[j]);
         result.push(r);
       }
@@ -585,21 +585,21 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
   }
 
   function combinatorialToCubic(data) {
-    var result = [];
-    for (var i = 0; i < data.length; i++) {
-      var v = data[i];
-      var min = Math.min.apply(null, v);
-      var max = Math.max.apply(null, v);
+    let result = [];
+    for (let i = 0; i < data.length; i++) {
+      let v = data[i];
+      let min = Math.min.apply(null, v);
+      let max = Math.max.apply(null, v);
       if (min !== 0 || v.length !== 3) {
         result.push(undefined);
         continue;
       }
 
-      var minIdx = v.indexOf(min);
-      var maxIdx = v.indexOf(max);
-      var middleIdx = ((minIdx + maxIdx) * 2) % 3;
+      let minIdx = v.indexOf(min);
+      let maxIdx = v.indexOf(max);
+      let middleIdx = ((minIdx + maxIdx) * 2) % 3;
 
-      var r = [0, 0, 0];
+      let r = [0, 0, 0];
       r = addArray(r, getComponent2(v, minIdx, middleIdx, maxIdx));
       r = addArray(r, getComponent1(v, minIdx, middleIdx, maxIdx));
       result.push(r);
@@ -608,54 +608,54 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
   }
 
   function combinatorialToEvenq(data) {
-    var r = combinatorialToCubic(data);
+    let r = combinatorialToCubic(data);
     r = cubicToEvenq(r);
     return r;
   }
 
   function cubicToEvenq(data) {
-    var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    let r = new Array(data.length);
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
-      var col = data[i][0],
+      let col = data[i][0],
         z = data[i][2];
-      var row = z + (col + (col & 1)) / 2;
+      let row = z + (col + (col & 1)) / 2;
       r[i] = [col, row];
     }
     return r;
   }
 
   function cubicToEvenr(data) {
-    var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    let r = new Array(data.length);
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
-      var row = data[i][2],
+      let row = data[i][2],
         x = data[i][0];
-      var col = x + (row + (row & 1)) / 2;
+      let col = x + (row + (row & 1)) / 2;
       r[i] = [col, row];
     }
     return r;
   }
 
   function cubicToOddr(data) {
-    var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    let r = new Array(data.length);
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
-      var row = data[i][2],
+      let row = data[i][2],
         x = data[i][0];
-      var col = x + (row - (row & 1)) / 2;
+      let col = x + (row - (row & 1)) / 2;
       r[i] = [col, row];
     }
     return r;
   }
 
   function cubicToOddq(data) {
-    var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    let r = new Array(data.length);
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
-      var col = data[i][0],
+      let col = data[i][0],
         z = data[i][2];
-      var row = z + (col - (col & 1)) / 2;
+      let row = z + (col - (col & 1)) / 2;
       r[i] = [col, row];
     }
     return r;
@@ -665,32 +665,32 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     if (arr1.length !== arr2.length) {
       throw new Error('Array not the same size in addition');
     }
-    var r = arr1.slice(0);
-    for (var i = 0; i < arr1.length; i++) {
+    let r = arr1.slice(0);
+    for (let i = 0; i < arr1.length; i++) {
       r[i] += arr2[i];
     }
     return r;
   }
 
   function multArray(arr, c) {
-    var r = arr.slice(0);
-    for (var i = 0; i < arr.length; i++) {
+    let r = arr.slice(0);
+    for (let i = 0; i < arr.length; i++) {
       r[i] *= c;
     }
     return r;
   }
 
   function offsetArray(arr, c) {
-    var r = arr.slice(0);
-    for (var i = 0; i < arr.length; i++) {
+    let r = arr.slice(0);
+    for (let i = 0; i < arr.length; i++) {
       r[i] += c;
     }
     return r;
   }
 
   function fillArray(d, l) {
-    var arr = new Array(l);
-    for (var i = 0; i < arr.length; i++) {
+    let arr = new Array(l);
+    for (let i = 0; i < arr.length; i++) {
       arr[i] = d;
     }
     return arr;
@@ -726,8 +726,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
   }
 
   function commonMax(a, b) {
-    var m = 0;
-    for (var i = 0; i < a.length; i++) {
+    let m = 0;
+    for (let i = 0; i < a.length; i++) {
       if (a[i] === b[i] && a[i] > m) m = a[i];
     }
     return m;

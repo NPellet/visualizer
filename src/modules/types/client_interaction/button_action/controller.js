@@ -41,7 +41,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.onClick = function (view, action) {
-    var text = this.module.getConfiguration('text');
+    let text = this.module.getConfiguration('text');
     let value = {
       label: text,
       state: view.currentState,

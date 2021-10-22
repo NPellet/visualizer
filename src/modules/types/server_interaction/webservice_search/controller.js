@@ -291,7 +291,7 @@ define([
     this.dataValues = {};
     this.method = this.module.getConfiguration('method') || 'POST';
 
-    var searchparams = this.module.getConfiguration('searchparams') || [];
+    let searchparams = this.module.getConfiguration('searchparams') || [];
     for (var i = 0; i < searchparams.length; i++) {
       if (searchparams[i].name && searchparams[i].defaultvalue) {
         this.addValue(searchparams[i], searchparams[i].defaultvalue);
@@ -299,9 +299,9 @@ define([
     }
 
     this.headers = {};
-    var headerList = this.module.getConfiguration('headers') || [];
+    let headerList = this.module.getConfiguration('headers') || [];
     for (i = 0; i < headerList.length; i++) {
-      var header = headerList[i];
+      let header = headerList[i];
       if (header.name && header.value) {
         this.headers[header.name] = header.value;
       }
@@ -315,7 +315,7 @@ define([
       delete this.module.resultfilter;
     }
 
-    var debounce = this.module.getConfiguration('debounce');
+    let debounce = this.module.getConfiguration('debounce');
     this.doSearch = debounce > 0 ? _.debounce(this._doSearch, debounce) : this._doSearch;
 
     if (this.module.getConfiguration('onloadsearch')) {
@@ -329,7 +329,7 @@ define([
     if (typeof value.resurrect === 'function') {
       value = value.resurrect();
     }
-    var str = typeof value === 'string';
+    let str = typeof value === 'string';
     switch (option.destination) {
       case 'query':
         this.queryValues[option.name] = str ? value : JSON.stringify(value);
@@ -349,15 +349,15 @@ define([
   };
 
   Controller.prototype._doSearch = function () {
-    var that = this,
+    let that = this,
       urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
 
-    var toPost = this.module.getConfiguration('postvariables', []);
-    for (var i = 0, ii = toPost.length; i < ii; i++) {
-      var valueToPost = API.getVar(toPost[i].variable).getData();
+    let toPost = this.module.getConfiguration('postvariables', []);
+    for (let i = 0, ii = toPost.length; i < ii; i++) {
+      let valueToPost = API.getVar(toPost[i].variable).getData();
       if (valueToPost) {
         var value;
-        var type = valueToPost.getType();
+        let type = valueToPost.getType();
         if (type === 'string' || type === 'number' || type === 'boolean') {
           value = valueToPost.get();
         } else if (toPost[i].filter === 'value') {
@@ -400,7 +400,7 @@ define([
         if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
           that.module.view.showSuccess(response.status);
         }
-        var body = response.body;
+        let body = response.body;
         if (body == null) {
           body = response.text;
         }

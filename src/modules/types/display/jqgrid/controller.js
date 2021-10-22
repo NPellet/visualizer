@@ -65,7 +65,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   });
 
   Controller.prototype.configurationStructure = function () {
-    var jpaths = this.module.model.getjPath('row', false);
+    let jpaths = this.module.model.getjPath('row', false);
 
     return {
       groups: {
@@ -155,8 +155,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   };
 
   Controller.prototype.onVarReceiveChange = function (name, rel, confSection) {
-    var data = API.getVar(name);
-    var jpaths = [];
+    let data = API.getVar(name);
+    let jpaths = [];
     if (!data)
       return;
 
@@ -191,7 +191,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   };
 
   Controller.prototype.lineOut = function (elements, row) {
-    var element = elements[row];
+    let element = elements[row];
     if (!element) {
       return;
     }
@@ -221,20 +221,20 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   };
 
   Controller.prototype.doToggle = function (act) {
-    var that = this,
+    let that = this,
       data = this.module.getDataFromRel('list');
 
     this.allVariablesFor((act == 'on' ? 'onToggleOn' : 'onToggleOff'), 'selectedrows', function (varToSend) {
-      var results = new DataArray();
+      let results = new DataArray();
 
-      for (var i in that.toggleElements) {
+      for (let i in that.toggleElements) {
         if (!data[i]) {
           continue;
         }
 
         data.traceSync([i]);
         Debug.warn('Warning. This is only sync');
-        var el = data[i].traceSync(varToSend.jpath.slice(0));
+        let el = data[i].traceSync(varToSend.jpath.slice(0));
         results.push(el);
       }
 

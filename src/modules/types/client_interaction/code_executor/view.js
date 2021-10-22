@@ -16,12 +16,12 @@ define([
     this._id = Util.getNextUniqueId();
     this._code = '';
 
-    var table = (this.table = $('<table>').css({
+    let table = (this.table = $('<table>').css({
       height: '100%',
       width: '100%',
       bottom: 0
     }));
-    var editorRow = $('<tr>')
+    let editorRow = $('<tr>')
       .appendTo(table)
       .css('height', 'auto');
     this.editorRow = editorRow;
@@ -40,9 +40,9 @@ define([
   };
 
   View.prototype.inDom = function () {
-    var that = this;
+    let that = this;
 
-    var initVal = this.module.getConfiguration('script') || '';
+    let initVal = this.module.getConfiguration('script') || '';
     this._code = initVal;
 
     if (this.module.getConfigurationCheckbox('display', 'editor')) {
@@ -62,14 +62,14 @@ define([
     }
 
     if (this.module.getConfigurationCheckbox('display', 'buttons')) {
-      var buttons = this.module.getConfiguration('buttons');
+      let buttons = this.module.getConfiguration('buttons');
       if (buttons) {
         buttons.forEach(function (button, idx) {
-          var onclick = that.module.controller.onButtonClick.bind(
+          let onclick = that.module.controller.onButtonClick.bind(
             that.module.controller,
             button.name
           );
-          var b = new Button(button.label, onclick, {
+          let b = new Button(button.label, onclick, {
             color: 'Grey',
             disabled: false
           });
@@ -122,7 +122,7 @@ define([
   };
 
   View.prototype.editorChanged = function () {
-    var val = this.editor.getValue();
+    let val = this.editor.getValue();
     this._code = val;
     this.module.definition.configuration.groups.group[0].script[0] = val;
   };

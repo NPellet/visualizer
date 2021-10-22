@@ -13,11 +13,11 @@ define([
       return this.dataValue;
     },
     getjPath: function (rel) {
-      var value = this.module.view._value || {};
+      let value = this.module.view._value || {};
       while (value.children && value.children.length > 0) {
         value = value.children[0];
       }
-      var jpaths = [];
+      let jpaths = [];
       Traversing.getJPathsFromElement(value, jpaths);
       switch (rel) {
         case 'node':

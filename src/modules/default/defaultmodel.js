@@ -28,8 +28,8 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
       this.mapVars();
       API.getRepositoryActions().unListen(this.getActionNameList(), this._actionlisten);
 
-      var list = this.getVarNameList();
-      for (var i = 0, l = list.length; i < l; i++) {
+      let list = this.getVarNameList();
+      for (let i = 0, l = list.length; i < l; i++) {
         API.getVar(list[i]).listen(this.module, this.onVarChange.bind(this));
       }
       this._actionlisten = API.getRepositoryActions().listen(this.getActionNameList(), this.onActionTrigger.bind(this));
@@ -135,7 +135,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         return false;
       }
 
-      var dataRebuilt = {};
+      let dataRebuilt = {};
       if (!sourceTypes) { // Accepts everything
         return data;
       }
@@ -144,7 +144,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         sourceTypes = [sourceTypes];
       }
 
-      var dataType = data.getType(),
+      let dataType = data.getType(),
         mustRebuild = false;
 
       // If no in type is defined, the module accepts anything
@@ -152,7 +152,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         return data;
       }
 
-      for (var i = 0; i < sourceTypes.length; i++) {
+      for (let i = 0; i < sourceTypes.length; i++) {
         if (sourceTypes[i] == dataType) {
           return data;
         }
@@ -192,7 +192,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
     },
 
     _getjPath(rel, subjPath) {
-      var data = this.module.getDataFromRel(rel);
+      let data = this.module.getDataFromRel(rel);
 
       if (data && subjPath !== undefined) {
         data = data.getChildSync(subjPath);
@@ -261,7 +261,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         return;
       }
 
-      for (var i = 0, l = this.triggerChangeCallbacksByRels[rel].length; i < l; i++) {
+      for (let i = 0, l = this.triggerChangeCallbacksByRels[rel].length; i < l; i++) {
         this.removeChangeListener(this.triggerChangeCallbacksByRels[rel][i].data, this.triggerChangeCallbacksByRels[rel][i].callback);
       }
     },

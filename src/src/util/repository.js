@@ -1,10 +1,10 @@
 'use strict';
 
 define(['jquery', 'src/util/event'], function ($, Event) {
-  var callbackId = -1;
+  let callbackId = -1;
 
   var bindKeysRecursively = function (repository, keys, callbackId, add) {
-    for (var i = 0, l = keys.length; i < l; i++) {
+    for (let i = 0, l = keys.length; i < l; i++) {
       if (Array.isArray(keys[i])) {
         bindKeysRecursively(repository, keys[i], callbackId, add);
         continue;
@@ -14,7 +14,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
       if (add) {
         repository._keys[keys[i]].push(callbackId);
       } else {
-        var index = repository._keys[keys[i]].indexOf(callbackId);
+        let index = repository._keys[keys[i]].indexOf(callbackId);
 
         if (index == -1) {
           continue;
@@ -24,10 +24,10 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     }
   };
 
-  var getCommonKeys = function (set1, set2) {
-    var set3 = set2.slice(0),
+  let getCommonKeys = function (set1, set2) {
+    let set3 = set2.slice(0),
       set1Rev = {};
-    for (var i = 0, l = set1.length; i < l; i++) {
+    for (let i = 0, l = set1.length; i < l; i++) {
       set1Rev[set1[i]] = true;
     }
     return compareKeysRecursively(set1Rev, set3, true);
@@ -35,7 +35,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
 
 
   var compareKeysRecursively = function (set1, set2, or) {
-    var i, l, set2el,
+    let i, l, set2el,
       set3 = [];
     for (i = 0, l = set2.length; i < l; i++) {
       set2el = set2[i];
@@ -56,27 +56,27 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     this.options = options || { doNotSave: false };
 
     this.on('change', function (sourcekeys, value, senderId) {
-      var callbacks = {};
+      let callbacks = {};
       this._keys = this._keys || [];
       sourcekeys = Array.isArray(sourcekeys) ? sourcekeys : [sourcekeys];
 
       for (var i = 0; i < sourcekeys.length; i++) {
         if (this._keys[sourcekeys[i]] == undefined)
           continue;
-        for (var j = 0; j < this._keys[sourcekeys[i]].length; j++)
+        for (let j = 0; j < this._keys[sourcekeys[i]].length; j++)
           callbacks[this._keys[sourcekeys[i]][j]] = true;
       }
 
 
       loop1: for (i in callbacks) {
-        var currentCallback = this._callbacks[i];
+        let currentCallback = this._callbacks[i];
 
         if (!currentCallback)
           continue;
-        var commonKeys = getCommonKeys(currentCallback[0], sourcekeys);
+        let commonKeys = getCommonKeys(currentCallback[0], sourcekeys);
 
         if (commonKeys.length > 0 || ((!commonKeys || commonKeys.length == 0) && currentCallback[2])) {
-          for (var killerID in this._killers) {
+          for (let killerID in this._killers) {
             if (this._killers[killerID].indexOf(+i) > -1) {
               currentCallback[1](value, commonKeys, killerID, senderId);
               continue loop1;
@@ -126,7 +126,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     }
 
 
-    var _callbackId = ++callbackId;
+    let _callbackId = ++callbackId;
     this._callbacks[_callbackId] = [keys, callback, sendCallbackOnEmptyArray];
 
     if (killerID) {
@@ -143,8 +143,8 @@ define(['jquery', 'src/util/event'], function ($, Event) {
       return;
     }
 
-    var callbackIds = this._killers[killerId];
-    for (var i = 0, l = callbackIds.length; i < l; i++) {
+    let callbackIds = this._killers[killerId];
+    for (let i = 0, l = callbackIds.length; i < l; i++) {
       bindKeysRecursively(this, this._callbacks[callbackIds[i]][0], callbackIds[i], false);
       delete this._callbacks[callbackIds[i]];
     }
@@ -172,14 +172,14 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   Repository.prototype.resendAll = function () {
     if (this.options.doNotSave === true)
       return;
-    for (var i in this._value)
+    for (let i in this._value)
       this.set(this._value[i][0], this._value[i][1]);
   };
 
   Repository.prototype.getKeys = function () {
-    var value = this._value,
+    let value = this._value,
       keys = [];
-    for (var i in value) {
+    for (let i in value) {
       keys.push(i);
     }
     return keys;

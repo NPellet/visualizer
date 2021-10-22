@@ -7,7 +7,7 @@ define([
   'forms/button',
   'src/util/util'
 ], function ($, Default, Versioning, Button, Util) {
-  var defaults = {
+  let defaults = {
     label: false,
     elements: false,
     viewURL: false,
@@ -17,16 +17,16 @@ define([
     toggle: false
   };
 
-  var buttons = { view: {}, data: {} };
+  let buttons = { view: {}, data: {} };
 
   function makeHandlerButtons() {
-    var pos = ['view', 'data'];
-    var pos2 = ['View', 'Data'];
+    let pos = ['view', 'data'];
+    let pos2 = ['View', 'Data'];
 
-    for (var i = 0; i < pos.length; i++) {
+    for (let i = 0; i < pos.length; i++) {
       (function (j) {
-        var subject = j == 0 ? Versioning.getView() : Versioning.getData();
-        var handler =
+        let subject = j == 0 ? Versioning.getView() : Versioning.getData();
+        let handler =
           j == 0 ? Versioning.getViewHandler() : Versioning.getDataHandler();
 
         buttons[pos[j]].copyToLocal = new Button(
@@ -58,7 +58,7 @@ define([
                   .children()
                   .find('span')
                   .remove();
-                var date = new Date();
+                let date = new Date();
                 date = `${Util.pad(date.getHours())}:${Util.pad(
                   date.getMinutes()
                 )}`;
@@ -77,7 +77,7 @@ define([
               'src/util/ui',
               'forms/button'
             ], function (FormFactory, ui, Button) {
-              var div = ui.dialog({ width: '80%', title: 'Make branch' });
+              let div = ui.dialog({ width: '80%', title: 'Make branch' });
               div.parent().css('zIndex', 10000);
 
               FormFactory.newform(
@@ -110,9 +110,9 @@ define([
                   }
                 },
                 function (form) {
-                  var save = new Button('Save', function () {
+                  let save = new Button('Save', function () {
                     form.dom.trigger('stopEditing');
-                    var value = form.getValue();
+                    let value = form.getValue();
                     handler.localBranch(
                       subject,
                       value.cfg[0].general[0].name[0]
@@ -144,7 +144,7 @@ define([
                 .children()
                 .find('span')
                 .remove();
-              var date = new Date();
+              let date = new Date();
               date = `${Util.pad(date.getHours())}:${Util.pad(
                 date.getMinutes()
               )}`;
@@ -171,7 +171,7 @@ define([
       this._ready = true;
       makeHandlerButtons(); // Make those buttons !
 
-      var $dom = this.$_elToOpen;
+      let $dom = this.$_elToOpen;
 
       // And add 'em all !
 
@@ -243,7 +243,7 @@ define([
     },
 
     _onClick: function () {
-      var el = this.getReady();
+      let el = this.getReady();
       this.setStyleOpen(this._open);
       if (this._open) {
         this.open();

@@ -247,11 +247,11 @@ define([
   };
 
   Controller.prototype.initImpl = function () {
-    var i, ii, cfgEl, eCfgEl;
+    let i, ii, cfgEl, eCfgEl;
 
-    var fileCfg = this.module.getConfiguration('vars');
+    let fileCfg = this.module.getConfiguration('vars');
     if (fileCfg) {
-      var enhancedFileCfg = [];
+      let enhancedFileCfg = [];
       for (i = 0, ii = fileCfg.length; i < ii; i++) {
         cfgEl = fileCfg[i];
         eCfgEl = $.extend({}, cfgEl);
@@ -271,9 +271,9 @@ define([
       this.fileCfg = enhancedFileCfg;
     }
 
-    var stringCfg = this.module.getConfiguration('string');
+    let stringCfg = this.module.getConfiguration('string');
     if (stringCfg) {
-      var enhancedStringCfg = [];
+      let enhancedStringCfg = [];
       for (i = 0, ii = stringCfg.length; i < ii; i++) {
         cfgEl = stringCfg[i];
         eCfgEl = $.extend({}, cfgEl);
@@ -310,7 +310,7 @@ define([
   };
 
   function treatMultiplePaste(items) {
-    var pitems = [];
+    let pitems = [];
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
       pitems.push({
@@ -329,9 +329,9 @@ define([
   Controller.prototype.open = function (data) {
     if (!(data.items && data.items.length) && !data.files.length) return;
 
-    var items;
+    let items;
 
-    var multiplePaste = true;
+    let multiplePaste = true;
     for (let i = 0; i < data.items.length; i++) {
       if (data.items[i].kind !== 'string') multiplePaste = false;
     }
@@ -346,10 +346,10 @@ define([
     this.module.model.tmpVars = new DataObject();
     this.module.model.tmpVarsArray = new DataObject();
 
-    var defs = [];
+    let defs = [];
 
-    var cfg = this.fileCfg;
-    var cfgString = this.stringCfg;
+    let cfg = this.fileCfg;
+    let cfgString = this.stringCfg;
 
     var i, item, meta, def;
     if (items) {
@@ -412,7 +412,7 @@ define([
   };
 
   Controller.prototype.openPhoto = function (result) {
-    var meta = this.checkPhotoMetadata(this.photoCfg);
+    let meta = this.checkPhotoMetadata(this.photoCfg);
     meta.def = $.Deferred();
     this.fileRead(result, meta);
 
@@ -462,7 +462,7 @@ define([
   };
 
   Controller.prototype.treatString = function (item, meta) {
-    var description = getDescription(meta.cfg);
+    let description = getDescription(meta.cfg);
     item.getAsString((str) => {
       if (this.module.getConfigurationCheckbox('askFilename', 'yes')) {
         ui.enterValue({
@@ -479,7 +479,7 @@ define([
           },
         }).then((val) => {
           if (val == undefined) return;
-          var m = this.checkMetadata(
+          let m = this.checkMetadata(
             item,
             meta.cfg,
             mimeFromName('text/plain'),
@@ -493,7 +493,7 @@ define([
           this.parseString(str, meta);
         });
       } else {
-        var m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'));
+        let m = this.checkMetadata(item, meta.cfg, mimeFromName('text/plain'));
         if (!m) {
           meta.def.resolve();
           return;
@@ -510,8 +510,8 @@ define([
     }
 
     name = name || item.name || '';
-    var mime = item.type || getMime(name);
-    var split = name.split('.'),
+    let mime = item.type || getMime(name);
+    let split = name.split('.'),
       ext,
       lineCfg;
     if (split.length < 2) {
@@ -519,16 +519,16 @@ define([
     } else {
       ext = split.pop().toLowerCase();
     }
-    for (var i = 0, l = cfg.length; i < l; i++) {
-      var filter = cfg[i].filter;
+    for (let i = 0, l = cfg.length; i < l; i++) {
+      let filter = cfg[i].filter;
       if (filter === 'ext') {
-        var extensions = cfg[i].extension;
+        let extensions = cfg[i].extension;
         if (extensions === '*' || extensions.split(',').indexOf(ext) !== -1) {
           lineCfg = cfg[i];
           break;
         }
       } else {
-        var matcher = cfg[i].match;
+        let matcher = cfg[i].match;
         if (matcher.test(mime)) {
           lineCfg = cfg[i];
           break;
@@ -536,7 +536,7 @@ define([
       }
     }
     if (!lineCfg) {
-      var msg = `Did not find match for ${name} (${mime})`;
+      let msg = `Did not find match for ${name} (${mime})`;
       ui.showNotification(msg, 'warn');
       return Debug.warn(msg);
     }
@@ -549,7 +549,7 @@ define([
   };
 
   Controller.prototype.checkPhotoMetadata = function (cfg) {
-    var lineCfg = cfg[0];
+    let lineCfg = cfg[0];
 
     lineCfg.filetype = 'url';
     lineCfg.type = 'png';
@@ -599,10 +599,10 @@ define([
         meta.def.resolve();
         return;
       }
-      // eslint-disable-next-line require-atomic-updates
+       
       meta.filename = `${value}.png`;
     }
-    var reader = new FileReader();
+    let reader = new FileReader();
     reader.onload = (e) => {
       this.fileRead(e.target.result, meta);
     };
@@ -633,8 +633,8 @@ define([
         value: obj,
       };
     }
-    var name = meta.cfg.variable;
-    var variable = new DataObject({
+    let name = meta.cfg.variable;
+    let variable = new DataObject({
       encoding: meta.cfg.filetype,
       filename: meta.filename,
       mimetype: meta.mime,
@@ -650,10 +650,10 @@ define([
   };
 
   Controller.prototype.emulDataTransfer = function (e) {
-    var emul = {};
+    let emul = {};
     emul.files = e.target.files;
     emul.items = [];
-    for (var i = 0; i < e.target.files.length; i++) {
+    for (let i = 0; i < e.target.files.length; i++) {
       (function (i) {
         emul.items.push({
           kind: 'file',
@@ -673,9 +673,9 @@ define([
   }
 
   function getDescription(cfg) {
-    var d = '';
+    let d = '';
     for (let i = 0; i < cfg.length; i++) {
-      var c = cfg[i];
+      let c = cfg[i];
       if (c.filter === 'mime') {
         d += 'Mime: ';
       } else {

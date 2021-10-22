@@ -46,9 +46,9 @@ define([
     },
   });
 
-  var exports = {};
-  var inProgress = {};
-  var $dialog;
+  let exports = {};
+  let inProgress = {};
+  let $dialog;
 
   exports.showCode = function (opts) {
     var opts = Object.assign(
@@ -61,13 +61,13 @@ define([
       opts,
     );
     require(['ace/ace'], function (ace) {
-      var id = Util.getNextUniqueId(true);
+      let id = Util.getNextUniqueId(true);
       exports.dialog(
         $(`<div style="width: 100%; height: 100%;" id="${id}"></div>`),
         opts,
       );
-      var editor = ace.edit(id);
-      var mode = `./mode/${opts.mode}`;
+      let editor = ace.edit(id);
+      let mode = `./mode/${opts.mode}`;
       editor.getSession().setOption('useWorker', false);
       editor.getSession().setMode(mode);
       editor.setValue(opts.content, -1);
@@ -87,14 +87,14 @@ define([
     opts = Object.assign({}, defaultOptions, opts);
 
     return new Promise(function (resolve) {
-      var div = $(`<div>${opts.description}<div>${opts.label}: </div></div>`);
-      var input = $(`<input type="text" value="${opts.value}"/>`)
+      let div = $(`<div>${opts.description}<div>${opts.label}: </div></div>`);
+      let input = $(`<input type="text" value="${opts.value}"/>`)
         .appendTo(div.find('div'))
         .on('keypress', (evt) => {
           if (evt.keyCode === 13) done();
         });
       const done = () => {
-        var value = input.val();
+        let value = input.val();
         if (!opts.validation(value)) {
           exports.showNotification(opts.validationMessage, 'error');
           return;
@@ -120,7 +120,7 @@ define([
     var template = Twig.twig({
       data: DataObject.resurrect(template),
     });
-    var renderer = await template.renderAsync(DataObject.resurrect(data));
+    let renderer = await template.renderAsync(DataObject.resurrect(data));
     const div = document.createElement('div');
     div.style = 'position: absolute; width: 1; height: 1; visibility: none';
     const body = document.getElementsByTagName('body')[0];
@@ -136,17 +136,17 @@ define([
     opts = Object.assign({}, opts);
 
     if (opts.twig) {
-      var template = Twig.twig({
+      let template = Twig.twig({
         data: DataObject.resurrect(div),
       });
-      var render = template.renderAsync(DataObject.resurrect(opts.twig));
+      let render = template.renderAsync(DataObject.resurrect(opts.twig));
       render.render();
       div = render.html;
     }
 
     return new Promise(function (resolve) {
       const done = (name) => {
-        var obj = form.getData(true);
+        let obj = form.getData(true);
         obj._clickedButton = name;
         form.unbind();
         resolve(obj);
@@ -225,14 +225,14 @@ define([
     await Util.require('select2');
     await Util.loadCss('components/select2/dist/css/select2.css');
 
-    var $select2 = '<div><div style="height:50px"></div> <select>';
-    var selectWidth = options.width;
+    let $select2 = '<div><div style="height:50px"></div> <select>';
+    let selectWidth = options.width;
 
-    var ww = Math.max(
+    let ww = Math.max(
       document.documentElement.clientWidth,
       window.innerWidth || 0,
     );
-    var wh = Math.max(
+    let wh = Math.max(
       document.documentElement.clientHeight,
       window.innerHeight || 0,
     );
@@ -273,7 +273,7 @@ define([
       .val(null)
       .trigger('change');
 
-    var selecting;
+    let selecting;
     $select2.on('select2:selecting', function () {
       selecting = true;
     });
@@ -320,14 +320,14 @@ define([
       return '...';
     }
 
-    var slickDefaultColumn = {
+    let slickDefaultColumn = {
       formatter: waitFormatter,
       asyncPostRender: typeRenderer,
       colDef: {},
     };
 
-    var grid;
-    var data;
+    let grid;
+    let data;
 
     const columns = slickOptions.columns.map((column) => {
       if (column.editor === 'auto') {
@@ -370,7 +370,7 @@ define([
 
     function getItemInfoFromRow(data, row) {
       if (_.isUndefined(row)) return null;
-      var id = data.mapRowsToIds([row])[0];
+      let id = data.mapRowsToIds([row])[0];
       if (!id) return null;
       return {
         id: id,
@@ -382,12 +382,12 @@ define([
     return new Promise((resolve) => {
       return Util.loadCss('components/slickgrid/slick.grid.css').then(
         function () {
-          var $dialog = $('<div>');
-          var $slick = $('<div>')
+          let $dialog = $('<div>');
+          let $slick = $('<div>')
             .css('height', '100%')
             .css('width', '100%')
             .addClass('visualizer-slickgrid');
-          var $container = $('<div>').css('height', 410);
+          let $container = $('<div>').css('height', 410);
           const dialogOptions = Object.assign(
             {},
             defaultDialogOptions,
@@ -422,14 +422,14 @@ define([
                 $dialog.append($container);
                 data = new Slick.Data.DataView();
                 $container.on('click', 'a.recycle-bin', function (e) {
-                  var columns = grid.getColumns();
-                  var args = grid.getCellFromEvent(e);
+                  let columns = grid.getColumns();
+                  let args = grid.getCellFromEvent(e);
                   if (
                     columns[args.cell] &&
                     columns[args.cell].id === 'rowDeletion'
                   ) {
                     // delete the row...
-                    var itemInfo = getItemInfoFromRow(data, args.row);
+                    let itemInfo = getItemInfoFromRow(data, args.row);
                     data.deleteItem(itemInfo.id);
                     grid.invalidateAllRows();
                     grid.render();
@@ -450,7 +450,7 @@ define([
                   cancelEditOnDrag: true,
                 });
                 moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
-                  for (var i = 0; i < data.rows.length; i++) {
+                  for (let i = 0; i < data.rows.length; i++) {
                     // no point in moving before or after itself
                     if (
                       data.rows[i] == data.insertBefore ||
@@ -464,17 +464,17 @@ define([
                 });
 
                 moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
-                  var rows = args.rows;
+                  let rows = args.rows;
                   rows = rows.map(function (r) {
                     return getItemInfoFromRow(data, r).idx;
                   });
-                  var insertBefore = getItemInfoFromRow(
+                  let insertBefore = getItemInfoFromRow(
                     data,
                     args.insertBefore,
                   );
                   if (insertBefore !== null) insertBefore = insertBefore.idx;
 
-                  var items = data.getItems();
+                  let items = data.getItems();
                   // Add a position indicatior ==> for stable sort
                   for (var i = 0; i < items.length; i++) {
                     if (rows.indexOf(i) !== -1) items[i].__pos = 2;
@@ -527,7 +527,7 @@ define([
 
   function typeRenderer(cellNode, row, dataContext, colDef) {
     if (cellNode) {
-      var val = DataObject.check(dataContext).getChildSync(colDef.jpath);
+      let val = DataObject.check(dataContext).getChildSync(colDef.jpath);
       Renderer.render(cellNode, val, colDef.rendererOptions);
     }
   }
@@ -535,14 +535,14 @@ define([
   exports.choose = async function (list, options) {
     const Slick = await Util.require('slickgrid');
     options = Object.assign({ slick: {} }, options);
-    var readyToAddItems;
+    let readyToAddItems;
 
     // Slick Rendering
     function waitFormatter() {
       return '...';
     }
 
-    var _ready = new Promise((resolve) => {
+    let _ready = new Promise((resolve) => {
       readyToAddItems = resolve;
     });
 
@@ -559,7 +559,7 @@ define([
                 <td id="abc">
                 </td></tr>
                 `);
-      var animCell = $($header.find('td')[1]);
+      let animCell = $($header.find('td')[1]);
       animCell.append(Util.getLoadingAnimation(16, 'blue'));
 
       if (!sources) {
@@ -570,7 +570,7 @@ define([
     function addItems(arr) {
       return _ready.then(function (slick) {
         slick.data.beginUpdate();
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
           slick.data.addItem(arr[i]);
         }
         slick.data.endUpdate();
@@ -583,7 +583,7 @@ define([
     }
 
     // Default values
-    var slickDefaultOptions = {
+    let slickDefaultOptions = {
       editable: true,
       enableAddRow: false,
       enableTextSelectionOnCells: true,
@@ -593,7 +593,7 @@ define([
       enableAsyncPostRender: true,
     };
 
-    var slickDefaultColumn = {
+    let slickDefaultColumn = {
       formatter: waitFormatter,
       asyncPostRender: typeRenderer,
     };
@@ -607,13 +607,13 @@ define([
       sources,
       failedSources = 0,
       $header;
-    var fromArray = Array.isArray(list);
+    let fromArray = Array.isArray(list);
 
     if (!options.asynchronous) {
       if (fromArray) {
         arr = list;
       } else {
-        var keys = Object.keys(list);
+        let keys = Object.keys(list);
         arr = new Array(keys.length);
         for (var i = 0; i < arr.length; i++) {
           arr[i] = {
@@ -628,7 +628,7 @@ define([
       sources = list.length;
       var allProm = new Array(list.length);
       for (let i = 0; i < list.length; i++) {
-        // eslint-disable-next-line no-loop-func
+         
         allProm[i] = list[i].promise.then(addItems).catch(function (e) {
           Debug.error('failed', e);
           sources--;
@@ -640,7 +640,7 @@ define([
       throw new Error('Invalid arguments');
     }
 
-    var slickOptions = _.defaults(options.slick, slickDefaultOptions);
+    let slickOptions = _.defaults(options.slick, slickDefaultOptions);
 
     if (options.columns) {
       columns = options.columns;
@@ -668,12 +668,12 @@ define([
 
     return new Promise(function (resolve) {
       Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
-        var $dialog = $('<div>');
-        var $slick = $('<div>');
-        var $container = $('<div>').css('height', 410);
+        let $dialog = $('<div>');
+        let $slick = $('<div>');
+        let $container = $('<div>').css('height', 410);
 
         Promise.all(allProm).then(() => {
-          var len = data.getLength();
+          let len = data.getLength();
           if (len === 0) {
             resolve();
             $dialog.dialog('close');
@@ -681,7 +681,7 @@ define([
           }
 
           if (len === 1 && options.autoSelect) {
-            var id = data.mapRowsToIds([0])[0];
+            let id = data.mapRowsToIds([0])[0];
             resolve(id);
             $dialog.dialog('close');
           }
@@ -728,7 +728,7 @@ define([
               grid.resizeCanvas();
             },
             open: function () {
-              var that = this;
+              let that = this;
               $container.addClass('flex-main-container');
               $slick.addClass('flex-1');
               $header = $('<div>');
@@ -818,7 +818,7 @@ define([
     });
   };
 
-  var defaultDialogOptions = {
+  let defaultDialogOptions = {
     appendTo: '#ci-visualizer',
     modal: true,
     autoDestroy: true,
@@ -832,7 +832,7 @@ define([
       div = null;
     }
     options = $.extend({}, defaultDialogOptions, options);
-    var $dialog;
+    let $dialog;
     if (options.noWrap) {
       $dialog = $(div || '<div>');
     } else {
@@ -897,8 +897,8 @@ define([
       successMessage = 'Copy success',
       failureMessage = 'Copy failure',
     } = options;
-    var strlen = str.length;
-    var txtarea = $('<textarea/>').text(str).css({
+    let strlen = str.length;
+    let txtarea = $('<textarea/>').text(str).css({
       width: 0,
       height: 0,
       position: 'fixed',
@@ -906,13 +906,13 @@ define([
 
     $('body').append(txtarea);
 
-    var txtdom = txtarea.get(0);
+    let txtdom = txtarea.get(0);
 
     txtdom.selectionStart = 0;
     txtdom.selectionEnd = strlen;
     txtdom.focus();
 
-    var success = document.execCommand('copy');
+    let success = document.execCommand('copy');
     if (success) {
       exports.showNotification(successMessage, 'success');
     } else {
@@ -928,7 +928,7 @@ define([
         : 'application/octet-stream',
     } = options;
     require(['file-saver'], (fileSaver) => {
-      var blob = new Blob(typeof data === 'string' ? [data] : data, {
+      let blob = new Blob(typeof data === 'string' ? [data] : data, {
         type: mimeType,
       });
       fileSaver(blob, filename);
@@ -936,7 +936,7 @@ define([
   };
 
   exports.showNotification = function () {
-    var args = Array.from(arguments);
+    let args = Array.from(arguments);
     args[1] = args[1] || 'error';
     if (args[1] && typeof args[1] === 'string') {
       args[1] = {

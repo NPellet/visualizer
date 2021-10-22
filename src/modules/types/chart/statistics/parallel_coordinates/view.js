@@ -26,7 +26,7 @@ define([
         id: this._id,
         class: 'parcoords',
       });
-      var that = this;
+      let that = this;
       Context.listen(this.dom[0], [
         [
           '<li><a><span class="ui-icon ui-icon-refresh"></span>Reset selection</a></li>',
@@ -55,7 +55,7 @@ define([
         if (this.dom) this.dom.empty();
       },
       columns: function () {
-        for (var i = 0; i < this._previousColumns.length; i++) {
+        for (let i = 0; i < this._previousColumns.length; i++) {
           delete this._currentColumns[this._previousColumns[i].name];
         }
         this._previousColumns = [];
@@ -79,7 +79,7 @@ define([
       columns: function (value) {
         if (!Array.isArray(value)) return;
 
-        for (var i = 0; i < value.length; i++) {
+        for (let i = 0; i < value.length; i++) {
           this._currentColumns[value[i].name] = value[i];
         }
         this._previousColumns = value;
@@ -105,7 +105,7 @@ define([
       this.redrawChart();
     },
     redrawChart: function () {
-      var that = this;
+      let that = this;
       this.createIntermediateData();
       this.dom.empty();
 
@@ -114,10 +114,10 @@ define([
       }
 
       if (this._data && this._data.length > 0) {
-        var cfg = this.module.getConfiguration;
-        var cfgCb = this.module.getConfigurationCheckbox;
+        let cfg = this.module.getConfiguration;
+        let cfgCb = this.module.getConfigurationCheckbox;
 
-        var parcoords = (this.parcoords = d3.parcoords()(`#${this._id}`));
+        let parcoords = (this.parcoords = d3.parcoords()(`#${this._id}`));
 
         parcoords.data(this._data);
         parcoords.detectDimensions();
@@ -136,7 +136,7 @@ define([
 
         parcoords.render();
 
-        var mode = cfg('brushMode');
+        let mode = cfg('brushMode');
         parcoords.brushMode(mode);
         if (mode != 'None') {
           parcoords.brushPredicate(cfg('brushPredicate'));
@@ -162,7 +162,7 @@ define([
       this.module.controller.onBrushSelection(this._data);
     },
     createIntermediateData: function () {
-      var columns = this.getColumns(),
+      let columns = this.getColumns(),
         l = columns.length,
         colorJpath = this.module.getConfiguration('colorjpath'),
         that = this;
@@ -174,7 +174,7 @@ define([
         };
       }
 
-      var value = this._value,
+      let value = this._value,
         vl = value.length;
 
       API.killHighlight(this.module.getId());
@@ -185,16 +185,16 @@ define([
         return;
       }
 
-      var i;
-      var newValue = new Array(vl);
-      var names = new Array(l);
+      let i;
+      let newValue = new Array(vl);
+      let names = new Array(l);
 
       for (i = 0; i < l; i++) {
         names[i] = columns[i].name.toString();
       }
       this._names = names;
 
-      var newVal, val;
+      let newVal, val;
       for (let i = 0; i < vl; i++) {
         newVal = {};
         val = value[i];
@@ -217,8 +217,8 @@ define([
           that.module.getId(),
         );
 
-        for (var j = 0; j < l; j++) {
-          var theVal = columns[j].jpathF(val);
+        for (let j = 0; j < l; j++) {
+          let theVal = columns[j].jpathF(val);
           newVal[columns[j].name] = theVal ? theVal.valueOf() : theVal;
         }
         if (colorJpath) {
@@ -229,10 +229,10 @@ define([
       this._data = newValue;
     },
     getColumns: function () {
-      var totalConfig = [],
+      let totalConfig = [],
         i;
-      var objConfig = {};
-      var config = this.jpathConfig;
+      let objConfig = {};
+      let config = this.jpathConfig;
       if (config) {
         for (i = 0; i < config.length; i++) {
           if (config[i].jpath) {
@@ -262,11 +262,11 @@ define([
       }
     },
     updateHighlight: _.throttle(function () {
-      var toHighlight = this._highlighted;
+      let toHighlight = this._highlighted;
       if (this.preventHighlight) {
         toHighlight = [];
-        var brushed = this.parcoords.brushed();
-        for (var i = 0, ii = this._highlighted.length; i < ii; i++) {
+        let brushed = this.parcoords.brushed();
+        for (let i = 0, ii = this._highlighted.length; i < ii; i++) {
           if (brushed.indexOf(this._highlighted[i]) > -1) {
             toHighlight.push(this._highlighted[i]);
           }

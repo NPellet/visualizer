@@ -1,12 +1,12 @@
 'use strict';
 
 define(function () {
-  var setTimeout = window.setInterval,
+  let setTimeout = window.setInterval,
     clearTimeout = window.clearTimeout,
     crons = {};
 
-  var create = function (url, interval, callback, overwrite, cancelStart) {
-    var name = url;
+  let create = function (url, interval, callback, overwrite, cancelStart) {
+    let name = url;
 
     if (crons[name]) {
       if (overwrite) {
@@ -39,7 +39,7 @@ define(function () {
     })(name);
   };
 
-  var stop = function (name) {
+  let stop = function (name) {
     if (!crons[name]) {
       return;
     }

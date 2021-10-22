@@ -11,7 +11,7 @@ define([
   'components/jquery.panzoom/dist/jquery.panzoom',
   'components/jquery-mousewheel/jquery.mousewheel',
 ], function (API, Debug, Default, Util, UI, _, bowser) {
-  var focusR = 0.5;
+  let focusR = 0.5;
 
   function View() {
     this.lastTransform = [1, 0, 0, 1, 0, 0];
@@ -22,7 +22,7 @@ define([
       this.currentPromise = Promise.resolve();
       this.toHide = this.toHide || {};
       this.transforms = this.transforms || {};
-      var that = this;
+      let that = this;
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(`<div id="${this._id}"></div>`)
@@ -53,7 +53,7 @@ define([
     },
 
     inDom: function () {
-      var transformThrottling = this.module.getConfiguration(
+      let transformThrottling = this.module.getConfiguration(
         'transformThrottling',
       );
       this.module.controller.setTransformThrottling(transformThrottling);
@@ -79,7 +79,7 @@ define([
         this.images = [];
         return;
       }
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         this.images[i].$panzoomEl.panzoom('destroy');
       }
       this.dom.html('');
@@ -88,7 +88,7 @@ define([
 
     clearImage: function (varname) {
       this.currentPromise = this.currentPromise.then(() => {
-        var idx = _.findIndex(this.images, (img) => img.name === varname);
+        let idx = _.findIndex(this.images, (img) => img.name === varname);
         if (idx === -1) return;
         this.images[idx].$panzoomEl.panzoom('destroy');
         this.images[idx].$parent.remove();
@@ -97,7 +97,7 @@ define([
     },
 
     doImage: function (varname, value, options, updateHighlights) {
-      var that = this;
+      let that = this;
       this.currentPromise = this.currentPromise
         .then(function () {
           return that.addImage(varname, value, options);
@@ -126,7 +126,7 @@ define([
     },
 
     reorderImages: function () {
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         this.images[i].$panzoomEl.css(
           'z-index',
           parseInt(this.images[i].conf.order, 10) || i,
@@ -135,14 +135,14 @@ define([
     },
 
     addImage: function (varname, variable, options) {
-      var that = this;
+      let that = this;
 
       return new Promise(function (resolve, reject) {
         if (variable === undefined) {
           variable = API.getData(varname);
         }
         // find the corresponding configuration line
-        var conf = _.find(that.module.getConfiguration('img'), function (c) {
+        let conf = _.find(that.module.getConfiguration('img'), function (c) {
           return c.variable === varname;
         });
 
@@ -152,15 +152,15 @@ define([
         }
 
         // Find if image already exists
-        var $parent = that.dom.find(`#${that.getImageDomId(varname)}`);
+        let $parent = that.dom.find(`#${that.getImageDomId(varname)}`);
         // If it does destroy the panzoom element
         $parent.find('.panzoom').panzoom('destroy');
 
-        var imgType;
+        let imgType;
 
         // $img can be <img>, <canvas> or <svg>
-        var $img, $previousImg;
-        var isSvg = options ? options.isSvg || variable.type === 'svg' : false;
+        let $img, $previousImg;
+        let isSvg = options ? options.isSvg || variable.type === 'svg' : false;
         if ($parent.length === 0 && varname === '__highlight__') {
           // New highlight
           $parent = that.newCanvasDom(varname);
@@ -197,8 +197,8 @@ define([
           imgType = 'image';
         }
 
-        var foundImg = false;
-        var image = _.find(that.images, function (img) {
+        let foundImg = false;
+        let image = _.find(that.images, function (img) {
           return img.name === varname;
         });
         if (image) foundImg = true;
@@ -252,7 +252,7 @@ define([
             image.height = this.height;
           }
 
-          var scaling = image.conf.scaling;
+          let scaling = image.conf.scaling;
           if (scaling === 'maxIfLarge') {
             if (image.width > that.width || image.height > that.height) {
               scaling = 'max';
@@ -274,7 +274,7 @@ define([
           }
           if (scaling === 'asHighlight') {
             if (that.himg.f) {
-              var transform = [
+              let transform = [
                 that.himg.f,
                 0,
                 0,
@@ -302,7 +302,7 @@ define([
     },
 
     processHighlights: function () {
-      var himg;
+      let himg;
 
       this.highlights = null;
       for (var i = 0; i < this.images.length; i++) {
@@ -311,7 +311,7 @@ define([
           himg = this.images[i];
       }
       if (!himg) return;
-      var data = API.getData(himg.name);
+      let data = API.getData(himg.name);
       if (data._highlightArray.length !== himg.width * himg.height) {
         Debug.warn('Panzoom: unexpected highlight length');
         return;
@@ -332,16 +332,16 @@ define([
       this.highlights = {};
 
       // For speed, transform _highlight into Map
-      var hMap = new Map();
+      let hMap = new Map();
       for (var i = 0; i < this._highlight.length; i++) {
         hMap.set(this._highlight[i], true);
       }
 
       // Map highlights to array of indexes in the image
       for (i = 0; i < data._highlightArray.length; i++) {
-        var h = data._highlightArray[i];
-        var left = i % himg.width;
-        var top = (i / himg.width) | 0;
+        let h = data._highlightArray[i];
+        let left = i % himg.width;
+        let top = (i / himg.width) | 0;
 
         if (h === undefined) continue;
         // Skip highlights that are not in the _highlight array
@@ -371,9 +371,9 @@ define([
         }
       }
 
-      var keys = Object.keys(this.highlights);
+      let keys = Object.keys(this.highlights);
       for (i = 0; i < keys.length; i++) {
-        var key = keys[i];
+        let key = keys[i];
         this.highlights[key].width =
           this.highlights[key].shiftX - this.highlights[key].shiftx + 1;
         this.highlights[key].height =
@@ -382,13 +382,13 @@ define([
     },
 
     listenHighlights: function () {
-      var that = this;
+      let that = this;
       API.killHighlight(this.module.getId());
       if (!this.highlights) return;
-      var hl = Object.keys(this.highlights);
+      let hl = Object.keys(this.highlights);
 
       that._highlighted = [];
-      for (var i = 0; i < hl.length; i++) {
+      for (let i = 0; i < hl.length; i++) {
         (function (i) {
           API.listenHighlight(
             { _highlight: hl[i] },
@@ -417,7 +417,7 @@ define([
     },
 
     _drawHighlight: function (senderId) {
-      var that = this;
+      let that = this;
       if (!this._highlighted || !this._highlighted.length) {
         this.toHide.__highlight__ = true;
         this.highlightImage = this.highlightImage || {};
@@ -432,13 +432,13 @@ define([
           'highlightStrategy',
         );
         if (highlightStrategy !== 'none' && senderId !== that.module.getId()) {
-          var w = that.highlightImage.canvas.width;
-          var h = that.highlightImage.canvas.height;
-          var x = that.highlightImage.shiftx;
-          var y = that.highlightImage.shifty;
+          let w = that.highlightImage.canvas.width;
+          let h = that.highlightImage.canvas.height;
+          let x = that.highlightImage.shiftx;
+          let y = that.highlightImage.shifty;
           x = Math.max(x - focusR * w, 0);
           y = Math.max(y - focusR * h, 0);
-          var z;
+          let z;
           if (highlightStrategy === 'panzoom') {
             z = Math.min(
               (that.himg.width / w) * focusR,
@@ -448,7 +448,7 @@ define([
           } else {
             z = that.lastTransform[0];
           }
-          var transform = [
+          let transform = [
             z,
             0,
             0,
@@ -490,19 +490,19 @@ define([
     },
 
     panzoomMode: function (varname) {
-      var that = this;
-      var start = 0;
-      var l = this.images.length;
+      let that = this;
+      let start = 0;
+      let l = this.images.length;
       // if varname specified, do for all
       // otherwise just for that var
       if (varname) {
-        var idx = _.findIndex(that.images, function (img) {
+        let idx = _.findIndex(that.images, function (img) {
           return img.name === varname;
         });
         start = idx === -1 ? undefined : idx;
         l = idx + 1;
       }
-      for (var i = start; i < l; i++) {
+      for (let i = start; i < l; i++) {
         that.images[i].$panzoomEl
           .panzoom({
             increment: 0.1,
@@ -521,7 +521,7 @@ define([
 
         // Use last transform to initialize transformation matrix
         if (that.lastTransform) {
-          var instance = that.images[i].$panzoomEl.panzoom('instance');
+          let instance = that.images[i].$panzoomEl.panzoom('instance');
           instance.setMatrix(that.lastTransform);
         }
 
@@ -531,12 +531,12 @@ define([
           that.lastTransform = panzoom.getMatrix();
           that.module.controller.transformChanged(that.lastTransform);
 
-          for (var j = 0; j < that.images.length; j++) {
+          for (let j = 0; j < that.images.length; j++) {
             if (that.state === 'done') {
               that.images[j].$panzoomEl.css('cursor', 'move');
               that.state = 'pan';
             }
-            var panzoomInstance = that.images[j].$panzoomEl.panzoom('instance');
+            let panzoomInstance = that.images[j].$panzoomEl.panzoom('instance');
 
             if (panzoomInstance !== panzoom) {
               panzoomInstance.setMatrix(that.lastTransform);
@@ -549,14 +549,14 @@ define([
       that.dom.off('mousewheel.focal');
       that.dom.on('mousewheel.focal', function (e) {
         e.preventDefault();
-        var increment = 1;
-        var baseIncrement = 0.2;
+        let increment = 1;
+        let baseIncrement = 0.2;
         if (that.images.length > 0) {
-          var zoomMagnitude = that.images[0].$panzoomEl.panzoom('getMatrix')[0];
+          let zoomMagnitude = that.images[0].$panzoomEl.panzoom('getMatrix')[0];
           increment = baseIncrement * zoomMagnitude;
         }
-        var delta = e.delta || e.originalEvent.wheelDelta;
-        var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+        let delta = e.delta || e.originalEvent.wheelDelta;
+        let zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
 
         // Use zoom on the first image, and use the resulting
         // transform on all other panzoom elements
@@ -567,8 +567,8 @@ define([
         });
         that.lastTransform = that.images[0].$panzoomEl.panzoom('getMatrix');
         that.module.controller.transformChanged(that.lastTransform);
-        for (var j = 1; j < that.images.length; j++) {
-          var instance = that.images[j].$panzoomEl.panzoom('instance');
+        for (let j = 1; j < that.images.length; j++) {
+          let instance = that.images[j].$panzoomEl.panzoom('instance');
           instance.setMatrix(that.lastTransform);
         }
 
@@ -576,10 +576,10 @@ define([
       });
 
       function getPixels(e, allPixels, pixel) {
-        for (var i = 0; i < that.images.length; i++) {
-          var rect = that.images[i].$img[0].getBoundingClientRect();
+        for (let i = 0; i < that.images.length; i++) {
+          let rect = that.images[i].$img[0].getBoundingClientRect();
           //      console.log('left', rect);
-          var p = {
+          let p = {
             x:
               (((e.clientX - rect.left) * that.images[i].width) / rect.width) |
               0,
@@ -615,20 +615,20 @@ define([
         that.state = 'done';
 
         $(this).css('cursor', 'pointer');
-        var base = {
+        let base = {
           shiftKey: e.shiftKey,
           ctrlKey: e.ctrlKey,
           altKey: e.altKey,
         };
-        var clickedPixel = Object.assign({}, base);
-        var allClickedPixels = {};
+        let clickedPixel = Object.assign({}, base);
+        let allClickedPixels = {};
         getPixels(e, allClickedPixels, clickedPixel);
         if (Object.keys(clickedPixel).length !== 3) {
           that.module.controller.clickedPixel(clickedPixel);
         }
         if (Object.keys(allClickedPixels).length !== 0) {
-          var keys = Object.keys(allClickedPixels);
-          for (var i = 0; i < keys.length; i++) {
+          let keys = Object.keys(allClickedPixels);
+          for (let i = 0; i < keys.length; i++) {
             Object.assign(allClickedPixels[keys[i]], base);
           }
           that.module.controller.allClickedPixels(allClickedPixels);
@@ -638,7 +638,7 @@ define([
       // Handle move event
       that.dom.off('mousemove.panzoom');
       that.dom.on('mousemove.panzoom', function (e) {
-        var base = {
+        let base = {
           shiftKey: e.shiftKey,
           ctrlKey: e.ctrlKey,
           altKey: e.altKey,
@@ -646,11 +646,11 @@ define([
         if (that.state === 'pan') {
           return;
         }
-        var allHoverPixels = {};
-        var hoverPixel = Object.assign({}, base);
+        let allHoverPixels = {};
+        let hoverPixel = Object.assign({}, base);
         getPixels(e, allHoverPixels, hoverPixel);
 
-        var hoverPixelKeys = Object.keys(hoverPixel);
+        let hoverPixelKeys = Object.keys(hoverPixel);
         if (
           hoverPixelKeys.length > 3 &&
           !_.isEqual(DataObject.resurrect(that.lastHoverPixel), hoverPixel)
@@ -672,8 +672,8 @@ define([
             allHoverPixels,
           )
         ) {
-          var keys = Object.keys(allHoverPixels);
-          for (var i = 0; i < keys.length; i++) {
+          let keys = Object.keys(allHoverPixels);
+          for (let i = 0; i < keys.length; i++) {
             Object.assign(allHoverPixels[keys[i]], base);
           }
           that.module.controller.allHoverPixels(allHoverPixels);
@@ -684,7 +684,7 @@ define([
       // Double click event
       this.dom.off('dblclick');
       this.dom.dblclick(function () {
-        for (var i = 0; i < that.images.length; i++) {
+        for (let i = 0; i < that.images.length; i++) {
           that.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {
             that.lastTransform = that.images[i].$panzoomEl.panzoom('getMatrix');
@@ -699,8 +699,8 @@ define([
       if (!noEvent) {
         this.module.controller.transformChanged(this.lastTransform);
       }
-      for (var j = 0; j < this.images.length; j++) {
-        var panzoomInstance = this.images[j].$panzoomEl.panzoom('instance');
+      for (let j = 0; j < this.images.length; j++) {
+        let panzoomInstance = this.images[j].$panzoomEl.panzoom('instance');
         panzoomInstance.setMatrix(this.lastTransform);
       }
     },
@@ -710,12 +710,12 @@ define([
       if (!Array.isArray(hl)) {
         hl = [hl];
       }
-      var shiftx = this.highlights[hl[0]].shiftx,
+      let shiftx = this.highlights[hl[0]].shiftx,
         shifty = this.highlights[hl[0]].shifty;
-      var shiftX = this.highlights[hl[0]].shiftx,
+      let shiftX = this.highlights[hl[0]].shiftx,
         shiftY = this.highlights[hl[0]].shiftY;
       for (var i = 0; i < hl.length; i++) {
-        var h = hl[i];
+        let h = hl[i];
         shiftx = Math.min(shiftx, this.highlights[h].shiftx);
         shifty = Math.min(shifty, this.highlights[h].shifty);
         shiftX = Math.max(shiftX, this.highlights[h].shiftX);
@@ -723,21 +723,21 @@ define([
       }
 
       // we create a canvas element
-      var canvas = document.createElement('canvas');
-      var height = shiftY - shifty + 1;
-      var width = shiftX - shiftx + 1;
+      let canvas = document.createElement('canvas');
+      let height = shiftY - shifty + 1;
+      let width = shiftX - shiftx + 1;
 
       canvas.height = height;
       canvas.width = width;
 
       // getting the context will allow to manipulate the image
-      var context = canvas.getContext('2d');
+      let context = canvas.getContext('2d');
 
       // Init image with yellow transparent pixels
-      var imageData = context.createImageData(width, height);
+      let imageData = context.createImageData(width, height);
       // The property data will contain an array of int8
-      var data = imageData.data;
-      var idx;
+      let data = imageData.data;
+      let idx;
       for (var i = 0; i < height * width; i++) {
         // Highlight color: see .ci-highlight in main.css
         idx = i * 4;
@@ -748,15 +748,15 @@ define([
       }
 
       // Change opacity for pixels that need to be seen
-      for (var j = 0; j < hl.length; j++) {
-        var hlj = hl[j];
+      for (let j = 0; j < hl.length; j++) {
+        let hlj = hl[j];
         for (i = 0; i < this.highlights[hlj].data.length; i++) {
           idx = this.highlights[hlj].data[i];
-          var x = idx % this.himg.width;
-          var y = (idx / this.himg.width) | 0;
-          var xi = x - shiftx;
-          var yi = y - shifty;
-          var idxi = yi * width + xi;
+          let x = idx % this.himg.width;
+          let y = (idx / this.himg.width) | 0;
+          let xi = x - shiftx;
+          let yi = y - shifty;
+          let idxi = yi * width + xi;
           data[idxi * 4 + 3] = 0xff;
         }
       }
@@ -770,10 +770,10 @@ define([
     },
 
     highlightOn: function (pixel) {
-      var that = this;
+      let that = this;
       if (that._highlightArray) {
-        var idx = pixel.x + that.himg.width * pixel.y;
-        var hl = that._highlightArray[idx];
+        let idx = pixel.x + that.himg.width * pixel.y;
+        let hl = that._highlightArray[idx];
         if (hl !== undefined) {
           if (that._hl !== hl) {
             that.module.model.highlightId(that._hl, 0);
@@ -794,7 +794,7 @@ define([
     },
 
     rerender: _.debounce(function () {
-      for (var j = 0; j < this.images.length; j++) {
+      for (let j = 0; j < this.images.length; j++) {
         // Trick to get crisp images with chrome
         // Since it does'n implement crisp-edges image rendering
         // But pixelated rendering instead
@@ -814,7 +814,7 @@ define([
     },
 
     doAllImages: function () {
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         if (this.images[i].type === 'svg') {
           this.doSvg(this.images[i].name);
         } else {
@@ -828,11 +828,11 @@ define([
     },
 
     export: function () {
-      var images = this.images.filter(
+      let images = this.images.filter(
         (img) => img.type === 'image' || img.type === 'svg',
       );
-      var choices = images.map((img) => {
-        var val;
+      let choices = images.map((img) => {
+        let val;
         if (img.type === 'image') {
           val = img.$img[0].src;
         } else {
@@ -870,7 +870,7 @@ define([
 
     onActionReceive: {
       hide: function (data) {
-        var varname;
+        let varname;
         if (typeof data === 'string') varname = data;
         else varname = data.name;
         if (this.toHide[varname]) return;
@@ -879,7 +879,7 @@ define([
       },
       show: function (data) {
         this.toHide = this.toHide || {};
-        var varname;
+        let varname;
         if (typeof data === 'string') varname = data;
         else varname = data.name;
 
@@ -891,7 +891,7 @@ define([
         this.setTransform(transformMatrix, true);
       },
       reset: function () {
-        for (var i = 0; i < this.images.length; i++) {
+        for (let i = 0; i < this.images.length; i++) {
           this.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {
             this.lastTransform = this.images[i].$panzoomEl.panzoom('getMatrix');
@@ -922,14 +922,14 @@ define([
           opacity: 0.7,
         };
       conf.variable = varname;
-      var x = _.assign(conf, options);
+      let x = _.assign(conf, options);
       return x;
     },
   });
 
   // Unused for now but don't erase
   function applyTransform(v, t) {
-    var r = new Array(2);
+    let r = new Array(2);
     r[0] = v[0] * +t[0] + v[1] * +t[1] + +t[4];
     r[1] = v[0] * +t[2] + v[1] * +t[3] + +t[5];
     return r;

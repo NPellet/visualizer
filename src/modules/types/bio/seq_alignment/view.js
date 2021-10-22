@@ -75,7 +75,7 @@ define([
     render: function () {
       if (!this.sequences) return;
       this.clear();
-      var opts = {};
+      let opts = {};
 
       opts.el = this.dom[0];
       opts.vis = { conserv: false, overviewbox: false };
@@ -86,7 +86,7 @@ define([
       // };
 
       try {
-        var m = new msa.msa(opts);
+        let m = new msa.msa(opts);
         const schema = this.module.getConfiguration('colorSchema');
         if (colorSchemas[schema]) {
           m.g.colorscheme.addDynScheme('dyn', colorSchemas[schema]);

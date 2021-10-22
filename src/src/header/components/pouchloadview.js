@@ -7,18 +7,18 @@ define(['jquery', 'src/util/ui', 'src/header/components/default', 'src/util/vers
   Util.inherits(Element, Default, {
 
     initImpl: function () {
-      var id = Util.getNextUniqueId();
-      var db = new PouchDB('localViews');
+      let id = Util.getNextUniqueId();
+      let db = new PouchDB('localViews');
       this.dialog = $(`<form><label for="name">Name</label><input type="text" name="name" id="${id}" class="text ui-widget-content ui-corner-all" />`);
 
       this.dialogOptions = {
         title: 'Load view',
         buttons: {
           Load: function () {
-            var text = $(`#${id}`).val();
+            let text = $(`#${id}`).val();
             text = text.replace(/[^a-zA-Z0-9-_]*/g, '');
             db.get(text, function (err, data) {
-              var view;
+              let view;
               if (err)
                 view = new DataObject();
               else

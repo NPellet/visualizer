@@ -34,6 +34,6 @@ define(['version', 'babel'], function (Version, babel) {
   return Sandbox;
 
   function safeEval(script, __ctx__, Sandbox, babel, safeEval) {
-    return eval(script); // eslint-disable-line no-eval
+    return eval(script);
   }
 });

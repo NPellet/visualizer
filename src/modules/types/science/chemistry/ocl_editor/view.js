@@ -90,7 +90,7 @@ define([
       actid: function (val) {
         this._currentValue = val;
         this._currentType = 'oclid';
-        var value = String(val.get());
+        let value = String(val.get());
         if (val.coordinates) {
           value += ` ${val.coordinates}`;
         }
@@ -100,8 +100,8 @@ define([
     },
 
     initEditor: function () {
-      var controller = this.module.controller;
-      var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
+      let controller = this.module.controller;
+      let useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
       this.editor = new OCL.StructureEditor(this.dom.get(0), useSVG, 1);
       this.editor.setChangeListenerCallback(
         this.module.controller.onChange.bind(controller)

@@ -1,24 +1,24 @@
 'use strict';
 
 define(function () {
-  var reg = new RegExp('^data:([^;]+);base64,(.+)$');
+  let reg = new RegExp('^data:([^;]+);base64,(.+)$');
 
   return {
     filter: function (dataObject, resolve, reject) {
-      var image = new Image();
-      var $c = $('<canvas/>');
-      var Canvas = $c[0];
-      var ctx = Canvas.getContext('2d');
+      let image = new Image();
+      let $c = $('<canvas/>');
+      let Canvas = $c[0];
+      let ctx = Canvas.getContext('2d');
       Canvas.width = 640;
       Canvas.height = 480;
-      var resultArray = [];
+      let resultArray = [];
       image.onload = doDecode;
 
       image.src = dataObject.get();
 
 
       function doDecode() {
-        var workerCount = 0;
+        let workerCount = 0;
         function receiveMessage(e) {
           if (e.data.success === 'log') {
             return;
@@ -34,16 +34,16 @@ define(function () {
             }
           }
           if (e.data.success) {
-            var tempArray = e.data.result;
+            let tempArray = e.data.result;
             for (var i = 0; i < tempArray.length; i++) {
               if (resultArray.indexOf(tempArray[i]) == -1) {
                 resultArray.push(tempArray[i]);
               }
             }
 
-            var filteredResult = [];
+            let filteredResult = [];
             for (var i = 0; i < resultArray.length; i++) {
-              var m = resultArray[i].match(/^([^:]*):(.*)$/);
+              let m = resultArray[i].match(/^([^:]*):(.*)$/);
               if (m[1] && m[2]) {
                 filteredResult.push({
                   encoding: m[1],

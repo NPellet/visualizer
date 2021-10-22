@@ -8,7 +8,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     if (data == null)
       return [];
 
-    var jpaths = [];
+    let jpaths = [];
     Traversing.getJPathsFromElement(data, jpaths);
 
     return jpaths;
@@ -21,7 +21,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
 
     getjPath: function (rel, accepts) {
-      var data = this.module.getDataFromRel('matrix');
+      let data = this.module.getDataFromRel('matrix');
 
       if (!data)
         return;

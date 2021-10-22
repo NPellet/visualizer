@@ -60,7 +60,7 @@ define([
       },
 
       jcamp2d: function (moduleValue, varName) {
-        var that = this;
+        let that = this;
 
 
         function hue2rgb(p, q, t) {
@@ -73,13 +73,13 @@ define([
         }
 
         function hslToRgb(h, s, l) {
-          var r, g, b;
+          let r, g, b;
 
           if (s == 0) {
             r = g = b = l; // achromatic
           } else {
-            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            var p = 2 * l - q;
+            let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            let p = 2 * l - q;
             r = hue2rgb(p, q, h + 1 / 3);
             g = hue2rgb(p, q, h);
             b = hue2rgb(p, q, h - 1 / 3);
@@ -89,7 +89,7 @@ define([
         }
 
 
-        var opts = {
+        let opts = {
           lineColor: `rgb(${hslToRgb(100 / 360, 0.8, 0.4).join()})`,
           twoDColor: {
             fromPositive: { h: 100, s: 0.3, l: 0.7 },
@@ -101,7 +101,7 @@ define([
 
 
         JcampConverter.convert(String(moduleValue.get()), true).then(function (result) {
-          var data = result.contourLines;
+          let data = result.contourLines;
           that.nmr.setSerie2D('SomeName', data, opts);
           that.redraw();
         });
@@ -123,15 +123,15 @@ define([
 
 
     addSerieJcampXOrY: function (value, x, y) {
-      var that = this;
+      let that = this;
 
-      var name = 'SomeName';
-      var options = {
+      let name = 'SomeName';
+      let options = {
         label: 'Chemical 1'
       };
 
       JcampConverter.convert(String(value.get()), true).then(function (result) {
-        var data = result.spectra[0].data[0];
+        let data = result.spectra[0].data[0];
 
         if (x) {
           that.nmr.setSerie2DX(name, data, options);

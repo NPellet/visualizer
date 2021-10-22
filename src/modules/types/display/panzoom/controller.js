@@ -1,7 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
-  var transformChanged;
+  let transformChanged;
 
   function Controller() {}
 
@@ -68,11 +68,11 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
   });
 
   Controller.prototype.configurationStructure = function () {
-    var vars = [];
-    var currentCfg = this.module.definition.vars_in;
+    let vars = [];
+    let currentCfg = this.module.definition.vars_in;
 
     if (currentCfg) {
-      var i = 0,
+      let i = 0,
         l = currentCfg.length;
 
       for (; i < l; i++) {

@@ -4,7 +4,7 @@ define(function () {
   function Event() {
   }
 
-  var slice = Array.prototype.slice;
+  let slice = Array.prototype.slice;
   Event.prototype.on = function (topic, callback) {
     this.topics = this.topics || [];
     this.topics[topic] = this.topics[topic] || $.Callbacks();

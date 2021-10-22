@@ -25,12 +25,12 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      var that = this;
-      var lastTr;
+      let that = this;
+      let lastTr;
 
-      var actionsOut = this.module.actions_out();
+      let actionsOut = this.module.actions_out();
       if (actionsOut) {
-        for (var i = 0; i < actionsOut.length; i++) {
+        for (let i = 0; i < actionsOut.length; i++) {
           if (
             actionsOut[i].event === 'onToggleOn' ||
             actionsOut[i].event === 'onToggleOff'
@@ -78,7 +78,7 @@ define([
           }
         });
 
-      var filter = this.module.getConfiguration('filterRow');
+      let filter = this.module.getConfiguration('filterRow');
       eval(
         `that.filter = function(jqGrid, source, rowId) { try { \n ${filter}\n } catch(_) { console.log(_); } }`
       );
@@ -91,13 +91,13 @@ define([
         return;
       }
 
-      var result = [];
-      var allEls = [],
+      let result = [];
+      let allEls = [],
         i = 0,
         l = this.elements.length;
 
-      var header = [];
-      for (var j = 0; j < this.jpaths.length; j++) {
+      let header = [];
+      for (let j = 0; j < this.jpaths.length; j++) {
         header.push(this.jpaths[j].name);
       }
       result.push(header.join('\t'));
@@ -105,7 +105,7 @@ define([
       for (; i < l; i++) {
         var line = [];
         for (let j = 0; j < this.jpaths.length; j++) {
-          // eslint-disable-next-line no-loop-func
+           
           Traversing.getValueFromJPath(
             this.elements[i],
             this.jpaths[j].jpath
@@ -126,7 +126,7 @@ define([
     },
 
     inDom: function () {
-      var that = this,
+      let that = this,
         colNames = [],
         colModel = [],
         j = 0,
@@ -161,7 +161,7 @@ define([
         }
       }
 
-      var nbLines = this.module.getConfiguration('nbLines') || 20;
+      let nbLines = this.module.getConfiguration('nbLines') || 20;
 
       this.domTable = $('<table />')
         .attr('id', this.uniqId)
@@ -232,7 +232,7 @@ define([
             return;
           }
 
-          var ids = that.jqGrid('getDataIDs'),
+          let ids = that.jqGrid('getDataIDs'),
             i = 0,
             l = ids.length,
             id;
@@ -272,7 +272,7 @@ define([
         },
 
         onSortCol: function () {
-          var ids = that.jqGrid('getDataIDs'),
+          let ids = that.jqGrid('getDataIDs'),
             i = 0,
             l = ids.length;
 
@@ -312,7 +312,7 @@ define([
 
     update: {
       list: function (moduleValue) {
-        var list = moduleValue.get(),
+        let list = moduleValue.get(),
           jpaths = this.module.getConfiguration('colsjPaths'),
           elements = [];
 
@@ -329,7 +329,7 @@ define([
         this.gridElements = elements;
         this.tableElements = elements;
 
-        var allEls = [],
+        let allEls = [],
           i = 0,
           l = elements.length;
 
@@ -355,7 +355,7 @@ define([
     },
 
     buildElements: function (source, arrayToPush, jpaths) {
-      var that = this,
+      let that = this,
         i = 0,
         l = source.length;
 
@@ -367,7 +367,7 @@ define([
     },
 
     buildElement: function (s, i, jp, m) {
-      var element = {},
+      let element = {},
         j = 0,
         l = jp.length;
 
@@ -389,7 +389,7 @@ define([
 
       element._inDom = $.Deferred();
       for (; j < l; j++) {
-        var id = getIDForCell(element.id, jp[j].name);
+        let id = getIDForCell(element.id, jp[j].name);
         (function (j, id) {
           element._inDom.progress(function () {
             Renderer.render($(`#${id}`), s, jp[j].jpath);
@@ -399,9 +399,9 @@ define([
         element[jp[j].name] = `<div id="${id}">`;
       }
 
-      var cJpath = this.module.getConfiguration('colorjPath');
+      let cJpath = this.module.getConfiguration('colorjPath');
       if (cJpath) {
-        var color = s.getChildSync(cJpath);
+        let color = s.getChildSync(cJpath);
         if (color) {
           element._backgroundColor = String(color);
         }
@@ -411,7 +411,7 @@ define([
     },
 
     listenFor: function (source, jpaths, id) {
-      var that = this,
+      let that = this,
         body = $('body');
 
       this.module.model.dataListenChange(
@@ -422,8 +422,8 @@ define([
             id,
             that.buildElement(this, id, jpaths, true)
           );
-          var scroll = body.scrollTop();
-          var target = $(`tr#${id}`, that.domTable).get(0);
+          let scroll = body.scrollTop();
+          let target = $(`tr#${id}`, that.domTable).get(0);
           if (target) {
             target.scrollIntoView();
             body.scrollTop(scroll);
@@ -438,9 +438,9 @@ define([
         this.elements = this.elements || [];
         this.elements.push(source);
         this.module.data = this.elements;
-        var jpaths = this.module.getConfiguration('colsjPaths');
-        var l = this.elements.length - 1;
-        var el = this.buildElement(source, this.uniqId + l, jpaths);
+        let jpaths = this.module.getConfiguration('colsjPaths');
+        let l = this.elements.length - 1;
+        let el = this.buildElement(source, this.uniqId + l, jpaths);
         this.gridElements.push(el);
 
         this.jqGrid('addRowData', el.id, el);
@@ -448,9 +448,9 @@ define([
 
       removeRow: function (el) {
         this.elements = this.elements || [];
-        var id, index;
+        let id, index;
 
-        for (var i = 0, l = this.gridElements.length; i < l; i++) {
+        for (let i = 0, l = this.gridElements.length; i < l; i++) {
           if (this.gridElements[i].__source == el) {
             id = this.gridElements[i].id;
             index = i;
@@ -465,12 +465,12 @@ define([
       },
 
       addColumn: function (jpath) {
-        var module = this.module;
-        var jpath2 = jpath.split('.');
+        let module = this.module;
+        let jpath2 = jpath.split('.');
         jpath2 = jpath2.pop();
 
-        var cols = module.getConfiguration('colsjPaths');
-        for (var i = 0; i < cols.length; i++) {
+        let cols = module.getConfiguration('colsjPaths');
+        for (let i = 0; i < cols.length; i++) {
           if (jpath === cols[i].jpath) return;
         }
 
@@ -484,7 +484,7 @@ define([
       },
 
       removeColumn: function (jpath) {
-        var module = this.module,
+        let module = this.module,
           jpaths = module.getConfiguration('colsjPaths'),
           i = 0,
           l = jpaths.length;

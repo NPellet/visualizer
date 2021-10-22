@@ -23,9 +23,9 @@ define([
     },
 
     open: function () {
-      var that = this;
+      let that = this;
       this.interval = window.setInterval(function () {
-        var view = Versioning.getView();
+        let view = Versioning.getView();
 
         if (that.viewHandler.currentPath[3] !== 'head')
           that.viewHandler.serverCopy(view);

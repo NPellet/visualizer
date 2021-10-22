@@ -65,7 +65,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.valueChanged = function (value) {
-    var type = this.module.getConfiguration('type'),
+    let type = this.module.getConfiguration('type'),
       def = $.Deferred(),
       that = this;
     switch (type) {

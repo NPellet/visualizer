@@ -46,10 +46,10 @@ define([
   Controller.prototype.variablesIn = ['data'];
 
   Controller.prototype.configurationStructure = function () {
-    var types = Structure._getList(),
+    let types = Structure._getList(),
       l = types.length,
       typeList = new Array(l);
-    for (var i = 0; i < l; i++) {
+    for (let i = 0; i < l; i++) {
       typeList[i] = { key: types[i], title: types[i] };
     }
     const config = {
@@ -158,9 +158,9 @@ define([
     }
 
     this.createDataFromEvent('onEditorChange', 'data', value);
-    var json = getJsonValue(value);
+    let json = getJsonValue(value);
     this.createDataFromEvent('onEditorChange', 'jsonValue', json);
-    var typedValue = this.getTypedValue(value);
+    let typedValue = this.getTypedValue(value);
     if (typedValue !== null)
       this.createDataFromEvent('onEditorChange', 'typedValue', typedValue);
   };
@@ -169,18 +169,18 @@ define([
     this.createDataFromEvent('onButtonClick', 'data', value);
     this.sendActionFromEvent('onButtonClick', 'data', value);
 
-    var json = getJsonValue(value);
+    let json = getJsonValue(value);
     this.createDataFromEvent('onButtonClick', 'jsonValue', json);
     this.sendActionFromEvent('onButtonClick', 'jsonValue', json);
 
-    var typedValue = this.getTypedValue(value);
+    let typedValue = this.getTypedValue(value);
     if (typedValue !== null) {
       this.createDataFromEvent('onButtonClick', 'typedValue', typedValue);
     }
   };
 
   Controller.prototype.getTypedValue = function (val) {
-    var type = this.module.getConfiguration('outputType');
+    let type = this.module.getConfiguration('outputType');
     if (!type) return null;
     return {
       type: this.module.getConfiguration('outputType'),

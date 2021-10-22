@@ -11,7 +11,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
 
     getjPath: function (rel, temporary) {
-      var data;
+      let data;
 
       switch (rel) {
         case 'selectedrows':
@@ -35,7 +35,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
           break;
       }
 
-      var customJpaths = this.module.definition.configuration.groups;
+      let customJpaths = this.module.definition.configuration.groups;
       if (customJpaths) {
         customJpaths = customJpaths.group[0].customJpaths;
         if (customJpaths && customJpaths[0]) {
@@ -47,7 +47,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
       }
       customJpaths = customJpaths || [];
       customJpaths = customJpaths.filter((jp) => jp);
-      var jpaths = [];
+      let jpaths = [];
       Traversing.getJPathsFromElement(data, jpaths);
       for (let i = 0; i < customJpaths.length; i++) {
         Traversing.addJpathToTree(jpaths, customJpaths[i]);

@@ -155,7 +155,7 @@ define([
 
     getModule(moduleId) {
       moduleId = Number(moduleId);
-      var modules = this.getModules();
+      let modules = this.getModules();
       modules = modules.filter(function (m) {
         return Number(m.getId()) === moduleId;
       });

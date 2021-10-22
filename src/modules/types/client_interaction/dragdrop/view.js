@@ -5,8 +5,8 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      var that = this;
-      var $fileInput = $('<input/>')
+      let that = this;
+      let $fileInput = $('<input/>')
         .css('display', 'none')
         .attr({
           type: 'file',
@@ -17,7 +17,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         this.module.getConfigurationCheckbox('inputOptions', 'allowDrop') ||
         this.module.getConfigurationCheckbox('inputOptions', 'allowPaste');
 
-      var textarea = $('<textarea>').css({
+      let textarea = $('<textarea>').css({
         position: 'absolute',
         top: 0,
         left: 0,
@@ -26,7 +26,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         opacity: 0
       });
 
-      var defaultMessage = this.module.getConfiguration('label');
+      let defaultMessage = this.module.getConfiguration('label');
       this.messages = {
         default: defaultMessage,
         drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
@@ -126,13 +126,13 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
     },
 
     inDom: function () {
-      var that = this,
+      let that = this,
         dom = this.dom.get(0);
 
       // We use a drag count to circumvent the fact that
       // The dragleave event is fired when entering a child element
       // See http://stackoverflow.com/q/7110353/1247233
-      var dragCount = 0;
+      let dragCount = 0;
 
       if (this.module.getConfigurationCheckbox('inputOptions', 'allowDrop')) {
         dom.addEventListener('dragenter', function (e) {
@@ -190,9 +190,9 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
     }
   });
 
-  var stream;
-  var $dialog;
-  var dialogClosed = true;
+  let stream;
+  let $dialog;
+  let dialogClosed = true;
 
   function confirm(message) {
     return new Promise(function (resolve) {
@@ -201,10 +201,10 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         $('body').append($dialog);
       }
 
-      var imgData = null;
+      let imgData = null;
       $dialog.html(message);
 
-      var streaming = false,
+      let streaming = false,
         video = document.querySelector('#video'),
         canvas = document.querySelector('#canvas'),
         width = 320,
@@ -252,7 +252,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         if (navigator.mozGetUserMedia) {
           video.mozSrcObject = stream;
         } else {
-          var vendorURL = window.URL || window.webkitURL;
+          let vendorURL = window.URL || window.webkitURL;
           video.src = vendorURL.createObjectURL(stream);
         }
         video.play();

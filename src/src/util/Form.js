@@ -92,8 +92,8 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
     // Returns a DataObject with the form data
     // if merge is true it edits the previous data object
     getData(merge) {
-      var f = this.get();
-      var obj;
+      let f = this.get();
+      let obj;
       if (merge && this.data) {
         obj = this.data;
       } else {
@@ -118,10 +118,10 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
       if (!data) return;
       data = DataObject.check(data, true);
       const changedNames = new Set();
-      var form = this.get();
+      let form = this.get();
       for (let i = 0; i < form.length; i++) {
         const jpath = form[i].name.split('.');
-        var fillWith = data.getChildSync(jpath);
+        let fillWith = data.getChildSync(jpath);
         const changed = this._setElement(form[i].dom, fillWith);
         if (changed) changedNames.add(form[i].name);
       }
@@ -144,7 +144,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
           value = getDefaultByType(el.type);
         }
       }
-      var transform = getTransform(el, 'backward');
+      let transform = getTransform(el, 'backward');
       switch (el.type) {
         case 'checkbox':
           el.checked = DataObject.resurrect(value);

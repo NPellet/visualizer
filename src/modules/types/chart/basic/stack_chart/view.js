@@ -37,20 +37,20 @@ define([
       this.loadedData = $.Deferred();
 
       this._data = []; // the data that will be sent to FLOT
-      var cfg = this.module.getConfiguration;
-      var axis;
-      var x;
+      let cfg = this.module.getConfiguration;
+      let axis;
+      let x;
       this.updateOptions(cfg, axis, x);
 
       this.resolveReady();
     },
 
     onResize: function () {
-      var that = this;
+      let that = this;
 
       this.loadedData.done(function () {
         this._plot = that.plot(that._id, that._data, that._options);
-        var choiceContainer = $(`#choices${that._id}`);
+        let choiceContainer = $(`#choices${that._id}`);
         choiceContainer.empty();
 
         $.each(that._data, function (key, val) {
@@ -72,11 +72,11 @@ define([
          */
     update: {
       chart: function (moduleValue) {
-        var cfg = this.module.getConfiguration;
+        let cfg = this.module.getConfiguration;
 
         this._convertChartToData(moduleValue.get().data);
-        var axis = moduleValue.get().axis;
-        var x = moduleValue.get().data[0].x;
+        let axis = moduleValue.get().axis;
+        let x = moduleValue.get().data[0].x;
         this.updateOptions(cfg, axis, x);
         this._plot = this.plot(this._id, this._data, this._options);
 
@@ -88,15 +88,15 @@ define([
       this._data = [];
       if (!Array.isArray(value) || !value || !Array.isArray(value.x)) return;
 
-      for (var j = 0; j < value.length; j++) {
-        var x = value[j].x;
-        var y = value[j].y;
-        var highlight = value[j]._highlight;
-        var info = value[j].serieLabel;
-        var label = value[j].info[0].name;
-        var s = [];
+      for (let j = 0; j < value.length; j++) {
+        let x = value[j].x;
+        let y = value[j].y;
+        let highlight = value[j]._highlight;
+        let info = value[j].serieLabel;
+        let label = value[j].info[0].name;
+        let s = [];
 
-        for (var i = 0; i < y.length; i++) {
+        for (let i = 0; i < y.length; i++) {
           if ($.isNumeric(x[i]))
             s.push({
               0: x[i],
@@ -119,14 +119,14 @@ define([
     },
 
     updateOptions: function (cfg, axis, x) {
-      var posx = null;
-      var posy = null;
-      var xmin = null;
-      var ymin = null;
-      var xmax = null;
-      var ymax = null;
-      var xunit = null;
-      var yunit = null;
+      let posx = null;
+      let posy = null;
+      let xmin = null;
+      let ymin = null;
+      let xmax = null;
+      let ymax = null;
+      let xunit = null;
+      let yunit = null;
       if (undefined != axis) {
         posx = axis[0].type;
         posy = axis[1].type;
@@ -149,17 +149,17 @@ define([
           yunit = u;
         }
       }
-      var steps = false;
-      var bars = false;
-      var lines = false;
-      var stack = cfg('stack');
-      var barWidth = cfg('barWidth');
-      var xlab = cfg('xLabel');
-      var ylab = cfg('yLabel');
-      var xlabh = cfg('xLabelHeight');
-      var xlabw = cfg('xLabelWidth');
-      var ylabh = cfg('yLabelHeight');
-      var ylabw = cfg('yLabelWidth');
+      let steps = false;
+      let bars = false;
+      let lines = false;
+      let stack = cfg('stack');
+      let barWidth = cfg('barWidth');
+      let xlab = cfg('xLabel');
+      let ylab = cfg('yLabel');
+      let xlabh = cfg('xLabelHeight');
+      let xlabw = cfg('xLabelWidth');
+      let ylabh = cfg('yLabelHeight');
+      let ylabw = cfg('yLabelWidth');
 
       switch (cfg('preference')) {
         case 'Lines With Steps':
@@ -212,7 +212,7 @@ define([
     },
 
     plot: function (id, data, options) {
-      var that = this;
+      let that = this;
       this._plot = $.plot(`#${id}`, data, options);
       $(`#${id}`).bind('plotclick', function (event, pos, item) {
         event.preventDefault();
@@ -228,10 +228,10 @@ define([
       });
     },
     plotAccordingToChoices: function (choiceContainer, id) {
-      var that = this;
-      var data = [];
+      let that = this;
+      let data = [];
       choiceContainer.find('input:checked').each(function () {
-        var key = $(this).attr('name');
+        let key = $(this).attr('name');
         if (key && that._data[key]) {
           data.push(that._data[key]);
         }

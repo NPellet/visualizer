@@ -2,22 +2,22 @@
 
 // LRU
 define(['jquery', 'src/util/debug'], function ($, Debug) {
-  var indexedDB, IDBTransaction, IDBKeyRange;
-  var db,
+  let indexedDB, IDBTransaction, IDBKeyRange;
+  let db,
     dbname = 'cilru';
 
   function createStoreDB(store, limit) {
-    var storeName = store;
-    var deferred = $.Deferred();
+    let storeName = store;
+    let deferred = $.Deferred();
 
     $.when(openDb()).then(
       function () {
-        var store = db.transaction(['lru'], 'readwrite').objectStore('lru');
-        var lruGet = store.get(`__lrudata${storeName}`);
+        let store = db.transaction(['lru'], 'readwrite').objectStore('lru');
+        let lruGet = store.get(`__lrudata${storeName}`);
 
         lruGet.onsuccess = function (e) {
-          var lru = e.target.result;
-          var toStore = {
+          let lru = e.target.result;
+          let toStore = {
             index: `__lrudata${storeName}`,
             data: {},
             store: storeName,
@@ -29,7 +29,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             toStore._count = lru._count;
             if (!limit) toStore._limit = lru._limit;
           }
-          var req = store.put(toStore);
+          let req = store.put(toStore);
           req.onsuccess = function (e) {
             Debug.info('success storing store', e);
             deferred.resolve();
@@ -50,7 +50,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
   }
 
   function openDb() {
-    var ready = $.Deferred();
+    let ready = $.Deferred();
 
     if (!dbname) return ready.reject('No database to use');
 
@@ -74,7 +74,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
       return ready;
     }
 
-    var openrequest = indexedDB.open(dbname, 2);
+    let openrequest = indexedDB.open(dbname, 2);
 
     // Database is open
     openrequest.onsuccess = function (e) {
@@ -106,11 +106,11 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
   }
 
   function getFromDB(storeName, index) {
-    var deferred = $.Deferred();
+    let deferred = $.Deferred();
 
     $.when(openDb()).then(
       function () {
-        var store = db.transaction('lru', 'readwrite').objectStore('lru'),
+        let store = db.transaction('lru', 'readwrite').objectStore('lru'),
           getter = store.get(storeName + index),
           defGet = $.Deferred();
 
@@ -119,14 +119,14 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           else defGet.reject();
         };
 
-        var getStore = store.get(`__lrudata${storeName}`);
+        let getStore = store.get(`__lrudata${storeName}`);
         getStore.onsuccess = function (e) {
-          var lru = e.target.result;
+          let lru = e.target.result;
           if (!lru) return;
 
           if (lru.data[index]) {
             lru.data[index] = Date.now(); // Update the date of the object
-            var setter = store.put(lru);
+            let setter = store.put(lru);
 
             setter.onsuccess = function (event) {
               Debug.info("success update resource's timestamp");
@@ -154,14 +154,14 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
   }
 
   function storeInDb(store, index, data) {
-    var storeName = store;
-    var deferred = $.Deferred();
+    let storeName = store;
+    let deferred = $.Deferred();
 
     $.when(openDb()).then(
       function () {
-        var store = db.transaction(['lru'], 'readwrite').objectStore('lru');
+        let store = db.transaction(['lru'], 'readwrite').objectStore('lru');
 
-        var storingRequest = store.put({
+        let storingRequest = store.put({
           data: {
             data: data,
             timeout: Date.now()
@@ -176,9 +176,9 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         storingRequest.onerror = function (e) {
           Debug.error('error storing data', e);
         };
-        var lruGet = store.get(`__lrudata${storeName}`);
+        let lruGet = store.get(`__lrudata${storeName}`);
         lruGet.onsuccess = function (e) {
-          var lru = e.target.result;
+          let lru = e.target.result;
           if (!lru) lru = {};
 
           if (!lru.data) lru.data = {};
@@ -192,7 +192,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           // We overflow the limit
           if (lru._count > lru._limit) {
             // We have to look for the oldest timestamps
-            var keys = Object.keys(lru.data);
+            let keys = Object.keys(lru.data);
             keys.sort(function (a, b) {
               // a goes first if timestamp smaller
               if (lru.data[a] < lru.data[b]) {
@@ -204,7 +204,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
               }
             });
 
-            for (var i = 0; i < lru._count - lru._limit; i++) {
+            for (let i = 0; i < lru._count - lru._limit; i++) {
               delete lru.data[keys[i]];
               store.delete(storeName + keys[i]);
             }

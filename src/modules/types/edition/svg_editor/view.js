@@ -32,8 +32,8 @@ define([
   'lib/svg-edit/embedapi',
   'svgsanitize'
 ], function (require, API, _, Default, Debug, Renderer) {
-  var saveSvgThrottled = _.throttle(function () {
-    var args = arguments;
+  let saveSvgThrottled = _.throttle(function () {
+    let args = arguments;
 
     function saveAndTrigger(data) {
       if (args[0].module.getConfigurationCheckbox('saveSvg', 'yes')) {
@@ -55,8 +55,8 @@ define([
         args[0].svgCanvas.getSvgString()(handleSvgData);
       }, 0);
     } else {
-      var svgcode = args[0].dom.clone();
-      var viewbox = svgcode[0].getAttribute('viewBox').split(' ');
+      let svgcode = args[0].dom.clone();
+      let viewbox = svgcode[0].getAttribute('viewBox').split(' ');
       svgcode
         .attr('width', viewbox[2])
         .attr('height', viewbox[3])
@@ -69,14 +69,14 @@ define([
     }
   }, 1000);
 
-  var animationTags = [
+  let animationTags = [
     'animate',
     'set',
     'animateMotion',
     'animateColor',
     'animateTransform'
   ];
-  var defaultAnimAttributes = {
+  let defaultAnimAttributes = {
     begin: 'indefinite',
     options: {
       clearOnEnd: false,
@@ -86,14 +86,14 @@ define([
     }
   };
 
-  var animationReserved = ['options', 'tag', 'attributes'];
-  var mouseEventNames = ['click', 'dblclick', 'mouseenter', 'mouseleave'];
-  var animMemory = {};
-  var highlightCount = {};
-  var blockHighlight = {};
+  let animationReserved = ['options', 'tag', 'attributes'];
+  let mouseEventNames = ['click', 'dblclick', 'mouseenter', 'mouseleave'];
+  let animMemory = {};
+  let highlightCount = {};
+  let blockHighlight = {};
 
   function View() {
-    var that = this;
+    let that = this;
     this.svgCanvas = null;
     this.iframeLoaded = $.Deferred();
     this.iframeLoaded.done(function () {
@@ -103,7 +103,7 @@ define([
 
   $.extend(true, View.prototype, Default, {
     _renderSvg: function (svgCode) {
-      var that = this;
+      let that = this;
       if (svgCode) {
         svgCode = String(svgCode.get());
       } else {
@@ -124,7 +124,7 @@ define([
           this.module.getDomContent().html(this.dom);
 
           this.dom.bind('load', function () {
-            var frame = that.dom[0];
+            let frame = that.dom[0];
             that.svgCanvas = new EmbeddedSVGEdit(frame);
             // Hide main button, as we will be controlling new, load, save, etc. from the host document
             that.iframeDoc =
@@ -143,7 +143,7 @@ define([
             return resolve();
           });
         } else {
-          var domContent = that.module.getDomContent();
+          let domContent = that.module.getDomContent();
           return Renderer.render(domContent, {
             type: 'svg',
             value: svgCode
@@ -188,20 +188,20 @@ define([
     },
 
     addAnimation: function ($svgEl, anim) {
-      var that = this;
-      var $allAnimations = $([]);
+      let that = this;
+      let $allAnimations = $([]);
       if (!anim.attributes) return;
-      var id = $svgEl.attr('id');
+      let id = $svgEl.attr('id');
       anim.tag = anim.tag || 'animate';
       if (animationTags.indexOf(anim.tag) === -1) return;
       if (!Array.isArray(anim.attributes)) {
         anim.attributes = [anim.attributes];
       }
       anim = _.defaults(anim, defaultAnimAttributes);
-      var highlightId = that.getHighlightId($svgEl);
+      let highlightId = that.getHighlightId($svgEl);
 
-      var thisDefault = {};
-      for (var k in anim) {
+      let thisDefault = {};
+      for (let k in anim) {
         if (animationReserved.indexOf(k) === -1)
           thisDefault[k] = _.cloneDeep(anim[k]);
       }
@@ -209,12 +209,12 @@ define([
         anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
 
         $svgEl.each(function () {
-          var animation = document.createElementNS(
+          let animation = document.createElementNS(
             'http://www.w3.org/2000/svg',
             anim.tag
           );
-          for (var attribute in anim.attributes[i]) {
-            var attrValue = anim.attributes[i][attribute];
+          for (let attribute in anim.attributes[i]) {
+            let attrValue = anim.attributes[i][attribute];
             attrValue =
               typeof attrValue === 'function' ? attrValue.call() : attrValue;
             animation.setAttributeNS(null, attribute, attrValue);
@@ -223,7 +223,7 @@ define([
         });
 
         // get the animations we just appended
-        var $animations = $svgEl.children(':last-child');
+        let $animations = $svgEl.children(':last-child');
         $allAnimations = $allAnimations.add($animations);
       }
 
@@ -247,7 +247,7 @@ define([
           }
 
           if (anim.options.clearOnEnd) {
-            var timeout = anim.options.clearOnEnd.timeout || 0;
+            let timeout = anim.options.clearOnEnd.timeout || 0;
             setTimeout(function () {
               $(element).remove();
               that._saveSvg();
@@ -275,7 +275,7 @@ define([
 
     addAnimations: function ($svgEl, animation) {
       if (Array.isArray(animation)) {
-        for (var i = 0; i < animation.length; i++) {
+        for (let i = 0; i < animation.length; i++) {
           this.addAnimation($svgEl, animation[i]);
         }
       } else {
@@ -300,14 +300,14 @@ define([
       // to override style properties defined in stylesheet
       $svgEl.each(function () {
         // remove the style property if it has the same name
-        for (var attribute in attributes) {
+        for (let attribute in attributes) {
           this.style.removeProperty(attribute);
         }
       });
     },
 
     modifySvgFromArray: function (arr, isPrimaryCall) {
-      var that = this;
+      let that = this;
 
       if (!arr) return;
       // Convert to array if necessary
@@ -322,25 +322,25 @@ define([
       }
 
       that.module._data = [];
-      for (var i = 0; i < arr.length; i++) {
+      for (let i = 0; i < arr.length; i++) {
         this.modifySvgFromObject(arr[i], isPrimaryCall);
       }
       that._saveSvg();
     },
 
     modifySvgFromObject: function (obj, isPrimaryCall) {
-      var that = this;
-      var selector = obj.selector;
+      let that = this;
+      let selector = obj.selector;
       if (!selector) return;
 
-      var doHighlight = typeof obj._highlight === 'string';
+      let doHighlight = typeof obj._highlight === 'string';
 
       if (obj.info) {
         that.module._data = obj.info;
       }
 
-      var $svgEl;
-      var $svgcontent = this.$svgcontent;
+      let $svgEl;
+      let $svgcontent = this.$svgcontent;
       $svgEl = $svgcontent.find(selector);
       if ($svgEl.length === 0 && selector[0] !== '#') {
         $svgEl = $svgcontent.find(`#${selector}`);
@@ -382,8 +382,8 @@ define([
         // Case 3)
         obj.animation.attributes = [];
 
-        for (var k in obj.attributes) {
-          var a = {};
+        for (let k in obj.attributes) {
+          let a = {};
           a.attributeName = k;
           a.to = obj.attributes[k];
           obj.animation.attributes.push(a);
@@ -426,7 +426,7 @@ define([
         if (blockHighlight[killId]) {
           return;
         }
-        var animation = {};
+        let animation = {};
         animation.tag = 'animateTransform';
         animation.options = {
           clearOnEnd: false,
@@ -468,7 +468,7 @@ define([
             .on('click.svgeditor.varout', onMouseClick);
         }
 
-        for (var j = 0; j < mouseEventNames.length; j++) {
+        for (let j = 0; j < mouseEventNames.length; j++) {
           if (obj.hasOwnProperty(mouseEventNames[j])) {
             (function (eventName) {
               $svgEl.off(eventName);
@@ -498,7 +498,7 @@ define([
     },
 
     _loadSvg: function () {
-      var svgcode = this.module.getConfiguration('svgcode');
+      let svgcode = this.module.getConfiguration('svgcode');
       this.svgCanvas.setSvgString(svgcode);
       this.module.controller.onChange(svgcode);
     },
@@ -540,8 +540,8 @@ define([
     },
 
     $getAnimationTags: function ($el) {
-      var $retEl;
-      for (var i = 0; i < animationTags.length; i++) {
+      let $retEl;
+      for (let i = 0; i < animationTags.length; i++) {
         if (i === 0) $retEl = $el.find(animationTags[i]);
         else $retEl = $retEl.add($el.find(animationTags[i]));
       }

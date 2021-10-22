@@ -17,16 +17,16 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init() {
-      var table = this.table = $('<table>').css({
+      let table = this.table = $('<table>').css({
         height: '100%',
         width: '100%'
       });
-      var editorRow = $('<tr>').appendTo(table).css('height', 'auto');
+      let editorRow = $('<tr>').appendTo(table).css('height', 'auto');
       this.buttonRow = $('<tr>').appendTo(table).css('height', '30px');
       this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
       this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
 
-      var debouncing = this.module.getConfiguration('debouncing');
+      let debouncing = this.module.getConfiguration('debouncing');
       if (debouncing > 0) {
         this.editorChangedDebounced = _.debounce(this.editorChanged.bind(this, false), debouncing);
       } else if (debouncing === -1) {
@@ -38,14 +38,14 @@ define([
       this.module.getDomContent().html(table);
     },
     inDom() {
-      var initVal = String(this.module.getConfiguration('script') || '');
+      let initVal = String(this.module.getConfiguration('script') || '');
       this.setCode(initVal, false, true);
 
       if (this.module.getConfigurationCheckbox('iseditable', 'editable')) {
         this.editable = true;
         $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%').appendTo(this.editorCell);
         this.editor = ace.edit(this._id);
-        var mode = `./mode/${this.module.getConfiguration('mode')}`;
+        let mode = `./mode/${this.module.getConfiguration('mode')}`;
 
         aceHelper.applyConfig(this.module, this.editor);
         this.editor.$blockScrolling = Infinity;
@@ -78,10 +78,10 @@ define([
     update: {
       data(value) {
         this._data = value;
-        var val = String(value.get());
+        let val = String(value.get());
         this.setCode(val, false, true);
         if (this.editable) {
-          var currentVal = this.editor.getValue();
+          let currentVal = this.editor.getValue();
           if (val === currentVal) {
             return;
           }
@@ -100,7 +100,7 @@ define([
       }
     },
     setCode(value, noTrigger, preventInputChange) {
-      var currentValue = this._code;
+      let currentValue = this._code;
       if (currentValue === value) {
         return;
       }

@@ -32,10 +32,10 @@ define([
 ) {
   function init(module) {
     // define object properties
-    var originalURL = String(
+    let originalURL = String(
       module.definition.getChildSync(['url'], true).get(),
     );
-    var moduleURL = Util.rewriteRequirePath(originalURL);
+    let moduleURL = Util.rewriteRequirePath(originalURL);
     if (moduleURL[moduleURL.length - 1] !== '/') {
       moduleURL = `${moduleURL}/`;
     }
@@ -171,7 +171,7 @@ define([
   }
   Module.prototype = {
     buildDom() {
-      var html = '';
+      let html = '';
       html +=
         '<div class="ci-module-wrapper ci-module-displaywrapper ci-module-';
       html += this.controller.moduleInformation.cssClass;
@@ -204,10 +204,10 @@ define([
     },
 
     setCustomStyle() {
-      var css = this.definition.css;
+      let css = this.definition.css;
       if (!css) return;
       css = css[0];
-      var style = {
+      let style = {
         fontSize: css.fontSize[0],
         fontFamily: css.fontFamily[0],
       };
@@ -215,11 +215,11 @@ define([
     },
 
     drawToolbar() {
-      var isLocked = API.isViewLocked();
-      var $ul = this.dom.find('.ci-module-header-toolbar ul');
-      var toolbar = this.controller.getToolbar();
-      var html = '';
-      for (var i = 0; i < toolbar.length; i++) {
+      let isLocked = API.isViewLocked();
+      let $ul = this.dom.find('.ci-module-header-toolbar ul');
+      let toolbar = this.controller.getToolbar();
+      let html = '';
+      for (let i = 0; i < toolbar.length; i++) {
         if (!toolbar[i].ifLocked && isLocked) continue;
         const color = toolbar[i].color || 'rgba(100,100, 100, 1)';
         html += `<li style="color:${toolbar[i].color}" + title="${toolbar[i]
@@ -236,15 +236,15 @@ define([
     },
 
     bindToolbar() {
-      var that = this;
+      let that = this;
       this.dom
         .find('.ci-module-header-toolbar ul')
         .on('click', 'li', (event) => {
-          var toolbar = that.controller.getToolbar();
-          var title = $(event.target)
+          let toolbar = that.controller.getToolbar();
+          let title = $(event.target)
             .closest('li')
             .attr('title');
-          var t = _.find(toolbar, (val) => val.title === title);
+          let t = _.find(toolbar, (val) => val.title === title);
           if (t && t.onClick) {
             t.onClick.apply(that);
           }
@@ -273,7 +273,7 @@ define([
       for (let i = 0; i < vars.length; i++) {
         const variable = API.getVar(vars[i].name);
         if (variable.isDefined()) {
-          // eslint-disable-next-line no-await-in-loop
+           
           await this.model.onVarChange(variable);
         }
       }
@@ -323,7 +323,7 @@ define([
      * Returns all accepted types defined in the controller
      */
     getAcceptedTypes(rel) {
-      var accept = this.controller.references;
+      let accept = this.controller.references;
       if (accept) {
         return accept[rel];
       }
@@ -334,7 +334,7 @@ define([
       if (!this.model || !this.model.data) {
         return;
       }
-      var data = this.model.data[rel];
+      let data = this.model.data[rel];
       if (data) {
         return data[Object.keys(data)[0]];
       }
@@ -342,13 +342,13 @@ define([
     },
 
     getVariableFromRel(rel) {
-      var name = this.getNameFromRel(rel);
+      let name = this.getNameFromRel(rel);
       return API.getVar(name);
     },
 
     getNameFromRel(rel) {
-      var vars = this.vars_in();
-      for (var i = 0; i < vars.length; i++) {
+      let vars = this.vars_in();
+      for (let i = 0; i < vars.length; i++) {
         if (vars[i].rel == rel) {
           return vars[i].name;
         }
@@ -361,9 +361,9 @@ define([
     },
 
     getDataRelFromName(name) {
-      var vars = this.vars_in();
-      var rels = [];
-      for (var i = 0; i < vars.length; i++) {
+      let vars = this.vars_in();
+      let rels = [];
+      for (let i = 0; i < vars.length; i++) {
         if (vars[i].name == name) {
           rels.push(vars[i].rel);
         }
@@ -372,8 +372,8 @@ define([
     },
 
     getActionRelFromName(name) {
-      var vars = this.actions_in();
-      for (var i = 0; i < vars.length; i++) {
+      let vars = this.actions_in();
+      for (let i = 0; i < vars.length; i++) {
         if (vars[i].name == name) {
           return vars[i].rel;
         }
@@ -388,7 +388,7 @@ define([
       this.controller.inDom();
       this.model.inDom();
 
-      var that = this;
+      let that = this;
       if (!API.isViewLocked()) {
         ContextMenu.listen(this.getDomWrapper().get(0), [
           [
@@ -430,7 +430,7 @@ define([
     },
 
     toggleLayer(newLayerShown, layerOut) {
-      var layer;
+      let layer;
       this.activeLayerName = newLayerShown;
       if ((layer = this.getLayer(newLayerShown))) {
         if (!layer.display) {
@@ -445,7 +445,7 @@ define([
 
         this.setBackgroundColor(layer.bgColor || [255, 255, 255, 1]);
 
-        var Grid = require('src/main/grid');
+        let Grid = require('src/main/grid');
         Grid.setModuleSize(this);
         Grid.moduleResize(this);
 
@@ -454,7 +454,7 @@ define([
     },
 
     eachLayer(callback) {
-      for (var i in this.definition.layers) {
+      for (let i in this.definition.layers) {
         callback(this.definition.layers[i], i);
       }
     },
@@ -472,7 +472,7 @@ define([
           delete this.definition.layers[modify_layer.rename.old];
         }
       } else {
-        for (var i in layers) {
+        for (let i in layers) {
           if (this.definition.layers[i]) {
             continue;
           }
@@ -1102,7 +1102,7 @@ define([
     },
 
     resetReady() {
-      var that = this;
+      let that = this;
       that.viewReady = new Promise(function (res) {
         that._resolveView = res;
       });
@@ -1114,12 +1114,12 @@ define([
     },
 
     getConfiguration(aliasName, fallbackValue, resurrectValue = true) {
-      var cfgEl = this.definition.configuration;
-      var alias = this.controller.configAliases[aliasName];
-      var toReturn;
+      let cfgEl = this.definition.configuration;
+      let alias = this.controller.configAliases[aliasName];
+      let toReturn;
 
       if (alias) {
-        for (var i = 0; i < alias.length; i++) {
+        for (let i = 0; i < alias.length; i++) {
           cfgEl = cfgEl[alias[i]];
           if (typeof cfgEl === 'undefined') {
             toReturn = this._getConfigurationDefault(alias, aliasName);
@@ -1138,7 +1138,7 @@ define([
     },
 
     getConfigurationCheckbox(aliasName, optionName) {
-      var conf = this.getConfiguration(aliasName);
+      let conf = this.getConfiguration(aliasName);
       if (!Array.isArray(conf)) {
         return false;
       }
@@ -1150,9 +1150,9 @@ define([
       this._cfgStructure =
         this._cfgStructure || this.controller.configurationStructure();
 
-      var cfgEl = this._cfgStructure;
+      let cfgEl = this._cfgStructure;
 
-      for (var i = 0, l = alias.length; i < l; i++) {
+      for (let i = 0, l = alias.length; i < l; i++) {
         if (typeof alias[i] == 'number') {
           continue;
         }
@@ -1198,7 +1198,7 @@ define([
      * Returns the current position of the module
      */
     getPosition(activeLayer) {
-      var layer = this.getLayer(activeLayer);
+      let layer = this.getLayer(activeLayer);
       return layer.position;
     },
 
@@ -1206,7 +1206,7 @@ define([
      * Returns the current size of the module
      */
     getSize(activeLayer) {
-      var layer = this.getLayer(activeLayer);
+      let layer = this.getLayer(activeLayer);
       return layer.size;
     },
 
@@ -1409,11 +1409,11 @@ define([
     },
 
     getConfigExample() {
-      var aliases = this.controller.configAliases,
+      let aliases = this.controller.configAliases,
         definition = this.controller.configurationStructure();
 
-      var result = {};
-      for (var i in aliases) {
+      let result = {};
+      for (let i in aliases) {
         if (aliases.hasOwnProperty(i)) {
           result[i] = getExampleFromAlias(definition, aliases[i]);
         }
@@ -1423,7 +1423,7 @@ define([
     },
 
     exportConfigExample() {
-      var that = this;
+      let that = this;
       ui.dialog('<div class="ci-module-export"><textarea></textarea></div>', {
         title: 'Config example',
         width: '70%',
@@ -1444,7 +1444,7 @@ define([
     const l = value.module_config[0].sections.layer[0].groups.group;
     const allDisplay =
       value.module_config[0].groups.layerDisplay[0].displayOn[0];
-    for (var i = 0; i < l.length; i++) {
+    for (let i = 0; i < l.length; i++) {
       self.definition.layers[l[i].layerName[0]].display =
         allDisplay.indexOf(l[i].layerName[0]) > -1;
       self.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
@@ -1487,9 +1487,9 @@ define([
   }
 
   function getExampleFromAlias(element, alias) {
-    var l = alias.length,
+    let l = alias.length,
       name;
-    for (var i = 0; i < l; i++) {
+    for (let i = 0; i < l; i++) {
       if (!element) break;
       name = alias[i];
       if (typeof name === 'string') {
@@ -1497,7 +1497,7 @@ define([
       } else if (i === l - 1) {
         if (element.options) {
           if (element.options.type === 'table') {
-            var tableElement = getTableFieldExample(element.fields);
+            let tableElement = getTableFieldExample(element.fields);
             if (element.options.multiple) {
               tableElement = [tableElement];
             }
@@ -1515,8 +1515,8 @@ define([
   }
 
   function getTableFieldExample(field) {
-    var result = {};
-    for (var i in field) {
+    let result = {};
+    for (let i in field) {
       if (field.hasOwnProperty(i)) {
         result[i] = getFieldExample(field[i]);
       }
@@ -1528,7 +1528,7 @@ define([
     switch (field.type) {
       case 'checkbox':
         var result = [];
-        for (var i in field.options) {
+        for (let i in field.options) {
           result.push(i);
         }
         return result;

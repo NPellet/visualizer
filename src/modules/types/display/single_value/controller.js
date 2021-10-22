@@ -33,7 +33,7 @@ define(
     Controller.prototype.variablesIn = ['value', 'color'];
 
     Controller.prototype.configurationStructure = function () {
-      var typeList = Renderer.getRendererComboOptions();
+      let typeList = Renderer.getRendererComboOptions();
       return {
         groups: {
           group: {

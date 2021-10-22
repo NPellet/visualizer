@@ -21,11 +21,11 @@ define([
   };
 
   Controller.prototype.configurationStructure = function () {
-    var that = this;
+    let that = this;
 
-    var typeList = Renderer.getRendererComboOptions();
+    let typeList = Renderer.getRendererComboOptions();
 
-    var jpaths = this.module.model.getjPath('row', false);
+    let jpaths = this.module.model.getjPath('row', false);
 
     return {
       groups: {
@@ -413,11 +413,11 @@ define([
   };
 
   Controller.prototype.onBeforeSave = function (formValue) {
-    var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
-    var saveInView =
+    let varname = formValue.module_specific_config[0].groups.data[0].varname[0];
+    let saveInView =
       formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
-    var vars_in = formValue.vars_in[0].groups.group[0];
-    var varin = vars_in[0];
+    let vars_in = formValue.vars_in[0].groups.group[0];
+    let varin = vars_in[0];
     if (varname && saveInView) {
       if (varin && varin.name) {
         varin.name = varname;
@@ -569,7 +569,7 @@ define([
   };
 
   Controller.prototype.onHover = function (row, item) {
-    var itemId = item[this.module.view.idPropertyName];
+    let itemId = item[this.module.view.idPropertyName];
     if (this.lastHoveredItemId === itemId) return;
     this.lastHoveredItemId = itemId;
     this.setVarFromEvent('onHover', 'row', 'list', [row]);
