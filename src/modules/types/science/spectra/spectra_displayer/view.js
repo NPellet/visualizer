@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -257,7 +257,7 @@ define([
           xAxis.on('zoom', xZoomHandler);
           xAxis.on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -1246,6 +1246,7 @@ define([
             }
 
             if (!Array.isArray(spectra)) return;
+            // eslint-disable-next-line no-unreachable-loop
             for (let spectrum of spectra) {
               let data = spectrum.data;
 
@@ -1589,7 +1590,7 @@ define([
   return View;
 });
 
-function convertSeries(series) {
+const convertSeries = function convertSeries(series) {
   let data = [];
   for (let serie of series) {
     data.push({
@@ -1602,9 +1603,9 @@ function convertSeries(series) {
     });
   }
   return data;
-}
+};
 
-function convertStyle(styles) {
+const convertStyle = function convertStyle(styles) {
   if (!Array.isArray(styles)) {
     styles = [
       {
@@ -1630,4 +1631,4 @@ function convertStyle(styles) {
     });
   }
   return newStyles;
-}
+};

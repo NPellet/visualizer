@@ -4,11 +4,11 @@ require.config({
   shim: {
     'components/leaflet/dist/leaflet': {
       exports: 'L',
-      init: function () {
+      init: function() {
         return this.L.noConflict();
-      }
-    }
-  }
+      },
+    },
+  },
 });
 
 define([
@@ -18,8 +18,8 @@ define([
   'src/util/api',
   'src/util/color',
   'components/leaflet/dist/leaflet',
-  'components/leaflet-omnivore/leaflet-omnivore.min'
-], function ($, Default, Util, API, Color, L, omnivore) {
+  'components/leaflet-omnivore/leaflet-omnivore.min',
+], function($, Default, Util, API, Color, L, omnivore) {
   function View() {
     this.mapID = Util.getNextUniqueId();
   }
@@ -28,15 +28,15 @@ define([
 
   // Custom icon that accepts Marker objects
   let CustomIcon = L.Icon.extend({
-    createIcon: function (oldIcon) {
+    createIcon: function(oldIcon) {
       this._marker = this.options.marker;
       let div = this._marker.div[0];
       this._setIconStyles(div, 'icon');
       return div;
     },
-    createShadow: function () {
+    createShadow: function() {
       return null;
-    }
+    },
   });
 
   function customIcon(marker) {
@@ -53,27 +53,28 @@ define([
         break;
       case 'circle':
         this.div.css('border-radius', merged.size);
-       
+
+      // eslint-disable-next-line no-fallthrough
       default:
         this.div.css('background', merged.color);
         break;
     }
     this.div.css({
       width: this.width,
-      height: this.height
+      height: this.height,
     });
   }
 
   Marker.defaultOptions = {
     size: 30,
     color: 'rgba(1,1,1,0.5)',
-    kind: 'circle'
+    kind: 'circle',
   };
-  Marker.setDefaultOptions = function (options) {
+  Marker.setDefaultOptions = function(options) {
     $.extend(Marker.defaultOptions, options);
   };
   Marker.prototype = {
-    highlight: function (onOff) {
+    highlight: function(onOff) {
       if (onOff) {
         if (this.kind === 'image' && this.options.imgHighlight)
           this.div.attr('src', this.options.imgHighlight);
@@ -93,17 +94,17 @@ define([
     },
     get height() {
       return this.options.height || this.options.width || this.options.size;
-    }
+    },
   };
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init: function() {
       this.mapLayers = {};
       this.mapLayer = {};
       this.mapBounds = {};
       this.dom = $(`<div id="${this.mapID}"></div>`).css({
         height: '100%',
-        width: '100%'
+        width: '100%',
       });
       this.module.getDomContent().html(this.dom);
 
@@ -113,16 +114,16 @@ define([
         color: Color.getColor(this.module.getConfiguration('markercolor')),
         size: parseInt(this.module.getConfiguration('markersize'), 10),
         img: 'components/leaflet/dist/images/marker-icon.png',
-        imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
+        imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png',
       });
       this.markerjpath = this.module.getConfiguration('markerjpath');
     },
-    inDom: function () {
+    inDom: function() {
       this.dom.empty();
       let that = this;
 
       this.map = L.map(this.mapID, {
-        zoomAnimation: false
+        zoomAnimation: false,
       });
 
       this.getTileLayer().addTo(that.map);
@@ -148,25 +149,25 @@ define([
       let promise;
       if (configCenter) promise = Promise.resolve(configCenter);
       else {
-        promise = new Promise(function (resolve) {
+        promise = new Promise(function(resolve) {
           if (window.navigator && window.navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-              function (geoposition) {
+              function(geoposition) {
                 resolve([
                   geoposition.coords.latitude,
-                  geoposition.coords.longitude
+                  geoposition.coords.longitude,
                 ]);
               },
-              function () {
+              function() {
                 resolve(defaultCenter);
-              }
+              },
             );
           } else {
             resolve(defaultCenter);
           }
         });
       }
-      promise.then(function (value) {
+      promise.then(function(value) {
         let zoom = that.module.getConfiguration('mapzoom') || 10;
         that.map.setView(value, zoom);
         that.resolveReady();
@@ -179,14 +180,14 @@ define([
       gpx: clearLayer,
       wkt: clearLayer,
       topojson: clearLayer,
-      point: clearLayer
+      point: clearLayer,
     },
     update: {
-      position: function (value) {
+      position: function(value) {
         if (value.length < 2) return;
         this.map.setView(L.latLng(value[0], value[1]));
       },
-      geojson: function (geo, varname) {
+      geojson: function(geo, varname) {
         try {
           let geoJson = geo.get();
           let converted = L.geoJson(geoJson, {
@@ -197,12 +198,12 @@ define([
                 color: '#000000',
                 weight: 1,
                 opacity: 1,
-                fillOpacity: 0.8
+                fillOpacity: 0.8,
               });
             },
             style: (feature) => {
               return feature.properties && feature.properties.style;
-            }
+            },
           });
           this.addGeoJSON(converted, varname);
         } catch (e) {
@@ -210,7 +211,7 @@ define([
         }
         this.updateFit(varname);
       },
-      csv: function (csv, varname) {
+      csv: function(csv, varname) {
         try {
           this.addGeoJSON(omnivore.csv.parse(String(csv.get())), varname);
         } catch (e) {
@@ -218,7 +219,7 @@ define([
         }
         this.updateFit(varname);
       },
-      kml: function (kml, varname) {
+      kml: function(kml, varname) {
         try {
           this.addGeoJSON(omnivore.kml.parse(String(kml.get())), varname);
         } catch (e) {
@@ -226,7 +227,7 @@ define([
         }
         this.updateFit(varname);
       },
-      gpx: function (gpx, varname) {
+      gpx: function(gpx, varname) {
         try {
           this.addGeoJSON(omnivore.gpx.parse(String(gpx.get())), varname);
         } catch (e) {
@@ -234,7 +235,7 @@ define([
         }
         this.updateFit(varname);
       },
-      wkt: function (wkt, varname) {
+      wkt: function(wkt, varname) {
         try {
           this.addGeoJSON(omnivore.wkt.parse(String(wkt.get())), varname);
         } catch (e) {
@@ -242,7 +243,7 @@ define([
         }
         this.updateFit(varname);
       },
-      topojson: function (topojson, varname) {
+      topojson: function(topojson, varname) {
         try {
           this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
         } catch (e) {
@@ -251,39 +252,39 @@ define([
         this.updateFit(varname);
       },
 
-      point: function (point, varname) {
+      point: function(point, varname) {
         let latlng = L.latLng(point[0], point[1]);
         let circle = L.circle(latlng, 20, {
           color: '#f00',
-          fillColor: '#f00'
+          fillColor: '#f00',
         });
         // circle.addTo(this.map);
         this.addLayer(circle, varname);
         this.updateFit(varname);
-      }
+      },
     },
 
-    addLayer: function (layer, varname) {
+    addLayer: function(layer, varname) {
       layer.addTo(this.map);
       this.mapLayer[varname] = layer;
       this.mapBounds[varname] = new L.LatLngBounds();
       this.mapBounds[varname].extend(
-        layer.getBounds ? layer.getBounds() : layer.getLatLng()
+        layer.getBounds ? layer.getBounds() : layer.getLatLng(),
       );
     },
 
-    addGeoJSON: function (geojson, varname) {
+    addGeoJSON: function(geojson, varname) {
       this.map.addLayer(geojson);
       this.mapLayers[varname] = geojson;
       this.mapBounds[varname] = new L.LatLngBounds();
       geojson.eachLayer((layer) => {
         this.addEvents(layer, varname);
         this.mapBounds[varname].extend(
-          layer.getBounds ? layer.getBounds() : layer.getLatLng()
+          layer.getBounds ? layer.getBounds() : layer.getLatLng(),
         );
       });
     },
-    updateFit: function (varname) {
+    updateFit: function(varname) {
       let fit = this.module.getConfiguration('autofit');
       let bounds;
       if (fit === 'var') {
@@ -298,11 +299,11 @@ define([
         this.map.fitBounds(bounds);
       }
     },
-    onResize: function () {
+    onResize: function() {
       this.map.invalidateSize();
     },
     onActionReceive: {
-      position: function (val) {
+      position: function(val) {
         let currentCenter = this.map.getCenter();
         if (
           round(val[0]) !== round(currentCenter.lat) ||
@@ -311,7 +312,7 @@ define([
           this.map.setView(L.latLng(val[0], val[1]));
         }
       },
-      zoom: function (val) {
+      zoom: function(val) {
         let min = this.map.getMinZoom();
         let max = this.map.getMaxZoom();
         if (val < min) val = min;
@@ -319,9 +320,9 @@ define([
         if (val !== this.map.getZoom()) {
           this.map.setZoom(val);
         }
-      }
+      },
     },
-    getTileLayer: function () {
+    getTileLayer: function() {
       let baselayer = this.module.getConfiguration('maptiles') || 'osm';
       let tileLayer = { parameters: {} };
       switch (baselayer) {
@@ -338,7 +339,7 @@ define([
           break;
       }
       return L.tileLayer(tileLayer.template, tileLayer.parameters);
-    }
+    },
   });
 
   function addEvents(layer, varname) {
@@ -360,7 +361,7 @@ define([
 
     API.listenHighlight(
       data,
-      function (onOff) {
+      function(onOff) {
         if (onOff) {
           if (layer instanceof L.Marker) {
             icon._marker.highlight(true);
@@ -384,22 +385,22 @@ define([
         }
       },
       false,
-      `${this.module.getId()}_${varname}`
+      `${this.module.getId()}_${varname}`,
     );
 
     layer.addEventListener(
       {
-        mouseover: function () {
+        mouseover: function() {
           that.module.controller.hoverElement(data);
         },
-        click: function () {
+        click: function() {
           that.module.controller.clickElement(data);
         },
-        mouseout: function () {
+        mouseout: function() {
           API.highlight(data, 0);
-        }
+        },
       },
-      this
+      this,
     );
   }
 

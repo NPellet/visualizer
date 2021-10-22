@@ -2,10 +2,13 @@
 
 const colorSchemas = {
   match: {
-    init: function () {
+    init: function() {
       const seqs = this.opt.seqs;
       // you have here access to the conservation or the sequence object
-      const max = seqs.reduce((prev, current) => (current.length > prev ? current.length : prev), 0);
+      const max = seqs.reduce(
+        (prev, current) => (current.length > prev ? current.length : prev),
+        0,
+      );
       this.cons = new Array(max);
       for (let i = 0; i < max; i++) {
         let matchType = 'match';
@@ -25,7 +28,7 @@ const colorSchemas = {
       // this.cons = this.opt.conservation();
     },
 
-    run: function (letter, opts) {
+    run: function(letter, opts) {
       switch (this.cons[opts.pos]) {
         case 'match':
           return 'green';
@@ -36,50 +39,55 @@ const colorSchemas = {
         default:
           return 'white';
       }
-    }
-  }
+    },
+  },
 };
 
-define([
-  'modules/default/defaultview',
-  'src/util/util',
-  'msa'
-], function (Default, Util, msa) {
-  function View() {
-  }
+define(['modules/default/defaultview', 'src/util/util', 'msa'], function(
+  Default,
+  Util,
+  msa,
+) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
-    init: function () {
+    init: function() {
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
-        this.dom = $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%');
+        this.dom = $(`<div id="${this._id}"></div>`)
+          .css('height', '100%')
+          .css('width', '100%');
         this.module.getDomContent().html(this.dom);
       }
       this.resolveReady();
     },
 
     update: {
-      sequences: function (value) {
+      sequences: function(value) {
         this.sequences = value;
         this.render();
-      }
+      },
     },
 
     blank: {
-      sequences: function () {
+      sequences: function() {
         this.clear();
-      }
+      },
     },
 
-    render: function () {
+    render: function() {
       if (!this.sequences) return;
       this.clear();
       let opts = {};
 
       opts.el = this.dom[0];
       opts.vis = { conserv: false, overviewbox: false };
-      opts.zoomer = { alignmentHeight: 405, labelWidth: 110, labelFontsize: '13px', labelIdLength: 50 };
+      opts.zoomer = {
+        alignmentHeight: 405,
+        labelWidth: 110,
+        labelFontsize: '13px',
+        labelIdLength: 50,
+      };
       opts.seqs = this.sequences;
       // opts.columns = {
       //     hidden: [1, 2]
@@ -99,18 +107,17 @@ define([
       }
     },
 
-    onResize: function () {
+    onResize: function() {
       this.render();
     },
 
-    clear: function () {
+    clear: function() {
       this.dom.html('');
     },
 
-    inDom: function () {
+    inDom: function() {
       this.render();
-    }
-
+    },
   });
 
   return View;
@@ -132,14 +139,13 @@ const nuclLookup = {
   D: ['A', 'G', 'T', 'U'],
   H: ['A', 'C', 'T', 'U'],
   V: ['A', 'C', 'G'],
-  N: ['A', 'C', 'G', 'T', 'U']
+  N: ['A', 'C', 'G', 'T', 'U'],
 };
 
-function nuclMatch(nucl1, nucl2) {
+const nuclMatch = function nuclMatch(nucl1, nucl2) {
   if (nucl1 === nucl2) return true;
   nucl1 = nuclLookup[nucl1];
   nucl2 = nuclLookup[nucl2];
   if (!nucl1 || !nucl2) return false;
   return nucl1.some((n1) => nucl2.find((n2) => n1 === n2));
-}
-
+};

@@ -105,7 +105,7 @@ define([
       for (; i < l; i++) {
         var line = [];
         for (let j = 0; j < this.jpaths.length; j++) {
-           
+
           Traversing.getValueFromJPath(
             this.elements[i],
             this.jpaths[j].jpath

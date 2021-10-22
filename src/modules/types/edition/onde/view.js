@@ -10,7 +10,7 @@ define([
   'src/util/debug',
   'src/util/api',
   'src/util/sandbox',
-], function (Default, Util, $, onde, Button, _, Debug, API, Sandbox) {
+], function(Default, Util, $, onde, Button, _, Debug, API, Sandbox) {
   function View() {
     this._id = Util.getNextUniqueId();
   }
@@ -23,13 +23,18 @@ define([
       if (filter) {
         const sandbox = new Sandbox();
         sandbox.setContext({ API });
-        this.filter = sandbox.run(`(function ondeOnChangeFilter(data, jpath) { try { \n ${filter}\n } catch(_) { console.log(_); } })`, 'ondeOnChangeFilter');
+        this.filter = sandbox.run(
+          `(function ondeOnChangeFilter(data, jpath) { try { \n ${filter}\n } catch(_) { console.log(_); } })`,
+          'ondeOnChangeFilter',
+        );
       }
-      this.dom = $(`<form id="${this._id}">`).css({
-        height: '100%',
-        width: '100%',
-        textAlign: 'left'
-      }).append($('<div class="onde-panel">'));
+      this.dom = $(`<form id="${this._id}">`)
+        .css({
+          height: '100%',
+          width: '100%',
+          textAlign: 'left',
+        })
+        .append($('<div class="onde-panel">'));
 
       if (this.module.getConfigurationCheckbox('hasButton', 'show')) {
         this.dom.append(
@@ -38,10 +43,12 @@ define([
             () => {
               this.exportForm();
             },
-            { color: 'green' }
-          ).render().css({
-            marginTop: '10px'
-          })
+            { color: 'green' },
+          )
+            .render()
+            .css({
+              marginTop: '10px',
+            }),
         );
       }
 
@@ -50,7 +57,6 @@ define([
         this.exportForm();
         return false;
       });
-
 
       const debouncing = this.module.getConfiguration('debouncing', -1);
       if (debouncing > -1) {
@@ -78,7 +84,10 @@ define([
       let $target = $(e.target);
       let fieldInfo = $target.data('fieldInfo');
       if (!fieldInfo) {
-        fieldInfo = $target.parents('ol').first().data('fieldInfo');
+        fieldInfo = $target
+          .parents('ol')
+          .first()
+          .data('fieldInfo');
       }
       if (!fieldInfo) {
         jpathSuccess = false;
@@ -88,7 +97,9 @@ define([
         let $firstOl = $target.parents('ol').first();
         if (!$firstOl.length) break;
         if (!$.contains(this.dom[0], $firstOl[0])) break;
-        let idx = $firstOl.children('li').index($target.parents('li.field.array-item')[0]);
+        let idx = $firstOl
+          .children('li')
+          .index($target.parents('li.field.array-item')[0]);
         $target = $firstOl;
         jpath[jpath.indexOf('$array$')] = idx;
       }
@@ -110,7 +121,7 @@ define([
       },
       schema() {
         this.module.controller.inputSchema = {};
-      }
+      },
     },
 
     inDom() {
@@ -122,9 +133,14 @@ define([
       }
 
       if (varname) {
-        API.createData(varname, JSON.parse(this.module.getConfiguration('data'))).then((data) => {
+        API.createData(
+          varname,
+          JSON.parse(this.module.getConfiguration('data')),
+        ).then((data) => {
           data.onChange(() => {
-            this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(data);
+            this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(
+              data,
+            );
           });
           this.resolveReady();
         });
@@ -142,15 +158,15 @@ define([
     },
 
     update: {
-      inputValue: function (value) {
+      inputValue: function(value) {
         this.inputObj = value;
         this.inputVal = value.get().resurrect();
         this.renderForm();
       },
-      schema: function (value) {
+      schema: function(value) {
         this.module.controller.inputSchema = value.resurrect();
         this.renderForm();
-      }
+      },
     },
 
     renderForm() {
@@ -176,17 +192,17 @@ define([
         this._data = data.data;
         this.module.controller.onSubmit(data.data);
       }
-    }
+    },
   });
 
   return View;
 });
 
-function registerCallback(dom, cb) {
+const registerCallback = function registerCallback(dom, cb) {
   // The problem with change on text inputs is that it fires when
   // the input is blurred
   // https://developer.mozilla.org/en-US/docs/Web/Events/input
   dom.on('input', cb);
   dom.on('change', '[type="checkbox"]', cb);
   dom.on('change', '[type="radio"]', cb);
-}
+};

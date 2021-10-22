@@ -50,7 +50,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       if (type === 'object') {
         currentProto = object;
         while (currentProto !== DataObjectProto) {
-           
+
           nextProto = Object.getPrototypeOf(currentProto);
           if (
             nextProto === null ||

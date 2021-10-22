@@ -3,7 +3,7 @@
 define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
   function Model() {
   }
-  
+
   $.extend(true, Model.prototype, Default, {
     getValue: function () {
       return this.dataValue;

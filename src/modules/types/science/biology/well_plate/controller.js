@@ -3,7 +3,7 @@
 define(['modules/default/defaultcontroller'], function (Default) {
   function Controller() {
   }
-  
+
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.moduleInformation = {
@@ -62,10 +62,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
     addElement: 'Add an element'
   };
 
-  
+
   Controller.prototype.configurationStructure = function () {
     let jpaths = this.module.model.getjPath();
-    
+
     return {
       groups: {
         group: {

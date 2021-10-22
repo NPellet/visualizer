@@ -421,7 +421,7 @@ define([
             '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-tree"></i></a>',
           );
           $link.appendTo($wrapper);
-          // eslint-disable-next-line
+
           $link.on('mousedown', async function(e) {
             editing = true;
             const jpath = await UI.selectJpath(inspectData);
