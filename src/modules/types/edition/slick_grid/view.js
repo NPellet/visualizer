@@ -13,7 +13,7 @@ define([
   'src/util/typerenderer',
   'src/util/sandbox',
   './copyFormatters',
-], function (
+], function(
   $,
   Default,
   Debug,
@@ -28,15 +28,15 @@ define([
   copyFormatters,
 ) {
   function View() {}
-  var symbolSgid = Symbol('_sgid');
+  let symbolSgid = Symbol('_sgid');
 
-  var cssPromises = [];
+  let cssPromises = [];
   cssPromises.push(Util.loadCss('components/slickgrid/slick.grid.css'));
-  var cssLoaded = Promise.all(cssPromises);
+  let cssLoaded = Promise.all(cssPromises);
 
-  var uniqueID = 0;
+  let uniqueID = 0;
 
-  var formatters = {
+  let formatters = {
     typerenderer: waitingFormatter,
     'slick.text': Slick.Formatters.Text,
     'slick.percent': Slick.Formatters.PercentComplete,
@@ -58,10 +58,10 @@ define([
       'ignoreMyHighlights',
     );
 
-    var columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
+    let columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
-    var cids = _.map(columns, 'id');
-    for (var key in ctx.columnFilters) {
+    let cids = _.map(columns, 'id');
+    for (let key in ctx.columnFilters) {
       if (cids.indexOf(key) === -1) {
         delete ctx.columnFilters[key];
       }
@@ -69,7 +69,7 @@ define([
 
     if (!ctx.hiddenColumns) {
       ctx.hiddenColumns = columns
-        .map(function (col) {
+        .map(function(col) {
           if (
             col.colDef &&
             col.colDef.hideColumn &&
@@ -78,7 +78,7 @@ define([
             return col.name;
           }
         })
-        .filter(function (v) {
+        .filter(function(v) {
           return v;
         });
     }
@@ -88,9 +88,9 @@ define([
     ctx.$rowToolbar = $('<div>').attr('class', 'rowToolbar');
     if (ctx.module.getConfigurationCheckbox('toolbar', 'add')) {
       ctx.$addButton = $('<input type="button" value="New"/>');
-      ctx.$addButton.on('click', function () {
-        var cols = ctx.grid.getColumns();
-        var colidx = _.findIndex(cols, function (v) {
+      ctx.$addButton.on('click', function() {
+        let cols = ctx.grid.getColumns();
+        let colidx = _.findIndex(cols, function(v) {
           return v.editor;
         });
         if (colidx > -1) {
@@ -104,7 +104,7 @@ define([
 
     if (ctx.module.getConfigurationCheckbox('toolbar', 'update')) {
       ctx.$updateButton = $('<input type="button" value="Update"/>');
-      ctx.$updateButton.on('click', function () {
+      ctx.$updateButton.on('click', function() {
         ctx._openDetails();
       });
       ctx.$rowToolbar.append(ctx.$updateButton);
@@ -112,14 +112,13 @@ define([
 
     if (ctx.module.getConfigurationCheckbox('toolbar', 'remove')) {
       ctx.$deleteButton = $('<input type="button" value="Delete"/>');
-      ctx.$deleteButton.on('click', function () {
+      ctx.$deleteButton.on('click', function() {
         ctx.deleteRowSelection();
       });
       ctx.$rowToolbar.append(ctx.$deleteButton);
     }
 
     if (ctx.module.getConfigurationCheckbox('toolbar', 'showHide')) {
-      // eslint-disable-next-line no-template-curly-in-string
       ctx.$showHideSelection = $.tmpl(
         // eslint-disable-next-line
         '<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>',
@@ -130,7 +129,7 @@ define([
       if (ctx.columnSelectionShown) {
         ctx.$showHideSelection.filter('div').show();
       }
-      ctx.$showHideSelection.on('click', function () {
+      ctx.$showHideSelection.on('click', function() {
         ctx.$showHideSelection.filter('div').toggle();
         ctx.columnSelectionShown = ctx.$showHideSelection
           .filter('div')
@@ -146,7 +145,7 @@ define([
 
       ctx.$showHideSelection
         .find('input[type="checkbox"]')
-        .on('change', function () {
+        .on('change', function() {
           if (this.checked) {
             ctx.hideColumn(this.value);
           } else {
@@ -159,11 +158,11 @@ define([
 
     ctx.$actionButtons = new Array(ctx.actionOutButtons.length);
     for (var i = 0; i < ctx.actionOutButtons.length; i++) {
-      (function (i) {
+      (function(i) {
         ctx.$actionButtons[i] = $(
           `<input type="button" value="${ctx.actionOutButtons[i].buttonTitle}"/>`,
         );
-        ctx.$actionButtons[i].on('click', function () {
+        ctx.$actionButtons[i].on('click', function() {
           ctx.module.controller.sendActionButton(
             ctx.actionOutButtons[i].actionName,
             ctx._getSelectedItems(),
@@ -226,7 +225,7 @@ define([
             'copyPasteOptions',
             'readOnly',
           ),
-          newRowCreator: function (nb) {
+          newRowCreator: function(nb) {
             if (
               !ctx.module.getConfigurationCheckbox(
                 'copyPasteOptions',
@@ -240,20 +239,20 @@ define([
             }
             ctx.onActionReceive.addRow.call(ctx, rows);
           },
-          dataItemColumnValueExtractor: function (item, colDef) {
+          dataItemColumnValueExtractor: function(item, colDef) {
             const cpFormatter = copyFormatters[colDef.colDef.copyFormatter];
             if (cpFormatter) {
               return cpFormatter.extract(item, colDef);
             } else if (colDef.CpEditor) {
-              var editorArgs = {
+              let editorArgs = {
                 container: $('<p>'), // a dummy container
                 column: colDef,
                 position: { top: 0, left: 0 }, // a dummy position required by some editors
                 grid: ctx.grid,
               };
-              var editor = new colDef.CpEditor(editorArgs);
+              let editor = new colDef.CpEditor(editorArgs);
               editor.loadValue(item);
-              var retVal = editor.serializeValue();
+              let retVal = editor.serializeValue();
               editor.destroy();
               return retVal;
             }
@@ -263,11 +262,11 @@ define([
     }
 
     if (ctx.module.getConfigurationCheckbox('autoColumns', 'reorder')) {
-      var moveRowsPlugin = new Slick.RowMoveManager({
+      let moveRowsPlugin = new Slick.RowMoveManager({
         cancelEditOnDrag: true,
       });
-      moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
-        for (var i = 0; i < data.rows.length; i++) {
+      moveRowsPlugin.onBeforeMoveRows.subscribe(function(e, data) {
+        for (let i = 0; i < data.rows.length; i++) {
           // no point in moving before or after itself
           if (
             data.rows[i] == data.insertBefore ||
@@ -280,17 +279,17 @@ define([
         return true;
       });
 
-      moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
-        var rows = args.rows;
-        rows = rows.map(function (r) {
+      moveRowsPlugin.onMoveRows.subscribe(function(event, args) {
+        let rows = args.rows;
+        rows = rows.map(function(r) {
           return ctx._getItemInfoFromRow(r).idx;
         });
-        var insertBefore = ctx._getItemInfoFromRow(args.insertBefore);
+        let insertBefore = ctx._getItemInfoFromRow(args.insertBefore);
         if (insertBefore !== null) insertBefore = insertBefore.idx;
 
         ctx._makeDataObjects();
         // We'll use a simple comparer function here.
-        var items = ctx.slick.data.getItems();
+        let items = ctx.slick.data.getItems();
         // Add a position indicatior ==> for stable sort
         for (var i = 0; i < items.length; i++) {
           if (rows.indexOf(i) !== -1) items[i].__pos = 2;
@@ -310,13 +309,13 @@ define([
         ctx.module.model.dataTriggerChange(ctx.module.data);
       });
       ctx.grid.registerPlugin(moveRowsPlugin);
-      ctx.grid.onDragInit.subscribe(function (e, dd) {
+      ctx.grid.onDragInit.subscribe(function(e, dd) {
         // prevent the ctx.grid.from cancelling drag'n'drop by default
         e.stopImmediatePropagation();
       });
-      ctx.grid.onDragStart.subscribe(function (e, dd) {
-        var data = this.module.data.get();
-        var cell = ctx.grid.getCellFromEvent(e);
+      ctx.grid.onDragStart.subscribe(function(e, dd) {
+        let data = this.module.data.get();
+        let cell = ctx.grid.getCellFromEvent(e);
         if (!cell) {
           return;
         }
@@ -329,14 +328,14 @@ define([
         }
         e.stopImmediatePropagation();
         dd.mode = 'recycle';
-        var selectedRows = ctx.grid.getSelectedRows();
+        let selectedRows = ctx.grid.getSelectedRows();
         if (!selectedRows.length || $.inArray(dd.row, selectedRows) == -1) {
           selectedRows = [dd.row];
           ctx.grid.setSelectedRows(selectedRows);
         }
         dd.rows = selectedRows;
         dd.count = selectedRows.length;
-        var proxy = $('<span></span>')
+        let proxy = $('<span></span>')
           .css({
             position: 'absolute',
             display: 'inline-block',
@@ -352,13 +351,13 @@ define([
         $(dd.available).css('background', 'pink');
         return proxy;
       });
-      ctx.grid.onDrag.subscribe(function (e, dd) {
+      ctx.grid.onDrag.subscribe(function(e, dd) {
         if (dd.mode != 'recycle') {
           return;
         }
         dd.helper.css({ top: e.pageY + 5, left: e.pageX + 5 });
       });
-      ctx.grid.onDragEnd.subscribe(function (event, dd) {
+      ctx.grid.onDragEnd.subscribe(function(event, dd) {
         if (dd.mode != 'recycle') {
           return;
         }
@@ -370,8 +369,8 @@ define([
     $(ctx.grid.getHeaderRow()).delegate(
       ':input',
       'change keyup',
-      _.debounce(function (event) {
-        var columnId = $(this).data('columnId');
+      _.debounce(function(event) {
+        let columnId = $(this).data('columnId');
         if (columnId != null) {
           ctx.columnFilters[columnId] = $.trim($(this).val());
           ctx.columnFilterFunctions[columnId] = getColumnFilterFunction(
@@ -382,7 +381,7 @@ define([
       }, 250),
     );
 
-    ctx.grid.onHeaderRowCellRendered.subscribe(function (event, args) {
+    ctx.grid.onHeaderRowCellRendered.subscribe(function(event, args) {
       $(args.node).empty();
       $("<input type='text'>")
         .css('width', '100%')
@@ -402,7 +401,7 @@ define([
 
     // listen to group expansion...
     if (ctx.module.getConfigurationCheckbox('slickCheck', 'oneUncollapsed')) {
-      ctx.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function (
+      ctx.slick.groupItemMetadataProvider.onGroupExpanded.subscribe(function(
         event,
         args,
       ) {
@@ -412,14 +411,14 @@ define([
     }
 
     // wire up model events to drive the grid
-    ctx.slick.data.onRowCountChanged.subscribe(function (event, args) {
+    ctx.slick.data.onRowCountChanged.subscribe(function(event, args) {
       ctx.grid.updateRowCount();
       ctx.grid.render();
     });
 
-    ctx.slick.data.onRowsChanged.subscribe(function (event, args) {
+    ctx.slick.data.onRowsChanged.subscribe(function(event, args) {
       if (ctx.hasFilter) {
-        var items = ctx._getItemsInfo(args.rows);
+        let items = ctx._getItemsInfo(args.rows);
         ctx._runFilter({
           event: 'rowsChanged',
           rows: items,
@@ -429,23 +428,23 @@ define([
       ctx.grid.render();
     });
 
-    ctx.grid.onAddNewRow.subscribe(function (event, args) {
+    ctx.grid.onAddNewRow.subscribe(function(event, args) {
       const item = args.item;
       ctx.setNextUniqId(item, true);
       ctx.slick.data.addItem(item);
       ctx._newRow(item, args);
     });
 
-    ctx.grid.onRenderCompleted.subscribe(function () {
+    ctx.grid.onRenderCompleted.subscribe(function() {
       ctx._jpathColor();
     });
 
-    ctx.grid.onViewportChanged.subscribe(function () {
+    ctx.grid.onViewportChanged.subscribe(function() {
       // onViewportChange is not really working properly, so we hack by having a settimeout
       // Acceptable since it is unlikely ctx someone click the delete button only 300 ms after
       // the viewport has changed...
-      setTimeout(function () {
-        var v = ctx.grid.getViewport();
+      setTimeout(function() {
+        let v = ctx.grid.getViewport();
         if (v !== ctx.lastViewport) {
           viewportChanged();
         }
@@ -457,7 +456,7 @@ define([
           ctx.module.getConfigurationCheckbox('slickCheck', 'rowNumbering') &&
           !ctx._preventRowHelp
         ) {
-          var totalLines = ctx.grid.getDataLength();
+          let totalLines = ctx.grid.getDataLength();
           ctx.$rowHelp.html(
             `${Math.min(
               totalLines,
@@ -466,7 +465,7 @@ define([
           );
           ctx.$rowHelp.fadeIn();
           clearTimeout(ctx.lastRowHelp);
-          ctx.lastRowHelp = setTimeout(function () {
+          ctx.lastRowHelp = setTimeout(function() {
             ctx.$rowHelp.fadeOut();
           }, 1000);
         }
@@ -478,7 +477,7 @@ define([
       viewportChanged();
     });
 
-    ctx.grid.onMouseEnter.subscribe(function (e) {
+    ctx.grid.onMouseEnter.subscribe(function(e) {
       // When scrolling fast, no mouseLeave event takes place
       // Therefore we also have to un-highlight here
       if (ctx._hl) {
@@ -488,10 +487,10 @@ define([
       ctx.count = ctx.count === undefined ? 0 : ctx.count;
       ctx.count++;
       ctx.hovering = true;
-      var itemInfo = ctx._getItemInfoFromEvent(e);
+      let itemInfo = ctx._getItemInfoFromEvent(e);
       if (!itemInfo) return;
 
-      var hl = itemInfo.item._highlight;
+      let hl = itemInfo.item._highlight;
       ctx._hl = hl;
       if (hl) {
         ctx.module.model.highlightId(hl, 1);
@@ -500,13 +499,13 @@ define([
       ctx.module.controller.onHover(itemInfo.idx, itemInfo.item);
     });
 
-    ctx.grid.onMouseLeave.subscribe(function (e) {
+    ctx.grid.onMouseLeave.subscribe(function(e) {
       ctx._e = e;
       ctx.count--;
       ctx.hovering = false;
-      var itemInfo = ctx._getItemInfoFromEvent(e);
+      let itemInfo = ctx._getItemInfoFromEvent(e);
       if (!itemInfo) return;
-      var hl = itemInfo.item._highlight;
+      let hl = itemInfo.item._highlight;
       if (hl) {
         ctx.module.model.highlightId(hl, 0);
       } else if (lastHighlight) {
@@ -514,11 +513,11 @@ define([
       }
     });
 
-    ctx.grid.onColumnsResized.subscribe(function () {
-      var cols = ctx.grid.getColumns();
+    ctx.grid.onColumnsResized.subscribe(function() {
+      let cols = ctx.grid.getColumns();
 
       for (let i = 0; i < cols.length; i++) {
-        var colToChange = ctx.colConfig.find(function (col) {
+        let colToChange = ctx.colConfig.find(function(col) {
           return col === cols[i].colDef;
         });
         if (colToChange) {
@@ -528,7 +527,7 @@ define([
       ctx.grid.invalidate();
     });
 
-    ctx.grid.onCellChange.subscribe(function (event, args) {
+    ctx.grid.onCellChange.subscribe(function(event, args) {
       if (ctx.fromPopup) {
         // We don't really know what has been edited...
         var columns = ctx.getColumnsGivenEditContext();
@@ -541,11 +540,11 @@ define([
       // (like action columns)
       if (isSpecialColumn(column)) return;
 
-      var itemInfo = ctx._getItemInfoFromRow(args.row);
+      let itemInfo = ctx._getItemInfoFromRow(args.row);
       if (itemInfo) {
         if (ctx.hasFilter) {
           if (columns) {
-            for (var i = 0; i < columns.length; i++) {
+            for (let i = 0; i < columns.length; i++) {
               ctx._runFilter({
                 event: 'cellChanged',
                 row: itemInfo,
@@ -576,9 +575,9 @@ define([
       }
     });
 
-    ctx.grid.onClick.subscribe(function (event, args) {
-      var columns = ctx.grid.getColumns();
-      var itemInfo = ctx._getItemInfoFromRow(args.row);
+    ctx.grid.onClick.subscribe(function(event, args) {
+      let columns = ctx.grid.getColumns();
+      let itemInfo = ctx._getItemInfoFromRow(args.row);
       if (itemInfo) {
         if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
           if (
@@ -591,29 +590,29 @@ define([
       }
     });
 
-    ctx.grid.onDblClick.subscribe(function (event, args) {
-      var itemInfo = ctx._getItemInfoFromRow(args.row);
+    ctx.grid.onDblClick.subscribe(function(event, args) {
+      let itemInfo = ctx._getItemInfoFromRow(args.row);
       ctx.module.controller.onDoubleClick(itemInfo.idx, itemInfo.item);
     });
 
-    ctx.grid.onActiveCellChanged.subscribe(function (event, args) {
+    ctx.grid.onActiveCellChanged.subscribe(function(event, args) {
       ctx.lastActiveCell = args.cell;
       ctx.lastActiveRow = args.row;
 
-      var itemInfo = ctx._getItemInfoFromRow(args.row);
+      let itemInfo = ctx._getItemInfoFromRow(args.row);
       if (itemInfo) {
-        var columns = ctx.grid.getColumns();
+        let columns = ctx.grid.getColumns();
         if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
           ctx.module.controller.onActive(itemInfo.idx, itemInfo.item);
         }
       }
     });
 
-    ctx.grid.onColumnsReordered.subscribe(function () {
-      var cols = ctx.grid.getColumns();
-      var conf = ctx.module.definition.configuration.groups.cols[0];
-      var names = _.map(conf, 'name');
-      var ids = _.map(cols, 'id');
+    ctx.grid.onColumnsReordered.subscribe(function() {
+      let cols = ctx.grid.getColumns();
+      let conf = ctx.module.definition.configuration.groups.cols[0];
+      let names = _.map(conf, 'name');
+      let ids = _.map(cols, 'id');
 
       if (
         names
@@ -631,17 +630,17 @@ define([
         return;
       }
       ctx.module.definition.configuration.groups.cols[0] = [];
-      for (var i = 0; i < cols.length; i++) {
-        var idx = names.indexOf(ids[i]);
+      for (let i = 0; i < cols.length; i++) {
+        let idx = names.indexOf(ids[i]);
         if (idx > -1) {
           ctx.module.definition.configuration.groups.cols[0].push(conf[idx]);
         }
       }
     });
 
-    ctx.grid.onSelectedRowsChanged.subscribe(function (event, args) {
+    ctx.grid.onSelectedRowsChanged.subscribe(function(event, args) {
       ctx.lastSelectedRows = args.rows.slice();
-      var selectedItems = ctx._getItemsInfo(ctx.lastSelectedRows);
+      let selectedItems = ctx._getItemsInfo(ctx.lastSelectedRows);
       if (ctx.hasFilter) {
         ctx._runFilter({
           event: 'rowsSelected',
@@ -658,14 +657,14 @@ define([
       ctx.module.controller.onRowsSelected(_.map(selectedItems, 'item'));
     });
 
-    ctx.grid.onSort.subscribe(function (event, args) {
+    ctx.grid.onSort.subscribe(function(event, args) {
       // args.multiColumnSort indicates whether or not this is a multi-column sort.
       // If it is, args.sortCols will have an array of {sortCol:..., sortAsc:...} objects.
       // If not, the sort column and direction will be in args.sortCol & args.sortAsc.
 
       ctx._makeDataObjects();
       // We'll use a simple comparer function here.
-      var sortCols;
+      let sortCols;
       if (!args.sortCols) {
         sortCols = [
           {
@@ -677,7 +676,7 @@ define([
         sortCols = args.sortCols;
       }
       for (let i = sortCols.length - 1; i >= 0; i--) {
-        var comparer1 = function (val1, val2) {
+        let comparer1 = function(val1, val2) {
           if (val1 === undefined) {
             if (sortCols[i].sortAsc) return 1;
             else return -1;
@@ -695,8 +694,8 @@ define([
         };
         let sortCol = sortCols[i];
         let jpath = sortCol.sortCol.jpath;
-        ctx.slick.data.sort(comparer1, sortCol.sortAsc, function (item) {
-          var val = item.getChildSync(jpath);
+        ctx.slick.data.sort(comparer1, sortCol.sortAsc, function(item) {
+          let val = item.getChildSync(jpath);
           if (val !== undefined) val = val.get();
           return val;
         });
@@ -710,12 +709,12 @@ define([
 
     ctx.slick.data.beginUpdate();
 
-    var groupings = _.chain(ctx.module.getConfiguration('groupings'))
+    let groupings = _.chain(ctx.module.getConfiguration('groupings'))
       .filter((val) => val && val.groupName && val.getter)
       .map((val) => {
-        var r = {};
+        let r = {};
         if (val.getter && val.getter.length > 1) {
-          r.getter = function (row) {
+          r.getter = function(row) {
             return row.getChildSync(val.getter);
           };
           ctx._makeDataObjects();
@@ -723,7 +722,7 @@ define([
           r.getter = val.getter[0];
         }
 
-        r.formatter = function (g) {
+        r.formatter = function(g) {
           return `${val.groupName}: ${g.value}  <span style='color:green'>(${g.count} items)</span>`;
         };
         r.aggregateCollapsed = false;
@@ -781,8 +780,8 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: async function () {
-      var that = this,
+    init: async function() {
+      let that = this,
         varname;
       this.columnFilters = {};
       this.columnFilterFunctions = {};
@@ -816,7 +815,7 @@ define([
         (v) => v.actionName && v.buttonTitle,
       );
 
-      this.$container.on('mouseleave', function () {
+      this.$container.on('mouseleave', function() {
         that.module.controller.lastHoveredItemId = null;
       });
 
@@ -824,14 +823,14 @@ define([
       this.slick = {};
       this.colConfig = this.module
         .getConfiguration('cols', [], false)
-        .filter(function (row) {
+        .filter(function(row) {
           return row.name;
         });
       this.actionColConfig = (this.module.getConfiguration('actionCols') || [])
-        .filter(function (row) {
+        .filter(function(row) {
           return row.name;
         })
-        .map(function (row) {
+        .map(function(row) {
           row.isAction = true;
           return row;
         });
@@ -842,7 +841,7 @@ define([
         this._setScript(this.module.getConfiguration('filterRow'));
       }
 
-      this.postRenderer = function (cellNode, row, dataContext, colDef) {
+      this.postRenderer = function(cellNode, row, dataContext, colDef) {
         if (cellNode) {
           let context = {
             event: 'postRender',
@@ -857,7 +856,7 @@ define([
         }
       };
 
-      this.actionRenderer = function (cellNode, row, dataContext, colDef) {
+      this.actionRenderer = function(cellNode, row, dataContext, colDef) {
         function sendAction() {
           API.doAction(context.renderOptions.action, dataContext);
         }
@@ -894,12 +893,12 @@ define([
             }
           }
 
-          var $cellNode = $(cellNode);
+          let $cellNode = $(cellNode);
 
           that.postUpdateCell(cellNode, context.renderOptions);
           $cellNode.css('cursor', 'default');
 
-          var $a = $cellNode.find('a');
+          let $a = $cellNode.find('a');
           $a.attr('title', context.renderOptions.tooltip);
 
           if (context.renderOptions.action) {
@@ -934,7 +933,7 @@ define([
       }
     },
 
-    loadEditors: async function () {
+    loadEditors: async function() {
       const columns = this.getAllSlickColumns();
       const loadableColumns = columns.filter(
         (col) => col.editor && col.editor.load,
@@ -942,28 +941,28 @@ define([
       await Promise.all(loadableColumns.map((col) => col.editor.load()));
     },
 
-    postUpdateCell: function (cellNode, renderOptions) {
-      var $cellNode = $(cellNode);
+    postUpdateCell: function(cellNode, renderOptions) {
+      let $cellNode = $(cellNode);
       $cellNode.css(renderOptions);
     },
 
-    preventRowHelp: function () {
+    preventRowHelp: function() {
       this._preventRowHelp = true;
     },
 
-    deleteRowSelection: function () {
-      var rows = this.grid.getSelectedRows();
-      var data = this.module.data.get();
-      var idx = new Array(rows.length);
+    deleteRowSelection: function() {
+      let rows = this.grid.getSelectedRows();
+      let data = this.module.data.get();
+      let idx = new Array(rows.length);
       for (var i = 0; i < rows.length; i++) {
-        var itemInfo = this._getItemInfoFromRow(rows[i]);
+        let itemInfo = this._getItemInfoFromRow(rows[i]);
         idx[i] = itemInfo.idx;
       }
       idx = idx.sort();
-      var j = 0;
-      var removedRows = [];
+      let j = 0;
+      let removedRows = [];
       for (i = 0; i < rows.length; i++) {
-        var removed = data.splice(idx[i] - j++, 1);
+        let removed = data.splice(idx[i] - j++, 1);
         if (removed.length) removedRows.push(removed[0]);
       }
       this.lastSelectedRows = [];
@@ -974,16 +973,16 @@ define([
       }
     },
 
-    getAllSlickColumns: function () {
-      var that = this;
-      var tp = typeRenderer.bind(this);
+    getAllSlickColumns: function() {
+      let that = this;
+      let tp = typeRenderer.bind(this);
 
       function getEditor(jpath) {
-        var editor;
+        let editor;
         if (!that.module.data || !that.module.data.length) {
           return undefined;
         }
-        var obj = that.module.data.get(0).getChildSync(jpath);
+        let obj = that.module.data.get(0).getChildSync(jpath);
         if (obj instanceof DataString) {
           editor = Slick.CustomEditors.TextValue;
         } else if (obj instanceof DataNumber) {
@@ -997,22 +996,22 @@ define([
       }
 
       function getType(jpath) {
-        var type;
-        var jp = jpath.slice(0);
+        let type;
+        let jp = jpath.slice(0);
         jp.unshift(0);
-        var obj = that.module.data.getChildSync(jp);
+        let obj = that.module.data.getChildSync(jp);
         if (DataObject.isDataObject(obj)) {
           type = obj.type;
         }
         return type;
       }
 
-      var slickCols = this.colConfig
-        .filter(function (row) {
+      let slickCols = this.colConfig
+        .filter(function(row) {
           return row.name;
         })
-        .map(function (row) {
-          var editor, CpEditor, type;
+        .map(function(row) {
+          let editor, CpEditor, type;
           if (row.editor === 'auto' && that.module.data) {
             if (!that.module.data.get().length) {
               editor = Slick.CustomEditors.DataString;
@@ -1033,7 +1032,7 @@ define([
             type = getType(row.jpath);
           }
 
-          var rendererOptions = Util.evalOptions(row.rendererOptions);
+          let rendererOptions = Util.evalOptions(row.rendererOptions);
           return {
             id: row.name,
             name: row.name,
@@ -1071,8 +1070,8 @@ define([
 
       // No columns are defined, we use the input object to define them
       if (_.isEmpty(slickCols)) {
-        var colNames = [];
-        var data = that.module.data.get();
+        let colNames = [];
+        let data = that.module.data.get();
         for (var i = 0; i < data.length; i++) {
           colNames = _(colNames)
             .push(_.keys(data[i]))
@@ -1106,7 +1105,7 @@ define([
       }
 
       // Action columns
-      var actionColumns = this.getActionColumns();
+      let actionColumns = this.getActionColumns();
       for (var i = 0; i < actionColumns.length; i++) {
         if (actionColumns[i].colDef.position === 'begin') {
           slickCols.unshift(actionColumns[i]);
@@ -1130,7 +1129,7 @@ define([
       }
 
       if (this.module.getConfigurationCheckbox('autoColumns', 'select')) {
-        var checkboxSelector = new Slick.CheckboxSelectColumn({
+        let checkboxSelector = new Slick.CheckboxSelectColumn({
           cssClass: 'slick-cell-checkboxsel',
         });
 
@@ -1148,7 +1147,7 @@ define([
           selectable: false,
           resizable: false,
           cssClass: 'cell-reorder dnd',
-          formatter: function () {
+          formatter: function() {
             return '';
           },
         });
@@ -1157,17 +1156,17 @@ define([
       return slickCols;
     },
 
-    getSlickColumns: function () {
-      var that = this;
-      var slickCols = this.getAllSlickColumns();
+    getSlickColumns: function() {
+      let that = this;
+      let slickCols = this.getAllSlickColumns();
 
-      return slickCols.filter(function (v) {
+      return slickCols.filter(function(v) {
         return that.hiddenColumns.indexOf(v.name) === -1;
       });
     },
 
-    getInMainColumns: function () {
-      return this.getSlickColumns().filter(function (col) {
+    getInMainColumns: function() {
+      return this.getSlickColumns().filter(function(col) {
         if (isSpecialColumn(col)) {
           // Special columns always in main
           return true;
@@ -1181,9 +1180,9 @@ define([
       });
     },
 
-    getInPopupColumns: function () {
+    getInPopupColumns: function() {
       return this.getAllSlickColumns()
-        .filter(function (col) {
+        .filter(function(col) {
           if (isSpecialColumn(col)) {
             // Special columns never in popup
             return false;
@@ -1193,14 +1192,14 @@ define([
             col.colDef.visibility === 'both'
           );
         })
-        .filter(function (col) {
+        .filter(function(col) {
           return col.editor;
         })
         .filter(filterSpecialColumns);
     },
 
-    getActionColumns: function () {
-      var that = this;
+    getActionColumns: function() {
+      let that = this;
       return this.actionColConfig.map((col) => {
         return {
           id: col.name,
@@ -1219,7 +1218,7 @@ define([
       });
     },
 
-    getColumnsGivenEditContext: function () {
+    getColumnsGivenEditContext: function() {
       if (this.fromPopup) {
         return this.getInPopupColumns();
       } else {
@@ -1227,8 +1226,8 @@ define([
       }
     },
 
-    getSlickOptions: function () {
-      var that = this;
+    getSlickOptions: function() {
+      let that = this;
       return {
         editable: that.module.getConfigurationCheckbox(
           'slickCheck',
@@ -1259,7 +1258,7 @@ define([
         asyncPostRenderDelay: 0,
         defaultColumnWidth:
           that.module.getConfiguration('slick.defaultColumnWidth') || 80,
-        dataItemColumnValueExtractor: function (item, coldef) {
+        dataItemColumnValueExtractor: function(item, coldef) {
           // In order to use jpath, we return the row instead of the column
           // TODO: use jpath in coldef here?
           return item;
@@ -1274,21 +1273,21 @@ define([
       };
     },
 
-    _openDetails: function () {
-      var that = this;
+    _openDetails: function() {
+      let that = this;
       if (
         this.grid.getEditorLock().isActive() &&
         !this.grid.getEditorLock().commitCurrentEdit()
       ) {
         return;
       }
-      var editableColumns = this.getInPopupColumns();
+      let editableColumns = this.getInPopupColumns();
 
       if (editableColumns.length === 0) {
         return;
       }
 
-      var $modal = $("<div class='item-details-form'></div>");
+      let $modal = $("<div class='item-details-form'></div>");
       $modal = $.tmpl(
         // eslint-disable-next-line no-template-curly-in-string
         "<div class='item-details-form'>\n    {{each columns}}\n    <div class='item-details-label'>\n        ${name}\n    </div>\n    <div class='item-details-editor-container' data-editorid='${id.replace(/[^a-zA-Z0-9_-]/g, \"_\")}'></div>\n    {{/each}}\n\n    <hr/>\n    <div class='item-details-form-buttons'>\n        <button data-action='save'>Save</button>\n        <button data-action='cancel'>Cancel</button>\n    </div>\n</div>",
@@ -1297,7 +1296,7 @@ define([
           columns: editableColumns,
         },
       ).appendTo('body');
-      $modal.keydown(function (e) {
+      $modal.keydown(function(e) {
         if (e.which == $.ui.keyCode.ENTER) {
           that.fromPopup = true;
           that.grid.getEditController().commitCurrentEdit();
@@ -1312,26 +1311,26 @@ define([
           e.preventDefault();
         }
       });
-      $modal.find('[data-action=save]').click(function () {
+      $modal.find('[data-action=save]').click(function() {
         that.fromPopup = true;
         that.grid.getEditController().commitCurrentEdit();
         that.fromPopup = false;
       });
-      $modal.find('[data-action=cancel]').click(function () {
+      $modal.find('[data-action=cancel]').click(function() {
         that.fromPopup = true;
         that.grid.getEditController().cancelCurrentEdit();
         that.fromPopup = false;
       });
-      var containers = $.map(editableColumns, function (c) {
+      let containers = $.map(editableColumns, function(c) {
         return $modal.find(
           `[data-editorid=${c.id.replace(/[^a-zA-Z0-9_-]/g, '_')}]`,
         );
       });
-      var compositeEditor = new Slick.CompositeEditor(
+      let compositeEditor = new Slick.CompositeEditor(
         editableColumns,
         containers,
         {
-          destroy: function () {
+          destroy: function() {
             $modal.remove();
           },
         },
@@ -1339,10 +1338,10 @@ define([
       if (!this.grid.editActiveCell(compositeEditor)) $modal.remove();
     },
 
-    inDom: function () {},
+    inDom: function() {},
 
     update: {
-      script: function (moduleValue) {
+      script: function(moduleValue) {
         if (this.module.getConfiguration('filterType') === 'invar') {
           this._setScript(moduleValue.get());
           this._runFilter({
@@ -1353,12 +1352,12 @@ define([
         this.rerender();
       },
 
-      data: function (moduleValue, varName) {
+      data: function(moduleValue, varName) {
         this.update.list.call(this, moduleValue, varName);
       },
 
-      list: function (moduleValue, varName) {
-        var that = this;
+      list: function(moduleValue, varName) {
+        let that = this;
 
         this.module.controller.lastClickedItem = undefined;
         this.module.data = moduleValue;
@@ -1372,14 +1371,14 @@ define([
           'slickCheck',
           'enableAddRow',
         );
-        var keepSelected = this.module.getConfigurationCheckbox(
+        let keepSelected = this.module.getConfigurationCheckbox(
           'slickCheck',
           'keepSelected',
         );
-        this.searchFilter = function (item) {
+        this.searchFilter = function(item) {
           // keep s
           if (keepSelected) {
-            var selected = that._getSelectedItems();
+            let selected = that._getSelectedItems();
             if (
               selected.find(
                 (s) => item[that.idPropertyName] === s[that.idPropertyName],
@@ -1388,16 +1387,16 @@ define([
               return true;
             }
           }
-          for (var columnId in that.columnFilters) {
+          for (let columnId in that.columnFilters) {
             if (columnId !== undefined && that.columnFilters[columnId] !== '') {
               try {
-                var idx = that.slick.data.getIdxById(item[that.idPropertyName]);
-                var c = that.grid.getColumns()[
+                let idx = that.slick.data.getIdxById(item[that.idPropertyName]);
+                let c = that.grid.getColumns()[
                   that.grid.getColumnIndex(columnId)
                 ];
-                var jpath = _.clone(DataObject.resurrect(c.jpath));
+                let jpath = _.clone(DataObject.resurrect(c.jpath));
                 jpath.unshift(idx);
-                var val = that.module.data.getChildSync(jpath);
+                let val = that.module.data.getChildSync(jpath);
                 if (val && val.get) val = val.get();
                 if (!that.columnFilterFunctions[columnId](val)) {
                   return false;
@@ -1415,24 +1414,24 @@ define([
             copyFormatters[column.copyFormatter].load();
           }
         }
-        Promise.all([cssLoaded, this.loadEditors()]).then(function () {
+        Promise.all([cssLoaded, this.loadEditors()]).then(function() {
           doGrid(that);
         });
       },
     },
 
     blank: {
-      list: function (varname) {
+      list: function(varname) {
         this.$container.html('');
       },
-      script: function (varname) {
+      script: function(varname) {
         if (this.module.getConfiguration('filterType') === 'invar') {
           this._setScript('');
         }
       },
     },
 
-    _newRow: function (newRow, args) {
+    _newRow: function(newRow, args) {
       this.module.controller.onRowNew(this.slick.data.getLength() - 1, newRow);
       this.module.model.dataTriggerChange(this.module.data);
       this._runFilter({
@@ -1445,24 +1444,24 @@ define([
       });
     },
 
-    _setBaseCellCssStyle: function () {
-      var cols = this.grid.getColumns();
+    _setBaseCellCssStyle: function() {
+      let cols = this.grid.getColumns();
       this.baseCellCssStyle = {};
-      for (var i = 0; i < cols.length; i++) {
+      for (let i = 0; i < cols.length; i++) {
         this.baseCellCssStyle[cols[i].id] = 'highlighted-cell';
       }
     },
 
-    _setDeleteRowListener: function () {
-      var that = this;
-      this.$container.on('click', 'a.recycle-bin', function (e) {
-        var columns = that.grid.getColumns();
-        var args = that.grid.getCellFromEvent(e);
+    _setDeleteRowListener: function() {
+      let that = this;
+      this.$container.on('click', 'a.recycle-bin', function(e) {
+        let columns = that.grid.getColumns();
+        let args = that.grid.getCellFromEvent(e);
         that.lastViewport = that.grid.getViewport();
         if (columns[args.cell] && columns[args.cell].id === 'rowDeletion') {
           // delete the row...
-          var itemInfo = that._getItemInfoFromRow(args.row);
-          var removed = that.module.data.get().splice(itemInfo.idx, 1);
+          let itemInfo = that._getItemInfoFromRow(args.row);
+          let removed = that.module.data.get().splice(itemInfo.idx, 1);
           if (removed.length) {
             that._deleteFilter(removed);
             that.module.controller.onRowsDelete(removed);
@@ -1472,11 +1471,11 @@ define([
       });
     },
 
-    _getItemInfoFromEvent: function (e) {
-      var that = this;
-      var cell = this.grid.getCellFromEvent(e);
+    _getItemInfoFromEvent: function(e) {
+      let that = this;
+      let cell = this.grid.getCellFromEvent(e);
       if (!cell) return null;
-      var id = that.slick.data.mapRowsToIds([cell.row])[0];
+      let id = that.slick.data.mapRowsToIds([cell.row])[0];
       if (!id) return null;
       return {
         id: id,
@@ -1485,10 +1484,10 @@ define([
       };
     },
 
-    _getItemInfoFromRow: function (row) {
-      var that = this;
+    _getItemInfoFromRow: function(row) {
+      let that = this;
       if (_.isUndefined(row)) return null;
-      var id = that.slick.data.mapRowsToIds([row])[0];
+      let id = that.slick.data.mapRowsToIds([row])[0];
       if (!id) return null;
       return {
         id: id,
@@ -1497,21 +1496,21 @@ define([
       };
     },
 
-    _jpathColor: function () {
-      var that = this;
+    _jpathColor: function() {
+      let that = this;
       if (!that.lastViewport) return;
-      var colorjPath = that.module.getConfiguration('colorjPath');
+      let colorjPath = that.module.getConfiguration('colorjPath');
       if (colorjPath && colorjPath.length > 0) {
         that._makeDataObjects();
         for (
-          var i = that.lastViewport.top;
+          let i = that.lastViewport.top;
           i <= that.lastViewport.bottom;
           i++
         ) {
-          var item = that.grid.getDataItem(i);
+          let item = that.grid.getDataItem(i);
           if (item && item.__group !== true) {
-            var color = item.getChildSync(colorjPath);
-            var node = that.grid.getCellNode(i, 0);
+            let color = item.getChildSync(colorjPath);
+            let node = that.grid.getCellNode(i, 0);
             if (color) {
               $(node)
                 .parent()
@@ -1570,13 +1569,13 @@ define([
     //    scriptChanged       The filter script changed
     //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering
     //    postRender          Called on each row after rendering
-    _setScript: function (script) {
+    _setScript: function(script) {
       this.filterScript = script || '';
       this.hasFilter = this._hasFilter();
       this._newSandbox();
     },
 
-    _newSandbox: function () {
+    _newSandbox: function() {
       this._sandbox = new Sandbox();
       this._sandbox.setContext(this._getNewContext());
       try {
@@ -1589,7 +1588,7 @@ define([
       }
     },
 
-    _runFilter: function (context) {
+    _runFilter: function(context) {
       if (this.hasFilter) {
         try {
           this.filter.call(context);
@@ -1599,23 +1598,23 @@ define([
       }
     },
 
-    _getNewContext: function () {
-      var that = this;
+    _getNewContext: function() {
+      let that = this;
       return {
-        getSlick: function () {
+        getSlick: function() {
           return that.slick;
         },
-        getData: function () {
+        getData: function() {
           return that.module.data && that.module.data.get();
         },
-        rerender: function (rows) {
+        rerender: function(rows) {
           that.rerender(rows);
         },
         API: API,
       };
     },
 
-    rerender: function (rows) {
+    rerender: function(rows) {
       if (!this.grid) return;
       if (!rows) {
         this.grid.invalidateAllRows();
@@ -1625,13 +1624,13 @@ define([
       this.grid.render();
     },
 
-    _reportError: function (e) {
-      var message = '';
+    _reportError: function(e) {
+      let message = '';
       if (e && e.stack) {
         message = e.message;
         e = e.stack;
       }
-      var str = 'Code executor error';
+      let str = 'Code executor error';
       if (this.title) {
         str += ` (${this.title})`;
       }
@@ -1642,11 +1641,11 @@ define([
       Debug.warn(e);
     },
 
-    _inViewFilter: function () {
-      var that = this;
+    _inViewFilter: function() {
+      let that = this;
       if (!that.hasFilter || !that.lastViewport) return;
-      var rows = that._getRowsFromViewport();
-      var items = that._getItemsInfo(rows);
+      let rows = that._getRowsFromViewport();
+      let items = that._getItemsInfo(rows);
       const context = that._runFilter({
         rows: items,
         cell: null,
@@ -1659,7 +1658,7 @@ define([
       // that.grid.render();
     },
 
-    _deleteFilter: function (deletedRows) {
+    _deleteFilter: function(deletedRows) {
       if (!this.hasFilter) return;
       this._runFilter({
         event: 'rowsDeleted',
@@ -1667,16 +1666,16 @@ define([
       });
     },
 
-    _selectHighlight: function () {
+    _selectHighlight: function() {
       if (this.hovering) {
         return;
       }
-      var that = this;
+      let that = this;
 
       if (
         this.module.getConfigurationCheckbox('slickCheck', 'highlightScroll')
       ) {
-        var idx = _.findIndex(this._highlights, function (val) {
+        let idx = _.findIndex(this._highlights, function(val) {
           return (
             val !== undefined &&
             (val === that._highlighted[0] ||
@@ -1685,8 +1684,8 @@ define([
         });
         if (idx > -1) {
           this.lastViewport = this.grid.getViewport();
-          var item = that.slick.data.getItemByIdx(idx);
-          var gridRow = that.slick.data.getRowById(item[that.idPropertyName]);
+          let item = that.slick.data.getItemByIdx(idx);
+          let gridRow = that.slick.data.getRowById(item[that.idPropertyName]);
           if (gridRow === undefined) {
             return;
           }
@@ -1702,25 +1701,24 @@ define([
       }
     },
 
-    _updateHighlights: function () {
+    _updateHighlights: function() {
       this._highlights = _.map(this.module.data.get(), '_highlight');
     },
 
-    _drawHighlight: function () {
-      var that = this;
+    _drawHighlight: function() {
+      let that = this;
       this.grid.removeCellCssStyles('highlight');
-      var tmp = {};
+      let tmp = {};
       this._selectHighlight();
       this.lastViewport = this.grid.getViewport();
       for (let i = this.lastViewport.top; i <= this.lastViewport.bottom; i++) {
         // var item = this.grid.getDataItem(i);
-        var itemInfo = this._getItemInfoFromRow(i);
+        let itemInfo = this._getItemInfoFromRow(i);
         if (!itemInfo) continue;
         var item = itemInfo.item;
         if (
-          // eslint-disable-next-line no-loop-func
-          _.some(that._highlighted, function (k) {
-            var hl = item._highlight;
+          _.some(that._highlighted, function(k) {
+            let hl = item._highlight;
             if (!Array.isArray(hl)) {
               hl = [hl];
             }
@@ -1733,9 +1731,9 @@ define([
       this.grid.setCellCssStyles('highlight', tmp);
     },
 
-    _activateHighlights: function () {
-      var that = this;
-      var hl = _(this.module.data.get())
+    _activateHighlights: function() {
+      let that = this;
+      let hl = _(this.module.data.get())
         .map('_highlight')
         .flatten()
         .filter((val) => !_.isUndefined(val))
@@ -1745,11 +1743,11 @@ define([
 
       API.killHighlight(this.module.getId());
 
-      for (var i = 0; i < hl.length; i++) {
-        (function (i) {
+      for (let i = 0; i < hl.length; i++) {
+        (function(i) {
           API.listenHighlight(
             { _highlight: hl[i] },
-            function (onOff, key, killerId, senderId) {
+            function(onOff, key, killerId, senderId) {
               if (that.ignoreMyHighlights && senderId === that.module.getId()) {
                 return;
               }
@@ -1763,7 +1761,7 @@ define([
                   .uniq()
                   .value();
               } else {
-                that._highlighted = _.filter(that._highlighted, function (val) {
+                that._highlighted = _.filter(that._highlighted, function(val) {
                   return key.indexOf(val) === -1;
                 });
               }
@@ -1776,65 +1774,65 @@ define([
       }
     },
 
-    _makeDataObjects: function () {
+    _makeDataObjects: function() {
       if (this.dataObjectsDone) return;
-      var data = this.module.data.get();
-      for (var i = 0; i < data.length; i++) {
+      let data = this.module.data.get();
+      for (let i = 0; i < data.length; i++) {
         data[i] = DataObject.check(data[i]);
       }
       this.dataObjectsDone = true;
     },
 
-    _getRowsFromViewport: function () {
+    _getRowsFromViewport: function() {
       if (!this.lastViewport) return [];
-      var rowCount = this.lastViewport.bottom - this.lastViewport.top + 1;
+      let rowCount = this.lastViewport.bottom - this.lastViewport.top + 1;
       if (Number.isNaN(rowCount) || rowCount < 0) return [];
-      var rows = new Array(rowCount);
-      for (var i = 0; i < rows.length; i++) {
+      let rows = new Array(rowCount);
+      for (let i = 0; i < rows.length; i++) {
         rows[i] = this.lastViewport.top + i;
       }
-      return rows.filter(function (row) {
+      return rows.filter(function(row) {
         return row >= 0;
       });
     },
 
-    _getItemsInfo: function (rows) {
-      var selected = [];
+    _getItemsInfo: function(rows) {
+      let selected = [];
       if (!this.slick.data) return selected;
-      for (var i = 0; i < rows.length; i++) {
-        var itemInfo = this._getItemInfoFromRow(rows[i]);
+      for (let i = 0; i < rows.length; i++) {
+        let itemInfo = this._getItemInfoFromRow(rows[i]);
         if (itemInfo) selected.push(itemInfo);
       }
       return selected;
     },
 
-    _getItems: function (rows) {
-      var items = this._getItemsInfo(rows);
+    _getItems: function(rows) {
+      let items = this._getItemsInfo(rows);
       return _.map(items, 'item');
     },
 
-    _getChangedColumn: function (cell) {
+    _getChangedColumn: function(cell) {
       return this.getColumnsGivenEditContext()[cell];
     },
 
-    _getCell: function (args) {
+    _getCell: function(args) {
       if (!args || args.row === undefined || args.cell === undefined) {
         return null;
       }
-      var itemInfo = this._getItemInfoFromRow(args.row);
+      let itemInfo = this._getItemInfoFromRow(args.row);
 
-      var jpath = this.getColumnsGivenEditContext()[args.cell].jpath.slice();
+      let jpath = this.getColumnsGivenEditContext()[args.cell].jpath.slice();
       jpath.unshift(itemInfo.idx);
-      var r = this.module.data.getChildSync(jpath);
+      let r = this.module.data.getChildSync(jpath);
       if (r !== undefined) r = r.get();
       return r;
     },
 
-    _getSelectedItems: function () {
+    _getSelectedItems: function() {
       return this._getItems(this.grid.getSelectedRows());
     },
 
-    onResize: function () {
+    onResize: function() {
       if (this.grid) {
         this.grid.resizeCanvas();
       }
@@ -1843,19 +1841,19 @@ define([
       });
     },
 
-    getNextIncrementalId: function () {
+    getNextIncrementalId: function() {
       return ++uniqueID;
     },
 
-    generateUniqIds: function () {
+    generateUniqIds: function() {
       if (!this.module.data) return;
-      var data = this.module.data.get();
-      for (var i = 0; i < data.length; i++) {
+      let data = this.module.data.get();
+      for (let i = 0; i < data.length; i++) {
         this.setNextUniqId(data[i]);
       }
     },
 
-    setNextUniqId: function (item, force) {
+    setNextUniqId: function(item, force) {
       if (item[this.idPropertyName]) return;
       if (
         this.autoIdProperty &&
@@ -1869,18 +1867,18 @@ define([
       }
     },
 
-    _hasFilter: function () {
-      return _.some(this.filterScript.split('\n'), function (line) {
-        var l = line.replace(' ', '');
+    _hasFilter: function() {
+      return _.some(this.filterScript.split('\n'), function(line) {
+        let l = line.replace(' ', '');
         // return false if void line
         return l ? !l.match(/^\s*\/\/a/) : false;
       });
     },
 
-    _findItem: function (row) {
-      var item;
+    _findItem: function(row) {
+      let item;
       if (!this.module.data) return null;
-      var data = this.module.data.get();
+      let data = this.module.data.get();
       if (typeof row === 'function') {
         return data.find(row);
       }
@@ -1896,10 +1894,10 @@ define([
       return item;
     },
 
-    exportToTabDelimited: function () {
+    exportToTabDelimited: function() {
       this._makeDataObjects();
-      var cols = this.grid.getColumns();
-      var choices = [
+      let cols = this.grid.getColumns();
+      let choices = [
         {
           key: 'all',
           description: 'Export entire list',
@@ -1928,7 +1926,7 @@ define([
         });
       }
 
-      var data;
+      let data;
       return UI.choose(choices, {
         autoSelect: true,
         noConfirmation: true,
@@ -1942,8 +1940,8 @@ define([
         } else {
           data = this.slick.data.getItems();
         }
-        var txt = '';
-        var line = [],
+        let txt = '';
+        let line = [],
           i,
           j;
         for (i = 0; i < cols.length; i++) {
@@ -1955,11 +1953,9 @@ define([
         for (i = 0; i < data.length; i++) {
           line = [];
           for (j = 0; j < cols.length; j++) {
-            console.log(cols[j]);
-
-            var jpath = cols[j].jpath;
+            let jpath = cols[j].jpath;
             if (!jpath) continue; // again
-            var el = data[i].getChildSync(jpath, false);
+            let el = data[i].getChildSync(jpath, false);
             el = el ? el.get() : '';
 
             if (typeof el === 'string')
@@ -1970,6 +1966,7 @@ define([
 
             const renderedValue = await Renderer.renderAsString(el, {
               forceType: cols[j].renderType,
+              ...cols[j].rendererOptions,
             });
             line.push(renderedValue);
           }
@@ -1979,7 +1976,7 @@ define([
       });
     },
 
-    hideColumn: function (column) {
+    hideColumn: function(column) {
       if (!this.hiddenColumns) return;
       if (this.hiddenColumns.indexOf(column) === -1) {
         this.hiddenColumns.push(column);
@@ -1987,17 +1984,17 @@ define([
       }
     },
 
-    showColumn: function (column) {
+    showColumn: function(column) {
       if (!this.hiddenColumns) return;
-      var idx = this.hiddenColumns.indexOf(column);
+      let idx = this.hiddenColumns.indexOf(column);
       if (idx > -1) {
         this.hiddenColumns.splice(idx, 1);
         doGrid(this);
       }
     },
 
-    toggleColumn: function (column) {
-      var idx = this.hiddenColumns.indexOf(column);
+    toggleColumn: function(column) {
+      let idx = this.hiddenColumns.indexOf(column);
       if (idx === -1) {
         this.hideColumn(column);
       } else {
@@ -2005,14 +2002,14 @@ define([
       }
     },
 
-    getRowIndexes: function (rows) {
-      var data = this.module.data.get();
-      var srows, items;
+    getRowIndexes: function(rows) {
+      let data = this.module.data.get();
+      let srows, items;
       if (typeof rows === 'function') {
         items = data.filter(rows);
       } else if (rows === 'all') {
         srows = new Array(this.slick.data.getLength());
-        for (var i = 0; i < srows.length; i++) {
+        for (let i = 0; i < srows.length; i++) {
           srows[i] = i;
         }
       } else if (
@@ -2042,10 +2039,10 @@ define([
     },
 
     onActionReceive: {
-      appendRow: function (items) {
+      appendRow: function(items) {
         this.onActionReceive.addRow.call(this, items);
       },
-      prependRow: function (items, ...args) {
+      prependRow: function(items, ...args) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2059,7 +2056,7 @@ define([
           }
         }
       },
-      addRow: function (items) {
+      addRow: function(items) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2073,7 +2070,7 @@ define([
           }
         }
       },
-      insertRow: function (items) {
+      insertRow: function(items) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2086,26 +2083,26 @@ define([
           }
         }
       },
-      rerender: function () {
+      rerender: function() {
         if (this.grid) {
           this.grid.invalidateAllRows();
           this.grid.render();
         }
       },
-      hoverRow: function (row) {
+      hoverRow: function(row) {
         // row can be the row itself or the array's index
-        var item = this._findItem(row);
+        let item = this._findItem(row);
 
         if (item && item[this.idPropertyName]) {
-          var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
-          var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
+          let gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
+          let dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
           item = this.slick.data.getItem(dataIdx);
           this.module.controller.onHover(dataIdx, item);
           this.grid.scrollRowToTop(gridRow);
         }
       },
 
-      unsetActiveRow: function () {
+      unsetActiveRow: function() {
         this.grid.setSelectedRows(
           this.grid
             .getSelectedRows()
@@ -2116,18 +2113,18 @@ define([
       },
 
       // "mimick click row"
-      selectRow: function (cell) {
+      selectRow: function(cell) {
         if (typeof cell === 'number') {
           cell = {
             row: cell,
           };
         }
-        var item = this._findItem(cell.row);
+        let item = this._findItem(cell.row);
         if (item && item[this.idPropertyName]) {
-          var gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
-          var dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
+          let gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
+          let dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
           item = this.slick.data.getItem();
-          var column = cell.column;
+          let column = cell.column;
           if (typeof column !== 'number') {
             // Find column by id
             column = this.slick.columns.findIndex((col) => col.id === column);
@@ -2141,41 +2138,41 @@ define([
         }
       },
 
-      selectRows: function (rows) {
+      selectRows: function(rows) {
         const nrows = this.getRowIndexes(rows);
         if (nrows) {
           this.grid.setSelectedRows(nrows);
         }
       },
 
-      unselectRows: function (rows) {
+      unselectRows: function(rows) {
         const srows = this.getRowIndexes(rows);
         const crows = this.grid.getSelectedRows();
         const nrows = _.difference(crows, srows);
         this.grid.setSelectedRows(nrows);
       },
 
-      scrollToRow: function (row) {
+      scrollToRow: function(row) {
         const [nrow] = this.getRowIndexes(row);
         this.grid.scrollRowToTop(nrow);
       },
 
-      selectRowsAdd: function (rows) {
+      selectRowsAdd: function(rows) {
         const srows = this.getRowIndexes(rows) || [];
         const crows = this.grid.getSelectedRows();
         const nrows = _.uniq(_.concat(srows, crows));
         this.grid.setSelectedRows(nrows);
       },
 
-      showColumn: function (column) {
+      showColumn: function(column) {
         this.showColumn(column);
       },
 
-      hideColumn: function (column) {
+      hideColumn: function(column) {
         this.hideColumn(column);
       },
 
-      toggleColumn: function (column) {
+      toggleColumn: function(column) {
         this.toggleColumn(column);
       },
     },
@@ -2201,7 +2198,7 @@ define([
     if (dataContext.__group) return;
     this.module.data.traceSync([row]);
     if (cellNode) {
-      var rendererOptions = colDef.rendererOptions || {};
+      let rendererOptions = colDef.rendererOptions || {};
       if (colDef.renderType) {
         rendererOptions.forceType = colDef.renderType;
       }
@@ -2219,12 +2216,12 @@ define([
         : new Array(width - n.length + 1).join(z) + n;
     }
 
-    var match;
+    let match;
 
     // Force string matcher
     match = query.match(/^"(.*)"$/);
     if (match) {
-      return function (val) {
+      return function(val) {
         match = match.toLowerCase();
         val = String(val).toLowerCase();
         return val.match(match[1]);
@@ -2234,7 +2231,7 @@ define([
     // Regular expression matcher
     match = query.match(/^\/(.+)\/(i?)/);
     if (match) {
-      return function (val) {
+      return function(val) {
         return String(val).match(new RegExp(match[1], match[2] || undefined));
       };
     }
@@ -2257,22 +2254,22 @@ define([
       date.setUTCSeconds(0);
       date.setUTCMilliseconds(0);
       if (match[1] === '<') {
-        return function (val) {
+        return function(val) {
           const valDate = new Date(val);
           return valDate < date;
         };
       } else if (match[1] === '>') {
-        return function (val) {
+        return function(val) {
           const valDate = new Date(val);
           return valDate > date;
         };
       } else if (match[1] === '<=') {
-        return function (val) {
+        return function(val) {
           const valDate = new Date(val);
           return valDate <= date;
         };
       } else if (match[1] === '>=') {
-        return function (val) {
+        return function(val) {
           const valDate = new Date(val);
           return valDate >= date;
         };
@@ -2285,23 +2282,23 @@ define([
     match = query.match(/^([<>=]{1,2})([0-9.-]+)$/);
     if (match) {
       if (match[1] === '<') {
-        return function (val) {
+        return function(val) {
           return val < match[2];
         };
       } else if (match[1] === '<=' || match[1] === '=<') {
-        return function (val) {
+        return function(val) {
           return val <= match[2];
         };
       } else if (match[1] === '>') {
-        return function (val) {
+        return function(val) {
           return val > match[2];
         };
       } else if (match[1] === '>=' || match[1] === '=>') {
-        return function (val) {
+        return function(val) {
           return val >= match[2];
         };
       } else if (match[1] === '==' || match[1] === '=') {
-        return function (val) {
+        return function(val) {
           return val == match[2];
         };
       }
@@ -2309,12 +2306,12 @@ define([
 
     match = query.match(/^([0-9.-]+)\.\.([0-9.-]*)$/);
     if (match) {
-      return function (val) {
+      return function(val) {
         return val >= match[1] && val <= match[2];
       };
     }
 
-    return function (val) {
+    return function(val) {
       return String(val)
         .toLowerCase()
         .match(query.toLowerCase());
