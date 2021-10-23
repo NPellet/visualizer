@@ -599,7 +599,7 @@ define([
         meta.def.resolve();
         return;
       }
-
+       
       meta.filename = `${value}.png`;
     }
     let reader = new FileReader();

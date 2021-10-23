@@ -1,14 +1,14 @@
 'use strict';
 
-let blobCache = {};
+var blobCache = {};
 
-define(['superagent'], function(agent) {
+define(['superagent'], function (agent) {
   return function getWorker(url) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       if (blobCache[url]) {
         return resolve(new Worker(blobCache[url]));
       }
-      agent.get(url).end(function(err, res) {
+      agent.get(url).end(function (err, res) {
         if (err) {
           return reject(err);
         }

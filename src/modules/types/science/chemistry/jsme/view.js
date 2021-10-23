@@ -187,7 +187,7 @@ define([
           let atoms = [];
           for (let i = 0, l = highlightId.length; i < l; i++) {
             if (!(moduleValue._atoms[highlightId[i]] instanceof Array))
-
+               
               moduleValue._atoms[highlightId[i]] = [moduleValue._atoms[highlightId[i]], ];
             atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
           }

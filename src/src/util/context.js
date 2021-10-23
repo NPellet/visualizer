@@ -18,7 +18,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           }
 
           for (let i = 0; i < elements.length; i++) {
-
+             
             (function (element, callbackClick, callbackOpen) {
               if (
                 Config.contextMenu().indexOf('all') === -1 &&

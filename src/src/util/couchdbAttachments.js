@@ -417,7 +417,7 @@ define([
       .set('Accept', 'application/json')
       .send(ctx.lastDoc);
     if (res && res.body && res.body.rev) {
-
+       
       ctx.lastDoc._rev = res.body.rev;
     }
 

@@ -470,7 +470,7 @@ define([
       for (let i = 0; i < l; i++) {
         var line = [];
         for (var j = 0; j < jpaths.length; j++) {
-
+           
           Traversing.getValueFromJPath(this.elements[i], jpaths[j].jpath).done(
             function (elVal) {
               line.push(elVal);

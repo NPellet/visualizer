@@ -1,7 +1,6 @@
-/* eslint-disable no-implicit-globals */
 'use strict';
 
-let count = 0;
+var count = 0;
 
 function getColorFromValue(value) {
   let minValue = min;
@@ -22,7 +21,7 @@ function getColorFromValue(value) {
     colors[color1Id],
     colors[color1Id + 1],
     color1Id * step + minValue,
-    (color1Id + 1) * step + minValue,
+    (color1Id + 1) * step + minValue
   );
 }
 
@@ -34,7 +33,7 @@ function getColorBetween(value, color1, color2, color1Val, color2Val) {
     parseInt(ratio * (color2[0] - color1[0]) + color1[0], 10),
     parseInt(ratio * (color2[1] - color1[1]) + color1[1], 10),
     parseInt(ratio * (color2[2] - color1[2]) + color1[2], 10),
-    parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10),
+    parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10)
   ];
 }
 
@@ -44,13 +43,13 @@ function getRGB(color) {
     return [
       parseInt(`0x${color.substring(1, 3)}`, 16),
       parseInt(`0x${color.substring(3, 5)}`, 16),
-      parseInt(`0x${color.substring(5, 7)}`, 16),
+      parseInt(`0x${color.substring(5, 7)}`, 16)
     ];
   } else if (color.length == 4) {
     return [
       parseInt(`0x${color.substring(1, 2)}`, 16),
       parseInt(`0x${color.substring(2, 3)}`, 16),
-      parseInt(`0x${color.substring(3, 4)}`, 16),
+      parseInt(`0x${color.substring(3, 4)}`, 16)
     ];
   }
 }
@@ -109,7 +108,7 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
 }
 
 var data, min, max, colors, pxPerCell, squareLoading, highContrast;
-self.onmessage = function(event) {
+self.onmessage = function (event) {
   let d = event.data;
 
   if (d.title == 'init') {
@@ -131,8 +130,8 @@ self.onmessage = function(event) {
         d.message.indexX,
         d.message.indexY,
         d.message.buffer,
-        d.message.nbValX,
-      ),
+        d.message.nbValX
+      )
     });
   }
 };

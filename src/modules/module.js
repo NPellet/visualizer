@@ -273,7 +273,7 @@ define([
       for (let i = 0; i < vars.length; i++) {
         const variable = API.getVar(vars[i].name);
         if (variable.isDefined()) {
-
+           
           await this.model.onVarChange(variable);
         }
       }

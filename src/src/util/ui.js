@@ -628,7 +628,7 @@ define([
       sources = list.length;
       var allProm = new Array(list.length);
       for (let i = 0; i < list.length; i++) {
-
+         
         allProm[i] = list[i].promise.then(addItems).catch(function (e) {
           Debug.error('failed', e);
           sources--;
