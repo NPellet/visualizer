@@ -14,7 +14,7 @@ define([
   $.extend(true, View.prototype, Default, {
     redrawButton() {
       let contentType = this.module.getConfiguration('contentType');
-      let content = this.module.getConfiguration('content');
+      var content = this.module.getConfiguration('content');
       switch (contentType) {
         case 'content':
           {
@@ -105,7 +105,7 @@ define([
       this.isToggle = this.module.getConfiguration('toggle') === 'toggle';
       this.isButton = this.module.getConfiguration('contentType') === 'content';
 
-      let label;
+      var label;
       this.dom = $('<div></div>').css({
         width: '100%',
         height: '100%'
@@ -161,7 +161,7 @@ define([
     },
 
     activateButton() {
-      let $button = this.dom.find('button');
+      var $button = this.dom.find('button');
       $button.removeAttr('disabled');
       $button.css({
         cursor: 'pointer',
@@ -178,9 +178,9 @@ define([
     },
 
     getContentType: function () {
-      let contentType = this.module.getConfiguration('contentType');
+      var contentType = this.module.getConfiguration('contentType');
       if (contentType === 'content') {
-        let content = this.module.getConfiguration('content');
+        var content = this.module.getConfiguration('content');
         if (!content) return 'button';
       }
       return contentType;

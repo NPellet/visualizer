@@ -1,18 +1,18 @@
 'use strict';
 
 define(['src/util/ui'], function (ui) {
-  let currentFullscreenModule,
+  var currentFullscreenModule,
     currentFullscreenElement,
     oldStyle,
     oldViewDimensions;
 
   function fullScreenChange() {
-    let fullscreenElement =
+    var fullscreenElement =
       document.fullscreenElement ||
       document.webkitFullscreenElement ||
       document.mozFullScreenElement ||
       document.msFullscreenElement;
-    let view = currentFullscreenModule.view;
+    var view = currentFullscreenModule.view;
     if (fullscreenElement) {
       // New element is now fullscreen
       oldStyle = fullscreenElement.getAttribute('style');
@@ -50,7 +50,7 @@ define(['src/util/ui'], function (ui) {
         document.msFullscreenEnabled
       ) {
         currentFullscreenModule = module;
-        let dom = module.getDomContent()[0];
+        var dom = module.getDomContent()[0];
         if (dom.requestFullscreen) {
           dom.requestFullscreen();
         } else if (dom.webkitRequestFullscreen) {

@@ -103,12 +103,12 @@ define(['./util'], function (Util) {
     }
 
     getViewUrl() {
-      let query = this._revision ? `?rev=${this._revision}` : '';
+      var query = this._revision ? `?rev=${this._revision}` : '';
       return this.hasView() ? `${this.manager.rocDbUrl}/entry/${this.id}/view.json${query}` : null;
     }
 
     getDataUrl() {
-      let query = this._revision ? `?rev=${this._revision}` : '';
+      var query = this._revision ? `?rev=${this._revision}` : '';
       return this.hasData() ? `${this.manager.rocDbUrl}/entry/${this.id}/data.json${query}` : null;
     }
 
@@ -120,11 +120,11 @@ define(['./util'], function (Util) {
     }
 
     moveTo(folder) {
-      let newPath = folder.data.path;
-      let flavor = newPath[0];
+      var newPath = folder.data.path;
+      var flavor = newPath[0];
 
-      let currentPath = this.flavors[flavor];
-      let name = currentPath[currentPath.length - 1];
+      var currentPath = this.flavors[flavor];
+      var name = currentPath[currentPath.length - 1];
       this.flavors[flavor] = newPath.slice(1).concat(name);
       return this.save().then(retTrue, retFalse);
     }
@@ -191,13 +191,13 @@ define(['./util'], function (Util) {
     }
 
     getName(flavor) {
-      let path = this.flavors[flavor];
+      var path = this.flavors[flavor];
       return path[path.length - 1];
     }
 
     rename(flavor, newName) {
-      let path = this.flavors[flavor];
-      let currentName = path[path.length - 1];
+      var path = this.flavors[flavor];
+      var currentName = path[path.length - 1];
       path[path.length - 1] = newName;
       return this.save().then(retTrue, function () {
         path[path.length - 1] = currentName;

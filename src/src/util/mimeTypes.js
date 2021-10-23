@@ -3,7 +3,7 @@
 define(['mime-types'], function (mimeTypes) {
   return {
     lookup: function (filename, override) {
-      let contentType = mimeTypes.lookup(filename);
+      var contentType = mimeTypes.lookup(filename);
       if (!contentType || override) {
         if (/\.j?dx$/i.test(filename)) {
           contentType = 'chemical/x-jcamp-dx';

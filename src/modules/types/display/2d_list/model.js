@@ -9,8 +9,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
       return this.dataValue;
     },
     getjPath: function () {
-      let jpaths = [];
-      let data = this.module.getDataFromRel('list');
+      var jpaths = [];
+      var data = this.module.getDataFromRel('list');
       if (!data || data == null) {
         return jpaths;
       }

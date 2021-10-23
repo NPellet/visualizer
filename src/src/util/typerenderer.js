@@ -46,7 +46,7 @@ define([
   };
   functions.country.toscreen = function ($element, val, rootVal, options) {
     val = String(val);
-    let country;
+    var country;
     if (val.length === 2) {
       val = val.toUpperCase();
       country = countryData.lookup.countries({ alpha2: val })[0];
@@ -91,12 +91,12 @@ define([
   };
 
   functions.barcode.toscreen = function ($element, val, rootVal, options) {
-    let defaultOptions = {
+    var defaultOptions = {
       format: 'CODE128',
     };
-    let $img = $('<img>');
+    var $img = $('<img>');
     $element.append($img);
-    let opts = Object.assign({}, defaultOptions, options);
+    var opts = Object.assign({}, defaultOptions, options);
     if (opts.format.startsWith('CODE')) {
       val = String(val);
     } else {
@@ -110,7 +110,7 @@ define([
     await asyncRequire('sparkline');
   };
   functions.sparkline.toscreen = function ($el, val, rootval, options) {
-    let defaultOptions = {
+    var defaultOptions = {
       width: options.type === 'discrete' ? 'auto' : '100%',
       height: '100%',
     };
@@ -124,7 +124,7 @@ define([
     val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     if (options.search) {
-      let search;
+      var search;
       try {
         search = new RegExp(options.search);
       } catch (e) {
@@ -147,7 +147,7 @@ define([
   functions.date = {};
   functions.date.toscreen = function ($element, val) {
     try {
-      let d = new Date(val);
+      var d = new Date(val);
       $element.html(d.toLocaleString());
     } catch (e) {
       $element.html('Invalid date');
@@ -156,7 +156,7 @@ define([
 
   functions.color = {};
   functions.color.toscreen = function ($element, val) {
-    let result = `${'<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
+    var result = `${'<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
       '<div style="background-color: '}${val}; width: 100%; height:100%; min-height: 1px; padding:0; margin:0"></div></div>`;
     $element.html(result);
   };
@@ -180,7 +180,7 @@ define([
   }
 
   function formatNumber(val, options) {
-    let number = Number(val);
+    var number = Number(val);
     if (isNaN(number)) {
       number = 'NaN';
     } else if (options.hasOwnProperty('duration')) {
@@ -270,7 +270,7 @@ define([
 
   functions.picture = {};
   functions.picture.toscreen = function (element, val, rootVal, options) {
-    let $img = $('<img>');
+    var $img = $('<img>');
     $img.attr({
       src: val,
       width: options ? options.width : undefined,
@@ -293,7 +293,7 @@ define([
 
   functions.svg = {};
   functions.svg.toscreen = function ($element, val) {
-    let dom = $(String(val));
+    var dom = $(String(val));
     let width = dom.attr('width');
     let height = dom.attr('height');
     if (width && height) {
@@ -310,7 +310,7 @@ define([
   functions.ghs = {};
   functions.ghs.toscreen = function ($element, val) {
     const ghs = {};
-    for (let i = 1; i <= 9; i++) {
+    for (var i = 1; i <= 9; i++) {
       ghs[i] = require.toUrl(`./typerenderer/svg/${i}.svg`);
     }
 
@@ -323,7 +323,7 @@ define([
       }
       for (let ghsValue of val) {
         ghsValue = String(ghsValue).replace(/[^1-9]/g, '');
-        let $img = $('<img>');
+        var $img = $('<img>');
         $img.attr({
           src: ghs[ghsValue],
         });
@@ -510,27 +510,27 @@ define([
   async function bioPv(type, element, val, valRoot, options) {
     options = options || {};
     const pv = await asyncRequire('lib/bio-pv/bio-pv.min');
-    let div = $('<div style="width:100%; height:100%" />');
+    var div = $('<div style="width:100%; height:100%" />');
     element.html(div);
-    let mol;
+    var mol;
     if (type === 'pdb') {
       mol = pv.io.pdb(val, { loadAllModels: true });
     } else if (type === 'mol3d') {
       mol = pv.io.sdf(val);
     }
-    let viewer = pv.Viewer(div.get(0), {
+    var viewer = pv.Viewer(div.get(0), {
       width: 0.99 * element.width(),
       height: Math.max(250, element.height() * 0.99),
       quality: 'medium',
     });
     viewer.addListener('viewerReady', function () {
       options.mode = viewer[options.mode] ? options.mode : 'cartoon';
-      let id = Util.getNextUniqueId();
+      var id = Util.getNextUniqueId();
       if (type === 'pdb') {
         viewer.clear();
         mol.forEach(function (structure) {
           if (options.mode === 'cartoon') {
-            let ligand = structure.select({
+            var ligand = structure.select({
               rnames: ['RVP', 'SAH'],
             });
             viewer.ballsAndSticks(`ligand-${id}`, ligand);
@@ -560,7 +560,7 @@ define([
 
   functions.downloadlink = {};
   functions.downloadlink.toscreen = function ($element, value, root, options) {
-    let title = options && options.title;
+    var title = options && options.title;
     title = title || 'Download resource';
 
     $element.html(
@@ -594,11 +594,11 @@ define([
     functions.gradient.colorbar = await asyncRequire('src/util/colorbar');
   };
   functions.gradient.toscreen = function ($element, value, root, options) {
-    let defaultColorBar = {
+    var defaultColorBar = {
       domain: [0, 1],
       stopType: 'values',
     };
-    let colorBar = Object.assign({}, defaultColorBar, value, options);
+    var colorBar = Object.assign({}, defaultColorBar, value, options);
     colorBar.stops = colorBar.stops || colorBar.color;
     colorBar.stopPositions = colorBar.stopPositions || colorBar.x;
     colorBar.width = $element.width();
@@ -610,15 +610,15 @@ define([
 
   functions.colorbar = {};
   functions.colorbar.toscreen = function ($element, value) {
-    let div = $('<div></div>');
-    let gradient = 'linear-gradient(to right';
+    var div = $('<div></div>');
+    var gradient = 'linear-gradient(to right';
 
-    let total = 0,
+    var total = 0,
       i = 0,
       l = value.length;
     for (; i < l; total += value[i++][0]);
 
-    let start = 0,
+    var start = 0,
       end,
       color;
     for (i = 0; i < l; i++) {
@@ -641,19 +641,19 @@ define([
 
   functions.indicator = {};
   functions.indicator.init = function () {
-    let tooltip = $('<div class="ci-tooltip"></div>')
+    var tooltip = $('<div class="ci-tooltip"></div>')
       .css({
         display: 'none',
         opacity: 0,
       })
       .appendTo('#ci-visualizer');
-    let current;
+    var current;
 
-    let $modulesGrid = $('#modules-grid');
+    var $modulesGrid = $('#modules-grid');
     $modulesGrid.on('mouseenter', '[data-tooltip]', function (e) {
       current = setTimeout(function () {
-        let target = $(e.target);
-        let offset = target.offset();
+        var target = $(e.target);
+        var offset = target.offset();
         tooltip
           .css({
             left: offset.left,
@@ -680,7 +680,7 @@ define([
     if (!Array.isArray(value)) {
       return;
     }
-    let html =
+    var html =
       '<table cellpadding="0" cellspacing="0" style="text-align: center; height:100%; width:100%; table-layout: fixed;"><tr>';
 
     // if the first element of the array is a number ... we need to convert the array.
@@ -695,10 +695,10 @@ define([
       });
     }
 
-    let length = value.length;
+    var length = value.length;
     // no color ? we add some ...
-    let colors = Color.getDistinctColors(value.length);
-    let totalSize = 0;
+    var colors = Color.getDistinctColors(value.length);
+    var totalSize = 0;
     for (var i = 0; i < length; i++) {
       if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
       if (!value[i].size && value[i].size !== 0) value[i].size = 10;
@@ -706,8 +706,8 @@ define([
     }
 
     for (var i = 0; i < length; i++) {
-      let element = value[i];
-      let span = $('<td></td>').css({
+      var element = value[i];
+      var span = $('<td></td>').css({
         minHeight: '1px',
         width: `${(100 * element.size) / totalSize}%`,
         border: 'none',
@@ -872,15 +872,15 @@ define([
         options = jpath;
         jpath = null;
       }
-      let renderingPromise;
+      var renderingPromise;
       if (renderingMap.has(element)) {
         renderingPromise = renderingMap.get(element);
       } else {
         renderingPromise = Promise.resolve();
       }
-      let $element = $(element);
+      var $element = $(element);
       object = DataObject.check(object, true);
-      let callback = () => {
+      var callback = () => {
         if (jpath) {
           return object.getChild(jpath).then(function (child) {
             return _render($element, child, options);

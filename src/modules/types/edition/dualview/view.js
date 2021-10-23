@@ -22,15 +22,15 @@ define([
       this.ondeV.module.view = this.ondeV;
       module.ondeM = this.ondeV.module;
 
-      let that = this;
-      let configCustom = function () {
+      var that = this;
+      var configCustom = function () {
         return that.module.getConfiguration.apply(that.module, arguments);
       };
       this.twigV.module.getConfiguration = configCustom;
       this.ondeV.module.getConfiguration = configCustom;
     },
     init: function () {
-      let html = '<div></div>';
+      var html = '<div></div>';
 
       this.dom = $(html).css({
         height: '100%',
@@ -40,9 +40,9 @@ define([
       this.twigV.init();
       this.ondeV.init();
 
-      let that = this;
+      var that = this;
 
-      let exportForm = this.ondeV.exportForm;
+      var exportForm = this.ondeV.exportForm;
       this.ondeV.exportForm = function () {
         exportForm.apply(this);
         that.loadTwig();
@@ -66,7 +66,7 @@ define([
       this.dom.html(this.ondeV.dom);
     },
     loadTwig: function () {
-      let that = this;
+      var that = this;
       this.dom.html(this.twigV.dom);
       this.twigV.dom.dblclick(function () {
         that.loadOnde();

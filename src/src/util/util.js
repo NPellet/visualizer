@@ -12,7 +12,7 @@ define([
   '../data/structures',
   'web-animations'
 ], function (Promise, _, Debug, Color, structures) {
-  let months = [
+  var months = [
     'January',
     'February',
     'March',
@@ -26,7 +26,7 @@ define([
     'November',
     'December'
   ];
-  let days = [
+  var days = [
     'Sunday',
     'Monday',
     'Tuesday',
@@ -40,7 +40,7 @@ define([
     // empty
   }
 
-  let regQuote = /"/g,
+  var regQuote = /"/g,
     regJpath = /^element\./;
 
   const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
@@ -50,14 +50,14 @@ define([
       return noop;
     }
 
-    let jpaths2 = jpath.replace(regJpath, ''),
+    var jpaths2 = jpath.replace(regJpath, ''),
       splitted = jpaths2.split('.'),
       l = splitted.length - 1,
       ifArray = [],
       ifString,
       ifElement = 'el';
 
-    for (let i = 0; i < l; i++) {
+    for (var i = 0; i < l; i++) {
       ifElement += `["${splitted[i].replace(regQuote, '\\"')}"]`;
       ifArray.push(`${ifElement} != undefined`);
     }
@@ -67,7 +67,7 @@ define([
       ifString = 'true';
     }
 
-    let functionEvaled = noop;
+    var functionEvaled = noop;
     eval(
       `functionEvaled = function( el ) { if (el && ${ifString}) return ${ifElement}['${splitted[
         l
@@ -83,7 +83,7 @@ define([
       return;
     }
 
-    let i = 0,
+    var i = 0,
       stylesheet,
       ii,
       cssRule;
@@ -124,16 +124,16 @@ define([
     return false;
   }
 
-  let exports = {
+  var exports = {
     getCurrentLang: function () {
       return 'en';
     },
     maskIframes: function () {
       $('iframe').each(function () {
-        let iframe = $(this);
-        let pos = iframe.position();
-        let width = iframe.width();
-        let height = iframe.height();
+        var iframe = $(this);
+        var pos = iframe.position();
+        var width = iframe.width();
+        var height = iframe.height();
         iframe.before(
           $('<div />')
             .css({
@@ -170,7 +170,7 @@ define([
       return days[day];
     },
     loadCss: function (url) {
-      let that = this;
+      var that = this;
       return new Promise(function (resolve, reject) {
         url = require.toUrl(url);
 
@@ -182,7 +182,7 @@ define([
           return resolve(that.loadedCss[url]);
         }
 
-        let link = document.createElement('link');
+        var link = document.createElement('link');
         link.type = 'text/css';
         link.rel = 'stylesheet';
         link.href = url;
@@ -199,7 +199,7 @@ define([
       });
     },
     unloadCss: function (url) {
-      let that = this;
+      var that = this;
       url = require.toUrl(url);
       if (that.loadedCss[url]) {
         that.loadedCss[url].disabled = true;
@@ -207,8 +207,8 @@ define([
     },
 
     getCssVendorPrefix: function () {
-      let styles = window.getComputedStyle(document.documentElement, '');
-      let pre = (Array.prototype.slice
+      var styles = window.getComputedStyle(document.documentElement, '');
+      var pre = (Array.prototype.slice
         .call(styles)
         .join('')
         .match(/-(moz|webkit|ms)-/) ||
@@ -224,7 +224,7 @@ define([
 
     jpathToArray: function (val) {
       if (val) {
-        let val2 = val.split('.');
+        var val2 = val.split('.');
         val2.shift();
         return val2;
       } else {
@@ -272,7 +272,7 @@ define([
         return;
       }
 
-      let rule;
+      var rule;
       if (!(rule = getCSS(ruleName))) {
         if (document.styleSheets[0].addRule) {
           document.styleSheets[0].addRule(ruleName, null, 0);
@@ -292,7 +292,7 @@ define([
       decSeparator = decSeparator == undefined ? '.' : decSeparator;
       thouSeparator = thouSeparator == undefined ? ',' : thouSeparator;
 
-      let sign = n < 0 ? '-' : '',
+      var sign = n < 0 ? '-' : '',
         i = `${parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`,
         j = i.length;
       j = j > 3 ? j % 3 : 0;
@@ -310,9 +310,9 @@ define([
     },
 
     safeAccess: function () {
-      let access = arguments[0];
+      var access = arguments[0];
 
-      for (let i = 1; i < arguments.length; i++) {
+      for (var i = 1; i < arguments.length; i++) {
         if (!(access = access[arguments[i]])) {
           return false;
         }
@@ -347,7 +347,7 @@ define([
    * @return {*}
    */
   exports.deprecate = function deprecate(method, message) {
-    let warned = false;
+    var warned = false;
     return function deprecated() {
       if (!warned) {
         Debug.warn(`Method ${method.name} is deprecated. ${message || ''}`);
@@ -404,7 +404,7 @@ define([
     if (size === undefined) size = 32;
     if (color === undefined) color = 'black';
     // Image taken from https://github.com/jxnblk/loading (loading-bars.svg)
-    let $elem = $(`
+    var $elem = $(`
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="black">
                <style>
                  @keyframes ci-loading-rectangles {
@@ -443,8 +443,8 @@ define([
   };
 
   exports.moduleIdFromUrl = function (url) {
-    let reg = /([^/]+)(\/)?$/;
-    let res = url.match(reg);
+    var reg = /([^/]+)(\/)?$/;
+    var res = url.match(reg);
     return res[1];
   };
 
@@ -452,17 +452,17 @@ define([
     return /^https?:\/\/|^\.|^\/|^\/\//.test(url);
   };
 
-  let utilReqPaths = {};
+  var utilReqPaths = {};
   exports.rewriteRequirePath = function (url) {
-    let rewrittenUrl = require.toUrl(url);
+    var rewrittenUrl = require.toUrl(url);
     if (!this.requireNeedsExtension(url)) {
       // return original url without trailing slash
       return url;
     }
-    let reqPathStr = exports.getNextUniqueId(true);
+    var reqPathStr = exports.getNextUniqueId(true);
     if (utilReqPaths[rewrittenUrl]) return utilReqPaths[url];
     utilReqPaths[rewrittenUrl] = reqPathStr;
-    let paths = {};
+    var paths = {};
     paths[reqPathStr] = rewrittenUrl;
     require.config({
       paths: paths
@@ -471,7 +471,7 @@ define([
     return reqPathStr;
   };
 
-  let objToString = Object.prototype.toString;
+  var objToString = Object.prototype.toString;
   exports.objectToString = function objectToString(obj) {
     return objToString.call(obj).slice(8, -1);
   };
@@ -496,7 +496,7 @@ define([
   exports.getColor = exports.deprecate(Color.getColor, 'use Color.getColor');
 
   exports.evalOptions = function (options) {
-    let result;
+    var result;
     if (typeof options !== 'string') {
       return options;
     }
@@ -523,23 +523,23 @@ define([
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
 
-    let byteCharacters = atob(b64Data);
-    let byteArrays = [];
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
 
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      let slice = byteCharacters.slice(offset, offset + sliceSize);
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
 
-      let byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
         byteNumbers[i] = slice.charCodeAt(i);
       }
 
-      let byteArray = new Uint8Array(byteNumbers);
+      var byteArray = new Uint8Array(byteNumbers);
 
       byteArrays.push(byteArray);
     }
 
-    let blob = new Blob(byteArrays, { type: contentType });
+    var blob = new Blob(byteArrays, { type: contentType });
     return blob;
   };
 
@@ -548,10 +548,10 @@ define([
   };
 
   exports.getStructuresComboOptions = function () {
-    let typeList = [];
+    var typeList = [];
     typeList.push({ key: '', title: 'none' });
-    let types = structures._getList();
-    for (let i = 0; i < types.length; i++) {
+    var types = structures._getList();
+    for (var i = 0; i < types.length; i++) {
       typeList.push({ key: types[i], title: types[i] });
     }
 
@@ -577,7 +577,7 @@ define([
       i < bin.length;
       ++i
     ) {
-      let tmp = bin.charCodeAt(i).toString(16);
+      var tmp = bin.charCodeAt(i).toString(16);
       if (tmp.length === 1) tmp = `0${tmp}`;
       hex[hex.length] = tmp;
     }
@@ -614,7 +614,7 @@ define([
   };
 
   exports.hashCode = function (str) {
-    let hash = 0,
+    var hash = 0,
       i,
       chr,
       len = str.length;

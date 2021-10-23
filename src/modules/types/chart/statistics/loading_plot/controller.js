@@ -71,10 +71,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.configurationStructure = function () {
-    let data = this.module.getDataFromRel('loading'),
+    var data = this.module.getDataFromRel('loading'),
       opts = [];
     if (data && data.value)
-      for (let i = 0; i < data.value.series.length; i++)
+      for (var i = 0; i < data.value.series.length; i++)
         opts.push({
           title: data.value.series[i].label,
           key: data.value.series[i].category

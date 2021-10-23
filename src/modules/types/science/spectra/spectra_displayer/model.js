@@ -43,7 +43,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
 
     getjPath: function (rel, accepts) {
-      let jpaths = [],
+      var jpaths = [],
         data;
 
       switch (rel) {

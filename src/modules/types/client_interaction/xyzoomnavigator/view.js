@@ -7,8 +7,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
   $.extend(true, View.prototype, Default, {
     init: function () {
       this.dom = $('<div />');
-      let that = this;
-      let img = $('<div class="ci-navigation-navigarrow"></div>');
+      var that = this;
+      var img = $('<div class="ci-navigation-navigarrow"></div>');
       this.domNavig = $('<div />').addClass('ci-navigation-navig')
         .append(img.clone().addClass('top'))
         .append(img.clone().addClass('left'))
@@ -65,20 +65,20 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     },
 
     moveStart: function (e) {
-      let started = Date.now();
+      var started = Date.now();
       // self.moveStart(event);
 
-      let that = this;
-      let target = $(e.target || e.srcElement);
+      var that = this;
+      var target = $(e.target || e.srcElement);
 
-      let mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
-      let timeout;
+      var mode = target.hasClass('top') ? 'top' : (target.hasClass('bottom') ? 'bottom' : (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'top')));
+      var timeout;
 
-      let getInterval = function () {
+      var getInterval = function () {
         return 300000 / ((Date.now() - started) + 1500) + 10;
       };
 
-      let execute = function () {
+      var execute = function () {
         if (mode == 'top')
           that.cy -= that.step;
         else if (mode == 'bottom')

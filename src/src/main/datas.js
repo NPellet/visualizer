@@ -10,7 +10,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       return;
     }
 
-    for (let i in object) {
+    for (var i in object) {
       if (object.hasOwnProperty(i)) {
         object[i] = DataObject.check(object[i]);
       }
@@ -20,10 +20,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
     return object;
   }
-  let DataObjectProto = DataObject.prototype;
+  var DataObjectProto = DataObject.prototype;
 
   DataObject.check = function (object, transformNatives) {
-    let currentProto, nextProto;
+    var currentProto, nextProto;
     if (isSpecialObject(object)) {
       return object;
     } else if (Array.isArray(object)) {
@@ -45,12 +45,12 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     } else if (object === null) {
       return null;
     } else {
-      let type = typeof object;
+      var type = typeof object;
 
       if (type === 'object') {
         currentProto = object;
         while (currentProto !== DataObjectProto) {
-           
+          // eslint-disable-line no-constant-condition
           nextProto = Object.getPrototypeOf(currentProto);
           if (
             nextProto === null ||
@@ -83,7 +83,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
   DataObject.recursiveTransform = function (object, transformNatives) {
     object = DataObject.check(object, transformNatives);
-    let i, l;
+    var i, l;
 
     if (Array.isArray(object)) {
       for (i = 0, l = object.length; i < l; i++) {
@@ -101,7 +101,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   function duplicate(object) {
-    let type = typeof object;
+    var type = typeof object;
     if (
       type === 'number' ||
       type === 'string' ||
@@ -113,7 +113,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       return;
     }
 
-    let target, i, l;
+    var target, i, l;
 
     if (isSpecialNativeObject(object)) {
       return transformNative(object);
@@ -127,7 +127,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         target[i] = duplicate(object[i]);
       }
     } else {
-      let keys = Object.keys(object);
+      var keys = Object.keys(object);
       l = keys.length;
       if (isDataObject(object)) {
         target = new DataObject();
@@ -142,7 +142,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     return target;
   }
 
-  let duplicator = {
+  var duplicator = {
     value: function () {
       return duplicate(this);
     }
@@ -159,7 +159,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     return String(value);
   };
 
-  let StringProperties = [
+  var StringProperties = [
     'charAt',
     'charCodeAt',
     'codePointAt',
@@ -186,7 +186,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     'trim'
   ];
 
-  for (let i = 0, l = StringProperties.length; i < l; i++) {
+  for (var i = 0, l = StringProperties.length; i < l; i++) {
     (function (j) {
       DataString.prototype[StringProperties[j]] = function () {
         return String.prototype[StringProperties[j]].apply(this.s_, arguments);
@@ -242,11 +242,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   window.DataBoolean = DataBoolean;
 
   function DataArray(arr, recursive, forceCopy) {
-    let newArr = [];
+    var newArr = [];
     if (arr) {
       if (!Array.isArray(arr))
         throw new Error('DataArray can only be constructed from arrays');
-      for (let i = 0, l = arr.length; i < l; i++) {
+      for (var i = 0, l = arr.length; i < l; i++) {
         if (recursive) {
           newArr[i] = DataObject.check(arr[i], recursive, forceCopy);
         } else {
@@ -264,16 +264,16 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   window.DataObject = DataObject;
   window.DataArray = DataArray;
 
-  let resurrectObject = {
+  var resurrectObject = {
     value: function () {
-      let obj = {};
+      var obj = {};
 
-      let enumerableKeys = Object.keys(this);
-      let ownKeys = Object.getOwnPropertyNames(this).filter((key) => !key.startsWith('__'));
-      let keys = enumerableKeys.concat(ownKeys);
+      var enumerableKeys = Object.keys(this);
+      var ownKeys = Object.getOwnPropertyNames(this).filter((key) => !key.startsWith('__'));
+      var keys = enumerableKeys.concat(ownKeys);
       keys = keys.filter((item, pos) => keys.indexOf(item) === pos);
 
-      for (let i of keys) {
+      for (var i of keys) {
         if (isSpecialObject(this[i])) {
           obj[i] = this[i].resurrect();
         } else {
@@ -284,10 +284,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let resurrectArray = {
+  var resurrectArray = {
     value: function () {
-      let obj = [];
-      for (let i = 0, l = this.length; i < l; i++) {
+      var obj = [];
+      for (var i = 0, l = this.length; i < l; i++) {
         if (isSpecialObject(this[i])) {
           obj[i] = this[i].resurrect();
         } else {
@@ -298,7 +298,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let dataGetter = {
+  var dataGetter = {
     value: function (prop, returnPromise, constructor) {
       function processVal(val) {
         if (typeof val !== 'object' || val === null) return val;
@@ -321,7 +321,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
           // Returns a promise if asked
           return this.get(true).then(processVal);
         } else {
-          let val = this.get(); // Current value
+          var val = this.get(); // Current value
 
           if (typeof val !== 'object' || val === null) return val;
           if (typeof val[prop] !== 'undefined') {
@@ -362,21 +362,21 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     return parent[prop];
   }
 
-  let dataSetter = {
+  var dataSetter = {
     value: function (prop, value, noTrigger) {
-      let valueTyped = DataObject.check(value, true);
-      let self = this.get();
+      var valueTyped = DataObject.check(value, true);
+      var self = this.get();
 
-      let current = self[prop];
+      var current = self[prop];
 
       if (!valueTyped) {
         self[prop] = valueTyped;
       } else {
-        let type = valueTyped.getType();
+        var type = valueTyped.getType();
 
         self[prop] = DataObject.check(self[prop], true);
 
-        let typeNow =
+        var typeNow =
           self[prop] != undefined && self[prop].getType
             ? self[prop].getType()
             : undefined;
@@ -388,7 +388,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
           isTypedObject(self[prop])
         ) {
           // Keep current listeners
-          let listeners = self[prop]._dataChange;
+          var listeners = self[prop]._dataChange;
           // Replace entire value so that special properties (_highlight ...) can be changed
           self[prop] = valueTyped;
           self[prop].linkToParent(this, prop);
@@ -455,7 +455,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       jpath = jpath.slice();
 
       const el = jpath.shift();
-      let subEl = await this.get(el, true);
+      var subEl = await this.get(el, true);
       if (typeof subEl !== 'undefined') {
         if (subEl && subEl.linkToParent) {
           subEl.linkToParent(this, el);
@@ -469,13 +469,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let traceSync = {
+  var traceSync = {
     value: function (jpath) {
       return this.getChildSync(jpath, true);
     }
   };
 
-  let getChildSync = {
+  var getChildSync = {
     value: function (jpath, setParents) {
       if (typeof jpath === 'string') {
         // Old version
@@ -489,8 +489,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
       jpath = jpath.slice();
 
-      let el = jpath.shift(); // Gets the current element and removes it from the array
-      let subEl = this.get(el);
+      var el = jpath.shift(); // Gets the current element and removes it from the array
+      var subEl = this.get(el);
 
       if (subEl == null) {
         return;
@@ -508,7 +508,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let linkToParent = {
+  var linkToParent = {
     value: function (parent, name) {
       if (this.__parent) {
         return;
@@ -529,9 +529,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let setChild = {
+  var setChild = {
     value: function (jpath, newValue, triggerParams, constructor) {
-      let that = this;
+      var that = this;
 
       if (typeof jpath === 'string') {
         // Old version
@@ -542,16 +542,16 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
       jpath = jpath.slice();
 
-      let jpathLength = jpath.length;
+      var jpathLength = jpath.length;
 
       if (jpathLength === 0) {
         throw new Error('setChild cannot be called with an empty jPath');
       }
 
-      let el = jpath.shift();
+      var el = jpath.shift();
 
       if (jpathLength === 1) {
-        let res = that.set(el, newValue, true); // noTrigger
+        var res = that.set(el, newValue, true); // noTrigger
         if (res && res.linkToParent) {
           res.linkToParent(that, el);
           res.triggerChange(false, triggerParams);
@@ -561,16 +561,16 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         return Promise.resolve();
       }
 
-      let elementType =
+      var elementType =
         jpath.length === 0
           ? constructor
           : typeof jpath[0] === 'number'
             ? DataArray
             : DataObject;
 
-      let name = el;
+      var name = el;
 
-      let args = [jpath, newValue, triggerParams, constructor];
+      var args = [jpath, newValue, triggerParams, constructor];
 
       return this.get(el, true, elementType).then(function (val) {
         that.set(name, val, true);
@@ -580,9 +580,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let setChildSync = {
+  var setChildSync = {
     value: function (jpath, newValue, triggerParams, constructor) {
-      let that = this;
+      var that = this;
 
       if (typeof jpath === 'string') {
         // Old version
@@ -593,16 +593,16 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
       jpath = jpath.slice();
 
-      let jpathLength = jpath.length;
+      var jpathLength = jpath.length;
 
       if (jpathLength === 0) {
         throw new Error('setChild cannot be called with an empty jPath');
       }
 
-      let el = jpath.shift();
+      var el = jpath.shift();
 
       if (jpathLength === 1) {
-        let res = that.set(el, newValue, true);
+        var res = that.set(el, newValue, true);
         if (res && res.linkToParent) {
           res.linkToParent(that, el);
           res.triggerChange(false, triggerParams);
@@ -612,28 +612,28 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         return;
       }
 
-      let elementType =
+      var elementType =
         jpath.length === 0
           ? constructor
           : typeof jpath[0] === 'number'
             ? DataArray
             : DataObject;
 
-      let name = el;
+      var name = el;
 
-      let args = [jpath, newValue, triggerParams, constructor];
+      var args = [jpath, newValue, triggerParams, constructor];
 
-      let val = this.get(el, false, elementType);
+      var val = this.get(el, false, elementType);
       this.set(name, val, true);
       val.linkToParent(that, name);
       val.setChildSync(...args);
     }
   };
 
-  let triggerBubble = {
+  var triggerBubble = {
     value: function (args) {
       if (this._dataChange) {
-        for (let i in this._dataChange) {
+        for (var i in this._dataChange) {
           this._dataChange[i].apply(this, args);
         }
       }
@@ -658,7 +658,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   // 2 June 2014
   // In order to prevent looping, the trigger and bind change should only be called via the module model.
 
-  let triggerChange = {
+  var triggerChange = {
     value: function (noBubble, args, jpath, target) {
       if (!Array.isArray(args)) {
         if (args == undefined) {
@@ -681,7 +681,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       }
 
       if (this._dataChange) {
-        for (let i in this._dataChange) {
+        for (var i in this._dataChange) {
           this._dataChange[i].apply(this, args);
         }
       }
@@ -707,7 +707,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let bindChange = {
+  var bindChange = {
     value: function (callback) {
       if (!this._dataChange) {
         Object.defineProperty(this, '_dataChange', {
@@ -718,7 +718,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         });
       }
 
-      let id = Util.getNextUniqueId(true);
+      var id = Util.getNextUniqueId(true);
       this._dataChange[id] = callback;
       callback.id = id;
 
@@ -726,7 +726,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let unbindChange = {
+  var unbindChange = {
     value: function (idOrFunc) {
       if (!this._dataChange) {
         Debug.info('Could not unbind event. No listener for this object');
@@ -741,9 +741,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let getType = {
+  var getType = {
     value: function () {
-      let type = Util.objectToString(this).toLowerCase();
+      var type = Util.objectToString(this).toLowerCase();
       if (type !== 'object')
         // Native types: number, string, boolean
         return type;
@@ -761,7 +761,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let fetch = {
+  var fetch = {
     value: function (forceJson) {
       if (!this.url || !this.type || this.hasOwnProperty('value')) {
         // No need for fetching. Still returning a promise, though.
@@ -772,7 +772,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         return this._fetching;
       }
 
-      let headers;
+      var headers;
       if (forceJson) {
         headers = {
           Accept: 'application/json'
@@ -812,18 +812,18 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
    * Result is different from jQuery.extend in the way that arrays are completely overwritten
    */
   function merge(to, from) {
-    for (let i in from) {
-      let el = from[i];
+    for (var i in from) {
+      var el = from[i];
       if (typeof el === 'object') {
         if (Array.isArray(el)) {
-          let toEl = to.get(i);
+          var toEl = to.get(i);
           if (!(toEl instanceof DataArray)) {
             toEl = new DataArray();
             to.set(i, toEl, true);
           }
           for (let j = 0; j < el.length; j++) {
-            let value = el[j];
-            let toValue = toEl[j];
+            var value = el[j];
+            var toValue = toEl[j];
             if (value === undefined && toValue !== undefined) continue;
             if (typeof value !== 'object' || isSpecialNativeObject(value)) {
               toEl.set(j, value);
@@ -846,7 +846,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   }
 
-  let mergeWithObject = {
+  var mergeWithObject = {
     value: function (objectToMerge, moduleId, noBubble) {
       if (
         typeof objectToMerge !== 'object' ||
@@ -859,7 +859,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let mergeWithArray = {
+  var mergeWithArray = {
     value: function (objectToMerge, moduleId, noBubble) {
       // TODO find a way to implement this
       this.triggerChange(noBubble, [moduleId]);
@@ -867,7 +867,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let setValue = {
+  var setValue = {
     value: function (newValue, noTrigger) {
       if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
         if (
@@ -888,7 +888,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  let commonProperties = {
+  var commonProperties = {
     set: dataSetter,
     get: dataGetter,
     setChild: setChild,
@@ -1020,7 +1020,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   function transformNative(object) {
-    let type;
+    var type;
 
     if (isSpecialNativeObject(object)) {
       type = object.getType();

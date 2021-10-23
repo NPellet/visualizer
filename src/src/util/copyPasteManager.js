@@ -9,16 +9,16 @@ define([
   'src/util/debug'
 ], function (mouseTracker, ModuleFactory, ui, Versioning, Grid, Debug) {
   document.addEventListener('copy', function (event) {
-    let currentFocus = document.activeElement;
+    var currentFocus = document.activeElement;
     if (currentFocus && currentFocus.nodeName === 'TEXTAREA') return;
-    let success = false;
-    let state = mouseTracker.getState();
+    var success = false;
+    var state = mouseTracker.getState();
     if (state.kind === 'grid') {
       event.clipboardData.setData('text/plain', Versioning.getViewJSON());
       ui.showNotification('View copied', 'success');
       success = true;
     } else if (state.kind === 'module') {
-      let modules = ModuleFactory.getModules();
+      var modules = ModuleFactory.getModules();
       modules = modules.filter(function (m) {
         return Number(m.getId()) === state.moduleId;
       });
@@ -47,11 +47,11 @@ define([
   });
 
   document.addEventListener('paste', function (e) {
-    let state = mouseTracker.getState();
+    var state = mouseTracker.getState();
     if (state.kind !== 'grid' && state.kind !== 'module') return;
     e.clipboardData.items[0].getAsString(function (s) {
       try {
-        let obj = JSON.parse(s);
+        var obj = JSON.parse(s);
         if (obj.version) {
           Versioning.setViewJSON(obj);
         } else if (obj.url) {

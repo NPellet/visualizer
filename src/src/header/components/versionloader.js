@@ -1,7 +1,7 @@
 'use strict';
 
 define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, Default, Versioning, Util) {
-  let defaults = {
+  var defaults = {
     label: false,
     elements: false,
     viewURL: false,
@@ -14,12 +14,12 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
   function Element() {
   }
 
-  let currentMenu;
+  var currentMenu;
 
   Util.inherits(Element, Default, {
 
     _onClick: function () {
-      let that = this;
+      var that = this;
 
       this.setStyleOpen(this._open);
 
@@ -38,7 +38,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     },
 
     load: function (el) {
-      let result = {};
+      var result = {};
       if (el.views || el.viewURL) {
         result.view = {
           url: el.viewURL,
@@ -65,7 +65,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
       if (!elements)
         return;
 
-      let ul = $('<ul />') || this.$_elToOpen.empty(),
+      var ul = $('<ul />') || this.$_elToOpen.empty(),
         i = 0,
         l = elements.length;
 
@@ -81,7 +81,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     },
 
     _buildSubElement: function (el) {
-      let that = this,
+      var that = this,
         dom = $('<li />').text(el.label || '');
       if (el.viewURL || el.dataURL) {
         dom.addClass('hasEvent').bind('click', function () {

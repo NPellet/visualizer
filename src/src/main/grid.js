@@ -29,11 +29,11 @@ define([
   Config,
   delay
 ) {
-  let definition, jqdom, moduleMove;
-  let isInit = false;
-  let activeLayer = 'Default layer';
-  let layersUl, layersLi;
-  let utilUl, utilLi;
+  var definition, jqdom, moduleMove;
+  var isInit = false;
+  var activeLayer = 'Default layer';
+  var layersUl, layersLi;
+  var utilUl, utilLi;
 
   const SCREEN_RESOLUTIONS = [
     {
@@ -69,10 +69,10 @@ define([
     .css({ top: -2, left: 4 });
 
   function checkDimensions(extend) {
-    let modules = ModuleFactory.getModules();
-    let bottomMax = 0;
-    for (let i in modules) {
-      let pos = modules[i].getPosition(getActiveLayer()),
+    var modules = ModuleFactory.getModules();
+    var bottomMax = 0;
+    for (var i in modules) {
+      var pos = modules[i].getPosition(getActiveLayer()),
         size = modules[i].getSize(getActiveLayer());
 
       if (
@@ -169,9 +169,9 @@ define([
             [
               '<li name="move"><a><span class="ui-icon ui-icon-arrow-4"></span> Move</a></li>',
               function (e) {
-                let pos = module.getDomWrapper().position();
-                let shiftX = e.pageX - pos.left;
-                let shiftY = e.pageY - pos.top;
+                var pos = module.getDomWrapper().position();
+                var shiftX = e.pageX - pos.left;
+                var shiftY = e.pageY - pos.top;
                 moveModule(module, shiftX, shiftY);
               }
             ],
@@ -349,7 +349,7 @@ define([
   }
 
   function moduleResize(module) {
-    let wrapper = module.getDomWrapper();
+    var wrapper = module.getDomWrapper();
 
     module
       .getSize(getActiveLayer())
@@ -358,7 +358,7 @@ define([
       .getSize(getActiveLayer())
       .set('height', Math.round(wrapper.height() / definition.yHeight));
 
-    let containerHeight =
+    var containerHeight =
       wrapper.height() -
       (module.getDomHeader().is(':visible')
         ? module.getDomHeader().outerHeight(true)
@@ -374,21 +374,21 @@ define([
   }
 
   function newModule(url) {
-    let modulePos = {};
+    var modulePos = {};
 
     var mouseUpHandler = function () {
-      let gridPos = jqdom.position();
-      let left = Math.round(
+      var gridPos = jqdom.position();
+      var left = Math.round(
         (modulePos.left - gridPos.left) / definition.xWidth
       );
-      let top = Math.round((modulePos.top - gridPos.top) / definition.yHeight);
-      let width = Math.round(modulePos.width / definition.xWidth);
-      let height = Math.round(modulePos.height / definition.yHeight);
+      var top = Math.round((modulePos.top - gridPos.top) / definition.yHeight);
+      var width = Math.round(modulePos.width / definition.xWidth);
+      var height = Math.round(modulePos.height / definition.yHeight);
 
       modulePos.div.remove();
       modulePos = {};
 
-      let module = ModuleFactory.newModule(
+      var module = ModuleFactory.newModule(
         new DataObject({
           // type: type,
           url: url
@@ -397,7 +397,7 @@ define([
 
       addModule(module);
 
-      let layer = module.getLayer(getActiveLayer());
+      var layer = module.getLayer(getActiveLayer());
 
       layer.position.set('left', left);
       layer.position.set('top', top);
@@ -462,7 +462,7 @@ define([
   }
 
   function moveToFront(module) {
-    let modules = ModuleFactory.getModules(),
+    var modules = ModuleFactory.getModules(),
       dom = module.dom,
       myZIndex = module.definition.zindex || 1,
       count = 0,
@@ -479,7 +479,7 @@ define([
   }
 
   function moveToBack(module) {
-    let modules = ModuleFactory.getModules(),
+    var modules = ModuleFactory.getModules(),
       dom = module.dom,
       myZIndex = module.definition.zindex || 1,
       count = 0,
@@ -536,8 +536,8 @@ define([
     moduleMove = { module: module, div: module.getDomWrapper() };
     Util.maskIframes();
 
-    let mouseMoveHandler = function (e) {
-      let gridPos = jqdom.position();
+    var mouseMoveHandler = function (e) {
+      var gridPos = jqdom.position();
 
       moduleMove.top = e.pageY - shiftY;
       moduleMove.left = e.pageX - shiftX;
@@ -550,10 +550,10 @@ define([
     var clickHandler = function () {
       if (!moduleMove.left) return;
 
-      let gridPos = jqdom.position();
+      var gridPos = jqdom.position();
 
-      let left = Math.max(-3, Math.round(moduleMove.left / definition.xWidth));
-      let top = Math.max(-3, Math.round(moduleMove.top / definition.yHeight));
+      var left = Math.max(-3, Math.round(moduleMove.left / definition.xWidth));
+      var top = Math.max(-3, Math.round(moduleMove.top / definition.yHeight));
 
       moduleMove.module.getPosition(getActiveLayer()).top = top;
       moduleMove.module.getPosition(getActiveLayer()).left = left;
@@ -575,10 +575,10 @@ define([
       .on('mousemove', mouseMoveHandler);
   }
 
-  let eachModules = function (callback) {
-    let modules = ModuleFactory.getModules();
+  var eachModules = function (callback) {
+    var modules = ModuleFactory.getModules();
 
-    for (let i = 0, l = modules.length; i < l; i++) {
+    for (var i = 0, l = modules.length; i < l; i++) {
       callback(modules[i]);
     }
   };
@@ -588,13 +588,13 @@ define([
   };
 
   function newLayer(toggleToIt, name) {
-    let def = $.Deferred();
+    var def = $.Deferred();
 
     if (name) {
       return (definition.layers[name] = { name: name });
     }
 
-    let div = ui.dialog({
+    var div = ui.dialog({
         autoPosition: true,
         title: 'New layer',
         width: '600px'
@@ -648,7 +648,7 @@ define([
 
     form.addButton('Validate', { color: 'green' }, function () {
       div.dialog('close');
-      let value = form.getValue().sections.layeropts[0].groups.layeropts[0],
+      var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
         layer = { name: value.layername[0] };
 
       definition.layers[layer.name] = layer;
@@ -674,9 +674,9 @@ define([
   }
 
   function removeLayer() {
-    let def = $.Deferred();
+    var def = $.Deferred();
 
-    let div = ui.dialog({
+    var div = ui.dialog({
         autoPosition: true,
         title: 'Remove layer',
         width: '600px'
@@ -723,7 +723,7 @@ define([
 
     form.addButton('Validate', { color: 'green' }, function () {
       div.dialog('close');
-      let value = form.getValue().sections.layeropts[0].groups.layeropts[0],
+      var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
         layer = { name: value.layername[0] };
 
       if (
@@ -764,9 +764,9 @@ define([
   }
 
   function renameLayer() {
-    let def = $.Deferred();
+    var def = $.Deferred();
 
-    let div = ui.dialog({
+    var div = ui.dialog({
         autoPosition: true,
         title: 'Rename layer',
         width: '600px'
@@ -828,7 +828,7 @@ define([
 
     form.addButton('Validate', { color: 'green' }, function () {
       div.dialog('close');
-      let value = form.getValue().sections.layeropts[0].groups.layeropts[0],
+      var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
         layer = { old: value.originalname[0], new: value.newname[0] };
 
       if (definition.layers[layer.old]) {
@@ -873,10 +873,10 @@ define([
   }
 
   function getBestLayerName(name, options) {
-    let resolutions = getBestResolutions(options);
-    let layerNames = getLayerNames();
-    for (let resolution of resolutions) {
-      for (let layerName of layerNames) {
+    var resolutions = getBestResolutions(options);
+    var layerNames = getLayerNames();
+    for (var resolution of resolutions) {
+      for (var layerName of layerNames) {
         if (layerName.match(new RegExp(`${name}.${resolution}`))) {
           return layerName;
         }
@@ -887,11 +887,11 @@ define([
 
   // we will find the large resolution we could use
   function getBestResolutions(options = {}) {
-    let { onlyLarger = true } = options;
-    let resolutions = JSON.parse(JSON.stringify(SCREEN_RESOLUTIONS));
-    let width = screen.width;
-    let height = screen.height;
-    for (let resolution of resolutions) {
+    var { onlyLarger = true } = options;
+    var resolutions = JSON.parse(JSON.stringify(SCREEN_RESOLUTIONS));
+    var width = screen.width;
+    var height = screen.height;
+    for (var resolution of resolutions) {
       resolution.error = width - resolution.width + height - resolution.height;
     }
     if (onlyLarger) resolutions = resolutions.filter((a) => a.error >= 0);
@@ -911,7 +911,7 @@ define([
   function switchToLayer(layerId, options = {}) {
     if (options.autoSize) layerId = getBestLayerName(layerId, options);
 
-    let layer = !definition.layers[layerId]
+    var layer = !definition.layers[layerId]
       ? newLayer(false, layerId)
       : definition.layers[layerId];
 
@@ -927,7 +927,7 @@ define([
         while (!moduleInstance.domWrapper) {
           await delay(10);
         }
-        let layer3 = moduleInstance.toggleLayer(layer.name);
+        var layer3 = moduleInstance.toggleLayer(layer.name);
 
         if (!layer3) {
           // moduleInstance.hide();
@@ -940,7 +940,7 @@ define([
   }
 
   function eachLayer(callback) {
-    for (let i in definition.layers) {
+    for (var i in definition.layers) {
       callback(definition.layers[i], i);
     }
   }
@@ -971,8 +971,8 @@ define([
         if (elements.folders) {
           // List of folders
           for (var i in elements.folders) {
-            let el = $(`<li><a>${i}</a></li>`);
-            let ul = $('<ul />').appendTo(el);
+            var el = $(`<li><a>${i}</a></li>`);
+            var ul = $('<ul />').appendTo(el);
             makeRecursiveMenu(elements.folders[i], ul);
             dom.append(el);
           }
@@ -984,7 +984,7 @@ define([
           [
             '<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
             function () {
-              let module = DataObject.recursiveTransform(
+              var module = DataObject.recursiveTransform(
                 JSON.parse(window.localStorage.getItem('ci-copy-module'))
               );
               addModuleFromJSON(module);
@@ -997,17 +997,17 @@ define([
           Config.contextMenu().indexOf('add') > -1
         ) {
           Context.listen(dom, [], function (contextDom) {
-            let $li = $('<li name="add"><a> Add a module</a></li>');
+            var $li = $('<li name="add"><a> Add a module</a></li>');
 
-            let $ulModules = $('<ul />').appendTo($li);
-            let allTypes = ModuleFactory.getTypes();
+            var $ulModules = $('<ul />').appendTo($li);
+            var allTypes = ModuleFactory.getTypes();
             $.when(allTypes).then(function (json) {
               if (typeof json === 'object' && !Array.isArray(json)) {
                 json = [json];
               }
 
               if (Array.isArray(json)) {
-                for (let i = 0, l = json.length; i < l; i++) {
+                for (var i = 0, l = json.length; i < l; i++) {
                   makeRecursiveMenu(json[i], $ulModules);
                 }
               }
@@ -1017,11 +1017,11 @@ define([
 
             $li.on('mouseup', function (event) {
               event.stopPropagation();
-              let module = $(event.target);
+              var module = $(event.target);
               if (module.prop('tagName') === 'A') {
                 module = module.parent();
               }
-              let url = module.attr('data-url');
+              var url = module.attr('data-url');
               if (url) newModule(decodeURIComponent(url));
             });
           });
@@ -1038,7 +1038,7 @@ define([
             layersUl.empty();
 
             eachLayer(function (layer, key) {
-              let li = $(
+              var li = $(
                 `<li data-layer="${encodeURIComponent(
                   key
                 )}"><a><span />${key}</a></li>`
@@ -1065,11 +1065,11 @@ define([
 
             layersLi.on('mouseup', function (event) {
               event.stopPropagation();
-              let target = $(event.target);
+              var target = $(event.target);
               if (target.prop('tagName') === 'A') {
                 target = target.parent();
               }
-              let layer = target.data('layerkey');
+              var layer = target.data('layerkey');
               if (layer !== '-1' && layer !== '-2' && layer !== '-3') {
                 switchToLayer(layer);
               } else if (layer == '-1') {
@@ -1130,7 +1130,7 @@ define([
             $(contextDom).append(utilLi);
 
             utilLi.on('mouseup', function (event) {
-              let utilkey = $(event.target.parentNode).data('utilkey');
+              var utilkey = $(event.target.parentNode).data('utilkey');
               switch (utilkey) {
                 case 'copyview':
                   Versioning.copyView();
@@ -1180,8 +1180,8 @@ define([
           ],
           null,
           function ($ctxmenu) {
-            let original = Versioning.originalVersion;
-            let prefix = '';
+            var original = Versioning.originalVersion;
+            var prefix = '';
             if (original !== 'none' && original !== Versioning.version) {
               prefix = `${original}\u2192`;
             }
@@ -1230,7 +1230,7 @@ define([
         definition.yHeight = 10;
       }
 
-      let modules = ModuleFactory.getModules();
+      var modules = ModuleFactory.getModules();
       while (modules.length) {
         removeModule(modules[0]);
       }

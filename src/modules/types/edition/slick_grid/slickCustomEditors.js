@@ -17,9 +17,9 @@ define([
 ], function (_, Util, UI, structures) {
   Util.loadCss('./components/spectrum/spectrum.css');
   (function ($) {
-    let typeEditors = {};
+    var typeEditors = {};
 
-    for (let key in structures) {
+    for (var key in structures) {
       if (typeof structures[key] === 'string') {
         typeEditors[key] = typeEditors[structures[key]];
       }
@@ -59,9 +59,9 @@ define([
 
     function DateEditor(args) {
       this.args = args;
-      let $input;
-      let defaultValue;
-      let calendarOpen = false;
+      var $input;
+      var defaultValue;
+      var calendarOpen = false;
 
       this.init = function () {
         $input = $('<INPUT type="text" class="editor-text" />');
@@ -155,11 +155,11 @@ define([
 
     function ColorEditor(args) {
       this.args = args;
-      let defaultValue;
+      var defaultValue;
       this.init = function () {
-        let that = this;
+        var that = this;
         this.$input = $('<input type="text">');
-        let box = args.container.getBoundingClientRect();
+        var box = args.container.getBoundingClientRect();
         this.$div = $('<div>').css({
           position: 'fixed',
           left: box.left,
@@ -301,7 +301,7 @@ define([
       };
 
       this.destroy = function () {
-        let d = this.$input.data();
+        var d = this.$input.data();
         this.$input.spectrum('destroy');
         this.$div.remove();
         // this.$input.remove();
@@ -353,7 +353,7 @@ define([
 
       this.validate = function () {
         if (args.column.validator) {
-          let validationResults = args.column.validator(this.$input.val());
+          var validationResults = args.column.validator(this.$input.val());
           if (!validationResults.valid) {
             return validationResults;
           }
@@ -406,7 +406,7 @@ define([
         }
         const $wrapper = $('<div style="position: relative;" />');
         this.initOptions = this.initOptions || {};
-        let editorOptions = getEditorOptions(
+        var editorOptions = getEditorOptions(
           this.args.column.colDef.editorOptions,
         );
         this.$input = $(
@@ -654,7 +654,7 @@ define([
   // ======== DEFAULT EDITOR FUNCTIONS ===============
   function defaultValidate() {
     if (this.args.column.validator) {
-      let validationResults = this.args.column.validator(this.serializeValue());
+      var validationResults = this.args.column.validator(this.serializeValue());
       if (!validationResults.valid) {
         return validationResults;
       }
@@ -674,7 +674,7 @@ define([
   }
 
   function defaultApplyValue(item, state, type) {
-    let newState;
+    var newState;
     DataObject.check(item, true);
     if (type) {
       newState = {
@@ -737,9 +737,9 @@ define([
   }
 
   function defaultInit() {
-    let that = this;
+    var that = this;
     this.initOptions = this.initOptions || {};
-    let editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
+    var editorOptions = getEditorOptions(this.args.column.colDef.editorOptions);
     if (this.initOptions.textarea) {
       $('<div>').appendTo(this.args.container);
       this.$input = $(
@@ -809,7 +809,7 @@ define([
 
   // =========== DATA BOOLEAN ==============
   function booleanInit() {
-    let that = this;
+    var that = this;
     this.$input = $(
       '<input type="checkbox" value="true" class="editor-checkbox" hideFocus>',
     );
@@ -852,7 +852,7 @@ define([
 
   // ========== LONG TEXT ===================
   function longTextInit() {
-    let that = this;
+    var that = this;
     this.$container = $('body');
 
     this.$wrapper = $(
@@ -973,9 +973,9 @@ define([
 
   // ========== SELECT ===================
   function selectInit() {
-    let options = this.args.column.editorOptions;
-    let editorOptions = getEditorOptions(options);
-    let $wrapper = $(this.args.container);
+    var options = this.args.column.editorOptions;
+    var editorOptions = getEditorOptions(options);
+    var $wrapper = $(this.args.container);
     this.initOptions = this.initOptions || {};
 
     this.$input = $(

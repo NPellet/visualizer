@@ -8,7 +8,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
 
   function doByUrl(url, headers, options) {
     let host;
-    let storeName = options.storeName || DEFAULT_STORE_NAME;
+    var storeName = options.storeName || DEFAULT_STORE_NAME;
     try {
       host = new URL(url).host;
     } catch (e) {
@@ -18,7 +18,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
     const withCredentials = options.withCredentials || credentials[host];
 
     Debug.debug(`DataURL: Looking for ${url} by AJAX`);
-    let req = superagent.get(url)
+    var req = superagent.get(url)
       .timeout(120000) // 2 minutes timeout
       .set(headers || {});
     if (withCredentials) {
@@ -30,7 +30,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (superagent, L
         Debug.info(`DataURL: Failing in retrieving ${url} by AJAX.`);
         throw new Error(`Expected status !== 200, got ${res.status}`);
       } else {
-        let data = res.body == null ? res.text : res.body;
+        var data = res.body == null ? res.text : res.body;
         Debug.info(`DataURL: Found ${url} by AJAX`);
         LRU.create(storeName, options.databaseLimit || DEFAULT_STORE_DB_LIMIT);
         LRU.store(storeName, url, data);

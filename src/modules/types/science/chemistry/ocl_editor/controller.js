@@ -12,12 +12,12 @@ define([
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.getToolbar = function () {
-    let base = Default.getToolbar.call(this);
+    var base = Default.getToolbar.call(this);
     base.unshift({
       onClick: function () {
-        let w = $(window).width();
-        let h = $(window).height();
-        let url = require.toUrl(
+        var w = $(window).width();
+        var h = $(window).height();
+        var url = require.toUrl(
           'modules/types/science/chemistry/ocl_editor/help/index.html',
         );
         ui.dialog(
@@ -138,22 +138,22 @@ define([
     if (inPlace && this.module.view._currentValue === null) {
       return;
     }
-    let split = (idCode || ' ').split(' ');
+    var split = (idCode || ' ').split(' ');
 
-    let idCodeOr = molecule.getCanonizedIDCode(
+    var idCodeOr = molecule.getCanonizedIDCode(
       OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS,
     );
     var idCode = split[0];
-    let coordinates = split[1];
+    var coordinates = split[1];
 
     if (
       idCodeOr !== this.currentMol.idCodeOr
       // coordinates !== this.currentMol.coordinates
     ) {
       this.currentMol = { coordinates, idCode, idCodeOr };
-      let molfile = molecule.toMolfile();
-      let molfileV3 = molecule.toMolfileV3();
-      let smiles = molecule.toSmiles();
+      var molfile = molecule.toMolfile();
+      var molfileV3 = molecule.toMolfileV3();
+      var smiles = molecule.toSmiles();
       this.createDataFromEvent('onStructureChange', 'mol', molfile);
       this.createDataFromEvent('onStructureChange', 'molV3', molfileV3);
       this.createDataFromEvent('onStructureChange', 'smiles', smiles);
@@ -169,7 +169,7 @@ define([
       // inplace modification is disabled for now because of unexpected
       // change events
       if (inPlace && this.module.view._currentType) {
-        let currentValue = this.module.view._currentValue;
+        var currentValue = this.module.view._currentValue;
         switch (this.module.view._currentType) {
           case 'mol':
             currentValue.setValue(molfile);

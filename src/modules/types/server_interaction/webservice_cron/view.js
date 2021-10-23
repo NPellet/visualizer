@@ -14,8 +14,8 @@ define(['modules/default/defaultview'], function (Default) {
       this.resolveReady();
     },
     log: function (success, variable) {
-      let time = new Date();
-      let color = success ? '#77DD77' : '#FF6961';
+      var time = new Date();
+      var color = success ? '#77DD77' : '#FF6961';
       this.dom.prepend(`<div>[${time.toLocaleString()}] - ${success ? 'Ok' : 'Error'}; Variable: ${variable}</div>`);
       this.dom.find(':first-child').css('background-color', color);
 

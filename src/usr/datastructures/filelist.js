@@ -10,7 +10,7 @@ define(
 
   ],
   function (Structures, Renderer) {
-    for (let i = 2, l = arguments.length; i < l; i++) {
+    for (var i = 2, l = arguments.length; i < l; i++) {
       Structures[arguments[i].typeName] = arguments[i].structure;
       Renderer.addType(arguments[i].typeName, arguments[i].renderer);
     }

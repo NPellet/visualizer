@@ -11,8 +11,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
 
     getjPath: function () {
-      let jpaths = [];
-      let data = this.module.view.list;
+      var jpaths = [];
+      var data = this.module.view.list;
       if (!data) {
         return jpaths;
       }

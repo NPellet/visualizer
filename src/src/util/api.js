@@ -26,10 +26,10 @@ define([
   Data,
   _
 ) {
-  let variableFilters;
+  var variableFilters;
 
-  let loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
-  let loadingHtml = $('<div>', { id: 'ci-loading' })
+  var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
+  var loadingHtml = $('<div>', { id: 'ci-loading' })
     .append(loadingSVG)
     .append(
       $('<div>', {
@@ -37,14 +37,14 @@ define([
         class: 'ci-loading-subtitle'
       })
     );
-  let loading = {};
-  let loadingNumber = 0;
+  var loading = {};
+  var loadingNumber = 0;
 
   function setHighlightId(id, value, senderId) {
     this.repositoryHighlights.set(id, value, null, senderId);
   }
 
-  let exports = {
+  var exports = {
     getRepositoryData: function () {
       return this.repositoryData;
     },
@@ -157,7 +157,7 @@ define([
       sourceVariable = null;
     }
     jpath = jpath || [];
-    let jpathNewVar = !sourceVariable
+    var jpathNewVar = !sourceVariable
       ? jpath
       : sourceVariable.getjPath().concat(jpath);
 
@@ -297,7 +297,7 @@ define([
 
     function getValue(alias) {
       let path = aliases[alias];
-      let currentElement = currentPreferences;
+      var currentElement = currentPreferences;
       for (let i = 0; i < path.length; i++) {
         currentElement = currentElement[path[i]];
         if (typeof currentElement === 'undefined') {
@@ -321,14 +321,14 @@ define([
   ) {
     const ModuleFactory = require('modules/modulefactory');
     const module = ModuleFactory.getModule(moduleId);
-    let currentPreferences = module.definition.configuration;
-    let aliases = module.controller.configAliases;
+    var currentPreferences = module.definition.configuration;
+    var aliases = module.controller.configAliases;
 
-    let cfgEl;
+    var cfgEl;
 
     function getCfgEl(alias) {
-      let cfgEl = currentPreferences;
-      for (let i = 0, l = alias.length - 1; i < l; i++) {
+      var cfgEl = currentPreferences;
+      for (var i = 0, l = alias.length - 1; i < l; i++) {
         cfgEl = cfgEl[alias[i]];
         if (typeof cfgEl === 'undefined') {
           break;
@@ -337,9 +337,9 @@ define([
       return cfgEl;
     }
 
-    for (let i in values) {
+    for (var i in values) {
       if (values.hasOwnProperty(i)) {
-        let alias = aliases[i];
+        var alias = aliases[i];
         if (alias) {
           cfgEl = getCfgEl(aliases[i]);
           cfgEl[0] = values[i];

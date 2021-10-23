@@ -12,10 +12,10 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      let that = this,
+      var that = this,
         currentColSort;
 
-      let toggle = this.module.getConfiguration('toggle');
+      var toggle = this.module.getConfiguration('toggle');
 
       this.domTable = $('<table />', {
         cellpadding: 0,
@@ -30,7 +30,7 @@ define([
       // not fire multiple times if the element has children
       this.domTable
         .on('mouseenter', 'tbody tr', function () {
-          let dataRowId = $(this).index();
+          var dataRowId = $(this).index();
 
           if (!isNaN(dataRowId)) {
             that.module.controller.lineHover(that.module.data, dataRowId);
@@ -39,14 +39,14 @@ define([
           // Mouseleave is better than mouseout in this case
         })
         .on('mouseleave', 'tbody tr', function () {
-          let dataRowId = $(this).index();
+          var dataRowId = $(this).index();
 
           if (!isNaN(dataRowId)) {
             that.module.controller.lineOut(that.module.data, dataRowId);
           }
         })
         .on('click', 'tr', function () {
-          let $this = $(this);
+          var $this = $(this);
 
           that.module.controller.lineClick(that.module.data, $this.index());
 
@@ -65,7 +65,7 @@ define([
               that.selected = [];
             }
 
-            let index = $this.index();
+            var index = $this.index();
 
             if ($this.hasClass('toggled')) {
               that.module.controller.onToggleOff(that.module.data, index);
@@ -80,7 +80,7 @@ define([
         })
         .on('click', 'th', function () {
           // Sorting
-          let jpathId = $(this).attr('data-jpath-number'),
+          var jpathId = $(this).attr('data-jpath-number'),
             data = that.module.getDataFromRel('list');
 
           if (!currentColSort || currentColSort.col !== jpathId) {
@@ -130,7 +130,7 @@ define([
       this.colsjPaths = jpaths;
       this.jpaths = {};
 
-      let thead = '<tr>';
+      var thead = '<tr>';
       for (; j < l; j++) {
         if (!jpaths[j].jpath) {
           continue;
@@ -141,7 +141,7 @@ define([
       }
       thead += '</tr>';
 
-      let colorjpath = this.module.getConfiguration('colorjPath');
+      var colorjpath = this.module.getConfiguration('colorjPath');
 
       if (colorjpath) {
         this.colorjpath = Util.makejPathFunction(colorjpath);
@@ -171,7 +171,7 @@ define([
           return;
         }
 
-        let i,
+        var i,
           l = this.module.data.length;
 
         for (i = 0; i < l; i++) {
@@ -198,7 +198,7 @@ define([
 
         this.elements = moduleValue;
 
-        let that = this,
+        var that = this,
           nbLines = this.module.getConfiguration('nbLines') || 20,
           html = '',
           i = 0,
@@ -232,7 +232,7 @@ define([
                 that.module.getId()
               );
 
-              let dom = that.domBody.find(`#${that.module.getId()}_${j}`);
+              var dom = that.domBody.find(`#${that.module.getId()}_${j}`);
 
               that.module.model.dataListenChange(
                 that.module.data.get(j),
@@ -273,11 +273,11 @@ define([
     updateVisibility: function () {
       if (!this.showList || !this.list) return;
 
-      let s = this.showList,
+      var s = this.showList,
         l = s.length,
         el,
         id = `${this.module.getId()}_`;
-      for (let i = 0; i < l; i++) {
+      for (var i = 0; i < l; i++) {
         el = document.getElementById(id + i);
         if (s[i]) {
           el.removeAttribute('style');
@@ -288,7 +288,7 @@ define([
     },
 
     buildElement: function (source, i) {
-      let jpaths = this.colsjPaths,
+      var jpaths = this.colsjPaths,
         html = '',
         j,
         k = jpaths.length,
@@ -359,9 +359,9 @@ define([
         }
 
         this.module.getDataFromRel('list').push(source);
-        let l = this.elements.length - 1;
+        var l = this.elements.length - 1;
 
-        let el = this.buildElement(source, l);
+        var el = this.buildElement(source, l);
         this.domBody.append(el);
       },
 
@@ -377,10 +377,10 @@ define([
           return;
         }
 
-        let el = this.module.getDataFromRel('list').splice(rowId, 1);
+        var el = this.module.getDataFromRel('list').splice(rowId, 1);
         el[0].unbindChange(this.module.getId());
 
-        let index;
+        var index;
 
         if ((index = this.selected.indexOf(rowId)) > -1) {
           this.selected.splice(index, 1);
@@ -393,7 +393,7 @@ define([
       },
 
       toggleOff: function (source) {
-        let index = this.module.getDataFromRel('list').indexOf(source);
+        var index = this.module.getDataFromRel('list').indexOf(source);
         if (index == -1) {
           return;
         }
@@ -406,13 +406,13 @@ define([
       },
 
       toggleOn: function (source) {
-        let index = this.module.getDataFromRel('list').indexOf(source);
+        var index = this.module.getDataFromRel('list').indexOf(source);
 
         if (index == -1) {
           return;
         }
 
-        let toggle = this.module.getConfiguration('toggle'),
+        var toggle = this.module.getConfiguration('toggle'),
           that = this;
 
         if (toggle == 'single' && that.selected[0] !== undefined) {
@@ -437,12 +437,12 @@ define([
       },
 
       scrollTo: function (source) {
-        let index = this.module.getDataFromRel('list').indexOf(source);
+        var index = this.module.getDataFromRel('list').indexOf(source);
         if (index == -1) {
           return;
         }
 
-        let el = this.domBody
+        var el = this.domBody
           .children()
           .eq(index)
           .get();
@@ -455,13 +455,13 @@ define([
         return;
       }
 
-      let result = [];
-      let allEls = [],
+      var result = [];
+      var allEls = [],
         l = this.elements.length;
 
-      let jpaths = this.colsjPaths;
+      var jpaths = this.colsjPaths;
 
-      let header = [];
+      var header = [];
       for (var j = 0; j < jpaths.length; j++) {
         header.push(jpaths[j].name);
       }
@@ -470,7 +470,7 @@ define([
       for (let i = 0; i < l; i++) {
         var line = [];
         for (var j = 0; j < jpaths.length; j++) {
-           
+          // eslint-disable-next-line no-loop-func
           Traversing.getValueFromJPath(this.elements[i], jpaths[j].jpath).done(
             function (elVal) {
               line.push(elVal);

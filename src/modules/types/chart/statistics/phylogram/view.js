@@ -30,7 +30,7 @@ define([
         this._idHash[currentNode.id] = currentNode;
       }
       if (Array.isArray(currentNode.children)) {
-        for (let i = 0; i < currentNode.children.length; i++) {
+        for (var i = 0; i < currentNode.children.length; i++) {
           this.getIdHash(currentNode.children[i]);
         }
       }
@@ -54,7 +54,7 @@ define([
 
     doAnnotation: function () {
       if (this._tree) {
-        let options = this.getOptions();
+        var options = this.getOptions();
         this._value = Tree.annotateTree(this._tree, this._data || [], options);
         this.updateTree();
       }
@@ -70,8 +70,8 @@ define([
     },
 
     getOptions: function () {
-      let options = {};
-      let getConf = this.module.getConfiguration;
+      var options = {};
+      var getConf = this.module.getConfiguration;
       maybePutOption(options, '$color', getConf('jpathColor'));
       maybePutOption(options, 'label', getConf('jpathLabel'));
       return options;
@@ -81,11 +81,11 @@ define([
       if (!this._value)
         return;
 
-      let dataD = this._value;
-      let that = this;
+      var dataD = this._value;
+      var that = this;
 
       this.dom.empty();
-      let skipBranchLengthScaling = this.module.getConfigurationCheckbox('d3check', 'skipBranchLengthScaling');
+      var skipBranchLengthScaling = this.module.getConfigurationCheckbox('d3check', 'skipBranchLengthScaling');
       d3.phylogram.build(this.selectorId, dataD, {
         height: that.height,
         width: that.width,
@@ -123,13 +123,13 @@ define([
         // skipLabels: false
       });
 
-      let leaves = d3.selectAll(`${this.selectorId} .leaf`);
+      var leaves = d3.selectAll(`${this.selectorId} .leaf`);
 
       leaves.each(function (data) {
         (function (dataNode, leaf) {
           if (dataNode.data && dataNode.data._highlight) {
             API.listenHighlight(dataNode.data, function (value, what) {
-              let point = leaf.select('circle');
+              var point = leaf.select('circle');
               point.attr('fill', function (a) {
                 if (a.data && a.data.$color)
                   return a.data.$color;

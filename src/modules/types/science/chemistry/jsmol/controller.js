@@ -7,7 +7,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.getToolbar = function () {
-    let base = Default.getToolbar.call(this);
+    var base = Default.getToolbar.call(this);
     base.unshift({
       onClick: function () {
         window.open('http://wiki.jmol.org/index.php/Mouse_Manual', '_blank');

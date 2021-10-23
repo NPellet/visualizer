@@ -13,7 +13,7 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      let html = '<div></div>';
+      var html = '<div></div>';
       if (this.module.getConfigurationCheckbox('append', 'yes')) {
         this.dom = $(html).css({
           height: '100%',
@@ -43,10 +43,10 @@ define([
     blank: {
       value: function () {
         if (this.module.getConfigurationCheckbox('append', 'yes')) {
-          let maxEntries = this.module.getConfiguration('maxEntries');
-          let children = this.dom.children();
-          let until = children.length - maxEntries;
-          for (let i = 0; i < until; i++) {
+          var maxEntries = this.module.getConfiguration('maxEntries');
+          var children = this.dom.children();
+          var until = children.length - maxEntries;
+          for (var i = 0; i < until; i++) {
             children[i].remove();
           }
         } else {
@@ -67,17 +67,17 @@ define([
         if (varValue instanceof DataNumber || varValue.type === 'number') {
           this._lastValueNumber = true;
         }
-        let val = this.values.find((value) => value.name === varName);
+        var val = this.values.find((value) => value.name === varName);
         if (!val) {
           this.values.push({
             name: varName,
             value: varValue,
           });
           this.values.sort((a, b) => {
-            let aIdx = this.module.definition.vars_in.findIndex(
+            var aIdx = this.module.definition.vars_in.findIndex(
               (varin) => varin.name === a.name,
             );
-            let bIdx = this.module.definition.vars_in.findIndex(
+            var bIdx = this.module.definition.vars_in.findIndex(
               (varin) => varin.name === b.name,
             );
             if (aIdx < bIdx) return -1;
@@ -98,34 +98,34 @@ define([
     },
 
     renderAll: function () {
-      let val = this._lastValue;
+      var val = this._lastValue;
       if (!val) return;
 
-      let that = this,
+      var that = this,
         sprintfVal = this.module.getConfiguration('sprintf'),
         rendererOptions =
           Util.evalOptions(this.module.getConfiguration('rendererOptions')) ||
           {};
-      let forceType = this.module.getConfiguration('forceType');
+      var forceType = this.module.getConfiguration('forceType');
       if (forceType) {
         rendererOptions.forceType = forceType;
       }
 
       if (sprintfVal) {
         if (!forceType) {
-          let prom = [];
-          for (let value of that.values) {
+          var prom = [];
+          for (var value of that.values) {
             prom.push(this.renderVal(value.value));
           }
           Promise.all(prom).then(function (rendered) {
-            let args = [sprintfVal].concat(rendered);
+            var args = [sprintfVal].concat(rendered);
             that.fillWithVal(sprintf.sprintf.apply(null, args), {
               forceType: 'html',
             });
           });
         } else {
           try {
-            let args = [sprintfVal];
+            var args = [sprintfVal];
             args = args.concat(
               that.values.map((v) => DataObject.resurrect(v.value.get())),
             );
@@ -141,12 +141,12 @@ define([
     },
 
     _scrollDown: function () {
-      let scroll_height = this.dom[0].scrollHeight;
+      var scroll_height = this.dom[0].scrollHeight;
       this.dom.scrollTop(scroll_height);
     },
 
     renderVal: function (val, options) {
-      let $span = $('<span>');
+      var $span = $('<span>');
       return Renderer.render($span, val, options)
         .then(function () {
           return $span.html();
@@ -157,22 +157,22 @@ define([
     },
 
     fillWithVal: function (val, rendererOptions) {
-      let that = this;
-      let valign = this.module.getConfiguration('valign');
-      let align = this.module.getConfiguration('align');
-      let fontcolor = this.module.getConfiguration('fontcolor');
-      let fontsize = this.module.getConfiguration('fontsize');
-      let font = this.module.getConfiguration('font');
-      let preformatted = this.module.getConfigurationCheckbox(
+      var that = this;
+      var valign = this.module.getConfiguration('valign');
+      var align = this.module.getConfiguration('align');
+      var fontcolor = this.module.getConfiguration('fontcolor');
+      var fontsize = this.module.getConfiguration('fontsize');
+      var font = this.module.getConfiguration('font');
+      var preformatted = this.module.getConfigurationCheckbox(
         'preformatted',
         'pre',
       );
-      let selectable = this.module.getConfigurationCheckbox(
+      var selectable = this.module.getConfigurationCheckbox(
         'preformatted',
         'selectable',
       );
 
-      let div;
+      var div;
 
       if (fontcolor) {
         fontcolor = Color.getColor(fontcolor);
@@ -207,7 +207,7 @@ define([
         });
         this.dom.html(div);
 
-        let isEditing;
+        var isEditing;
         if (
           this.module.getConfigurationCheckbox('editable', 'yes') &&
           isEditable(this._lastValue)
@@ -267,7 +267,7 @@ define([
   }
 
   function triggerChange(e) {
-    let replaceValue = e.target.innerText;
+    var replaceValue = e.target.innerText;
     if (this._lastValueNumber) {
       replaceValue = +replaceValue;
     }

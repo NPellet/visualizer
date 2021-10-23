@@ -5,7 +5,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
   Debug,
   semver
 ) {
-  let migrators = [
+  var migrators = [
     '2.1.0',
     function (view) {
       if (view.entryPoint) {
@@ -13,9 +13,9 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         delete view.entryPoint;
 
         // we should also resize the modules
-        let modules = view.modules;
-        for (let i = 0; i < modules.length; i++) {
-          let module = modules[i];
+        var modules = view.modules;
+        for (var i = 0; i < modules.length; i++) {
+          var module = modules[i];
           module.position.left *= 2;
           module.position.top *= 2;
           module.size.width *= 2;
@@ -28,8 +28,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     function (view) {
       // we change the grid to jqgrid and the editable_grid to jqgrid
       if (view.modules) {
-        for (let i = 0; i < view.modules.length; i++) {
-          let module = view.modules[i];
+        for (var i = 0; i < view.modules.length; i++) {
+          var module = view.modules[i];
           if (module.type === 'grid' || module.type === 'editable_grid')
             module.type = 'jqgrid';
         }
@@ -40,8 +40,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     function (view) {
       // modules are now defined based on URL
       if (view.modules) {
-        for (let i = 0; i < view.modules.length; i++) {
-          let module = view.modules[i];
+        for (var i = 0; i < view.modules.length; i++) {
+          var module = view.modules[i];
           module.url = updateModule(module.type);
           delete module.type;
         }
@@ -71,21 +71,21 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let i;
+          var i;
           module.url = 'modules/types/client_interaction/code_editor/';
           if (module.configuration.groups.group[0].iseditable[0][0] === 'true')
             module.configuration.groups.group[0].iseditable[0][0] = 'editable';
           delete module.configuration.groups.group[0].padding;
           module.configuration.groups.group[0].mode = ['text'];
           for (i = 0; i < module.vars_out.length; i++) {
-            let varout = module.vars_out[i];
+            var varout = module.vars_out[i];
             if (varout.event) {
               varout.event = 'onEditorChange';
               varout.rel = 'value';
             }
           }
           for (i = 0; i < module.actions_out.length; i++) {
-            let actout = module.actions_out[i];
+            var actout = module.actions_out[i];
             if (actout.event) {
               actout.event = 'onButtonClick';
               actout.rel = 'value';
@@ -102,7 +102,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let url = module.configuration.groups.group[0].url;
+          var url = module.configuration.groups.group[0].url;
           if (url[0]) {
             url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, '{$1}');
           }
@@ -116,8 +116,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          for (let j = 0; j < module.vars_out.length; j++) {
-            let var_out = module.vars_out[j];
+          for (var j = 0; j < module.vars_out.length; j++) {
+            var var_out = module.vars_out[j];
             var_out.event = 'onRead';
             if (var_out.rel === 'data')
               var_out.jpath = `${var_out.jpath}.content`;
@@ -178,13 +178,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     '2.4.0-b0',
     function (view) {
       if (view.variables) {
-        for (let i = 0; i < view.variables.length; i++) {
+        for (var i = 0; i < view.variables.length; i++) {
           updateJpath(view.variables[i]);
         }
       }
 
       eachModule(view, function (module) {
-        let i;
+        var i;
         if (module.vars_out) {
           for (i = 0; i < module.vars_out.length; i++) {
             updateJpath(module.vars_out[i]);
@@ -203,8 +203,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let out = module.vars_out;
-          for (let i = 0; i < out.length; i++) {
+          var out = module.vars_out;
+          for (var i = 0; i < out.length; i++) {
             out[i].setChild(['rel'], 'output');
           }
         },
@@ -217,8 +217,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let out = module.vars_out;
-          for (let i = 0; i < out.length; i++) {
+          var out = module.vars_out;
+          for (var i = 0; i < out.length; i++) {
             out[i].setChild(['rel'], 'filteredObject');
           }
         },
@@ -231,8 +231,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let i;
-          let postvariables =
+          var i;
+          var postvariables =
             module.configuration.sections.postvariables[0].groups
               .postvariables[0];
           for (i = 0; i < postvariables.length; i++) {
@@ -242,7 +242,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
               postvariables[i].destination = 'data';
             }
           }
-          let searchparams = module.configuration.groups.searchparams[0];
+          var searchparams = module.configuration.groups.searchparams[0];
           for (i = 0; i < searchparams.length; i++) {
             if (!searchparams[i].name) {
               searchparams.splice(i--, 1);
@@ -250,7 +250,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
               searchparams[i].destination = 'url';
             }
           }
-          let input = module.vars_in;
+          var input = module.vars_in;
           for (i = 0; i < input.length; i++) {
             if (!input[i].rel) {
               input.splice(i--, 1);
@@ -284,9 +284,9 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     function (view) {
       eachModule(view, function (module) {
         if (module.layers) {
-          let layers = module.layers,
+          var layers = module.layers,
             layer;
-          for (let i in layers) {
+          for (var i in layers) {
             layer = layers[i];
             if (layer.bgcolor) {
               if (!layer.bgColor) {
@@ -328,7 +328,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let plotinfos = module.getChildSync([
+          var plotinfos = module.getChildSync([
             'configuration',
             'groups',
             'plotinfos',
@@ -356,14 +356,14 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let groupings = module.getChildSync([
+          var groupings = module.getChildSync([
             'configuration',
             'groups',
             'groupings',
             0
           ]);
           if (!groupings) return;
-          for (let i = 0; i < groupings.length; i++) {
+          for (var i = 0; i < groupings.length; i++) {
             groupings[i].getter = [groupings[i].getter];
           }
         },
@@ -376,20 +376,20 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let cols = module.getChildSync([
+          var cols = module.getChildSync([
             'configuration',
             'groups',
             'cols',
             0
           ]);
-          for (let i = 0; i < cols.length; i++) {
+          for (var i = 0; i < cols.length; i++) {
             delete cols[i].selectable;
             delete cols[i].focusable;
             delete cols[i].sortable;
             delete cols[i].defaultSortOnAsc;
             delete cols[i].resizable;
           }
-          let group = module.getChildSync([
+          var group = module.getChildSync([
             'configuration',
             'groups',
             'group',
@@ -398,7 +398,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 
           delete group.toggle;
 
-          let slickCheck = group.slickCheck[0];
+          var slickCheck = group.slickCheck[0];
           if (slickCheck instanceof Array) {
             checkboxRemove(slickCheck, 'multiColumnSort');
             checkboxRemove(slickCheck, 'enableColumnReorder');
@@ -415,7 +415,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let actions_in = module.actions_in;
+          var actions_in = module.actions_in;
           if (actions_in && actions_in.length) {
             actions_in.forEach(function (action) {
               if (action && action.rel === 'fromTo') {
@@ -432,7 +432,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let slickCheck = module.getChildSync([
+          var slickCheck = module.getChildSync([
             'configuration',
             'groups',
             'group',
@@ -462,7 +462,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let plotinfos = module.getChildSync([
+          var plotinfos = module.getChildSync([
             'configuration',
             'groups',
             'plotinfos',
@@ -484,7 +484,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         view,
         function (module) {
           // legend was changed in an earlier version but the prerelease version was not bumped at that time
-          let legend = module.getChildSync([
+          var legend = module.getChildSync([
             'configuration',
             'groups',
             'group',
@@ -508,28 +508,28 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             }
           }
 
-          let oldConfig = module.getChildSync(['configuration']);
+          var oldConfig = module.getChildSync(['configuration']);
 
           function getChild(name) {
             return oldConfig.getChildSync(['groups', 'group', 0, name]);
           }
 
-          let xCheckBoxes = [];
-          let yCheckBoxes = [];
+          var xCheckBoxes = [];
+          var yCheckBoxes = [];
 
-          let display = getChild('displayAxis');
+          var display = getChild('displayAxis');
           if (Array.isArray(display) && Array.isArray(display[0])) {
             if (display[0].indexOf('x') > -1) xCheckBoxes.push('display');
             if (display[0].indexOf('y') > -1) yCheckBoxes.push('display');
           }
 
-          let flip = getChild('flip');
+          var flip = getChild('flip');
           if (Array.isArray(flip) && Array.isArray(flip[0])) {
             if (flip[0].indexOf('flipX') > -1) xCheckBoxes.push('flip');
             if (flip[0].indexOf('flipY') > -1) yCheckBoxes.push('flip');
           }
 
-          let grid = getChild('grids');
+          var grid = getChild('grids');
           if (Array.isArray(grid) && Array.isArray(grid[0])) {
             if (grid[0].indexOf('vmain') > -1) xCheckBoxes.push('main');
             if (grid[0].indexOf('vsec') > -1) xCheckBoxes.push('sec');
@@ -603,15 +603,15 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let str = module.getChildSync([
+          var str = module.getChildSync([
             'configuration',
             'groups',
             'string',
             0
           ]);
           if (str && str.length) {
-            for (let i = 0; i < str.length; i++) {
-              let extension = str.getChildSync([i, 'filter']);
+            for (var i = 0; i < str.length; i++) {
+              var extension = str.getChildSync([i, 'filter']);
               module.setChildSync(
                 ['configuration', 'groups', 'string', 0, i, 'extension'],
                 extension
@@ -643,7 +643,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       eachModule(
         view,
         function (module) {
-          let actionCols = module.getChildSync([
+          var actionCols = module.getChildSync([
             'configuration',
             'groups',
             'actionCols',
@@ -738,9 +738,9 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
   ];
 
   function modifyRel(module, oldRel, newRel) {
-    let vars_in = module.getChildSync(['vars_in']);
-    let vars_out = module.getChildSync(['vars_out']);
-    let actions_out = module.getChildSync(['actions_out']);
+    var vars_in = module.getChildSync(['vars_in']);
+    var vars_out = module.getChildSync(['vars_out']);
+    var actions_out = module.getChildSync(['actions_out']);
     vars_in.forEach(function (vars_in) {
       if (vars_in && vars_in.rel && vars_in.rel === oldRel)
         vars_in.rel = newRel;
@@ -757,14 +757,14 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
   }
 
   function checkboxRemove(checkbox, name) {
-    let idx = checkbox.indexOf(name);
+    var idx = checkbox.indexOf(name);
     if (idx > -1) {
       checkbox.splice(idx, 1);
     }
   }
 
   function checkboxAdd(checkbox, name) {
-    let idx = checkbox.indexOf(name);
+    var idx = checkbox.indexOf(name);
     if (idx === -1) {
       checkbox.push(name);
     }
@@ -777,11 +777,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       } else if (!Array.isArray(moduleNames)) {
         moduleNames = [''];
       }
-      let i = 0,
+      var i = 0,
         ii = view.modules.length,
         module,
         url;
-      let j,
+      var j,
         jj = moduleNames.length;
       for (; i < ii; i++) {
         module = view.modules[i];
@@ -853,7 +853,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
   }
 
   function updateJpath(element) {
-    let jpath = element.getChildSync(['jpath']);
+    var jpath = element.getChildSync(['jpath']);
     if (jpath && jpath.split) {
       element.setChild(['jpath'], jpath.split('.').slice(1));
     }
@@ -896,7 +896,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         break;
     }
 
-    let viewVersion = semver.parse(view.version);
+    var viewVersion = semver.parse(view.version);
     if (!viewVersion) {
       Debug.error(
         `View has an invalid version: ${view.version}. It cannot be migrated`
@@ -904,7 +904,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       return view;
     }
 
-    let visualizerVersion = semver.parse(Versioning.version);
+    var visualizerVersion = semver.parse(Versioning.version);
 
     if (semver.gt(viewVersion, visualizerVersion)) {
       return view;
@@ -924,7 +924,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       );
     }
 
-    for (let i = 0; i < migrationFunctions.length; i++) {
+    for (var i = 0; i < migrationFunctions.length; i++) {
       if (semver.lt(viewVersion, migrationFunctions[i].version)) {
         Debug.debug(
           `applying migration to v${migrationFunctions[i].version.version}`
@@ -944,12 +944,12 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     throw new Error('Invalid length of the migrators array.');
   }
 
-  for (let i = 0; i < migrators.length; i += 2) {
-    let version = semver.parse(migrators[i]);
+  for (var i = 0; i < migrators.length; i += 2) {
+    var version = semver.parse(migrators[i]);
     if (!version) {
       throw new Error(`invalid semver for migration function: ${migrators[i]}`);
     }
-    let func = migrators[i + 1];
+    var func = migrators[i + 1];
     if (typeof func !== 'function') {
       throw new Error(
         `object passed for migration ${migrators[i]} has to be a function`

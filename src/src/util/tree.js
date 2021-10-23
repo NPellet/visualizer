@@ -1,15 +1,15 @@
 'use strict';
 
 define(['src/main/datas'], function (Data) {
-  let uniqueID = 0;
+  var uniqueID = 0;
 
   function annotateTree(tree, data, options) {
     for (let key in data) {
       data[key] = DataObject.check(data[key]);
     }
 
-    let root = tree;
-    let keys = Object.keys(options);
+    var root = tree;
+    var keys = Object.keys(options);
     uniqueID = 0;
     traversal(root, data, options, keys);
     return tree;
@@ -21,11 +21,11 @@ define(['src/main/datas'], function (Data) {
     node.data = {};
     // add data to the currentNode
     if (node.hasOwnProperty('index')) {
-      let element = data[node.index];
+      var element = data[node.index];
       if (element) {
         node.data.data = element;
         for (let i = 0; i < keys.length; ++i) {
-          let value = element.getChildSync(options[keys[i]]);
+          var value = element.getChildSync(options[keys[i]]);
           if (value && Data.isSpecialNativeObject(value)) {
             node.data[keys[i]] = DataObject.resurrect(value.get());
           }

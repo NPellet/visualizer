@@ -66,8 +66,8 @@ define([
   Controller.prototype.variablesIn = ['tree', 'newTree', 'data'];
 
   Controller.prototype.configurationStructure = function () {
-    let dataJPath = [];
-    let data = this.module.getDataFromRel('data');
+    var dataJPath = [];
+    var data = this.module.getDataFromRel('data');
     if (data) {
       Traversing.getJPathsFromElement(data[0], dataJPath);
     }

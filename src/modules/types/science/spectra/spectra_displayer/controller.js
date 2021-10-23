@@ -10,13 +10,13 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.getToolbar = function () {
-    let base = Default.getToolbar.call(this);
+    var base = Default.getToolbar.call(this);
     base.unshift({
       onClick: () => {
         const svgStr = this.module.view.getSVGString();
         if (svgStr) {
           require(['file-saver'], function (fileSaver) {
-            let blob = new Blob([`${svgStr}`], {
+            var blob = new Blob([`${svgStr}`], {
               type: 'application/svg;charset=utf-8'
             });
             fileSaver(blob, 'graph.svg');
@@ -224,7 +224,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     toggleGrid: 'Toggle grid'
   };
 
-  let axisFields = {
+  var axisFields = {
     checkboxes: {
       type: 'checkbox',
       title: 'Options',
@@ -269,16 +269,16 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
   };
 
   Controller.prototype.configurationStructure = function () {
-    let vars = [];
-    let varsAxis = [];
-    let adaptAxis = [
+    var vars = [];
+    var varsAxis = [];
+    var adaptAxis = [
       {
         title: 'None',
         key: 'none'
       }
     ];
-    let numAxis = 0;
-    let currentCfg = this.module.definition.vars_in;
+    var numAxis = 0;
+    var currentCfg = this.module.definition.vars_in;
 
     if (currentCfg) {
       var i = 0,
@@ -1093,7 +1093,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
   };
 
   Controller.prototype.zoomChanged = function (axis, min, max) {
-    let obj = {
+    var obj = {
       type: 'fromTo',
       value: {
         from: min,
@@ -1107,7 +1107,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
 
   Controller.prototype.sendBoundaries = _.throttle(
     function () {
-      let boundaries = this.module.model.getBoundaries();
+      var boundaries = this.module.model.getBoundaries();
       this.sendActionFromEvent('onZoomChange', 'fromToXY', boundaries);
       this.createDataFromEvent('onZoomChange', 'fromToXY', boundaries);
     },

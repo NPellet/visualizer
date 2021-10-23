@@ -9,13 +9,13 @@ define([
 ], function (Util, API, ModuleFactory, Grid) {
   return function () {
     Util.loadCss('components/select2/dist/css/select2.css').then(function () {
-      let modules = ModuleFactory.getModulesById();
-      let keys = Object.keys(modules);
+      var modules = ModuleFactory.getModulesById();
+      var keys = Object.keys(modules);
 
-      let modulesArr = [];
-      let layers = API.getLayerNames();
-      let activeLayer = API.getActiveLayerName();
-      let layersArr = [];
+      var modulesArr = [];
+      var layers = API.getLayerNames();
+      var activeLayer = API.getActiveLayerName();
+      var layersArr = [];
       for (var i = 0; i < keys.length; i++) {
         if (!modules[keys[i]].hidden) {
           const module = modules[keys[i]];
@@ -26,21 +26,21 @@ define([
       }
 
       for (i = 0; i < layers.length; i++) {
-        let l = {};
+        var l = {};
         l.text = layers[i];
         l.cat = 'layer';
         l.id = `layer-${layers[i]}`;
         if (layers[i] === activeLayer) l.disabled = true;
         layersArr.push(l);
       }
-      let $select2 = '<div><div style="height:50px"></div> <select>';
-      let selectWidth = 500;
+      var $select2 = '<div><div style="height:50px"></div> <select>';
+      var selectWidth = 500;
 
-      let ww = Math.max(
+      var ww = Math.max(
         document.documentElement.clientWidth,
         window.innerWidth || 0
       );
-      let wh = Math.max(
+      var wh = Math.max(
         document.documentElement.clientHeight,
         window.innerHeight || 0
       );
@@ -75,7 +75,7 @@ define([
         return module.moduleName || module.text;
       }
 
-      let selectData = [];
+      var selectData = [];
       if (layersArr.length) {
         selectData.push({
           id: 'layer-list',
@@ -100,12 +100,12 @@ define([
         .val(null)
         .trigger('change');
 
-      let selecting;
+      var selecting;
       $select2.on('select2:selecting', function (event) {
         selecting = true;
       });
       $select2.on('select2:select', function (e) {
-        let url = e.params.data.url;
+        var url = e.params.data.url;
         $select2.select2('destroy');
         $select2.parent().remove();
         if (e.params.data.cat === 'module') {

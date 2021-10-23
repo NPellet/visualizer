@@ -1,7 +1,7 @@
 'use strict';
 
 define(['jquery'], function ($) {
-  let db, process;
+  var db, process;
 
   return {
     open: function () {
@@ -25,12 +25,12 @@ define(['jquery'], function ($) {
         window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
       // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
 
-      let def = $.Deferred();
+      var def = $.Deferred();
       if (!indexedDB) return def.reject();
 
       if (db) return def.resolve();
 
-      let req = indexedDB.open('ci', 26);
+      var req = indexedDB.open('ci', 26);
 
       req.onsuccess = function (e) {
         process = false;
@@ -41,7 +41,7 @@ define(['jquery'], function ($) {
       req.onupgradeneeded = function (e) {
         process = false;
         db = e.target.result;
-        let def1 = $.Deferred(),
+        var def1 = $.Deferred(),
           def2 = $.Deferred();
         if (db.objectStoreNames.contains('localview')) {
           db.deleteObjectStore('localview');
@@ -51,10 +51,10 @@ define(['jquery'], function ($) {
           db.deleteObjectStore('localdata');
         }
 
-        let def3 = $.Deferred(),
+        var def3 = $.Deferred(),
           def4 = $.Deferred();
-        let req1 = db.createObjectStore('localdata', { keyPath: 'readURL' });
-        let req2 = db.createObjectStore('localview', { keyPath: 'readURL' });
+        var req1 = db.createObjectStore('localdata', { keyPath: 'readURL' });
+        var req2 = db.createObjectStore('localview', { keyPath: 'readURL' });
 
         req1.onsuccess = function () {
           def3.resolve();
@@ -76,13 +76,13 @@ define(['jquery'], function ($) {
     },
 
     getAll: function (type, key, branch) {
-      let def = $.Deferred(),
+      var def = $.Deferred(),
         that = this;
       type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
 
-      let trans = db.transaction([type], 'readwrite');
-      let store = trans.objectStore(type);
-      let stack = {};
+      var trans = db.transaction([type], 'readwrite');
+      var store = trans.objectStore(type);
+      var stack = {};
 
       if (branch) var req = store.get(`${key};${branch}`);
       else {
@@ -121,7 +121,7 @@ define(['jquery'], function ($) {
     create: function (type, key, branch) {
       // Create empty head, empty list
 
-      let obj = {
+      var obj = {
         readURL: `${key};${branch}`,
         url: key,
         branch: branch,
@@ -129,12 +129,12 @@ define(['jquery'], function ($) {
         head: '{}'
       };
 
-      let def = $.Deferred();
+      var def = $.Deferred();
 
       type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
-      let trans = db.transaction(type, 'readwrite');
-      let store = trans.objectStore(type);
-      let req = store.put(obj);
+      var trans = db.transaction(type, 'readwrite');
+      var store = trans.objectStore(type);
+      var req = store.put(obj);
 
       req.onsuccess = function () {
         def.resolve(obj);
@@ -144,18 +144,18 @@ define(['jquery'], function ($) {
     },
 
     storeToHead: function (type, key, branch, obj) {
-      let def = $.Deferred(),
+      var def = $.Deferred(),
         that = this;
       type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
-      let trans = db.transaction(type, 'readwrite');
-      let store = trans.objectStore(type);
+      var trans = db.transaction(type, 'readwrite');
+      var store = trans.objectStore(type);
 
-      let req = store.get(`${key};${branch}`);
+      var req = store.get(`${key};${branch}`);
       req.onsuccess = function (e) {
         if (e.target.result) {
-          let obj2 = e.target.result;
+          var obj2 = e.target.result;
           obj2.head = JSON.stringify(obj);
-          let req2 = store.put(obj2);
+          var req2 = store.put(obj2);
           req2.onsuccess = function () {
             def.resolve(obj);
           };
@@ -171,11 +171,11 @@ define(['jquery'], function ($) {
     },
 
     store: function (type, key, branch, obj) {
-      let def = $.Deferred();
+      var def = $.Deferred();
       type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
-      let trans = db.transaction(type, 'readwrite');
+      var trans = db.transaction(type, 'readwrite');
 
-      let store = trans.objectStore(type);
+      var store = trans.objectStore(type);
 
       var req = store.get(`${key};${branch}`),
         obj = JSON.stringify(obj);
@@ -184,18 +184,18 @@ define(['jquery'], function ($) {
         if (e.target.result == null) {
           // Ok here we have a new branch => Save to the head.
           db.create(type, key, branch).done(function (resulted) {
-            let trans = db.transaction(type, 'readwrite');
-            let store = trans.objectStore(type);
+            var trans = db.transaction(type, 'readwrite');
+            var store = trans.objectStore(type);
             resulted.head = obj;
-            let req2 = store.put(resulted);
+            var req2 = store.put(resulted);
             req2.onsuccess = function () {
               def.resolve(obj);
             };
           });
         } else {
-          let obj2 = e.target.result;
+          var obj2 = e.target.result;
           obj2.list.push(obj);
-          let req2 = store.put(obj2);
+          var req2 = store.put(obj2);
           req2.onsuccess = function () {
             def.resolve(obj);
           };
@@ -205,7 +205,7 @@ define(['jquery'], function ($) {
     },
 
     getHead: function (type, key, branch) {
-      let that = this;
+      var that = this;
       return this.open().pipe(function () {
         return that.getAll(type, key, branch).pipe(function (obj) {
           return obj.head;

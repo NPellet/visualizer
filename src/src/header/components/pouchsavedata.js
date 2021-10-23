@@ -12,8 +12,8 @@ define([
 
   Util.inherits(Element, Default, {
     initImpl: function () {
-      let id = Util.getNextUniqueId();
-      let db = new PouchDB('localDatas');
+      var id = Util.getNextUniqueId();
+      var db = new PouchDB('localDatas');
       this.dialog = $(
         `<form><label for="name">Name</label><input type="text" name="name" id="${id}" class="text ui-widget-content ui-corner-all" />`
       );
@@ -22,9 +22,9 @@ define([
         title: 'Save data',
         buttons: {
           Save: function () {
-            let text = $(`#${id}`).val();
+            var text = $(`#${id}`).val();
             text = text.replace(/[^a-zA-Z0-9-_]*/g, '');
-            let data = JSON.parse(Versioning.getDataJSON());
+            var data = JSON.parse(Versioning.getDataJSON());
             db.get(text, function (event, otherDoc) {
               db.put(
                 { data: data },

@@ -7,10 +7,10 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
 
   $.extend(true, View.prototype, Default, {
     inDom: function () {
-      let that = this;
-      let defaultValue = this.module.getConfiguration('thevalue');
+      var that = this;
+      var defaultValue = this.module.getConfiguration('thevalue');
       var textarea = ui.getSafeElement('textarea').on('keyup', function () {
-        let val = textarea.val();
+        var val = textarea.val();
         if (that.currentValue !== val) {
           that.module.controller.valueChanged(val);
           that.currentValue = val;

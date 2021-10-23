@@ -10,7 +10,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       this.dom = $('<div class="ci-displaylist-list-2d-fast"></div>');
       this.module.getDomContent().html(this.dom);
       this.rendererOptions = Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
-      let forceType = this.module.getConfiguration('forceType');
+      var forceType = this.module.getConfiguration('forceType');
       if (forceType) this.rendererOptions.forceType = forceType;
     },
 
@@ -26,16 +26,16 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     },
 
     inDom: function () {
-      let that = this;
+      var that = this;
       this.dom.on('mouseenter mouseleave click', '> div', function (e) {
-        let elementId = $(this).index();
-        let value = that.list[elementId];
-        let jpath;
+        var elementId = $(this).index();
+        var value = that.list[elementId];
+        var jpath;
         if (that.dim === 1) {
           jpath = [elementId];
         } else {
-          let row = Math.floor(elementId / that.dimWidth);
-          let col = elementId % that.dimWidth;
+          var row = Math.floor(elementId / that.dimWidth);
+          var col = elementId % that.dimWidth;
           jpath = [row, col];
         }
         if (e.type === 'mouseenter') {
@@ -53,18 +53,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 
     update: {
       list: function (moduleValue) {
-        let val = moduleValue.get();
+        var val = moduleValue.get();
         this.setDim(val);
 
-        let cfg = this.module.getConfiguration;
-        let cols, list, length;
+        var cfg = this.module.getConfiguration;
+        var cols, list, length;
 
         if (this.dim === 1) {
           cols = `${100 / (cfg('colnumber', 4) || 4)}%`;
           list = val;
           length = val.length;
         } else {
-          let width = val[0].length;
+          var width = val[0].length;
           cols = `${100 / val[0].length}%`;
           length = val.length * width;
           list = convert2Dto1D(val);
@@ -75,18 +75,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
 
         this.list = list;
 
-        let colorJpath = cfg('colorjpath', false),
+        var colorJpath = cfg('colorjpath', false),
           valJpath = cfg('valjpath', ''),
           dimensions = {
             width: cols
           };
-        let height = cfg('height');
+        var height = cfg('height');
         if (height) {
           dimensions.height = `${height}px`;
         }
 
-        for (let i = 0; i < length; i++) {
-          let data = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
+        for (var i = 0; i < length; i++) {
+          var data = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
           this.dataReady[i] = data[0];
           this.dataDivs[i] = data[1];
         }
@@ -95,7 +95,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       },
 
       showList: function (value) {
-        let list = value.get();
+        var list = value.get();
         this.setDim(list);
         if (this.dim === 1) {
           this.showList = list;
@@ -110,11 +110,11 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       if (!this.showList || !this.list)
         return;
 
-      let that = this;
+      var that = this;
 
       Promise.all(this.dataReady).then(function () {
-        let value = that.showList;
-        for (let i = 0; i < value.length; i++) {
+        var value = that.showList;
+        for (var i = 0; i < value.length; i++) {
           if (value[i]) {
             that.dataDivs[i].show();
           } else {
@@ -125,7 +125,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     },
 
     renderElement: function (element, dimensions, colorJpath, valJpath) {
-      let td = $('<div>').css(dimensions).appendTo(this.dom);
+      var td = $('<div>').css(dimensions).appendTo(this.dom);
 
       if (colorJpath) {
         element.getChild(colorJpath, true).then(function (val) {
@@ -145,8 +145,8 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
     },
 
     setDim: function (val) {
-      let currentDim = this.dim;
-      let newDim = Array.isArray(val[0]) ? 2 : 1;
+      var currentDim = this.dim;
+      var newDim = Array.isArray(val[0]) ? 2 : 1;
       if (newDim !== currentDim) {
         this.dim = newDim;
         this.list = null;
@@ -161,12 +161,12 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
   });
 
   function convert2Dto1D(val) {
-    let height = val.length;
-    let width = val[0].length;
-    let length = height * width;
-    let array = new Array(length);
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width; j++) {
+    var height = val.length;
+    var width = val[0].length;
+    var length = height * width;
+    var array = new Array(length);
+    for (var i = 0; i < height; i++) {
+      for (var j = 0; j < width; j++) {
         array[i * width + j] = val[i][j];
       }
     }

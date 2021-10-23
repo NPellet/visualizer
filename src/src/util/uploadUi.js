@@ -15,9 +15,9 @@ define([
   'mime-types'
 ], function (Util, Debug, ui, _, $, Slick, mimeTypes) {
   function attachmentsFromCouch(data, options) {
-    let r = new Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-      let d = data[i];
+    var r = new Array(data.length);
+    for (var i = 0; i < data.length; i++) {
+      var d = data[i];
       r[i] = {
         name: d.name,
         contentType: d.content_type,
@@ -31,29 +31,29 @@ define([
     return r;
   }
 
-  let modes = {
+  var modes = {
     couchdb: attachmentsFromCouch,
     couch: attachmentsFromCouch
   };
 
-  let exports = {};
-  let cssLoaded = Promise.all([
+  var exports = {};
+  var cssLoaded = Promise.all([
     Util.loadCss('components/slickgrid/slick.grid.css'),
     Util.loadCss('src/util/uploadUi.css')
   ]);
 
-  let prefix = 'upload/';
+  var prefix = 'upload/';
 
   function uploadDialog(data, options) {
-    let mode = options.mode;
+    var mode = options.mode;
     if (data && mode && modes[mode]) {
       data = modes[mode](data, options);
     }
     data = data || [];
-    let slickData;
+    var slickData;
     return cssLoaded.then(function () {
       return new Promise(function (resolve) {
-        let slickOptions = {
+        var slickOptions = {
           editable: true,
           enableAddRow: false,
           enableCellNavigation: true,
@@ -69,7 +69,7 @@ define([
           rowHeight: 20
         };
 
-        let columns = [
+        var columns = [
           {
             id: 'name',
             name: 'name',
@@ -110,14 +110,14 @@ define([
             formatter: downloadFormatter
           });
         }
-        let $dialog = $('<div class="upload-ui">');
-        let $slick = $('<div class="dropzone">');
-        let $deleteAll = $(
+        var $dialog = $('<div class="upload-ui">');
+        var $slick = $('<div class="dropzone">');
+        var $deleteAll = $(
           '<input type="checkbox">Select/Unselect Delete</input>'
         );
 
         $deleteAll.on('change', function () {
-          let toSet = !!this.checked;
+          var toSet = !!this.checked;
           data.forEach(function (d) {
             if (
               d.name !== 'view.json' ||
@@ -129,7 +129,7 @@ define([
           grid.invalidateAllRows();
           grid.render();
         });
-        let grid;
+        var grid;
 
         ui.dialog($dialog, {
           buttons: {
@@ -137,7 +137,7 @@ define([
               $(this).dialog('close');
             },
             Upload: function () {
-              let toUpload = _.filter(data, function (v) {
+              var toUpload = _.filter(data, function (v) {
                 return v.file || v.toDelete;
               });
               resolve(toUpload);
@@ -165,7 +165,7 @@ define([
           height: 500
         });
 
-        let dragCount = 0;
+        var dragCount = 0;
         $dialog[0].addEventListener('dragenter', function (e) {
           e.preventDefault();
           e.stopPropagation();
@@ -184,9 +184,9 @@ define([
 
         function addFile(file, name) {
           name = name || '';
-          let filePath =
+          var filePath =
             prefix + (name === '' ? file.name : `${name}/${file.name}`);
-          let exists = _.find(slickData.getItems(), function (v) {
+          var exists = _.find(slickData.getItems(), function (v) {
             return v.name === filePath;
           });
           if (exists) {
@@ -221,12 +221,12 @@ define([
           name = name || '';
           if (entry.isDirectory) {
             return Promise.resolve().then(function () {
-              let dirReader = entry.createReader();
+              var dirReader = entry.createReader();
               return new Promise(function (resolve, reject) {
                 dirReader.readEntries(function (fileEntries) {
-                  let prom = [];
-                  for (let i = 0; i < fileEntries.length; i++) {
-                    let fileEntry = fileEntries[i];
+                  var prom = [];
+                  for (var i = 0; i < fileEntries.length; i++) {
+                    var fileEntry = fileEntries[i];
                     if (fileEntry.isFile) {
                       prom.push(doFile(fileEntry, name));
                     } else if (fileEntry.isDirectory) {
@@ -250,9 +250,9 @@ define([
           e.preventDefault();
           dragCount = 0;
           $dialog.removeClass('drop-over');
-          let prom = [];
-          for (let i = 0; i < e.dataTransfer.items.length; i++) {
-            let entry = e.dataTransfer.items[i].webkitGetAsEntry();
+          var prom = [];
+          for (var i = 0; i < e.dataTransfer.items.length; i++) {
+            var entry = e.dataTransfer.items[i].webkitGetAsEntry();
             prom.push(traverseEntries(entry, entry.name));
           }
           Promise.all(prom).then(function () {
@@ -285,7 +285,7 @@ define([
   }
 
   function downloadFormatter(row, cell, value, coldef, dataContext) {
-    let name = dataContext.name.replace(/^.*\//, '');
+    var name = dataContext.name.replace(/^.*\//, '');
     return `<div style="width:100%; height: 100%;"><a href="${
       dataContext.downloadUrl
     }" download="${name}" class="download-attachment"><i class="centered-icon fa fa-file-download"></i></a></div>`;

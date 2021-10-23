@@ -7,7 +7,7 @@ define(['modules/types/client_interaction/code_editor/model', 'src/util/datatrav
 
   Util.inherits(Model, CodeEditor, {
     getjPath: function (rel) {
-      let jpath = [];
+      var jpath = [];
 
       if (rel === 'outputValue' && this.module.controller.outputObject) {
         Traversing.getJPathsFromElement(this.module.controller.outputObject, jpath);

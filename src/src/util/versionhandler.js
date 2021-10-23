@@ -6,7 +6,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
   db,
   UI
 ) {
-  let DataViewHandler = function (dirUrl, defaultBranch, defaultUrl) {
+  var DataViewHandler = function (dirUrl, defaultBranch, defaultUrl) {
     this.currentPath = [];
     this._allData = {};
     this.dom = $('<div />');
@@ -46,7 +46,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     getData: function () {
-      let that = this;
+      var that = this;
 
       if (this.currentPath[1] == 'server') {
         return this._getServer().pipe(
@@ -84,11 +84,11 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     getBranches: function () {
-      let that = this;
+      var that = this;
       return $.when(this.getData()).pipe(function (data) {
-        let branches = {};
+        var branches = {};
 
-        for (let i in data) {
+        for (var i in data) {
           // i is branch name
           // data.revisions is all revs || data[i].list
           branches[i] = `${i} (${data[i].list.length +
@@ -99,16 +99,16 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     getElements: function (level) {
-      let that = this;
-      let branch = this.currentPath[2];
+      var that = this;
+      var branch = this.currentPath[2];
       return $.when(this.getData()).pipe(function (alldata) {
-        let data = alldata[branch].list;
-        let all = {};
+        var data = alldata[branch].list;
+        var all = {};
 
         if (that.currentPath[1] == 'local' && alldata[branch].head)
           all.head = that.makeFilename(alldata[branch].head);
 
-        for (let i = data.length - 1; i >= 0; i--)
+        for (var i = data.length - 1; i >= 0; i--)
           all[data[i]._time] = that.makeFilename(data[i]);
 
         return all;
@@ -118,14 +118,14 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     makeFilename: function (el, head) {
       if (!el._time) return 'Head';
 
-      let time = new Date(el._time);
-      let str = `${time.getDate()}/${time.getMonth()}/${time.getFullYear()} `;
+      var time = new Date(el._time);
+      var str = `${time.getDate()}/${time.getMonth()}/${time.getFullYear()} `;
       str += `${Util.pad(time.getHours())}:${Util.pad(time.getMinutes())}`;
       return str;
     },
 
     _getLocal: function () {
-      let that = this;
+      var that = this;
       return db.open().pipe(function () {
         return db.getAll(that.type, that._dirUrl).pipe(function (all) {
           return all;
@@ -134,7 +134,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     _getServer: function () {
-      let def = $.Deferred();
+      var def = $.Deferred();
       $.ajax({
         url: this.getUrl(),
         type: 'get',
@@ -143,9 +143,9 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
           action: 'Dir'
         },
         success: function (data) {
-          for (let i in data) {
+          for (var i in data) {
             data[i].list = [];
-            for (let j in data[i].revisions)
+            for (var j in data[i].revisions)
               data[i].list.push({ _time: data[i].revisions[j] });
           }
 
@@ -161,9 +161,9 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     makeMenu: function (level) {
-      let toOpen = this.structure,
+      var toOpen = this.structure,
         that = this;
-      let i = 0;
+      var i = 0;
       // Want to display the top level (server/local)
       if (level == 1) {
         toOpen = { server: 'Server', local: 'Local Database' };
@@ -196,8 +196,8 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     arrayToMenu: function (array, level, parent, parentParent) {
-      let html = '';
-      for (let i = 0, l = array.length; i < l; i++) {
+      var html = '';
+      for (var i = 0, l = array.length; i < l; i++) {
         html += `<li draggable="false" data-parent-parent="${parentParent}" data-parent="${parent}" data-el="${
           array[i][1]
         }"><a>${array[i][0]}${
@@ -211,8 +211,8 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     objectToMenu: function (object, level, parent, parentParent) {
-      let html = '';
-      for (let i in object) {
+      var html = '';
+      for (var i in object) {
         html += `<li draggable="false" data-parent-parent="${parentParent}" data-el="${i}" data-parent="${parent}"><a>${
           object[i]
         }${
@@ -226,14 +226,14 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     bindEventsMenu: function (dom) {
-      let that = this;
+      var that = this;
 
       dom.on('mouseenter', 'li', function () {
-        let $this = $(this);
+        var $this = $(this);
         if ($this.find('.ci-fetched').length > 0) return;
 
-        let ul = $this.parent();
-        let level = ul.data('level');
+        var ul = $this.parent();
+        var level = ul.data('level');
         that.currentPath[level] = $this.data('el');
 
         // Leaf
@@ -262,9 +262,9 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
       });
 
       dom.on('mouseup', 'li', function () {
-        let $this = $(this);
-        let ul = $this.parent();
-        let level = ul.data('level');
+        var $this = $(this);
+        var ul = $this.parent();
+        var level = ul.data('level');
         that.currentPath[level] = $this.data('el');
 
         if ($this.find('ul').length > 0) return;
@@ -274,7 +274,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     buildDom: function (el) {
-      let html = '<ul draggable="false" class="ci-dataview">';
+      var html = '<ul draggable="false" class="ci-dataview">';
 
       html += this._buildDomEl(1, this.currentPath[1]); // Local / Server
       html += this._buildDomEl(2, this.currentPath[2]); // Master / Branch1 / Branch2
@@ -285,8 +285,8 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     _buildDomEl: function (level, val) {
-      let htmlvalue;
-      let value;
+      var htmlvalue;
+      var value;
 
       if (level == 1) {
         if (val == 'server') {
@@ -312,11 +312,11 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     bindEventsDom: function (dom) {
-      let that = this;
+      var that = this;
 
       dom.on('mousedown', 'li', function () {
-        let $this = $(this);
-        let pos = $this.position();
+        var $this = $(this);
+        var pos = $this.position();
 
         that.makeMenu($this.data('level')).done(function (menu) {
           menu = $(
@@ -353,7 +353,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     make: function (el, branch, head) {
       this.currentElement = el;
       this.doUpdateButtons();
-      let html = $(this.buildDom(el));
+      var html = $(this.buildDom(el));
       this.bindEventsDom(html);
 
       this.dom.empty().html(html);
@@ -366,14 +366,14 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     clickLeaf: function (li) {
-      let that = this;
-      let i = li.data('el');
-      let branch = li.data('parent');
-      let mode = li.data('parent-parent');
+      var that = this;
+      var i = li.data('el');
+      var branch = li.data('parent');
+      var mode = li.data('parent-parent');
 
       if (mode == 'server') {
         // fetch head from server
-        let data = { branch: branch };
+        var data = { branch: branch };
         if (i !== 'head') data.revision = i;
 
         this.getFromServer(data).done(function (el) {
@@ -391,7 +391,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
           if (i == 'head') {
             el = el.head;
           } else {
-            for (let j = 0, l = el.list.length; j < l; j++) {
+            for (var j = 0, l = el.list.length; j < l; j++) {
               if (el.list[j]._time == i) {
                 el = el.list[j];
                 break;
@@ -410,10 +410,10 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     loadReadonly: function (def, options) {
-      let that = this,
+      var that = this,
         url = this._defaultUrl;
 
-      let retry = true;
+      var retry = true;
       if (options && options.withCredentials) {
         retry = false;
       }
@@ -458,20 +458,20 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
       this._defaultUrl = defaultUrl;
       this.defaultBranch = defaultBranch;
 
-      let that = this;
-      let def = $.Deferred();
+      var that = this;
+      var def = $.Deferred();
 
       if (!this._dirUrl && this._defaultUrl) {
         this.loadReadonly(def, options);
         return def;
       }
 
-      let branch = this.defaultBranch || 'Master';
-      let defServer = this.getFromServer({
+      var branch = this.defaultBranch || 'Master';
+      var defServer = this.getFromServer({
         branch: branch,
         action: 'Load'
       });
-      let defLocal = that._getLocalHead(branch);
+      var defLocal = that._getLocalHead(branch);
 
       // First load the server
       // Needed to identify branch and revision of the file
@@ -479,12 +479,12 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
       $.when(defServer).then(
         function (server) {
           // Success
-          let branch = server._name || that.defaultBranch;
-          let rev = server._time || 'head';
-          let saved = server._saved || 0;
+          var branch = server._name || that.defaultBranch;
+          var rev = server._time || 'head';
+          var saved = server._saved || 0;
 
           // Always compare to the head of the local branch
-          let defLocal = that._getLocalHead(branch);
+          var defLocal = that._getLocalHead(branch);
 
           $.when(defLocal).then(
             function (el) {
@@ -496,7 +496,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
                   doLocal(server, server._name, 'head');
                 });
               } else {
-                let savedLocal = el._saved || 0;
+                var savedLocal = el._saved || 0;
                 // Loads the latest file
                 el._name = branch;
 
@@ -572,7 +572,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     _localSave: function (obj, mode, name) {
-      let that = this;
+      var that = this;
       obj._local = true;
       // IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
       obj._time = mode == 'head' ? false : Date.now();
@@ -611,12 +611,12 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     localAutosave: function (val, callback, done) {
-      let that = this;
+      var that = this;
       if (this._autosaveLocal) window.clearInterval(this._autosaveLocal);
 
       if (val)
         this._autosaveLocal = window.setInterval(function () {
-          let el = callback();
+          var el = callback();
           that._localSave(el, 'head', el._name || 'Master').done(function () {
             if (done) done();
           });
@@ -627,7 +627,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     localBranch: function (data, name) {
       data._name = name;
       data._time = false;
-      let that = this;
+      var that = this;
       return this._localSave(data, 'head', name).pipe(function (obj) {
         that.make(obj, that.currentPath[2], that.currentPath[3]);
       });
@@ -635,7 +635,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
 
     // Do not change branch, just change the head
     localRevert: function (data) {
-      let that = this;
+      var that = this;
       data._time = false;
       this._localSave(data, 'head', data._name || 'Master').done(function (obj) {
         that.make(obj, that.currentPath[2], that.currentPath[3]);
@@ -647,7 +647,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     /** **********************/
 
     autosaveServer: function (val, callback, done) {
-      let that = this;
+      var that = this;
       if (this._autosaveServer) window.clearInterval(this._autosaveServer);
 
       if (val)
@@ -679,7 +679,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     getFromServer: function (data) {
-      let that = this,
+      var that = this,
         def = $.Deferred(),
         url = this.getUrl() || this._defaultUrl;
 
@@ -710,7 +710,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     serverCopy: function (data, branch, rev) {
-      let that = this;
+      var that = this;
 
       data._name = data._name || branch || 'Master';
       data._time = false;
@@ -726,7 +726,7 @@ define(['jquery', 'src/util/util', 'src/util/localdb', 'src/util/ui'], function 
     },
 
     _onLoaded: function (el) {
-      let elTyped;
+      var elTyped;
       elTyped = DataObject.check(el, 1);
       this.onLoaded(elTyped);
     }

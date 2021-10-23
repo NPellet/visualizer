@@ -169,7 +169,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
 
   Controller.prototype.configFunctions = {
     mapcenter: function (cfg) {
-      let split = cfg.split(',');
+      var split = cfg.split(',');
       return [parseFloat(split[0]), parseFloat(split[1])];
     }
   };
@@ -195,7 +195,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
   };
 
   Controller.prototype.moveAction = function () {
-    let center = this.map.getCenter();
+    var center = this.map.getCenter();
 
     this.module.controller.sendActionFromEvent('onMapMove', 'position', [center.lat, center.lng]);
 
@@ -209,10 +209,10 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (Default,
   };
 
   function boundUpdate() {
-    let map = this.map;
+    var map = this.map;
     this.module.controller.createDataFromEvent('onMapMove', 'viewport', null, function () {
-      let bounds = map.getBounds();
-      let arr = new Array(4);
+      var bounds = map.getBounds();
+      var arr = new Array(4);
 
       arr[0] = getGeoCoords(bounds.getSouthWest());
       arr[1] = getGeoCoords(bounds.getNorthWest());

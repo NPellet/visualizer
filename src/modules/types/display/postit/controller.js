@@ -31,7 +31,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
   };
 
   Controller.prototype.configurationStructure = function () {
-    let standardFonts = Util.getWebsafeFonts();
+    var standardFonts = Util.getWebsafeFonts();
     standardFonts.push({ title: 'Post-it', key: 'Post_IT' });
     return {
       groups: {

@@ -42,7 +42,7 @@ define([
     },
 
     onResize: function () {
-      let that = this;
+      var that = this;
       // the size is now really defined (we are after inDom)
       // and we received the data ...
       this.loadedData.done(function () {
@@ -63,7 +63,7 @@ define([
 
         API.killHighlight(that.module.getId());
 
-        for (let i = 0; i < that._data.length; i++) {
+        for (var i = 0; i < that._data.length; i++) {
           if (!that._data[i]._highlight) continue;
           (function (i) {
             API.listenHighlight(
@@ -111,16 +111,16 @@ define([
 
     _convertChartToData: function (value) {
       this._data = [];
-      let that = this;
+      var that = this;
       if (
         !Array.isArray(value.data) ||
         !value.data[0] ||
         !Array.isArray(value.data[0].y)
       )
         return;
-      let y = value.data[0].y;
-      let highlight = value.data[0]._highlight;
-      let infos = value.data[0].info;
+      var y = value.data[0].y;
+      var highlight = value.data[0]._highlight;
+      var infos = value.data[0].info;
       for (let i = 0; i < y.length; i++) {
         this._data[i] = {
           data: y[i]

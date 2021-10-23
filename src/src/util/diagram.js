@@ -9,7 +9,7 @@ define([
   'modules/modulefactory'
 ], function (Util, ui, Debug, _, $, ModuleFactory) {
   function Rectangle(arg1) {
-    let fail;
+    var fail;
     if (arguments.length === 3) {
       this.init1.apply(this, arguments);
     } else if (arguments.length === 4) {
@@ -49,10 +49,10 @@ define([
   };
 
   Rectangle.prototype.init2 = function () {
-    let corners = arguments;
-    let x = _.map(corners, 'x');
-    let y = _.map(corners, 'y');
-    for (let i = 0; i < corners.length; i++) {
+    var corners = arguments;
+    var x = _.map(corners, 'x');
+    var y = _.map(corners, 'y');
+    for (var i = 0; i < corners.length; i++) {
       if (Math.max.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
         this.maxmax = corners[i];
       else if (Math.min.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
@@ -68,12 +68,12 @@ define([
   };
 
   Rectangle.prototype.intersection = function (point) {
-    let that = this,
+    var that = this,
       points;
 
     if (point.x !== this.centerx) {
-      let a = (point.y - this.centery) / (point.x - this.centerx);
-      let b = point.y - a * point.x;
+      var a = (point.y - this.centery) / (point.x - this.centerx);
+      var b = point.y - a * point.x;
 
       points = [
         { x: (this.miny - b) / a, y: this.miny },
@@ -93,11 +93,11 @@ define([
     }
 
 
-    let distances = _.map(points, function (p) {
+    var distances = _.map(points, function (p) {
       return distance(p, point);
     });
 
-    let idx = distances.indexOf(Math.min.apply(null, distances));
+    var idx = distances.indexOf(Math.min.apply(null, distances));
     if (idx > -1) return points[idx];
     return null;
   };
@@ -107,27 +107,27 @@ define([
   };
 
   function distance(a, b) {
-    let dx = a.x - b.x;
-    let dy = a.y - b.y;
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  let exports = {};
-  let $diagram;
+  var exports = {};
+  var $diagram;
 
   function getLinks() {
     // targets are vars_in, sources are vars_out
-    let sources = [],
+    var sources = [],
       targets = [],
       links = [],
       i, j;
-    let modules = ModuleFactory.getModules();
+    var modules = ModuleFactory.getModules();
     for (i = 0; i < modules.length; i++) {
-      let module = modules[i].definition;
+      var module = modules[i].definition;
 
-      let vars_in = module.vars_in || [];
+      var vars_in = module.vars_in || [];
       for (j = 0; j < vars_in.length; j++) {
-        let var_in = module.vars_in[j];
+        var var_in = module.vars_in[j];
         if (!var_in.name) continue;
         targets.push({
           module: modules[i],
@@ -137,9 +137,9 @@ define([
         });
       }
 
-      let vars_out = module.vars_out || [];
+      var vars_out = module.vars_out || [];
       for (j = 0; j < vars_out.length; j++) {
-        let var_out = module.vars_out[j];
+        var var_out = module.vars_out[j];
         if (!var_out.name || !var_out.event) continue;
         sources.push({
           id: DataObject.resurrect(module.id),
@@ -154,7 +154,7 @@ define([
     }
     for (let i = 0; i < targets.length; i++) {
       // Try to find source with same name
-      let source = _.filter(sources, function (s) {
+      var source = _.filter(sources, function (s) {
         return s.name === targets[i].name;
       });
 
@@ -189,7 +189,7 @@ define([
     }
 
     for (let i = 0; i < sources.length; i++) {
-      let target = _.filter(targets, function (t) {
+      var target = _.filter(targets, function (t) {
         return t.name === sources[i].name;
       });
 
@@ -201,16 +201,16 @@ define([
   }
 
   function getNodes(links) {
-    let width = 1400,
+    var width = 1400,
       height = 900;
-    let nodes = {};
+    var nodes = {};
     links.forEach(function (link) {
       link.source = nodes[link.source.id] || (nodes[link.source.id] = { info: link.source });
       link.target = nodes[link.target.id] || (nodes[link.target.id] = { info: link.target });
     });
-    let n = Object.keys(nodes).length,
+    var n = Object.keys(nodes).length,
       i = 0;
-    for (let key in nodes) {
+    for (var key in nodes) {
       // nodes[key].x = i*width/n + (Math.random()-0.5) * i/n/10 * width;
       // nodes[key].y = i*height/n + (Math.random()-0.5) *i/n/10 * height;
       nodes[key].x = Math.random() * width;
@@ -223,11 +223,11 @@ define([
 
   exports.showVariableDiagram = function () {
     Promise.all([Util.require('d3'), Util.loadCss('src/util/diagram.css')]).then(function ([d3]) {
-      let type = 'rect'; // Use circ or rect
-      let links = getLinks();
-      let nodes = getNodes(links);
+      var type = 'rect'; // Use circ or rect
+      var links = getLinks();
+      var nodes = getNodes(links);
 
-      let width = 1400,
+      var width = 1400,
         height = 900,
         nodeRadius = 50,
         nodeBox;
@@ -246,13 +246,13 @@ define([
         };
       }
 
-      let linkBox = {
+      var linkBox = {
         width: 150,
         height: 200
       };
 
 
-      let force = d3.layout.force()
+      var force = d3.layout.force()
         .nodes(d3.values(nodes))
         .links(links)
         .size([width, height])
@@ -263,11 +263,11 @@ define([
 
       $diagram = $('<div class="ci-diagram">');
 
-      let zoom = d3.behavior.zoom()
+      var zoom = d3.behavior.zoom()
         .scaleExtent([0.2, 10])
         .on('zoom', zoomed);
 
-      let svg = d3.select($diagram[0]).append('svg')
+      var svg = d3.select($diagram[0]).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('width', '100%')
         .attr('height', '100%');
@@ -297,7 +297,7 @@ define([
         .append('path')
         .attr('d', 'M0,-5L10,0L0,5');
 
-      let path = svg.append('g').selectAll('path')
+      var path = svg.append('g').selectAll('path')
         .data(force.links())
         .enter().append('path')
         .attr('class', function (d) {
@@ -307,7 +307,7 @@ define([
           return `url(#${d.type})`;
         });
 
-      let node;
+      var node;
       if (type === 'circ') {
         node = svg.append('g').selectAll('circle')
           .data(force.nodes())
@@ -329,7 +329,7 @@ define([
       // .call(drag1);
 
 
-      let linkText = svg.append('g')
+      var linkText = svg.append('g')
         .selectAll('foreignObject')
         .data(force.links())
         .enter()
@@ -350,7 +350,7 @@ define([
         .attr('class', 'arrow-text')
         .html(linkTextContent);
 
-      let nodeText = svg.append('g')
+      var nodeText = svg.append('g')
         .selectAll('foreignObject')
         .data(force.nodes())
         .enter().append('foreignObject')
@@ -377,7 +377,7 @@ define([
       }
 
       function nodeTextContent(d) {
-        let res = [];
+        var res = [];
         res.push(`${d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown'}<br/>`);
         res.push(d.info.module.definition.title);
 
@@ -385,8 +385,8 @@ define([
       }
 
       function linkTextContent(d) {
-        let template = 'Event:&nbsp;<%= event %><br/>\nName:&nbsp;<%= name %><br/>\n<!--<% if(rel_out) { %> Ref out:&nbsp;<%= rel_out %><br/><% } %>-->\n<!--<% if(rel_in) { %> Ref in:&nbsp;<%= rel_in %><br/><% } %>-->\n<% if(jpath.length > 0) { %> <br/>jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
-        let compiled = _.template(template);
+        var template = 'Event:&nbsp;<%= event %><br/>\nName:&nbsp;<%= name %><br/>\n<!--<% if(rel_out) { %> Ref out:&nbsp;<%= rel_out %><br/><% } %>-->\n<!--<% if(rel_in) { %> Ref in:&nbsp;<%= rel_in %><br/><% } %>-->\n<% if(jpath.length > 0) { %> <br/>jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
+        var compiled = _.template(template);
         return compiled(DataObject.resurrect(d));
       }
 
@@ -398,14 +398,14 @@ define([
       }
 
       function linkArc(d) {
-        let dx = d.target.x - d.source.x,
+        var dx = d.target.x - d.source.x,
           dy = d.target.y - d.source.y,
           dr = Math.sqrt(dx * dx + dy * dy);
         return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y + -40}`;
       }
 
       function linkLine(d) {
-        let target = getTargetPosition(d);
+        var target = getTargetPosition(d);
         return `M${target.from.x},${target.from.y}L${target.to.x} ${target.to.y}`;
       }
 
@@ -417,7 +417,7 @@ define([
       }
 
       function transformLink(d) {
-        let target = getTargetPosition(d);
+        var target = getTargetPosition(d);
         return `translate(${(target.from.x + target.to.x) / 2 - linkBox.width / 2},${(target.from.y + target.to.y) / 2 - linkBox.height / 2})`;
       }
 
@@ -460,10 +460,10 @@ define([
         }
       }
 
-      let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-      let wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-      let f = 0.94;
-      let dw, dh; // dialog height and width
+      var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      var f = 0.94;
+      var dw, dh; // dialog height and width
       if (ww / width < wh / height) {
         dw = f * ww;
         dh = dw * height / width;

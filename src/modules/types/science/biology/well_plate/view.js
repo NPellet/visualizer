@@ -201,7 +201,7 @@ define(['modules/default/defaultview', 'src/util/api', 'src/util/color'], functi
       },
 
       plateSetup: function (moduleValue) {
-        let list = moduleValue.get();
+        var list = moduleValue.get();
         checkJpath(list);
         let path = list.color ? 'color' : 'group';
         if (path) {

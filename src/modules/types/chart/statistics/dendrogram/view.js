@@ -59,7 +59,7 @@ define([
         this._idHash[currentNode.id] = currentNode;
       }
       if (Array.isArray(currentNode.children)) {
-        for (let i = 0; i < currentNode.children.length; i++) {
+        for (var i = 0; i < currentNode.children.length; i++) {
           this.getIdHash(currentNode.children[i]);
         }
       }
@@ -99,7 +99,7 @@ define([
 
     doAnnotation() {
       if (this._tree) {
-        let options = this.getOptions();
+        var options = this.getOptions();
         this._value = Tree.annotateTree(this._tree, this._data || [], options);
         this.updateTree();
       }
@@ -116,8 +116,8 @@ define([
     },
 
     getOptions() {
-      let options = {};
-      let getConf = this.module.getConfiguration;
+      var options = {};
+      var getConf = this.module.getConfiguration;
       maybePutOption(options, '$color', getConf('jpathColor'));
       maybePutOption(options, '$dim', getConf('jpathSize'));
       maybePutOption(options, '$type', getConf('jpathShape'));
@@ -144,7 +144,7 @@ define([
     },
 
     updateOptions() {
-      let cfg = this.module.getConfiguration;
+      var cfg = this.module.getConfiguration;
 
       this._options = {
         nodeSize: cfg('nodeSize') || 1,
@@ -153,20 +153,20 @@ define([
     },
 
     createDendrogram() {
-      let actions = this.module.vars_out();
+      var actions = this.module.vars_out();
       if (!actions || actions.length == 0) return;
-      let hover = (node) => {
+      var hover = (node) => {
         this.module.controller.onHover(this._idHash[node.id]);
       };
-      let click = (node) => {
+      var click = (node) => {
         this.module.controller.onClick(this._idHash[node.id]);
       };
 
-      let cfg = this.module.getConfiguration;
+      var cfg = this.module.getConfiguration;
 
       this.dom.empty();
 
-      let options = this._options;
+      var options = this._options;
       this._rgraph = new $jit.RGraph({
         injectInto: this._id,
         // withLabels: true,
@@ -222,7 +222,7 @@ define([
 
         Events: {
           getRgraph(e) {
-            let src = e.srcElement.id.replace(/-.*/, '');
+            var src = e.srcElement.id.replace(/-.*/, '');
             if ($jit.existingInstance[src]) return $jit.existingInstance[src];
             // maybe we clicked on a label
             src = e.srcElement.parentElement.id.replace(/-.*/, '');
@@ -233,9 +233,9 @@ define([
           type: 'Native', // otherwise the events are only on the labels (if auto)
           onClick(node, eventInfo, e) {
             if (!node) return;
-            let rgraph = this.getRgraph(e);
+            var rgraph = this.getRgraph(e);
 
-            let currentNode;
+            var currentNode;
             // the problem is that the event may be taken by a hidden node ...
             if (node.collapsed) {
               // we click on a collapsed node
@@ -309,7 +309,7 @@ define([
       if (this._highlighted[id] && val) return;
       if (!this._highlighted[id] && !val) return;
       this._highlighted[id] = val;
-      for (let i in this._currentValue._atoms) {
+      for (var i in this._currentValue._atoms) {
         if (this._currentValue._atoms[i].indexOf(id) > -1) {
           API.highlight(i, val);
         }

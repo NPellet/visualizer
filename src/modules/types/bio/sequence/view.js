@@ -40,13 +40,13 @@ define([
     },
 
     render: function () {
-      let that = this;
+      var that = this;
       this.clear();
       if (!this.sequence) return;
 
-      let seq = String(this.sequence);
-      let annotations = this.annotations || {};
-      let mySequence = new window.Biojs.Sequence({
+      var seq = String(this.sequence);
+      var annotations = this.annotations || {};
+      var mySequence = new window.Biojs.Sequence({
         sequence: seq,
         target: this.dom.attr('id'),
         format: 'CODATA',

@@ -27,10 +27,10 @@ define([
   Util.loadCss('components/leaflet/dist/leaflet.css');
 
   // Custom icon that accepts Marker objects
-  let CustomIcon = L.Icon.extend({
+  var CustomIcon = L.Icon.extend({
     createIcon: function (oldIcon) {
       this._marker = this.options.marker;
-      let div = this._marker.div[0];
+      var div = this._marker.div[0];
       this._setIconStyles(div, 'icon');
       return div;
     },
@@ -44,7 +44,7 @@ define([
   }
 
   function Marker(options) {
-    let merged = (this.options = $.extend({}, Marker.defaultOptions, options));
+    var merged = (this.options = $.extend({}, Marker.defaultOptions, options));
     this.div = $('<div>');
     this.kind = merged.kind;
     switch (merged.kind) {
@@ -53,7 +53,7 @@ define([
         break;
       case 'circle':
         this.div.css('border-radius', merged.size);
-       
+      // eslint-disable-line no-fallthrough
       default:
         this.div.css('background', merged.color);
         break;
@@ -119,7 +119,7 @@ define([
     },
     inDom: function () {
       this.dom.empty();
-      let that = this;
+      var that = this;
 
       this.map = L.map(this.mapID, {
         zoomAnimation: false
@@ -127,7 +127,7 @@ define([
 
       this.getTileLayer().addTo(that.map);
 
-      let firstZoom = true;
+      var firstZoom = true;
 
       function onZoom() {
         if (firstZoom) {
@@ -143,9 +143,9 @@ define([
       this.map.on('drag', that.module.controller.moveAction, that);
       this.map.on('zoomend', onZoom);
 
-      let defaultCenter = [46.522117, 6.566144];
-      let configCenter = this.module.getConfiguration('mapcenter');
-      let promise;
+      var defaultCenter = [46.522117, 6.566144];
+      var configCenter = this.module.getConfiguration('mapcenter');
+      var promise;
       if (configCenter) promise = Promise.resolve(configCenter);
       else {
         promise = new Promise(function (resolve) {
@@ -167,7 +167,7 @@ define([
         });
       }
       promise.then(function (value) {
-        let zoom = that.module.getConfiguration('mapzoom') || 10;
+        var zoom = that.module.getConfiguration('mapzoom') || 10;
         that.map.setView(value, zoom);
         that.resolveReady();
       });
@@ -188,8 +188,8 @@ define([
       },
       geojson: function (geo, varname) {
         try {
-          let geoJson = geo.get();
-          let converted = L.geoJson(geoJson, {
+          var geoJson = geo.get();
+          var converted = L.geoJson(geoJson, {
             pointToLayer: (feature, latlng) => {
               return L.circleMarker(latlng, {
                 radius: 4,
@@ -252,8 +252,8 @@ define([
       },
 
       point: function (point, varname) {
-        let latlng = L.latLng(point[0], point[1]);
-        let circle = L.circle(latlng, 20, {
+        var latlng = L.latLng(point[0], point[1]);
+        var circle = L.circle(latlng, 20, {
           color: '#f00',
           fillColor: '#f00'
         });
@@ -284,13 +284,13 @@ define([
       });
     },
     updateFit: function (varname) {
-      let fit = this.module.getConfiguration('autofit');
-      let bounds;
+      var fit = this.module.getConfiguration('autofit');
+      var bounds;
       if (fit === 'var') {
         bounds = this.mapBounds[varname];
       } else if (fit === 'all') {
         bounds = new L.LatLngBounds();
-        for (let i in this.mapBounds) {
+        for (var i in this.mapBounds) {
           bounds.extend(this.mapBounds[i]);
         }
       }
@@ -303,7 +303,7 @@ define([
     },
     onActionReceive: {
       position: function (val) {
-        let currentCenter = this.map.getCenter();
+        var currentCenter = this.map.getCenter();
         if (
           round(val[0]) !== round(currentCenter.lat) ||
           round(val[1]) !== round(currentCenter.lng)
@@ -312,8 +312,8 @@ define([
         }
       },
       zoom: function (val) {
-        let min = this.map.getMinZoom();
-        let max = this.map.getMaxZoom();
+        var min = this.map.getMinZoom();
+        var max = this.map.getMaxZoom();
         if (val < min) val = min;
         else if (val > max) val = max;
         if (val !== this.map.getZoom()) {
@@ -322,8 +322,8 @@ define([
       }
     },
     getTileLayer: function () {
-      let baselayer = this.module.getConfiguration('maptiles') || 'osm';
-      let tileLayer = { parameters: {} };
+      var baselayer = this.module.getConfiguration('maptiles') || 'osm';
+      var tileLayer = { parameters: {} };
       switch (baselayer) {
         case 'hb':
           tileLayer.template =
@@ -342,18 +342,18 @@ define([
   });
 
   function addEvents(layer, varname) {
-    let data = layer.feature.properties || {};
-    let that = this;
+    var data = layer.feature.properties || {};
+    var that = this;
 
     this.module.data = data;
 
-    let icon;
+    var icon;
     if (layer instanceof L.Marker) {
-      let options = {};
+      var options = {};
       if (DataObject.isDataObject(data)) {
         $.extend(options, data.getChildSync(this.markerjpath));
       }
-      let marker = new Marker(options);
+      var marker = new Marker(options);
       icon = customIcon(marker);
       layer.setIcon(icon);
     }

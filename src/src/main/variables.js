@@ -6,10 +6,10 @@ define([
   'src/main/datas',
   'src/util/debug'
 ], function ($, Util, Datas, Debug) {
-  let data = new DataObject();
+  var data = new DataObject();
   data.onChange(handleChange);
 
-  let allVariables = new Map();
+  var allVariables = new Map();
 
   class Variable {
     constructor(name) {
@@ -46,10 +46,10 @@ define([
         jpath.shift();
       }
 
-      let currentJpath = this._jpath;
-      let same = true;
+      var currentJpath = this._jpath;
+      var same = true;
       if (currentJpath && jpath.length === currentJpath.length) {
-        for (let i = 0; i < currentJpath.length; i++) {
+        for (var i = 0; i < currentJpath.length; i++) {
           if (String(currentJpath[i]) !== String(jpath[i])) {
             same = false;
             break;
@@ -133,7 +133,7 @@ define([
     }
 
     listen(module, callback) {
-      let id = module.getId();
+      var id = module.getId();
       // If the module already listens for this variable, we should definitely not listen for it again.
       if (!this._listenedBy.has(id)) {
         this._listeners.push({
@@ -146,7 +146,7 @@ define([
 
     unlisten(moduleId) {
       if (this._listenedBy.has(moduleId)) {
-        for (let i = 0, ii = this._listeners.length; i < ii; i++) {
+        for (var i = 0, ii = this._listeners.length; i < ii; i++) {
           if (this._listeners[i].id === moduleId) {
             this._listeners.splice(i, 1);
             break; // There should only be one listener per id, do not check further
@@ -198,7 +198,7 @@ define([
         this._setValue(value);
         return value;
       });
-      let prom = this.currentPromise.catch((err) => {
+      var prom = this.currentPromise.catch((err) => {
         if (
           err.message === 'filter' || // Already caught
           err.message === 'latency' // Expected
@@ -211,7 +211,7 @@ define([
         );
       });
 
-      for (let i = 0, l = this._listeners.length; i < l; i++) {
+      for (var i = 0, l = this._listeners.length; i < l; i++) {
         if (this._listeners[i].id !== moduleId) {
           this._listeners[i].callback.call(this, this);
         }
@@ -225,8 +225,8 @@ define([
   }
 
   function unlisten(module) {
-    let moduleId = module.getId();
-    for (let variable of allVariables.values()) {
+    var moduleId = module.getId();
+    for (var variable of allVariables.values()) {
       variable.unlisten(moduleId);
     }
   }
@@ -245,7 +245,7 @@ define([
   }
 
   function setVariable(name, jpath, newData, filter) {
-    let variable = getVariable(name);
+    var variable = getVariable(name);
 
     variable.setFilter(filter || null);
 
@@ -264,10 +264,10 @@ define([
     if (event.jpath.length === 0) {
       return; // Direct change of data. Can happen with API.createData using undefined value
     }
-    let eventJpath = event.jpath;
-    let el = eventJpath.length;
-    let varJpath, j, l;
-    loop1: for (let variable of allVariables.values()) {
+    var eventJpath = event.jpath;
+    var el = eventJpath.length;
+    var varJpath, j, l;
+    loop1: for (var variable of allVariables.values()) {
       varJpath = variable.getjPath();
       if (varJpath) {
         l = Math.min(varJpath.length, el);

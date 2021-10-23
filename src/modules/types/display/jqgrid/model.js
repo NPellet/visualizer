@@ -11,7 +11,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
 
     getjPath: function (rel, temporary) {
-      let data;
+      var data;
 
       switch (rel) {
         case 'selectedrows':
@@ -29,7 +29,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
           break;
       }
 
-      let jpaths = [];
+      var jpaths = [];
       Traversing.getJPathsFromElement(data, jpaths);
       return jpaths;
     }

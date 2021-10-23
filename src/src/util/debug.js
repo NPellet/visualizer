@@ -2,11 +2,11 @@
 
 define(['loglevel'], function (log) {
   // Fallback to Date for incompatible navigators (Safari)
-  let perfObj = window.performance ? window.performance : Date;
+  var perfObj = window.performance ? window.performance : Date;
 
   log.setLevel('trace');
 
-  let Levels = {
+  var Levels = {
     NODEBUG: -1,
     ERROR: 0,
     WARN: 1,
@@ -15,7 +15,7 @@ define(['loglevel'], function (log) {
     TRACE: 4
   };
 
-  let levelMapping = {
+  var levelMapping = {
     '-1': 'silent',
     0: 'error',
     1: 'warn',
@@ -24,9 +24,9 @@ define(['loglevel'], function (log) {
     4: 'trace'
   };
 
-  let debugLevel = Levels.TRACE;
+  var debugLevel = Levels.TRACE;
 
-  let Debug = {
+  var Debug = {
     Levels: Levels,
 
     setDebugLevel: function (level) {
@@ -57,7 +57,7 @@ define(['loglevel'], function (log) {
     trace: log.trace,
 
     timer: function () {
-      let t = new Timer();
+      var t = new Timer();
       t.start();
       return t;
     },
@@ -110,8 +110,8 @@ define(['loglevel'], function (log) {
     },
     step: function (format) {
       if (this._started && !this._paused) {
-        let now = perfObj.now();
-        let time = now - this._start;
+        var now = perfObj.now();
+        var time = now - this._start;
         this._start = now;
         this._total += time;
         this._steps.push(time);
@@ -120,7 +120,7 @@ define(['loglevel'], function (log) {
     },
     lap: function (format) {
       if (this._started && !this._paused) {
-        let time = perfObj.now() - this._start;
+        var time = perfObj.now() - this._start;
         this._laps.push(time);
         return formatTime(this._total, format);
       }
@@ -129,7 +129,7 @@ define(['loglevel'], function (log) {
       Debug.info(this.time());
     },
     sum: function (name) {
-      let elapsed = perfObj.now() - this._start;
+      var elapsed = perfObj.now() - this._start;
       if (name) {
         if (!this._sums[name]) {
           this._sums[name] = 0;
@@ -149,8 +149,8 @@ define(['loglevel'], function (log) {
       });
     },
     getSums: function (format) {
-      let result = {};
-      for (let i in this._sums) {
+      var result = {};
+      for (var i in this._sums) {
         result[i] = formatTime(this._sums[i], format);
       }
       return result;

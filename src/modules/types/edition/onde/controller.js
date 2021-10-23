@@ -177,17 +177,17 @@ define([
   };
 
   Controller.prototype.onBeforeSave = function (formValue) {
-    let varname = formValue.module_specific_config[0].groups.data[0].varname[0];
-    let saveInView =
+    var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
+    var saveInView =
       formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
-    let vars_in = formValue.vars_in[0].groups.group[0];
-    let output = formValue.module_specific_config[0].groups.group[0].output[0];
+    var vars_in = formValue.vars_in[0].groups.group[0];
+    var output = formValue.module_specific_config[0].groups.group[0].output[0];
     if (saveInView && output !== 'modified') {
       Debug.warn(
         'onde: if save in view is activated you probably want to modify var in'
       );
     }
-    let varin = vars_in.filter(function (v) {
+    var varin = vars_in.filter(function (v) {
       return v.rel === 'inputValue';
     })[0];
     if (varname && saveInView) {
@@ -207,8 +207,8 @@ define([
   };
 
   Controller.prototype.getSchema = function () {
-    let mode = this.module.getConfiguration('mode');
-    let schema = {};
+    var mode = this.module.getConfiguration('mode');
+    var schema = {};
     if (
       (mode === 'object' || mode === 'both') &&
       this.module.view.inputVal !== null
@@ -216,8 +216,8 @@ define([
       schema = Schema.fromObject(this.module.view.inputVal);
     }
     if (mode === 'schema' || mode === 'both') {
-      let schemaSource = this.module.getConfiguration('schemaSource');
-      let intSchema;
+      var schemaSource = this.module.getConfiguration('schemaSource');
+      var intSchema;
       if (schemaSource === 'variable') intSchema = this.inputSchema;
       else intSchema = Yaml.safeLoad(this.module.getConfiguration('schema'));
       $.extend(true, schema, intSchema);
@@ -229,7 +229,7 @@ define([
 
   function schemaJpath(schema, jpath) {
     if (schema.type === 'object' && typeof schema.properties === 'object') {
-      for (let key in schema.properties) {
+      for (var key in schema.properties) {
         schema.jpath = jpath;
         var njpath = jpath.slice();
         njpath.push(key);
@@ -246,7 +246,7 @@ define([
   }
 
   Controller.prototype.onSubmit = function (data) {
-    let outputType = this.module.getConfiguration('output');
+    var outputType = this.module.getConfiguration('output');
     if (outputType === 'modified' && this.module.view.inputObj) {
       this.module.view.inputObj.mergeWith(data, this.module.getId());
     }

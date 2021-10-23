@@ -61,17 +61,17 @@ define([
       // 2. create an empty chart
       // 3. apply the data
 
-      let data = this._convertChartToData(this.value);
+      var data = this._convertChartToData(this.value);
 
       this.createChart(this.value);
 
       this._radar.parse(data, 'json');
 
-      let that = this;
+      var that = this;
       this._radar.attachEvent('onMouseMove', function (id, ev, trg) {
         data.forEach(function (entry) {
           if (entry.id == id) {
-            let obj = entry;
+            var obj = entry;
             if (
               ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] == 'd'
             ) {
@@ -93,14 +93,14 @@ define([
     },
 
     _convertChartToData: function (value) {
-      let data = [];
+      var data = [];
       if (value && Array.isArray(value.data)) {
-        for (let j = 0; j < value.data[0].x.length; j++) {
+        for (var j = 0; j < value.data[0].x.length; j++) {
           data[j] = {};
           data[j].xunit = value.data[0].x[j];
           data[j]._highlight = [];
-          for (let i = 0; i < value.data.length; i++) {
-            let index = `serie${i}`;
+          for (var i = 0; i < value.data.length; i++) {
+            var index = `serie${i}`;
             data[j][index] = value.data[i].y[j];
             if (value.data[i]._highlight && value.data[i]._highlight[j]) {
               data[j]._highlight.push({
@@ -114,14 +114,14 @@ define([
       return data;
     },
     getRandomColor: function (nbColor, i) {
-      let currentColor = (360 / nbColor) * i;
-      let color = `hsla(${currentColor},100%,50%,0.3)`;
+      var currentColor = (360 / nbColor) * i;
+      var color = `hsla(${currentColor},100%,50%,0.3)`;
 
       return color;
     },
 
     createChart: function (chart, data) {
-      let cfg = this.module.getConfiguration;
+      var cfg = this.module.getConfiguration;
       switch (cfg('preference')) {
         case 'radar':
           if (!chart.data[0].color) {
@@ -155,7 +155,7 @@ define([
 
           var val = [];
 
-          for (let i = 0; i < chart.data.length; i++) {
+          for (var i = 0; i < chart.data.length; i++) {
             if (i != 0) {
               if (!chart.data[i].color) {
                 chart.data[i].color = this.getRandomColor(chart.data.length, i);

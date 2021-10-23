@@ -15,9 +15,9 @@ define([
   'components/ml/dist/ml.min',
   'lib/threejs/TrackballControls'
 ], function (Default, Data, Traversing, API, Util, colorUtil, colorbar, _, THREE, Debug, chroma, ml) {
-  let separation = 0.55,
+  var separation = 0.55,
     incrementation = 0.001;
-  let Stat = ml.Stat;
+  var Stat = ml.Stat;
 
   function addKeyHandler() {
     document.addEventListener('keyup', onKeyUp, false);
@@ -45,21 +45,21 @@ define([
   addKeyHandler();
 
   function preloadImages(img) {
-    for (let key in img) {
+    for (var key in img) {
       THREE.ImageUtils.loadTexture(img[key]);
     }
   }
 
   function generateRandomArray(n, min, max) {
-    let result = [];
-    for (let i = 0; i < n; i++) {
+    var result = [];
+    for (var i = 0; i < n; i++) {
       result.push(Math.random() * (max - min) + min);
     }
     return result;
   }
 
   function componentToHex(c) {
-    let hex = c.toString(16);
+    var hex = c.toString(16);
     return hex.length == 1 ? `0${hex}` : hex;
   }
 
@@ -69,35 +69,35 @@ define([
 
   function keepDecimals(num, n) {
     num = `${num}`;
-    let idx = num.indexOf('.');
+    var idx = num.indexOf('.');
     if (idx === -1) return +num;
     return num.slice(0, idx + n + 1);
   }
 
   function rotateAroundObjectAxis(object, axis, radians) {
-    let rotObjectMatrix = new THREE.Matrix4();
+    var rotObjectMatrix = new THREE.Matrix4();
     rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
     object.applyMatrix(rotObjectMatrix);
     // object.rotation.setEulerFromRotationMatrix(object.matrix);
   }
 
-  let NORM_CONSTANT = 1000;
-  let TOOLTIP_WIDTH = 100;
-  let ZOOM_START = 3;
-  let DEFAULT_BACKGROUND_COLOR = '#eeeeee';
-  let DEFAULT_PROJECTION_COLOR = '#888888';
-  let DEFAULT_POINT_COLOR = 'lightblue';
-  let DEFAULT_POINT_RADIUS = 0.03;
-  let DEFAULT_POINT_SHAPE = 'sphere';
-  let DEFAULT_TEXT_COLOR = 'rgba(0,0,0,1)';
-  let HIGHLIGHT_OPACITY = 0.6;
-  let DELTA = NORM_CONSTANT / 1000;
-  let CAMERA_NEAR = 2;
-  let CAMERA_FAR = 10000;
+  var NORM_CONSTANT = 1000;
+  var TOOLTIP_WIDTH = 100;
+  var ZOOM_START = 3;
+  var DEFAULT_BACKGROUND_COLOR = '#eeeeee';
+  var DEFAULT_PROJECTION_COLOR = '#888888';
+  var DEFAULT_POINT_COLOR = 'lightblue';
+  var DEFAULT_POINT_RADIUS = 0.03;
+  var DEFAULT_POINT_SHAPE = 'sphere';
+  var DEFAULT_TEXT_COLOR = 'rgba(0,0,0,1)';
+  var HIGHLIGHT_OPACITY = 0.6;
+  var DELTA = NORM_CONSTANT / 1000;
+  var CAMERA_NEAR = 2;
+  var CAMERA_FAR = 10000;
 
 
-  let baseURL = `${require.toUrl('modules/types/chart/basic/scatter3D')}/`;
-  let shapeImages = {
+  var baseURL = `${require.toUrl('modules/types/chart/basic/scatter3D')}/`;
+  var shapeImages = {
     sphere: `${baseURL}img/ball.png`,
     spheret: `${baseURL}img/ballt.png`,
     tetrahedron: `${baseURL}img/tetrahedron2.png`,
@@ -119,7 +119,7 @@ define([
 
   $.fn.listHandlers = function (events, outputFunction) {
     return this.each(function (i) {
-      let that = this,
+      var that = this,
         dEvents = $(this).data('events');
       if (!dEvents) return;
       $.each(dEvents, function (name, handler) {
@@ -139,15 +139,15 @@ define([
   $.extend(true, View.prototype, Default, {
 
     _initThreejs: function () {
-      let that = this;
-      let container;
-      let pointedObjects = [];
-      let lastMouseMoveEvent = null;
-      let currentPoint = null;
-      let drawTickLabelsThrottled = _.throttle(this._drawTickLabels.bind(this), 500);
-      let drawAxisLabelsThrottled = _.throttle(this._drawAxisLabels.bind(this), 500);
-      let drawGraphTitleThrottled = _.throttle(this._drawGraphTitle.bind(this), 500);
-      let projections = [];
+      var that = this;
+      var container;
+      var pointedObjects = [];
+      var lastMouseMoveEvent = null;
+      var currentPoint = null;
+      var drawTickLabelsThrottled = _.throttle(this._drawTickLabels.bind(this), 500);
+      var drawAxisLabelsThrottled = _.throttle(this._drawAxisLabels.bind(this), 500);
+      var drawGraphTitleThrottled = _.throttle(this._drawGraphTitle.bind(this), 500);
+      var projections = [];
 
       init();
       animate();
@@ -159,19 +159,19 @@ define([
         if (that._3d === 'sideBySide') width = that.width / 2;
         else width = that.width;
         var height = that.height;
-        let vector = new THREE.Vector3(
+        var vector = new THREE.Vector3(
           (event.offsetX / width) * 2 - 1,
           -(event.offsetY / height) * 2 + 1,
           0.5
         );
         vector.unproject(that.camera);
 
-        let ray = new THREE.Ray(that.camera.position,
+        var ray = new THREE.Ray(that.camera.position,
           vector.sub(that.camera.position).normalize());
 
-        let count = 0;
-        let intersects = [];
-        for (let i = 0; i < that.mathPoints.length; i++) {
+        var count = 0;
+        var intersects = [];
+        for (var i = 0; i < that.mathPoints.length; i++) {
           if (ray.isIntersectionSphere(that.mathPoints[i])) {
             count++;
             intersects.push({
@@ -192,11 +192,11 @@ define([
 
       function showPointCoordinates(index) {
         if (that._configCheckBox('displayPointCoordinates', 'onhover')) {
-          let arr = [];
+          var arr = [];
           arr.push(`X: ${parseFloat(that._data.x[index].toPrecision(3)).toExponential()}`);
           arr.push(`Y: ${parseFloat(that._data.y[index].toPrecision(3)).toExponential()}`);
           arr.push(`Z: ${parseFloat(that._data.z[index].toPrecision(3)).toExponential()}`);
-          let $legend = $('#legend_point_coordinates');
+          var $legend = $('#legend_point_coordinates');
           $legend.html(arr.join('<br/>'));
           $legend.show();
         }
@@ -209,14 +209,14 @@ define([
       }
 
       function onMouseMove(event) {
-        let intersects;
+        var intersects;
         intersects = getIntersectsBis(event);
         pointedObjects = intersects;
         lastMouseMoveEvent = event;
         if (intersects.length > 0) {
-          let index = intersects[0];
-          let newPoint = index;
-          let pointChanged = (newPoint !== currentPoint);
+          var index = intersects[0];
+          var newPoint = index;
+          var pointChanged = (newPoint !== currentPoint);
           if (currentPoint && pointChanged) {
             // rehighlight currentPoint -> newPoint
             API.highlightId(that._data._highlight[currentPoint], 0);
@@ -242,20 +242,20 @@ define([
         if (pointedObjects.length === 0) {
           return;
         }
-        let jpath = that.module.getConfiguration('tooltipJpath');
+        var jpath = that.module.getConfiguration('tooltipJpath');
         if (!jpath) {
           return;
         }
 
-        let data = that._data;
+        var data = that._data;
 
         if (!data.info) {
           return;
         }
 
-        let info = data.info[pointedObjects[0]];
-        let label = info.getChildSync(jpath);
-        let $tooltip = that.$tooltip;
+        var info = data.info[pointedObjects[0]];
+        var label = info.getChildSync(jpath);
+        var $tooltip = that.$tooltip;
         $tooltip.css('left', lastMouseMoveEvent.offsetX - TOOLTIP_WIDTH);
         $tooltip.css('top', lastMouseMoveEvent.offsetY);
         $tooltip.css('width', TOOLTIP_WIDTH);
@@ -272,16 +272,16 @@ define([
           return;
         }
 
-        let index = pointedObjects[0];
+        var index = pointedObjects[0];
         if (projections.length > 0) {
           hideProjection();
         }
-        let options = {
+        var options = {
           color: 0x888888
         };
         // xy projection
-        let p1 = new THREE.Vector3(that._data.normalizedData.x[index], that._data.normalizedData.y[index], that._data.normalizedData.z[index]);
-        let p2 = new THREE.Vector3(that._data.normalizedData.x[index], that._data.normalizedData.y[index], 0);
+        var p1 = new THREE.Vector3(that._data.normalizedData.x[index], that._data.normalizedData.y[index], that._data.normalizedData.z[index]);
+        var p2 = new THREE.Vector3(that._data.normalizedData.x[index], that._data.normalizedData.y[index], 0);
         projections.push(that._drawLine(p1, p2, options));
         projections.push(that._drawCircle({
           color: '#000000',
@@ -320,7 +320,7 @@ define([
       }
 
       function hideProjection() {
-        for (let i = 0; i < projections.length; i++) {
+        for (var i = 0; i < projections.length; i++) {
           that.scene.remove(projections[i]);
         }
         projections = [];
@@ -369,7 +369,7 @@ define([
         that.$tooltip.hide();
 
         $(that.dom).append('<div id="legend" style="z-index: 10000; right:10px ;position:absolute; top: 25px; height: auto; background-color: #ffffff;"> </div>');
-        let $legend = $('#legend');
+        var $legend = $('#legend');
         $legend.append('<div id="legend_titles"></div>');
         $legend.append('<div id="legend_point_coordinates"></div>');
         $legend.css('background-color', that.module.getConfiguration('backgroundColor')).css('text-align', 'right');
@@ -381,7 +381,7 @@ define([
 
         function onHover() {
           if (pointedObjects.length > 0) {
-            let j = pointedObjects[0];
+            var j = pointedObjects[0];
             that.module.controller.onHover(j);
           }
         }
@@ -419,8 +419,8 @@ define([
 
         if (that._3d) {
           that.camera.updateMatrix();
-          let leftPos = new THREE.Vector3(-separation, 0, 0);
-          let rightPos = new THREE.Vector3(separation, 0, 0);
+          var leftPos = new THREE.Vector3(-separation, 0, 0);
+          var rightPos = new THREE.Vector3(separation, 0, 0);
           that.camera.localToWorld(leftPos);
           that.camera.localToWorld(rightPos);
 
@@ -459,14 +459,14 @@ define([
 
 
     _drawGraph: function () {
-      let that = this;
+      var that = this;
       // Remove all objects
       _.keys(that.scene.children).forEach(function (key) {
         that.scene.remove(that.scene.children[key]);
       });
 
 
-      let light;
+      var light;
       // HEADLIGHT ============
       light = new THREE.AmbientLight(0x222222, 1);
       that.scene.add(light);
@@ -494,15 +494,15 @@ define([
     },
 
     _drawPointsQuick: function () {
-      let that = this;
+      var that = this;
       if (that._mainParticleObjects) {
         for (var shape in that._mainParticleObjects) {
           that.scene.remove(that._mainParticleObjects[shape]);
         }
       }
       that._mainParticleObjects = {};
-      let m = {};
-      for (let i = 0; i < that._data.shape.length; i++) {
+      var m = {};
+      for (var i = 0; i < that._data.shape.length; i++) {
         m[that._data.shape[i]] = m[that._data.shape[i]] || [];
         m[that._data.shape[i]].push(i);
       }
@@ -532,7 +532,7 @@ define([
     },
 
     _normalizeData: function () {
-      let that = this;
+      var that = this;
       if (!this._data) {
         return;
       }
@@ -548,10 +548,10 @@ define([
       });
 
       // size normalization
-      let sizeConstant = this.module.getConfiguration('sizeNormalization');
-      let sizeMin = Stat.array.min(that._data.size);
-      let sizeMax = Stat.array.max(that._data.size);
-      let sizeInt = sizeMax - sizeMin;
+      var sizeConstant = this.module.getConfiguration('sizeNormalization');
+      var sizeMin = Stat.array.min(that._data.size);
+      var sizeMax = Stat.array.max(that._data.size);
+      var sizeInt = sizeMax - sizeMin;
       that._data.size = _.map(that._data.size, function (s) {
         return sizeInt === 0 ? sizeConstant / 2 : sizeConstant * ((s - sizeMin) / sizeInt + 0.01);
       });
@@ -562,7 +562,7 @@ define([
         return !isNaN(v);
       });
       this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
-      let gradient = this.module.getConfiguration('gradient');
+      var gradient = this.module.getConfiguration('gradient');
       gradient = _.filter(gradient, function (v) {
         return v.stopPosition !== undefined;
       });
@@ -592,25 +592,25 @@ define([
     },
 
     _computeMinMax: function () {
-      let that = this;
+      var that = this;
       if (!that._data) {
         return;
       }
       that.minMax = {};
-      let x = that._data.x;
-      let y = that._data.y;
-      let z = that._data.z;
+      var x = that._data.x;
+      var y = that._data.y;
+      var z = that._data.z;
 
       that._data.min = {};
       that._data.max = {};
       that._data.len = {};
 
-      let xm = that._meta.getChildSync(['axis', 0, 'min']);
-      let xM = that._meta.getChildSync(['axis', 0, 'max']);
-      let ym = that._meta.getChildSync(['axis', 1, 'min']);
-      let yM = that._meta.getChildSync(['axis', 1, 'max']);
-      let zm = that._meta.getChildSync(['axis', 2, 'min']);
-      let zM = that._meta.getChildSync(['axis', 2, 'max']);
+      var xm = that._meta.getChildSync(['axis', 0, 'min']);
+      var xM = that._meta.getChildSync(['axis', 0, 'max']);
+      var ym = that._meta.getChildSync(['axis', 1, 'min']);
+      var yM = that._meta.getChildSync(['axis', 1, 'max']);
+      var zm = that._meta.getChildSync(['axis', 2, 'min']);
+      var zM = that._meta.getChildSync(['axis', 2, 'max']);
 
       that._data.min.x = parseFloat(that.module.getConfiguration('minX')) || xm && xm.get() || Stat.array.min(x);
       that._data.min.y = parseFloat(that.module.getConfiguration('minY')) || ym && ym.get() || Stat.array.min(y);
@@ -624,7 +624,7 @@ define([
     },
 
     _getUnitPerTick: function (px, nbTick, valrange, axis) {
-      let that = this;
+      var that = this;
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
       if (!nbTick)
         nbTick = px / 10;
@@ -634,17 +634,17 @@ define([
 
       // So now the question is, how many units per ticks ?
       // Say, we have 0.0004 unit per tick
-      let unitPerTick = valrange / nbTick;
+      var unitPerTick = valrange / nbTick;
 
       // We take the log
-      let decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
+      var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
       /*
              Example:
              13'453 => Math.log10() = 4.12 => 4
              0.0000341 => Math.log10() = -4.46 => -5
              */
 
-      let numberToNatural = unitPerTick * Math.pow(10, -decimals);
+      var numberToNatural = unitPerTick * Math.pow(10, -decimals);
 
       /*
              Example:
@@ -653,9 +653,9 @@ define([
              */
 
 
-      let possibleTicks = [1, 2, 5, 10];
-      let closest = false;
-      for (let i = possibleTicks.length - 1; i >= 0; i--)
+      var possibleTicks = [1, 2, 5, 10];
+      var closest = false;
+      for (var i = possibleTicks.length - 1; i >= 0; i--)
         if (!closest || (Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural))) {
           closest = possibleTicks[i];
         }
@@ -668,7 +668,7 @@ define([
              */
 
       // Let's scale it back
-      let unitPerTickCorrect = closest * Math.pow(10, decimals);
+      var unitPerTickCorrect = closest * Math.pow(10, decimals);
       /*
              Example:
              13'453 (4) (1.345) (1) => 10'000
@@ -697,7 +697,7 @@ define([
       that._data.intervalPx[axis] = NORM_CONSTANT / (that._data.nbTicks[axis] - 1);
       that._data.decimals[axis] = decimals;
 
-      let intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
+      var intdec = Math.floor(Math.log(unitPerTickCorrect) / Math.log(10));
       if (Math.abs(intdec) <= 1) {
         that._data.intervalFactor[axis] = 1;
       } else {
@@ -708,10 +708,10 @@ define([
       if (!_.isFinite(that._data.intervalPx[axis])) {
         that._data.nbTicks[axis] = 3;
         that._data.intervalPx[axis] = NORM_CONSTANT / 2;
-        let num = that._data[axis][0];
+        var num = that._data[axis][0];
         that._data.decimals[axis] = that._data[axis][0] === 0 ? 0 : Math.floor(Math.log(Math.abs(num)) / Math.log(10));
         that._data.intervalFactor[axis] = Math.pow(10, that._data.decimals[axis]);
-        let diff = that._data.intervalFactor[axis];
+        var diff = that._data.intervalFactor[axis];
         that._data.realMin[axis] = Math.ceil((num - diff) / diff) * diff;
         that._data.realMax[axis] = Math.floor((num + diff) / diff) * diff;
         that._data.realLen[axis] = that._data.realMax[axis] - that._data.realMin[axis];
@@ -720,7 +720,7 @@ define([
     },
 
     _computeTickInfo: function () {
-      let that = this;
+      var that = this;
       that._data.realMin = {};
       that._data.realMax = {};
       that._data.realLen = {};
@@ -737,22 +737,22 @@ define([
     },
 
     _drawAxes: function () {
-      let that = this;
+      var that = this;
       if (!that._data) {
         return;
       }
 
       that._reinitObject3DArray('axes');
 
-      let vX = new THREE.Vector3(1, 0, 0);
-      let vY = new THREE.Vector3(0, 1, 0);
-      let vZ = new THREE.Vector3(0, 0, -1);
-      let origin = new THREE.Vector3(0, 0, 0);
-      let color = 0x000000;
+      var vX = new THREE.Vector3(1, 0, 0);
+      var vY = new THREE.Vector3(0, 1, 0);
+      var vZ = new THREE.Vector3(0, 0, -1);
+      var origin = new THREE.Vector3(0, 0, 0);
+      var color = 0x000000;
 
-      let axX = new THREE.ArrowHelper(vX, new THREE.Vector3(0, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
-      let axY = new THREE.ArrowHelper(vY, new THREE.Vector3(0, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
-      let axZ = new THREE.ArrowHelper(vZ, new THREE.Vector3(NORM_CONSTANT, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
+      var axX = new THREE.ArrowHelper(vX, new THREE.Vector3(0, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
+      var axY = new THREE.ArrowHelper(vY, new THREE.Vector3(0, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
+      var axZ = new THREE.ArrowHelper(vZ, new THREE.Vector3(NORM_CONSTANT, 0, NORM_CONSTANT), NORM_CONSTANT, color, 1, 1);
 
       that.axes.push(axX, axY, axZ);
 
@@ -763,15 +763,15 @@ define([
 
     _drawCircle: function (options) {
       var options = options || {};
-      let circle = new THREE.Shape();
-      let radius = options.radius || DEFAULT_POINT_RADIUS;
+      var circle = new THREE.Shape();
+      var radius = options.radius || DEFAULT_POINT_RADIUS;
       radius = radius * NORM_CONSTANT;
 
-      for (let i = 0; i < 16; i++) {
-        let pct = (i + 1) / 16;
-        let theta = pct * Math.PI * 2.0;
-        let x = radius * Math.cos(theta);
-        let y = radius * Math.sin(theta);
+      for (var i = 0; i < 16; i++) {
+        var pct = (i + 1) / 16;
+        var theta = pct * Math.PI * 2.0;
+        var x = radius * Math.cos(theta);
+        var y = radius * Math.sin(theta);
         if (i == 0) {
           circle.moveTo(x, y);
         } else {
@@ -779,15 +779,15 @@ define([
         }
       }
 
-      let geometry = circle.makeGeometry();
-      let material = new THREE.MeshBasicMaterial({
+      var geometry = circle.makeGeometry();
+      var material = new THREE.MeshBasicMaterial({
         color: options.color || DEFAULT_PROJECTION_COLOR,
         side: THREE.DoubleSide
       });
-      let mesh = new THREE.Mesh(geometry, material);
+      var mesh = new THREE.Mesh(geometry, material);
 
-      let m1 = new THREE.Matrix4();
-      let m2 = new THREE.Matrix4();
+      var m1 = new THREE.Matrix4();
+      var m2 = new THREE.Matrix4();
       if (options.rotationAxis) {
         m1.makeRotationAxis(new THREE.Vector3(options.rotationAxis.x || 0, options.rotationAxis.y || 0, options.rotationAxis.z || 0), options.rotationAngle || 0);
       }
@@ -821,20 +821,20 @@ define([
 
     _drawLine: function (p1, p2, options) {
       options = options || {};
-      let material = new THREE.LineBasicMaterial({
+      var material = new THREE.LineBasicMaterial({
         color: options.color || 0x000000
       });
-      let geometry = new THREE.Geometry();
+      var geometry = new THREE.Geometry();
       geometry.vertices.push(p1);
       geometry.vertices.push(p2);
-      let line = new THREE.Line(geometry, material);
+      var line = new THREE.Line(geometry, material);
       this.scene.add(line);
       return line;
     },
 
     _reinitObject3DArray: function (name) {
       this[name] = this[name] || [];
-      for (let i = 0; i < this[name].length; i++) {
+      for (var i = 0; i < this[name].length; i++) {
         this.scene.remove(this[name][i]);
       }
       this[name] = [];
@@ -851,12 +851,12 @@ define([
     },
 
     _drawSecondaryGrid: function () {
-      let that = this;
+      var that = this;
       that._reinitObject3DArray('secondaryGrid');
-      let options = { color: 0x888888 };
+      var options = { color: 0x888888 };
 
       // x lines
-      let jmax = that.module.getConfiguration('secondaryGrids') || 2;
+      var jmax = that.module.getConfiguration('secondaryGrids') || 2;
       for (var i = 0; i < that._data.nbTicks.x - 1; i++) {
         for (var j = 1; j < jmax; j++) {
           if (this._configCheckBox('grid', 'xysec'))
@@ -894,7 +894,7 @@ define([
     },
 
     _drawGrid: function () {
-      let that = this;
+      var that = this;
       that._reinitObject3DArray('grid');
       // x lines
       for (var i = 0; i < that._data.nbTicks.x; i++) {
@@ -930,7 +930,7 @@ define([
     },
 
     _drawTicks: function () {
-      let that = this;
+      var that = this;
       that._reinitObject3DArray('ticks');
 
       // x ticks
@@ -958,7 +958,7 @@ define([
     },
 
     _addText: function (text, x, y, z, options) {
-      let that = this;
+      var that = this;
       var options = options || {};
 
       // Set default options
@@ -971,7 +971,7 @@ define([
 
 
       // create a canvas element
-      let canvas = document.createElement('canvas');
+      var canvas = document.createElement('canvas');
       canvas.height = options.size;
       canvas.width = options.size * text.length / 2 + options.size / 2;
 
@@ -984,27 +984,27 @@ define([
           break;
       }
 
-      let ctx = canvas.getContext('2d');
+      var ctx = canvas.getContext('2d');
       ctx.font = `Bold ${options.size * 0.9}px ${options.font}`;
       ctx.fillStyle = options.fillStyle;
       ctx.fillText(text, 0, options.size * 0.9);
 
       // canvas contents will be used for a texture
-      let texture = new THREE.Texture(canvas);
+      var texture = new THREE.Texture(canvas);
       texture.minFilter = THREE.NearestFilter;
       texture.needsUpdate = true;
 
-      let material = new THREE.MeshBasicMaterial({
+      var material = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: (options.opacity === 1) ? false : true,
         opacity: options.opacity
       });
-      let mesh = new THREE.Mesh(
+      var mesh = new THREE.Mesh(
         new THREE.PlaneBufferGeometry(canvas.width, canvas.height),
         material
       );
       // mesh.position.set(0,50,0);
-      let textOrientation = that.camera.matrix.clone();
+      var textOrientation = that.camera.matrix.clone();
       textOrientation.setPosition(new THREE.Vector3(0, 0, 0));
       mesh.applyMatrix(textOrientation);
       mesh.position.set(x, y, z);
@@ -1015,7 +1015,7 @@ define([
     },
 
     _drawTickLabels: function () {
-      let that = this;
+      var that = this;
 
       that._reinitObject3DArray('tickLabels');
 
@@ -1050,11 +1050,11 @@ define([
     },
 
     _drawGraphTitle: function () {
-      let that = this;
+      var that = this;
 
       that._reinitObject3DArray('graphTitle');
-      let mode = that.module.getConfiguration('labels');
-      let title = that._meta.title || '';
+      var mode = that.module.getConfiguration('labels');
+      var title = that._meta.title || '';
       if (!title || title === '') return;
       switch (mode) {
         case 'none':
@@ -1068,17 +1068,17 @@ define([
     },
 
     _drawAxisLabels: function () {
-      let that = this;
+      var that = this;
 
       that._reinitObject3DArray('axisLabels');
 
-      let mode = that.module.getConfiguration('labels');
-      let xt = that._meta.getChildSync(['axis', that._data.xAxis || 0, 'label']);
-      let yt = that._meta.getChildSync(['axis', that._data.yAxis || 1, 'label']);
-      let zt = that._meta.getChildSync(['axis', that._data.zAxis || 2, 'label']);
-      let xu = that._meta.getChildSync(['axis', 0, 'unit']);
-      let yu = that._meta.getChildSync(['axis', 1, 'unit']);
-      let zu = that._meta.getChildSync(['axis', 2, 'unit']);
+      var mode = that.module.getConfiguration('labels');
+      var xt = that._meta.getChildSync(['axis', that._data.xAxis || 0, 'label']);
+      var yt = that._meta.getChildSync(['axis', that._data.yAxis || 1, 'label']);
+      var zt = that._meta.getChildSync(['axis', that._data.zAxis || 2, 'label']);
+      var xu = that._meta.getChildSync(['axis', 0, 'unit']);
+      var yu = that._meta.getChildSync(['axis', 1, 'unit']);
+      var zu = that._meta.getChildSync(['axis', 2, 'unit']);
 
       xt = xt && xt.get();
       yt = yt && yt.get();
@@ -1087,12 +1087,12 @@ define([
       yt = yu && (`${yt} [${yu.get()}]`) || yt;
       zt = zu && (`${zt} [${zu.get()}]`) || zt;
 
-      let xtitle = this.module.getConfiguration('xLabel') || xt || 'X';
-      let ytitle = this.module.getConfiguration('yLabel') || yt || 'Y';
-      let ztitle = this.module.getConfiguration('zLabel') || zt || 'Z';
+      var xtitle = this.module.getConfiguration('xLabel') || xt || 'X';
+      var ytitle = this.module.getConfiguration('yLabel') || yt || 'Y';
+      var ztitle = this.module.getConfiguration('zLabel') || zt || 'Z';
 
 
-      let $legendTitles = $('#legend_titles');
+      var $legendTitles = $('#legend_titles');
 
       switch (mode) {
         case 'axis':
@@ -1114,7 +1114,7 @@ define([
 
 
       function drawLegend(tx, ty, tz) {
-        let arr = [];
+        var arr = [];
         arr.push(`X: ${tx}`);
         arr.push(`Y: ${ty}`);
         arr.push(`Z: ${tz}`);
@@ -1149,8 +1149,8 @@ define([
 
       function unicodeSuperscript(num) {
         num = num.toString();
-        let result = '';
-        for (let i = 0; i < num.length; i++) {
+        var result = '';
+        for (var i = 0; i < num.length; i++) {
           if (num[i] === '2' || num[i] === '3') {
             result += String.fromCharCode(176 + parseInt(num[i], 10));
           } else if (num[i] >= '0' && num[i] < '9') {
@@ -1164,7 +1164,7 @@ define([
     },
 
     _drawFaces: function () {
-      let that = this;
+      var that = this;
       if (!that._data) {
         return;
       }
@@ -1185,28 +1185,28 @@ define([
       // 6: xz top
 
 
-      let geometry1 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
-      let geometry2 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
-      let geometry3 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
-      let geometry4 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
-      let geometry5 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
-      let geometry6 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+      var geometry1 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+      var geometry2 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+      var geometry3 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+      var geometry4 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+      var geometry5 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
+      var geometry6 = new THREE.PlaneBufferGeometry(NORM_CONSTANT, NORM_CONSTANT);
 
-      let material = new THREE.MeshBasicMaterial({
+      var material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: HIGHLIGHT_OPACITY
       });
-      let mesh1 = new THREE.Mesh(geometry1, material);
-      let mesh2 = new THREE.Mesh(geometry2, material);
-      let mesh3 = new THREE.Mesh(geometry3, material);
-      let mesh4 = new THREE.Mesh(geometry4, material);
-      let mesh5 = new THREE.Mesh(geometry5, material);
-      let mesh6 = new THREE.Mesh(geometry6, material);
+      var mesh1 = new THREE.Mesh(geometry1, material);
+      var mesh2 = new THREE.Mesh(geometry2, material);
+      var mesh3 = new THREE.Mesh(geometry3, material);
+      var mesh4 = new THREE.Mesh(geometry4, material);
+      var mesh5 = new THREE.Mesh(geometry5, material);
+      var mesh6 = new THREE.Mesh(geometry6, material);
 
 
-      let m1, m2, m3;
+      var m1, m2, m3;
       // Face 1
       m1 = new THREE.Matrix4();
       m2 = new THREE.Matrix4();
@@ -1249,13 +1249,13 @@ define([
       that.faces.push(mesh2);
       that.faces.push(mesh3);
 
-      for (let i = 0; i < that.faces.length; i++) {
+      for (var i = 0; i < that.faces.length; i++) {
         that.scene.add(that.faces[i]);
       }
     },
 
     _inBoundary: function (point) {
-      let that = this;
+      var that = this;
       if (_.isObject(point)) {
         if (point.x < that._data.realMin.x || point.x > that._data.realMax.x)
           return false;
@@ -1279,9 +1279,9 @@ define([
     },
 
     _computeInBoundaryIndexes: function () {
-      let that = this;
+      var that = this;
       that._data.inBoundary = [];
-      for (let i = 0; i < that._data.x.length; i++) {
+      for (var i = 0; i < that._data.x.length; i++) {
         if (that._inBoundary({
           x: that._data.x[i],
           y: that._data.y[i],
@@ -1296,27 +1296,27 @@ define([
 
 
     _mathPoints: function () {
-      let that = this;
+      var that = this;
       if (!that._data) return;
       that.mathPoints = [];
 
-      for (let i = 0; i < that._data.x.length; i++) {
+      for (var i = 0; i < that._data.x.length; i++) {
         if (!that._data.inBoundary[i]) continue;
 
-        let radius = DEFAULT_POINT_RADIUS;
+        var radius = DEFAULT_POINT_RADIUS;
         if (that._data.size && that._data.size[i]) {
           radius = that._data.size[i];
         }
 
-        let sphere = new THREE.Sphere(new THREE.Vector3(that._data.normalizedData.x[i], that._data.normalizedData.y[i], that._data.normalizedData.z[i]), radius * NORM_CONSTANT);
+        var sphere = new THREE.Sphere(new THREE.Vector3(that._data.normalizedData.x[i], that._data.normalizedData.y[i], that._data.normalizedData.z[i]), radius * NORM_CONSTANT);
         sphere.index = i;
         that.mathPoints.push(sphere);
       }
     },
 
     _updateMathPoints: function (options) {
-      let that = this;
-      let filter;
+      var that = this;
+      var filter;
       if (options.applyFilter) {
         filter = that._data.inBoundary.slice(0);
         for (var i = 0; i < that._dispFilter.length; i++) {
@@ -1334,14 +1334,14 @@ define([
     },
 
     _zoomToFit: function () {
-      let that = this;
-      let theta = Math.PI / 3;
-      let phi = Math.PI / 4;
-      let r = NORM_CONSTANT * ZOOM_START;
-      let eye = this._polarToCartesian(theta, phi, r);
+      var that = this;
+      var theta = Math.PI / 3;
+      var phi = Math.PI / 4;
+      var r = NORM_CONSTANT * ZOOM_START;
+      var eye = this._polarToCartesian(theta, phi, r);
 
       // Lookat the middle of the cube
-      let target = new THREE.Vector3(NORM_CONSTANT / 2, NORM_CONSTANT / 2, NORM_CONSTANT / 2);
+      var target = new THREE.Vector3(NORM_CONSTANT / 2, NORM_CONSTANT / 2, NORM_CONSTANT / 2);
       that.camera.position.set(eye[0], eye[1], eye[2]);
       that.camera.lookAt(target);
 
@@ -1353,16 +1353,16 @@ define([
     },
 
     _polarToCartesian: function (theta, phi, r) {
-      let x = Math.sin(phi) * Math.cos(theta) * r;
-      let y = Math.sin(phi) * Math.sin(theta) * r;
-      let z = Math.cos(phi) * r;
+      var x = Math.sin(phi) * Math.cos(theta) * r;
+      var y = Math.sin(phi) * Math.sin(theta) * r;
+      var z = Math.cos(phi) * r;
       return [x, y, z];
     },
 
 
     init: function () {
-      let that = this;
-      let c = this.module.getConfiguration('defaultPointColor');
+      var that = this;
+      var c = this.module.getConfiguration('defaultPointColor');
       DEFAULT_POINT_COLOR = rgbToHex(c[0], c[1], c[2]);
 
       if (!this.dom) {
@@ -1388,7 +1388,7 @@ define([
     },
 
     onResize: function () {
-      let that = this;
+      var that = this;
 
       // the size is now really defined (we are after inDom)
       // and we received the data ...
@@ -1424,23 +1424,23 @@ define([
     },
 
     _setBackgroundColor: function () {
-      let bgColor = this.module.getConfiguration('backgroundColor');
+      var bgColor = this.module.getConfiguration('backgroundColor');
       DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2]);
       this.renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 1);
     },
 
     _newParticleObject: function (indexes, options) {
-      let that = this;
+      var that = this;
       options = options || {};
-      let image = shapeImages[options.shape] || shapeImages[DEFAULT_POINT_SHAPE];
+      var image = shapeImages[options.shape] || shapeImages[DEFAULT_POINT_SHAPE];
       if (options.transparent) {
         image = image.replace(/\.(png|svg|jpeg|jpg|gif)$/i, 't.$1');
       }
-      let attributes = {
+      var attributes = {
         size: { type: 'f', value: [] },
         ca: { type: 'c', value: [] }
       };
-      let uniforms = {
+      var uniforms = {
         amplitude: { type: 'f', value: 1 },
         color: { type: 'c', value: new THREE.Color('#ffffff') },
         texture: { type: 't', value: THREE.ImageUtils.loadTexture(image) }
@@ -1448,7 +1448,7 @@ define([
 
       // uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
 
-      let shaderMaterial = new THREE.ShaderMaterial({
+      var shaderMaterial = new THREE.ShaderMaterial({
 
         uniforms: uniforms,
         attributes: attributes,
@@ -1458,7 +1458,7 @@ define([
       });
 
 
-      let geometry = new THREE.Geometry();
+      var geometry = new THREE.Geometry();
       if (indexes) {
         for (var i = 0; i < indexes.length; i++) {
           var vertex = new THREE.Vector3();
@@ -1478,7 +1478,7 @@ define([
       }
 
       // particle system
-      let object = new THREE.PointCloud(geometry, shaderMaterial);
+      var object = new THREE.PointCloud(geometry, shaderMaterial);
       object.indexes = indexes;
       return object;
     },
@@ -1487,21 +1487,21 @@ define([
       if (!object) {
         return;
       }
-      let that = this;
+      var that = this;
       options = options || {};
-      let indexes = object.indexes;
-      let vertices = object.geometry.vertices;
-      let values_size = object.material.attributes.size.value;
-      let values_color = object.material.attributes.ca.value;
-      let color = that._data.color;
-      let size = that._data.size;
-      let factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * that.height;
-      let forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
-      let updateColor = options.updateColor || true;
-      let filter;
+      var indexes = object.indexes;
+      var vertices = object.geometry.vertices;
+      var values_size = object.material.attributes.size.value;
+      var values_color = object.material.attributes.ca.value;
+      var color = that._data.color;
+      var size = that._data.size;
+      var factor = 2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * that.height;
+      var forcedColor = options.forcedColor ? new THREE.Color(options.forcedColor) : null;
+      var updateColor = options.updateColor || true;
+      var filter;
       if (options.applyFilter) { // Filter point to display
         filter = that._data.inBoundary.slice(0);
-        for (let i = 0; i < that._dispFilter.length; i++) {
+        for (var i = 0; i < that._dispFilter.length; i++) {
           filter[i] = that._dispFilter[i] && filter[i];
         }
       } else {
@@ -1535,18 +1535,18 @@ define([
     },
 
     _prepareHighlights: function (hl) {
-      let that = this;
+      var that = this;
       that._highlightParticleObjects = {};
-      let m = {};
+      var m = {};
 
-      for (let i = 0; i < hl.length; i++) {
+      for (var i = 0; i < hl.length; i++) {
         m[that._data.shape[i]] = m[that._data.shape[i]] || {};
         m[that._data.shape[i]][hl[i]] = m[that._data.shape[i]][hl[i]] || [];
         m[that._data.shape[i]][hl[i]].push(i);
       }
 
-      for (let shape in m) {
-        for (let hlkey in m[shape]) {
+      for (var shape in m) {
+        for (var hlkey in m[shape]) {
           that._highlightParticleObjects[shape] = that._highlightParticleObjects[shape] || {};
           that._highlightParticleObjects[shape][hlkey] = that._newParticleObject(m[shape][hlkey], {
             shape: shape || DEFAULT_POINT_SHAPE,
@@ -1628,7 +1628,7 @@ define([
         if (!this._data || !this._mainParticleObjects) {
           return;
         }
-        let that = this;
+        var that = this;
         if (!moduleValue || !moduleValue.get()) {
           Debug.error('Unvalid value boolArray', moduleValue);
           return;
@@ -1643,7 +1643,7 @@ define([
 
         that._updateMathPoints({ applyFilter: true });
         for (var shape in that._highlightParticleObjects) {
-          for (let hlkey in that._highlightParticleObjects[shape]) {
+          for (var hlkey in that._highlightParticleObjects[shape]) {
             that._updateParticleObject(that._highlightParticleObjects[shape][hlkey], {
               applyFilter: true,
               updateColor: false,
@@ -1656,7 +1656,7 @@ define([
     },
 
     _render: function () {
-      let that = this;
+      var that = this;
       setTimeout(function () {
         that._doRender();
       }, 20);
@@ -1664,8 +1664,8 @@ define([
 
     _doRender: function () {
       if (this._3d === 'sideBySide') {
-        let width = this.width / 2;
-        let height = this.height;
+        var width = this.width / 2;
+        var height = this.height;
         this.renderer.setViewport(0, 0, width, height);
         this.renderer.setScissor(0, 0, width, height);
         this.renderer.enableScissorTest(true);
@@ -1690,7 +1690,7 @@ define([
     },
 
     _convertData3dToData: function (value) {
-      let that = this;
+      var that = this;
       if (!Array.isArray(value) || value.length === 0) {
         Debug.error('Data 3D not valid');
       }
@@ -1698,7 +1698,7 @@ define([
 
       that._data = new DataObject();
 
-      let jpaths = that.module.getConfiguration('dataJpaths');
+      var jpaths = that.module.getConfiguration('dataJpaths');
       that._data.x = [];
       that._data.y = [];
       that._data.z = [];
@@ -1707,7 +1707,7 @@ define([
       that._data.shape = [];
       that._data._highlight = [];
 
-      let jp = _.cloneDeep(Data.resurrect(jpaths));
+      var jp = _.cloneDeep(Data.resurrect(jpaths));
       _.each(jp, (v) => v.unshift(0));
 
 
@@ -1716,7 +1716,7 @@ define([
       }
 
       function getFromJpath(value, jp, fallback) {
-        let val = value.getChildSync(jp);
+        var val = value.getChildSync(jp);
         if (val === undefined) {
           return fallback;
         }
@@ -1745,7 +1745,7 @@ define([
     _convertChartToData: function (value) {
       this._data = new DataObject();
       this._meta = new DataObject();
-      let that = this;
+      var that = this;
       if (!Array.isArray(value.data) || !value.data[0] || !Array.isArray(value.data[0].y)) return;
       if (value.data.length > 1) {
         Debug.warn('Scatter 3D module will merge series together');
@@ -1781,9 +1781,9 @@ define([
     },
 
     _completeData: function (name, defaultValue) {
-      let that = this;
+      var that = this;
       that._data[name] = that._data[name] || [];
-      for (let i = 0; i < that._data.x.length; i++) {
+      for (var i = 0; i < that._data.x.length; i++) {
         if (that._data[name][i] === undefined) that._data[name][i] = defaultValue;
       }
     },
@@ -1795,7 +1795,7 @@ define([
     },
 
     _activateHighlights: function () {
-      let that = this;
+      var that = this;
       if (that._data) {
         API.killHighlight(that.module.getId());
         if (that._data._highlight) {
@@ -1806,7 +1806,7 @@ define([
 
       function listenHighlightsBis(hl) {
         that._prepareHighlights(hl);
-        let hlset = _.uniq(hl);
+        var hlset = _.uniq(hl);
 
         _.keys(hlset).forEach(function (k) {
           if (!hlset[k]) return;
@@ -1821,8 +1821,8 @@ define([
       }
 
       function undrawHighlightBis(hl) {
-        let doDraw = false;
-        for (let shape in that._highlightParticleObjects) {
+        var doDraw = false;
+        for (var shape in that._highlightParticleObjects) {
           if (that._highlightParticleObjects[shape][hl] && that._highlightParticleObjects[shape][hl].drawn) {
             that.scene.remove(that._highlightParticleObjects[shape][hl]);
             that._highlightParticleObjects[shape][hl].drawn = false;
@@ -1833,7 +1833,7 @@ define([
       }
 
       function drawHighlightBis(hl) {
-        for (let shape in that._highlightParticleObjects) {
+        for (var shape in that._highlightParticleObjects) {
           if (that._highlightParticleObjects[shape][hl]) {
             if (that._highlightParticleObjects[shape][hl].drawn === true) {
               return;
@@ -1868,7 +1868,7 @@ define([
   });
 
   function blank() {
-    let that = this;
+    var that = this;
     if (!this.scene || !this.scene.children) return;
     _.keys(this.scene.children).forEach(function (key) {
       that.scene.remove(that.scene.children[key]);

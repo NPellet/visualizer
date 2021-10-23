@@ -46,10 +46,10 @@ define([
         if (!this._lastValue) {
           return;
         }
-        for (let i in moduleValue) {
-          for (let j = 0; j < this._lastValue.series.length; j++) {
+        for (var i in moduleValue) {
+          for (var j = 0; j < this._lastValue.series.length; j++) {
             if (this._lastValue.series[j].category == i) {
-              for (let k = 0; k < this._lastValue.series[j].data.length; k++) {
+              for (var k = 0; k < this._lastValue.series[j].data.length; k++) {
                 this._instances[j][k].filter(moduleValue[i]);
               }
             }
@@ -79,14 +79,14 @@ define([
       },
 
       loading: function (moduleValue) {
-        let that = this;
+        var that = this;
         if (!moduleValue || !moduleValue.value) {
           return;
         }
 
         this._highlights = [];
 
-        let svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
+        var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
 
         svg._svgEl.style.display = 'block';
 
@@ -107,11 +107,11 @@ define([
           svg.setSize(this._w, this._h);
         }
 
-        let minX = moduleValue.value.minX || 0;
-        let minY = moduleValue.value.minY || 0;
+        var minX = moduleValue.value.minX || 0;
+        var minY = moduleValue.value.minY || 0;
 
-        let widthX = (moduleValue.value.maxX || 100) - minX;
-        let widthY = (moduleValue.value.maxY || 100) - minY;
+        var widthX = (moduleValue.value.maxX || 100) - minX;
+        var widthY = (moduleValue.value.maxY || 100) - minY;
 
         svg.setViewBoxWidth(minX, minY, widthX, widthY, true);
 
@@ -119,7 +119,7 @@ define([
 
         svg.bindTo(this.dom);
 
-        let Springs = new LoadingPlot.SpringLabels(svg);
+        var Springs = new LoadingPlot.SpringLabels(svg);
 
         svg.initZoom();
         LoadingPlot.SVGElement.prototype.Springs = Springs;
@@ -129,24 +129,24 @@ define([
           return;
         }
 
-        let layers = this.module.getConfiguration('layers');
+        var layers = this.module.getConfiguration('layers');
 
-        for (let i = 0; i < layers.length; i++) {
-          let layer = layers[i].groups.group[0];
-          let labels = layer.labels[0];
-          let theLabels = {};
+        for (var i = 0; i < layers.length; i++) {
+          var layer = layers[i].groups.group[0];
+          var labels = layer.labels[0];
+          var theLabels = {};
           var j;
           for (j = 0; j < labels.length; j++) {
             theLabels[labels[j]] = true;
           }
-          let layerId = layer.el[0];
-          let type = layer.type[0] || 'ellipse';
+          var layerId = layer.el[0];
+          var type = layer.type[0] || 'ellipse';
 
           for (j = 0; j < moduleValue.value.series.length; j++) {
             if (moduleValue.value.series[j].category === layerId) {
-              let datas = moduleValue.value.series[j].data;
+              var datas = moduleValue.value.series[j].data;
               var el;
-              for (let k = 0, l = datas.length; k < l; k++) {
+              for (var k = 0, l = datas.length; k < l; k++) {
                 if (type === 'pie')
                   el = new LoadingPlot.Pie(svg, datas[k].x, datas[k].y, datas[k]);
                 else if (type === 'ellipse')
@@ -160,8 +160,8 @@ define([
                 if (layer.labelzoomthreshold[0] !== '')
                   el.setLabelDisplayThreshold(layer.labelzoomthreshold[0]);
 
-                let highlightMag = layer.highlightmag[0] ? (layer.highlightmag[0]) : 1;
-                let highlightStroke = layer.highlighteffect[0][0] ? true : false;
+                var highlightMag = layer.highlightmag[0] ? (layer.highlightmag[0]) : 1;
+                var highlightStroke = layer.highlighteffect[0][0] ? true : false;
 
                 el.setHighlightMag(highlightMag);
                 el.setHighlightEffect({
@@ -173,7 +173,7 @@ define([
                 el.setLabelStroke(theLabels.blackstroke);
                 el.setLabelScale(theLabels.scalelabel);
 
-                let fnc = el.highlight.bind(el);
+                var fnc = el.highlight.bind(el);
                 API.listenHighlight(datas[k], fnc, false, this.module.getId());
 
                 el.hoverCallback = function () {

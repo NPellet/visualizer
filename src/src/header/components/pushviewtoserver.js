@@ -11,7 +11,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     },
 
     _onClick: function () { // Overwrite usual onclick which loads a list / loads views/datas
-      let that = this;
+      var that = this;
       clearTimeout(this.timeout);
       that.$_dom.css({ color: '#000' });
       that.viewHandler.serverPush(Versioning.getView()).then(function () {
@@ -24,7 +24,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     },
 
     returnToBlack: function () {
-      let that = this;
+      var that = this;
       this.timeout = setTimeout(function () {
         that.$_dom.animate({
           color: '#000'

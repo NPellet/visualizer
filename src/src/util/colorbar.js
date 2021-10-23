@@ -1,16 +1,16 @@
 'use strict';
 
 define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chroma) {
-  let exports = {};
+  var exports = {};
 
   const margin = 30;
 
   Util.loadCss('src/util/colorbar.css');
 
   exports.getColorScale = function (options) {
-    let domain;
-    let domMin = d3.min(options.domain);
-    let domMax = d3.max(options.domain);
+    var domain;
+    var domMin = d3.min(options.domain);
+    var domMax = d3.max(options.domain);
     // Default stop type is percent
     if (options.stopType !== 'values') {
       domain = options.stopPositions.map(function (v) {
@@ -21,9 +21,9 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
     }
 
     // Normalize colors to be hexadecimal
-    let stops = options.stops.map(function (c) {
-      let ch = chroma(c);
-      let r = {
+    var stops = options.stops.map(function (c) {
+      var ch = chroma(c);
+      var r = {
         color: ch.hex(),
         opacity: ch.alpha()
       };
@@ -41,15 +41,15 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
   };
 
   exports.getSvg = function (options) {
-    let el = $('<div>')[0];
+    var el = $('<div>')[0];
     return exports.renderSvg(el, options);
   };
 
   exports.renderSvg = function (el, options) {
-    let stopPositions;
+    var stopPositions;
     // Default stop type is percent
-    let domMin = d3.min(options.domain);
-    let domMax = d3.max(options.domain);
+    var domMin = d3.min(options.domain);
+    var domMax = d3.max(options.domain);
     if (options.stopType === 'values') {
       // convert values to percentages
       stopPositions = options.stopPositions.map(function (s) {
@@ -58,9 +58,9 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
     } else {
       stopPositions = options.stopPositions;
     }
-    let orientation = getOrientation(options);
-    let linearg = getGradientXY(orientation);
-    let gradientWidth,
+    var orientation = getOrientation(options);
+    var linearg = getGradientXY(orientation);
+    var gradientWidth,
       totalWidth = options.width,
       gradientHeight,
       totalHeight = options.height;
@@ -72,10 +72,10 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       gradientHeight = totalHeight;
     }
 
-    let svg = d3.select(el).append('svg')
+    var svg = d3.select(el).append('svg')
       .attr('width', totalWidth)
       .attr('height', totalHeight);
-    let id = Util.getNextUniqueId();
+    var id = Util.getNextUniqueId();
     svg.append('defs').append('linearGradient')
       .attr({
         x1: linearg[0],
@@ -95,11 +95,11 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       })
       .style('stop-opacity', 1);
 
-    let g = svg.append('g')
+    var g = svg.append('g')
       .attr('class', 'key')
       .attr('transform', function () {
-        let tx = getTx(options);
-        let ty = getTy(options);
+        var tx = getTx(options);
+        var ty = getTy(options);
         return `translate(${tx},${ty})`;
       });
     g.append('rect')
@@ -107,14 +107,14 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       .attr('width', gradientWidth)
       .attr('height', gradientHeight);
 
-    let x = d3.scale.linear()
+    var x = d3.scale.linear()
       .domain(options.domain);
     if (!options.axis || !options.axis.tickValues) {
       x = x.nice();
     }
     x.range([0, (orientation === 'bottom' || orientation === 'top' ? gradientWidth : gradientHeight)]);
     if (hasAxis(options)) {
-      let axis = d3.svg.axis()
+      var axis = d3.svg.axis()
         .scale(x)
         .orient(orientation)
         .tickSize(6);
@@ -128,7 +128,7 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       g.append('g')
         .attr('class', 'key')
         .attr('transform', function () {
-          let tx = 0,
+          var tx = 0,
             ty = 0;
           if (orientation === 'bottom') {
             ty += gradientHeight;
@@ -153,8 +153,8 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
   }
 
   function getTx(options) {
-    let tx = 0;
-    let orientation = getOrientation(options);
+    var tx = 0;
+    var orientation = getOrientation(options);
     if (!hasAxis(options)) {
       return tx;
     }
@@ -168,11 +168,11 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
   }
 
   function getTy(options) {
-    let ty = 0;
+    var ty = 0;
     if (!hasAxis(options)) {
       return ty;
     }
-    let orientation = getOrientation(options);
+    var orientation = getOrientation(options);
     if (orientation === 'left' || orientation === 'right') {
       ty += margin / 2;
     }

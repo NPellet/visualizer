@@ -27,13 +27,13 @@ define([
   Versioning,
   CouchdbAttachments,
   uploadUi) {
-  let UPLOAD_LIMIT = 50 * 1024 * 1024;
-  let fakeLink = {
+  var UPLOAD_LIMIT = 50 * 1024 * 1024;
+  var fakeLink = {
     color: 'blue',
     cursor: 'pointer',
     textDecoration: 'underline'
   };
-  let compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
+  var compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
 
   class RocViewManager extends Default {
     get flavor() {
@@ -50,7 +50,7 @@ define([
     }
 
     initImpl() {
-      let options = this.options || {};
+      var options = this.options || {};
       if (!options.url || !options.database) {
         throw new Error('roc-views: url and database options are mandatory');
       }
@@ -98,7 +98,7 @@ define([
     }
 
     getRequest(url, query) {
-      let request = superagent.get(this.rocUrl + url).withCredentials();
+      var request = superagent.get(this.rocUrl + url).withCredentials();
       if (query) {
         request.query(query);
       }
@@ -110,13 +110,13 @@ define([
     }
 
     putRequestDB(url, data) {
-      let request = superagent.put(this.rocDbUrl + url).withCredentials();
+      var request = superagent.put(this.rocDbUrl + url).withCredentials();
       request.send(data);
       return request;
     }
 
     postRequestDB(url, data) {
-      let request = superagent.post(this.rocDbUrl + url).withCredentials();
+      var request = superagent.post(this.rocDbUrl + url).withCredentials();
       request.send(data);
       return request;
     }
@@ -172,8 +172,8 @@ define([
     }
 
     getLoginContent() {
-      let login = $('<div>');
-      let link = $('<a>', {
+      var login = $('<div>');
+      var link = $('<a>', {
         text: 'here',
         href: '#',
         click: () => this.login()
@@ -186,7 +186,7 @@ define([
     }
 
     login() {
-      let url = encodeURIComponent(document.location.href);
+      var url = encodeURIComponent(document.location.href);
       document.location.href = `${this.rocUrl}/auth/login?continue=${url}`;
     }
 
@@ -202,9 +202,9 @@ define([
         return this.$menuContent;
       }
 
-      let root = this.$menuContent = $('<div id="root">').css('position', 'relative');
+      var root = this.$menuContent = $('<div id="root">').css('position', 'relative');
 
-      let hide = this.$hide = $('<div>').css({
+      var hide = this.$hide = $('<div>').css({
         position: 'absolute',
         width: '100%',
         height: '100%',
@@ -214,11 +214,11 @@ define([
         justifyContent: 'center'
       }).hide();
 
-      let dom = $('<div>').css('zIndex', 1);
+      var dom = $('<div>').css('zIndex', 1);
 
-      let header = $('<div>');
+      var header = $('<div>');
 
-      let leftHeader = $('<p>', {
+      var leftHeader = $('<p>', {
         css: {
           display: 'inline-block',
           width: '50%'
@@ -231,7 +231,7 @@ define([
         text: 'refresh'
       }));
 
-      let rightHeader = $('<p>', {
+      var rightHeader = $('<p>', {
         css: {
           display: 'inline-block',
           textAlign: 'right',
@@ -251,14 +251,14 @@ define([
         .append(leftHeader)
         .append(rightHeader);
 
-      let main = $('<div>', {
+      var main = $('<div>', {
         css: {
           marginTop: '20px',
           width: '710px'
         }
       });
 
-      let leftMain = $('<div>', {
+      var leftMain = $('<div>', {
         css: {
           verticalAlign: 'top',
           display: 'inline-block',
@@ -266,14 +266,14 @@ define([
         }
       });
 
-      let searchBox = $('<div></div>', {
+      var searchBox = $('<div></div>', {
         text: 'Search: '
       });
 
-      let lastSearchValue = '';
+      var lastSearchValue = '';
       var searchField = $('<input type="text" size="20">')
         .keyup(() => {
-          let value = searchField.val();
+          var value = searchField.val();
           if (value !== lastSearchValue) {
             this.doSearch(value);
             lastSearchValue = value;
@@ -282,9 +282,9 @@ define([
 
       searchBox.append(searchField);
 
-      let flavorSelect = $('<div>');
+      var flavorSelect = $('<div>');
 
-      let tree = $('<div>', {
+      var tree = $('<div>', {
         css: {
           overflowY: 'auto',
           maxHeight: '500px'
@@ -297,7 +297,7 @@ define([
         .append(flavorSelect)
         .append(tree);
 
-      let rightMain = $('<div>', {
+      var rightMain = $('<div>', {
         css: {
           display: 'inline-block',
           height: '100%',
@@ -306,7 +306,7 @@ define([
         }
       });
 
-      let title = this.$title = $('<div>', {
+      var title = this.$title = $('<div>', {
         css: {
           width: '100%',
           textAlign: 'center',
@@ -314,7 +314,7 @@ define([
         }
       });
 
-      let rightAccordion = $('<div>', {
+      var rightAccordion = $('<div>', {
         css: {
           height: '80%',
           width: '100%'
@@ -335,7 +335,7 @@ define([
       rightAccordion.append('<h3>Attachments</h3>');
       this.$attachmentsBox = $('<div>').appendTo(rightAccordion);
 
-      let uploadButton = $('<button>Upload attachments</button>')
+      var uploadButton = $('<button>Upload attachments</button>')
         .button().click(() => this.uploadFiles());
       this.$attachmentsBox.html(uploadButton);
 
@@ -345,20 +345,20 @@ define([
       rightAccordion.append('<h3>Metadata</h3>');
       this.$metaBox = $('<div>').appendTo(rightAccordion);
 
-      let publicCheckbox = this.$publicCheckbox = $('<input type="checkbox" />').click((e) => {
+      var publicCheckbox = this.$publicCheckbox = $('<input type="checkbox" />').click((e) => {
         e.preventDefault();
         this.togglePublic();
       });
-      let checkboxContainer = $('<div>')
+      var checkboxContainer = $('<div>')
         .append(publicCheckbox)
         .append('Public');
 
-      let ownersList = this.$ownersList = $('<div>').css({
+      var ownersList = this.$ownersList = $('<div>').css({
         marginTop: '5px',
         marginBottom: '5px'
       });
-      let addOwnerButton = $('<button>Add owner</button>').click(() => this.addOwner());
-      let ownersContainer = $('<div>')
+      var addOwnerButton = $('<button>Add owner</button>').click(() => this.addOwner());
+      var ownersContainer = $('<div>')
         .append(ownersList)
         .append(addOwnerButton);
 
@@ -372,17 +372,17 @@ define([
         heightStyle: 'content'
       });
 
-      let rightButtons = $('<div>', {
+      var rightButtons = $('<div>', {
         css: {
           paddingTop: '20px',
           height: '20%'
         }
       });
 
-      let closeButton = this.$closeButton = $('<button>Close view</button>').button({ disabled: true }).click(() => this.closeLoadedView());
-      let saveButton = this.$saveButton = $('<button>Save</button>').button({ disabled: true }).click(() => this.saveCurrentView('active'));
-      let saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({ disabled: true }).click(() => this.saveAs());
-      let saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
+      var closeButton = this.$closeButton = $('<button>Close view</button>').button({ disabled: true }).click(() => this.closeLoadedView());
+      var saveButton = this.$saveButton = $('<button>Save</button>').button({ disabled: true }).click(() => this.saveCurrentView('active'));
+      var saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({ disabled: true }).click(() => this.saveAs());
+      var saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
 
       rightButtons
         .append(closeButton)
@@ -432,7 +432,7 @@ define([
       // Create new tree
       const views = await this.getViews();
 
-      let tree = this.getTree(views);
+      var tree = this.getTree(views);
       this.$tree.fancytree({
         source: tree,
         toggleEffect: false,
@@ -447,14 +447,14 @@ define([
             return !node.folder; // Can only move documents
           },
           dragEnter: (target, info) => {
-            let theNode = info.otherNode;
+            var theNode = info.otherNode;
             if (target.folder && target === theNode.parent) {
               return false; // Already in current folder
             }
             return !!target.folder; // Can only drop in a folder
           },
           dragDrop: (target, info) => {
-            let theNode = info.otherNode;
+            var theNode = info.otherNode;
             this.showHide(true);
             theNode.data.view.moveTo(target)
               .then((result) => {
@@ -493,11 +493,11 @@ define([
         menu: [],
         beforeOpen: (event, ui) => {
           if (this.inSearch) return false;
-          let node = $.ui.fancytree.getNode(ui.target);
+          var node = $.ui.fancytree.getNode(ui.target);
 
           if (node.folder) {
-            let path = node.data.path;
-            let menu = [{ title: 'Create folder', cmd: 'createFolder', uiIcon: 'ui-icon-folder-collapsed' }];
+            var path = node.data.path;
+            var menu = [{ title: 'Create folder', cmd: 'createFolder', uiIcon: 'ui-icon-folder-collapsed' }];
             if (path.length === 1) { // root of flavor
               menu.push({ title: 'New flavor...', cmd: 'newFlavor', uiIcon: 'ui-icon-document-b' });
               menu.push({ title: '----' });
@@ -512,11 +512,11 @@ define([
             }
             this.$tree.contextmenu('replaceMenu', menu);
           } else {
-            let flavors = this.flavors;
-            let menuFlavors = [];
-            let viewFlavors = node.data.view.flavors;
+            var flavors = this.flavors;
+            var menuFlavors = [];
+            var viewFlavors = node.data.view.flavors;
             for (var i = 0; i < flavors.length; i++) {
-              let has = !!viewFlavors[flavors[i]];
+              var has = !!viewFlavors[flavors[i]];
               menuFlavors.push({
                 title: flavors[i],
                 cmd: 'toggleFlavor',
@@ -604,12 +604,12 @@ define([
     }
 
     newFlavor() {
-      let div = $('<div>Name of the new flavor: </div>');
-      let input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
+      var div = $('<div>Name of the new flavor: </div>');
+      var input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
         if (evt.keyCode === 13) Create();
       });
       const Create = () => {
-        let name = validateFlavor(input.val());
+        var name = validateFlavor(input.val());
         if (!name) {
           return UI.showNotification('Invalid name', 'error');
         }
@@ -629,20 +629,20 @@ define([
     }
 
     createFolder(node) {
-      let div = $('<div>Name of the directory: </div>');
-      let input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
+      var div = $('<div>Name of the directory: </div>');
+      var input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
         if (evt.keyCode === 13) Save();
       });
       const Save = () => {
-        let name = validateName(input.val());
+        var name = validateName(input.val());
         if (!name) {
           return UI.showNotification('Invalid name', 'error');
         }
 
         // Check if folder already exists
-        let children = node.getChildren();
+        var children = node.getChildren();
         if (children) {
-          for (let i = 0; i < children.length; i++) {
+          for (var i = 0; i < children.length; i++) {
             if (children[i].title === name && children[i].folder) {
               return UI.showNotification(`Folder ${name} already exists`, 'error');
             }
@@ -650,7 +650,7 @@ define([
         }
 
         node.setExpanded(true);
-        let newNode = node.addNode({
+        var newNode = node.addNode({
           folder: true,
           title: name,
           path: node.data.path.concat(name)
@@ -685,12 +685,12 @@ define([
     }
 
     renameView(node) {
-      let div = $(`<div>Renaming view "${node.title}"<br>New name: </div>`);
-      let input = $(`<input type="text" value="${node.data.view.getName(node.data.flavor)}"/>`).appendTo(div).on('keypress', (evt) => {
+      var div = $(`<div>Renaming view "${node.title}"<br>New name: </div>`);
+      var input = $(`<input type="text" value="${node.data.view.getName(node.data.flavor)}"/>`).appendTo(div).on('keypress', (evt) => {
         if (evt.keyCode === 13) Rename();
       }).select();
       const Rename = () => {
-        let name = input.val().trim();
+        var name = input.val().trim();
         if (name.length === 0) {
           return UI.showNotification('Name cannot be empty', 'error');
         }
@@ -780,7 +780,7 @@ define([
     }
 
     renderFlavor() {
-      let found = false;
+      var found = false;
       this.tree.filterBranches((node) => {
         if (node.folder && node.title === this.flavor && node.data.path.length === 1) {
           found = true;
@@ -923,7 +923,7 @@ define([
         const name = value[i];
 
         // Check if folder already exists
-        let children = folder.getChildren();
+        var children = folder.getChildren();
         if (children) {
           for (let j = 0; j < children.length; j++) {
             if (children[j].title === name && children[j].folder) {
@@ -992,7 +992,7 @@ define([
     }
 
     saveCurrentView(activeOrLoaded) {
-      let theView;
+      var theView;
       if (activeOrLoaded === 'active') {
         theView = this.activeView;
       } else {
@@ -1028,12 +1028,12 @@ define([
     }
 
     onDblclick(event, data) {
-      let node = data.node;
+      var node = data.node;
       if (node.folder) {
         return;
       }
       // Load view
-      let flavor = node.data.flavor;
+      var flavor = node.data.flavor;
       this.switchToFlavor(flavor);
       if (this.inSearch) {
         this.doSearch('');
@@ -1045,19 +1045,19 @@ define([
 
     loadNode(node) {
       this.setLoadedNode(node);
-      let view = node.data.view;
+      var view = node.data.view;
       Versioning.switchView(view.getViewSwitcher(), true, {
         withCredentials: true
       });
     }
 
     getTree(views) {
-      let tree = new Map();
-      let flavors = new Set();
+      var tree = new Map();
+      var flavors = new Set();
 
-      for (let i = 0; i < views.length; i++) {
-        let view = new RocView(views[i], this);
-        for (let flavor in view.content.flavors) {
+      for (var i = 0; i < views.length; i++) {
+        var view = new RocView(views[i], this);
+        for (var flavor in view.content.flavors) {
           flavors.add(flavor);
           addFlavor(tree, view, flavor, view.content.flavors[flavor]);
         }
@@ -1065,9 +1065,9 @@ define([
 
       this.flavors = Array.from(flavors).sort();
 
-      let fancytree = [];
-      for (let element of tree) {
-        let name = formatName(element[0]);
+      var fancytree = [];
+      for (var element of tree) {
+        var name = formatName(element[0]);
         this.buildElement(fancytree, name, element[1], [name], true, name);
       }
       fancytree.sort(sortFancytree); // todo sort the root differently ?
@@ -1076,8 +1076,8 @@ define([
     }
 
     buildFolder(fancytree, tree, path, firstLevel, flavor) {
-      for (let element of tree) {
-        let name = formatName(element[0]);
+      for (var element of tree) {
+        var name = formatName(element[0]);
         this.buildElement(fancytree, name, element[1], path.concat(name), firstLevel, flavor);
       }
       fancytree.sort(sortFancytree);
@@ -1085,7 +1085,7 @@ define([
 
     buildElement(fancytree, name, value, path, firstLevel, flavor) {
       if (value instanceof Map) {
-        let element = {
+        var element = {
           title: name,
           folder: true,
           children: [],
@@ -1168,17 +1168,17 @@ define([
 
       if (!toUpload || toUpload.length === 0) return;
       this.showHide(true);
-      let parts;
+      var parts;
       parts = _.partition(toUpload, function (v) {
         return v.toDelete;
       });
-      let toDelete = parts[0];
+      var toDelete = parts[0];
       parts = _.partition(parts[1], function (v) {
         return v.size < UPLOAD_LIMIT;
       });
 
-      let largeUploads = parts[1];
-      let smallUploads = parts[0];
+      var largeUploads = parts[1];
+      var smallUploads = parts[0];
 
       // Sort to minimize number of requests
       smallUploads.sort(function (a, b) {
@@ -1188,9 +1188,9 @@ define([
       });
 
       // Create inline uploads batch
-      let inlineUploads = [];
-      let current = [];
-      let uploadSum = 0;
+      var inlineUploads = [];
+      var current = [];
+      var uploadSum = 0;
       for (let i = 0; i < smallUploads.length; i++) {
         uploadSum += smallUploads[i].size;
         if (uploadSum < UPLOAD_LIMIT) {
@@ -1210,11 +1210,11 @@ define([
         await couchA.remove(_.map(toDelete, 'name'));
 
         for (let i = 0; i < largeUploads.length; i++) {
-          await couchA.upload(largeUploads[i]);
+          await couchA.upload(largeUploads[i]); // eslint-disable-line no-await-in-loop
         }
 
         for (let i = 0; i < inlineUploads.length; i++) {
-          await couchA.inlineUploads(inlineUploads[i]);
+          await couchA.inlineUploads(inlineUploads[i]); // eslint-disable-line no-await-in-loop
         }
 
         this.showHide(false);
@@ -1248,12 +1248,12 @@ define([
 
     addOwner() {
       if (!this.activeView) return;
-      let div = $('<div>User email address: </div>');
-      let input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
+      var div = $('<div>User email address: </div>');
+      var input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
         if (evt.keyCode === 13) Add();
       });
       const Add = () => {
-        let value = input.val();
+        var value = input.val();
         if (!Util.isEmail(value)) {
           return UI.showNotification('Invalid email', 'error');
         }
@@ -1272,7 +1272,7 @@ define([
 
     getMeta() {
       const meta = {};
-      let $input = this.$metaBox.find('input');
+      var $input = this.$metaBox.find('input');
       if ($input[0]) {
         meta.keywords = $input[0].value.split(',').map((val) => val.trim()).filter((val) => val);
       }
@@ -1313,7 +1313,7 @@ define([
   }
 
   function addFlavor(tree, view, flavorName, flavor) {
-    let map = tree.get(flavorName);
+    var map = tree.get(flavorName);
     if (!map) {
       map = new Map();
       tree.set(flavorName, map);

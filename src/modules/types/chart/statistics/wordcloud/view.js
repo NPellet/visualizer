@@ -57,29 +57,29 @@ define([
     },
     processChart: function (myvalues) {
       // ####### BEGIN VARS ########
-      let that = this;
-      let tags, fetcher;
+      var that = this;
+      var tags, fetcher;
       that.words = [];
 
-      let unicodePunctuationRe =
+      var unicodePunctuationRe =
         '!-#%-*,-/:;?@\\[-\\]_{}¡§«¶·»¿;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･';
 
-      let stopWords = /^(i|me|my|myself|we|us|our|ours|ourselves|you|your|yours|yourself|yourselves|he|him|his|himself|she|her|hers|herself|it|its|itself|they|them|their|theirs|themselves|what|which|who|whom|whose|this|that|these|those|am|is|are|was|were|be|been|being|have|has|had|having|do|does|did|doing|will|would|should|can|could|ought|i'm|you're|he's|she's|it's|we're|they're|i've|you've|we've|they've|i'd|you'd|he'd|she'd|we'd|they'd|i'll|you'll|he'll|she'll|we'll|they'll|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't|doesn't|don't|didn't|won't|wouldn't|shan't|shouldn't|can't|cannot|couldn't|mustn't|let's|that's|who's|what's|here's|there's|when's|where's|why's|how's|a|an|the|and|but|if|or|because|as|until|while|of|at|by|for|with|about|against|between|into|through|during|before|after|above|below|to|from|up|upon|down|in|out|on|off|over|under|again|further|then|once|here|there|when|where|why|how|all|any|both|each|few|more|most|other|some|such|no|nor|not|only|own|same|so|than|too|very|say|says|said|shall)$/;
-      let punctuation = new RegExp(`[${unicodePunctuationRe}]`, 'g');
-      let wordSeparators = /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g;
-      let discard = /^(@|https?:|\/\/)/;
+      var stopWords = /^(i|me|my|myself|we|us|our|ours|ourselves|you|your|yours|yourself|yourselves|he|him|his|himself|she|her|hers|herself|it|its|itself|they|them|their|theirs|themselves|what|which|who|whom|whose|this|that|these|those|am|is|are|was|were|be|been|being|have|has|had|having|do|does|did|doing|will|would|should|can|could|ought|i'm|you're|he's|she's|it's|we're|they're|i've|you've|we've|they've|i'd|you'd|he'd|she'd|we'd|they'd|i'll|you'll|he'll|she'll|we'll|they'll|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't|doesn't|don't|didn't|won't|wouldn't|shan't|shouldn't|can't|cannot|couldn't|mustn't|let's|that's|who's|what's|here's|there's|when's|where's|why's|how's|a|an|the|and|but|if|or|because|as|until|while|of|at|by|for|with|about|against|between|into|through|during|before|after|above|below|to|from|up|upon|down|in|out|on|off|over|under|again|further|then|once|here|there|when|where|why|how|all|any|both|each|few|more|most|other|some|such|no|nor|not|only|own|same|so|than|too|very|say|says|said|shall)$/;
+      var punctuation = new RegExp(`[${unicodePunctuationRe}]`, 'g');
+      var wordSeparators = /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g;
+      var discard = /^(@|https?:|\/\/)/;
 
       that.drawChart();
 
       function parseArray(myarray) {
         tags = {};
-        let cases = {};
+        var cases = {};
 
-        for (let i = myarray.length - 1; i >= 0; i--) {
-          let key = myarray[i][0];
-          let word = myarray[i][1];
+        for (var i = myarray.length - 1; i >= 0; i--) {
+          var key = myarray[i][0];
+          var word = myarray[i][1];
           if (key !== parseInt(key, 10) && word === parseInt(word, 10)) {
-            let tmp = key;
+            var tmp = key;
             key = word;
             word = tmp;
           }
@@ -101,7 +101,7 @@ define([
 
       function parseText(text) {
         tags = {};
-        let cases = {};
+        var cases = {};
 
         text
           .split(
@@ -153,35 +153,35 @@ define([
       }
     },
     drawChart: function () {
-      let that = this;
-      let fill = d3.scale.category20b();
-      let w = this.width,
+      var that = this;
+      var fill = d3.scale.category20b();
+      var w = this.width,
         h = this.height;
 
-      let svg = d3
+      var svg = d3
         .select(`#${this._id}`)
         .append('svg')
         .attr('width', w)
         .attr('height', h)
         .style('display', 'block');
 
-      let background = svg.append('g'),
+      var background = svg.append('g'),
         vis = svg
           .append('g')
           .attr('transform', `translate(${[w >> 1, h >> 1]})`);
-      let from = that.module.getConfiguration('fromTo')
+      var from = that.module.getConfiguration('fromTo')
         ? Math.max(
           -90,
           Math.min(90, +that.module.getConfiguration('fromTo')[0])
         )
         : 0;
-      let to = that.module.getConfiguration('fromTo')
+      var to = that.module.getConfiguration('fromTo')
         ? Math.max(
           -90,
           Math.min(90, +that.module.getConfiguration('fromTo')[1])
         )
         : 0;
-      let count =
+      var count =
         that.module.getConfiguration('orientation') > 0
           ? that.module.getConfiguration('orientation')
           : 1;
@@ -216,7 +216,7 @@ define([
       }
 
       function draw(data, bounds) {
-        let scale = bounds
+        var scale = bounds
           ? Math.min(
             w / Math.abs(bounds[1].x - w / 2),
             w / Math.abs(bounds[0].x - w / 2),
@@ -226,7 +226,7 @@ define([
           : 1;
 
         that.words = data;
-        let text = vis.selectAll('text').data(that.words, function (d) {
+        var text = vis.selectAll('text').data(that.words, function (d) {
           return d.text.toLowerCase();
         });
         text
@@ -261,10 +261,10 @@ define([
           .text(function (d) {
             return d.text;
           });
-        let exitGroup = background
+        var exitGroup = background
           .append('g')
           .attr('transform', vis.attr('transform'));
-        let exitGroupNode = exitGroup.node();
+        var exitGroupNode = exitGroup.node();
         text.exit().each(function () {
           exitGroupNode.appendChild(this);
         });

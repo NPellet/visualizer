@@ -8,12 +8,12 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
   Util.inherits(View, CodeEditor);
 
   View.prototype.inDom = function () {
-    let that = this;
+    var that = this;
 
     this.editable = true;
     $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%').appendTo(this.editorCell);
     this.editor = ace.edit(this._id);
-    let initVal = this.module.getConfiguration('script') || '';
+    var initVal = this.module.getConfiguration('script') || '';
     this._code = initVal;
     this.editor.$blockScrolling = Infinity;
     this.editor.getSession().setOption('useWorker', false);
@@ -38,7 +38,7 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
   };
 
   View.prototype.editorChanged = function () {
-    let val = this.editor.getValue();
+    var val = this.editor.getValue();
     this._code = val;
     this.module.definition.configuration.groups.group[0].script[0] = val;
   };

@@ -1,9 +1,9 @@
 'use strict';
 
 define(['src/util/util', 'marked', 'highlightjs'], function (Util, marked, highlights) {
-  let cssPromises = [];
+  var cssPromises = [];
   cssPromises.push(Util.loadCss('lib/highlight.js/styles/default.css'));
-  let cssLoaded = Promise.all(cssPromises);
+  var cssLoaded = Promise.all(cssPromises);
 
   return {
     filter: function gcFilter(md, resolve) {

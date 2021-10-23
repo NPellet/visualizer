@@ -3,9 +3,9 @@
 define(['lib/pixastic/pixastic'], function (Pixastic) {
   return {
     filter: function histogramFilter(dataObject, resolve) {
-      let image = new Image();
+      var image = new Image();
       image.src = dataObject.get();
-      let hist = {};
+      var hist = {};
       Pixastic.process(image, 'colorhistogram', { returnValue: hist });
       resolve(hist);
     }

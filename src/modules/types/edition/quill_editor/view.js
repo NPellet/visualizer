@@ -20,7 +20,7 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      let that = this;
+      var that = this;
       this.debounce = this.module.getConfiguration('debouncing');
       this.storeInView = this.module.getConfigurationCheckbox(
         'storeInView',
@@ -47,7 +47,7 @@ define([
           return Util.loadCss('node_modules/katex/dist/katex.min.css');
         })
         .then(() => {
-          let contents = this.module.definition.richtext || '';
+          var contents = this.module.definition.richtext || '';
           this.$content = $(`
             <style>
               ${this.module.getConfiguration('css')}

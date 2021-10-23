@@ -45,7 +45,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.configurationStructure = function () {
-    let jpaths = this.module.model.getjPath('nodeData');
+    var jpaths = this.module.model.getjPath('nodeData');
 
     return {
       groups: {

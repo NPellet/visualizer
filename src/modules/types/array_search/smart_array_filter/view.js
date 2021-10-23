@@ -14,18 +14,18 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
   $.extend(true, View.prototype, Default, {
     inDom: function () {
       this.module.getDomContent().empty();
-      let fontSize = (this._fontSize = this.module.getConfiguration(
+      var fontSize = (this._fontSize = this.module.getConfiguration(
         'fontSize',
       ));
 
-      let div = (this._div = $('<div>')
+      var div = (this._div = $('<div>')
         .css({
           width: '100%',
           fontSize: `${fontSize}px`,
         })
         .appendTo(this.module.getDomContent()));
 
-      let input = (this._input = $('<input type="text" />')
+      var input = (this._input = $('<input type="text" />')
         .css({
           padding: '0px 0px',
           margin: '0',
@@ -40,12 +40,12 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
       }
       input.val(this._query);
 
-      let debounce = this.module.getConfiguration('debounce');
+      var debounce = this.module.getConfiguration('debounce');
 
       input.on(
         'keyup',
         _.debounce(() => {
-          let value = input.val();
+          var value = input.val();
           this.onQuery(value);
         }, debounce),
       );
@@ -94,7 +94,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
       },
     },
     resizeInput: function () {
-      let width = this._div.width();
+      var width = this._div.width();
       this._input.css('width', width - this._fontSize * 2);
     },
     onResize: function () {

@@ -22,7 +22,7 @@ define([
     },
 
     inDom() {
-      let axisOptions = {
+      var axisOptions = {
         primaryGrid: false,
         secondaryGrid: false
       };
@@ -61,7 +61,7 @@ define([
         left: [axisOptions]
       });
 
-      let that = this;
+      var that = this;
       this.graph.on('shapeMouseOver', function (shape) {
         that.module.controller.onCellHover(shape.getData());
       });
@@ -92,18 +92,18 @@ define([
         if (String(value.get('name')) !== 'SOM') {
           return;
         }
-        let data = value.get('data');
-        let x = data.length,
+        var data = value.get('data');
+        var x = data.length,
           y = data[0].length;
-        let graph = this.graph;
+        var graph = this.graph;
 
-        let i;
+        var i;
 
-        let cfg = this.module.getConfiguration;
-        let field1 = cfg('bgField1');
-        let field2 = cfg('bgField2');
-        let field3 = cfg('bgField3');
-        let fields = value.options.fields;
+        var cfg = this.module.getConfiguration;
+        var field1 = cfg('bgField1');
+        var field2 = cfg('bgField2');
+        var field3 = cfg('bgField3');
+        var fields = value.options.fields;
         if (Array.isArray(fields)) {
           for (i = 0; i < fields.length; i++) {
             if (fields[i].name === field1) {
@@ -124,8 +124,8 @@ define([
         graph.getYAxis().forceMin(0).forceMax(y);
 
         for (i = 0; i < x; i++) {
-          for (let j = 0; j < y; j++) {
-            let shape = graph.newShape('rect', {
+          for (var j = 0; j < y; j++) {
+            var shape = graph.newShape('rect', {
               position: [
                 {
                   x: i,
@@ -148,8 +148,8 @@ define([
         this.redraw();
       },
       dataset(value, name) {
-        let i, getColor;
-        let config = this.module.getConfiguration('datasets'),
+        var i, getColor;
+        var config = this.module.getConfiguration('datasets'),
           theConfig;
         if (config) {
           for (i = 0; i < config.length; i++) {
@@ -176,11 +176,11 @@ define([
           }
         }
 
-        let that = this;
-        let data = value.getChildSync(['data', '0']);
-        let l = data.x.length;
-        let theData = new Array(l * 2);
-        let colors = new Array(l),
+        var that = this;
+        var data = value.getChildSync(['data', '0']);
+        var l = data.x.length;
+        var theData = new Array(l * 2);
+        var colors = new Array(l),
           color;
         for (i = 0; i < l; i++) {
           theData[i * 2] = data.x[i];
@@ -190,7 +190,7 @@ define([
             fill: color
           };
         }
-        let serie = this.series[name] = this.graph.newSerie(name, {
+        var serie = this.series[name] = this.graph.newSerie(name, {
           layer: 2
         }, 'scatter')
           .autoAxis()
@@ -233,7 +233,7 @@ define([
   });
 
   function colorGenerator(type, space, colorA1, colorA2, field1, field2, field3) {
-    let color1 = chroma(colorA1),
+    var color1 = chroma(colorA1),
       color2 = chroma(colorA2),
       scale, val;
     if (type === 'fixed') {
@@ -247,8 +247,8 @@ define([
         return scale(value[field1]).css();
       };
     } else if (type === 'inter') {
-      let interpolators = getInterpolators(colorA1, colorA2);
-      let mean = (colorA1[3] + colorA2[3]) / 2;
+      var interpolators = getInterpolators(colorA1, colorA2);
+      var mean = (colorA1[3] + colorA2[3]) / 2;
       return function interpolatedColor(value) {
         return chroma([interpolators[0](value[field1]), interpolators[1](value[field2]), interpolators[2](value[field3]), mean]).css();
       };

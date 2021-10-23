@@ -1,4 +1,4 @@
- 
+/* eslint-disable array-bracket-spacing */
 'use strict';
 
 define([
@@ -10,7 +10,7 @@ define([
 ], function (require, _, Default, API, Debug) {
   function View() {}
 
-  let views = {};
+  var views = {};
 
   window.addEventListener('message', function (event) {
     try {
@@ -21,13 +21,13 @@ define([
     if (message.module !== 'jsmol') {
       return;
     }
-    let id = message.id;
+    var id = message.id;
     if (!views[id]) {
       Debug.error(`No view with ID ${id}`);
       return;
     }
-    let view = views[id];
-    let atom;
+    var view = views[id];
+    var atom;
     switch (message.type) {
       case 'ready':
         view.resolveReady();
@@ -58,9 +58,9 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      let that = this;
+      var that = this;
       this.actionOnloadScript = '';
-      let id = this.module.getId();
+      var id = this.module.getId();
       views[id] = this;
       let webgl = (this.module.getConfiguration('prefs') || []).includes(
         'webgl',
@@ -104,7 +104,7 @@ define([
     },
 
     inDom: function () {
-      let that = this;
+      var that = this;
       this.dom.parent().on('mouseleave', function () {
         if (that.lastHoveredAtom) {
           API.highlightId(that.lastHoveredAtom.label, 0);
@@ -121,7 +121,7 @@ define([
 
     update: {
       data: function (data) {
-        let that = this;
+        var that = this;
         this.module.data = data;
         that.postMessage('setMolFile', {
           _modelLoad: data.get(),
@@ -165,7 +165,7 @@ define([
     },
 
     postMessage: function (type, message) {
-      let cw = this.dom.get(0).contentWindow;
+      var cw = this.dom.get(0).contentWindow;
       if (cw) {
         cw.postMessage(
           JSON.stringify({
@@ -182,8 +182,8 @@ define([
     },
 
     parseAtom: function (atom) {
-      let reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
-      let m = reg.exec(atom);
+      var reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
+      var m = reg.exec(atom);
       return {
         id: m[2],
         label: m[1],
@@ -216,7 +216,7 @@ define([
     },
 
     _activateHighlights: function () {
-      let that = this;
+      var that = this;
       if (!this.module.data._highlight) return;
       if (!this.module.data._atoms) {
         console.log(
@@ -224,7 +224,7 @@ define([
         );
         return;
       }
-      let highlight = _(this.module.data._highlight)
+      var highlight = _(this.module.data._highlight)
         .flatten()
         .uniq()
         .value();
@@ -232,7 +232,7 @@ define([
       that._highlighted = [];
 
       API.killHighlight(this.module.getId());
-      for (let i = 0; i < highlight.length; i++) {
+      for (var i = 0; i < highlight.length; i++) {
         (function (i) {
           API.listenHighlight(
             { _highlight: highlight[i] },

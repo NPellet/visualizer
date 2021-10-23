@@ -1,7 +1,7 @@
 'use strict';
 
 define(['jquery', 'jsgraph'], function ($, Graph) {
-  let defaults = {
+  var defaults = {
     msIsContinuous: false,
     title: 'GC-MS',
     onlyOneMS: false,
@@ -44,8 +44,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
   GCMS.prototype = {
     init: function () {
-      let that = this;
-      let optionsGc = {
+      var that = this;
+      var optionsGc = {
         paddingTop: 25,
         paddingBottom: 0,
         paddingLeft: 20,
@@ -105,13 +105,13 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             return;
           }
 
-          let i = Object.keys(val)[0];
+          var i = Object.keys(val)[0];
 
           if (val[i] == undefined || (!that.msData && !that.msDataRO)) {
             return;
           }
 
-          let x = val[i].xIndexClosest;
+          var x = val[i].xIndexClosest;
 
           if (x) {
             that.recalculateMSMove(x);
@@ -119,7 +119,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         }
       };
 
-      let axisGc = {
+      var axisGc = {
         bottom: [
           {
             labelValue: 'Time',
@@ -149,7 +149,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         ]
       };
 
-      let optionsMs = {
+      var optionsMs = {
         paddingTop: 5,
         paddingBottom: 0,
         paddingLeft: 20,
@@ -239,7 +239,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
                  //that.onAnnotationChange();
                  }*/
       };
-      let axisMs = {
+      var axisMs = {
         bottom: [
           {
             labelValue: 'm/z',
@@ -305,7 +305,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         // that.lockTrackingLine = !that.lockTrackingLine;
       });
 
-      let shape = this.gcGraph.newShape({
+      var shape = this.gcGraph.newShape({
         type: 'line',
         position: [{ x: 100, y: 'min' }, { x: 100, y: 'max' }],
         strokeColor: 'rgba(0, 0, 0, 1)',
@@ -326,7 +326,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       });
 
       this.gcGraph.on('shapeSelect', function (shape) {
-        let data = shape.getProperties();
+        var data = shape.getProperties();
         if (data.type === 'areaundercurve') {
           that.trigger('AUCSelected', data);
         }
@@ -345,7 +345,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     setupGCEvents() {
-      let graph = this.gcGraph;
+      var graph = this.gcGraph;
 
       graph.on('shapeNew', (shape) => {
         if (shape.type === 'areaundercurve') {
@@ -418,7 +418,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     msShapesSelectChange: function () {
-      let shapes = this.msGraph.selectedShapes;
+      var shapes = this.msGraph.selectedShapes;
 
       this.trigger('MZChange', [
         shapes.map(function (shape) {
@@ -428,8 +428,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     resize: function (w, h) {
-      let h1 = h * this.sizeFactor;
-      let h2 = h * (1 - this.sizeFactor);
+      var h1 = h * this.sizeFactor;
+      var h2 = h * (1 - this.sizeFactor);
 
       this.gcGraph.resize(w, h1);
       this.msGraph.resize(w, h2);
@@ -445,21 +445,21 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       // Creating an averaged MS on the fly
       if (!this.gcSerie) return;
 
-      let data = annot.getProperties();
-      let that = this;
-      let xStart = data.position[0].x;
-      let xEnd = data.position[1].x;
-      let indexStart = that.gcSerie.searchClosestValue(xStart).xBeforeIndex;
-      let indexEnd = that.gcSerie.searchClosestValue(xEnd).xBeforeIndex;
-      let indexMin = Math.min(indexStart, indexEnd);
-      let indexMax = Math.max(indexStart, indexEnd);
-      let obj = [];
-      let allMs = [];
-      let i;
-      let j;
-      let l;
-      let floor;
-      let finalMs = [];
+      var data = annot.getProperties();
+      var that = this;
+      var xStart = data.position[0].x;
+      var xEnd = data.position[1].x;
+      var indexStart = that.gcSerie.searchClosestValue(xStart).xBeforeIndex;
+      var indexEnd = that.gcSerie.searchClosestValue(xEnd).xBeforeIndex;
+      var indexMin = Math.min(indexStart, indexEnd);
+      var indexMax = Math.max(indexStart, indexEnd);
+      var obj = [];
+      var allMs = [];
+      var i;
+      var j;
+      var l;
+      var floor;
+      var finalMs = [];
 
       if (indexMax === indexMin) {
         return;
@@ -484,7 +484,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
         finalMs.push(Math.round(obj[allMs[i]] / Math.abs(indexMax - indexMin)));
       }
 
-      let buffer;
+      var buffer;
       if (this.options.onlyOneMS) {
         buffer = that;
 
@@ -544,7 +544,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     addAUC: function (from, to, options) {
-      let that = this,
+      var that = this,
         obj = {
           position: [{ x: from }, { x: to }],
 
@@ -576,7 +576,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     killAllAUC: function () {
-      let that = this;
+      var that = this;
       this.aucs.map(function (auc) {
         auc.kill();
 
@@ -663,7 +663,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     setGC: function (chromatogram) {
-      let that = this;
+      var that = this;
 
       if (!this.gcGraph) {
         return;
@@ -671,9 +671,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
       this.blank();
 
-      for (let serieName in chromatogram.series) {
+      for (var serieName in chromatogram.series) {
         if (serieName !== 'ms') {
-          let serie = this.gcGraph
+          var serie = this.gcGraph
             .newSerie('gc', {
               useSlots: false,
               lineColor: this.options.mainColor
@@ -687,9 +687,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
           serie.setLineWidth(1, 'selected');
           this.gcGraph.selectSerie(serie);
 
-          let axis = this.gcGraph.getBottomAxis();
-          let from = axis.getCurrentMin();
-          let to = axis.getCurrentMax();
+          var axis = this.gcGraph.getBottomAxis();
+          var from = axis.getCurrentMin();
+          var to = axis.getCurrentMax();
 
           this.trigger('onZoomGC', [from, to]);
 
@@ -722,9 +722,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
       this.blankRO();
 
-      for (let serieName in chromatogram.series) {
+      for (var serieName in chromatogram.series) {
         if (serieName !== 'ms') {
-          let serie = this.gcGraph
+          var serie = this.gcGraph
             .newSerie('gcro', {
               useSlots: false,
               selectable: false,
@@ -751,10 +751,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     setMS: function (ms) {
-      let minX = Infinity;
-      let maxX = -Infinity;
-      for (let t = 0; t < ms.length; t++) {
-        for (let m = 0; m < ms[t][0].length; m++) {
+      var minX = Infinity;
+      var maxX = -Infinity;
+      for (var t = 0; t < ms.length; t++) {
+        for (var m = 0; m < ms[t][0].length; m++) {
           if (ms[t][0][m] > maxX) {
             maxX = ms[t][0][m];
           }
@@ -789,8 +789,8 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     recalculateMSMove: function (x) {
-      let ms = this.msData ? this.msData[x] : null;
-      let msro = this.msDataRO ? this.msDataRO[x] : null;
+      var ms = this.msData ? this.msData[x] : null;
+      var msro = this.msDataRO ? this.msDataRO[x] : null;
 
       this.trigger('MSChangeIndex', [x, ms]);
 
@@ -812,9 +812,9 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
           .autoAxis();
       }
 
-      let xVal = this.gcTimes ? this.gcTimes[x] : this.gcTimesRO[x];
+      var xVal = this.gcTimes ? this.gcTimes[x] : this.gcTimesRO[x];
 
-      let trackData = this.trackingLineGC.getProperties();
+      var trackData = this.trackingLineGC.getProperties();
       trackData.position[0].x = xVal;
       trackData.position[1].x = xVal;
 

@@ -6,8 +6,8 @@ define(['js-yaml'], function (Yaml) {
       if (dataObject.getType() !== 'string')
         return reject(new TypeError('yaml2json filter expects a string'));
 
-      let str = dataObject.get();
-      let json = Yaml.safeLoad(str);
+      var str = dataObject.get();
+      var json = Yaml.safeLoad(str);
 
       resolve(json);
     }

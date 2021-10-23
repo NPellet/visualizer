@@ -190,12 +190,12 @@ define([
 
   Controller.prototype.initImpl = function () {
     this.stopExecution();
-    let neededLibs = this.module.getConfiguration('libs');
-    let urls = [];
-    let aliases = [];
+    var neededLibs = this.module.getConfiguration('libs');
+    var urls = [];
+    var aliases = [];
     if (neededLibs) {
-      for (let i = 0; i < neededLibs.length; i++) {
-        let neededLib = neededLibs[i];
+      for (var i = 0; i < neededLibs.length; i++) {
+        var neededLib = neededLibs[i];
         if (neededLib.lib) {
           urls.push(neededLib.lib);
           aliases.push(neededLib.alias || `required_anonymous_${i}`);
@@ -217,20 +217,20 @@ define([
   };
 
   Controller.prototype.initExecutor = function () {
-    let promise;
-    let newScript = this.module.view._code;
+    var promise;
+    var newScript = this.module.view._code;
     if (!this.reloaded && this.currentScript == newScript) {
       promise = Promise.resolve(this._executor || this._loadingExecutor);
     } else {
       this.reloaded = false;
-      let prom = new Promise((resolve, reject) => {
+      var prom = new Promise((resolve, reject) => {
         require(this.neededUrls, (...args) => {
-          let libs = new Array(this.neededUrls.length);
-          for (let i = 0; i < this.neededUrls.length; i++) {
+          var libs = new Array(this.neededUrls.length);
+          for (var i = 0; i < this.neededUrls.length; i++) {
             libs[i] = args[i];
           }
 
-          let executor = new ScriptExecutor(this, libs, {
+          var executor = new ScriptExecutor(this, libs, {
             topAwait: this.module.getConfigurationCheckbox('asyncAwait', 'top')
           });
           this.currentScript = newScript;
@@ -286,7 +286,7 @@ define([
 
   Controller.prototype._changeButtonProperty = function (name, property, value) {
     if (!this.module.view.buttons) return;
-    let button = this.module.view.buttons.find((b) => b.name === name);
+    var button = this.module.view.buttons.find((b) => b.name === name);
     if (button) {
       button[property] = value;
     } else {
@@ -300,7 +300,7 @@ define([
 
   Controller.prototype._changeButton = function (name, type) {
     if (!this.module.view.buttons) return;
-    let button = this.module.view.buttons.find((b) => b.name === name);
+    var button = this.module.view.buttons.find((b) => b.name === name);
     if (button) {
       button[type]();
     } else {
@@ -312,8 +312,8 @@ define([
     this.controller = controller;
     this.title = String(controller.module.definition.title);
     this.libs = libs;
-    let context = getNewContext(this);
-    let theCode = this.controller.module.view._code;
+    var context = getNewContext(this);
+    var theCode = this.controller.module.view._code;
     this._sandbox = new Sandbox();
     this._sandbox.setContext(context);
     try {
@@ -330,43 +330,43 @@ define([
   }
 
   function getNewContext(executor) {
-    let setter = function (name, value) {
+    var setter = function (name, value) {
       executor.wasSet = true;
       executor.doVariable(name, value);
     };
-    let clear = function () {
+    var clear = function () {
       executor.wasSet = true;
       executor.controller.outputObject = {};
     };
-    let unset = function (name) {
+    var unset = function (name) {
       executor.wasSet = true;
       delete executor.controller.outputObject[name];
     };
-    let done = function (e) {
+    var done = function (e) {
       executor.done(e);
     };
-    let setAsync = function () {
+    var setAsync = function () {
       executor.async();
     };
-    let sendAction = function (name, value) {
+    var sendAction = function (name, value) {
       API.doAction(name, value);
     };
-    let showButton = function (name) {
+    var showButton = function (name) {
       executor.controller.showButton(name);
     };
-    let hideButton = function (name) {
+    var hideButton = function (name) {
       executor.controller.hideButton(name);
     };
-    let enableButton = function (name) {
+    var enableButton = function (name) {
       executor.controller.enableButton(name);
     };
-    let disableButton = function (name) {
+    var disableButton = function (name) {
       executor.controller.disableButton(name);
     };
-    let getButton = function (name) {
+    var getButton = function (name) {
       return executor.controller._getButton(name);
     };
-    let context = {
+    var context = {
       variables: {},
       variable: null,
       event: null,
@@ -375,7 +375,7 @@ define([
       defined: 0,
       set: setter,
       get: function (name) {
-        let variable = this.variables[name];
+        var variable = this.variables[name];
         if (variable) {
           return variable.get();
         }
@@ -395,7 +395,7 @@ define([
       )
     };
 
-    let ctx = {
+    var ctx = {
       getVariable() {
         return context.variable;
       },
@@ -467,10 +467,10 @@ define([
 
   ScriptExecutor.prototype.execute = function () {
     this.controller.startExecution();
-    let variables = this.controller.module.view._input;
-    let ctxVariables = {};
-    let varNum = 0;
-    for (let i in variables) {
+    var variables = this.controller.module.view._input;
+    var ctxVariables = {};
+    var varNum = 0;
+    for (var i in variables) {
       if (variables[i] != null) {
         varNum++;
         ctxVariables[i] = variables[i];
@@ -485,7 +485,7 @@ define([
     this._done = Promise.resolve();
 
     try {
-      let result = Promise.resolve(
+      var result = Promise.resolve(
         this.theFunction.apply(this.context, this.libs)
       );
       if (!this._async) {
@@ -499,7 +499,7 @@ define([
   };
 
   ScriptExecutor.prototype.setOutput = function () {
-    let that = this;
+    var that = this;
     this._done
       .then(
         function () {
@@ -524,7 +524,7 @@ define([
   ScriptExecutor.prototype.async = function () {
     if (this._async) return;
     this._async = true;
-    let that = this;
+    var that = this;
     this._done = new Promise(function (resolve, reject) {
       that.done = function (v) {
         if (Util.objectToString(v) === 'Error') {
@@ -539,12 +539,12 @@ define([
   ScriptExecutor.prototype.done = function () {};
 
   function reportError(title, e) {
-    let message = '';
+    var message = '';
     if (e && e.stack) {
       message = e.message;
       e = e.stack;
     }
-    let str = 'Code executor error';
+    var str = 'Code executor error';
     if (title) {
       str += ` (${title})`;
     }

@@ -11,7 +11,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     },
 
     getjPath: function () {
-      let data = this.module.getDataFromRel('list');
+      var data = this.module.getDataFromRel('list');
 
       if (!data || data == null) {
         return;
@@ -23,7 +23,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         return;
       }
 
-      let jpath = {};
+      var jpath = {};
       Traversing._getjPath(data[0], jpath);
       return jpath;
     }

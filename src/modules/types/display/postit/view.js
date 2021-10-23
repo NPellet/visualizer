@@ -7,7 +7,7 @@ define(['modules/default/defaultview', 'forms/button', 'src/util/util', 'src/mai
   $.extend(true, View.prototype, Default, {
 
     init: function () {
-      let that = this,
+      var that = this,
         id = Util.getNextUniqueId(),
         done = false;
 

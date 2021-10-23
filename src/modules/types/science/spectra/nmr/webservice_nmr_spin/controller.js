@@ -18,17 +18,17 @@ define([
     cssClass: 'webservice_nmr_spin'
   };
 
-  let regDelta = /^delta_(\d+)/;
-  let regCoupling = /^coupling_(\d+)_(\d+)/;
+  var regDelta = /^delta_(\d+)/;
+  var regCoupling = /^coupling_(\d+)_(\d+)/;
 
   Controller.prototype.doAnalysis = function () {
-    let data = this.module.view.system.serializeArray();
+    var data = this.module.view.system.serializeArray();
 
-    let chemicalShifts = [];
-    let multiplicity = [];
-    let options = {};
+    var chemicalShifts = [];
+    var multiplicity = [];
+    var options = {};
 
-    let name, res, i, j;
+    var name, res, i, j;
     for (i = 0; i < data.length; i++) {
       if (isNaN(data[i].value)) throw new Error('not a number');
       name = data[i].name;
@@ -38,7 +38,7 @@ define([
       }
     }
 
-    let coupling = new Array(chemicalShifts.length);
+    var coupling = new Array(chemicalShifts.length);
     for (i = 0; i < chemicalShifts.length; i++) {
       coupling[i] = new Array(chemicalShifts.length);
       for (j = 0; j < chemicalShifts.length; j++) {
@@ -58,14 +58,14 @@ define([
       }
     }
 
-    let spinSystem = new simulation.SpinSystem(
+    var spinSystem = new simulation.SpinSystem(
       chemicalShifts,
       coupling,
       multiplicity
     );
-    let spectrum = simulation.simulate1D(spinSystem, options);
+    var spectrum = simulation.simulate1D(spinSystem, options);
 
-    let chart = {
+    var chart = {
       data: [
         {
           x: getX(options.from, options.to, options.nbPoints),
@@ -80,8 +80,8 @@ define([
   function getX(from, to, nbPoints) {
     const result = new Array(nbPoints);
     const step = (to - from) / nbPoints;
-    let value = from;
-    for (let i = 0; i < nbPoints; i++) {
+    var value = from;
+    for (var i = 0; i < nbPoints; i++) {
       result[i] = value;
       value += step;
     }

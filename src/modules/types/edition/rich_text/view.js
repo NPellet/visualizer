@@ -15,7 +15,7 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      let that = this;
+      var that = this;
       this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
       this.debounce = this.module.getConfiguration('debouncing');
       this.storeInView = this.module.getConfigurationCheckbox('storeInView', 'yes');
@@ -34,7 +34,7 @@ define([
     update: {
       html: function (moduleValue) {
         this.module.data = moduleValue;
-        let val = moduleValue.get();
+        var val = moduleValue.get();
         if (this.storeInView) {
           this.module.definition.richtext = val;
         }
@@ -42,8 +42,8 @@ define([
       }
     },
     initEditor: function () {
-      let that = this;
-      let initText = this.module.definition.richtext || '';
+      var that = this;
+      var initText = this.module.definition.richtext || '';
       this.readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
       if (this.readOnly && this.plainHtml) {
         this.dom = $('<div>');
@@ -64,7 +64,7 @@ define([
           CKEDITOR.instances[this._id].destroy();
         }
         CKEDITOR.disableAutoInline = true;
-        let options = {
+        var options = {
           extraPlugins: 'mathjax,font,sourcedialog,codesnippet',
           removeButtons: '',
           language: 'en',
@@ -98,7 +98,7 @@ define([
       }
     },
     getContentHeight: function () {
-      let height = 0;
+      var height = 0;
       this.dom.children().each(function () {
         height += $(this).height();
       });
@@ -117,7 +117,7 @@ define([
     },
 
     _setCss: function () {
-      let bgColor = this.module.getConfiguration('bgColor');
+      var bgColor = this.module.getConfiguration('bgColor');
       this.dom.css({
         height: '100%',
         width: '100%',
@@ -125,7 +125,7 @@ define([
         boxSizing: 'border-box'
       });
       if (this.module.getConfigurationCheckbox('postit', 'yes')) {
-        let ch = chroma(bgColor[0], bgColor[1], bgColor[2]);
+        var ch = chroma(bgColor[0], bgColor[1], bgColor[2]);
         this.dom.addClass('richtext-postit');
         this.dom.parents('.ci-module-wrapper').addClass('ci-module-richtext-postit');
         this.dom.css({

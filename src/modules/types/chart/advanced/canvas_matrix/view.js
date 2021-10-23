@@ -35,11 +35,11 @@ define([
 
       this.buffers = {};
 
-      let that = this;
+      var that = this;
       that.accumulatedDelta = 0;
       $(this.canvasContainer).on('mousewheel', 'canvas', function (e) {
         e.preventDefault();
-        let delta = e.originalEvent.detail || e.originalEvent.wheelDelta;
+        var delta = e.originalEvent.detail || e.originalEvent.wheelDelta;
 
         if (that.max && delta > 0 || that.min && delta < 0)
           return;
@@ -54,8 +54,8 @@ define([
 
       $(this.canvasContainer).drag(function (e1, e2) {
         e1.preventDefault();
-        let baseShift = that.baseShift;
-        let shift = that.getXYShift();
+        var baseShift = that.baseShift;
+        var shift = that.getXYShift();
         shift.x = baseShift.x + e2.deltaX;
         shift.y = baseShift.y + e2.deltaY;
         that.doCanvasErase();
@@ -93,32 +93,32 @@ define([
     },
 
     doCanvasRedraw: function () {
-      let bufferIndices = this.getBufferIndices(this.getPxPerCell());
+      var bufferIndices = this.getBufferIndices(this.getPxPerCell());
 
-      for (let i = bufferIndices.minXIndexBuffer; i <= bufferIndices.maxXIndexBuffer; i++) {
-        for (let j = bufferIndices.minYIndexBuffer; j <= bufferIndices.maxXIndexBuffer; j++) {
+      for (var i = bufferIndices.minXIndexBuffer; i <= bufferIndices.maxXIndexBuffer; i++) {
+        for (var j = bufferIndices.minYIndexBuffer; j <= bufferIndices.maxXIndexBuffer; j++) {
           this.doCanvasDrawBuffer(i, j);
         }
       }
     },
 
     getBufferIndices: function (pxPerCell) {
-      let currentPxPerCell = this.getPxPerCell();
-      let ratioIndex = currentPxPerCell / pxPerCell;
-      let shift = this.getXYShift();
+      var currentPxPerCell = this.getPxPerCell();
+      var ratioIndex = currentPxPerCell / pxPerCell;
+      var shift = this.getXYShift();
 
-      let minXIndex = 0;
+      var minXIndex = 0;
       if (shift.x < 0)
         minXIndex = Math.floor(-shift.x / currentPxPerCell / this.squareLoading);
 
-      let minYIndex = 0;
+      var minYIndex = 0;
       if (shift.y < 0)
         minYIndex = Math.floor(-shift.y / currentPxPerCell / this.squareLoading);
 
-      let maxXIndex = Math.min(this.canvasNbX / this.squareLoading - 1, (this.canvas.width - shift.x) / pxPerCell / this.squareLoading);// , (this.canvas.width + shift.x) / pxPerCell);
-      let maxYIndex = Math.min(this.canvasNbY / this.squareLoading - 1, (this.canvas.height - shift.y) / pxPerCell / this.squareLoading);// , (this.canvas.height + shift.y) / pxPerCell);
+      var maxXIndex = Math.min(this.canvasNbX / this.squareLoading - 1, (this.canvas.width - shift.x) / pxPerCell / this.squareLoading);// , (this.canvas.width + shift.x) / pxPerCell);
+      var maxYIndex = Math.min(this.canvasNbY / this.squareLoading - 1, (this.canvas.height - shift.y) / pxPerCell / this.squareLoading);// , (this.canvas.height + shift.y) / pxPerCell);
 
-      let currentIndices = {
+      var currentIndices = {
         minXIndexBuffer: minXIndex,
         minYIndexBuffer: minYIndex,
 
@@ -127,11 +127,11 @@ define([
       };
 
       if (currentPxPerCell > pxPerCell) {
-        let ultraMaxX = Math.ceil(this.canvasNbX / this.squareLoading) - 1;
-        let ultraMaxY = Math.ceil(this.canvasNbY / this.squareLoading) - 1;
+        var ultraMaxX = Math.ceil(this.canvasNbX / this.squareLoading) - 1;
+        var ultraMaxY = Math.ceil(this.canvasNbY / this.squareLoading) - 1;
 
-        let diff = (currentIndices.maxXIndexBuffer - currentIndices.minXIndexBuffer);
-        let diff2 = (currentIndices.maxYIndexBuffer - currentIndices.minYIndexBuffer);
+        var diff = (currentIndices.maxXIndexBuffer - currentIndices.minXIndexBuffer);
+        var diff2 = (currentIndices.maxYIndexBuffer - currentIndices.minYIndexBuffer);
 
         currentIndices.minXIndexBuffer = Math.floor(Math.max(0, currentIndices.minXIndexBuffer - diff * (ratioIndex - 1)));
         currentIndices.maxXIndexBuffer = Math.floor(Math.min(ultraMaxX, currentIndices.maxXIndexBuffer + diff * (ratioIndex - 1) - 1));
@@ -147,9 +147,9 @@ define([
     },
 
     doCanvasDrawBuffer: function (bufferX, bufferY) {
-      let shift = this.getXYShift();
-      let pxPerCell = this.getPxPerCell();
-      let bufferKey = this.getBufferKey(pxPerCell, bufferX, bufferY);
+      var shift = this.getXYShift();
+      var pxPerCell = this.getPxPerCell();
+      var bufferKey = this.getBufferKey(pxPerCell, bufferX, bufferY);
 
       if (!this.buffers[bufferKey])
         return;
@@ -166,7 +166,7 @@ define([
     },
 
     resetZoomPrefetch: function () {
-      let currentIndex, i, len;
+      var currentIndex, i, len;
       for (i = 0; i < this.availableZooms.length; i++) {
         if (this.availableZooms[i] == this.pxPerCell) {
           currentIndex = i;
@@ -174,8 +174,8 @@ define([
         }
       }
 
-      let arrBefore = this.availableZooms.slice(currentIndex - 2, currentIndex).reverse();
-      let arrAfter = this.availableZooms.slice(currentIndex + 1, currentIndex + 3);
+      var arrBefore = this.availableZooms.slice(currentIndex - 2, currentIndex).reverse();
+      var arrAfter = this.availableZooms.slice(currentIndex + 1, currentIndex + 3);
       this.availableZoomsForFetch = [];
 
       for (i = 0, len = (arrBefore.length + arrAfter.length); i < len; i++) {
@@ -191,21 +191,21 @@ define([
     },
 
     getClosest: function (haystack, needle) {
-      let closest = false,
+      var closest = false,
         newClosest;
-      for (let i = 0; i < haystack.length; i++)
+      for (var i = 0; i < haystack.length; i++)
         if (!closest || (haystack[i] - needle < 0 && needle - haystack[i] < needle - closest))
           closest = haystack[i];
       return closest;
     },
 
     changeZoom: function (diff, mouseX, mouseY) {
-      let newPxPerCell = Math.max(1, this.getClosest(this.availableZooms, this.getOriginalPxPerCell() + this.tanh(diff)));
+      var newPxPerCell = Math.max(1, this.getClosest(this.availableZooms, this.getOriginalPxPerCell() + this.tanh(diff)));
 
       if (this.pxPerCell != newPxPerCell) {
-        let zoomRatio = newPxPerCell / this.pxPerCell;
+        var zoomRatio = newPxPerCell / this.pxPerCell;
 
-        let shift = this.getXYShift();
+        var shift = this.getXYShift();
 
         shift.x = mouseX - (mouseX - shift.x) * zoomRatio;
         shift.y = mouseY - (mouseY - shift.y) * zoomRatio;
@@ -240,9 +240,9 @@ define([
     getXYShift: function () {
       if (this.xyShift && !isNaN(this.xyShift.x) && !isNaN(this.xyShift.y))
         return this.xyShift;
-      let pxPerCell = this.getPxPerCell();
-      let zoneX = pxPerCell * this.canvasNbX;
-      let zoneY = pxPerCell * this.canvasNbY;
+      var pxPerCell = this.getPxPerCell();
+      var zoneX = pxPerCell * this.canvasNbX;
+      var zoneY = pxPerCell * this.canvasNbY;
 
 
       this.xyShift = {
@@ -278,11 +278,11 @@ define([
     },
 
     initWorkers: function () {
-      let minMaxWorker = Worker(require.toUrl('src/util/workers/getminmaxmatrix.js'));
-      let mainWorker = Worker(require.toUrl('./worker.js'));
-      let that = this;
+      var minMaxWorker = Worker(require.toUrl('src/util/workers/getminmaxmatrix.js'));
+      var mainWorker = Worker(require.toUrl('./worker.js'));
+      var that = this;
       return Promise.all([minMaxWorker, mainWorker]).then(function (workers) {
-        let minMaxWorker = workers[0];
+        var minMaxWorker = workers[0];
         minMaxWorker.addEventListener('message', function (event) {
           that.minValue = event.data.min;
           that.maxValue = event.data.max;
@@ -299,7 +299,7 @@ define([
         });
         that.minmaxworker = minMaxWorker;
 
-        let mainWorker = workers[1];
+        var mainWorker = workers[1];
         mainWorker.postMessage({
           title: 'init',
           message: {
@@ -309,10 +309,10 @@ define([
           }
         });
         mainWorker.addEventListener('message', function (event) {
-          let data = event.data;
-          let pxPerCell = data.pxPerCell;
-          let buffIndexX = data.indexX;
-          let buffIndexY = data.indexY;
+          var data = event.data;
+          var pxPerCell = data.pxPerCell;
+          var buffIndexX = data.indexX;
+          var buffIndexY = data.indexY;
 
           that.buffers[that.getBufferKey(pxPerCell, buffIndexX, buffIndexY)] = data.data;
           if (that.getPxPerCell() == pxPerCell)
@@ -334,7 +334,7 @@ define([
     },
 
     launchWorkers: function (restartAtNormal) {
-      let pxPerCell;
+      var pxPerCell;
       this.cachedPxPerCell = this.pxPerCell;
       if (restartAtNormal) {
         pxPerCell = this.getPxPerCell();
@@ -352,10 +352,10 @@ define([
 
     // http://localhost:8888/git/visualizer/?viewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3DZv1Ib2VDf6&dataURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/result/2012-07-06/2012-07-06_09-11-38oE4j5XDDPd%26key%3DieGxx34DhR&saveViewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DSaveFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3Dh5fKTxoIWD
     postNextMessageToWorker: function (pxPerCell) {
-      let bufferIndices = this.getBufferIndices(pxPerCell);
-      for (let i = bufferIndices.minXIndexBuffer; i <= bufferIndices.maxXIndexBuffer; i++) {
-        for (let j = bufferIndices.minYIndexBuffer; j <= bufferIndices.maxYIndexBuffer; j++) {
-          let key = this.getBufferKey(pxPerCell, i, j);
+      var bufferIndices = this.getBufferIndices(pxPerCell);
+      for (var i = bufferIndices.minXIndexBuffer; i <= bufferIndices.maxXIndexBuffer; i++) {
+        for (var j = bufferIndices.minYIndexBuffer; j <= bufferIndices.maxYIndexBuffer; j++) {
+          var key = this.getBufferKey(pxPerCell, i, j);
 
           if (typeof this.buffers[key] == 'undefined') {
             this.doPostNextMessageToWorker(pxPerCell, i, j);
@@ -364,8 +364,8 @@ define([
         }
       }
 
-      let maxXBuffer = Math.ceil(this.canvasNbX / this.squareLoading) - 1;
-      let maxYBuffer = Math.ceil(this.canvasNbY / this.squareLoading) - 1;
+      var maxXBuffer = Math.ceil(this.canvasNbX / this.squareLoading) - 1;
+      var maxYBuffer = Math.ceil(this.canvasNbY / this.squareLoading) - 1;
 
       return false;
     },
@@ -409,7 +409,7 @@ define([
 
     getColors: function () {
       if (!this.colors) {
-        let colors = this.module.getConfiguration('colors');
+        var colors = this.module.getConfiguration('colors');
         if (colors) {
           if (colors.length === 1) {
             colors.push([255, 255, 255, 1]);
@@ -427,17 +427,17 @@ define([
     },
 
     redoScale: function (min, max) {
-      let colors = this.getColors();
+      var colors = this.getColors();
       this.scaleCanvas.height = this.scaleContainer.height() - 20;
       this.scaleCanvas.width = 40;
 
-      let gradHeight = this.scaleCanvas.height - 30;
-      let step = (max - min) / (colors.length - 1);
-      let stepPx = gradHeight / (colors.length - 1);
+      var gradHeight = this.scaleCanvas.height - 30;
+      var step = (max - min) / (colors.length - 1);
+      var stepPx = gradHeight / (colors.length - 1);
 
-      let lineargradient = this.scaleCanvasContext.createLinearGradient(0, 0, 0, gradHeight);
+      var lineargradient = this.scaleCanvasContext.createLinearGradient(0, 0, 0, gradHeight);
 
-      for (let i = 0; i < colors.length; i++) {
+      for (var i = 0; i < colors.length; i++) {
         lineargradient.addColorStop(i / (colors.length - 1), Color.getColor(colors[i]));
         this.scaleCanvasContext.fillText(String(Math.round(100 * (i * step + min)) / 100), 5, stepPx * i <= 0 ? 15 : stepPx * i - 5);
       }

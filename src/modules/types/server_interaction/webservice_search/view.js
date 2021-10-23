@@ -10,8 +10,8 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function () {
-      let that = this;
-      let cfg = this.module.getConfiguration;
+      var that = this;
+      var cfg = this.module.getConfiguration;
 
       this.dom = $('<div></div>');
       this.search = $('<table class="Search" cellpadding="5" cellspacing="0"><col width="100"><col width="*"></table>').css('width', '90%');
@@ -23,21 +23,21 @@ define([
       this.oldVal = {};
       this._url = false;
 
-      let searchparams;
+      var searchparams;
       if ((searchparams = cfg('searchparams'))) {
-        for (let i in searchparams) {
+        for (var i in searchparams) {
           if (!i || !searchparams[i].label)
             continue;
           this.search.append(`<tr><td><nobr>${searchparams[i].label}</nobr></td><td>${this._makeFormEl(searchparams[i], i)}</td></tr>`);
         }
 
-        let url = cfg('url');
+        var url = cfg('url');
         this.button = cfg('button', false);
 
         if (this.button) {
           require(['forms/button'], function (Button) {
             that.dom.append((that.buttonInst = new Button(cfg('buttonlabel') || 'Search', function () {
-              let prom = Promise.resolve(true);
+              var prom = Promise.resolve(true);
               if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
                 prom = ui.confirm(that.module.getConfiguration('confirmText'));
               }
@@ -52,12 +52,12 @@ define([
 
 
         this.search.on('keyup', 'input[type=text], textarea', function (e) {
-          let $this = $(this);
-          let searchTerm = $this.val();
+          var $this = $(this);
+          var searchTerm = $this.val();
           if ($this.attr('data-type') === 'float') {
             searchTerm = parseFloat(searchTerm);
           }
-          let searchName = $this.attr('name');
+          var searchName = $this.attr('name');
 
           if (!that.oldVal[searchName] || that.oldVal[searchName] !== searchTerm) {
             $this.trigger('change');
@@ -82,13 +82,13 @@ define([
         });
 
         this.search.on('change', 'select', function () {
-          let $this = $(this);
+          var $this = $(this);
 
-          let searchTerm = $this.val();
+          var searchTerm = $this.val();
           if ($this.attr('data-type') === 'float') {
             searchTerm = parseFloat(searchTerm);
           }
-          let searchName = $this.attr('name');
+          var searchName = $this.attr('name');
           if (searchName !== undefined) {
             that.module.controller.addValue({
               name: searchName,
@@ -102,9 +102,9 @@ define([
         });
 
         this.search.on('change', 'input[type=checkbox]', function () {
-          let $this = $(this);
-          let searchTerm = $this.is(':checked');
-          let searchName = $this.attr('name');
+          var $this = $(this);
+          var searchTerm = $this.is(':checked');
+          var searchName = $this.attr('name');
 
           if (searchName !== undefined) {
             that.module.controller.addValue({
@@ -123,7 +123,7 @@ define([
     },
 
     _makeFormEl: function (spec, name) {
-      let elemAttribute = `name="${spec.name}" data-dest="${spec.destination}" data-type="${spec.fieldtype}"`;
+      var elemAttribute = `name="${spec.name}" data-dest="${spec.destination}" data-type="${spec.fieldtype}"`;
 
       switch (spec.fieldtype) {
         case 'combo':
@@ -131,7 +131,7 @@ define([
             opt,
             html = '';
           html += `<option ${spec.defaultvalue == '' ? 'selected="selected" ' : ''}value=""></option>`;
-          for (let i = 0, l = opts.length; i < l; i++) {
+          for (var i = 0, l = opts.length; i < l; i++) {
             opt = opts[i].split(':');
             html += `<option ${spec.defaultvalue == opt[0] ? 'selected="selected" ' : ''}value="${opt[0]}">${opt[1] || opt[0]}</option>`;
           }
@@ -208,7 +208,7 @@ define([
     },
 
     _feedbackTimeout: function () {
-      let that = this;
+      var that = this;
       if (this._ftimeout) {
         clearTimeout(this._ftimeout);
       }

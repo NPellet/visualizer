@@ -10,8 +10,8 @@ define([
 
   $.extend(true, Model.prototype, Default, {
     getjPath: function (rel) {
-      let data = [];
-      let view = this.module.view;
+      var data = [];
+      var view = this.module.view;
       switch (rel) {
         case 'GCIntegration':
           if (view.annotations) data = view.annotations[0];
@@ -24,7 +24,7 @@ define([
           break;
       }
 
-      let jpaths = [];
+      var jpaths = [];
       Traversing.getJPathsFromElement(data, jpaths);
 
       return jpaths;

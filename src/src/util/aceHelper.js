@@ -35,7 +35,7 @@ define(function () {
   };
 
   aceHelper.applyConfig = function (module, editor) {
-    let session = editor.getSession();
+    var session = editor.getSession();
     session.setOptions({
       useSoftTabs: module.getConfigurationCheckbox('useSoftTabs', 'yes'),
       tabSize: module.getConfiguration('tabSize')

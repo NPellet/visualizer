@@ -8,7 +8,7 @@ define([
   'src/util/ui',
   'jquery-cookie'
 ], function (Debug, bowser, _, modernizr, ui) {
-  let features = {
+  var features = {
     canvas: {
       name: 'Canvas',
       type: 'recommended'
@@ -33,18 +33,18 @@ define([
     }
   });
 
-  let browserHasAllFeatures = _.every(_.map(features, function (val) {
+  var browserHasAllFeatures = _.every(_.map(features, function (val) {
     return val.has;
   }));
 
-  let browsers = {
+  var browsers = {
     chrome: 5.0,
     msie: 11.0,
     firefox: 5.0,
     msedge: 0
   };
 
-  let recommendedBrowsers = {
+  var recommendedBrowsers = {
     browserName: bowser.name,
     browserVersion: bowser.version,
     browsers: [
@@ -62,15 +62,15 @@ define([
 
   function checkBrowser() {
     // Check that it's not a bot
-    let reg = /bot/i;
+    var reg = /bot/i;
     if (navigator.userAgent.match(reg)) {
       return 'bot';
     }
-    let browserKeys = _.keys(browsers);
-    let bmap = _.map(browserKeys, function (val) {
+    var browserKeys = _.keys(browsers);
+    var bmap = _.map(browserKeys, function (val) {
       return bowser[val];
     });
-    let browserListed = _.some(bmap);
+    var browserListed = _.some(bmap);
 
 
     if (!browserListed) {
@@ -78,16 +78,16 @@ define([
       return true;
     }
 
-    let bowserKey = browserKeys[bmap.indexOf(true)];
+    var bowserKey = browserKeys[bmap.indexOf(true)];
     // Required version is more recent than actual version
     return browsers[bowserKey] <= +bowser.version;
   }
 
-  let browserIsCompatible = checkBrowser();
+  var browserIsCompatible = checkBrowser();
 
 
   function browserErrorMessage() {
-    let tmpl = '<h1>Incompatible browser</h1>';
+    var tmpl = '<h1>Incompatible browser</h1>';
 
     tmpl += '<b><%- browserName %> <%- browserVersion %> </b> is incompatible with the visualizer<br/>';
     tmpl += 'Please update your browser to one of the following: <br/>';
@@ -96,14 +96,14 @@ define([
   }
 
   function featureErrorMessage() {
-    let tmpl = '<h1>Your browser is missing some important features </h1><br/>';
+    var tmpl = '<h1>Your browser is missing some important features </h1><br/>';
 
 
     tmpl += '<table><% _.forEach(features, function(f) { %> <tr>  <td style="width:20px; background-color: <%- f.color %>;"></td> <td> <%- f.name %>  </td></tr> <% }); %> </table><br/>';
     tmpl += '<p>We recommend updating your browser to one of the following:</p>';
     tmpl += '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
 
-    let feat = { features: _.cloneDeep(features) };
+    var feat = { features: _.cloneDeep(features) };
     return _.template(tmpl)(_.merge(feat, recommendedBrowsers));
   }
 
@@ -129,7 +129,7 @@ define([
           return resolve();
         }
 
-        let $dialog = $('<div>');
+        var $dialog = $('<div>');
 
         $dialog.html(featureErrorMessage());
         $dialog.append('<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>');

@@ -6,7 +6,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
   $.extend(true, Model.prototype, Default, {
     getjPath: function (rel) {
-      let data, el;
+      var data, el;
       switch (rel) {
         case 'element':
           data = this.module.getDataFromRel('dataset');
@@ -20,8 +20,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         case 'elementList':
           data = this.getAllDataFromRel('dataset');
           if (data) {
-            let result = {};
-            for (let i in data) {
+            var result = {};
+            for (var i in data) {
               result[i] = {};
             }
             return Traversing.getJPathsFromElement(result);

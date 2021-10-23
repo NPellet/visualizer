@@ -20,22 +20,22 @@ define([
   };
 
   Controller.prototype.getMatrixElementFromEvent = function (e) {
-    let moduleValue;
+    var moduleValue;
     if (!(moduleValue = this.module.getDataFromRel('matrix'))) {
       return false;
     }
 
-    let pxPerCell = this.module.view.getPxPerCell();
-    let shift = this.module.view.getXYShift();
+    var pxPerCell = this.module.view.getPxPerCell();
+    var shift = this.module.view.getXYShift();
 
 
     e.offsetX = (e.offsetX || e.pageX - $(e.target).offset().left);
     e.offsetY = (e.offsetY || e.pageY - $(e.target).offset().top);
 
-    let x = Math.floor((e.offsetX - shift.x) / pxPerCell);
-    let y = Math.floor((e.offsetY - shift.y) / pxPerCell);
+    var x = Math.floor((e.offsetX - shift.x) / pxPerCell);
+    var y = Math.floor((e.offsetY - shift.y) / pxPerCell);
 
-    let gridData = moduleValue.get();
+    var gridData = moduleValue.get();
     gridData = gridData.data ? gridData.data : gridData;
 
     if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length) {
@@ -47,20 +47,20 @@ define([
 
   function getHandlerForEvent(controller, name) {
     return function handleEvent(e) {
-      let keyed = controller.getMatrixElementFromEvent(e);
+      var keyed = controller.getMatrixElementFromEvent(e);
 
       if (!keyed) {
         return;
       }
 
-      let row = keyed[1];
-      let column = keyed[0];
+      var row = keyed[1];
+      var column = keyed[0];
 
       controller.setVarFromEvent(name, 'row', 'matrix', ['xLabel', row]);
       controller.setVarFromEvent(name, 'col', 'matrix', ['yLabel', column]);
 
-      let intersect = [row, column];
-      let data = controller.module.getDataFromRel('matrix').get();
+      var intersect = [row, column];
+      var data = controller.module.getDataFromRel('matrix').get();
       if (data.data) {
         data = data.data;
         intersect.unshift('data');
@@ -80,9 +80,9 @@ define([
 
       controller.createDataFromEvent(name, 'fullRow', data[row].slice());
 
-      let l = data.length;
-      let col = new Array(l);
-      for (let i = 0; i < l; i++) {
+      var l = data.length;
+      var col = new Array(l);
+      for (var i = 0; i < l; i++) {
         col[i] = data[i][column];
       }
       controller.createDataFromEvent(name, 'fullCol', col);
@@ -90,7 +90,7 @@ define([
   }
 
   Controller.prototype.initEvents = function () {
-    let dom = $(this.module.getDomContent());
+    var dom = $(this.module.getDomContent());
 
     dom.on('mousemove', 'canvas', _.debounce(getHandlerForEvent(this, 'onPixelHover'), 25));
     dom.on('click', 'canvas', getHandlerForEvent(this, 'onPixelClick'));

@@ -5,14 +5,14 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     this.tmpVars = new DataObject();
   }
 
-  let standardFile = new DataObject({
+  var standardFile = new DataObject({
     filename: '',
     mimetype: '',
     contentType: '',
     content: ''
   });
 
-  let standardArray = new DataArray([standardFile]);
+  var standardArray = new DataArray([standardFile]);
 
   $.extend(true, Model.prototype, Default, {
 
@@ -27,14 +27,14 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
 
     getjPath: function (rel, accepts) {
-      let jpaths = [];
-      let i;
+      var jpaths = [];
+      var i;
 
       if (rel === 'data' || rel === 'dataarray') {
         // Populate tmpVars with empty object so the user can set a variable out even if no file was dropped
-        let definedDrops = (this.module.getConfiguration('vars') || []).slice();
-        let definedString = this.module.getConfiguration('string');
-        let definedPhoto = this.module.getConfiguration('photo');
+        var definedDrops = (this.module.getConfiguration('vars') || []).slice();
+        var definedString = this.module.getConfiguration('string');
+        var definedPhoto = this.module.getConfiguration('photo');
         if (definedString) {
           for (i = 0; i < definedString.length; i++) {
             definedDrops.push(definedString[i]);
@@ -46,7 +46,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         }
 
         for (i = 0; i < definedDrops.length; i++) {
-          let def = definedDrops[i];
+          var def = definedDrops[i];
           if (!def || !def.variable)
             continue;
           if (rel === 'data' && !this.tmpVars.hasOwnProperty(def.variable)) {

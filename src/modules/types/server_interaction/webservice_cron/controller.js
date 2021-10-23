@@ -28,7 +28,7 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
   Controller.prototype.stop = function () {
     if (!this.running)
       return;
-    for (let i = 0, ii = this.runners.length; i < ii; i++) {
+    for (var i = 0, ii = this.runners.length; i < ii; i++) {
       window.clearInterval(this.runners[i]);
     }
     this.runners = [];
@@ -53,13 +53,13 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
   };
 
   Controller.prototype.doVariables = function () {
-    let cfg = this.module.getConfiguration('cronInfos'),
+    var cfg = this.module.getConfiguration('cronInfos'),
       variable, time, url, datatype;
 
     if (!cfg)
       return;
 
-    for (let i = 0, l = cfg.length; i < l; i++) {
+    for (var i = 0, l = cfg.length; i < l; i++) {
       variable = cfg[i].variable;
       time = cfg[i].repeat;
       url = cfg[i].url;
@@ -73,13 +73,13 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
   };
 
   Controller.prototype.doAjax = function (self, variable, url, datatype) {
-    let ajax = {
+    var ajax = {
       url: url,
       dataType: 'text'
     };
 
     ajax.success = function (data) {
-      let dataobj;
+      var dataobj;
       if (datatype === 'json') {
         dataobj = JSON.parse(data);
       } else if (datatype === 'xml') {

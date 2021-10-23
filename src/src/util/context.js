@@ -4,7 +4,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
   $,
   Config
 ) {
-  let contextMenu;
+  var contextMenu;
 
   return {
     listen: function (dom, elements, onBeforeShow, onAfterShow) {
@@ -18,7 +18,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           }
 
           for (let i = 0; i < elements.length; i++) {
-             
+            // eslint-disable-next-line no-loop-func
             (function (element, callbackClick, callbackOpen) {
               if (
                 Config.contextMenu().indexOf('all') === -1 &&
@@ -58,7 +58,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
 
     init: function (dom) {
       this.dom = dom;
-      let top, left;
+      var top, left;
       dom.addEventListener(
         'contextmenu',
         function (e) {
@@ -73,7 +73,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           contextMenu = null;
           top = e.clientY - 1;
           left = e.clientX - 1;
-          let $menu = $('<ul class="ci-contextmenu"></ul>')
+          var $menu = $('<ul class="ci-contextmenu"></ul>')
             .css({
               position: 'fixed',
               left: left,
@@ -107,7 +107,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           if (contextMenu.children().length > 0) {
             contextMenu.menu({
               select: function (event, ui) {
-                let moduleName = ui.item.attr('name');
+                var moduleName = ui.item.attr('name');
               }
             });
 
@@ -115,10 +115,10 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
             e.stopPropagation();
 
             // Move the menu if it would go beyond the viewport
-            let height = contextMenu.height();
-            let width = contextMenu.width();
-            let clientH = document.documentElement.clientHeight;
-            let clientW = document.documentElement.clientWidth;
+            var height = contextMenu.height();
+            var width = contextMenu.width();
+            var clientH = document.documentElement.clientHeight;
+            var clientW = document.documentElement.clientWidth;
             if (top + height > clientH) {
               contextMenu.css('top', Math.max(0, clientH - height - 10));
             }

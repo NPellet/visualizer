@@ -1,10 +1,10 @@
 'use strict';
 
 define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structures, Debug) {
-  let asyncId = 0;
+  var asyncId = 0;
 
   function _getValueFromJPath(element, jpath) {
-    let el = getValueIfNeeded(element),
+    var el = getValueIfNeeded(element),
       type,
       jpathElement = jpath.shift();
 
@@ -25,13 +25,13 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
   }
 
   function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
-    let el = getValueIfNeeded(element);
-    let type, subelement;
+    var el = getValueIfNeeded(element);
+    var type, subelement;
     if (typeof el != 'object' && jpath.length > 0)
       el = {};
     if (jpath.length == 1)
       return (el[jpath[0]] = newValue);
-    let jpathElement = jpath.shift();
+    var jpathElement = jpath.shift();
     if (jpathElement) {
       if (!(subelement = el[jpathElement])) { // If not an object, we make it an object
         subelement = {};
@@ -71,11 +71,11 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
   }
 
   function fetchElementIfNeeded(element) {
-    let deferred = $.Deferred();
+    var deferred = $.Deferred();
 
     if (typeof element == 'undefined' || element == null)
       return deferred.reject();
-    let type = getType(element);
+    var type = getType(element);
     if (element.url && element.type) {
       // var ajaxType = typeof Structures[type] == 'object' ? 'json' : 'text';
       require(['src/util/urldata'], function (urlData) {
@@ -100,7 +100,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
       return element.getType();
     }
 
-    let type = typeof element;
+    var type = typeof element;
     if (type == 'object') {
       if (Array.isArray(element))
         return 'array';
@@ -126,7 +126,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
 
   function triggerDataChange(data, id) {
     if (data.__onDataChanged) {
-      for (let i = 0, l = data.__onDataChanged.length; i < l; i++) {
+      for (var i = 0, l = data.__onDataChanged.length; i < l; i++) {
         if ((id !== undefined && data.__onDataChanged[i][1] !== id) || id === undefined) {
           data.__onDataChanged[i][0].call(data, data);
         }
@@ -136,7 +136,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
 
   function addToTree(tree, customJpaths) {
     if (!tree || !tree.children) return;
-    let el = tree.children.find((el) => {
+    var el = tree.children.find((el) => {
       return el.title === customJpaths[0];
     });
     if (!el) {
@@ -169,7 +169,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         return $.Deferred().resolve(element);
       if (!jpath.split)
         jpath = '';
-      let jpathSplitted = jpath.split('.'); // Remove first element, which should always be 'element'
+      var jpathSplitted = jpath.split('.'); // Remove first element, which should always be 'element'
       jpathSplitted.shift();
       return _getValueFromJPath(element, jpathSplitted);
     },
@@ -177,7 +177,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
     setValueFromJPath: function (element, jpath, newValue, moduleId, mute) {
       if (!jpath.split)
         jpath = '';
-      let jpathSplitted = jpath.split('.');
+      var jpathSplitted = jpath.split('.');
       jpathSplitted.shift();
 
       if (moduleId === true || moduleId === false) {
@@ -204,7 +204,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         return;
       }
 
-      let children = [],
+      var children = [],
         len, i;
 
       if (structure.elements) {
@@ -287,7 +287,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
       }
 
 
-      let structure = {};
+      var structure = {};
 
       if (!element) {
         return;
@@ -298,13 +298,13 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
       }
 
 
-      let type = element.getType();
+      var type = element.getType();
       element = DataObject.check(element.get());
 
       if (type == 'array') {
         structure.type = 'array';
         structure.elements = [];
-        let length = Math.min(5, element.length);
+        var length = Math.min(5, element.length);
 
         for (var i = 0; i < length; i++) {
           structure.elements[i] = this.getStructureFromElement(element.get(i, false), options, recursion + 1);
@@ -313,7 +313,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
         structure.type = 'object';
         structure.elements = {};
 
-        let counter = 0;
+        var counter = 0;
         for (var i in element) {
           if (counter++ >= 100) break;
           if (i[0] !== '_')
@@ -345,7 +345,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function ($, Structu
       } else if (element.type && Structures[element.type] && (element.value || element.url)) {
         this.getJPathsFromStructure(Structures[element.type], null, jpaths);
       } else {
-        let structure = this.getStructureFromElement(element, { recursionLimit: 7 });
+        var structure = this.getStructureFromElement(element, { recursionLimit: 7 });
         this.getJPathsFromStructure(structure, null, jpaths);
       }
 

@@ -64,9 +64,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
   });
 
   Controller.prototype.configurationStructure = function () {
-    let jpaths = this.module.model.getjPath();
+    var jpaths = this.module.model.getjPath();
 
-    let background = {
+    var background = {
       options: {
         type: 'list',
         title: 'Background'
@@ -165,7 +165,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
       }
     };
 
-    let foreground = _.cloneDeep(background);
+    var foreground = _.cloneDeep(background);
     foreground.options.title = 'Foreground';
     foreground.fields.mode.options.push({
       key: 'state', title: 'State'
@@ -297,7 +297,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
 
   Controller.prototype.periodSelected = function (period) {
-    let elements = this.module.view.elements;
+    var elements = this.module.view.elements;
     elements = elements.filter((el) => {
       return el.period == period;
     });
@@ -306,7 +306,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
   };
 
   Controller.prototype.groupSelected = function (group) {
-    let elements = this.module.view.elements;
+    var elements = this.module.view.elements;
     elements = elements.filter((el) => {
       return el.group == group;
     });
@@ -316,8 +316,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
   Controller.prototype.elementSelected = function (atomicNumber) {
     atomicNumber = +atomicNumber;
-    let elements = this.module.view.elements;
-    let el = elements.find((el) => +DataObject.resurrect(el.Z) === atomicNumber);
+    var elements = this.module.view.elements;
+    var el = elements.find((el) => +DataObject.resurrect(el.Z) === atomicNumber);
     if (el) {
       this.createDataFromEvent('onElementSelect', 'element', el);
     }
@@ -325,8 +325,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
   Controller.prototype.elementHovered = function (atomicNumber) {
     atomicNumber = +atomicNumber;
-    let elements = this.module.view.elements;
-    let el = elements.find((el) => +DataObject.resurrect(el.Z) === atomicNumber);
+    var elements = this.module.view.elements;
+    var el = elements.find((el) => +DataObject.resurrect(el.Z) === atomicNumber);
     if (el) {
       this.createDataFromEvent('onElementHover', 'element', el);
     }
@@ -334,7 +334,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
 
   Controller.prototype.elementsSelected = function (atomicNumbers) {
     atomicNumbers = atomicNumbers.map((el) => +el);
-    let elements = this.module.view.elements;
+    var elements = this.module.view.elements;
     elements = elements.filter((el) => {
       return atomicNumbers.indexOf(+DataObject.resurrect(el.Z)) > -1;
     });

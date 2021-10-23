@@ -1,7 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
-  let typeList = Util.getStructuresComboOptions();
+  var typeList = Util.getStructuresComboOptions();
 
   function Controller() {
   }
@@ -48,7 +48,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
   };
 
   Controller.prototype.configurationStructure = function () {
-    let jpaths = this.module.model.getjPath();
+    var jpaths = this.module.model.getjPath();
 
     return {
       groups: {

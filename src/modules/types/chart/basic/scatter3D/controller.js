@@ -27,14 +27,14 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   };
 
   Controller.prototype.onHover = function (row) {
-    let coord = [
+    var coord = [
       this.module.view._data.x[row],
       this.module.view._data.y[row],
       this.module.view._data.z[row]
     ];
 
     this.setVarFromEvent('onHover', 'point', 'data3D', [row]);
-    let info = this.module.view._data.getChildSync(['info', row]);
+    var info = this.module.view._data.getChildSync(['info', row]);
     this.createDataFromEvent('onHover', 'info', info);
     this.createDataFromEvent('onHover', 'coordinates', DataObject.check(coord));
   };
@@ -85,10 +85,10 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   Controller.prototype.variablesIn = ['chart', 'boolArray', 'data3D'];
 
   Controller.prototype.configurationStructure = function () {
-    let jpath = [];
+    var jpath = [];
     Traversing.getJPathsFromElement(this.module.data, jpath);
 
-    let jpathPoint = this.module.model.getjPath('point', false);
+    var jpathPoint = this.module.model.getjPath('point', false);
     return {
       groups: {
         group: {

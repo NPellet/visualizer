@@ -74,21 +74,21 @@ define([
     },
 
     _doFilter(e) {
-      let jpathSuccess = true;
-      let $target = $(e.target);
-      let fieldInfo = $target.data('fieldInfo');
+      var jpathSuccess = true;
+      var $target = $(e.target);
+      var fieldInfo = $target.data('fieldInfo');
       if (!fieldInfo) {
         fieldInfo = $target.parents('ol').first().data('fieldInfo');
       }
       if (!fieldInfo) {
         jpathSuccess = false;
       }
-      let jpath = fieldInfo.jpath.slice().reverse();
+      var jpath = fieldInfo.jpath.slice().reverse();
       while (jpath.indexOf('$array$') > -1) {
-        let $firstOl = $target.parents('ol').first();
+        var $firstOl = $target.parents('ol').first();
         if (!$firstOl.length) break;
         if (!$.contains(this.dom[0], $firstOl[0])) break;
-        let idx = $firstOl.children('li').index($target.parents('li.field.array-item')[0]);
+        var idx = $firstOl.children('li').index($target.parents('li.field.array-item')[0]);
         $target = $firstOl;
         jpath[jpath.indexOf('$array$')] = idx;
       }

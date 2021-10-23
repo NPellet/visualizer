@@ -50,7 +50,7 @@
       return '';
     }
 
-    let color;
+    var color;
 
     if (value < 30) {
       color = 'red';

@@ -22,7 +22,7 @@ define(['lib/semver/semver'], function (semver) {
 
   let isModernBrowser;
   try {
-     
+    // eslint-disable-next-line no-eval
     eval('(async function() {})()');
     isModernBrowser = true;
   } catch (e) {

@@ -1,8 +1,8 @@
 'use strict';
 
 define(function () {
-  let cache = {};
-  let exports = {};
+  var cache = {};
+  var exports = {};
 
   exports.get = function (name) {
     return cache[name];

@@ -55,8 +55,8 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      *
      */
     showGeneralLegend: function () {
-      let config = this.opt.json.configuration;
-      let dataURL = `${this._webservice}?`;
+      var config = this.opt.json.configuration;
+      var dataURL = `${this._webservice}?`;
       window.open(dataURL); // open generated image in new tab/window
     },
 
@@ -72,11 +72,11 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
       //        if (typeof FlashCanvas != 'undefined') {
       //            FlashCanvas.initElement(canvas);
       //        }
-      let config = this.opt.json.configuration;
-      let dataURL = '';
+      var config = this.opt.json.configuration;
+      var dataURL = '';
       if (jQuery.browser.msie) {
         // canvas does not work (not even with IE 9)
-        let args = `segment=${this.opt.json.segment}`;
+        var args = `segment=${this.opt.json.segment}`;
         if (config.requestedStart != 0 && config.requestedStop != 0) {
           args = `${args}:${config.requestedStart},${config.requestedStop}`;
         }
@@ -90,15 +90,15 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         dataURL = `${this._webservice}?${args}`;
         window.open(dataURL); // open generated image in new tab/window
       } else {
-        let $holder = jQuery('#uniprotFeaturePainter-holder');
-        let $svg = $holder.find('svg');
-        let oldW = $svg.attr('width');
-        let oldH = $svg.attr('height');
+        var $holder = jQuery('#uniprotFeaturePainter-holder');
+        var $svg = $holder.find('svg');
+        var oldW = $svg.attr('width');
+        var oldH = $svg.attr('height');
         $svg.attr('width', `${$svg.width()}px`);
         $svg.attr('height', `${$svg.height()}px`);
-        let svg = document.getElementById('uniprotFeaturePainter-holder')
+        var svg = document.getElementById('uniprotFeaturePainter-holder')
           .innerHTML;
-        let canvas = document.createElement('canvas');
+        var canvas = document.createElement('canvas');
         canvg(canvas, svg);
         dataURL = canvas.toDataURL();
         $svg.attr('width', `${$svg.width()}px`);
@@ -130,7 +130,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         style != undefined &&
         (style == 'centered' || style == 'nonOverlapping' || (style = 'rows'))
       ) {
-        let config = this.opt.json.configuration;
+        var config = this.opt.json.configuration;
         this.customize(style, config.horizontalGrid, config.verticalGrid);
       }
     },
@@ -144,7 +144,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      */
     showHideHorizontalGrid: function (show) {
       if (show != undefined && (show == true || show == false)) {
-        let config = this.opt.json.configuration;
+        var config = this.opt.json.configuration;
         this.customize(config.style, show, config.verticalGrid);
       }
     },
@@ -158,7 +158,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      */
     showHideVerticalGrid: function (show) {
       if (show != undefined && (show == true || show == false)) {
-        let config = this.opt.json.configuration;
+        var config = this.opt.json.configuration;
         this.customize(config.style, config.horizontalGrid, show);
       }
     }

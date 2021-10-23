@@ -44,9 +44,9 @@ define([
   Config,
   Sandbox
 ) {
-  let _viewLoaded, _dataLoaded, _modulesSet;
+  var _viewLoaded, _dataLoaded, _modulesSet;
 
-  let RepositoryData = new Repository(),
+  var RepositoryData = new Repository(),
     RepositoryHighlight = new Repository(),
     RepositoryActions = new Repository({ doNotSave: true });
 
@@ -72,14 +72,14 @@ define([
 
     view.modules = view.modules || new DataArray();
 
-    let l = view.modules.length;
+    var l = view.modules.length;
 
     view.variables = view.variables || new DataArray();
     view.aliases = view.aliases || new DataArray();
     view.configuration = view.configuration || new DataObject();
     view.configuration.title = view.configuration.title || 'No title';
 
-    for (let i = 0; i < l; i++) {
+    for (var i = 0; i < l; i++) {
       Grid.addModuleFromJSON(view.getChildSync(['modules', i], true));
     }
 
@@ -124,8 +124,8 @@ define([
       return;
     }
 
-    let view = Versioning.getView();
-    let data = Versioning.getData();
+    var view = Versioning.getView();
+    var data = Versioning.getData();
 
     Promise.all([
       loadCustomFilters(),
@@ -168,28 +168,28 @@ define([
 
     function configureRequirejs() {
       if (!view.aliases) return;
-      let paths = view.aliases;
+      var paths = view.aliases;
 
       paths = _.filter(paths, function (p) {
         return p && p.alias && p.path;
       });
-      let conf = { paths: {} };
-      for (let i = 0; i < paths.length; i++) {
+      var conf = { paths: {} };
+      for (var i = 0; i < paths.length; i++) {
         conf.paths[paths[i].alias] = paths[i].path;
       }
-      for (let key in conf.paths) {
+      for (var key in conf.paths) {
         require.undef(key);
       }
       require.config(DataObject.resurrect(conf));
     }
 
     function checkCustomModules() {
-      let v = Versioning.getView().duplicate();
-      let changed = false;
-      let modulesById = ModuleFactory.getModulesById();
-      for (let j = 0; j < v.modules.length; j++) {
-        let moduleId = Util.moduleIdFromUrl(v.modules[j].url);
-        let module = modulesById[moduleId];
+      var v = Versioning.getView().duplicate();
+      var changed = false;
+      var modulesById = ModuleFactory.getModulesById();
+      for (var j = 0; j < v.modules.length; j++) {
+        var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
+        var module = modulesById[moduleId];
         if (!module) {
           Debug.warn(
             `Your view contains an url to a module (id: ${moduleId}) that does not correspond to any loaded modules`
@@ -209,7 +209,7 @@ define([
     }
 
     function loadCustomModules() {
-      let modules = view.getChildSync([
+      var modules = view.getChildSync([
         'custom_filters',
         0,
         'sections',
@@ -223,7 +223,7 @@ define([
       modules = _.filter(modules, function (m) {
         return m && m.url;
       });
-      for (let i = 0; i < modules.length; i++) {
+      for (var i = 0; i < modules.length; i++) {
         modules[i].url = modules[i].url.replace(/\/$/, '');
       }
       return ModuleFactory.setModules({
@@ -234,16 +234,16 @@ define([
     function loadCustomFilters() {
       // Load custom filters
       if (view.custom_filters) {
-        let filters = view.custom_filters[0].sections.filters,
+        var filters = view.custom_filters[0].sections.filters,
           allFilters = API.getAllFilters();
-        for (let i = 0; i < filters.length; i++) {
-          let filter = filters[i].groups.filter[0];
+        for (var i = 0; i < filters.length; i++) {
+          var filter = filters[i].groups.filter[0];
           if (filter.name[0]) {
             var deps = filters[i].groups.libs[0],
               depsA = ['src/util/api'],
               defineStr = 'filterDef = function filterDefinition(API',
               dep;
-            for (let j = 0; j < deps.length; j++) {
+            for (var j = 0; j < deps.length; j++) {
               dep = deps[j];
               if (dep.lib) {
                 depsA.push(dep.lib);
@@ -266,7 +266,7 @@ define([
             }
           }
         }
-        let filtersLib = view.getChildSync(
+        var filtersLib = view.getChildSync(
           'custom_filters',
           0,
           'sections',
@@ -299,10 +299,10 @@ define([
 
       // Entry point variables
       API.loading('Fetching remote variables');
-      let fetching = [];
+      var fetching = [];
       for (var i = 0, l = view.variables.length; i < l; i++) {
         (function (i) {
-          let entryVar = view.traceSync(['variables', i]);
+          var entryVar = view.traceSync(['variables', i]);
           if (entryVar.varname) {
             // Defined by an URL
             if (entryVar.url) {
@@ -310,7 +310,7 @@ define([
                 UrlData.get(entryVar.url, entryVar.timeout | 0, {
                   Accept: 'application/json'
                 }).then(function (v) {
-                  let varname = entryVar.varname;
+                  var varname = entryVar.varname;
                   data.setChild([varname], v, true);
                   return API.setVariable(varname, false, [varname]);
                 })
@@ -340,21 +340,21 @@ define([
   }
 
   function configureEntryPoint() {
-    let data = Versioning.getData(),
+    var data = Versioning.getData(),
       view = Versioning.getView();
 
-    let div = ui.dialog({
+    var div = ui.dialog({
       autoPosition: true,
       width: '80%',
       noHeader: true
     });
 
-    let options = [];
+    var options = [];
 
     Traversing.getJPathsFromElement(data, options);
 
     require(['forms/form'], function (Form) {
-      let form = new Form();
+      var form = new Form();
 
       form.init({
         onValueChanged: function (value) {}
@@ -386,7 +386,7 @@ define([
                     options: options,
                     extractValue: function (val) {
                       if (val) {
-                        let val2 = val.split('.');
+                        var val2 = val.split('.');
                         val2.shift();
                         return val2;
                       }
@@ -638,7 +638,7 @@ define([
       form.addButton('Save', { color: 'green' }, function () {
         div.dialog('close');
 
-        let data,
+        var data,
           value = form.getValue();
 
         /* Entry variables */
@@ -681,7 +681,7 @@ define([
       //      return;
       //  }
 
-      let css = [
+      var css = [
         'css/main.css',
         'components/colors/css/colors.min.css',
         'components/jquery-ui/themes/base/jquery-ui.min.css',
@@ -695,7 +695,7 @@ define([
         Util.loadCss(css);
       });
 
-      let debugSet;
+      var debugSet;
       if (urls.debug) {
         Debug.setDebugLevel(parseInt(urls.debug, 10));
         debugSet = true;
@@ -709,7 +709,7 @@ define([
 
       // Sets the header
       function doInit(errorMessage) {
-        let visualizerDiv = $('#ci-visualizer');
+        var visualizerDiv = $('#ci-visualizer');
 
         if (errorMessage) {
           visualizerDiv.append(
@@ -722,7 +722,7 @@ define([
           '<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>'
         );
 
-        let configJson = urls.config || visualizerDiv.attr('data-ci-config');
+        var configJson = urls.config || visualizerDiv.attr('data-ci-config');
         if (!configJson) {
           if (visualizerDiv.attr('config')) {
             Debug.warn(
@@ -796,9 +796,9 @@ define([
               Versioning.setDataJSON({});
 
               Versioning.setURLType(type);
-              let $visualizer = $('#ci-visualizer');
+              var $visualizer = $('#ci-visualizer');
 
-              let viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
+              var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
               if (!viewURL && $visualizer.attr('viewURL')) {
                 Debug.warn(
                   'viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.'
@@ -806,7 +806,7 @@ define([
                 viewURL = $visualizer.attr('viewURL');
               }
 
-              let dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
+              var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
               if (!dataURL && $visualizer.attr('dataURL')) {
                 Debug.warn(
                   'dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.'
@@ -814,7 +814,7 @@ define([
                 dataURL = $visualizer.attr('dataURL');
               }
 
-              let viewInfo = {
+              var viewInfo = {
                 view: {
                   urls: urls.views,
                   branch: urls.viewBranch,

@@ -99,15 +99,15 @@ define([
 
   Controller.prototype.onQuery = function (query) {
     if (!this.module.view._data) return;
-    let array = DataObject.resurrect(this.module.view._data);
-    let result = filter(array, {
+    var array = DataObject.resurrect(this.module.view._data);
+    var result = filter(array, {
       keywords: query,
       index: true,
       limit: this.module.getConfiguration('limit', 0),
     });
-    let original = this.module.view._originalData;
-    let toSend = new Array(result.length);
-    for (let i = 0; i < result.length; i++) {
+    var original = this.module.view._originalData;
+    var toSend = new Array(result.length);
+    for (var i = 0; i < result.length; i++) {
       toSend[i] = original[result[i]];
     }
     this.createDataFromEvent('onQuery', 'search', query);

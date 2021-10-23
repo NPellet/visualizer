@@ -11,11 +11,11 @@ define([
   function VersionSelector() {
   }
 
-  let versionURL;
-  let versions;
-  let type;
+  var versionURL;
+  var versions;
+  var type;
 
-  let currentMenu;
+  var currentMenu;
 
   function getVersions() {
     if (!versions) {
@@ -37,7 +37,7 @@ define([
     },
 
     _onClick: function () {
-      let that = this;
+      var that = this;
 
       this.setStyleOpen(this._open);
 
@@ -53,23 +53,23 @@ define([
     },
 
     doElements: function () {
-      let that = this;
-      let uri = new URI(document.location.href);
-      let query = getQuery(uri);
-      let currentVersion;
+      var that = this;
+      var uri = new URI(document.location.href);
+      var query = getQuery(uri);
+      var currentVersion;
       if (query.v) {
         currentVersion = query.v;
       } else {
         currentVersion = `v${Versioning.version}`;
       }
       getVersions().then((versions) => {
-        let ul = that.$_elToOpen = $('<ul />');
-        for (let i = 0; i < versions.length; i++) {
-          let version = versions[i];
+        var ul = that.$_elToOpen = $('<ul />');
+        for (var i = 0; i < versions.length; i++) {
+          var version = versions[i];
           if (semver.valid(version) && semver.lt(version, this.minVersion)) {
             continue;
           }
-          let bool = currentVersion === version;
+          var bool = currentVersion === version;
           ul.append(that._buildSubElement(versions[i], bool));
         }
         that.open();
@@ -77,8 +77,8 @@ define([
     },
 
     _buildSubElement: function (version, isSame) {
-      let text = (isSame ? '• ' : '') + version;
-      let that = this,
+      var text = (isSame ? '• ' : '') + version;
+      var that = this,
         dom = $('<li />').text(text);
       dom.addClass('hasEvent').bind('click', function () {
         that.load(version);
@@ -88,8 +88,8 @@ define([
     },
 
     load: function (version) {
-      let uri = new URI(document.location.href);
-      let query = getQuery(uri);
+      var uri = new URI(document.location.href);
+      var query = getQuery(uri);
       if (query.v !== version) {
         setQuery(uri, 'v', version);
         document.location = uri.href();
@@ -101,7 +101,7 @@ define([
   });
 
   function getQuery(uri) {
-    let query;
+    var query;
     if (type === 'query') {
       query = uri.query(true);
     } else if (type === 'fragment') {
