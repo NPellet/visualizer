@@ -1,3 +1,14 @@
+## [2.134.3](https://github.com/NPellet/visualizer/compare/v2.134.2...v2.134.3) (2021-10-23)
+
+
+### Reverts
+
+* Revert "chore: update eslint" ([14b8b13](https://github.com/NPellet/visualizer/commit/14b8b13fcc8d535efcad35a4c971edfcc2ccb68a))
+* Revert "chore: ignore more eslint rules" ([f9eb72d](https://github.com/NPellet/visualizer/commit/f9eb72d24717ed5d7628363fb3cecafbac7350a5))
+* Revert "chore: eslint rules update and fixes" ([04fc386](https://github.com/NPellet/visualizer/commit/04fc386027fded1a41f30f4dcc8716f2d92595b7))
+
+
+
 ## [2.134.2](https://github.com/NPellet/visualizer/compare/v2.134.1...v2.134.2) (2021-10-23)
 
 
