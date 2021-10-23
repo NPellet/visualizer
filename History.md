@@ -1,3 +1,12 @@
+## [2.134.1](https://github.com/NPellet/visualizer/compare/v2.134.0...v2.134.1) (2021-10-23)
+
+
+### Bug Fixes
+
+* export from slick grid and format values ([cd4937e](https://github.com/NPellet/visualizer/commit/cd4937ef9db2bcb0912e3bff3bb84787cf3b46f6))
+
+
+
 # [2.134.0](https://github.com/NPellet/visualizer/compare/v2.133.1...v2.134.0) (2021-10-22)
 
 
