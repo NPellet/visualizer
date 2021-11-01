@@ -1,3 +1,12 @@
+# [2.136.0](https://github.com/NPellet/visualizer/compare/v2.135.0...v2.136.0) (2021-11-01)
+
+
+### Features
+
+* when exporting don't ask question if no selection ([7c00bef](https://github.com/NPellet/visualizer/commit/7c00bef271be8b4bdeee373313e629ac4f9cf9aa))
+
+
+
 # [2.135.0](https://github.com/NPellet/visualizer/compare/v2.134.3...v2.135.0) (2021-11-01)
 
 
