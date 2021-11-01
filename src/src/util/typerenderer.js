@@ -892,11 +892,11 @@ define([
     },
 
     getRendererComboOptions() {
-      return Object.keys(functions).map((k) => ({ key: k, title: k }));
+      return Object.keys(functions).sort().map((k) => ({ key: k, title: k }));
     },
 
     getList() {
-      return Object.keys(functions);
+      return Object.keys(functions).sort();
     },
 
     hasType(name) {
