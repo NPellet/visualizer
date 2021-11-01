@@ -1,5 +1,5 @@
 {
-	"version": "2.134.4-0",
+	"version": "2.135.1-0",
 	"grid": {
 	  "layers": {
 	    "Default layer": {
@@ -553,7 +553,8 @@
 			"forceFitColumns",
 			"highlightScroll",
 			"forgetLastActive",
-			"editable"
+			"editable",
+			"filterColumns"
 		      ]
 		    ],
 		    "copyPaste": [
@@ -613,7 +614,6 @@
 		      "visibility": "both",
 		      "rendererOptions": "numeral: '0.00'",
 		      "editorOptions": "",
-		      "width": "",
 		      "hideColumn": []
 		    },
 		    {

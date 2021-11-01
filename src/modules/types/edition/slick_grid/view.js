@@ -1904,10 +1904,12 @@ define([
         },
       ];
       if (this.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
-        choices.push({
-          key: 'filtered',
-          description: 'Export filtered list',
-        });
+        if (this.slick.data.getItems(true).length !== this.slick.data.getItems().length) {
+          choices.push({
+            key: 'filtered',
+            description: 'Export filtered list',
+          });
+        }
       }
 
       const filtered = _.map(
