@@ -398,11 +398,12 @@ define([
               buttons: {
                 cancel: function () {
                   $(this).dialog('close');
+                  resolve(false);
                 },
                 confirm: function () {
                   currentList = JSON.parse(JSON.stringify(list));
                   $(this).dialog('close');
-                  resolve();
+                  resolve(true);
                 },
               },
 
@@ -411,7 +412,7 @@ define([
                 for (let idx = 0; idx < currentList.length; idx++) {
                   list[idx] = currentList[idx];
                 }
-                resolve();
+                resolve(false);
               },
               resize: function () {
                 grid.resizeCanvas();
