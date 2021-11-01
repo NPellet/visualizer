@@ -1,3 +1,20 @@
+# [2.135.0](https://github.com/NPellet/visualizer/compare/v2.134.3...v2.135.0) (2021-11-01)
+
+
+### Bug Fixes
+
+* renderAsString returns value for 'mf' ([497c18b](https://github.com/NPellet/visualizer/commit/497c18b0c7071d9b7d97f08b44d9cbc491739f99))
+* resolve true / false in UI.editTable ([1971c52](https://github.com/NPellet/visualizer/commit/1971c52b83e4ea8dd4dad4bc8bb500bc94c4f845))
+
+
+### Features
+
+* resolve true / false in UI.editTable ([f053175](https://github.com/NPellet/visualizer/commit/f053175ad8b359a7f5269cd38dcd231aefb61ea1))
+* sort list of type renderer ([9e0b0af](https://github.com/NPellet/visualizer/commit/9e0b0afc615bbcc917e9bf4a06b3c00cf43c0f19))
+* speed improvement of typerenderer using init ([bae60a1](https://github.com/NPellet/visualizer/commit/bae60a1a42210916072183191d38ca3cbe2268d8))
+
+
+
 ## [2.134.3](https://github.com/NPellet/visualizer/compare/v2.134.2...v2.134.3) (2021-10-23)
 
 
