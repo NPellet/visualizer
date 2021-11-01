@@ -1,0 +1,152 @@
+{
+	"version": "2.134.4-0",
+	"grid": {
+	  "layers": {
+	    "Default layer": {
+	      "name": "Default layer"
+	    }
+	  },
+	  "xWidth": 10,
+	  "yHeight": 10
+	},
+	"modules": [
+	  {
+	    "url": "modules/types/client_interaction/code_executor/",
+	    "configuration": {
+	      "sections": {},
+	      "groups": {
+		"group": [
+		  {
+		    "display": [
+		      [
+			"editor",
+			"buttons"
+		      ]
+		    ],
+		    "execOnLoad": [
+		      []
+		    ],
+		    "asyncAwait": [
+		      [
+			"top"
+		      ]
+		    ],
+		    "script": [
+		      "const cols = [\n    {\n        \"name\": \"Name\",\n        \"jpath\": [],\n        \"editor\": \"none\",\n        \"forceType\": \"\",\n        \"formatter\": \"typerenderer\",\n        \"copyFormatter\": \"default\",\n        \"visibility\": \"both\",\n        \"rendererOptions\": \"twig:'  {% if reference %}{{reference}}  {% else %}  {{jcamp.filename|split(\\\"/\\\",3)[2]}}  {{text.filename|split(\\\"/\\\",3)[2]}}  {{cdf.filename|split(\\\"/\\\",3)[2]}}  {{xml.filename|split(\\\"/\\\",3)[2]}}  {{pdf.filename|split(\\\"/\\\",3)[2]}}  {{file.filename|split(\\\"/\\\",3)[2]}}  {% endif %}  '  \",\n        \"editorOptions\": \"\",\n        \"width\": 82,\n        \"hideColumn\": [],\n        \"id\": 0.04137742284513313\n    },\n    {\n        \"name\": \"Method\",\n        \"jpath\": [\n            \"method\"\n        ],\n        \"editor\": \"string\",\n        \"forceType\": \"\",\n        \"formatter\": \"typerenderer\",\n        \"copyFormatter\": \"default\",\n        \"visibility\": \"both\",\n        \"rendererOptions\": \"\",\n        \"editorOptions\": \"\",\n        \"width\": 58,\n        \"hideColumn\": [],\n        \"id\": 0.2250464931415117\n    },\n    {\n        \"name\": \"Initial mass\",\n        \"jpath\": [\n            \"weight\"\n        ],\n        \"editor\": \"none\",\n        \"forceType\": \"unit\",\n        \"formatter\": \"typerenderer\",\n        \"copyFormatter\": \"default\",\n        \"visibility\": \"both\",\n        \"rendererOptions\": \"numeral: '#.##'\",\n        \"editorOptions\": \"\",\n        \"hideColumn\": [],\n        \"id\": 0.11914345812719151\n    },\n    {\n        \"name\": \"⇓\",\n        \"jpath\": [\n            \"jcamp\",\n            \"dUrl\"\n        ],\n        \"editor\": \"none\",\n        \"forceType\": \"downloadlink\",\n        \"formatter\": \"typerenderer\",\n        \"copyFormatter\": \"default\",\n        \"visibility\": \"both\",\n        \"rendererOptions\": \"\",\n        \"editorOptions\": \"\",\n        \"width\": 30,\n        \"hideColumn\": [],\n        \"id\": 0.8143382032375135\n    },\n    {\n        \"forceType\": \"barcode\",\n        \"id\": \"abzpxscxfff\",\n        \"formatter\": \"typerenderer\",\n        \"jpath\": [\n            \"zone\",\n            \"length\"\n        ]\n    }\n]\n\n\n const result = await UI.editTable(cols, {\n      remove: true,\n      reorder: true,\n      dialog: {\n        title: 'Configure the columns of the module'\n      },\n      columns: [\n        {\n          id: 'id',\n          name: 'name',\n          jpath: ['name'],\n        },\n        {\n          id: 'rendererOptions',\n          name: 'rendererOptions',\n          jpath: ['rendererOptions'],\n        },\n        {\n          id: 'width',\n          name: 'width',\n          jpath: ['width'],\n        },\n        {\n          id: 'forceType',\n          name: 'forceType',\n          jpath: ['forceType'],\n        },\n        {\n          id: 'jpath',\n          name: 'jpath',\n          jpath: ['jpath'],\n          forceType: 'jpath',\n          rendererOptions: {\n            forceType: 'jpath'\n          }\n        }\n      ]\n    });\n\n    console.log({ result });"
+		    ]
+		  }
+		],
+		"libs": [
+		  [
+		    {
+		      "lib": "src/util/ui",
+		      "alias": "UI"
+		    }
+		  ]
+		],
+		"buttons": [
+		  [
+		    {
+		      "name": "button1",
+		      "label": "Execute",
+		      "hide": [],
+		      "disable": []
+		    }
+		  ]
+		]
+	      }
+	    },
+	    "layers": {
+	      "Default layer": {
+		"position": {
+		  "left": 39,
+		  "top": 10
+		},
+		"size": {
+		  "width": 90,
+		  "height": 57
+		},
+		"zIndex": 0,
+		"display": true,
+		"title": "",
+		"bgColor": [
+		  255,
+		  255,
+		  255,
+		  0
+		],
+		"wrapper": true,
+		"created": true,
+		"name": "Default layer"
+	      }
+	    },
+	    "id": 19,
+	    "vars_in": [
+	      {}
+	    ],
+	    "actions_in": [
+	      {}
+	    ],
+	    "vars_out": [
+	      {
+		"jpath": []
+	      }
+	    ],
+	    "actions_out": [
+	      {
+		"jpath": []
+	      }
+	    ],
+	    "toolbar": {
+	      "custom": [
+		[
+		  {
+		    "title": "",
+		    "icon": "",
+		    "action": "",
+		    "position": "begin",
+		    "color": [
+		      100,
+		      100,
+		      100,
+		      1
+		    ]
+		  }
+		]
+	      ],
+	      "common": [
+		{
+		  "toolbar": [
+		    [
+		      "Open Preferences"
+		    ]
+		  ]
+		}
+	      ]
+	    },
+	    "css": [
+	      {
+		"fontSize": [
+		  ""
+		],
+		"fontFamily": [
+		  ""
+		]
+	      }
+	    ],
+	    "title": ""
+	  }
+	],
+	"variables": [
+	  {
+	    "varname": "results",
+	    "jpath": [
+	      "results"
+	    ]
+	  }
+	],
+	"aliases": [],
+	"configuration": {
+	  "title": "No title"
+	}
+      }
