@@ -190,7 +190,8 @@ define([
   };
 
   functions.indicator = {};
-  functions.indicator.init = function () {
+  functions.indicator.init = async () => {
+    functions.indicator.Color = await asyncRequire('src/util/color');
     var tooltip = $('<div class="ci-tooltip"></div>')
       .css({
         display: 'none',
@@ -226,7 +227,6 @@ define([
     });
   };
   functions.indicator.toscreen = async function ($element, value) {
-    const Color = await asyncRequire('src/util/color');
     if (!Array.isArray(value)) {
       return;
     }
@@ -247,10 +247,10 @@ define([
 
     var length = value.length;
     // no color ? we add some ...
-    var colors = Color.getDistinctColors(value.length);
+    var colors = functions.indicator.Color.getDistinctColors(value.length);
     var totalSize = 0;
     for (var i = 0; i < length; i++) {
-      if (!value[i].bgcolor) value[i].bgcolor = Color.getColor(colors[i]);
+      if (!value[i].bgcolor) value[i].bgcolor = functions.indicator.Color.getColor(colors[i]);
       if (!value[i].size && value[i].size !== 0) value[i].size = 10;
       totalSize += value[i].size;
     }
@@ -305,11 +305,13 @@ define([
   };
 
   functions.mf = {};
+  functions.mf.init = async () => {
+    functions.mf.parseToHtml = (await asyncRequire('MFParser')).parseToHtml;
+  };
   functions.mf.toscreen = async function ($element, value) {
     if (value) {
-      const { parseToHtml } = await asyncRequire('MFParser');
       try {
-        $element.html(parseToHtml(String(value)));
+        $element.html(functions.mf.parseToHtml(String(value)));
       } catch (error) {
         $element.html(value.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
       }
@@ -365,13 +367,16 @@ define([
   };
 
   functions.oclid = {};
+  functions.oclid.init = async () => {
+    functions.oclid.OCL = await asyncRequire(oclUrl);
+  };
   functions.oclid.toscreen = async ($element, val, root, options) => {
     let coordinates = val.coordinates || root.coordinates;
     let oclid = val.value ? val.value : val;
     if (oclid) oclid = String(oclid);
-    const OCL = await asyncRequire(oclUrl);
+    
     if (!coordinates && !val.value) {
-      const mol = OCL.Molecule.fromIDCode(oclid, true);
+      const mol = functions.oclid.OCL.Molecule.fromIDCode(oclid, true);
       coordinates = mol.getIDCoordinates();
       Object.defineProperty(root, 'coordinates', {
         configurable: true,
@@ -445,6 +450,10 @@ define([
   };
 
   functions.reaction = {};
+  functions.reaction.init = async () => {
+    functions.reaction.OCL = await asyncRequire(oclUrl);
+    functions.reaction.RxnRenderer = (await asyncRequire('RxnRenderer')).RxnRenderer;
+  };
   functions.reaction.toscreen = async function (
     $element,
     val,
@@ -452,19 +461,20 @@ define([
     options = {},
   ) {
     const { maxWidth = 300, maxHeight = 300 } = options;
-    const OCL = await asyncRequire(oclUrl);
-    const { RxnRenderer } = await asyncRequire('RxnRenderer');
-    let renderer = new RxnRenderer(OCL, { maxWidth, maxHeight });
+   
+    let renderer = new functions.reaction.RxnRenderer(functions.reaction.OCL, { maxWidth, maxHeight });
     let html = renderer.render(DataObject.resurrect(val));
     $element.html(html);
   };
 
   functions.regexp = {};
+  functions.regexp.init = async () => {
+    functions.regexp.Parser = await asyncRequire('lib/regexper/regexper');
+  };
   functions.regexp.toscreen = async function ($element, val) {
     const value = String(val);
-    const Parser = await asyncRequire('lib/regexper/regexper');
     const div = $('<div>').appendTo($element);
-    const parser = new Parser(div.get(0));
+    const parser = new functions.regexp.Parser(div.get(0));
     parser.parse(value).invoke('render');
   };
 
@@ -472,19 +482,23 @@ define([
  
 
   functions.rxn = {};
+  functions.rxn.init = async () => {
+    functions.rxn.OCL = await asyncRequire(oclUrl);
+    functions.rxn.RxnRenderer = (await asyncRequire('RxnRenderer')).RxnRenderer;
+  };
   functions.rxn.toscreen = async function ($element, val, root, options = {}) {
     const { maxWidth = 300, maxHeight = 300 } = options;
-    const OCL = await asyncRequire(oclUrl);
-    const { RxnRenderer } = await asyncRequire('RxnRenderer');
-    let renderer = new RxnRenderer(OCL, { maxWidth, maxHeight });
+    let renderer = new functions.rxn.RxnRenderer(functions.rxn.OCL, { maxWidth, maxHeight });
     let html = renderer.renderRXN(String(val));
     $element.html(html);
   };
 
   functions.smiles = {};
+  functions.smiles.init = async () => {
+    functions.smiles.OCL = await asyncRequire(oclUrl);
+  };
   functions.smiles.toscreen = async function ($element, smi, smiRoot, options) {
-    const OCL = await asyncRequire(oclUrl);
-    const mol = OCL.Molecule.fromSmiles(String(smi));
+    const mol = functions.smiles.OCL.Molecule.fromSmiles(String(smi));
     return renderOpenChemLibStructure(true, $element, mol, false, options);
   };
 
@@ -541,6 +555,9 @@ define([
   };
  
   functions.unit = {};
+  functions.unit.init = async function () {
+    functions.unit.mathjs = await asyncRequire('mathjs');
+  };
   functions.unit.toscreen = async function ($element, val, rootVal, options) {
     if (!val) return;
     let displayValue;
@@ -548,8 +565,7 @@ define([
       displayValue = formatNumber(val, options);
     } else {
       const stringUnit = val.unit ? String(val.unit) : '';
-      const mathjs = await asyncRequire('mathjs');
-      let unit = mathjs.unit(stringUnit);
+      let unit = functions.unit.mathjs.unit(stringUnit);
       unit.value = Number(val.SI);
 
       if (options.format) {
