@@ -382,6 +382,7 @@ define([
     return new Promise((resolve) => {
       return Util.loadCss('components/slickgrid/slick.grid.css').then(
         function () {
+          let status=false;	
           var $dialog = $('<div>');
           var $slick = $('<div>')
             .css('height', '100%')
@@ -398,21 +399,20 @@ define([
               buttons: {
                 cancel: function () {
                   $(this).dialog('close');
-                  resolve(false);
                 },
                 confirm: function () {
+		  status=true;
                   currentList = JSON.parse(JSON.stringify(list));
+		  list.length = 0;
+		  for (let idx = 0; idx < currentList.length; idx++) {
+		    list[idx] = currentList[idx];
+		  }
                   $(this).dialog('close');
-                  resolve(true);
                 },
               },
 
               close: () => {
-                list.length = 0;
-                for (let idx = 0; idx < currentList.length; idx++) {
-                  list[idx] = currentList[idx];
-                }
-                resolve(false);
+		resolve(status)
               },
               resize: function () {
                 grid.resizeCanvas();
