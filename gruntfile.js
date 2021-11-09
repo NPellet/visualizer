@@ -120,6 +120,18 @@ module.exports = function(grunt) {
           },
         },
       },
+      SmartArrayFilter: {
+        files: {
+          'src/browserified/SmartArrayFilter/index.js': [
+            './node_modules/smart-array-filter/lib/index.js',
+          ],
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'SAF',
+          },
+        },
+      },
     },
     pkg: grunt.file.readJSON('package.json'),
     babel: {
@@ -289,7 +301,6 @@ module.exports = function(grunt) {
               './web-animations-js/*.js.map',
               './moment/moment*',
               './moment-duration-format/lib/moment-duration-format.js',
-              './smart-array-filter/dist/*',
               './numeral/numeral*',
               './flag-icon-css/css/flag-icon.min.css',
               './flag-icon-css/flags/**',

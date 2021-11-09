@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(function() {
   try {
     eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
   } catch (e) {
@@ -77,8 +77,7 @@ require.config({
     select2: 'components/select2/dist/js/select2.full',
     slickgrid: 'components/slickgrid/slick.grid',
     slickgrid_core: 'components/slickgrid/slick.core',
-    'smart-array-filter':
-      'components/smart-array-filter/dist/smart-array-filter.min',
+    'smart-array-filter': 'browserified/SmartArrayFilter/index',
     sparkline: 'lib/jquery.sparkline/jquery.sparkline.min',
     sprintf: 'components/sprintf/dist/sprintf.min',
     superagent: 'browserified/superagent/index',
@@ -115,7 +114,7 @@ require.config({
     // },
     threejs: {
       exports: 'THREE',
-      init: function () {
+      init: function() {
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
       },
@@ -218,7 +217,7 @@ require([
   'bluebird',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function (Version, $, Datas, EntryPoint, URI, Promise) {
+], function(Version, $, Datas, EntryPoint, URI, Promise) {
   window.Promise = Promise;
   Promise.config({
     warnings: Version.head,
@@ -232,8 +231,8 @@ require([
       url.search().length > 0
         ? 'search'
         : url.fragment()[0] === '?'
-          ? 'fragment'
-          : 'search';
+        ? 'fragment'
+        : 'search';
     const query = new URI(url[type]()).query(true);
     EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
   });
