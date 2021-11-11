@@ -206,7 +206,16 @@
       ],
       "vars_out": [
         {
-          "jpath": []
+          "event": "onSelect",
+          "rel": "row",
+          "jpath": [],
+          "name": "RowClicked"
+        },
+        {
+          "event": "onRowActive",
+          "rel": "row",
+          "jpath": [],
+          "name": "RowActivated"
         }
       ],
       "actions_out": [
@@ -253,7 +262,7 @@
               "display": [["editor", "buttons"]],
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
-              "script": ["API.doAction('CellClick', 5);\n\n"]
+              "script": ["API.doAction('CellClick', 2);\n\n"]
             }
           ],
           "libs": [[{}]],
@@ -272,8 +281,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 5,
-            "top": 42
+            "left": 0,
+            "top": 39
           },
           "size": {
             "width": 41,
@@ -356,8 +365,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 93,
-            "top": 9
+            "left": 88,
+            "top": 0
           },
           "size": {
             "width": 59,
@@ -415,6 +424,170 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["view"],
+              "expanded": [["expand"]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 51,
+            "top": 43
+          },
+          "size": {
+            "width": 48,
+            "height": 42
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "RowClicked",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "RowClicked"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "RowClicked"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["view"],
+              "expanded": [["expand"]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 102,
+            "top": 43
+          },
+          "size": {
+            "width": 48,
+            "height": 42
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "RowActivated",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "RowActivated"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "RowActivated"
     }
   ],
   "variables": [
