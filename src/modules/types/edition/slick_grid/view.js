@@ -2128,7 +2128,7 @@ define([
         if (item && item[this.idPropertyName]) {
           let gridRow = this.slick.data.getRowById(item[this.idPropertyName]);
           let dataIdx = this.slick.data.getIdxById(item[this.idPropertyName]);
-          item = this.slick.data.getItem();
+          item = this.slick.data.getItem(dataIdx);
           let column = cell.column;
           if (typeof column !== 'number') {
             // Find column by id
