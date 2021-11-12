@@ -8,8 +8,6 @@ parserOptions:
 
 rules:
   # Disable those for now
-  indent: 0
-  space-before-function-paren: 0
   no-console: 1
   no-eval: 0
   curly: 0
