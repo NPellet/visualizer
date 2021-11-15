@@ -1,3 +1,17 @@
+# [2.137.0](https://github.com/NPellet/visualizer/compare/v2.136.0...v2.137.0) (2021-11-15)
+
+
+### Bug Fixes
+
+* send data in row click action when click was triggered by action in ([c5f4abe](https://github.com/NPellet/visualizer/commit/c5f4abe69ab3a357fe1364d8c4924ca7c12b8328))
+
+
+### Features
+
+* update smart-array-filter and add options to the module ([fb26904](https://github.com/NPellet/visualizer/commit/fb26904493b76959e9658737c9927cfa10d53ed8)), closes [#1147](https://github.com/NPellet/visualizer/issues/1147)
+
+
+
 # [2.136.0](https://github.com/NPellet/visualizer/compare/v2.135.0...v2.136.0) (2021-11-01)
 
 
