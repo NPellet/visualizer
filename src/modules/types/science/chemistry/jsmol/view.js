@@ -115,7 +115,14 @@ define([
 
     blank: {
       data: function() {
-        if (this.module.data) this.storeOrientation();
+        if (
+          (
+            (this.module.data && this.module.getConfiguration('prefs')) ||
+            []
+          ).includes('orientation')
+        ) {
+          this.storeOrientation();
+        }
         this.postMessage('blank', '');
       },
     },
@@ -130,15 +137,6 @@ define([
           _script: data._script,
         });
 
-        if (
-          (that.module.getConfiguration('prefs') || []).includes(
-            'orientation',
-          ) &&
-          that.orientation
-        ) {
-          that.postMessage('executeScript', [that.orientation]);
-        }
-
         if (that.module.getConfiguration('script')) {
           that.postMessage('executeScript', [
             that.module.getConfiguration('script'),
@@ -152,6 +150,7 @@ define([
             that.module.getConfiguration('syncScript'),
           ]);
         }
+
         this._activateHighlights();
 
         // self.postMessage('restoreOrientation', 'lastOrientation');
@@ -181,7 +180,7 @@ define([
     postMessage: function(type, message) {
       var cw = this.dom.get(0).contentWindow;
       if (cw) {
-        let result = cw.postMessage(
+        cw.postMessage(
           JSON.stringify({
             type: type,
             message: message,
@@ -208,17 +207,7 @@ define([
     },
 
     storeOrientation: function() {
-      var cw = this.dom.get(0).contentWindow;
-      if (cw && cw.applet) {
-        const orientation = cw.Jmol.scriptWait(cw.applet, 'show orientation')
-          .split(/\r?\n/)
-          .filter((line) => line.match('reset;'))[0];
-        if (!orientation) {
-          this.orientation = undefined;
-          return;
-        }
-        this.orientation = orientation;
-      }
+      this.postMessage('saveOrientation', []);
     },
 
     _doHighlights: function(atom) {
