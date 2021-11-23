@@ -1,14 +1,14 @@
 'use strict';
 
-define(['modules/default/defaultcontroller'], function(Default) {
+define(['modules/default/defaultcontroller'], function (Default) {
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
-  Controller.prototype.getToolbar = function() {
+  Controller.prototype.getToolbar = function () {
     var base = Default.getToolbar.call(this);
     base.unshift({
-      onClick: function() {
+      onClick: function () {
         window.open('http://wiki.jmol.org/index.php/Mouse_Manual', '_blank');
       },
       title: 'Help',
@@ -67,7 +67,7 @@ define(['modules/default/defaultcontroller'], function(Default) {
 
   Controller.prototype.variablesIn = ['data'];
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {
@@ -111,30 +111,28 @@ define(['modules/default/defaultcontroller'], function(Default) {
     setTempJsmolScript: 'Add temporary after load script',
   };
 
-  Controller.prototype.onRemove = function() {
+  Controller.prototype.onRemove = function () {
     this.module.view.remove(this.module.getId());
   };
 
-  Controller.prototype.onNewMessage = function(message) {
+  Controller.prototype.onNewMessage = function (message) {
     this.createDataFromEvent('onMessage', 'message', message);
   };
 
-  Controller.prototype.onAtomClick = function(message) {
+  Controller.prototype.onAtomClick = function (message) {
     this.createDataFromEvent('onAtomClick', 'atom', message);
   };
 
-  Controller.prototype.onAtomHover = function(message) {
+  Controller.prototype.onAtomHover = function (message) {
     this.createDataFromEvent('onAtomHover', 'atom', message);
   };
 
-  Controller.prototype.onSyncExecDone = function(message) {
+  Controller.prototype.onSyncExecDone = function (message) {
     this.createDataFromEvent('onExecResult', 'execResult', message);
   };
 
-  Controller.prototype.export = function() {
-    return this.module.view.postMessage('executeScriptSync', [
-      'write PNGJ jsmol.png',
-    ]);
+  Controller.prototype.export = function () {
+    return this.module.view.postMessage('executeScriptSync', ['write PNGJ jsmol.png', ]);
   };
 
   return Controller;
