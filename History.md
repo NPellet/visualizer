@@ -1,3 +1,17 @@
+# [2.138.0](https://github.com/NPellet/visualizer/compare/v2.137.0...v2.138.0) (2021-11-23)
+
+
+### Bug Fixes
+
+* cross origin in jsmol orientation ([a976c52](https://github.com/NPellet/visualizer/commit/a976c52a47269659fd40490b17a640ceb71084c1))
+
+
+### Features
+
+* add option in jsmol to store orientation ([093438b](https://github.com/NPellet/visualizer/commit/093438b2d7bb7aa5f7940e8f36a374a9f9c5069a))
+
+
+
 # [2.137.0](https://github.com/NPellet/visualizer/compare/v2.136.0...v2.137.0) (2021-11-15)
 
 
