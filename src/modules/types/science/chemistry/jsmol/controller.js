@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -14,7 +13,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
       },
       title: 'Help',
       cssClass: 'fa fa-question',
-      ifLocked: true
+      ifLocked: true,
     });
     return base;
   };
@@ -25,45 +24,45 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Nathanaêl Khodl, Luc Patiny',
     date: '30.12.2013',
     license: 'MIT',
-    cssClass: 'jsmol'
+    cssClass: 'jsmol',
   };
 
   Controller.prototype.references = {
     data: {
       type: ['cif', 'pdb', 'mol3d', 'magres', 'mol2d', 'jme', 'string'],
-      label: 'A molecule/protein data'
+      label: 'A molecule/protein data',
     },
     message: {
       type: ['string'],
-      label: 'Messages from jsmol'
+      label: 'Messages from jsmol',
     },
     atom: {
       type: ['string'],
-      label: 'A string describing the clicked atom'
+      label: 'A string describing the clicked atom',
     },
     execResult: {
       type: ['string'],
-      label: 'Result of executing sync script'
-    }
+      label: 'Result of executing sync script',
+    },
   };
 
   Controller.prototype.events = {
     onMessage: {
       label: 'A new message from jsmol arrived',
-      refVariable: ['message']
+      refVariable: ['message'],
     },
     onAtomClick: {
       label: 'An atom was clicked',
-      refVariable: ['atom']
+      refVariable: ['atom'],
     },
     onAtomHover: {
       label: 'An atom was hovered',
-      refVariable: ['atom']
+      refVariable: ['atom'],
     },
     onExecResult: {
       label: 'New sync exec result',
-      refVariable: ['execResult']
-    }
+      refVariable: ['execResult'],
+    },
   };
 
   Controller.prototype.variablesIn = ['data'];
@@ -73,7 +72,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
 
           fields: {
@@ -82,20 +81,21 @@ define(['modules/default/defaultcontroller'], function (Default) {
               title: 'Options',
               default: [],
               options: {
-                webgl: 'Enable webgl (fast but limited rendering options)'
-              }
+                webgl: 'Enable webgl (fast but limited rendering options)',
+                orientation: 'Keep orientation',
+              },
             },
             script: {
               type: 'jscode',
-              title: 'After load script'
+              title: 'After load script',
             },
             syncScript: {
               type: 'jscode',
-              title: 'Sync after load script'
-            }
-          }
-        }
-      }
+              title: 'Sync after load script',
+            },
+          },
+        },
+      },
     };
   };
 
@@ -132,7 +132,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.export = function () {
-    return this.module.view.postMessage('executeScriptSync', ['write PNGJ jsmol.png']);
+    return this.module.view.postMessage('executeScriptSync', ['write PNGJ jsmol.png', ]);
   };
 
   return Controller;

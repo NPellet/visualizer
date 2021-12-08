@@ -6,7 +6,7 @@
         "groups": {
           "group": [
             {
-              "prefs": [[]],
+              "prefs": [["orientation"]],
               "script": ["wireframe 0;\nribbon on;\n"],
               "syncScript": [null]
             }
@@ -423,7 +423,7 @@
   "configuration": {
     "title": "Scripting JSMol"
   },
-  "version": "2.123.3-0",
+  "version": "2.137.1-0",
   "grid": {
     "layers": {
       "Default layer": {

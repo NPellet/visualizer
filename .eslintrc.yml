@@ -8,8 +8,6 @@ parserOptions:
 
 rules:
   # Disable those for now
-  indent: 0
-  space-before-function-paren: 0
   no-console: 1
   no-eval: 0
   curly: 0
@@ -28,6 +26,7 @@ rules:
   one-var: 0
   no-multi-spaces: 2
   prefer-rest-params: 0
+  array-bracket-spacing: 0
   brace-style:
     - 2
     - '1tbs'

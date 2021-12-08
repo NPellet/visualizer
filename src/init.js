@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+(function () {
   try {
     eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
   } catch (e) {
@@ -114,7 +114,7 @@ require.config({
     // },
     threejs: {
       exports: 'THREE',
-      init: function() {
+      init: function () {
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
       },
@@ -217,7 +217,7 @@ require([
   'bluebird',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function(Version, $, Datas, EntryPoint, URI, Promise) {
+], function (Version, $, Datas, EntryPoint, URI, Promise) {
   window.Promise = Promise;
   Promise.config({
     warnings: Version.head,
@@ -231,8 +231,8 @@ require([
       url.search().length > 0
         ? 'search'
         : url.fragment()[0] === '?'
-        ? 'fragment'
-        : 'search';
+          ? 'fragment'
+          : 'search';
     const query = new URI(url[type]()).query(true);
     EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
   });

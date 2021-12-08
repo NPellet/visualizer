@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/default/defaultcontroller',
   'smart-array-filter',
-], function($, Default, SAF) {
+], function ($, Default, SAF) {
   const filter = SAF.filter;
 
   function isRegExpString(value) {
@@ -58,7 +58,7 @@ define([
     appendQuery: 'Append to current query',
   };
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {
@@ -154,7 +154,7 @@ define([
     ignorePaths: ['groups', 'ignorePaths', 0],
   };
 
-  Controller.prototype.onQuery = function(query) {
+  Controller.prototype.onQuery = function (query) {
     if (!this.module.view._data) return;
     const pathAlias = this.module
       .getConfiguration('aliases', [])

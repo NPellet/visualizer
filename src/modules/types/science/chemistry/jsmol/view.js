@@ -115,6 +115,14 @@ define([
 
     blank: {
       data: function () {
+        if (
+          (
+            (this.module.data && this.module.getConfiguration('prefs')) ||
+            []
+          ).includes('orientation')
+        ) {
+          this.storeOrientation();
+        }
         this.postMessage('blank', '');
       },
     },
@@ -138,6 +146,7 @@ define([
         if (that.module.getConfiguration('syncScript')) {
           that.postMessage('executeScriptSync', [that.module.getConfiguration('syncScript'), ]);
         }
+
         this._activateHighlights();
 
         // self.postMessage('restoreOrientation', 'lastOrientation');
@@ -191,6 +200,10 @@ define([
         y: m[4],
         z: m[5],
       };
+    },
+
+    storeOrientation: function () {
+      this.postMessage('saveOrientation', []);
     },
 
     _doHighlights: function (atom) {
