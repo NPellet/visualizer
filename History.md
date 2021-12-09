@@ -1,3 +1,12 @@
+## [2.138.1](https://github.com/NPellet/visualizer/compare/v2.138.0...v2.138.1) (2021-12-09)
+
+
+### Bug Fixes
+
+* update openchemlib for expand hydrogens on single atoms ([a41ba64](https://github.com/NPellet/visualizer/commit/a41ba64cc1e9e8e20b85ec389436d95b8edc7170))
+
+
+
 # [2.138.0](https://github.com/NPellet/visualizer/compare/v2.137.0...v2.138.0) (2021-11-23)
 
 
