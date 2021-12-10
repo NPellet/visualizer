@@ -1,3 +1,13 @@
+# [2.142.0](https://github.com/NPellet/visualizer/compare/v2.141.0...v2.142.0) (2021-12-10)
+
+
+### Features
+
+* add copy to clipboard in quill_editor ([6f0f7bc](https://github.com/NPellet/visualizer/commit/6f0f7bc8f535d17618d54a5e7903ff3ac7ef7f95))
+* render SVG before copying html in display value and twig module ([80df466](https://github.com/NPellet/visualizer/commit/80df4661d6983028027011b364a1df566b4158bb))
+
+
+
 # [2.141.0](https://github.com/NPellet/visualizer/compare/v2.140.0...v2.141.0) (2021-12-10)
 
 
