@@ -1,3 +1,12 @@
+# [2.141.0](https://github.com/NPellet/visualizer/compare/v2.140.0...v2.141.0) (2021-12-10)
+
+
+### Features
+
+* add export to twig module ([0bba07f](https://github.com/NPellet/visualizer/commit/0bba07fc347cfdbafbb513c35f2c88ce681df426))
+
+
+
 # [2.140.0](https://github.com/NPellet/visualizer/compare/v2.139.0...v2.140.0) (2021-12-10)
 
 
