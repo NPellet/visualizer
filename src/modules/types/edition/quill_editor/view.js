@@ -112,7 +112,6 @@ define([
     exportToHTML: function() {
       const dom = this.dom[0].querySelector('.ql-editor');
       API.domToHTML(dom).then((html) => {
-        console.log(html);
         API.copyHTMLToClipboard(html);
       });
     },
