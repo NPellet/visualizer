@@ -25,6 +25,7 @@ rules:
   no-empty-function: 0
   one-var: 0
   no-multi-spaces: 2
+  space-before-function-paren: 0
   prefer-rest-params: 0
   array-bracket-spacing: 0
   brace-style:
@@ -50,3 +51,4 @@ globals:
   DataString: false
   DataNumber: false
   DataBoolean: false
+  ClipboardItem: false

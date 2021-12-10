@@ -145,6 +145,13 @@ define([
     exportToHTML: function() {
       var type = 'text/html';
       var blob = new Blob([this.contentForExportation], { type });
+      if (typeof ClipboardItem === 'undefined') {
+        UI.showNotification(
+          'Copy to clipboard not supported in this browser',
+          'error',
+        );
+        return;
+      }
       var data = [new ClipboardItem({ [type]: blob })];
 
       navigator.clipboard.write(data).then(

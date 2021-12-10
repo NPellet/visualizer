@@ -4,7 +4,7 @@ define([
   'modules/default/defaultcontroller',
   'src/util/util',
   'src/util/typerenderer',
-], function(Default, Util, Renderer) {
+], function (Default, Util, Renderer) {
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
@@ -30,7 +30,7 @@ define([
 
   Controller.prototype.variablesIn = ['value', 'color'];
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     var typeList = Renderer.getRendererComboOptions();
     return {
       groups: {
@@ -161,7 +161,7 @@ define([
     };
   };
 
-  Controller.prototype.export = function() {
+  Controller.prototype.export = function () {
     return this.module.view.exportToHTML();
   };
 
