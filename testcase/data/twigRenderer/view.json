@@ -1,5 +1,5 @@
 {
-  "version": "2.122.1-0",
+  "version": "2.140.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,20 +17,9 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                []
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
               "script": [
                 "const template = API.getData('template');\n\nconst data={\n    a: 1\n}\n\nlet html = await UI.renderTwig(template, data);\n\n\n\nAPI.createData('html', html);\n\n"
               ]
@@ -69,12 +58,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Code to generate HTML based on twig and data",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -87,9 +71,7 @@
           "name": "template"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -108,33 +90,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Code to generate HTML based on twig and data"
@@ -146,34 +115,14 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "html"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                [
-                  "store"
-                ]
-              ],
-              "debouncing": [
-                0
-              ],
+              "mode": ["html"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
               "script": [
                 "ABCDE\n\n{{a}}\n\n{{rendertype('C10H20O', 'mf')}}\n\n<div style=\"width: 600px; height: 200px; background-color: pink;\"> \n{{rendertypeBlock('CCCCCCCCCCCCCO', 'smiles',{width: 500, height: 300})}}\n</div>  "
               ]
@@ -181,14 +130,8 @@
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -206,24 +149,15 @@
           "zIndex": 0,
           "display": true,
           "title": "Twig template",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 2,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -245,33 +179,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Twig template"
@@ -283,23 +204,11 @@
         "groups": {
           "group": [
             {
-              "selectable": [
-                []
-              ],
-              "template": [
-                ""
-              ],
-              "modifyInForm": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
-              "formOptions": [
-                [
-                  "keepFormValueIfDataUndefined"
-                ]
-              ]
+              "selectable": [[]],
+              "template": [""],
+              "modifyInForm": [[]],
+              "debouncing": [0],
+              "formOptions": [["keepFormValueIfDataUndefined"]]
             }
           ]
         }
@@ -317,12 +226,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Preview of HTML code",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -335,9 +239,7 @@
           "name": "html"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -356,33 +258,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences", "Export Data"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Preview of HTML code"
@@ -394,47 +283,21 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "text"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
-              "script": [
-                null
-              ]
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -452,12 +315,7 @@
           "zIndex": 0,
           "display": true,
           "title": "HTML code",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -470,9 +328,7 @@
           "name": "html"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -491,33 +347,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "HTML code"

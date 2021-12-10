@@ -10,21 +10,23 @@ define([
   './cache',
   './actionmanager',
   './util',
+  './ui',
   './versioning',
   './config',
   'src/main/variables',
   'src/main/datas',
   'lodash',
-  'src/main/grid'
-], function (
+  'src/main/grid',
+], function(
   Cache,
   ActionManager,
   Util,
+  UI,
   Versioning,
   Config,
   Variables,
   Data,
-  _
+  _,
 ) {
   var variableFilters;
 
@@ -34,8 +36,8 @@ define([
     .append(
       $('<div>', {
         id: 'ci-loading-message',
-        class: 'ci-loading-subtitle'
-      })
+        class: 'ci-loading-subtitle',
+      }),
     );
   var loading = {};
   var loadingNumber = 0;
@@ -45,111 +47,108 @@ define([
   }
 
   var exports = {
-    getRepositoryData: function () {
+    getRepositoryData: function() {
       return this.repositoryData;
     },
 
-    setRepositoryData: function (repo) {
+    setRepositoryData: function(repo) {
       this.repositoryData = repo;
     },
 
-    getRepositoryHighlights: function () {
+    getRepositoryHighlights: function() {
       return this.repositoryHighlights;
     },
 
-    setRepositoryHighlights: function (repo) {
+    setRepositoryHighlights: function(repo) {
       this.repositoryHighlights = repo;
     },
 
-    getRepositoryActions: function () {
+    getRepositoryActions: function() {
       return this.repositoryActions;
     },
 
-    setRepositoryActions: function (repo) {
+    setRepositoryActions: function(repo) {
       this.repositoryActions = repo;
     },
 
-    listenHighlight: function () {
-      if (
-        !arguments[0] ||
-                typeof arguments[0]._highlight == 'undefined'
-      ) {
+    listenHighlight: function() {
+      if (!arguments[0] || typeof arguments[0]._highlight == 'undefined') {
         return;
       }
 
       arguments[0] = arguments[0]._highlight;
       this.repositoryHighlights.listen.apply(
         this.repositoryHighlights,
-        arguments
+        arguments,
       );
     },
 
-    killHighlight: function () {
+    killHighlight: function() {
       this.repositoryHighlights.kill.apply(
         this.repositoryHighlights,
-        arguments
+        arguments,
       );
     },
 
     highlightId: setHighlightId,
 
-    getAllFilters: function () {
+    getAllFilters: function() {
       return variableFilters;
     },
 
-    setAllFilters: function (filters) {
+    setAllFilters: function(filters) {
       variableFilters = _([filters, variableFilters])
         .flatten()
         .filter((v) => v && v.name && v.file)
         .uniq((v) => v.file)
         .unshift({
           file: '',
-          name: 'No filter'
+          name: 'No filter',
         })
         .value();
     },
 
-    isViewLocked: function () {
+    isViewLocked: function() {
       return Versioning.isViewLocked();
     },
 
-    viewLock: function () {
+    viewLock: function() {
       return Versioning.viewLock();
     },
 
-    getContextMenu: function () {
+    getContextMenu: function() {
       return Config.contextMenu();
     },
 
     /* Extra functions used in filter testsuite. Allows compatibility of filters */
-    dev_fctCalled: function (fct) {},
-    dev_fctUncalled: function (fct) {},
-    dev_assert: function (family, script, value) {}
+    dev_fctCalled: function(fct) {},
+    dev_fctUncalled: function(fct) {},
+    dev_assert: function(family, script, value) {},
   };
 
   /**
-     * Check if a variable is defined
-     * @param {string} varName - Name of the variable
-     * @return {boolean}
-     */
+   * Check if a variable is defined
+   * @param {string} varName - Name of the variable
+   * @return {boolean}
+   */
   exports.existVariable = function existVariable(varName) {
     return Variables.exist(varName);
   };
   exports.existVar = exports.existVariable;
 
   /**
-     * Set a variable using a jpath
-     * @param {string} name - Name of the variable
-     * @param {Variable} [sourceVariable] - Source variable. If set, the new variable will be created relative to its jpath
-     * @param {string[]} jpath
-     * @param {string} [filter] - Url of the filter to use with this variable
-     * @return {Promise}
-     */
+   * Set a variable using a jpath
+   * @param {string} name - Name of the variable
+   * @param {Variable} [sourceVariable] - Source variable. If set, the new variable will be created relative to its jpath
+   * @param {string[]} jpath
+   * @param {string} [filter] - Url of the filter to use with this variable
+   * @return {Promise}
+   */
   exports.setVariable = function setVariable(
     name,
     sourceVariable,
     jpath,
-    filter
+    filter,
   ) {
     if (Array.isArray(sourceVariable)) {
       filter = jpath;
@@ -166,12 +165,12 @@ define([
   exports.setVar = exports.setVariable;
 
   /**
-     * Create new data and set a variable to it
-     * @param {string} name - Name of the variable
-     * @param {*} data - Data to set
-     * @param {string} [filter] - Url of the filter to use with this variable
-     * @return {Promise}
-     */
+   * Create new data and set a variable to it
+   * @param {string} name - Name of the variable
+   * @param {*} data - Data to set
+   * @param {string} [filter] - Url of the filter to use with this variable
+   * @return {Promise}
+   */
   exports.createData = function createData(name, data, filter) {
     return exports.createDataJpath(name, data, [], filter);
   };
@@ -180,7 +179,7 @@ define([
     name,
     data,
     jpath,
-    filter
+    filter,
   ) {
     data = Data.check(Data.resurrect(data), true);
     if (data && data.trace) {
@@ -193,29 +192,29 @@ define([
   };
 
   /**
-     * Get a variable by name
-     * @param {string} name - Name of the variable
-     * @return {Variable}
-     */
+   * Get a variable by name
+   * @param {string} name - Name of the variable
+   * @return {Variable}
+   */
   exports.getVariable = function getVariable(name) {
     return Variables.getVariable(name);
   };
   exports.getVar = exports.getVariable;
 
   /**
-     * Get the DataObject associated to a variable
-     * @param {string} varName - Name of the variable
-     * @return {*} - DataObject or undefined
-     */
+   * Get the DataObject associated to a variable
+   * @param {string} varName - Name of the variable
+   * @return {*} - DataObject or undefined
+   */
   exports.getData = function getData(varName) {
     return exports.getVariable(varName).getData();
   };
 
   /**
-     * Change the state of a highlight
-     * @param {object|Array} element - Object with a _highlight property or array of highlight IDs
-     * @param {boolean} onOff
-     */
+   * Change the state of a highlight
+   * @param {object|Array} element - Object with a _highlight property or array of highlight IDs
+   * @param {boolean} onOff
+   */
   exports.setHighlight = function setHighlight(element, onOff) {
     if (!element) return;
 
@@ -232,10 +231,10 @@ define([
   exports.highlight = exports.setHighlight;
 
   /**
-     * Set a loading message or change the value of an existing message
-     * @param {string} id - ID of the message
-     * @param {string} [message] - Message content (default: value of the ID)
-     */
+   * Set a loading message or change the value of an existing message
+   * @param {string} id - ID of the message
+   * @param {string} [message] - Message content (default: value of the ID)
+   */
   exports.loading = function setLoading(id, message) {
     if (!message) {
       message = id;
@@ -256,9 +255,9 @@ define([
   };
 
   /**
-     * Remove a loading message
-     * @param {string} id - ID of the message
-     */
+   * Remove a loading message
+   * @param {string} id - ID of the message
+   */
   exports.stopLoading = function stopLoading(id) {
     if (loading[id]) {
       loadingNumber--;
@@ -272,16 +271,38 @@ define([
   };
 
   /**
-     * Send an action to all modules and global action scripts
-     * @param {string} name - Action name
-     * @param {*} [value] - Action value
-     */
+   * Send an action to all modules and global action scripts
+   * @param {string} name - Action name
+   * @param {*} [value] - Action value
+   */
   exports.doAction = function doAction(name, value) {
     if (Data.isSpecialObject(value)) {
       value = value.get();
     }
     this.repositoryActions.set(name, value);
     ActionManager.execute(name, value);
+  };
+
+  exports.copyHTMLToClipboard = function copyHTMLToClipboard(html) {
+    const type = 'text/html';
+    if (typeof ClipboardItem === 'undefined') {
+      UI.showNotification(
+        'Copy to clipboard not supported in this browser',
+        'error',
+      );
+      return;
+    }
+    const blob = new Blob([html], { type });
+    const data = [new ClipboardItem({ [type]: blob })];
+
+    navigator.clipboard.write(data).then(
+      () => {
+        UI.showNotification('Copied to clipboard', 'success');
+      },
+      () => {
+        UI.showNotification('Failed to copy to clipboard', 'error');
+      },
+    );
   };
 
   exports.getModule = function getModule(moduleId) {
@@ -317,7 +338,7 @@ define([
 
   exports.updateModulePreferences = function updateModulePreferences(
     moduleId,
-    values
+    values,
   ) {
     const ModuleFactory = require('modules/modulefactory');
     const module = ModuleFactory.getModule(moduleId);
@@ -351,21 +372,21 @@ define([
   };
 
   /**
-     * @deprecated
-     * Execute a global visualizer action. This is deprecated. Use API.doAction instead.
-     * @param {string} name - Action name
-     * @param {*} value - Action value
-     */
+   * @deprecated
+   * Execute a global visualizer action. This is deprecated. Use API.doAction instead.
+   * @param {string} name - Action name
+   * @param {*} value - Action value
+   */
   exports.executeAction = Util.deprecate(function executeAction(name, value) {
     ActionManager.execute(name, value);
   }, 'API.doAction is the recommended method.');
 
   /**
-     * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
-     * @param {string} name - Name of the cached value
-     * @param {*} [value] - New value to set
-     * @return {*} The cached value or undefined if used as a setter
-     */
+   * Cache a value in memory or retrieve it. The value can be retrieved anywhere API is available
+   * @param {string} name - Name of the cached value
+   * @param {*} [value] - New value to set
+   * @return {*} The cached value or undefined if used as a setter
+   */
   exports.cache = function cacheHandler(name, value) {
     if (arguments.length === 1) {
       return Cache.get(name);
@@ -375,32 +396,32 @@ define([
   };
 
   /*
-     * Set the cache to an empty object
-     */
+   * Set the cache to an empty object
+   */
   exports.cache.clear = function clearCache() {
     return Cache.clear();
   };
 
-  exports.getLayerNames = function () {
+  exports.getLayerNames = function() {
     return require('src/main/grid').getLayerNames();
   };
 
-  exports.switchToLayer = function (name, options) {
+  exports.switchToLayer = function(name, options) {
     return require('src/main/grid').switchToLayer(name, options);
   };
 
-  exports.getActiveLayerName = function () {
+  exports.getActiveLayerName = function() {
     return require('src/main/grid').getActiveLayerName();
   };
 
-  exports.preventUnload = function (message) {
-    window.onbeforeunload = function (e) {
+  exports.preventUnload = function(message) {
+    window.onbeforeunload = function(e) {
       e.returnValue = message;
       return message;
     };
   };
 
-  exports.clearPreventUnload = function () {
+  exports.clearPreventUnload = function() {
     window.onbeforeunload = null;
   };
 
@@ -408,7 +429,7 @@ define([
     return exports.getRepositoryActions().listen(names, callback);
   };
 
-  exports.offAction = function (actionId) {
+  exports.offAction = function(actionId) {
     return exports.getRepositoryActions().unlisten(actionId);
   };
 

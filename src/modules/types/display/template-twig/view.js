@@ -5,10 +5,11 @@ define([
   'modules/default/defaultview',
   'lib/twigjs/twig',
   'src/util/debug',
+  'src/util/api',
   'lodash',
   'src/util/Form',
   'src/util/util',
-], function ($, Default, Twig, Debug, _, Form, Util) {
+], function($, Default, Twig, Debug, API, _, Form, Util) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
@@ -75,6 +76,10 @@ define([
 
     clearForm() {
       this.form.clear();
+    },
+
+    exportToHTML: function() {
+      API.copyHTMLToClipboard(this.dom.html());
     },
 
     setForm(data) {
@@ -212,13 +217,13 @@ define([
     },
 
     onActionReceive: {
-      clearForm: function (submitChange) {
+      clearForm: function(submitChange) {
         this.clearForm();
         if (submitChange) {
           this.submitChange();
         }
       },
-      setForm: function (options) {
+      setForm: function(options) {
         if (!options.data)
           throw new Error(
             'setForm invalid arguments. Must be object with data property.',
@@ -244,8 +249,9 @@ define([
             this._values[this.formName] = this.formObject;
           }
           var render = this.template.renderAsync(this._values);
+
           this.dom.html(render.html);
-          const renderProm = render.render().then(function () {
+          const renderProm = render.render().then(function() {
             if (cb) cb();
             that.setStyle();
             that.module.controller.onRendered(that.dom.html());
