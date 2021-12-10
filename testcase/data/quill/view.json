@@ -1,5 +1,5 @@
 {
-  "version": "2.128.2-0",
+  "version": "2.141.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,28 +17,12 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                [
-                  "isEditable"
-                ]
-              ],
-              "toolbarMode": [
-                "light"
-              ],
-              "debouncing": [
-                100
-              ],
-              "storeInView": [
-                []
-              ],
-              "modifyVarIn": [
-                [
-                  "yes"
-                ]
-              ],
-              "className": [
-                "quill"
-              ],
+              "editable": [["isEditable"]],
+              "toolbarMode": ["light"],
+              "debouncing": [100],
+              "storeInView": [[]],
+              "modifyVarIn": [["yes"]],
+              "className": ["quill"],
               "css": [
                 ".quill a {\n    text-decoration: none;\n    color: black;\n    font-weight: bold;\n}\n.quill p {\n    padding-top: 3px;\n    padding-bottom: 3px;\n}"
               ]
@@ -59,12 +43,7 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -109,33 +88,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences", "Export Data"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "",
@@ -160,47 +126,21 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "text"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                []
-              ],
-              "debouncing": [
-                0
-              ],
-              "script": [
-                null
-              ]
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -218,12 +158,7 @@
           "zIndex": 0,
           "display": true,
           "title": "Resulting HTML",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -236,9 +171,7 @@
           "name": "test"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -259,33 +192,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Resulting HTML"
@@ -297,30 +217,15 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                []
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
               "script": [
                 "\n\nAPI.doAction('insertHTML','<a href=\"#reagent_2\">Hello</a>')"
               ]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -346,24 +251,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 3,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -387,22 +283,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -414,30 +302,15 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                []
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
               "script": [
                 "var test=API.getData('test');\nvar newValue=test.replace(/<a.*?href=\"#(.*?)\".*?>(.*?)<\\/a>/g, \n    (x,id,content) => `<a href=\"#${id}\">\n        ${content.substring(0,5)+Math.random()}</a>`\n);\ntest.setValue(newValue);\n"
               ]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -463,24 +336,15 @@
           "zIndex": 0,
           "display": true,
           "title": "Test to replace the data",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 4,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -504,22 +368,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": "Test to replace the data"
@@ -531,49 +387,21 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "text"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                [
-                  "store"
-                ]
-              ],
-              "debouncing": [
-                0
-              ],
-              "script": [
-                "Test <a href='ab'>asdfasdf</a>\n"
-              ]
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
+              "script": ["Test <a href='ab'>asdfasdf</a>\n"]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -591,24 +419,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 5,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -630,33 +449,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -668,30 +474,15 @@
         "groups": {
           "group": [
             {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                []
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
               "script": [
                 "\n\nAPI.doAction('insertText','<a href=\"#reagent_2\">Hello</a>')"
               ]
             }
           ],
-          "libs": [
-            [
-              {}
-            ]
-          ],
+          "libs": [[{}]],
           "buttons": [
             [
               {
@@ -717,24 +508,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 6,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
@@ -758,22 +540,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -785,31 +559,13 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "searchBox": [
-                [
-                  "search"
-                ]
-              ],
-              "sendButton": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
               "storedObject": [
                 "[{\"key\":\"abc\",\"text\":\"the abc string\"},{\"key\":\"_def\",\"html\":\"the <b>DEF</b> html\"}]"
               ]
@@ -830,24 +586,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 7,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -869,33 +616,20 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
+              "color": [100, 100, 100, 1]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ],
       "title": ""
@@ -903,14 +637,10 @@
   ],
   "variables": [
     {
-      "jpath": [
-        ""
-      ]
+      "jpath": [""]
     }
   ],
-  "aliases": [
-    {}
-  ],
+  "aliases": [{}],
   "configuration": {
     "title": "No title"
   },
@@ -920,12 +650,8 @@
       "groups": {
         "action": [
           {
-            "name": [
-              null
-            ],
-            "script": [
-              null
-            ]
+            "name": [null],
+            "script": [null]
           }
         ]
       }
@@ -937,9 +663,7 @@
       "groups": {
         "general": [
           {
-            "script": [
-              ""
-            ]
+            "script": [""]
           }
         ]
       }
@@ -952,11 +676,7 @@
           {
             "sections": {},
             "groups": {
-              "modules": [
-                [
-                  {}
-                ]
-              ]
+              "modules": [[{}]]
             }
           }
         ],
@@ -964,11 +684,7 @@
           {
             "sections": {},
             "groups": {
-              "filters": [
-                [
-                  {}
-                ]
-              ]
+              "filters": [[{}]]
             }
           }
         ],
@@ -978,19 +694,11 @@
             "groups": {
               "filter": [
                 {
-                  "name": [
-                    null
-                  ],
-                  "script": [
-                    null
-                  ]
+                  "name": [null],
+                  "script": [null]
                 }
               ],
-              "libs": [
-                [
-                  {}
-                ]
-              ]
+              "libs": [[{}]]
             }
           }
         ]
@@ -1002,11 +710,7 @@
     {
       "sections": {},
       "groups": {
-        "action": [
-          [
-            {}
-          ]
-        ]
+        "action": [[{}]]
       }
     }
   ]

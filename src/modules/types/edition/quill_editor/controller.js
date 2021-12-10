@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
+define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
@@ -11,33 +11,37 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     author: 'Miguel Asencio',
     date: '01.03.2018',
     license: 'MIT',
-    cssClass: 'quill_editor'
+    cssClass: 'quill_editor',
   };
 
   Controller.prototype.references = {
     quill: {
-      label: 'A Quill delta object'
+      label: 'A Quill delta object',
     },
     html: {
-      label: 'A string with html'
+      label: 'A string with html',
     },
     shortcuts: {
-      label: 'An array of key / text / html object'
-    }
+      label: 'An array of key / text / html object',
+    },
   };
 
   Controller.prototype.events = {
     onEditorChange: {
       label: 'The value in the editor has changed',
-      refVariable: ['quill', 'html']
-    }
+      refVariable: ['quill', 'html'],
+    },
+  };
+
+  Controller.prototype.export = function() {
+    return this.module.view.exportToHTML();
   };
 
   Controller.prototype.variablesIn = ['html', 'quill', 'shortcuts'];
 
-  Controller.prototype.onRemove = function () {};
+  Controller.prototype.onRemove = function() {};
 
-  Controller.prototype.valueChanged = function (value) {
+  Controller.prototype.valueChanged = function(value) {
     const html = this.module.view.instance.root.innerHTML;
     if (this.module.getConfigurationCheckbox('storeInView', 'yes')) {
       this.module.definition.richtext = value;
@@ -58,19 +62,19 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     this.createDataFromEvent('onEditorChange', 'html', html);
   };
 
-  Controller.prototype.configurationStructure = function () {
+  Controller.prototype.configurationStructure = function() {
     return {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             editable: {
               type: 'checkbox',
               title: 'Is Editable',
               options: { isEditable: 'Yes' },
-              default: ['isEditable']
+              default: ['isEditable'],
             },
             toolbarMode: {
               type: 'combo',
@@ -78,47 +82,47 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
               options: [
                 { key: 'minimal', title: 'Minimal' },
                 { key: 'light', title: 'Light' },
-                { key: 'all', title: 'All' }
+                { key: 'all', title: 'All' },
               ],
-              default: 'light'
+              default: 'light',
             },
             debouncing: {
               type: 'float',
               title: 'Debouncing (ms)',
-              default: 0
+              default: 0,
             },
             storeInView: {
               type: 'checkbox',
               title: 'Store content in view',
               options: { yes: 'Yes' },
-              default: ['yes']
+              default: ['yes'],
             },
             modifyVarIn: {
               type: 'checkbox',
               title: 'Modify input variable',
               options: { yes: 'Yes' },
-              default: []
+              default: [],
             },
             className: {
               type: 'text',
               title: 'CSS class name',
-              default: 'quill'
+              default: 'quill',
             },
             css: {
               type: 'jscode',
               title: 'CSS',
               mode: 'css',
-              default: '.quill {}'
-            }
-          }
-        }
-      }
+              default: '.quill {}',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.actionsIn = {
     insertHtml: 'Insert html',
-    insertText: 'Insert text'
+    insertText: 'Insert text',
   };
 
   Controller.prototype.configAliases = {
@@ -128,7 +132,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     modifyVarIn: ['groups', 'group', 0, 'modifyVarIn', 0],
     toolbarMode: ['groups', 'group', 0, 'toolbarMode', 0],
     className: ['groups', 'group', 0, 'className', 0],
-    css: ['groups', 'group', 0, 'css', 0]
+    css: ['groups', 'group', 0, 'css', 0],
   };
 
   return Controller;
