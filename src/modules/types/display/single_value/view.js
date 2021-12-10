@@ -241,9 +241,9 @@ define([
             'input',
             that.module.getConfiguration('debounce') > 0
               ? _.debounce(
-                  triggerChange,
-                  that.module.getConfiguration('debounce'),
-                ).bind(that)
+                triggerChange,
+                that.module.getConfiguration('debounce'),
+              ).bind(that)
               : triggerChange.bind(that),
           );
           div.on('keyup', function(e) {
