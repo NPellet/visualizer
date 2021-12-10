@@ -1,3 +1,12 @@
+# [2.140.0](https://github.com/NPellet/visualizer/compare/v2.139.0...v2.140.0) (2021-12-10)
+
+
+### Features
+
+* add confirmation dialog before deleting a row ([a5960db](https://github.com/NPellet/visualizer/commit/a5960dbcc49445981f93cb0034d6cc064150eb06))
+
+
+
 # [2.139.0](https://github.com/NPellet/visualizer/compare/v2.138.1...v2.139.0) (2021-12-10)
 
 
