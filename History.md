@@ -1,3 +1,13 @@
+# [2.139.0](https://github.com/NPellet/visualizer/compare/v2.138.1...v2.139.0) (2021-12-10)
+
+
+### Features
+
+* add export (as html in clipboard) in displayValue module ([dce77a8](https://github.com/NPellet/visualizer/commit/dce77a874784c092eb7d69ef81a2ab372d2d8181))
+* display correct error message if copy on firefox ([6e25414](https://github.com/NPellet/visualizer/commit/6e25414dc89a98470f39e945879234be5b47601d))
+
+
+
 ## [2.138.1](https://github.com/NPellet/visualizer/compare/v2.138.0...v2.138.1) (2021-12-09)
 
 
