@@ -283,7 +283,59 @@ define([
     ActionManager.execute(name, value);
   };
 
-  exports.copyHTMLToClipboard = function copyHTMLToClipboard(html) {
+  exports.domToHTML = async function domToHTML(dom) {
+    let canvases = dom.querySelectorAll('canvas');
+    // clone the original dom, we also need to copy the canvas
+    let domCopy = dom.cloneNode(true);
+    let canvasesCopy = domCopy.querySelectorAll('canvas');
+    for (let i = 0; i < canvases.length; i++) {
+      const png = canvases[i].toDataURL('image/png');
+      canvasesCopy[i].parentElement.innerHTML = `<img src="${png}" />`;
+    }
+
+    let svgs = dom.querySelectorAll('svg');
+    let svgsCopy = domCopy.querySelectorAll('svg');
+
+    const promises = [];
+
+    for (let i = 0; i < svgs.length; i++) {
+      const svgDOM = svgs[i];
+      const svgDOMCopy = svgsCopy[i];
+      const width = svgDOM.clientWidth;
+      const height = svgDOM.clientHeight;
+      const svgString = svgDOM.outerHTML;
+      const canvas = document.createElement('canvas');
+      canvas.setAttribute('width', width);
+      canvas.setAttribute('height', height);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const image = new Image();
+      const svg = new Blob([svgString], {
+        type: 'image/svg+xml;charset=utf-8',
+      });
+      const url = URL.createObjectURL(svg);
+
+      const promise = new Promise((resolve, reject) => {
+        image.onload = () => {
+          ctx.drawImage(image, 0, 0);
+          const png = canvas.toDataURL('image/png');
+          const img = document.createElement('img');
+          img.src = png;
+          svgDOMCopy.replaceWith(img);
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+      });
+      promises.push(promise);
+      image.src = url;
+    }
+
+    await Promise.all(promises);
+    return domCopy.innerHTML;
+  };
+
+  exports.copyHTMLToClipboard = async function copyHTMLToClipboard(html) {
     const type = 'text/html';
     if (typeof ClipboardItem === 'undefined') {
       UI.showNotification(

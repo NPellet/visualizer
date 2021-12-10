@@ -79,7 +79,9 @@ define([
     },
 
     exportToHTML: function() {
-      API.copyHTMLToClipboard(this.dom.html());
+      API.domToHTML(this.dom[0]).then((html) => {
+        API.copyHTMLToClipboard(html);
+      });
     },
 
     setForm(data) {

@@ -14,7 +14,6 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init: function() {
-      this.contentForExportation = '';
       var html = '<div></div>';
       if (this.module.getConfigurationCheckbox('append', 'yes')) {
         this.dom = $(html).css({
@@ -143,7 +142,9 @@ define([
     },
 
     exportToHTML: function() {
-      API.copyHTMLToClipboard(this.contentForExportation);
+      API.domToHTML(this.divForExportation[0]).then((html) => {
+        API.copyHTMLToClipboard(html);
+      });
     },
 
     _scrollDown: function() {
@@ -252,7 +253,7 @@ define([
 
       this._scrollDown();
       Renderer.render(div, val, rendererOptions).then(() => {
-        that.contentForExportation = div.html();
+        that.divForExportation = div;
         that._scrollDown();
       });
     },
