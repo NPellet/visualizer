@@ -1,3 +1,12 @@
+## [2.142.1](https://github.com/NPellet/visualizer/compare/v2.142.0...v2.142.1) (2022-02-28)
+
+
+### Bug Fixes
+
+* improve typerenderer for export ([70e5448](https://github.com/NPellet/visualizer/commit/70e5448894fae5bcd6110d3e96fded2de177417a))
+
+
+
 # [2.142.0](https://github.com/NPellet/visualizer/compare/v2.141.0...v2.142.0) (2021-12-10)
 
 
