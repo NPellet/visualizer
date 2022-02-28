@@ -10,7 +10,7 @@ define([
   './util',
   './typerenderer/chart',
   './typerenderer/jcamp',
-], function (
+], function(
   require,
   $,
   _,
@@ -26,11 +26,11 @@ define([
   const functions = {};
 
   functions.barcode = {};
-  functions.barcode.init = async function () {
+  functions.barcode.init = async function() {
     await asyncRequire('jsbarcode');
   };
 
-  functions.barcode.toscreen = function ($element, val, rootVal, options) {
+  functions.barcode.toscreen = function($element, val, rootVal, options) {
     var defaultOptions = {
       format: 'CODE128',
     };
@@ -46,7 +46,7 @@ define([
   };
 
   functions.boolean = {};
-  functions.boolean.toscreen = function ($element, value) {
+  functions.boolean.toscreen = function($element, value) {
     if (value instanceof DataBoolean) {
       value = value.get();
     }
@@ -57,14 +57,14 @@ define([
   functions.chart = chartRenderer;
 
   functions.color = {};
-  functions.color.toscreen = function ($element, val) {
+  functions.color.toscreen = function($element, val) {
     var result = `${'<div style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==); width:100%; height:100%">' +
       '<div style="background-color: '}${val}; width: 100%; height:100%; min-height: 1px; padding:0; margin:0"></div></div>`;
     $element.html(result);
   };
 
   functions.colorbar = {};
-  functions.colorbar.toscreen = function ($element, value) {
+  functions.colorbar.toscreen = function($element, value) {
     var div = $('<div></div>');
     var gradient = 'linear-gradient(to right';
 
@@ -96,12 +96,12 @@ define([
 
   let countryData;
   functions.country = {};
-  functions.country.init = async function () {
+  functions.country.init = async function() {
     const css = Util.loadCss('components/flag-icon-css/css/flag-icon.min.css');
     countryData = await asyncRequire('countryData');
     await css;
   };
-  functions.country.toscreen = function ($element, val, rootVal, options) {
+  functions.country.toscreen = function($element, val, rootVal, options) {
     val = String(val);
     var country;
     if (val.length === 2) {
@@ -126,7 +126,7 @@ define([
   };
 
   functions.date = {};
-  functions.date.toscreen = function ($element, val) {
+  functions.date.toscreen = function($element, val) {
     try {
       var d = new Date(val);
       $element.html(d.toLocaleString());
@@ -136,7 +136,7 @@ define([
   };
 
   functions.downloadlink = {};
-  functions.downloadlink.toscreen = function ($element, value, root, options) {
+  functions.downloadlink.toscreen = function($element, value, root, options) {
     var title = options && options.title;
     title = title || 'Download resource';
 
@@ -148,7 +148,7 @@ define([
   };
 
   functions.elecconfig = {};
-  functions.elecconfig.toscreen = function ($element, value) {
+  functions.elecconfig.toscreen = function($element, value) {
     if (value) {
       $element.html(value.replace(/([a-z])([0-9]+)/g, '$1<sup>$2</sup>'));
     } else {
@@ -157,7 +157,7 @@ define([
   };
 
   functions.ghs = {};
-  functions.ghs.toscreen = function ($element, val) {
+  functions.ghs.toscreen = function($element, val) {
     const ghs = {};
     for (var i = 1; i <= 9; i++) {
       ghs[i] = require.toUrl(`./typerenderer/svg/${i}.svg`);
@@ -185,7 +185,7 @@ define([
   };
 
   functions.html = {};
-  functions.html.toscreen = function ($element, val) {
+  functions.html.toscreen = function($element, val) {
     $element.html(String(val));
   };
 
@@ -201,8 +201,8 @@ define([
     var current;
 
     var $modulesGrid = $('#modules-grid');
-    $modulesGrid.on('mouseenter', '[data-tooltip]', function (e) {
-      current = setTimeout(function () {
+    $modulesGrid.on('mouseenter', '[data-tooltip]', function(e) {
+      current = setTimeout(function() {
         var target = $(e.target);
         var offset = target.offset();
         tooltip
@@ -218,7 +218,7 @@ define([
       }, 500);
     });
 
-    $modulesGrid.on('mouseleave', '[data-tooltip]', function (event) {
+    $modulesGrid.on('mouseleave', '[data-tooltip]', function(event) {
       clearTimeout(current);
       tooltip.css({
         opacity: 0,
@@ -226,7 +226,7 @@ define([
       });
     });
   };
-  functions.indicator.toscreen = async function ($element, value) {
+  functions.indicator.toscreen = async function($element, value) {
     if (!Array.isArray(value)) {
       return;
     }
@@ -240,7 +240,7 @@ define([
     value = _.cloneDeep(value);
 
     if (!isNaN(value[0])) {
-      value = value.map(function (value) {
+      value = value.map(function(value) {
         return { size: value };
       });
     }
@@ -250,7 +250,8 @@ define([
     var colors = functions.indicator.Color.getDistinctColors(value.length);
     var totalSize = 0;
     for (var i = 0; i < length; i++) {
-      if (!value[i].bgcolor) value[i].bgcolor = functions.indicator.Color.getColor(colors[i]);
+      if (!value[i].bgcolor)
+        value[i].bgcolor = functions.indicator.Color.getColor(colors[i]);
       if (!value[i].size && value[i].size !== 0) value[i].size = 10;
       totalSize += value[i].size;
     }
@@ -282,24 +283,24 @@ define([
   functions.jcamp = jcampRenderer;
 
   functions.jme = {};
-  functions.jme.toscreen = async function ($element, jme, jmeRoot, options) {
+  functions.jme.toscreen = async function($element, jme, jmeRoot, options) {
     const Converter = await asyncRequire('lib/chemistry/jme-converter');
     const converted = Converter.toMolfile(String(jme));
     return functions.mol2d.toscreen($element, converted, jmeRoot, options);
   };
 
   functions.jpath = {};
-  functions.jpath.toscreen = function ($element, val, rootVal, options) {
+  functions.jpath.toscreen = function($element, val, rootVal, options) {
     $element.html(val.join('.'));
   };
 
   functions.latex = {};
-  functions.latex.init = async function () {
+  functions.latex.init = async function() {
     const css = Util.loadCss('node_modules/katex/dist/katex.min.css');
     functions.latex.katex = await asyncRequire('katex');
     await css;
   };
-  functions.latex.toscreen = function ($element, val, rootVal, options) {
+  functions.latex.toscreen = function($element, val, rootVal, options) {
     $element.empty();
     functions.latex.katex.render(String(val), $element[0], options);
   };
@@ -308,7 +309,7 @@ define([
   functions.mf.init = async () => {
     functions.mf.parseToHtml = (await asyncRequire('MFParser')).parseToHtml;
   };
-  functions.mf.toscreen = async function ($element, value) {
+  functions.mf.toscreen = async function($element, value) {
     if (value) {
       try {
         $element.html(functions.mf.parseToHtml(String(value)));
@@ -321,7 +322,7 @@ define([
   };
 
   functions.mol2d = {};
-  functions.mol2d.toscreen = async function (
+  functions.mol2d.toscreen = async function(
     $element,
     molfile,
     molfileRoot,
@@ -341,19 +342,18 @@ define([
   functions.mol3d = {};
   functions.mol3d.toscreen = bioPv.bind(functions.pdb, 'mol3d');
   functions.molfile3d = functions.mol3d;
- 
 
   functions.number = {};
-  functions.number.toscreen = function ($element, val, rootVal, options) {
+  functions.number.toscreen = function($element, val, rootVal, options) {
     const number = formatNumber(val, options);
     $element.html(number);
   };
 
   functions.object = {};
-  functions.object.init = async function () {
+  functions.object.init = async function() {
     functions.object.twig = await asyncRequire('lib/twigjs/twig');
   };
-  functions.object.toscreen = function ($element, value, root, options) {
+  functions.object.toscreen = function($element, value, root, options) {
     if (options.twig) {
       const template = functions.object.twig.twig({ data: options.twig });
       const render = template.renderAsync(JSON.parse(JSON.stringify(value)));
@@ -374,7 +374,7 @@ define([
     let coordinates = val.coordinates || root.coordinates;
     let oclid = val.value ? val.value : val;
     if (oclid) oclid = String(oclid);
-    
+
     if (!coordinates && !val.value) {
       const mol = functions.oclid.OCL.Molecule.fromIDCode(oclid, true);
       coordinates = mol.getIDCoordinates();
@@ -397,7 +397,7 @@ define([
   functions.actelionid = functions.oclid;
 
   functions.openlink = {};
-  functions.openlink.toscreen = function ($element, value) {
+  functions.openlink.toscreen = function($element, value) {
     $element.html(
       value.replace(
         /^(.*)$/,
@@ -406,12 +406,11 @@ define([
     );
   };
 
-  
   functions.pdb = {};
   functions.pdb.toscreen = bioPv.bind(functions.pdb, 'pdb');
 
   functions.picture = {};
-  functions.picture.toscreen = function (element, val, rootVal, options) {
+  functions.picture.toscreen = function(element, val, rootVal, options) {
     var $img = $('<img>');
     $img.attr({
       src: val,
@@ -433,10 +432,10 @@ define([
   functions.webp = functions.picture;
 
   functions.qrcode = {};
-  functions.qrcode.init = async function () {
+  functions.qrcode.init = async function() {
     await asyncRequire('components/jquery-qrcode/jquery.qrcode.min');
   };
-  functions.qrcode.toscreen = function ($element, val, rootVal, options) {
+  functions.qrcode.toscreen = function($element, val, rootVal, options) {
     options = Object.assign(
       {
         width: 128,
@@ -452,17 +451,22 @@ define([
   functions.reaction = {};
   functions.reaction.init = async () => {
     functions.reaction.OCL = await asyncRequire(oclUrl);
-    functions.reaction.RxnRenderer = (await asyncRequire('RxnRenderer')).RxnRenderer;
+    functions.reaction.RxnRenderer = (
+      await asyncRequire('RxnRenderer')
+    ).RxnRenderer;
   };
-  functions.reaction.toscreen = async function (
+  functions.reaction.toscreen = async function(
     $element,
     val,
     root,
     options = {},
   ) {
     const { maxWidth = 300, maxHeight = 300 } = options;
-   
-    let renderer = new functions.reaction.RxnRenderer(functions.reaction.OCL, { maxWidth, maxHeight });
+
+    let renderer = new functions.reaction.RxnRenderer(functions.reaction.OCL, {
+      maxWidth,
+      maxHeight,
+    });
     let html = renderer.render(DataObject.resurrect(val));
     $element.html(html);
   };
@@ -471,7 +475,7 @@ define([
   functions.regexp.init = async () => {
     functions.regexp.Parser = await asyncRequire('lib/regexper/regexper');
   };
-  functions.regexp.toscreen = async function ($element, val) {
+  functions.regexp.toscreen = async function($element, val) {
     const value = String(val);
     const div = $('<div>').appendTo($element);
     const parser = new functions.regexp.Parser(div.get(0));
@@ -479,16 +483,18 @@ define([
   };
 
   functions.regex = functions.regexp;
- 
 
   functions.rxn = {};
   functions.rxn.init = async () => {
     functions.rxn.OCL = await asyncRequire(oclUrl);
     functions.rxn.RxnRenderer = (await asyncRequire('RxnRenderer')).RxnRenderer;
   };
-  functions.rxn.toscreen = async function ($element, val, root, options = {}) {
+  functions.rxn.toscreen = async function($element, val, root, options = {}) {
     const { maxWidth = 300, maxHeight = 300 } = options;
-    let renderer = new functions.rxn.RxnRenderer(functions.rxn.OCL, { maxWidth, maxHeight });
+    let renderer = new functions.rxn.RxnRenderer(functions.rxn.OCL, {
+      maxWidth,
+      maxHeight,
+    });
     let html = renderer.renderRXN(String(val));
     $element.html(html);
   };
@@ -497,17 +503,16 @@ define([
   functions.smiles.init = async () => {
     functions.smiles.OCL = await asyncRequire(oclUrl);
   };
-  functions.smiles.toscreen = async function ($element, smi, smiRoot, options) {
+  functions.smiles.toscreen = async function($element, smi, smiRoot, options) {
     const mol = functions.smiles.OCL.Molecule.fromSmiles(String(smi));
     return renderOpenChemLibStructure(true, $element, mol, false, options);
   };
 
- 
   functions.sparkline = {};
-  functions.sparkline.init = async function () {
+  functions.sparkline.init = async function() {
     await asyncRequire('sparkline');
   };
-  functions.sparkline.toscreen = function ($el, val, rootval, options) {
+  functions.sparkline.toscreen = function($el, val, rootval, options) {
     var defaultOptions = {
       width: options.type === 'discrete' ? 'auto' : '100%',
       height: '100%',
@@ -517,7 +522,7 @@ define([
   };
 
   functions.string = {};
-  functions.string.toscreen = function ($element, val, rootVal, options) {
+  functions.string.toscreen = function($element, val, rootVal, options) {
     val = String(val);
     val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -537,9 +542,8 @@ define([
     $element.html(val);
   };
 
- 
   functions.svg = {};
-  functions.svg.toscreen = function ($element, val) {
+  functions.svg.toscreen = function($element, val) {
     var dom = $(String(val));
     let width = dom.attr('width');
     let height = dom.attr('height');
@@ -553,12 +557,12 @@ define([
     dom.css('display', 'block');
     $element.html(dom);
   };
- 
+
   functions.unit = {};
-  functions.unit.init = async function () {
+  functions.unit.init = async function() {
     functions.unit.mathjs = await asyncRequire('mathjs');
   };
-  functions.unit.toscreen = async function ($element, val, rootVal, options) {
+  functions.unit.toscreen = async function($element, val, rootVal, options) {
     if (!val) return;
     let displayValue;
     if (typeof val === 'number') {
@@ -592,7 +596,7 @@ define([
   };
 
   functions.valueunits = {};
-  functions.valueunits.toscreen = async function (
+  functions.valueunits.toscreen = async function(
     $element,
     val,
     rootVal,
@@ -665,7 +669,6 @@ define([
       );
     }
   }
-  
 
   async function bioPv(type, element, val, valRoot, options) {
     options = options || {};
@@ -683,12 +686,12 @@ define([
       height: Math.max(250, element.height() * 0.99),
       quality: 'medium',
     });
-    viewer.addListener('viewerReady', function () {
+    viewer.addListener('viewerReady', function() {
       options.mode = viewer[options.mode] ? options.mode : 'cartoon';
       var id = Util.getNextUniqueId();
       if (type === 'pdb') {
         viewer.clear();
-        mol.forEach(function (structure) {
+        mol.forEach(function(structure) {
           if (options.mode === 'cartoon') {
             var ligand = structure.select({
               rnames: ['RVP', 'SAH'],
@@ -711,10 +714,10 @@ define([
   }
 
   functions.gradient = {};
-  functions.gradient.init = async function () {
+  functions.gradient.init = async function() {
     functions.gradient.colorbar = await asyncRequire('src/util/colorbar');
   };
-  functions.gradient.toscreen = function ($element, value, root, options) {
+  functions.gradient.toscreen = function($element, value, root, options) {
     var defaultColorBar = {
       domain: [0, 1],
       stopType: 'values',
@@ -732,11 +735,11 @@ define([
   function checkDate(options) {
     return (
       options.hasOwnProperty('dateFormat') ||
-   options.hasOwnProperty('dateFromNow') ||
-   options.hasOwnProperty('dateCalendar')
+      options.hasOwnProperty('dateFromNow') ||
+      options.hasOwnProperty('dateCalendar')
     );
   }
-    
+
   function toDate(value, options) {
     if (options.dateFormat) {
       return moment(value).format(options.dateFormat);
@@ -746,7 +749,7 @@ define([
       return moment(value).calendar();
     }
   }
-    
+
   function formatNumber(val, options) {
     var number = Number(val);
     if (isNaN(number)) {
@@ -769,7 +772,6 @@ define([
     return number;
   }
 
-      
   const typeInit = new Map();
   const renderingMap = new WeakMap();
 
@@ -832,8 +834,16 @@ define([
 
     switch (type) {
       case 'smiles':
+      case 'color':
       case 'mf':
         return value;
+      case 'png':
+      case 'gif':
+      case 'jpg':
+      case 'jpeg':
+      case 'image':
+      case 'webp':
+        return type;
     }
 
     if (!functions[type]) {
@@ -891,7 +901,7 @@ define([
       object = DataObject.check(object, true);
       var callback = () => {
         if (jpath) {
-          return object.getChild(jpath).then(function (child) {
+          return object.getChild(jpath).then(function(child) {
             return _render($element, child, options);
           });
         } else {
@@ -908,7 +918,9 @@ define([
     },
 
     getRendererComboOptions() {
-      return Object.keys(functions).sort().map((k) => ({ key: k, title: k }));
+      return Object.keys(functions)
+        .sort()
+        .map((k) => ({ key: k, title: k }));
     },
 
     getList() {
