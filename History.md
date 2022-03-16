@@ -1,3 +1,12 @@
+# [2.143.0](https://github.com/NPellet/visualizer/compare/v2.142.1...v2.143.0) (2022-03-16)
+
+
+### Features
+
+* add download molfile in OCL editor header ([d2a8d67](https://github.com/NPellet/visualizer/commit/d2a8d67760c778a0235e4c69e3feaf0944c32a08))
+
+
+
 ## [2.142.1](https://github.com/NPellet/visualizer/compare/v2.142.0...v2.142.1) (2022-02-28)
 
 
