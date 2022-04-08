@@ -1,3 +1,12 @@
+## [2.143.1](https://github.com/NPellet/visualizer/compare/v2.143.0...v2.143.1) (2022-04-08)
+
+
+### Bug Fixes
+
+* able to rendertype that contains 0 ([c433db3](https://github.com/NPellet/visualizer/commit/c433db3ee02e4944653adefc76888bfbc8294168))
+
+
+
 # [2.143.0](https://github.com/NPellet/visualizer/compare/v2.142.1...v2.143.0) (2022-03-16)
 
 
