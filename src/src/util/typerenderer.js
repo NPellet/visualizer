@@ -836,6 +836,7 @@ define([
       case 'smiles':
       case 'color':
       case 'mf':
+      case 'boolean':
         return value;
       case 'png':
       case 'gif':
