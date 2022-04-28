@@ -1,3 +1,14 @@
+# [2.144.0](https://github.com/NPellet/visualizer/compare/v2.143.1...v2.144.0) (2022-04-28)
+
+
+### Bug Fixes
+
+* export boolean as boolean ([36186db](https://github.com/NPellet/visualizer/commit/36186db43a7992d11715dc3cf6e1d80614f65dd6))
+* update panzoom for pixellated image problem ([05d3b62](https://github.com/NPellet/visualizer/commit/05d3b6243da2f490465bbd62cb3b3daf69a30557))
+* update twig to 1.15.4 ([d00e4f4](https://github.com/NPellet/visualizer/commit/d00e4f45ae8677eaf60e4125d1af434b29cc64e3))
+
+
+
 ## [2.143.1](https://github.com/NPellet/visualizer/compare/v2.143.0...v2.143.1) (2022-04-08)
 
 
