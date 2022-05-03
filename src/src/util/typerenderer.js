@@ -760,6 +760,8 @@ define([
       number = moment.duration(number * 1000).as(options.durationS);
     } else if (options.hasOwnProperty('toPrecision')) {
       number = number.toPrecision(options.toPrecision);
+    } else if (options.hasOwnProperty('toExponential')) {
+      number = number.toExponential(options.toExponential);
     } else if (options.hasOwnProperty('toFixed')) {
       number = number.toFixed(options.toFixed);
     } else if (options.hasOwnProperty('numeral')) {
