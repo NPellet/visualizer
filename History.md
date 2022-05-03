@@ -1,3 +1,12 @@
+# [2.145.0](https://github.com/NPellet/visualizer/compare/v2.144.0...v2.145.0) (2022-05-03)
+
+
+### Features
+
+* add toExponential in number renderer formatting ([d8dd38f](https://github.com/NPellet/visualizer/commit/d8dd38f6f7efb2828221095959d9045ebc61deee))
+
+
+
 # [2.144.0](https://github.com/NPellet/visualizer/compare/v2.143.1...v2.144.0) (2022-04-28)
 
 
