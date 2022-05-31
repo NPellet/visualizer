@@ -639,7 +639,9 @@ define([
     });
 
     ctx.grid.onSelectedRowsChanged.subscribe(function(event, args) {
-      ctx.lastSelectedRows = args.rows.slice();
+      // we need to filter the selected rows when we have a hierarchy
+      // in this case we have some selected rows that are actually headers
+      ctx.lastSelectedRows = ctx._getLastSelectedRows(args.rows.slice());
       let selectedItems = ctx._getItemsInfo(ctx.lastSelectedRows);
       if (ctx.hasFilter) {
         ctx._runFilter({
@@ -1808,6 +1810,16 @@ define([
       for (let i = 0; i < rows.length; i++) {
         let itemInfo = this._getItemInfoFromRow(rows[i]);
         if (itemInfo) selected.push(itemInfo);
+      }
+      return selected;
+    },
+
+    _getLastSelectedRows: function(rows) {
+      let selected = [];
+      if (!this.slick.data) return selected;
+      for (let i = 0; i < rows.length; i++) {
+        let itemInfo = this._getItemInfoFromRow(rows[i]);
+        if (itemInfo) selected.push(rows[i]);
       }
       return selected;
     },
