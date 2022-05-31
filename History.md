@@ -1,3 +1,12 @@
+## [2.145.1](https://github.com/NPellet/visualizer/compare/v2.145.0...v2.145.1) (2022-05-31)
+
+
+### Bug Fixes
+
+* problem with slick grid selection in case of hierarchy ([f6adf47](https://github.com/NPellet/visualizer/commit/f6adf473e9f053ed142fdab83c1394f450ba3184))
+
+
+
 # [2.145.0](https://github.com/NPellet/visualizer/compare/v2.144.0...v2.145.0) (2022-05-03)
 
 
