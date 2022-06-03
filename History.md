@@ -1,3 +1,12 @@
+# [2.146.0](https://github.com/NPellet/visualizer/compare/v2.145.1...v2.146.0) (2022-06-03)
+
+
+### Features
+
+* deal with corrupted RXN files ([8425ddc](https://github.com/NPellet/visualizer/commit/8425ddc89ea201957fcb6c96c9776a6a40027d74))
+
+
+
 ## [2.145.1](https://github.com/NPellet/visualizer/compare/v2.145.0...v2.145.1) (2022-05-31)
 
 
