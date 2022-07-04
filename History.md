@@ -1,3 +1,12 @@
+# [2.147.0](https://github.com/NPellet/visualizer/compare/v2.146.0...v2.147.0) (2022-07-04)
+
+
+### Features
+
+* ocl typerenderer accepts {icCode, coordinates) ([c269066](https://github.com/NPellet/visualizer/commit/c2690663d39bcb34d66d9df0e1efbc07222eed6d))
+
+
+
 # [2.146.0](https://github.com/NPellet/visualizer/compare/v2.145.1...v2.146.0) (2022-06-03)
 
 
