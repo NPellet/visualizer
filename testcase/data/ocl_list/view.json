@@ -1,5 +1,5 @@
 {
-  "version": "2.130.1-0",
+  "version": "2.146.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -25,7 +25,7 @@
               "sendButton": [[]],
               "output": ["new"],
               "storedObject": [
-                "[{\"mf\":\"PhEt\",\"mw\":106.16529471443975,\"em\":106.0782503223,\"ocl\":{\"value\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"}}]"
+                "[{\"mf\":\"PhEt\",\"mw\":106.16529471443975,\"em\":106.0782503223,\"ocl\":{\"value\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"},\"ocl2\":{\"idCode\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"}}]"
               ]
             }
           ]
@@ -38,8 +38,8 @@
             "top": 6
           },
           "size": {
-            "width": 70,
-            "height": 61
+            "width": 66,
+            "height": 34
           },
           "zIndex": 0,
           "display": true,
@@ -140,8 +140,20 @@
                 "hideColumn": []
               },
               {
-                "name": "Structure 2",
+                "name": "OCL",
                 "jpath": ["ocl"],
+                "editor": "none",
+                "forceType": "oclid",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "OCL2",
+                "jpath": ["ocl2"],
                 "editor": "none",
                 "forceType": "oclid",
                 "formatter": "typerenderer",
@@ -183,8 +195,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 85,
-            "top": 16
+            "left": 76,
+            "top": 11
           },
           "size": {
             "width": 55,

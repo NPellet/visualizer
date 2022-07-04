@@ -372,7 +372,7 @@ define([
   };
   functions.oclid.toscreen = async ($element, val, root, options) => {
     let coordinates = val.coordinates || root.coordinates;
-    let oclid = val.value ? val.value : val;
+    let oclid = val.value ? val.value : val.idCode ? val.idCode : val;
     if (oclid) oclid = String(oclid);
 
     if (!coordinates && !val.value) {
