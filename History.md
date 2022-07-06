@@ -1,3 +1,12 @@
+## [2.147.1](https://github.com/NPellet/visualizer/compare/v2.147.0...v2.147.1) (2022-07-06)
+
+
+### Bug Fixes
+
+* CO3-- and type renderer of mf ([b05c059](https://github.com/NPellet/visualizer/commit/b05c059ec796e3b68c9dd4df8d1217f200037669))
+
+
+
 # [2.147.0](https://github.com/NPellet/visualizer/compare/v2.146.0...v2.147.0) (2022-07-04)
 
 
