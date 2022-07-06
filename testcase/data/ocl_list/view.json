@@ -1,5 +1,5 @@
 {
-  "version": "2.146.1-0",
+  "version": "2.147.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -25,7 +25,7 @@
               "sendButton": [[]],
               "output": ["new"],
               "storedObject": [
-                "[{\"mf\":\"PhEt\",\"mw\":106.16529471443975,\"em\":106.0782503223,\"ocl\":{\"value\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"},\"ocl2\":{\"idCode\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"}}]"
+                "[{\"mf\":\"PhEt\",\"mw\":106.16529471443975,\"em\":106.0782503223,\"ocl\":{\"value\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"},\"ocl2\":{\"idCode\":\"daD@@DjUZxHH@@\",\"coordinates\":\"!B_`BH_]]}bOrHM_|bGt\"},\"ocl3\":\"daD@@DjUZxHH@@\",\"ocl4\":{\"idCode\":\"daD@@DjUZxHH@@\"}}]"
               ]
             }
           ]
@@ -39,7 +39,7 @@
           },
           "size": {
             "width": 66,
-            "height": 34
+            "height": 55
           },
           "zIndex": 0,
           "display": true,
@@ -140,7 +140,7 @@
                 "hideColumn": []
               },
               {
-                "name": "OCL",
+                "name": "1",
                 "jpath": ["ocl"],
                 "editor": "none",
                 "forceType": "oclid",
@@ -152,8 +152,32 @@
                 "hideColumn": []
               },
               {
-                "name": "OCL2",
+                "name": "2",
                 "jpath": ["ocl2"],
+                "editor": "none",
+                "forceType": "oclid",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "3",
+                "jpath": ["ocl3"],
+                "editor": "none",
+                "forceType": "oclid",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "4",
+                "jpath": ["ocl4"],
                 "editor": "none",
                 "forceType": "oclid",
                 "formatter": "typerenderer",
@@ -199,7 +223,7 @@
             "top": 11
           },
           "size": {
-            "width": 55,
+            "width": 82,
             "height": 46
           },
           "zIndex": 0,

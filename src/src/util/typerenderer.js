@@ -312,6 +312,8 @@ define([
   functions.mf.toscreen = async function($element, value) {
     if (value) {
       try {
+        value = String(value).replace(/([0-9])(-+)/, '$1($2)');
+
         $element.html(functions.mf.parseToHtml(String(value)));
       } catch (error) {
         $element.html(value.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
