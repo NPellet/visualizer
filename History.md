@@ -1,3 +1,14 @@
+# [2.148.0](https://github.com/NPellet/visualizer/compare/v2.147.1...v2.148.0) (2022-07-12)
+
+
+### Features
+
+* **phylogram:** add option to skip either leave labels or node labels ([cb0f9df](https://github.com/NPellet/visualizer/commit/cb0f9df347d5cc3b76036e865edb34e7421d7779))
+* **phylogram:** change leave label anchor and position ([130f64e](https://github.com/NPellet/visualizer/commit/130f64e7d94aa7d2016b2998473108094ad89afe))
+* **phylogram:** display label for node if available ([91930cd](https://github.com/NPellet/visualizer/commit/91930cdde51b18028b9bcf16508de51c1b2baddb))
+
+
+
 ## [2.147.1](https://github.com/NPellet/visualizer/compare/v2.147.0...v2.147.1) (2022-07-06)
 
 
