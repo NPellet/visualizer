@@ -103,6 +103,7 @@ define([
         labelDx: this.module.getConfiguration('labelDx'),
         labelDy: this.module.getConfiguration('labelDy'),
         labelSize: this.module.getConfiguration('labelSize'),
+        nodeLabelSize: this.module.getConfiguration('nodeLabelSize'),
         children: function(node) {
           return node.children;
         },

@@ -122,9 +122,14 @@ define([
               extractValue: Util.jpathToArray,
               insertValue: Util.jpathToString,
             },
+            nodeLabelSize: {
+              type: 'text',
+              title: 'Node label font size',
+              default: '9px',
+            },
             labelSize: {
               type: 'text',
-              title: 'Label font size',
+              title: 'Leave label font size',
               default: '10px',
             },
             labelDx: {
@@ -151,6 +156,7 @@ define([
     labelSize: ['groups', 'group', 0, 'labelSize', 0],
     labelDx: ['groups', 'group', 0, 'labelDx', 0],
     labelDy: ['groups', 'group', 0, 'labelDy', 0],
+    nodeLabelSize: ['groups', 'group', 0, 'nodeLabelSize', 0],
   };
 
   Controller.prototype.events = {

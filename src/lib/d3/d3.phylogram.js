@@ -363,9 +363,10 @@ define(['d3'], function(d3) {
           .attr('dx', -8)
           .attr('dy', -8)
           .attr('text-anchor', 'end')
-          .attr('font-size', '9px')
-          .attr('fill', '#999')
-          .text(function(d) {
+          .attr('font-size', options.nodeLabelSize || '9px')
+          .attr('fill', '#AAA')
+          .text((d) => {
+            if (d.data) return d.data.label;
             return d.distance;
           });
       }
@@ -380,9 +381,8 @@ define(['d3'], function(d3) {
           .attr('font-family', 'Helvetica Neue, Helvetica, sans-serif')
           .attr('font-size', options.labelSize || '10px')
           .attr('fill', 'black')
-          .text(function(d) {
-            if (d.data)
-              return d.data.label; /*return d.name + ' ('+d.length+')';*/
+          .text((d) => {
+            if (d.data) return d.data.label;
           });
       }
 
