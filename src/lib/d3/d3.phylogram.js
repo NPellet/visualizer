@@ -356,7 +356,7 @@ define(['d3'], function(d3) {
         });
 
       d3.phylogram.styleTreeNodes(vis);
-      if (!options.skipLabels) {
+      if (!options.skipNodeLabels) {
         vis
           .selectAll('g.inner.node')
           .append('svg:text')
@@ -368,7 +368,9 @@ define(['d3'], function(d3) {
           .text(function(d) {
             return d.distance;
           });
+      }
 
+      if (!options.skipLabels) {
         vis
           .selectAll('g.leaf.node')
           .append('svg:text')
@@ -426,13 +428,14 @@ define(['d3'], function(d3) {
         skipBranchLengthScaling: true,
         skipTicks: true,
         skipLabels: options.skipLabels,
+        skipNodeLabels: options.skipNodeLabels,
         diagonal: d3.phylogram.radialRightAngleDiagonal(),
       });
       vis.selectAll('g.node').attr('transform', function(d) {
         return 'rotate(' + (d.x - 90) + ')translate(' + d.y + ')';
       });
 
-      if (!options.skipLabels) {
+      if (!options.skipNodeLabels) {
         vis
           .selectAll('g.leaf.node text')
           .attr('dx', function(d) {
@@ -451,7 +454,9 @@ define(['d3'], function(d3) {
           .text(function(d) {
             return d.data.name;
           });
+      }
 
+      if (!options.skipLabels) {
         vis
           .selectAll('g.inner.node text')
           .attr('dx', function(d) {

@@ -6,13 +6,12 @@ define([
   'lib/d3/d3.phylogram',
   'src/util/api',
   'src/util/ui',
-  'src/util/tree'
-], function (Default, Util, d3, API, ui, Tree) {
-  function View() {
-  }
+  'src/util/tree',
+], function(Default, Util, d3, API, ui, Tree) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init: function() {
       this._id = Util.getNextUniqueId();
       this.selectorId = `#${this._id}`;
       this.chart = null;
@@ -22,10 +21,10 @@ define([
       this.module.getDomContent().html(this.dom);
       this.resolveReady();
     },
-    blank: function () {
+    blank: function() {
       this.dom.empty();
     },
-    getIdHash: function (currentNode) {
+    getIdHash: function(currentNode) {
       if (currentNode.id) {
         this._idHash[currentNode.id] = currentNode;
       }
@@ -36,23 +35,23 @@ define([
       }
     },
     update: {
-      tree: function (data) {
+      tree: function(data) {
         this._value = data.get();
         this.updateTree();
       },
 
-      newTree: function (moduleValue) {
+      newTree: function(moduleValue) {
         this._tree = moduleValue.get();
         this.doAnnotation();
       },
 
-      data: function (data) {
+      data: function(data) {
         this._data = data.get();
         this.doAnnotation();
-      }
+      },
     },
 
-    doAnnotation: function () {
+    doAnnotation: function() {
       if (this._tree) {
         var options = this.getOptions();
         this._value = Tree.annotateTree(this._tree, this._data || [], options);
@@ -60,7 +59,7 @@ define([
       }
     },
 
-    updateTree: function () {
+    updateTree: function() {
       this._idHash = [];
       this.getIdHash(this._value);
 
@@ -69,7 +68,7 @@ define([
       this.drawPhylogram();
     },
 
-    getOptions: function () {
+    getOptions: function() {
       var options = {};
       var getConf = this.module.getConfiguration;
       maybePutOption(options, '$color', getConf('jpathColor'));
@@ -77,81 +76,95 @@ define([
       return options;
     },
 
-    drawPhylogram: function (data, view) {
-      if (!this._value)
-        return;
+    drawPhylogram: function(data, view) {
+      if (!this._value) return;
 
       var dataD = this._value;
       var that = this;
 
       this.dom.empty();
-      var skipBranchLengthScaling = this.module.getConfigurationCheckbox('d3check', 'skipBranchLengthScaling');
+      var skipBranchLengthScaling = this.module.getConfigurationCheckbox(
+        'd3check',
+        'skipBranchLengthScaling',
+      );
       d3.phylogram.build(this.selectorId, dataD, {
         height: that.height,
         width: that.width,
         skipBranchLengthScaling: skipBranchLengthScaling,
         skipTicks: false,
-        skipLabels: this.module.getConfigurationCheckbox('d3check', 'skipLabels'),
+        skipLabels: this.module.getConfigurationCheckbox(
+          'd3check',
+          'skipLabels',
+        ),
+        skipNodeLabels: this.module.getConfigurationCheckbox(
+          'd3check',
+          'skipNodeLabels',
+        ),
         labelDx: this.module.getConfiguration('labelDx'),
         labelDy: this.module.getConfiguration('labelDy'),
         labelSize: this.module.getConfiguration('labelSize'),
-        children: function (node) {
+        children: function(node) {
           return node.children;
         },
         // LEAF
-        callbackMouseOverLeaf: function (data) {
+        callbackMouseOverLeaf: function(data) {
           that.module.controller.mouseOverLeaf(data);
           API.highlight(data.data, 1);
         },
-        callbackMouseOutLeaf: function (data) {
+        callbackMouseOutLeaf: function(data) {
           that.module.controller.mouseOutLeaf(data);
           API.highlight(data.data, 0);
         },
-        callbackClickLeaf: function (data) {
+        callbackClickLeaf: function(data) {
           that.module.controller.clickLeaf(data);
         },
         // BRANCH
-        callbackMouseOverBranch: function (data) {
+        callbackMouseOverBranch: function(data) {
           that.module.controller.mouseOverBranch(data.target);
         },
-        callbackMouseOutBranch: function (data) {
+        callbackMouseOutBranch: function(data) {
           that.module.controller.mouseOutBranch(data.target);
         },
-        callbackClickBranch: function (data) {
+        callbackClickBranch: function(data) {
           that.module.controller.clickBranch(data.target);
-        }
-        // skipLabels: false
+        },
       });
 
       var leaves = d3.selectAll(`${this.selectorId} .leaf`);
 
-      leaves.each(function (data) {
-        (function (dataNode, leaf) {
+      leaves.each(function(data) {
+        (function(dataNode, leaf) {
           if (dataNode.data && dataNode.data._highlight) {
-            API.listenHighlight(dataNode.data, function (value, what) {
-              var point = leaf.select('circle');
-              point.attr('fill', function (a) {
-                if (a.data && a.data.$color)
-                  return a.data.$color;
-                if (value)
-                  return '#f5f48d';
-                return 'grey';
-              });
-              point.attr('r', (value ? 9 : 4.5));
-            }, false, that._id);
+            API.listenHighlight(
+              dataNode.data,
+              function(value, what) {
+                var point = leaf.select('circle');
+                point.attr('fill', function(a) {
+                  if (a.data && a.data.$color) return a.data.$color;
+                  if (value) return '#f5f48d';
+                  return 'grey';
+                });
+                point.attr('r', value ? 9 : 4.5);
+              },
+              false,
+              that._id,
+            );
           }
         })(data, d3.select(this));
       });
 
       // ( this.module.getConfiguration('defaultvalue') || '' )
-      d3.selectAll(`${this.selectorId} .link`).each(function () {
+      d3.selectAll(`${this.selectorId} .link`).each(function() {
         // d3.select(this).attr('stroke',( view.module.getConfiguration('branchColor') || '#cccccc' ));
-        d3.select(this).attr('stroke-width', (`${that.module.getConfiguration('branchWidth')}px` || '5px'));
+        d3.select(this).attr(
+          'stroke-width',
+          `${that.module.getConfiguration('branchWidth')}px` || '5px',
+        );
       });
     },
-    onResize: function () {
+    onResize: function() {
       this.drawPhylogram();
-    }
+    },
   });
 
   return View;
