@@ -135,7 +135,7 @@ define([
             labelDx: {
               type: 'float',
               title: 'Label dx',
-              default: -30,
+              default: 0,
             },
             labelDy: {
               type: 'float',

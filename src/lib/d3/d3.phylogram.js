@@ -366,7 +366,8 @@ define(['d3'], function(d3) {
           .attr('font-size', options.nodeLabelSize || '9px')
           .attr('fill', '#AAA')
           .text((d) => {
-            if (d.data) return d.data.label;
+            if (d.data && d.data.label) return d.data.label;
+            if (d.label) return d.label;
             return d.distance;
           });
       }
@@ -375,14 +376,15 @@ define(['d3'], function(d3) {
         vis
           .selectAll('g.leaf.node')
           .append('svg:text')
-          .attr('dx', options.labelDx || 30)
+          .attr('dx', options.labelDx || 0)
           .attr('dy', options.labelDy || 10)
-          .attr('text-anchor', 'start')
+          .attr('text-anchor', 'end')
           .attr('font-family', 'Helvetica Neue, Helvetica, sans-serif')
           .attr('font-size', options.labelSize || '10px')
           .attr('fill', 'black')
           .text((d) => {
-            if (d.data) return d.data.label;
+            if (d.data && d.data.label) return d.data.label;
+            return d.label;
           });
       }
 
