@@ -1,5 +1,5 @@
 {
-  "version": "2.71.5-0",
+  "version": "2.148.1-0",
   "modules": [
     {
       "url": "modules/types/display/single_value/",
@@ -8,53 +8,20 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                ""
-              ],
-              "forceType": [
-                "smiles"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["smiles"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -72,27 +39,20 @@
           "zIndex": 0,
           "display": true,
           "title": "smiles with forcing type",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 15,
+      "id": 1,
       "vars_in": [
         {
           "rel": "value",
           "name": "smiles"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "smiles with forcing type",
       "vars_out": {},
       "actions_out": {},
@@ -109,11 +69,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -125,30 +81,11 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                [
-                  "isEditable"
-                ]
-              ],
-              "modifyInVariable": [
-                []
-              ],
-              "autoHeight": [
-                []
-              ],
-              "bgColor": [
-                [
-                  255,
-                  242,
-                  204,
-                  1
-                ]
-              ],
-              "postit": [
-                [
-                  "yes"
-                ]
-              ]
+              "editable": [["isEditable"]],
+              "modifyInVariable": [[]],
+              "autoHeight": [[]],
+              "bgColor": [[255, 242, 204, 1]],
+              "postit": [["yes"]]
             }
           ]
         }
@@ -166,24 +103,15 @@
           "zIndex": 0,
           "display": true,
           "title": "Untitled",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 16,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 2,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "richtext": "<p>&nbsp;</p>\n\n<p>In the visualizer you can extend the &quot;types&quot; defined by javascript with other specific types.</p>\n\n<p>The structure of a value will be something like:</p>\n\n<p>{&quot;type&quot;:&quot;mf&quot;, &quot;value&quot;:&quot;C10H20O3&quot;}</p>\n\n<p>Each type may be associated to a renderer. This could be a simple render allowing to put in a molecular formula the number in subscript or more complex renderer allowing to display a chart.</p>\n\n<p>&nbsp;</p>\n",
       "vars_out": [
         {
@@ -205,11 +133,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -221,23 +145,11 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "output": ["new"],
               "storedObject": [
                 "{\"type\":\"mf\",\"value\":\"[13C]C++H10O3NO2CO3--\"}"
               ]
@@ -245,13 +157,9 @@
           ]
         }
       },
-      "id": 17,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -274,12 +182,7 @@
           },
           "display": true,
           "title": "A molecular formula",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -299,11 +202,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -315,37 +214,19 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "\"CCCC1CCCON1C\""
-              ]
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "output": ["new"],
+              "storedObject": ["\"CCCC1CCCON1C\""]
             }
           ]
         }
       },
-      "id": 18,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 4,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -368,12 +249,7 @@
           },
           "display": true,
           "title": "A SMILES",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -393,11 +269,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -409,23 +281,11 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "output": ["new"],
               "storedObject": [
                 "{\"type\":\"mol2d\",\"value\":\"\\nActelion Java MolfileCreator 1.0\\n\\n  5  4  0  0  0  0  0  0  0  0999 V2000\\n    2.5981   -0.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.7321   -0.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.7321   -1.5000   -0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.8660   -0.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    0.0000   -0.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\\n  2  1  1  0  0  0  0\\n  3  2  2  0  0  0  0\\n  4  2  1  0  0  0  0\\n  5  4  1  0  0  0  0\\nM  END\\n\"}"
               ]
@@ -433,13 +293,9 @@
           ]
         }
       },
-      "id": 19,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 5,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -462,12 +318,7 @@
           },
           "display": true,
           "title": "A molfile with 2D coordinates",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -487,11 +338,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -503,23 +350,11 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "output": ["new"],
               "storedObject": [
                 "{\"type\":\"mol3d\",\"value\":\"C[C@@H]1CNCOC1\\nJME 2015-03-03 Wed Apr 01 14:52:33 GMT+200 2015\\n \\n 18 18  0  0  0  0  0  0  0  0999 V2000\\n    3.6752    0.8494   -0.0636 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    3.4563    2.1159    0.5717 O   0  0  0  0  0  0  0  0  0  0  0  0\\n    2.3240    2.8067    0.0284 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.0585    1.9558    0.2273 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    1.2778    0.5765   -0.4148 C   0  0  0  0  0  0  0  0  0  0  0  0\\n    2.5040   -0.0332    0.1488 N   0  0  0  0  0  0  0  0  0  0  0  0\\n   -0.1543    2.6492   -0.4104 C   0  0  0  0  0  0  0  0  0  0  0  0\\n   -1.0365    2.0429   -0.2597 H   0  0  0  0  0  0\\n   -0.3009    3.6161    0.0502 H   0  0  0  0  0  0\\n    0.0163    2.7781   -1.4702 H   0  0  0  0  0  0\\n    2.3795   -0.2251    1.1468 H   0  0  0  0  0  0\\n    0.4285   -0.0598   -0.2091 H   0  0  0  0  0  0\\n    1.3915    0.6889   -1.4845 H   0  0  0  0  0  0\\n    0.8812    1.8289    1.2862 H   0  0  0  0  0  0\\n    2.2039    3.7533    0.5369 H   0  0  0  0  0  0\\n    2.4804    2.9858   -1.0268 H   0  0  0  0  0  0\\n    3.8333    0.9952   -1.1238 H   0  0  0  0  0  0\\n    4.5521    0.3840    0.3644 H   0  0  0  0  0  0\\n  1  2  1  0  0  0  0\\n  2  3  1  0  0  0  0\\n  3  4  1  0  0  0  0\\n  4  5  1  0  0  0  0\\n  5  6  1  0  0  0  0\\n  6  1  1  0  0  0  0\\n  4  7  1  1  0  0  0\\n  7  8  1  0  0  0\\n  7  9  1  0  0  0\\n  7 10  1  0  0  0\\n  6 11  1  0  0  0\\n  5 12  1  0  0  0\\n  5 13  1  0  0  0\\n  4 14  1  0  0  0\\n  3 15  1  0  0  0\\n  3 16  1  0  0  0\\n  1 17  1  0  0  0\\n  1 18  1  0  0  0\\nM  END\\n>  <MSRFVL>\\nhphob_srf 110.85\\nhphil_srf 25.12\\ntotal_srf 135.97\\nhphob_vl 92.50\\nhphil_vl 17.23\\ntotal_vl 109.73\\novality 1.226729\\n\\n>  <GEOMW>\\nMW 101.148\\nRg 2.130\\nVr 4.844\\nd0 0.757\\nd1 1.097\\nd2 1.661\\n\\n>  <DONACCNT>\\ndon 1\\nacc 3\\n\\n>  <HCNT>\\nCH3 1\\nCH2 3\\nCH1 1\\ncHn 0\\nXHn 0\\n\\n$$$$\\n\"}"
               ]
@@ -527,13 +362,9 @@
           ]
         }
       },
-      "id": 20,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 6,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -556,12 +387,7 @@
           },
           "display": true,
           "title": "A molfile with 3D coordinates",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -581,11 +407,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -597,53 +419,20 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                "14pt"
-              ],
-              "align": [
-                "center"
-              ],
-              "valign": [
-                "middle"
-              ],
-              "rendererOptions": [
-                ""
-              ],
-              "forceType": [
-                ""
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": ["14pt"],
+              "align": ["center"],
+              "valign": ["middle"],
+              "rendererOptions": [""],
+              "forceType": [""],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -661,27 +450,20 @@
           "zIndex": 0,
           "display": true,
           "title": "mf",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 21,
+      "id": 7,
       "vars_in": [
         {
           "rel": "value",
           "name": "mf"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "mf",
       "vars_out": {},
       "actions_out": {},
@@ -698,11 +480,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -714,44 +492,17 @@
         "groups": {
           "group": [
             {
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ],
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ]
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]],
+              "append": [[]],
+              "maxEntries": [1]
             }
           ]
         }
@@ -769,27 +520,20 @@
           "zIndex": 0,
           "display": true,
           "title": "mol2d",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 22,
+      "id": 8,
       "vars_in": [
         {
           "rel": "value",
           "name": "mol2d"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "mol2d",
       "vars_out": {},
       "actions_out": {},
@@ -806,11 +550,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -822,44 +562,17 @@
         "groups": {
           "group": [
             {
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ],
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ]
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]],
+              "append": [[]],
+              "maxEntries": [1]
             }
           ]
         }
@@ -877,27 +590,20 @@
           "zIndex": 0,
           "display": true,
           "title": "mol3d",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 23,
+      "id": 9,
       "vars_in": [
         {
           "rel": "value",
           "name": "mol3d"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "mol3d",
       "vars_out": {},
       "actions_out": {},
@@ -914,11 +620,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -930,23 +632,11 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "output": ["new"],
               "storedObject": [
                 "{\"type\":\"pdb\",\"url\":\"https://couch.cheminfo.org/pdb/1PSA/1PSA.pdb\"}"
               ]
@@ -954,13 +644,9 @@
           ]
         }
       },
-      "id": 24,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 10,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -983,12 +669,7 @@
           },
           "display": true,
           "title": "A PDB coming from a URL",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -1008,11 +689,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -1024,44 +701,17 @@
         "groups": {
           "group": [
             {
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ],
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ]
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]],
+              "append": [[]],
+              "maxEntries": [1]
             }
           ]
         }
@@ -1079,27 +729,20 @@
           "zIndex": 0,
           "display": true,
           "title": "pdb",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 25,
+      "id": 11,
       "vars_in": [
         {
           "rel": "value",
           "name": "pdb"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "pdb",
       "vars_out": {},
       "actions_out": {},
@@ -1116,11 +759,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -1132,12 +771,8 @@
         "groups": {
           "group": [
             {
-              "selectable": [
-                []
-              ],
-              "template": [
-                ""
-              ]
+              "selectable": [[]],
+              "template": [""]
             }
           ]
         }
@@ -1150,23 +785,18 @@
           },
           "size": {
             "width": 62,
-            "height": 42
+            "height": 19
           },
           "zIndex": 0,
           "display": true,
           "title": "Tiwg module with renderer",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 26,
+      "id": 12,
       "vars_in": [
         {
           "rel": "value",
@@ -1177,9 +807,7 @@
           "name": "twigTemplate"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "Tiwg module with renderer",
       "vars_out": [
         {
@@ -1204,11 +832,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -1220,34 +844,14 @@
         "groups": {
           "group": [
             {
-              "mode": [
-                "html"
-              ],
-              "outputType": [
-                null
-              ],
-              "btnvalue": [
-                "Send script"
-              ],
-              "iseditable": [
-                [
-                  "editable"
-                ]
-              ],
-              "hasButton": [
-                []
-              ],
-              "variable": [
-                []
-              ],
-              "storeOnChange": [
-                [
-                  "store"
-                ]
-              ],
-              "debouncing": [
-                0
-              ],
+              "mode": ["html"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
               "script": [
                 "<table>\n    <tr>\n        <td>\n            Smiles: \n                <span style='display:inline-block;width:300px'>\n                    {{rendertype('CCCCC','smiles')}}\n                </span>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            Smiles: {{rendertype('CCCCC','smiles')}}\n        </td>\n    </tr>\n    <tr>\n        <td>\n            MF: {{rendertype('C10H12O3--','mf')}}\n        </td>\n    </tr>\n    <tr>\n        <td>\n            colorbar: {{rendertype([1,2,3,4,5],'indicator')}}\n        </td>\n    </tr>\n    <tr>\n        <td>\n            sparkline: <span style='display:inline-block;width:100px'>{{rendertype([1,3,2,4,1],'sparkline')}}</span>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            regexp: {{rendertype('[0-9]{2,3}|ABC','regexp')}}\n        </td>\n    </tr>\n    <tr>\n        <td>\n            sparkline: {{rendertype([1,3,2,4,1],'sparkline')}}\n        </td>\n    </tr>\n\n</table>\n"
               ]
@@ -1255,14 +859,8 @@
           ],
           "ace": [
             {
-              "useSoftTabs": [
-                [
-                  "yes"
-                ]
-              ],
-              "tabSize": [
-                4
-              ]
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
             }
           ]
         }
@@ -1280,24 +878,15 @@
           "zIndex": 0,
           "display": true,
           "title": "Twig template",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 27,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 13,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -1325,11 +914,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -1352,42 +937,24 @@
                   "autoEdit"
                 ]
               ],
-              "autoColumns": [
-                []
-              ],
-              "toolbar": [
-                []
-              ],
-              "colorjpath": [
-                []
-              ],
-              "slick.defaultColumnWidth": [
-                null
-              ],
-              "slick.rowHeight": [
-                null
-              ],
-              "slick.selectionModel": [
-                "row"
-              ],
-              "filterType": [
-                "pref"
-              ],
+              "autoColumns": [[]],
+              "toolbar": [[]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": [null],
+              "slick.selectionModel": ["row"],
+              "filterType": ["pref"],
               "filterRow": [
                 "// Documentation: https://github.com/NPellet/visualizer/blob/db85d9cc12c6204e4a3afb69bba6d695f6f8bad5/src/modules/types/edition/slick_grid/view.js#L918-L940"
               ],
-              "customJpaths": [
-                "mf"
-              ]
+              "customJpaths": ["mf"]
             }
           ],
           "cols": [
             [
               {
                 "name": "mf",
-                "jpath": [
-                  "mf"
-                ],
+                "jpath": ["mf"],
                 "editor": "string",
                 "forceType": "mf",
                 "formatter": "typerenderer",
@@ -1401,18 +968,8 @@
           "actionCols": [
             [
               {
-                "backgroundColor": [
-                  255,
-                  255,
-                  255,
-                  1
-                ],
-                "color": [
-                  0,
-                  0,
-                  0,
-                  1
-                ],
+                "backgroundColor": [255, 255, 255, 1],
+                "color": [0, 0, 0, 1],
                 "position": "end"
               }
             ]
@@ -1424,21 +981,11 @@
               }
             ]
           ],
-          "actionOutButtons": [
-            [
-              {}
-            ]
-          ],
+          "actionOutButtons": [[{}]],
           "data": [
             {
-              "saveInView": [
-                [
-                  "yes"
-                ]
-              ],
-              "varname": [
-                "mfs"
-              ],
+              "saveInView": [["yes"]],
+              "varname": ["mfs"],
               "data": [
                 "[{\"mf\":\"C10H12O2\"},{\"mf\":\"CO3---\"},{\"mf\":\"CO-3\"},{\"mf\":\"CO---\"},{\"mf\":\"CO+N3-\"},{\"mf\":\"[13C]C++H10O3NO2CO3--\"},{\"mf\":\"Ru+7\"}]"
               ]
@@ -1459,18 +1006,13 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 28,
+      "id": 14,
       "vars_in": [
         {},
         {
@@ -1478,9 +1020,7 @@
           "name": "mfs"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "",
       "vars_out": [
         {
@@ -1505,11 +1045,7 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       }
@@ -1521,45 +1057,21 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "searchBox": [
-                [
-                  "search"
-                ]
-              ],
-              "sendButton": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "\"1s2 2s2 2p6\""
-              ]
+              "editable": ["text"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [[]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["\"1s2 2s2 2p6\""]
             }
           ]
         }
       },
-      "id": 29,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
+      "id": 15,
+      "vars_in": [{}],
+      "actions_in": [{}],
       "vars_out": [
         {
           "event": "onObjectChange",
@@ -1586,12 +1098,7 @@
           },
           "display": true,
           "title": "A SMILES",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -1611,22 +1118,14 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     },
@@ -1637,56 +1136,21 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "debounce": [
-                0
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                ""
-              ],
-              "forceType": [
-                "elecConfig"
-              ],
-              "sprintf": [
-                null
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["elecConfig"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -1704,27 +1168,20 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 30,
+      "id": 16,
       "vars_in": [
         {
           "rel": "value",
           "name": "eleconfig"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "actions_out": [
         {
           "jpath": []
@@ -1745,22 +1202,181 @@
         ],
         "common": [
           {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
+            "toolbar": [["Open Preferences"]]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": ["view"],
+              "expanded": [[]],
+              "storeObject": [["expand"]],
+              "displayValue": [["display"]],
+              "searchBox": [["search"]],
+              "sendButton": [[]],
+              "output": ["new"],
+              "storedObject": ["{\"value\":\"gGQ@@eJuT@@\"}"]
+            }
           ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 112,
+            "top": 69
+          },
+          "size": {
+            "width": 31,
+            "height": 24
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "icode",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 17,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "icode"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "icode"
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["oclid"],
+              "sprintf": [null],
+              "sprintfOrder": [""],
+              "preformatted": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 145,
+            "top": 69
+          },
+          "size": {
+            "width": 22,
+            "height": 19
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "icode",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 18,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "icode"
+        }
+      ],
+      "actions_in": [{}],
+      "title": "icode",
+      "vars_out": {},
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
         }
       ]
     }
@@ -1768,12 +1384,9 @@
   "variables": [
     {
       "varname": "test",
-      "jpath": [
-        "test"
-      ]
+      "jpath": ["test"]
     }
   ],
-  "pouchvariables": [],
   "configuration": {
     "title": "Chemical Renderer and Twig renderer"
   },
