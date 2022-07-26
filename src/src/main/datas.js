@@ -567,8 +567,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
         jpath.length === 0
           ? constructor
           : typeof jpath[0] === 'number'
-          ? DataArray
-          : DataObject;
+            ? DataArray
+            : DataObject;
 
       var name = el;
 
@@ -618,8 +618,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
         jpath.length === 0
           ? constructor
           : typeof jpath[0] === 'number'
-          ? DataArray
-          : DataObject;
+            ? DataArray
+            : DataObject;
 
       var name = el;
 
