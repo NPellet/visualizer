@@ -1,9 +1,9 @@
 'use strict';
 
-define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
+define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   Util,
   Debug,
-  urlData
+  urlData,
 ) {
   function DataObject(object) {
     if (!object) {
@@ -22,7 +22,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
   var DataObjectProto = DataObject.prototype;
 
-  DataObject.check = function (object, transformNatives) {
+  DataObject.check = function(object, transformNatives) {
     var currentProto, nextProto;
     if (isSpecialObject(object)) {
       return object;
@@ -74,14 +74,14 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     }
   };
 
-  DataObject.resurrect = function (obj) {
+  DataObject.resurrect = function(obj) {
     if (isSpecialObject(obj)) {
       return obj.resurrect();
     }
     return obj;
   };
 
-  DataObject.recursiveTransform = function (object, transformNatives) {
+  DataObject.recursiveTransform = function(object, transformNatives) {
     object = DataObject.check(object, transformNatives);
     var i, l;
 
@@ -143,19 +143,19 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   var duplicator = {
-    value: function () {
+    value: function() {
       return duplicate(this);
-    }
+    },
   };
 
   function DataString(s) {
     Object.defineProperty(this, 's_', {
       value: String(s),
-      writable: true
+      writable: true,
     });
   }
 
-  DataString.cast = function (value) {
+  DataString.cast = function(value) {
     return String(value);
   };
 
@@ -183,18 +183,18 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     'toLocaleUpperCase',
     'toLowerCase',
     'toUpperCase',
-    'trim'
+    'trim',
   ];
 
   for (var i = 0, l = StringProperties.length; i < l; i++) {
-    (function (j) {
-      DataString.prototype[StringProperties[j]] = function () {
+    (function(j) {
+      DataString.prototype[StringProperties[j]] = function() {
         return String.prototype[StringProperties[j]].apply(this.s_, arguments);
       };
     })(i);
   }
 
-  DataString.prototype.getType = function () {
+  DataString.prototype.getType = function() {
     return 'string';
   };
 
@@ -203,15 +203,15 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   function DataNumber(s) {
     Object.defineProperty(this, 's_', {
       value: Number(s),
-      writable: true
+      writable: true,
     });
   }
 
-  DataNumber.cast = function (value) {
+  DataNumber.cast = function(value) {
     return Number(value);
   };
 
-  DataNumber.prototype.getType = function () {
+  DataNumber.prototype.getType = function() {
     return 'number';
   };
 
@@ -220,18 +220,18 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   function DataBoolean(s) {
     Object.defineProperty(this, 's_', {
       value: Boolean(s),
-      writable: true
+      writable: true,
     });
   }
 
-  DataBoolean.cast = function (value) {
+  DataBoolean.cast = function(value) {
     if (value instanceof DataBoolean) {
       return value.s_;
     }
     return Boolean(value);
   };
 
-  DataBoolean.prototype.getType = function () {
+  DataBoolean.prototype.getType = function() {
     return 'boolean';
   };
 
@@ -265,11 +265,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   window.DataArray = DataArray;
 
   var resurrectObject = {
-    value: function () {
+    value: function() {
       var obj = {};
 
       var enumerableKeys = Object.keys(this);
-      var ownKeys = Object.getOwnPropertyNames(this).filter((key) => !key.startsWith('__'));
+      var ownKeys = Object.getOwnPropertyNames(this).filter(
+        (key) => !key.startsWith('__'),
+      );
       var keys = enumerableKeys.concat(ownKeys);
       keys = keys.filter((item, pos) => keys.indexOf(item) === pos);
 
@@ -281,11 +283,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         }
       }
       return obj;
-    }
+    },
   };
 
   var resurrectArray = {
-    value: function () {
+    value: function() {
       var obj = [];
       for (var i = 0, l = this.length; i < l; i++) {
         if (isSpecialObject(this[i])) {
@@ -295,11 +297,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         }
       }
       return obj;
-    }
+    },
   };
 
   var dataGetter = {
-    value: function (prop, returnPromise, constructor) {
+    value: function(prop, returnPromise, constructor) {
       function processVal(val) {
         if (typeof val !== 'object' || val === null) return val;
         if (typeof val[prop] !== 'undefined') {
@@ -340,7 +342,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
             this.hasOwnProperty('type') &&
             this.hasOwnProperty('url')
           ) {
-            return this.fetch(true).then(function (self) {
+            return this.fetch(true).then(function(self) {
               return self.get();
             });
           } else {
@@ -352,7 +354,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
           return this;
         }
       }
-    }
+    },
   };
 
   function dataObjectify(parent, prop) {
@@ -363,7 +365,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   var dataSetter = {
-    value: function (prop, value, noTrigger) {
+    value: function(prop, value, noTrigger) {
       var valueTyped = DataObject.check(value, true);
       var self = this.get();
 
@@ -412,11 +414,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       }
 
       return self[prop];
-    }
+    },
   };
 
   const getChild = {
-    value: async function (jpath) {
+    value: async function(jpath) {
       if (typeof jpath === 'string') {
         // Old version
         jpath = jpath.split('.');
@@ -438,11 +440,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       } else {
         return subEl.getChild(jpath);
       }
-    }
+    },
   };
 
   const trace = {
-    value: async function (jpath) {
+    value: async function(jpath) {
       if (jpath && jpath.split) {
         jpath = jpath.split('.');
         jpath.shift();
@@ -466,17 +468,17 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         return subEl.trace(jpath);
       }
       return subEl;
-    }
+    },
   };
 
   var traceSync = {
-    value: function (jpath) {
+    value: function(jpath) {
       return this.getChildSync(jpath, true);
-    }
+    },
   };
 
   var getChildSync = {
-    value: function (jpath, setParents) {
+    value: function(jpath, setParents) {
       if (typeof jpath === 'string') {
         // Old version
         jpath = jpath.split('.');
@@ -505,11 +507,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       }
 
       return subEl.getChildSync(jpath, setParents);
-    }
+    },
   };
 
   var linkToParent = {
-    value: function (parent, name) {
+    value: function(parent, name) {
       if (this.__parent) {
         return;
       }
@@ -518,19 +520,19 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         value: parent,
         writable: false,
         configurable: true,
-        enumerable: false
+        enumerable: false,
       });
       Object.defineProperty(this, '__name', {
         value: name,
         writable: false,
         configurable: true,
-        enumerable: false
+        enumerable: false,
       });
-    }
+    },
   };
 
   var setChild = {
-    value: function (jpath, newValue, triggerParams, constructor) {
+    value: function(jpath, newValue, triggerParams, constructor) {
       var that = this;
 
       if (typeof jpath === 'string') {
@@ -565,23 +567,23 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         jpath.length === 0
           ? constructor
           : typeof jpath[0] === 'number'
-            ? DataArray
-            : DataObject;
+          ? DataArray
+          : DataObject;
 
       var name = el;
 
       var args = [jpath, newValue, triggerParams, constructor];
 
-      return this.get(el, true, elementType).then(function (val) {
+      return this.get(el, true, elementType).then(function(val) {
         that.set(name, val, true);
         val.linkToParent(that, name);
         val.setChild(...args);
       });
-    }
+    },
   };
 
   var setChildSync = {
-    value: function (jpath, newValue, triggerParams, constructor) {
+    value: function(jpath, newValue, triggerParams, constructor) {
       var that = this;
 
       if (typeof jpath === 'string') {
@@ -616,8 +618,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         jpath.length === 0
           ? constructor
           : typeof jpath[0] === 'number'
-            ? DataArray
-            : DataObject;
+          ? DataArray
+          : DataObject;
 
       var name = el;
 
@@ -627,11 +629,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       this.set(name, val, true);
       val.linkToParent(that, name);
       val.setChildSync(...args);
-    }
+    },
   };
 
   var triggerBubble = {
-    value: function (args) {
+    value: function(args) {
       if (this._dataChange) {
         for (var i in this._dataChange) {
           this._dataChange[i].apply(this, args);
@@ -641,7 +643,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       if (this.type && this.url && this.hasOwnProperty('value')) {
         delete this.url;
         Object.defineProperty(this, 'value', {
-          enumerable: true
+          enumerable: true,
         });
       }
 
@@ -652,14 +654,14 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       args[0].jpath.unshift(this.__name);
 
       this.__parent._triggerBubble(args);
-    }
+    },
   };
 
   // 2 June 2014
   // In order to prevent looping, the trigger and bind change should only be called via the module model.
 
   var triggerChange = {
-    value: function (noBubble, args, jpath, target) {
+    value: function(noBubble, args, jpath, target) {
       if (!Array.isArray(args)) {
         if (args == undefined) {
           args = [];
@@ -671,12 +673,12 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       if (jpath) {
         args.unshift({
           target: target,
-          jpath: [jpath]
+          jpath: [jpath],
         });
       } else {
         args.unshift({
           target: this,
-          jpath: []
+          jpath: [],
         });
       }
 
@@ -689,7 +691,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       if (this.type && this.url && this.hasOwnProperty('value')) {
         delete this.url;
         Object.defineProperty(this, 'value', {
-          enumerable: true
+          enumerable: true,
         });
       }
 
@@ -704,17 +706,17 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       args[0].jpath.unshift(this.__name);
 
       this.__parent._triggerBubble(args);
-    }
+    },
   };
 
   var bindChange = {
-    value: function (callback) {
+    value: function(callback) {
       if (!this._dataChange) {
         Object.defineProperty(this, '_dataChange', {
           value: {},
           enumerable: false,
           writable: true,
-          configurable: true
+          configurable: true,
         });
       }
 
@@ -723,11 +725,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       callback.id = id;
 
       return id;
-    }
+    },
   };
 
   var unbindChange = {
-    value: function (idOrFunc) {
+    value: function(idOrFunc) {
       if (!this._dataChange) {
         Debug.info('Could not unbind event. No listener for this object');
         return false;
@@ -738,11 +740,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       }
 
       delete this._dataChange[idOrFunc];
-    }
+    },
   };
 
   var getType = {
-    value: function () {
+    value: function() {
       var type = Util.objectToString(this).toLowerCase();
       if (type !== 'object')
         // Native types: number, string, boolean
@@ -750,10 +752,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       if (Array.isArray(this)) return 'array';
       if (isTypedObject(this)) return this.type;
       return type;
-    }
+    },
   };
 
-  DataObject.getType = function (value) {
+  DataObject.getType = function(value) {
     if (isSpecialObject(value)) {
       return value.getType();
     } else {
@@ -762,7 +764,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var fetch = {
-    value: function (forceJson) {
+    value: function(forceJson) {
       if (!this.url || !this.type || this.hasOwnProperty('value')) {
         // No need for fetching. Still returning a promise, though.
         return Promise.resolve(this);
@@ -775,36 +777,38 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       var headers;
       if (forceJson) {
         headers = {
-          Accept: 'application/json'
+          Accept: 'application/json',
         };
       }
 
-      this._fetching = urlData.get(this.url, false, this.timeout, headers, {
-        withCredentials: this.withCredentials,
-      }).then(
-        (data) => {
-          delete this._fetching;
-          data = DataObject.check(data, true); // Transform the input into a DataObject
+      this._fetching = urlData
+        .get(this.url, false, this.timeout, headers, {
+          withCredentials: this.withCredentials,
+        })
+        .then(
+          (data) => {
+            delete this._fetching;
+            data = DataObject.check(data, true); // Transform the input into a DataObject
 
-          Object.defineProperty(this, 'value', {
-            // Sets the value to the object
-            enumerable: this._keep || false, // If this._keep is true, then we will save the fetched data
-            writable: true,
-            configurable: true,
-            value: data
-          });
+            Object.defineProperty(this, 'value', {
+              // Sets the value to the object
+              enumerable: this._keep || false, // If this._keep is true, then we will save the fetched data
+              writable: true,
+              configurable: true,
+              value: data,
+            });
 
-          return this;
-        },
-        (err) => {
-          delete this._fetching;
-          Debug.debug(`Could not fetch ${this.url} (${err})`);
-          throw err;
-        }
-      );
+            return this;
+          },
+          (err) => {
+            delete this._fetching;
+            Debug.debug(`Could not fetch ${this.url} (${err})`);
+            throw err;
+          },
+        );
 
       return this._fetching;
-    }
+    },
   };
 
   /*
@@ -847,7 +851,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   var mergeWithObject = {
-    value: function (objectToMerge, moduleId, noBubble) {
+    value: function(objectToMerge, moduleId, noBubble) {
       if (
         typeof objectToMerge !== 'object' ||
         Array.isArray(objectToMerge) ||
@@ -856,19 +860,19 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         return;
       merge(this, objectToMerge);
       this.triggerChange(noBubble, [moduleId]);
-    }
+    },
   };
 
   var mergeWithArray = {
-    value: function (objectToMerge, moduleId, noBubble) {
+    value: function(objectToMerge, moduleId, noBubble) {
       // TODO find a way to implement this
       this.triggerChange(noBubble, [moduleId]);
       return Debug.warn('mergeWith method not yet implemented for DataArray');
-    }
+    },
   };
 
   var setValue = {
-    value: function (newValue, noTrigger) {
+    value: function(newValue, noTrigger) {
       if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
         if (
           this.value instanceof DataString ||
@@ -885,7 +889,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       } else {
         Debug.warn('Cannot set value of untyped DataObject');
       }
-    }
+    },
   };
 
   var commonProperties = {
@@ -904,7 +908,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     _triggerBubble: triggerBubble,
     linkToParent: linkToParent,
     getType: getType,
-    setValue: setValue
+    setValue: setValue,
   };
 
   Object.defineProperties(DataObjectProto, commonProperties);
@@ -920,13 +924,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   const getNative = {
     value: function getNative() {
       return this.s_;
-    }
+    },
   };
 
   const getChildNative = {
     value: function getChildNative(jpath) {
       return Promise.resolve(this.getChildSync(jpath));
-    }
+    },
   };
 
   const getChildSyncNative = {
@@ -936,7 +940,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       } else {
         return undefined;
       }
-    }
+    },
   };
 
   const setValueNative = {
@@ -945,19 +949,19 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
       if (!noTrigger) {
         this.triggerChange(false, []);
       }
-    }
+    },
   };
 
   const toStringNative = {
     value: function toStringNative() {
       return String(this.s_);
-    }
+    },
   };
 
   const traceNative = {
     value: function traceNative(jpath) {
       return Promise.resolve(this.getChildSync(jpath));
-    }
+    },
   };
 
   const commonNativeProperties = {
@@ -973,7 +977,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     getChildSync: getChildSyncNative,
     valueOf: getNative,
     setValue: setValueNative,
-    toString: toStringNative
+    toString: toStringNative,
   };
 
   Object.defineProperties(DataString.prototype, commonNativeProperties);
@@ -1050,6 +1054,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     isSpecialObject: isSpecialObject,
     isSpecialNativeObject: isSpecialNativeObject,
     resurrect: DataObject.resurrect,
-    check: DataObject.check
+    check: DataObject.check,
   };
 });
