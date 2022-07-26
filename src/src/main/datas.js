@@ -821,7 +821,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
       if (typeof el === 'object') {
         if (Array.isArray(el)) {
           var toEl = to.get(i);
-          if (!(toEl instanceof DataArray)) {
+          if (toEl instanceof DataArray) {
+            toEl.length = 0;
+          } else {
             toEl = new DataArray();
             to.set(i, toEl, true);
           }
