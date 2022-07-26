@@ -10,6 +10,7 @@ define([
   './util',
   './typerenderer/chart',
   './typerenderer/jcamp',
+  './typerenderer/tree',
 ], function(
   require,
   $,
@@ -20,6 +21,7 @@ define([
   Util,
   chartRenderer,
   jcampRenderer,
+  treeRenderer,
 ) {
   const asyncRequire = Util.require;
 
@@ -281,6 +283,8 @@ define([
   };
 
   functions.jcamp = jcampRenderer;
+
+  functions.tree = treeRenderer;
 
   functions.jme = {};
   functions.jme.toscreen = async function($element, jme, jmeRoot, options) {
