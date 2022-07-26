@@ -2,10 +2,10 @@
 
 const dataTransform = {
   exponential10: {
-    forward: function (input) {
+    forward: function(input) {
       return Math.pow(10, input);
     },
-    backward: function (input) {
+    backward: function(input) {
       return Math.log10(input);
     },
   },
@@ -16,7 +16,7 @@ const defaultOptions = {
   // if false will set the input to a default value (default value depends on type of input)
 };
 
-define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
+define(['jquery', 'lodash', 'src/util/debug'], function($, _, Debug) {
   class Form {
     constructor(dom, options) {
       this.options = Object.assign({}, defaultOptions, options);
@@ -33,8 +33,9 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
       if (!this.dom) return;
       const inputs = this.dom.find('input,textarea,select');
       let radios = [];
+      let multiselects = [];
       const out = inputs
-        .map(function () {
+        .map(function() {
           const { name, value, type } = this;
           return {
             name,
@@ -52,9 +53,14 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
             radios.push(o);
             return false;
           }
+          if (o.type === 'select-multiple') {
+            o.value = [];
+            multiselects.push(o);
+          }
           return true;
         });
 
+      // deal with radio buttons
       const groupedRadios = _.groupBy(radios, (radio) => radio.name);
       for (let name in groupedRadios) {
         const radios = groupedRadios[name].filter((radio) => radio.name);
@@ -63,6 +69,14 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
           out.push(radio);
         } else if (radios.length) {
           out.push(radios[0]);
+        }
+      }
+
+      for (let multiselect of multiselects) {
+        for (const option of multiselect.dom.options) {
+          if (option.selected) {
+            multiselect.value.push(option.value);
+          }
         }
       }
 
@@ -149,15 +163,22 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
         case 'checkbox':
           el.checked = DataObject.resurrect(value);
           break;
-
+        case 'select-multiple':
+          {
+            const values = DataObject.resurrect(value);
+            for (const option of el.options) {
+              option.selected = values.includes(option.value);
+            }
+          }
+          break;
         case 'radio':
           var name = el.name;
-          this.dom.find(`input[name="${name}"]`).each(function () {
+          this.dom.find(`input[name="${name}"]`).each(function() {
             this.checked = false;
           });
           this.dom
             .find(`input[name="${name}"][value="${transform(value)}"]`)
-            .each(function () {
+            .each(function() {
               this.checked = true;
             });
           break;
@@ -193,13 +214,13 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
   }
 
   function onChange(ctx) {
-    return function (e) {
+    return function(e) {
       if (ctx.changeCb) ctx.changeCb(e);
     };
   }
 
   function onSubmit(ctx) {
-    return function (e) {
+    return function(e) {
       e.preventDefault();
       if (ctx.submitCb) ctx.submitCb(e);
     };
