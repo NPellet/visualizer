@@ -958,7 +958,6 @@ module.exports = function(grunt) {
       console.log('Publishing release');
 
       // Commit the version change and tag
-      child_process.execFileSync('git', ['pull']);
       child_process.execFileSync('git', [
         'add',
         'src/version.js',
