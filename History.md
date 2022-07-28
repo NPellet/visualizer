@@ -1,3 +1,19 @@
+# [2.149.0](https://github.com/NPellet/visualizer/compare/v2.148.0...v2.149.0) (2022-07-28)
+
+
+### Bug Fixes
+
+* merge should totaly replace existing array (really ?) !!!!! ([cd4da66](https://github.com/NPellet/visualizer/commit/cd4da667016f9fc96013c11169c2018c8f53c2d3))
+* remove git pull during release ([8c5ff75](https://github.com/NPellet/visualizer/commit/8c5ff755f09ed3743cd9d347527962991d7db524))
+
+
+### Features
+
+* add multiselect example and improve code ([0facf33](https://github.com/NPellet/visualizer/commit/0facf33d76474e11d3a6ff48fb7d262042a1b2b8))
+* update smart-array-filter ([839f4fb](https://github.com/NPellet/visualizer/commit/839f4fb774a344f50b9db1425d01cf804fb097e5))
+
+
+
 # [2.148.0](https://github.com/NPellet/visualizer/compare/v2.147.1...v2.148.0) (2022-07-12)
 
 
