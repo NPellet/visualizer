@@ -1,5 +1,5 @@
 {
-  "version": "2.148.1-0",
+  "version": "2.149.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -26,7 +26,7 @@
               "storeOnChange": [["store"]],
               "debouncing": [0],
               "script": [
-                "<link href=\"components/select2/dist/css/select2.css\" rel=\"stylesheet\" />\n<style>\n    #multiform .select2-container .select2-selection--multiple {\n    min-height: 24px;\n}\n</style>\n<div id=\"multiform\">\n    <select\n      class=\"multiselect\"\n      name=\"axis\" multiple style=\"width: 300px\">\n      <option value=\"AL\">AL</option>\n      <option value=\"WY\">WY</option>\n      <option value=\"AB\">AB</option>\n      <option value=\"CD\">CD</option\n    </select>\n</div>\n\n \n<script>\nsetTimeout( () => {\n      $('.multiselect').select2();\n})\n</script>\n"
+                "<script>\n    if (! document.getElementById('select2css')) {\n        const baseUrl=require.s.contexts._.config.baseUrl;\n        const cssLink=baseUrl+'components/select2/dist/css/select2.css'; \n        $('head').append('<link href=\"'+cssLink+'\" id=\"select2css\" rel=\"stylesheet\" />');\n    }\n</script>    \n\n\n<style>\n    #multiform .select2-container .select2-selection--multiple {\n    min-height: 24px;\n}\n</style>\n<div id=\"multiform\">\n    <select\n      class=\"multiselect\"\n      name=\"axis\" multiple style=\"width: 300px\">\n      <option value=\"AL\">AL</option>\n      <option value=\"WY\">WY</option>\n      <option value=\"AB\">AB</option>\n      <option value=\"CD\">CD</option\n    </select>\n</div>\n\n \n<script>\nsetTimeout( () => {\n      $('.multiselect').select2();\n})\n</script>\n"
               ]
             }
           ],
