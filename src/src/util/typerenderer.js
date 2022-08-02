@@ -790,6 +790,7 @@ define([
     }
     let value = await object.get(true);
     let type;
+    console.log({ options });
     if (options && options.forceType) {
       if (value && value.value && value.type) {
         value = value.value;
