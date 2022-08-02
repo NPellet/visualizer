@@ -79,7 +79,10 @@ define([
     drawPhylogram: function(data, view) {
       if (!this._value) return;
 
-      var dataD = JSON.parse(JSON.stringify(this._value));
+      // if we try to copy the value the display of part of tree is broken
+      // because we try to stringify a circular object
+      // var dataD = JSON.parse(JSON.stringify(this._value));
+      var dataD = this._value;
       var that = this;
 
       this.dom.empty();
