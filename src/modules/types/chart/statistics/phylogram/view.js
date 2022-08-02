@@ -79,7 +79,7 @@ define([
     drawPhylogram: function(data, view) {
       if (!this._value) return;
 
-      var dataD = this._value;
+      var dataD = JSON.parse(JSON.stringify(this._value));
       var that = this;
 
       this.dom.empty();
