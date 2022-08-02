@@ -132,7 +132,6 @@ define([
       });
 
       var leaves = d3.selectAll(`${this.selectorId} .leaf`);
-
       leaves.each(function(data) {
         (function(dataNode, leaf) {
           if (dataNode.data && dataNode.data._highlight) {
