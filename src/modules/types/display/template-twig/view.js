@@ -204,12 +204,21 @@ define([
           .then(() => this.submitChange());
       },
 
-      form(value, name) {
+      async form(value, name) {
         this.formName = name;
         this.formObject = value;
         // fill form should execute when the template exists
         // It doesn't make sense otherwise
-        return this.hasTemplate.then(() => this.fillForm(true));
+        await this.hasTemplate;
+        this.fillForm(true);
+        if (
+          this.module.getConfigurationCheckbox(
+            'formOptions',
+            'rerenderIfFormValueChanges',
+          )
+        ) {
+          this.rerender();
+        }
       },
 
       style(value) {
