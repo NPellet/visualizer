@@ -1,3 +1,12 @@
+# [2.150.0](https://github.com/NPellet/visualizer/compare/v2.149.1...v2.150.0) (2022-08-15)
+
+
+### Features
+
+* add new option in twig to rerender template on form variable change ([94ff048](https://github.com/NPellet/visualizer/commit/94ff048ad3463e20aab0b53de8e8e339975f73d5))
+
+
+
 ## [2.149.1](https://github.com/NPellet/visualizer/compare/v2.149.0...v2.149.1) (2022-08-05)
 
 
