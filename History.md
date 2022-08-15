@@ -1,3 +1,12 @@
+## [2.150.1](https://github.com/NPellet/visualizer/compare/v2.150.0...v2.150.1) (2022-08-15)
+
+
+### Bug Fixes
+
+* add more option to rerender form when variable changes in twig ([3961130](https://github.com/NPellet/visualizer/commit/39611300d88e05d357e5cfe8ab8c7082bf1a3a2f))
+
+
+
 # [2.150.0](https://github.com/NPellet/visualizer/compare/v2.149.1...v2.150.0) (2022-08-15)
 
 
