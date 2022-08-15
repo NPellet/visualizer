@@ -1,5 +1,5 @@
 {
-  "version": "2.149.2-0",
+  "version": "2.150.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -26,7 +26,7 @@
               "storeOnChange": [["store"]],
               "debouncing": [0],
               "script": [
-                "<script>\n    if (! document.getElementById('select2css')) {\n        const baseUrl=require.s.contexts._.config.baseUrl;\n        const cssLink=baseUrl+'components/select2/dist/css/select2.css'; \n        $('head').append('<link href=\"'+cssLink+'\" id=\"select2css\" rel=\"stylesheet\" />');\n    }\n</script>    \n\n\n<style>\n    #multiform .select2-container .select2-selection--multiple {\n    min-height: 24px;\n}\n</style>\n<div id=\"multiform\">\n    <select\n      class=\"multiselect\"\n      name=\"axis\" multiple style=\"width: 300px\">\n      <option value=\"AL\">AL</option>\n      <option value=\"WY\">WY</option>\n      <option value=\"AB\">AB</option>\n      <option value=\"CD\">CD</option\n    </select>\n</div>\n\n \n<script>\nsetTimeout( () => {\n      $('.multiselect').select2();\n})\n\n</script>\n"
+                "<script>\n    if (! document.getElementById('select2css')) {\n        const baseUrl=require.s.contexts._.config.baseUrl;\n        const cssLink=baseUrl+'components/select2/dist/css/select2.css'; \n        $('head').append('<link href=\"'+cssLink+'\" id=\"select2css\" rel=\"stylesheet\" />');\n    }\n</script>    \n\n\n<style>\n    #multiform .select2-container .select2-selection--multiple {\n    min-height: 24px;\n}\n</style>\n<div id=\"multiform\">\n    <select\n      class=\"multiselect\"\n      name=\"axis\" multiple style=\"width: 300px\">\n      <option value=\"AL\">AL</option>\n      <option value=\"WY\">WY</option>\n      <option value=\"AB\">AB</option>\n      <option value=\"CD\">CD</option>\n    </select>\n    \n    <select\n      class=\"multiselect\"\n      name=\"yaxis\" multiple style=\"width: 300px\">\n      {% for axis in possibleAxes %}\n            <option value=\"{{axis}}\">{{axis}}</option>\n      {% endfor %}\n    </select>\n    \n</div>\n\n \n \n \n<script>\nsetTimeout( () => {\n      $('.multiselect').select2();\n})\n\n</script>\n"
               ]
             }
           ],
@@ -145,6 +145,10 @@
         {
           "rel": "form",
           "name": "preferences"
+        },
+        {
+          "rel": "value",
+          "name": "possibleAxes"
         }
       ],
       "actions_in": [{}],
@@ -277,7 +281,13 @@
               "template": [""],
               "modifyInForm": [["yes"]],
               "debouncing": [100],
-              "formOptions": [["keepFormValueIfDataUndefined"]]
+              "formOptions": [
+                [
+                  "keepFormValueIfDataUndefined",
+                  "rerenderIfFormValueChanges",
+                  "rerenderIfValueChanges"
+                ]
+              ]
             }
           ]
         }
@@ -310,6 +320,10 @@
         {
           "rel": "form",
           "name": "preferences"
+        },
+        {
+          "rel": "value",
+          "name": "possibleAxes"
         }
       ],
       "actions_in": [{}],
@@ -434,6 +448,176 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.createData('possibleAxes', ['AL','WY','AB','CD','EF']);"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 66,
+            "top": 50
+          },
+          "size": {
+            "width": 65,
+            "height": 11
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": ["API.createData('possibleAxes', []);"]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 68,
+            "top": 69
+          },
+          "size": {
+            "width": 63,
+            "height": 16
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
@@ -465,7 +649,9 @@
       "groups": {
         "general": [
           {
-            "script": ["\n\nAPI.createData('preferences', {\n    axis: []\n});"]
+            "script": [
+              "\n\nAPI.createData('preferences', {\n    axis: [],\n    yaxis: [],\n});\n\nAPI.createData('possibleAxes', ['AL','WY','AB','CD','EF']);\n\n"
+            ]
           }
         ]
       }

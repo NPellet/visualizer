@@ -102,6 +102,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
                   'Keep form value if data undefined',
                 rerenderIfFormValueChanges:
                   'Rerender form if form value changes',
+                rerenderIfValueChanges: 'Rerender form if any value changes',
               },
               default: ['keepFormValueIfDataUndefined'],
             },

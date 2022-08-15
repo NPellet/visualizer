@@ -185,7 +185,17 @@ define([
                  and the values need to be native)
                  */
         this._values[name] = DataObject.resurrect(value.get());
+
         this.rerender();
+
+        if (
+          this.module.getConfigurationCheckbox(
+            'formOptions',
+            'rerenderIfValueChanges',
+          )
+        ) {
+          this.render(() => this.fillForm(true));
+        }
       },
       tpl(value) {
         var tpl = value.get().toString();
