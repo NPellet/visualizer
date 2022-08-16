@@ -1,3 +1,12 @@
+# [2.151.0](https://github.com/NPellet/visualizer/compare/v2.150.1...v2.151.0) (2022-08-16)
+
+
+### Features
+
+* update fontawesome-free to 6.1.2 ([0f49af8](https://github.com/NPellet/visualizer/commit/0f49af8195520426793e2abf90e0ada160c7d5c1))
+
+
+
 ## [2.150.1](https://github.com/NPellet/visualizer/compare/v2.150.0...v2.150.1) (2022-08-15)
 
 
