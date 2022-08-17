@@ -85,7 +85,7 @@
     "quill-image-drop-module": "github:cheminfo/quill-image-drop-module#4cdc591cfddec42a22ab25b635f34de9e973c86d",
     "quill-image-resize-module": "^3.0.0",
     "rxn-renderer": "0.2.0",
-    "smart-array-filter": "^3.2.0",
+    "smart-array-filter": "^4.0.0",
     "superagent": "^3.8.3",
     "twig": "^1.15.4"
   }
