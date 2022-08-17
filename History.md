@@ -1,3 +1,12 @@
+# [2.152.0](https://github.com/NPellet/visualizer/compare/v2.151.0...v2.152.0) (2022-08-17)
+
+
+### Features
+
+* update smart-array-filter to 4.0.0 ([d6eb00a](https://github.com/NPellet/visualizer/commit/d6eb00ac4351f5f216f8b248f0d4371262a83729))
+
+
+
 # [2.151.0](https://github.com/NPellet/visualizer/compare/v2.150.1...v2.151.0) (2022-08-16)
 
 
