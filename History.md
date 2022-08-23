@@ -1,3 +1,12 @@
+# [2.153.0](https://github.com/NPellet/visualizer/compare/v2.152.0...v2.153.0) (2022-08-23)
+
+
+### Features
+
+* add the possibility to hide NaN or zero numbers ([26fac63](https://github.com/NPellet/visualizer/commit/26fac63b5035f7549dde36d6f3471ea08c4a33bb))
+
+
+
 # [2.152.0](https://github.com/NPellet/visualizer/compare/v2.151.0...v2.152.0) (2022-08-17)
 
 
