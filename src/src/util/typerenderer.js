@@ -754,24 +754,33 @@ define([
 
   function formatNumber(val, options) {
     var number = Number(val);
-    if (isNaN(number)) {
-      number = 'NaN';
+    if (
+      (val === undefined || val === null || isNaN(number)) &&
+      options.hasOwnProperty('hideUndefined')
+    ) {
+      console.log(val);
+      return '';
+    } else if (number === 0 && options.hasOwnProperty('hideZero')) {
+      console.log(number);
+      return '';
+    } else if (isNaN(number)) {
+      return 'NaN';
     } else if (options.hasOwnProperty('duration')) {
-      number = moment.duration(number).as(options.duration);
+      return moment.duration(number).as(options.duration);
     } else if (options.hasOwnProperty('durationS')) {
-      number = moment.duration(number * 1000).as(options.durationS);
+      return moment.duration(number * 1000).as(options.durationS);
     } else if (options.hasOwnProperty('toPrecision')) {
-      number = number.toPrecision(options.toPrecision);
+      return number.toPrecision(options.toPrecision);
     } else if (options.hasOwnProperty('toExponential')) {
-      number = number.toExponential(options.toExponential);
+      return number.toExponential(options.toExponential);
     } else if (options.hasOwnProperty('toFixed')) {
-      number = number.toFixed(options.toFixed);
+      return number.toFixed(options.toFixed);
     } else if (options.hasOwnProperty('numeral')) {
-      number = numeral(number).format(options.numeral);
+      return numeral(number).format(options.numeral);
     } else if (options.hasOwnProperty('sprintf')) {
-      number = sprintf.sprintf(options.sprintf, number);
+      return sprintf.sprintf(options.sprintf, number);
     } else if (checkDate(options)) {
-      number = toDate(number, options);
+      return toDate(number, options);
     }
     return number;
   }
