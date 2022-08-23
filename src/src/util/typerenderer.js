@@ -758,10 +758,8 @@ define([
       (val === undefined || val === null || isNaN(number)) &&
       options.hasOwnProperty('hideUndefined')
     ) {
-      console.log(val);
       return '';
     } else if (number === 0 && options.hasOwnProperty('hideZero')) {
-      console.log(number);
       return '';
     } else if (isNaN(number)) {
       return 'NaN';
