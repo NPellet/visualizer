@@ -1,3 +1,12 @@
+# [2.154.0](https://github.com/NPellet/visualizer/compare/v2.153.0...v2.154.0) (2022-08-24)
+
+
+### Features
+
+* allow to filter query in smart array filter ([ed8e509](https://github.com/NPellet/visualizer/commit/ed8e509219cb0426e09a483b3c679b22fd711170))
+
+
+
 # [2.153.0](https://github.com/NPellet/visualizer/compare/v2.152.0...v2.153.0) (2022-08-23)
 
 
