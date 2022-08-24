@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/default/defaultcontroller',
   'smart-array-filter',
-], function ($, Default, SAF) {
+], function($, Default, SAF) {
   const filter = SAF.filter;
 
   function isRegExpString(value) {
@@ -58,7 +58,7 @@ define([
     appendQuery: 'Append to current query',
   };
 
-  Controller.prototype.configurationStructure = function () {
+  Controller.prototype.configurationStructure = function() {
     return {
       groups: {
         group: {
@@ -99,6 +99,11 @@ define([
                 { title: 'OR', key: 'OR' },
               ],
               default: 'AND',
+            },
+            queryFilter: {
+              type: 'jscode',
+              title: 'Callback to filter "query" string',
+              default: 'return query;',
             },
             booleanOptions: {
               type: 'checkbox',
@@ -149,12 +154,13 @@ define([
     placeholder: ['groups', 'group', 0, 'placeholder', 0],
     fontSize: ['groups', 'group', 0, 'fontSize', 0],
     predicate: ['groups', 'group', 0, 'predicate', 0],
+    queryFilter: ['groups', 'group', 0, 'queryFilter', 0],
     booleanOptions: ['groups', 'group', 0, 'booleanOptions', 0],
     aliases: ['groups', 'aliases', 0],
     ignorePaths: ['groups', 'ignorePaths', 0],
   };
 
-  Controller.prototype.onQuery = function (query) {
+  Controller.prototype.onQuery = function(query) {
     if (!this.module.view._data) return;
     const pathAlias = this.module
       .getConfiguration('aliases', [])

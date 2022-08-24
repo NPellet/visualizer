@@ -1,5 +1,5 @@
 {
-  "version": "2.46.3-0",
+  "version": "2.153.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,20 +17,18 @@
         "groups": {
           "group": [
             {
-              "debounce": [
-                100
-              ],
-              "initialValue": [
-                ""
-              ],
-              "placeholder": [
-                "Type a search query"
-              ],
-              "fontSize": [
-                20
-              ]
+              "debounce": [100],
+              "limit": [0],
+              "initialValue": [""],
+              "placeholder": ["Type a search query"],
+              "fontSize": [20],
+              "predicate": ["AND"],
+              "queryFilter": ["return query.replace(/ .*/,'')"],
+              "booleanOptions": [["caseInsensitive"]]
             }
-          ]
+          ],
+          "aliases": [[{}]],
+          "ignorePaths": [[{}]]
         }
       },
       "layers": {
@@ -46,18 +44,13 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 1,
       "vars_in": [
         {
           "rel": "input",
@@ -93,7 +86,35 @@
           "name": "str"
         }
       ],
-      "actions_out": []
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
     },
     {
       "url": "modules/types/edition/object_editor/",
@@ -102,24 +123,12 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "view"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                []
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "{}"
-              ]
+              "editable": ["view"],
+              "expanded": [[]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
             }
           ]
         }
@@ -137,34 +146,44 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 6,
+      "id": 2,
       "vars_in": [
         {
           "rel": "value",
           "name": "input"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
         }
       ],
       "title": "",
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/object_editor/",
@@ -173,24 +192,12 @@
         "groups": {
           "group": [
             {
-              "editable": [
-                "view"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                []
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "{}"
-              ]
+              "editable": ["view"],
+              "expanded": [[]],
+              "storeObject": [[]],
+              "displayValue": [[]],
+              "output": ["new"],
+              "storedObject": ["{}"]
             }
           ]
         }
@@ -208,34 +215,44 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 7,
+      "id": 3,
       "vars_in": [
         {
           "rel": "value",
           "name": "output"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "vars_out": [
         {
           "jpath": []
         }
       ],
       "title": "",
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/display/single_value/",
@@ -244,50 +261,19 @@
         "groups": {
           "group": [
             {
-              "append": [
-                []
-              ],
-              "maxEntries": [
-                1
-              ],
-              "editable": [
-                []
-              ],
-              "defaultvalue": [
-                null
-              ],
-              "font": [
-                null
-              ],
-              "fontcolor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "fontsize": [
-                null
-              ],
-              "align": [
-                null
-              ],
-              "valign": [
-                null
-              ],
-              "rendererOptions": [
-                ""
-              ],
-              "sprintf": [
-                "Searching for %s"
-              ],
-              "sprintfOrder": [
-                null
-              ],
-              "preformatted": [
-                []
-              ]
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "sprintf": ["Searching for %s"],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
             }
           ]
         }
@@ -305,30 +291,40 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 8,
+      "id": 4,
       "vars_in": [
         {
           "rel": "value",
           "name": "str"
         }
       ],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "",
       "vars_out": [],
-      "actions_out": []
+      "actions_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -337,58 +333,20 @@
         "groups": {
           "group": [
             {
-              "toggle": [
-                "click"
-              ],
-              "label": [
-                "Clear query"
-              ],
-              "onLabel": [
-                "Toggle action off"
-              ],
-              "offLabel": [
-                "Toggle action on"
-              ],
-              "onColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "offColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "startState": [
-                "off"
-              ],
-              "text": [
-                ""
-              ],
-              "askConfirm": [
-                []
-              ],
-              "confirmText": [
-                "Are you sure?"
-              ],
-              "okLabel": [
-                "Ok"
-              ],
-              "cancelLabel": [
-                "Cancel"
-              ],
-              "content": [
-                ""
-              ],
-              "contentType": [
-                "content"
-              ]
+              "toggle": ["click"],
+              "label": ["Clear query"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "onColor": [[0, 0, 0, 1]],
+              "offColor": [[0, 0, 0, 1]],
+              "startState": ["off"],
+              "text": [""],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "content": [""],
+              "contentType": ["content"]
             }
           ]
         }
@@ -406,22 +364,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 9,
+      "id": 5,
       "vars_in": [],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "",
       "vars_out": [],
       "actions_out": [
@@ -431,7 +382,24 @@
           "jpath": [],
           "name": "clearQuery"
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -440,58 +408,20 @@
         "groups": {
           "group": [
             {
-              "toggle": [
-                "click"
-              ],
-              "label": [
-                "Set query"
-              ],
-              "onLabel": [
-                "Toggle action off"
-              ],
-              "offLabel": [
-                "Toggle action on"
-              ],
-              "onColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "offColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "startState": [
-                "off"
-              ],
-              "text": [
-                "mw:>300"
-              ],
-              "askConfirm": [
-                []
-              ],
-              "confirmText": [
-                "Are you sure?"
-              ],
-              "okLabel": [
-                "Ok"
-              ],
-              "cancelLabel": [
-                "Cancel"
-              ],
-              "content": [
-                ""
-              ],
-              "contentType": [
-                "content"
-              ]
+              "toggle": ["click"],
+              "label": ["Set query"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "onColor": [[0, 0, 0, 1]],
+              "offColor": [[0, 0, 0, 1]],
+              "startState": ["off"],
+              "text": ["mw:>300"],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "content": [""],
+              "contentType": ["content"]
             }
           ]
         }
@@ -509,22 +439,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 10,
+      "id": 6,
       "vars_in": [],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "",
       "vars_out": [],
       "actions_out": [
@@ -534,7 +457,24 @@
           "jpath": [],
           "name": "setQuery"
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/client_interaction/button_action/",
@@ -543,58 +483,20 @@
         "groups": {
           "group": [
             {
-              "toggle": [
-                "click"
-              ],
-              "label": [
-                "Append query"
-              ],
-              "onLabel": [
-                "Toggle action off"
-              ],
-              "offLabel": [
-                "Toggle action on"
-              ],
-              "onColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "offColor": [
-                [
-                  0,
-                  0,
-                  0,
-                  1
-                ]
-              ],
-              "startState": [
-                "off"
-              ],
-              "text": [
-                "iupac1:acetate"
-              ],
-              "askConfirm": [
-                []
-              ],
-              "confirmText": [
-                "Are you sure?"
-              ],
-              "okLabel": [
-                "Ok"
-              ],
-              "cancelLabel": [
-                "Cancel"
-              ],
-              "content": [
-                ""
-              ],
-              "contentType": [
-                "content"
-              ]
+              "toggle": ["click"],
+              "label": ["Append query"],
+              "onLabel": ["Toggle action off"],
+              "offLabel": ["Toggle action on"],
+              "onColor": [[0, 0, 0, 1]],
+              "offColor": [[0, 0, 0, 1]],
+              "startState": ["off"],
+              "text": ["iupac1:acetate"],
+              "askConfirm": [[]],
+              "confirmText": ["Are you sure?"],
+              "okLabel": ["Ok"],
+              "cancelLabel": ["Cancel"],
+              "content": [""],
+              "contentType": ["content"]
             }
           ]
         }
@@ -612,22 +514,15 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
+          "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 11,
+      "id": 7,
       "vars_in": [],
-      "actions_in": [
-        {}
-      ],
+      "actions_in": [{}],
       "title": "",
       "vars_out": [],
       "actions_out": [
@@ -637,19 +532,33 @@
           "jpath": [],
           "name": "appendQuery"
         }
-      ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      }
     }
   ],
   "variables": [
     {
       "varname": "input",
-      "jpath": [
-        "input"
-      ]
+      "jpath": ["input"]
     }
   ],
   "aliases": [],
-  "pouchvariables": [],
   "configuration": {
     "title": "Untitled"
   }
