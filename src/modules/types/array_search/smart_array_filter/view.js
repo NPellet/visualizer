@@ -64,6 +64,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function(
         'queryFilter',
       ));
       if (queryFilter) {
+        // eslint-disable-next-line no-new-func
         const filter = new Function('query', queryFilter);
         query = filter(query);
       }
