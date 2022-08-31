@@ -1,5 +1,5 @@
 {
-  "version": "2.143.2-0",
+  "version": "2.154.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -316,28 +316,15 @@
               {
                 "name": "Test",
                 "jpath": ["a"],
-                "editor": "none",
-                "forceType": "",
                 "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "toPrecision:6",
-                "editorOptions": "",
                 "width": 100,
-                "hideColumn": []
+                "rendererOptions": "toPrecision:6"
               },
               {
                 "name": "Test 2",
                 "jpath": ["b", "c"],
-                "editor": "none",
-                "forceType": "",
                 "formatter": "typerenderer",
-                "copyFormatter": "default",
-                "visibility": "both",
-                "rendererOptions": "",
-                "editorOptions": "",
-                "width": 100,
-                "hideColumn": []
+                "width": 100
               }
             ]
           ],
@@ -394,7 +381,12 @@
           "name": "data"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {
+          "rel": "selectRow",
+          "name": "mimicCellClick"
+        }
+      ],
       "actions_out": [
         {
           "event": "_onLoaded",
@@ -615,6 +607,92 @@
         }
       ],
       "title": "Extract preferences from a module"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "API.doAction('mimicCellClick', {\n    row: (row) => {\n        console.log(row);\n        return row.a == 12;\n    }\n})"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 21,
+            "top": 62
+          },
+          "size": {
+            "width": 45,
+            "height": 17
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
