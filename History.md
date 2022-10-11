@@ -1,3 +1,12 @@
+## [2.154.1](https://github.com/NPellet/visualizer/compare/v2.154.0...v2.154.1) (2022-10-11)
+
+
+### Bug Fixes
+
+* bug introduced in 2.150 and racing in twig template update ([a6b318e](https://github.com/NPellet/visualizer/commit/a6b318e5d6d5e4afea7b27558615aa08ef129d4e))
+
+
+
 # [2.154.0](https://github.com/NPellet/visualizer/compare/v2.153.0...v2.154.0) (2022-08-24)
 
 
