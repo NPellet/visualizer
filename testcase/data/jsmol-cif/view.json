@@ -1,0 +1,446 @@
+{
+  "version": "2.154.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/science/chemistry/jsmol/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [[]],
+              "script": ["wireframe 0;\nribbon on;\n"],
+              "syncScript": [null]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 75,
+            "top": 0
+          },
+          "size": {
+            "width": 69,
+            "height": 89
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "script"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "jsmolscript",
+          "name": "testscript"
+        }
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              ["Open Preferences", "Export Data", "Show fullscreen", "Print"]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
+              "script": [
+                "###############################################################################\r\n# Ballentyne, D.W.G.Ballentyne, D.W.G.Roy, B. (1961)\r\n# Physica (Utrecht) (18,1952-78,1974) 27, 337-341\r\n# Electroluminescence and crystal structure in the alloy system Zn S - \\\r\n#Cd S\r\n# \r\n# CIF by ICSD-for-WWW,  Copyright 2003 FIZ-Karlsruhe & A.W.Hewat (hewat@ill.fr)\r\n# NOT TO BE PUBLISHED IN ANY FORM. See http://icsd.ill.fr/icsd/conditions.html\r\n###############################################################################\r\n\r\ndata_43597-ICSD\r\n_database_code_ICSD                43597\r\n_audit_creation_date               2000-07-15\r\n_chemical_name_systematic\r\n'Zinc sulfide - 2H'\r\n_chemical_formula_structural       \r\n'Zn S'\r\n_chemical_formula_sum              \r\n'S1 Zn1'\r\n_publ_section_title                \r\n'S1 Zn1'\r\nloop_\r\n_citation_id\r\n_citation_journal_abbrev\r\n_citation_year\r\n_citation_journal_volume\r\n_citation_page_first\r\n_citation_page_last\r\n_citation_journal_id_ASTM\r\nprimary 'Physica (Utrecht) (18,1952-78,1974)' 1961 27 337 341 PHYSAG\r\nloop_\r\n_publ_author_name\r\nBallentyne, D.W.G.Ballentyne, D.W.G.Roy, B.\r\n_cell_length_a                     3.818\r\n_cell_length_b                     3.818\r\n_cell_length_c                     6.26\r\n_cell_angle_alpha                  90.\r\n_cell_angle_beta                   90.\r\n_cell_angle_gamma                  120.\r\n_cell_volume                       79.03\r\n_cell_formula_units_Z              2\r\n_symmetry_space_group_name_H-M     'P 63 m c'\r\n_symmetry_Int_Tables_number        186\r\n_refine_ls_R_factor_all            \r\nloop_\r\n_symmetry_equiv_pos_site_id\r\n_symmetry_equiv_pos_as_xyz\r\n  1     '-x, -x+y, z+1/2'\r\n  2     'x-y, -y, z+1/2'\r\n  3     'y, x, z+1/2'\r\n  4     'x-y, x, z+1/2'\r\n  5     'y, -x+y, z+1/2'\r\n  6     '-x, -y, z+1/2'\r\n  7     'x, x-y, z'\r\n  8     '-x+y, y, z'\r\n  9     '-y, -x, z'\r\n  10     '-x+y, -x, z'\r\n  11     '-y, x-y, z'\r\n  12     'x, y, z'\r\nloop_\r\n_atom_type_symbol\r\n_atom_type_oxidation_number\r\nZn2+     2.\r\nS2-     -2.\r\nloop_\r\n_atom_site_label\r\n_atom_site_type_symbol\r\n_atom_site_symmetry_multiplicity\r\n_atom_site_Wyckoff_symbol\r\n_atom_site_fract_x\r\n_atom_site_fract_y\r\n_atom_site_fract_z\r\n_atom_site_B_iso_or_equiv\r\n_atom_site_occupancy\r\nZn1 Zn2+ 2 b 0.3333 0.6667 0 0.9 1.\r\nS1 S2- 2 b 0.3333 0.6667 0.375 0.7 1.\r\n#End of data_43597-ICSD\r\n\r\n"
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 71,
+            "height": 34
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "CIF file",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "cif"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "CIF file"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": [
+                "const cif = API.getData('cif').resurrect();\n\nconst script = `\nload INLINE \"cif::${cif}\" {3 3 3};\nset showunitcell\n`\n\nAPI.createData('script', script);\n"
+              ]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 35
+          },
+          "size": {
+            "width": 71,
+            "height": 53
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [["button"]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 147,
+            "top": 18
+          },
+          "size": {
+            "width": 82,
+            "height": 59
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "script"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "result",
+      "jpath": ["result", "pdbs"]
+    },
+    {
+      "varname": "pdb",
+      "jpath": ["result", "pdbs", "0", "pdb"]
+    }
+  ],
+  "aliases": [{}],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [null],
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [null]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [[{}]]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [[{}]]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [null],
+                  "script": [null]
+                }
+              ],
+              "libs": [[{}]]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [[{}]]
+      }
+    }
+  ]
+}
