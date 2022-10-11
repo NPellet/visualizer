@@ -1,5 +1,5 @@
 {
-  "version": "2.127.1-0",
+  "version": "2.154.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -145,7 +145,7 @@
           "event": "onObjectChange",
           "rel": "output",
           "jpath": [],
-          "name": "data"
+          "name": "dataXXX"
         }
       ],
       "actions_out": [
@@ -190,7 +190,7 @@
               "template": [""],
               "modifyInForm": [["yes"]],
               "debouncing": [100],
-              "formOptions": [[]]
+              "formOptions": [["keepFormValueIfDataUndefined"]]
             }
           ]
         }
@@ -552,7 +552,9 @@
       "groups": {
         "general": [
           {
-            "script": ["API.createData('data', {});\n"]
+            "script": [
+              "\n\nconst track = await API.require('vh/util/track');\nawait track('emdbPreferences', {\n  \"title\": \"abfddc\",\n  \"kind\": \"A\"\n}, { varName: 'data' });\n"
+            ]
           }
         ]
       }

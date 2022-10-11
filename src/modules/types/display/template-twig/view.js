@@ -219,16 +219,17 @@ define([
         this.formObject = value;
         // fill form should execute when the template exists
         // It doesn't make sense otherwise
-        await this.hasTemplate;
-        this.fillForm(true);
-        if (
-          this.module.getConfigurationCheckbox(
-            'formOptions',
-            'rerenderIfFormValueChanges',
-          )
-        ) {
-          this.rerender();
-        }
+        this.hasTemplate.then(() => {
+          this.fillForm(true);
+          if (
+            this.module.getConfigurationCheckbox(
+              'formOptions',
+              'rerenderIfFormValueChanges',
+            )
+          ) {
+            this.rerender();
+          }
+        });
       },
 
       style(value) {
