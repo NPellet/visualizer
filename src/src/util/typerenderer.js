@@ -465,7 +465,7 @@ define([
   ) {
     const { maxWidth = 300, maxHeight = 300 } = options;
 
-    let renderer = new functions.reaction.RxnRenderer(functions.reaction.OCL, {
+    let renderer = new functions.rxncode.RxnRenderer(functions.rxncode.OCL, {
       maxWidth,
       maxHeight,
     });
