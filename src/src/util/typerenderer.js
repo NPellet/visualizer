@@ -469,7 +469,6 @@ define([
       maxWidth,
       maxHeight,
     });
-    debugger;
     let html = renderer.renderRXNCode(DataObject.resurrect(val));
     $element.html(html);
   };
