@@ -450,6 +450,30 @@ define([
     $element.qrcode(options);
   };
 
+  functions.rxncode = {};
+  functions.rxncode.init = async () => {
+    functions.rxncode.OCL = await asyncRequire(oclUrl);
+    functions.rxncode.RxnRenderer = (
+      await asyncRequire('RxnRenderer')
+    ).RxnRenderer;
+  };
+  functions.rxncode.toscreen = async function(
+    $element,
+    val,
+    root,
+    options = {},
+  ) {
+    const { maxWidth = 300, maxHeight = 300 } = options;
+
+    let renderer = new functions.reaction.RxnRenderer(functions.reaction.OCL, {
+      maxWidth,
+      maxHeight,
+    });
+    debugger;
+    let html = renderer.renderRXNCode(DataObject.resurrect(val));
+    $element.html(html);
+  };
+
   functions.reaction = {};
   functions.reaction.init = async () => {
     functions.reaction.OCL = await asyncRequire(oclUrl);

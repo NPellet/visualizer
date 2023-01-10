@@ -1,5 +1,5 @@
 {
-  "version": "2.103.1-0",
+  "version": "2.154.2-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -103,7 +103,7 @@
               "outputType": [null],
               "btnvalue": ["Send script"],
               "iseditable": [["editable"]],
-              "hasButton": [["button"]],
+              "hasButton": [[]],
               "variable": [[]],
               "storeOnChange": [["store"]],
               "debouncing": [0],
@@ -132,7 +132,7 @@
           },
           "zIndex": 0,
           "display": true,
-          "title": "",
+          "title": "RXN file",
           "bgColor": [255, 255, 255, 0],
           "wrapper": true,
           "created": true,
@@ -179,7 +179,7 @@
           "fontFamily": [""]
         }
       ],
-      "title": ""
+      "title": "RXN file"
     },
     {
       "url": "modules/types/display/single_value/",
@@ -320,6 +320,182 @@
         {
           "rel": "value",
           "name": "object"
+        }
+      ],
+      "actions_in": [{}],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [["store"]],
+              "debouncing": [0],
+              "script": [
+                "gJQ@@dju@P!eMHAIXO}R` eF@HhP#qjN` qjH Ql#!R?g~w?[_|m?t]tmp !R?g~w?QvZw@ !R_vp]nop"
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 60
+          },
+          "size": {
+            "width": 51,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "RXN code",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "rxnCode"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "RXN code"
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [[]],
+              "maxEntries": [1],
+              "editable": [[]],
+              "editSearchRegexp": [null],
+              "editReplace": [null],
+              "debounce": [0],
+              "defaultvalue": [null],
+              "font": [null],
+              "fontcolor": [[0, 0, 0, 1]],
+              "fontsize": [null],
+              "align": [null],
+              "valign": [null],
+              "rendererOptions": [""],
+              "forceType": ["rxnCode"],
+              "sprintf": [null],
+              "sprintfOrder": [null],
+              "preformatted": [[]]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 52,
+            "top": 60
+          },
+          "size": {
+            "width": 68,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "rxnCode"
         }
       ],
       "actions_in": [{}],

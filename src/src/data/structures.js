@@ -1,6 +1,6 @@
 'use strict';
 
-define(function () {
+define(function() {
   var structures = {
     //        'object': 'object', // Removed ! Object should by dynamic.
     latex: 'string',
@@ -43,8 +43,8 @@ define(function () {
       type: 'array',
       elements: {
         type: 'array',
-        elements: ['number', 'string']
-      }
+        elements: ['number', 'string'],
+      },
     },
     indicator: {
       type: 'array',
@@ -55,38 +55,38 @@ define(function () {
         class: 'string',
         icon: 'string',
         css: 'object',
-        tooltip: 'string'
-      }
+        tooltip: 'string',
+      },
     },
     styledValue: {
       type: 'object',
       elements: {
         css: 'object',
-        value: 'object'
-      }
+        value: 'object',
+      },
     },
     arrayXY: {
       type: 'array',
-      elements: ['number', 'number']
+      elements: ['number', 'number'],
     },
     matrix: {
-      type: 'object'
+      type: 'object',
     },
     sparkline: {
-      type: 'object'
+      type: 'object',
     },
     chart: {
-      type: 'object'
+      type: 'object',
     },
     tree: {
-      type: 'object'
+      type: 'object',
     },
     fromTo: {
       type: 'object',
       elements: {
         from: 'number',
-        to: 'number'
-      }
+        to: 'number',
+      },
     },
     loading: {
       type: 'object',
@@ -114,14 +114,14 @@ define(function () {
                     o: 'number',
                     w: 'number',
                     x: 'number',
-                    y: 'number'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                    y: 'number',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     gridSelector: {
       type: 'object',
@@ -138,9 +138,9 @@ define(function () {
               defaultMaxValue: 'number',
               defaultMinValue: 'number',
               maxValue: 'number',
-              minValue: 'number'
-            }
-          }
+              minValue: 'number',
+            },
+          },
         },
 
         variables: {
@@ -149,11 +149,11 @@ define(function () {
             type: 'object',
             elements: {
               name: 'string',
-              label: 'strig'
-            }
-          }
-        }
-      }
+              label: 'strig',
+            },
+          },
+        },
+      },
     },
     chemical: {
       type: 'object',
@@ -169,9 +169,9 @@ define(function () {
             type: 'object',
             elements: {
               value: 'string',
-              language: 'string'
-            }
-          }
+              language: 'string',
+            },
+          },
         },
         mf: {
           type: 'array',
@@ -181,9 +181,9 @@ define(function () {
             elements: {
               value: 'mf',
               mw: 'int',
-              exactMass: 'int'
-            }
-          }
+              exactMass: 'int',
+            },
+          },
         },
         mol: {
           type: 'array',
@@ -192,9 +192,9 @@ define(function () {
             type: 'object',
             elements: {
               value: 'molfile2D',
-              gif: 'gif'
-            }
-          }
+              gif: 'gif',
+            },
+          },
         },
         rn: {
           type: 'array',
@@ -202,14 +202,14 @@ define(function () {
           elements: {
             type: 'object',
             elements: {
-              value: 'int'
-            }
-          }
+              value: 'int',
+            },
+          },
         },
         batchID: 'string',
         catalogID: 'string',
-        entryDetails: 'chemicalDetails'
-      }
+        entryDetails: 'chemicalDetails',
+      },
     },
     chemicalDetails: {
       type: 'object',
@@ -224,9 +224,9 @@ define(function () {
             type: 'object',
             elements: {
               value: 'string',
-              language: 'string'
-            }
-          }
+              language: 'string',
+            },
+          },
         },
         mf: {
           type: 'array',
@@ -235,9 +235,9 @@ define(function () {
             elements: {
               value: 'mf',
               mw: 'int',
-              exactMass: 'int'
-            }
-          }
+              exactMass: 'int',
+            },
+          },
         },
         mol: {
           type: 'array',
@@ -245,9 +245,9 @@ define(function () {
             type: 'object',
             elements: {
               value: 'molfile2D',
-              gif: 'gif'
-            }
-          }
+              gif: 'gif',
+            },
+          },
         },
         batchID: 'string',
         catalogID: 'string',
@@ -258,9 +258,9 @@ define(function () {
             elements: {
               pressure: 'number',
               high: 'number',
-              low: 'number'
-            }
-          }
+              low: 'number',
+            },
+          },
         },
         mp: {
           type: 'array',
@@ -269,18 +269,18 @@ define(function () {
             elements: {
               pressure: 'number',
               high: 'number',
-              low: 'number'
-            }
-          }
+              low: 'number',
+            },
+          },
         },
         rn: {
           type: 'array',
           elements: {
             type: 'object',
             elements: {
-              value: 'number'
-            }
-          }
+              value: 'number',
+            },
+          },
         },
         density: {
           type: 'array',
@@ -289,13 +289,13 @@ define(function () {
             elements: {
               high: 'number',
               low: 'number',
-              temperature: 'number'
-            }
-          }
+              temperature: 'number',
+            },
+          },
         },
         mol3d: {
           type: 'array',
-          elements: 'molfile3d'
+          elements: 'molfile3d',
         },
         ir: {
           type: 'array',
@@ -311,11 +311,11 @@ define(function () {
                   description: 'string',
                   value: 'string',
                   url: 'string',
-                  pdf: 'string'
-                }
-              }
-            }
-          }
+                  pdf: 'string',
+                },
+              },
+            },
+          },
         },
         nmr: {
           type: 'array',
@@ -335,11 +335,11 @@ define(function () {
                   description: 'string',
                   value: 'string',
                   url: 'string',
-                  pdf: 'string'
-                }
-              }
-            }
-          }
+                  pdf: 'string',
+                },
+              },
+            },
+          },
         },
         nmrExperiment: {
           type: 'object',
@@ -362,11 +362,11 @@ define(function () {
                       description: 'string',
                       value: 'string',
                       url: 'string',
-                      pdf: 'string'
-                    }
-                  }
-                }
-              }
+                      pdf: 'string',
+                    },
+                  },
+                },
+              },
             },
             '13C': {
               type: 'array',
@@ -386,11 +386,11 @@ define(function () {
                       description: 'string',
                       value: 'string',
                       url: 'string',
-                      pdf: 'string'
-                    }
-                  }
-                }
-              }
+                      pdf: 'string',
+                    },
+                  },
+                },
+              },
             },
             cosy: {
               type: 'array',
@@ -410,11 +410,11 @@ define(function () {
                       description: 'string',
                       value: 'string',
                       url: 'string',
-                      pdf: 'string'
-                    }
-                  }
-                }
-              }
+                      pdf: 'string',
+                    },
+                  },
+                },
+              },
             },
             hsqc: {
               type: 'array',
@@ -434,11 +434,11 @@ define(function () {
                       description: 'string',
                       value: 'string',
                       url: 'string',
-                      pdf: 'string'
-                    }
-                  }
-                }
-              }
+                      pdf: 'string',
+                    },
+                  },
+                },
+              },
             },
             hmbc: {
               type: 'array',
@@ -458,11 +458,11 @@ define(function () {
                       description: 'string',
                       value: 'string',
                       url: 'string',
-                      pdf: 'string'
-                    }
-                  }
-                }
-              }
+                      pdf: 'string',
+                    },
+                  },
+                },
+              },
             },
             jresolv: {
               type: 'array',
@@ -482,13 +482,13 @@ define(function () {
                       description: 'string',
                       value: 'string',
                       url: 'string',
-                      pdf: 'string'
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      pdf: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         mass: {
           type: 'array',
@@ -496,9 +496,9 @@ define(function () {
             type: 'object',
             elements: {
               experiment: 'string',
-              jcamp: 'jcamp'
-            }
-          }
+              jcamp: 'jcamp',
+            },
+          },
         },
         massExperiment: {
           type: 'object',
@@ -509,9 +509,9 @@ define(function () {
                 type: 'object',
                 elements: {
                   experiment: 'string',
-                  jcamp: 'jcamp'
-                }
-              }
+                  jcamp: 'jcamp',
+                },
+              },
             },
             gcMS: {
               type: 'array',
@@ -519,9 +519,9 @@ define(function () {
                 type: 'object',
                 elements: {
                   experiment: 'string',
-                  jcamp: 'jcamp'
-                }
-              }
+                  jcamp: 'jcamp',
+                },
+              },
             },
             ms: {
               type: 'array',
@@ -529,26 +529,26 @@ define(function () {
                 type: 'object',
                 elements: {
                   experiment: 'string',
-                  jcamp: 'jcamp'
-                }
-              }
-            }
-          }
-        }
-      }
+                  jcamp: 'jcamp',
+                },
+              },
+            },
+          },
+        },
+      },
     },
     geojson: 'object',
     pdb: 'string',
     cif: 'string',
     magres: 'string',
-    jsmolscript: 'string'
+    jsmolscript: 'string',
   };
 
-  var getList = function () {
+  var getList = function() {
     return Object.keys(this).sort();
   };
 
-  var parse = function (type, value) {
+  var parse = function(type, value) {
     if (!this[type]) return;
 
     var result = { type: type };
@@ -578,11 +578,11 @@ define(function () {
   };
 
   Object.defineProperty(structures, '_getList', {
-    value: getList
+    value: getList,
   });
 
   Object.defineProperty(structures, '_parse', {
-    value: parse
+    value: parse,
   });
 
   return structures;
