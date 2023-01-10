@@ -1,3 +1,12 @@
+# [2.155.0](https://github.com/NPellet/visualizer/compare/v2.154.1...v2.155.0) (2023-01-10)
+
+
+### Features
+
+* add rxnCode ([7a5c39b](https://github.com/NPellet/visualizer/commit/7a5c39be3d7e1b7c32502b5fe15fbcb61a802814))
+
+
+
 ## [2.154.1](https://github.com/NPellet/visualizer/compare/v2.154.0...v2.154.1) (2022-10-11)
 
 
