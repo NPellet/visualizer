@@ -1,3 +1,12 @@
+## [2.155.1](https://github.com/NPellet/visualizer/compare/v2.155.0...v2.155.1) (2023-01-10)
+
+
+### Bug Fixes
+
+* rxnCode typerenderer ([0026ca9](https://github.com/NPellet/visualizer/commit/0026ca9e036a7f5118d19309eebcc6fc8a9dab21))
+
+
+
 # [2.155.0](https://github.com/NPellet/visualizer/compare/v2.154.1...v2.155.0) (2023-01-10)
 
 
