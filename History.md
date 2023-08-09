@@ -1,3 +1,12 @@
+## [2.156.1](https://github.com/NPellet/visualizer/compare/v2.156.0...v2.156.1) (2023-08-09)
+
+
+### Features
+
+* allow height option for ghs pictograms ([299d40b](https://github.com/NPellet/visualizer/commit/299d40b8be1e3f6beb6423ba1cfc61613b9be896))
+
+
+
 # [2.156.0](https://github.com/NPellet/visualizer/compare/v2.155.1...v2.156.0) (2023-01-19)
 
 
