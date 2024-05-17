@@ -1,3 +1,12 @@
+# [2.157.0](https://github.com/NPellet/visualizer/compare/v2.156.1...v2.157.0) (2024-05-17)
+
+
+### Features
+
+* download SVG from spectra-displayer is compatible 1.1 ([75d4541](https://github.com/NPellet/visualizer/commit/75d4541b2a0ca0b5f9238e0575e6bebd1277ec8f))
+
+
+
 ## [2.156.1](https://github.com/NPellet/visualizer/compare/v2.156.0...v2.156.1) (2023-08-09)
 
 
