@@ -1165,6 +1165,5 @@ function svg11(string) {
     string = string.replace(/fill="transparent"/g, 'fill-opacity="0"')
         .replace(/stroke="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g, 'stroke="rgb($1,$2,$3)" stroke-opacity="$4"')
         .replace(/fill="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g, 'fill="rgb($1,$2,$3) fill-opacity="$4"');
-    console.log(string);
     return string;
 }
