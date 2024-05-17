@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -257,7 +257,7 @@ define([
           xAxis.on('zoom', xZoomHandler);
           xAxis.on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function () {
+            xAxis.on('zoom', function() {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -1376,6 +1376,8 @@ define([
 
     onActionReceive: {
       fromToX(value) {
+        if (this.xCached) console.log({ value });
+        console.log(this.xAxis);
         this.xAxis.zoom(value.from, value.to);
         this.graph.draw();
       },
