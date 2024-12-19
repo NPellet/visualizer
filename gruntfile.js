@@ -295,7 +295,6 @@ module.exports = function(grunt) {
               './json-chart/dist/*',
               './d3-plugins/**',
               './mime-types/**',
-              './bluebird/js/browser/**',
               './notifyjs/dist/**',
               './web-animations-js/*.js',
               './web-animations-js/*.js.map',

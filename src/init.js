@@ -20,7 +20,6 @@ require.config({
     async: 'components/async/dist/async',
     babel: 'components/babel-standalone/babel.min',
     bioParsers: 'browserified/bioParsers/index',
-    bluebird: 'components/bluebird/js/browser/bluebird',
     bowser: 'components/bowser/bowser',
     canvg: 'components/canvg/dist/canvg.bundle',
     chroma: 'components/chroma-js/chroma.min',
@@ -214,16 +213,9 @@ require([
   'src/main/datas',
   'src/main/entrypoint',
   'uri/URI.fragmentQuery',
-  'bluebird',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function (Version, $, Datas, EntryPoint, URI, Promise) {
-  window.Promise = Promise;
-  Promise.config({
-    warnings: Version.head,
-    longStackTraces: Version.head,
-    monitoring: false,
-  });
+], function (Version, $, Datas, EntryPoint, URI) {
   $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);
