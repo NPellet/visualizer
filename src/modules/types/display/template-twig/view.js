@@ -135,7 +135,6 @@ define([
       }
 
       this.module.controller.onFormChanged(toSend, noChange);
-      // Return null to tell Bluebird that we don't care about the Promise created above
       return null;
     },
 

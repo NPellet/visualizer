@@ -5,13 +5,12 @@
  * @module src/util/util
  */
 define([
-  'bluebird',
   'lodash',
   './debug',
   './color',
   '../data/structures',
   'web-animations'
-], function (Promise, _, Debug, Color, structures) {
+], function (_, Debug, Color, structures) {
   var months = [
     'January',
     'February',
