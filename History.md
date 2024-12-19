@@ -1,3 +1,12 @@
+# [2.158.0](https://github.com/NPellet/visualizer/compare/v2.157.0...v2.158.0) (2024-12-19)
+
+
+### Bug Fixes
+
+* remove bluebird ([#1151](https://github.com/NPellet/visualizer/issues/1151)) ([e23a51e](https://github.com/NPellet/visualizer/commit/e23a51eb13aeab1926e0eb8aa7f602aa90986ef4))
+
+
+
 # [2.157.0](https://github.com/NPellet/visualizer/compare/v2.156.1...v2.157.0) (2024-05-17)
 
 
