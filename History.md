@@ -1,3 +1,12 @@
+## [2.158.1](https://github.com/NPellet/visualizer/compare/v2.158.0...v2.158.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* update numeral to fix leading 000 bug ([3a10889](https://github.com/NPellet/visualizer/commit/3a108892613ab6475f3fe658ce096950766d550c))
+
+
+
 # [2.158.0](https://github.com/NPellet/visualizer/compare/v2.157.0...v2.158.0) (2024-12-19)
 
 
