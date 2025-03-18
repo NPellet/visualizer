@@ -1,5 +1,5 @@
 {
-  "version": "2.152.1-0",
+  "version": "2.158.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -42,7 +42,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 5
+            "top": 0
           },
           "size": {
             "width": 56,
@@ -179,6 +179,18 @@
                 "rendererOptions": "toFixed: 2, hideZero: true",
                 "editorOptions": "",
                 "hideColumn": []
+              },
+              {
+                "name": "1 numeral",
+                "jpath": ["first"],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "numeral: '000.000'",
+                "editorOptions": "",
+                "hideColumn": []
               }
             ]
           ],
@@ -212,11 +224,11 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 58,
-            "top": 15
+            "left": 57,
+            "top": 0
           },
           "size": {
-            "width": 89,
+            "width": 61,
             "height": 50
           },
           "zIndex": 0,
