@@ -52,7 +52,9 @@ define([
                 text,
               );
               return;
-            } catch (e) {}
+            } catch (e) {
+              // not a smiles, we expect it is an idCode
+            }
             this.module.view.onActionReceive.setIDCode.call(
               this.module.view,
               text,
