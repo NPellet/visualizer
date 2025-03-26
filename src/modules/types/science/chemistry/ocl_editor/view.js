@@ -51,10 +51,27 @@ define([
         this.editor.setMolFile(val);
         this.setFragment();
       },
+      setIDCode: function(val) {
+        if (this._currentValue && this._currentValue.setValue) {
+          this._currentValue.setValue(val);
+        } else {
+          this._currentValue = val;
+        }
+        console.log(val);
+        this._currentType = 'oclid';
+        this.editor.setIDCode(val);
+        this.setFragment();
+      },
       copyMolfile: function() {
         const molfile = this.editor.getMolFileV3();
         ui.copyToClipboard(molfile, {
           successMessage: 'Molfile copied to the clipboard',
+        });
+      },
+      copyIDCode: function() {
+        const idCode = this.editor.getIDCode();
+        ui.copyToClipboard(idCode, {
+          successMessage: 'IDCode copied to the clipboard',
         });
       },
       downloadSvg: function(value = {}) {

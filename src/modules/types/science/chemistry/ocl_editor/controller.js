@@ -37,18 +37,39 @@ define([
       onClick: () => {
         if (navigator.clipboard) {
           navigator.clipboard.readText().then((text) => {
-            if (!text.includes('\n')) {
-              text = OCL.Molecule.fromSmiles(text).toMolfile();
+            if (text.split('\n').length > 4) {
+              this.module.view.onActionReceive.setMolfile.call(
+                this.module.view,
+                text,
+              );
+              return;
             }
-            this.module.view.onActionReceive.setMolfile.call(
+            // could be either a SMILES or an IDCode
+            try {
+              text = OCL.Molecule.fromSmiles(text).toMolfileV3();
+              this.module.view.onActionReceive.setMolfile.call(
+                this.module.view,
+                text,
+              );
+              return;
+            } catch (e) {}
+            this.module.view.onActionReceive.setIDCode.call(
               this.module.view,
               text,
             );
           });
         }
       },
-      title: 'Import molfile or SMILES from clipboard',
+      title: 'Import molfile, SMILES or IDCode from clipboard',
       cssClass: 'fa fa-paste',
+      ifLocked: true,
+    });
+    base.unshift({
+      onClick: () => {
+        this.module.view.onActionReceive.copyIDCode.call(this.module.view);
+      },
+      title: 'Copy idCode (unique ID from OCL Editor)',
+      cssClass: 'fa fa-fingerprint',
       ifLocked: true,
     });
     base.unshift({
@@ -106,6 +127,7 @@ define([
 
   Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
     setMolfile: 'Set molecule from molfile',
+    setIDCode: 'Set molecule from idCode',
     downloadSvg: 'Download molecule as SVG',
     copyMolfile: 'Copy Molfile to clipboard',
   });
