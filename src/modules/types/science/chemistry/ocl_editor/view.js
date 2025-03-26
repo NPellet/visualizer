@@ -57,7 +57,6 @@ define([
         } else {
           this._currentValue = val;
         }
-        console.log(val);
         this._currentType = 'oclid';
         this.editor.setIDCode(val);
         this.setFragment();
