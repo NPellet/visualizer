@@ -1,3 +1,12 @@
+# [2.159.0](https://github.com/NPellet/visualizer/compare/v2.158.1...v2.159.0) (2025-03-26)
+
+
+### Features
+
+* OCL editor allows to copy / paste idCode ([e2a279e](https://github.com/NPellet/visualizer/commit/e2a279e5a2ff141d1689d6fcc8f5a0784b44181b))
+
+
+
 ## [2.158.1](https://github.com/NPellet/visualizer/compare/v2.158.0...v2.158.1) (2025-03-18)
 
 
