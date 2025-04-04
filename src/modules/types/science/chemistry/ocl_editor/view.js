@@ -142,7 +142,7 @@ define([
 
 function setCurrentValue(self, molecule) {
   const setValue = (value) => {
-    if (self._currentValue?.setValue) {
+    if (self._currentValue && self._currentValue.setValue) {
       self._currentValue.setValue(value);
     } else {
       self._currentValue = value;
