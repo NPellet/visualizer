@@ -1,3 +1,13 @@
+## [2.159.1](https://github.com/NPellet/visualizer/compare/v2.159.0...v2.159.1) (2025-04-04)
+
+
+### Bug Fixes
+
+* do not use coordinates from root in ocl renderer ([1a35dde](https://github.com/NPellet/visualizer/commit/1a35dde2c6136c4a8986b22ddcb11af3aa5db57e))
+* OCL editor receive action deals correctly with different kinds ([1b886dd](https://github.com/NPellet/visualizer/commit/1b886dda73678ad072b7104b24f86ac9e7e03405))
+
+
+
 # [2.159.0](https://github.com/NPellet/visualizer/compare/v2.158.1...v2.159.0) (2025-03-26)
 
 
