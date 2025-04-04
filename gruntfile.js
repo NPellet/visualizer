@@ -276,7 +276,7 @@ module.exports = function(grunt) {
               './jsgraph/dist/**',
               './jsme/**',
               './jsmol/**',
-              './jcampconverter/dist/*',
+              './jcampconverter/*',
               './jsbarcode/dist/*.js',
               './slickgrid/**',
               './ml/dist/*',

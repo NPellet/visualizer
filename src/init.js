@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(function() {
   try {
     eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
   } catch (e) {
@@ -34,7 +34,7 @@ require.config({
     'file-saver': 'components/file-saver.js/FileSaver',
     forms: 'lib/forms',
     highlightjs: 'lib/highlight.js/highlight.pack',
-    jcampconverter: 'components/jcampconverter/dist/jcampconverter.min',
+    jcampconverter: 'lib/jcampconverter/jcampconverter.7.3.1.min',
     jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
     jsbarcode: 'components/jsbarcode/dist/JsBarcode.all.min',
     jquery: 'components/jquery/dist/jquery',
@@ -113,7 +113,7 @@ require.config({
     // },
     threejs: {
       exports: 'THREE',
-      init: function () {
+      init: function() {
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
       },
@@ -215,7 +215,7 @@ require([
   'uri/URI.fragmentQuery',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function (Version, $, Datas, EntryPoint, URI) {
+], function(Version, $, Datas, EntryPoint, URI) {
   $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);
@@ -223,8 +223,8 @@ require([
       url.search().length > 0
         ? 'search'
         : url.fragment()[0] === '?'
-          ? 'fragment'
-          : 'search';
+        ? 'fragment'
+        : 'search';
     const query = new URI(url[type]()).query(true);
     EntryPoint.init(query, type.replace(type[0], type[0].toUpperCase()));
   });

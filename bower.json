@@ -27,7 +27,6 @@
     "fetch": "2.0.1",
     "file-saver.js": "cheminfo-js/file-saver.js#6a90cb37e56fbb110f03c70c90ebceb9312650db",
     "flag-icon-css": "2.8.0",
-    "jcampconverter": "7.3.1",
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
     "jquery": "2.2.4",
@@ -77,7 +76,6 @@
   },
   "resolutions": {
     "jsgraph": "2.2.36",
-    "jcampconverter": "7.3.1",
     "jquery": "2.2.4",
     "eventEmitter": "^5.1.0"
   },
