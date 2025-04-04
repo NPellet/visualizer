@@ -42,24 +42,12 @@ define([
 
     onActionReceive: {
       setMolfile: function(val) {
-        if (this._currentValue && this._currentValue.setValue) {
-          this._currentValue.setValue(val);
-        } else {
-          this._currentValue = val;
-        }
-        this._currentType = 'molV3';
-        this.editor.setMolFile(val);
-        this.setFragment();
+        const molecule = OCL.Molecule.formMolfile(val);
+        setCurrentValue(this, molecule);
       },
       setIDCode: function(val) {
-        if (this._currentValue && this._currentValue.setValue) {
-          this._currentValue.setValue(val);
-        } else {
-          this._currentValue = val;
-        }
-        this._currentType = 'oclid';
-        this.editor.setIDCode(val);
-        this.setFragment();
+        const molecule = OCL.Molecule.fromIDCode(val);
+        setCurrentValue(this, molecule);
       },
       copyMolfile: function() {
         const molfile = this.editor.getMolFileV3();
@@ -151,3 +139,33 @@ define([
 
   return View;
 });
+
+function setCurrentValue(self, molecule) {
+  const setValue = (value) => {
+    if (self._currentValue?.setValue) {
+      self._currentValue.setValue(value);
+    } else {
+      self._currentValue = value;
+    }
+  };
+
+  switch (self._currentType) {
+    case 'mol':
+      setValue(molecule.toMolfile());
+      break;
+    case 'molV3':
+      setValue(molecule.toMolfileV3());
+      break;
+    case 'smiles':
+      setValue(molecule.toSmiles());
+      break;
+    case 'oclid':
+      setValue(molecule.getIDCode());
+      break;
+    default:
+      self._currentType = 'molV3';
+      self._currentValue = molecule.toMolfileV3();
+  }
+  self.editor.setIDCode(molecule.getIDCode());
+  self.setFragment();
+}

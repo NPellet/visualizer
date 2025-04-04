@@ -42,7 +42,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 1
+            "top": 0
           },
           "size": {
             "width": 47,
@@ -128,7 +128,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 45
+            "top": 44
           },
           "size": {
             "width": 47,
@@ -199,11 +199,11 @@
         "Default layer": {
           "position": {
             "left": 48,
-            "top": 1
+            "top": 0
           },
           "size": {
             "width": 42,
-            "height": 53
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
@@ -219,6 +219,10 @@
         {
           "rel": "actid",
           "name": "oclid"
+        },
+        {
+          "rel": "mol",
+          "name": "molfile"
         }
       ],
       "actions_in": [{}],
@@ -293,11 +297,11 @@
         "Default layer": {
           "position": {
             "left": 91,
-            "top": 1
+            "top": 0
           },
           "size": {
             "width": 55,
-            "height": 33
+            "height": 43
           },
           "zIndex": 0,
           "display": true,
@@ -371,11 +375,11 @@
         "Default layer": {
           "position": {
             "left": 48,
-            "top": 55
+            "top": 44
           },
           "size": {
             "width": 42,
-            "height": 23
+            "height": 33
           },
           "zIndex": 0,
           "display": true,
@@ -453,11 +457,11 @@
         "Default layer": {
           "position": {
             "left": 91,
-            "top": 35
+            "top": 44
           },
           "size": {
-            "width": 54,
-            "height": 37
+            "width": 55,
+            "height": 33
           },
           "zIndex": 0,
           "display": true,
@@ -511,6 +515,263 @@
         }
       ],
       "title": "newIDCode"
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": ["text"],
+              "outputType": [null],
+              "btnvalue": ["Send script"],
+              "iseditable": [["editable"]],
+              "hasButton": [[]],
+              "variable": [[]],
+              "storeOnChange": [[]],
+              "debouncing": [0],
+              "script": [null]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [["yes"]],
+              "tabSize": [4]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 147,
+            "top": 0
+          },
+          "size": {
+            "width": 52,
+            "height": 77
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "An empty molfile input with input variable change",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": "An empty molfile input with input variable change"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": ["API.createData('molfile', '');"]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 78
+          },
+          "size": {
+            "width": 47,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [[]],
+              "asyncAwait": [["top"]],
+              "script": ["API.createData('oclid', '');"]
+            }
+          ],
+          "libs": [[{}]],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 48,
+            "top": 78
+          },
+          "size": {
+            "width": 47,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 9,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
@@ -541,7 +802,7 @@
       "groups": {
         "general": [
           {
-            "script": [null]
+            "script": ["API.createData('molfile', '');"]
           }
         ]
       }
