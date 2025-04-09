@@ -1,3 +1,12 @@
+## [2.160.3](https://github.com/NPellet/visualizer/compare/v2.160.2...v2.160.3) (2025-04-09)
+
+
+### Bug Fixes
+
+* list of ocl with coordinates didn't display structures ([ad662da](https://github.com/NPellet/visualizer/commit/ad662da569459c9788cd685c8a8dd8d42231b2cc))
+
+
+
 ## [2.160.2](https://github.com/NPellet/visualizer/compare/v2.160.1...v2.160.2) (2025-04-04)
 
 
