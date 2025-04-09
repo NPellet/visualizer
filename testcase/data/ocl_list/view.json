@@ -1,5 +1,5 @@
 {
-  "version": "2.147.1-0",
+  "version": "2.160.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -34,12 +34,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 4,
-            "top": 6
+            "left": 0,
+            "top": 0
           },
           "size": {
-            "width": 66,
-            "height": 55
+            "width": 47,
+            "height": 41
           },
           "zIndex": 0,
           "display": true,
@@ -219,12 +219,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 76,
-            "top": 11
+            "left": 48,
+            "top": 0
           },
           "size": {
-            "width": 82,
-            "height": 46
+            "width": 59,
+            "height": 41
           },
           "zIndex": 0,
           "display": true,
@@ -240,6 +240,274 @@
         {
           "rel": "list",
           "name": "table"
+        }
+      ],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [["editor", "buttons"]],
+              "execOnLoad": [["yes"]],
+              "asyncAwait": [["top"]],
+              "script": [
+                ";const entries=[]\n\n\nfor (let i=2; i<5; i++) {\n    const smiles =  'C'.repeat(i);\n    const molecule = OCL.Molecule.fromSmiles(smiles);\n    const idCodeCoordinates = molecule.getIDCodeAndCoordinates();\n    console.log(idCodeCoordinates)\n    entries.push({\n        smiles,\n        idCode: molecule.getIDCode(),\n        idCodeCoordinates: {\n            value: idCodeCoordinates.idCode,\n            coordinates: idCodeCoordinates.coordinates,\n        },\n        molfile: molecule.toMolfile(),\n    })    \n}\n\nAPI.createData('entries', entries);\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "openchemlib/openchemlib-full",
+                "alias": "OCL"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 42
+          },
+          "size": {
+            "width": 47,
+            "height": 37
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [{}],
+      "actions_in": [{}],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [100, 100, 100, 1]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [["Open Preferences"]]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [""],
+          "fontFamily": [""]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [[]],
+              "copyPasteOptions": [["newRows"]],
+              "autoColumns": [[]],
+              "toolbar": [[]],
+              "colorjpath": [[]],
+              "slick.defaultColumnWidth": [null],
+              "slick.rowHeight": ["100"],
+              "slick.headerRowHeight": [30],
+              "slick.selectionModel": ["row"],
+              "idProperty": [""],
+              "filterType": ["pref"],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [""]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "smiles",
+                "jpath": ["smiles"],
+                "editor": "none",
+                "forceType": "smiles",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "idCode",
+                "jpath": ["idCode"],
+                "editor": "none",
+                "forceType": "oclid",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Molfile",
+                "jpath": ["molfile"],
+                "editor": "none",
+                "forceType": "molfile2d",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "idCodeCoordinates",
+                "jpath": ["idCodeCoordinates"],
+                "editor": "none",
+                "forceType": "oclid",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [255, 255, 255, 0],
+                "color": [0, 0, 0, 1],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [[{}]],
+          "data": [
+            {
+              "saveInView": [[]],
+              "varname": [""],
+              "data": ["[]"]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 48,
+            "top": 42
+          },
+          "size": {
+            "width": 45,
+            "height": 40
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [255, 255, 255, 0],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "entries"
         }
       ],
       "actions_in": [{}],

@@ -378,6 +378,7 @@ define([
     let coordinates = val.coordinates;
     let oclid = val.value ? val.value : val.idCode ? val.idCode : val;
     if (oclid) oclid = String(oclid);
+    if (coordinates) coordinates = String(coordinates);
 
     if (!coordinates && !val.value) {
       const mol = functions.oclid.OCL.Molecule.fromIDCode(oclid, true);
