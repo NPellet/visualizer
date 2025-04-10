@@ -785,8 +785,7 @@ define([
         this.series[varname] = this.series[varname] || [];
         this.removeSerie(varname);
 
-        moduleValue = JSONChart.check(moduleValue.get());
-
+        moduleValue = JSONChart.check(recursiveUntypeArrays(moduleValue.get()));
         var existingNames = new Set();
 
         // in spectra diplayer we don't have the correct format currently. still need to change it for now
@@ -1376,8 +1375,6 @@ define([
 
     onActionReceive: {
       fromToX(value) {
-        if (this.xCached) console.log({ value });
-        console.log(this.xAxis);
         this.xAxis.zoom(value.from, value.to);
         this.graph.draw();
       },
@@ -1632,4 +1629,31 @@ function convertStyle(styles) {
     });
   }
   return newStyles;
+}
+
+/**
+ * Recursively change the typed arrays to normal arrays
+ * The changes are done in-place !
+ * @param object
+ * @returns
+ */
+function recursiveUntypeArrays(object) {
+  if (typeof object !== 'object') return object;
+  object = modifier(object);
+  return object;
+}
+
+function modifier(object) {
+  if (typeof object !== 'object') return object;
+  if (ArrayBuffer.isView(object)) {
+    return Array.from(object);
+  }
+  for (const key in object) {
+    if (ArrayBuffer.isView(object[key])) {
+      object[key] = Array.from(object[key]);
+    } else if (typeof object[key] === 'object') {
+      modifier(object[key]);
+    }
+  }
+  return object;
 }
