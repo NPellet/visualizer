@@ -1,3 +1,12 @@
+# [2.161.0](https://github.com/NPellet/visualizer/compare/v2.160.3...v2.161.0) (2025-04-10)
+
+
+### Features
+
+* spectra-displayer allows data with typed arrays ([afedf4a](https://github.com/NPellet/visualizer/commit/afedf4a004f4fc484c5787a6a826f3f7159a7aaf))
+
+
+
 ## [2.160.3](https://github.com/NPellet/visualizer/compare/v2.160.2...v2.160.3) (2025-04-09)
 
 
