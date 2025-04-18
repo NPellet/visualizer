@@ -22,8 +22,7 @@
     "prettier-write": "prettier --write src",
     "test": "npm run eslint",
     "release:minor": "npm run test && grunt bump:minor --release",
-    "release:patch": "npm run test && grunt bump:patch --release",
-    "doc": "grunt jsdoc"
+    "release:patch": "npm run test && grunt bump:patch --release"
   },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {
