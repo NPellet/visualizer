@@ -6,7 +6,7 @@ define([
   'ace/ace',
   'src/util/context',
   'jquery',
-  'forms/button'
+  'forms/button',
 ], function (Default, Util, ace, Context, $, Button) {
   function View() {}
 
@@ -16,27 +16,21 @@ define([
     this._id = Util.getNextUniqueId();
     this._code = '';
 
-    var table = (this.table = $('<table>').css({
+    this.table = $('<table>').css({
       height: '100%',
       width: '100%',
-      bottom: 0
-    }));
-    var editorRow = $('<tr>')
-      .appendTo(table)
-      .css('height', 'auto');
+      bottom: 0,
+    });
+    var editorRow = $('<tr>').appendTo(this.table).css('height', 'auto');
     this.editorRow = editorRow;
-    this.buttonRow = $('<tr>')
-      .appendTo(table)
-      .css('height', '30px');
-    this.editorCell = $('<td>')
-      .css('height', '100%')
-      .appendTo(editorRow);
+    this.buttonRow = $('<tr>').appendTo(this.table).css('height', '30px');
+    this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
     this.buttonCell = $('<td>')
       .appendTo(this.buttonRow)
       .css('text-align', 'center');
     this._input = {};
     this.buttons = [];
-    this.module.getDomContent().html(table);
+    this.module.getDomContent().html(this.table);
   };
 
   View.prototype.inDom = function () {
@@ -67,11 +61,11 @@ define([
         buttons.forEach(function (button, idx) {
           var onclick = that.module.controller.onButtonClick.bind(
             that.module.controller,
-            button.name
+            button.name,
           );
           var b = new Button(button.label, onclick, {
             color: 'Grey',
-            disabled: false
+            disabled: false,
           });
           b.name = button.name;
           if (button.hide && button.hide.indexOf('hide') > -1) {
@@ -86,7 +80,7 @@ define([
             that.editor.commands.addCommand({
               name: 'run',
               bindKey: { win: 'Ctrl-Return', mac: 'Command-Return' },
-              exec: onclick
+              exec: onclick,
             });
           }
         });

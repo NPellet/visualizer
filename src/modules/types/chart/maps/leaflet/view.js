@@ -6,9 +6,9 @@ require.config({
       exports: 'L',
       init: function () {
         return this.L.noConflict();
-      }
-    }
-  }
+      },
+    },
+  },
 });
 
 define([
@@ -18,7 +18,7 @@ define([
   'src/util/api',
   'src/util/color',
   'components/leaflet/dist/leaflet',
-  'components/leaflet-omnivore/leaflet-omnivore.min'
+  'components/leaflet-omnivore/leaflet-omnivore.min',
 ], function ($, Default, Util, API, Color, L, omnivore) {
   function View() {
     this.mapID = Util.getNextUniqueId();
@@ -36,7 +36,7 @@ define([
     },
     createShadow: function () {
       return null;
-    }
+    },
   });
 
   function customIcon(marker) {
@@ -44,7 +44,8 @@ define([
   }
 
   function Marker(options) {
-    var merged = (this.options = $.extend({}, Marker.defaultOptions, options));
+    this.options = $.extend({}, Marker.defaultOptions, options);
+    var merged = this.options;
     this.div = $('<div>');
     this.kind = merged.kind;
     switch (merged.kind) {
@@ -53,21 +54,22 @@ define([
         break;
       case 'circle':
         this.div.css('border-radius', merged.size);
-      // eslint-disable-line no-fallthrough
+
+      // eslint-disable-next-line no-fallthrough
       default:
         this.div.css('background', merged.color);
         break;
     }
     this.div.css({
       width: this.width,
-      height: this.height
+      height: this.height,
     });
   }
 
   Marker.defaultOptions = {
     size: 30,
     color: 'rgba(1,1,1,0.5)',
-    kind: 'circle'
+    kind: 'circle',
   };
   Marker.setDefaultOptions = function (options) {
     $.extend(Marker.defaultOptions, options);
@@ -75,13 +77,15 @@ define([
   Marker.prototype = {
     highlight: function (onOff) {
       if (onOff) {
-        if (this.kind === 'image' && this.options.imgHighlight)
+        if (this.kind === 'image' && this.options.imgHighlight) {
           this.div.attr('src', this.options.imgHighlight);
-        else this.div.css('border', 'solid');
+        } else {
+          this.div.css('border', 'solid');
+        }
+      } else if (this.kind === 'image' && this.options.imgHighlight) {
+        this.div.attr('src', this.options.img);
       } else {
-        if (this.kind === 'image' && this.options.imgHighlight)
-          this.div.attr('src', this.options.img);
-        else this.div.css('border', 'none');
+        this.div.css('border', 'none');
       }
     },
     get center() {
@@ -93,7 +97,7 @@ define([
     },
     get height() {
       return this.options.height || this.options.width || this.options.size;
-    }
+    },
   };
 
   $.extend(true, View.prototype, Default, {
@@ -103,7 +107,7 @@ define([
       this.mapBounds = {};
       this.dom = $(`<div id="${this.mapID}"></div>`).css({
         height: '100%',
-        width: '100%'
+        width: '100%',
       });
       this.module.getDomContent().html(this.dom);
 
@@ -113,7 +117,7 @@ define([
         color: Color.getColor(this.module.getConfiguration('markercolor')),
         size: parseInt(this.module.getConfiguration('markersize'), 10),
         img: 'components/leaflet/dist/images/marker-icon.png',
-        imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png'
+        imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png',
       });
       this.markerjpath = this.module.getConfiguration('markerjpath');
     },
@@ -122,7 +126,7 @@ define([
       var that = this;
 
       this.map = L.map(this.mapID, {
-        zoomAnimation: false
+        zoomAnimation: false,
       });
 
       this.getTileLayer().addTo(that.map);
@@ -146,20 +150,21 @@ define([
       var defaultCenter = [46.522117, 6.566144];
       var configCenter = this.module.getConfiguration('mapcenter');
       var promise;
-      if (configCenter) promise = Promise.resolve(configCenter);
-      else {
+      if (configCenter) {
+        promise = Promise.resolve(configCenter);
+      } else {
         promise = new Promise(function (resolve) {
           if (window.navigator && window.navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
               function (geoposition) {
                 resolve([
                   geoposition.coords.latitude,
-                  geoposition.coords.longitude
+                  geoposition.coords.longitude,
                 ]);
               },
               function () {
                 resolve(defaultCenter);
-              }
+              },
             );
           } else {
             resolve(defaultCenter);
@@ -179,7 +184,7 @@ define([
       gpx: clearLayer,
       wkt: clearLayer,
       topojson: clearLayer,
-      point: clearLayer
+      point: clearLayer,
     },
     update: {
       position: function (value) {
@@ -197,12 +202,12 @@ define([
                 color: '#000000',
                 weight: 1,
                 opacity: 1,
-                fillOpacity: 0.8
+                fillOpacity: 0.8,
               });
             },
             style: (feature) => {
               return feature.properties && feature.properties.style;
-            }
+            },
           });
           this.addGeoJSON(converted, varname);
         } catch (e) {
@@ -255,12 +260,12 @@ define([
         var latlng = L.latLng(point[0], point[1]);
         var circle = L.circle(latlng, 20, {
           color: '#f00',
-          fillColor: '#f00'
+          fillColor: '#f00',
         });
         // circle.addTo(this.map);
         this.addLayer(circle, varname);
         this.updateFit(varname);
-      }
+      },
     },
 
     addLayer: function (layer, varname) {
@@ -268,7 +273,7 @@ define([
       this.mapLayer[varname] = layer;
       this.mapBounds[varname] = new L.LatLngBounds();
       this.mapBounds[varname].extend(
-        layer.getBounds ? layer.getBounds() : layer.getLatLng()
+        layer.getBounds ? layer.getBounds() : layer.getLatLng(),
       );
     },
 
@@ -279,7 +284,7 @@ define([
       geojson.eachLayer((layer) => {
         this.addEvents(layer, varname);
         this.mapBounds[varname].extend(
-          layer.getBounds ? layer.getBounds() : layer.getLatLng()
+          layer.getBounds ? layer.getBounds() : layer.getLatLng(),
         );
       });
     },
@@ -319,7 +324,7 @@ define([
         if (val !== this.map.getZoom()) {
           this.map.setZoom(val);
         }
-      }
+      },
     },
     getTileLayer: function () {
       var baselayer = this.module.getConfiguration('maptiles') || 'osm';
@@ -338,7 +343,7 @@ define([
           break;
       }
       return L.tileLayer(tileLayer.template, tileLayer.parameters);
-    }
+    },
   });
 
   function addEvents(layer, varname) {
@@ -367,24 +372,20 @@ define([
           } else {
             layer.setStyle({ color: '#ff3300' });
           }
+        } else if (layer instanceof L.Marker) {
+          icon._marker.highlight(false);
+        } else if (
+          layer.feature &&
+          layer.feature.properties &&
+          layer.feature.properties.style
+        ) {
+          layer.setStyle(layer.feature.properties.style);
         } else {
-          if (layer instanceof L.Marker) {
-            icon._marker.highlight(false);
-          } else {
-            if (
-              layer.feature &&
-              layer.feature.properties &&
-              layer.feature.properties.style
-            ) {
-              layer.setStyle(layer.feature.properties.style);
-            } else {
-              layer.setStyle({ color: '#0033ff' });
-            }
-          }
+          layer.setStyle({ color: '#0033ff' });
         }
       },
       false,
-      `${this.module.getId()}_${varname}`
+      `${this.module.getId()}_${varname}`,
     );
 
     layer.addEventListener(
@@ -397,22 +398,22 @@ define([
         },
         mouseout: function () {
           API.highlight(data, 0);
-        }
+        },
       },
-      this
+      this,
     );
   }
 
   function clearLayer(varname) {
     API.killHighlight(`${this.module.getId()}_${varname}`);
-    if (this.mapLayers.hasOwnProperty(varname)) {
+    if (Object.hasOwn(this.mapLayers, varname)) {
       this.map.removeLayer(this.mapLayers[varname]);
       delete this.mapLayers[varname];
     }
-    if (this.mapLayer.hasOwnProperty(varname)) {
+    if (Object.hasOwn(this.mapLayer, varname)) {
       this.map.removeLayer(this.mapLayer[varname]);
     }
-    if (this.mapBounds.hasOwnProperty(varname)) {
+    if (Object.hasOwn(this.mapBounds, varname)) {
       delete this.mapBounds[varname];
     }
     this.updateFit();

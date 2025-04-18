@@ -1,8 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api'], function (Default, Traversing, API) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'src/util/datatraversing',
+  'src/util/api',
+], function (Default, Traversing, API) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,14 +15,14 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     author: 'Khalid Arroub',
     date: '07.01.2014',
     license: 'MIT',
-    cssClass: 'stack_chart'
+    cssClass: 'stack_chart',
   };
 
   Controller.prototype.events = {
     onHover: {
       label: 'Hover a piece of chart',
-      refVariable: ['piece']
-    }
+      refVariable: ['piece'],
+    },
   };
 
   Controller.prototype.onHover = function (element) {
@@ -32,8 +35,8 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   Controller.prototype.references = {
     chart: {
       type: ['chart', 'object'],
-      label: 'A json describing a chart'
-    }
+      label: 'A json describing a chart',
+    },
   };
 
   Controller.prototype.elementHover = function (element) {
@@ -60,7 +63,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             preference: {
@@ -72,21 +75,20 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 { title: 'Lines', key: 'Lines' },
                 {
                   title: 'Lines With Steps',
-                  key: 'Lines With Steps'
-                }
+                  key: 'Lines With Steps',
+                },
               ],
               displaySource: {
                 Bars: 'b',
                 Lines: 'l',
-                'Lines With Steps': 'ls'
-
-              }
+                'Lines With Steps': 'ls',
+              },
             },
             stack: {
               type: 'checkbox',
               title: 'Stack',
               default: false,
-              options: { stack: 'Stacking the series together' }
+              options: { stack: 'Stacking the series together' },
             },
             barWidth: {
               type: 'combo',
@@ -98,58 +100,57 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 { title: '0.6', key: 0.6 },
                 { title: '0.7', key: 0.7 },
                 { title: '0.8', key: 0.8 },
-                { title: '0.9', key: 0.9 }
+                { title: '0.9', key: 0.9 },
               ],
 
-              displayTarget: ['b']
+              displayTarget: ['b'],
             },
             fill: {
               type: 'checkbox',
               default: false,
               title: 'Fill',
               options: { fill: 'Filling under lines' },
-              displayTarget: ['l', 'ls']
+              displayTarget: ['l', 'ls'],
             },
             xLabel: {
               type: 'text',
-              title: 'X Axis Label'
+              title: 'X Axis Label',
             },
 
             yLabel: {
               type: 'text',
-              title: 'Y Axis Label'
+              title: 'Y Axis Label',
             },
 
             xLabelHeight: {
               type: 'text',
-              title: 'X Axis label Height'
+              title: 'X Axis label Height',
             },
             xLabelWidth: {
               type: 'text',
-              title: 'X Axis label Width'
+              title: 'X Axis label Width',
             },
             yLabelHeight: {
               type: 'text',
-              title: 'Y Axis label Height'
+              title: 'Y Axis label Height',
             },
             yLabelWidth: {
               type: 'text',
-              title: 'Y Axis label Width'
-            }
-
-          }
-        }
-      }
+              title: 'Y Axis label Width',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configFunctions = {
     stack: function (cfg) {
-      return cfg.indexOf('stack') != -1;
+      return cfg.indexOf('stack') !== -1;
     },
     fill: function (cfg) {
-      return cfg.indexOf('fill') != -1;
-    }
+      return cfg.indexOf('fill') !== -1;
+    },
   };
 
   Controller.prototype.configAliases = {
@@ -162,7 +163,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     xLabelHeight: ['groups', 'group', 0, 'xLabelHeight', 0],
     xLabelWidth: ['groups', 'group', 0, 'xLabelWidth', 0],
     yLabelHeight: ['groups', 'group', 0, 'yLabelHeight', 0],
-    yLabelWidth: ['groups', 'group', 0, 'yLabelWidth', 0]
+    yLabelWidth: ['groups', 'group', 0, 'yLabelWidth', 0],
   };
 
   return Controller;

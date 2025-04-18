@@ -12,7 +12,7 @@ define(['loglevel'], function (log) {
     WARN: 1,
     INFO: 2,
     DEBUG: 3,
-    TRACE: 4
+    TRACE: 4,
   };
 
   var levelMapping = {
@@ -21,7 +21,7 @@ define(['loglevel'], function (log) {
     1: 'warn',
     2: 'info',
     3: 'debug',
-    4: 'trace'
+    4: 'trace',
   };
 
   var debugLevel = Levels.TRACE;
@@ -62,7 +62,7 @@ define(['loglevel'], function (log) {
       return t;
     },
 
-    Timer: Timer
+    Timer: Timer,
   };
 
   function formatTime(time, format) {
@@ -154,7 +154,7 @@ define(['loglevel'], function (log) {
         result[i] = formatTime(this._sums[i], format);
       }
       return result;
-    }
+    },
   };
 
   return Debug;

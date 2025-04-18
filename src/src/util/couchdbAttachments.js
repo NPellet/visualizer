@@ -279,8 +279,9 @@ define([
       const url = `${this.docUrl}/${name}`;
       if (!options.responseType) {
         const req = superagent.get(url).withCredentials();
-        if (_att)
+        if (_att) {
           req.set('Accept', this.lastDoc._attachments[name].content_type);
+        }
         const res = await req.query({ rev: this.lastDoc._rev });
         if (options.raw) return res.text;
         else if (options.responseType) return res.xhr.response;
@@ -404,8 +405,10 @@ define([
   // Private function
   async function inlineRemove(ctx, names, options = {}) {
     await ctx.list();
-    if (!Array.isArray(names))
+    if (!Array.isArray(names)) {
       throw new TypeError('Argument should be an array');
+    }
+
     if (names.length === 0) return ctx.list();
     for (let i = 0; i < names.length; i++) {
       delete ctx.lastDoc._attachments[names[i]];
@@ -417,7 +420,6 @@ define([
       .set('Accept', 'application/json')
       .send(ctx.lastDoc);
     if (res && res.body && res.body.rev) {
-      // eslint-disable-next-line require-atomic-updates
       ctx.lastDoc._rev = res.body.rev;
     }
 

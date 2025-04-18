@@ -1,6 +1,11 @@
 'use strict';
 
-define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chroma) {
+define(['lodash', 'd3', 'src/util/util', 'chroma'], function (
+  _,
+  d3,
+  Util,
+  chroma,
+) {
   var exports = {};
 
   const margin = 30;
@@ -25,7 +30,7 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       var ch = chroma(c);
       var r = {
         color: ch.hex(),
-        opacity: ch.alpha()
+        opacity: ch.alpha(),
       };
 
       return r;
@@ -72,21 +77,26 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       gradientHeight = totalHeight;
     }
 
-    var svg = d3.select(el).append('svg')
+    var svg = d3
+      .select(el)
+      .append('svg')
       .attr('width', totalWidth)
       .attr('height', totalHeight);
     var id = Util.getNextUniqueId();
-    svg.append('defs').append('linearGradient')
+    svg
+      .append('defs')
+      .append('linearGradient')
       .attr({
         x1: linearg[0],
         y1: linearg[1],
         x2: linearg[2],
         y2: linearg[3],
-        id: id
+        id: id,
       })
       .selectAll('stop')
       .data(options.stops)
-      .enter().append('stop')
+      .enter()
+      .append('stop')
       .attr('offset', function (d, i) {
         return `${stopPositions[i] * 100}%`;
       })
@@ -95,7 +105,8 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       })
       .style('stop-opacity', 1);
 
-    var g = svg.append('g')
+    var g = svg
+      .append('g')
       .attr('class', 'key')
       .attr('transform', function () {
         var tx = getTx(options);
@@ -107,23 +118,23 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
       .attr('width', gradientWidth)
       .attr('height', gradientHeight);
 
-    var x = d3.scale.linear()
-      .domain(options.domain);
+    var x = d3.scale.linear().domain(options.domain);
     if (!options.axis || !options.axis.tickValues) {
       x = x.nice();
     }
-    x.range([0, (orientation === 'bottom' || orientation === 'top' ? gradientWidth : gradientHeight)]);
+    x.range([
+      0,
+      orientation === 'bottom' || orientation === 'top'
+        ? gradientWidth
+        : gradientHeight,
+    ]);
     if (hasAxis(options)) {
-      var axis = d3.svg.axis()
-        .scale(x)
-        .orient(orientation)
-        .tickSize(6);
+      var axis = d3.svg.axis().scale(x).orient(orientation).tickSize(6);
       if (options.axis.ticks) {
         axis.ticks(options.axis.ticks);
       } else if (options.axis.tickValues) {
         axis.tickValues(options.axis.tickValues);
       }
-
 
       g.append('g')
         .attr('class', 'key')
@@ -139,7 +150,6 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
         })
         .call(axis);
     }
-
 
     return svg.html();
   };
@@ -183,7 +193,9 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (_, d3, Util, chrom
   }
 
   function getOrientation(options) {
-    return options.orientation || options.axis && options.axis.orientation || 'top';
+    return (
+      options.orientation || (options.axis && options.axis.orientation) || 'top'
+    );
   }
 
   function hasAxis(options) {

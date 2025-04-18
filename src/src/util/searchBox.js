@@ -5,7 +5,7 @@ define([
   'src/util/api',
   'modules/modulefactory',
   'src/main/grid',
-  'select2'
+  'select2',
 ], function (Util, API, ModuleFactory, Grid) {
   return function () {
     Util.loadCss('components/select2/dist/css/select2.css').then(function () {
@@ -38,11 +38,11 @@ define([
 
       var ww = Math.max(
         document.documentElement.clientWidth,
-        window.innerWidth || 0
+        window.innerWidth || 0,
       );
       var wh = Math.max(
         document.documentElement.clientHeight,
-        window.innerHeight || 0
+        window.innerHeight || 0,
       );
 
       $select2 += '</select></div>';
@@ -61,14 +61,14 @@ define([
           margin: 0,
           'box-sizing': 'border-box',
           opacity: 0.7,
-          backgroundColor: '#262b33'
+          backgroundColor: '#262b33',
         })
         .appendTo('body')
         .find('select')
         .addClass('js-example-basic-single')
         .css({
           width: selectWidth,
-          zIndex: 5000
+          zIndex: 5000,
         });
 
       function outputTemplate(module) {
@@ -80,21 +80,21 @@ define([
         selectData.push({
           id: 'layer-list',
           text: 'Layers',
-          children: layersArr
+          children: layersArr,
         });
       }
       if (modulesArr.length) {
         selectData.push({
           id: 'module-list',
           text: 'Modules',
-          children: modulesArr
+          children: modulesArr,
         });
       }
       $select2
         .select2({
           placeholder: 'Select a module',
           data: selectData,
-          templateResult: outputTemplate
+          templateResult: outputTemplate,
         })
         .select2('open')
         .val(null)

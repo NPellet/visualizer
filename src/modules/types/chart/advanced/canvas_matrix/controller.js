@@ -1,12 +1,11 @@
 'use strict';
 
-define([
-  'jquery',
-  'modules/default/defaultcontroller',
-  'lodash'
-], function ($, Default, _) {
-  function Controller() {
-  }
+define(['jquery', 'modules/default/defaultcontroller', 'lodash'], function (
+  $,
+  Default,
+  _,
+) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -16,7 +15,7 @@ define([
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'canvas_matrix'
+    cssClass: 'canvas_matrix',
   };
 
   Controller.prototype.getMatrixElementFromEvent = function (e) {
@@ -28,9 +27,8 @@ define([
     var pxPerCell = this.module.view.getPxPerCell();
     var shift = this.module.view.getXYShift();
 
-
-    e.offsetX = (e.offsetX || e.pageX - $(e.target).offset().left);
-    e.offsetY = (e.offsetY || e.pageY - $(e.target).offset().top);
+    e.offsetX = e.offsetX || e.pageX - $(e.target).offset().left;
+    e.offsetY = e.offsetY || e.pageY - $(e.target).offset().top;
 
     var x = Math.floor((e.offsetX - shift.x) / pxPerCell);
     var y = Math.floor((e.offsetY - shift.y) / pxPerCell);
@@ -38,7 +36,14 @@ define([
     var gridData = moduleValue.get();
     gridData = gridData.data ? gridData.data : gridData;
 
-    if (!gridData || !gridData[0] || x < 0 || y < 0 || y > gridData.length || x > gridData[0].length) {
+    if (
+      !gridData ||
+      !gridData[0] ||
+      x < 0 ||
+      y < 0 ||
+      y > gridData.length ||
+      x > gridData[0].length
+    ) {
       return false;
     }
 
@@ -75,7 +80,7 @@ define([
       controller.createDataFromEvent(name, 'point', {
         row: row,
         column: column,
-        value: data[row][column]
+        value: data[row][column],
       });
 
       controller.createDataFromEvent(name, 'fullRow', data[row].slice());
@@ -92,34 +97,38 @@ define([
   Controller.prototype.initEvents = function () {
     var dom = $(this.module.getDomContent());
 
-    dom.on('mousemove', 'canvas', _.debounce(getHandlerForEvent(this, 'onPixelHover'), 25));
+    dom.on(
+      'mousemove',
+      'canvas',
+      _.debounce(getHandlerForEvent(this, 'onPixelHover'), 25),
+    );
     dom.on('click', 'canvas', getHandlerForEvent(this, 'onPixelClick'));
   };
 
   Controller.prototype.references = {
     row: {
-      label: 'Row index'
+      label: 'Row index',
     },
     fullRow: {
-      label: 'Full row'
+      label: 'Full row',
     },
     col: {
-      label: 'Column index'
+      label: 'Column index',
     },
     fullCol: {
-      label: 'Full column'
+      label: 'Full column',
     },
     intersect: {
-      label: 'Intersection value'
+      label: 'Intersection value',
     },
     point: {
-      label: 'Coordinates and value'
+      label: 'Coordinates and value',
     },
     matrix: {
       label: 'Matrix',
       description: 'A 2D array representing the matrix',
-      type: ['matrix', 'object', 'array']
-    }
+      type: ['matrix', 'object', 'array'],
+    },
   };
 
   Controller.prototype.variablesIn = ['matrix'];
@@ -128,18 +137,18 @@ define([
     onPixelHover: {
       label: 'Hover on a pixel',
       description: 'When the mouses moves over a new pixel of the data matrix',
-      refVariable: ['row', 'col', 'intersect', 'point', 'fullRow', 'fullCol']
+      refVariable: ['row', 'col', 'intersect', 'point', 'fullRow', 'fullCol'],
     },
     onPixelClick: {
       label: 'Click on a pixel',
       description: 'When the users click on any pixel',
-      refVariable: ['row', 'col', 'intersect', 'point', 'fullRow', 'fullCol']
-    }/* ,
+      refVariable: ['row', 'col', 'intersect', 'point', 'fullRow', 'fullCol'],
+    } /* ,
          onPixelDblClick: {
          label: 'double click on a pixel',
          description: 'When the user double clics on any pixel',
          refVariable: ['row', 'col', 'intersect']
-         }*/
+         }*/,
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -147,29 +156,29 @@ define([
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             highcontrast: {
               default: 'true',
               type: 'checkbox',
               title: 'Contrast',
-              options: { true: 'Take data min/max as boundaries' }
+              options: { true: 'Take data min/max as boundaries' },
             },
             color: {
               type: 'color',
               title: 'Color',
-              multiple: true
-            }
-          }
-        }
-      }
+              multiple: true,
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     colors: ['groups', 'group', 0, 'color'],
-    highContrast: ['groups', 'group', 0, 'highcontrast', 0, 0]
+    highContrast: ['groups', 'group', 0, 'highcontrast', 0, 0],
   };
 
   return Controller;

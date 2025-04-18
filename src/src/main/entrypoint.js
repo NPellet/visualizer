@@ -22,7 +22,7 @@ define([
   'src/util/sandbox',
   'src/util/shortcuts',
   'src/util/copyPasteManager',
-  './forceLoad'
+  './forceLoad',
 ], function (
   $,
   _,
@@ -42,7 +42,7 @@ define([
   UrlData,
   ui,
   Config,
-  Sandbox
+  Sandbox,
 ) {
   var _viewLoaded, _dataLoaded, _modulesSet;
 
@@ -79,7 +79,7 @@ define([
     view.configuration = view.configuration || new DataObject();
     view.configuration.title = view.configuration.title || 'No title';
 
-    for (var i = 0; i < l; i++) {
+    for (let i = 0; i < l; i++) {
       Grid.addModuleFromJSON(view.getChildSync(['modules', i], true));
     }
 
@@ -131,7 +131,7 @@ define([
       loadCustomFilters(),
       loadMainVariables(),
       configureRequirejs(),
-      loadCustomModules()
+      loadCustomModules(),
     ])
       .then(doInitScript)
       .then(
@@ -150,9 +150,8 @@ define([
         },
         function (e) {
           Debug.error('View loading problem', e, e.stack);
-        }
+        },
       );
-
 
     function doInitScript() {
       if (view.init_script) {
@@ -174,7 +173,7 @@ define([
         return p && p.alias && p.path;
       });
       var conf = { paths: {} };
-      for (var i = 0; i < paths.length; i++) {
+      for (let i = 0; i < paths.length; i++) {
         conf.paths[paths[i].alias] = paths[i].path;
       }
       for (var key in conf.paths) {
@@ -192,7 +191,7 @@ define([
         var module = modulesById[moduleId];
         if (!module) {
           Debug.warn(
-            `Your view contains an url to a module (id: ${moduleId}) that does not correspond to any loaded modules`
+            `Your view contains an url to a module (id: ${moduleId}) that does not correspond to any loaded modules`,
           );
           continue;
         }
@@ -217,17 +216,17 @@ define([
         0,
         'groups',
         'modules',
-        0
+        0,
       ]);
       if (!modules) return Promise.resolve();
       modules = _.filter(modules, function (m) {
         return m && m.url;
       });
-      for (var i = 0; i < modules.length; i++) {
+      for (let i = 0; i < modules.length; i++) {
         modules[i].url = modules[i].url.replace(/\/$/, '');
       }
       return ModuleFactory.setModules({
-        folders: _.map(modules, 'url')
+        folders: _.map(modules, 'url'),
       });
     }
 
@@ -236,7 +235,7 @@ define([
       if (view.custom_filters) {
         var filters = view.custom_filters[0].sections.filters,
           allFilters = API.getAllFilters();
-        for (var i = 0; i < filters.length; i++) {
+        for (let i = 0; i < filters.length; i++) {
           var filter = filters[i].groups.filter[0];
           if (filter.name[0]) {
             var deps = filters[i].groups.libs[0],
@@ -259,7 +258,7 @@ define([
               define(filter.name[0], depsA, filterDef);
               allFilters.push({
                 file: filter.name[0],
-                name: filter.name[0]
+                name: filter.name[0],
               });
             } catch (e) {
               Debug.warn('Problem with custom filter definition', e);
@@ -274,7 +273,7 @@ define([
           0,
           'groups',
           'filters',
-          0
+          0,
         );
         if (filtersLib) {
           filtersLib = _.filter(filtersLib, function (v) {
@@ -288,7 +287,7 @@ define([
     function loadMainVariables() {
       // If no variable is defined in the view, we start browsing the data and add all the first level
       if (view.variables.length === 0) {
-        for (var i in data) {
+        for (let i in data) {
           if (i.charAt(0) === '_') {
             continue;
           }
@@ -300,37 +299,35 @@ define([
       // Entry point variables
       API.loading('Fetching remote variables');
       var fetching = [];
-      for (var i = 0, l = view.variables.length; i < l; i++) {
-        (function (i) {
-          var entryVar = view.traceSync(['variables', i]);
-          if (entryVar.varname) {
-            // Defined by an URL
-            if (entryVar.url) {
-              fetching.push(
-                UrlData.get(entryVar.url, entryVar.timeout | 0, {
-                  Accept: 'application/json'
-                }).then(function (v) {
-                  var varname = entryVar.varname;
-                  data.setChild([varname], v, true);
-                  return API.setVariable(varname, false, [varname]);
-                })
-              );
-            } else if (!entryVar.jpath) {
-              // If there is no jpath, we assume the variable is an object and we add it in the data stack
-              // Note: if that's not an object, we will have a problem...
-              fetching.push(API.createData(name, false));
-            } else {
-              if (typeof entryVar.jpath === 'string') {
-                entryVar.jpath = entryVar.jpath.split('.');
-                entryVar.jpath.shift();
-              }
-
-              fetching.push(
-                API.setVariable(entryVar.varname, false, entryVar.jpath)
-              );
+      for (let i = 0, l = view.variables.length; i < l; i++) {
+        const entryVar = view.traceSync(['variables', i]);
+        if (entryVar.varname) {
+          // Defined by an URL
+          if (entryVar.url) {
+            fetching.push(
+              UrlData.get(entryVar.url, entryVar.timeout | 0, {
+                Accept: 'application/json',
+              }).then(function (v) {
+                const varname = entryVar.varname;
+                data.setChild([varname], v, true);
+                return API.setVariable(varname, false, [varname]);
+              }),
+            );
+          } else if (!entryVar.jpath) {
+            // If there is no jpath, we assume the variable is an object and we add it in the data stack
+            // Note: if that's not an object, we will have a problem...
+            fetching.push(API.createData(name, false));
+          } else {
+            if (typeof entryVar.jpath === 'string') {
+              entryVar.jpath = entryVar.jpath.split('.');
+              entryVar.jpath.shift();
             }
+
+            fetching.push(
+              API.setVariable(entryVar.varname, false, entryVar.jpath),
+            );
           }
-        })(i);
+        }
       }
 
       return Promise.all(fetching).then(function () {
@@ -346,7 +343,7 @@ define([
     var div = ui.dialog({
       autoPosition: true,
       width: '80%',
-      noHeader: true
+      noHeader: true,
     });
 
     var options = [];
@@ -357,7 +354,7 @@ define([
       var form = new Form();
 
       form.init({
-        onValueChanged: function (value) {}
+        onValueChanged: function (value) {},
       });
 
       form.setStructure({
@@ -365,20 +362,20 @@ define([
           cfg: {
             options: {
               title: 'General configuration',
-              icon: 'hostname'
+              icon: 'hostname',
             },
             groups: {
               tablevars: {
                 options: {
                   type: 'table',
                   title: 'Main variables',
-                  multiple: true
+                  multiple: true,
                 },
                 fields: {
                   varname: {
                     type: 'text',
                     multiple: false,
-                    title: 'Variable name'
+                    title: 'Variable name',
                   },
                   jpath: {
                     type: 'combo',
@@ -394,87 +391,87 @@ define([
 
                     insertValue: function (val) {
                       return `element.${(val || []).join('.')}`;
-                    }
+                    },
                   },
                   url: {
                     type: 'text',
-                    title: 'From URL'
+                    title: 'From URL',
                   },
                   timeout: {
                     type: 'text',
-                    title: 'Timeout'
-                  }
-                }
+                    title: 'Timeout',
+                  },
+                },
               },
               aliases: {
                 options: {
                   type: 'table',
                   multiple: true,
-                  title: 'Define Global Aliases'
+                  title: 'Define Global Aliases',
                 },
                 fields: {
                   path: {
                     type: 'text',
-                    title: 'Url or Path (omit .js extension)'
+                    title: 'Url or Path (omit .js extension)',
                   },
                   alias: {
                     type: 'text',
-                    title: 'Alias'
-                  }
-                }
-              }
-            }
+                    title: 'Alias',
+                  },
+                },
+              },
+            },
           },
           actionscripts: {
             options: {
               title: 'Action scripting',
-              icon: 'script_go'
+              icon: 'script_go',
             },
             sections: {
               actions: {
                 options: {
                   multiple: true,
-                  title: 'Action'
+                  title: 'Action',
                 },
                 groups: {
                   action: {
                     options: {
-                      type: 'list'
+                      type: 'list',
                     },
                     fields: {
                       name: {
                         type: 'text',
-                        title: 'Action name'
+                        title: 'Action name',
                       },
                       script: {
                         type: 'jscode',
-                        title: 'Script'
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        title: 'Script',
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           actionfiles: {
             options: {
               title: 'Action files',
-              icon: 'server_go'
+              icon: 'server_go',
             },
             groups: {
               action: {
                 options: {
                   type: 'table',
-                  multiple: true
+                  multiple: true,
                 },
                 fields: {
                   name: {
                     type: 'text',
-                    title: 'Action name'
+                    title: 'Action name',
                   },
                   file: {
                     type: 'text',
-                    title: 'File'
+                    title: 'File',
                   },
                   mode: {
                     type: 'combo',
@@ -483,126 +480,126 @@ define([
                       { key: 'worker', title: 'WebWorker' },
                       {
                         key: 'amd',
-                        title: 'Asynchronously loaded module'
-                      }
-                    ]
-                  }
-                }
-              }
-            }
+                        title: 'Asynchronously loaded module',
+                      },
+                    ],
+                  },
+                },
+              },
+            },
           },
           custom_filters: {
             options: {
               title: 'Custom filters',
-              icon: 'script_go'
+              icon: 'script_go',
             },
             sections: {
               modules: {
                 options: {
                   multiple: false,
-                  title: 'Modules'
+                  title: 'Modules',
                 },
                 groups: {
                   modules: {
                     options: {
                       type: 'table',
-                      multiple: true
+                      multiple: true,
                     },
                     fields: {
                       url: {
                         type: 'text',
-                        title: 'Root url to modules'
-                      }
-                    }
-                  }
-                }
+                        title: 'Root url to modules',
+                      },
+                    },
+                  },
+                },
               },
               filtersLib: {
                 options: {
-                  title: 'Filters'
+                  title: 'Filters',
                 },
                 groups: {
                   filters: {
                     options: {
                       type: 'table',
-                      multiple: true
+                      multiple: true,
                     },
                     fields: {
                       name: {
                         type: 'text',
-                        title: 'Name'
+                        title: 'Name',
                       },
                       file: {
                         type: 'text',
-                        title: 'url'
-                      }
-                    }
-                  }
-                }
+                        title: 'url',
+                      },
+                    },
+                  },
+                },
               },
               filters: {
                 options: {
                   multiple: true,
-                  title: 'Custom Filters'
+                  title: 'Custom Filters',
                 },
                 groups: {
                   filter: {
                     options: {
-                      type: 'list'
+                      type: 'list',
                     },
                     fields: {
                       name: {
                         type: 'text',
-                        title: 'Filter name'
+                        title: 'Filter name',
                       },
                       script: {
                         type: 'jscode',
-                        title: 'Script'
-                      }
-                    }
+                        title: 'Script',
+                      },
+                    },
                   },
                   libs: {
                     options: {
                       type: 'table',
                       multiple: 'true',
-                      title: 'Dependencies'
+                      title: 'Dependencies',
                     },
                     fields: {
                       lib: {
                         type: 'text',
-                        title: 'URL'
+                        title: 'URL',
                       },
                       alias: {
                         type: 'text',
-                        title: 'Alias'
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        title: 'Alias',
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           init_script: {
             options: {
               title: 'Initialization script',
-              icon: 'scripts'
+              icon: 'scripts',
             },
             groups: {
               general: {
                 options: {
                   type: 'list',
-                  multiple: true
+                  multiple: true,
                 },
                 fields: {
                   script: {
                     type: 'jscode',
-                    title: 'Javascript to execute'
-                  }
-                }
-              }
-            }
-          }
-        }
+                    title: 'Javascript to execute',
+                  },
+                },
+              },
+            },
+          },
+        },
       });
 
       form.onStructureLoaded().done(function () {
@@ -612,22 +609,22 @@ define([
               {
                 groups: {
                   tablevars: [view.variables],
-                  aliases: [view.aliases]
-                }
-              }
+                  aliases: [view.aliases],
+                },
+              },
             ],
             actionscripts: [
               {
                 sections: {
-                  actions: ActionManager.getScriptsForm()
-                }
-              }
+                  actions: ActionManager.getScriptsForm(),
+                },
+              },
             ],
             init_script: view.init_script,
             custom_filters: view.custom_filters,
             actionfiles: ActionManager.getFilesForm(),
-            requirejs: view.requirejs
-          }
+            requirejs: view.requirejs,
+          },
         });
       });
 
@@ -647,7 +644,7 @@ define([
         view.variables = data;
         view.aliases = new DataArray(
           value.sections.cfg[0].groups.aliases[0],
-          true
+          true,
         );
         view.init_script = value.sections.init_script;
         view.custom_filters = value.sections.custom_filters;
@@ -688,7 +685,7 @@ define([
         'lib/forms/style.css',
         'components/fancytree/dist/skin-lion/ui.fancytree.css',
         'css/overwrite_styles.css',
-        'node_modules/@fortawesome/fontawesome-free/css/all.min.css'
+        'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
       ];
 
       css.forEach(function (css) {
@@ -713,20 +710,20 @@ define([
 
         if (errorMessage) {
           visualizerDiv.append(
-            `<div id="browser-compatibility">${errorMessage}</div>`
+            `<div id="browser-compatibility">${errorMessage}</div>`,
           );
           return;
         }
 
         visualizerDiv.html(
-          '<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>'
+          '<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>',
         );
 
         var configJson = urls.config || visualizerDiv.attr('data-ci-config');
         if (!configJson) {
           if (visualizerDiv.attr('config')) {
             Debug.warn(
-              'config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.'
+              'config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.',
             );
             configJson = visualizerDiv.attr('config');
           } else {
@@ -738,8 +735,8 @@ define([
           if (cfgJson.usrDir) {
             require.config({
               paths: {
-                usr: cfgJson.usrDir
-              }
+                usr: cfgJson.usrDir,
+              },
             });
           }
 
@@ -776,16 +773,16 @@ define([
                     '<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
                     function () {
                       configureEntryPoint();
-                    }
-                  ]
+                    },
+                  ],
                 ]);
                 Context.listen(Context.getRootDom(), [
                   [
                     '<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
                     function () {
                       document.location.reload();
-                    }
-                  ]
+                    },
+                  ],
                 ]);
               }
 
@@ -801,7 +798,7 @@ define([
               var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
               if (!viewURL && $visualizer.attr('viewURL')) {
                 Debug.warn(
-                  'viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.'
+                  'viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.',
                 );
                 viewURL = $visualizer.attr('viewURL');
               }
@@ -809,7 +806,7 @@ define([
               var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
               if (!dataURL && $visualizer.attr('dataURL')) {
                 Debug.warn(
-                  'dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.'
+                  'dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.',
                 );
                 dataURL = $visualizer.attr('dataURL');
               }
@@ -818,22 +815,22 @@ define([
                 view: {
                   urls: urls.views,
                   branch: urls.viewBranch,
-                  url: viewURL
+                  url: viewURL,
                 },
                 data: {
                   urls: urls.results,
                   branch: urls.resultBranch,
-                  url: dataURL
-                }
+                  url: dataURL,
+                },
               };
               window.history.replaceState(
                 { type: 'viewchange', value: viewInfo },
-                ''
+                '',
               );
               Versioning.switchView(viewInfo, false);
             });
           });
       }
-    }
+    },
   };
 });

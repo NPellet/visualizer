@@ -138,8 +138,8 @@ define([
 
       this.isValueChanged = function () {
         return (
-          !($input.val() == '' && defaultValue == null) &&
-          $input.val() != defaultValue
+          !($input.val() === '' && defaultValue == null) &&
+          $input.val() !== defaultValue
         );
       };
 
@@ -294,10 +294,7 @@ define([
           localStorageKey: 'visualizer-spectrum',
         });
 
-        this.$input
-          .next()
-          .first()
-          .click();
+        this.$input.next().first().click();
       };
 
       this.destroy = function () {
@@ -346,8 +343,8 @@ define([
 
       this.isValueChanged = function () {
         return (
-          !(this.$input.val() == '' && defaultValue == null) &&
-          this.$input.val() != defaultValue
+          !(this.$input.val() === '' && defaultValue == null) &&
+          this.$input.val() !== defaultValue
         );
       };
 
@@ -398,10 +395,8 @@ define([
             if (that.args.commitChanges) {
               that.args.commitChanges('next');
             }
-          } else {
-            if (that.args.commitChanges) {
-              that.args.commitChanges('none');
-            }
+          } else if (that.args.commitChanges) {
+            that.args.commitChanges('none');
           }
         }
         const $wrapper = $('<div style="position: relative;" />');
@@ -421,8 +416,8 @@ define([
             '<a style="position: absolute; top: 0; right: 0;" class="icon-clickable select-jpath""><i class="centered-icon fa fa-tree"></i></a>',
           );
           $link.appendTo($wrapper);
-          // eslint-disable-next-line
-          $link.on('mousedown', async function(e) {
+
+          $link.on('mousedown', async function (e) {
             editing = true;
             const jpath = await UI.selectJpath(inspectData);
             editing = false;
@@ -668,8 +663,8 @@ define([
 
   function defaultIsValueChanged() {
     return (
-      !(this.$input.val() == '' && this.defaultValue == null) &&
-      this.$input.val() != this.defaultValue
+      !(this.$input.val() === '' && this.defaultValue == null) &&
+      this.$input.val() !== this.defaultValue
     );
   }
 
@@ -776,10 +771,8 @@ define([
           if (that.args.commitChanges) {
             that.args.commitChanges('next');
           }
-        } else {
-          if (that.args.commitChanges) {
-            that.args.commitChanges('none');
-          }
+        } else if (that.args.commitChanges) {
+          that.args.commitChanges('none');
         }
       });
   }
@@ -824,7 +817,8 @@ define([
     DataObject.check(item, true);
     this.defaultValue = item.getChildSync(this.args.column.jpath);
     if (this.defaultValue) {
-      var val = (this.defaultValue = this.defaultValue.get());
+      this.defaultValue = this.defaultValue.get();
+      var val = this.defaultValue;
     }
     if (val) {
       if (val instanceof DataBoolean && !val.get()) {
@@ -870,15 +864,15 @@ define([
     this.$wrapper.find('button:first').bind('click', this.save);
     this.$wrapper.find('button:last').bind('click', this.cancel);
     this.$input.bind('keydown', function (e) {
-      if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
+      if (e.which === $.ui.keyCode.ENTER && e.ctrlKey) {
         that.save();
-      } else if (e.which == $.ui.keyCode.ESCAPE) {
+      } else if (e.which === $.ui.keyCode.ESCAPE) {
         e.preventDefault();
         that.cancel();
-      } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
+      } else if (e.which === $.ui.keyCode.TAB && e.shiftKey) {
         e.preventDefault();
         that.args.grid.navigatePrev();
-      } else if (e.which == $.ui.keyCode.TAB) {
+      } else if (e.which === $.ui.keyCode.TAB) {
         e.preventDefault();
         that.args.grid.navigateNext();
       }
@@ -891,8 +885,9 @@ define([
       .select()
       .focusout(function () {
         // Shouldn't do this if auto-edit
-        if (!that.args.grid.module.view.slick.options.autoEdit)
+        if (!that.args.grid.module.view.slick.options.autoEdit) {
           that.args.commitChanges('next');
+        }
       });
   }
 
@@ -993,9 +988,11 @@ define([
       })
       .focusout(() => {
         // Shouldn't do this if auto-edit
-        if (!this.args.grid.module.view.slick.options.autoEdit)
+        if (!this.args.grid.module.view.slick.options.autoEdit) {
           this.args.commitChanges('next');
-        else this.args.commitChanges('none');
+        } else {
+          this.args.commitChanges('none');
+        }
       });
   }
 

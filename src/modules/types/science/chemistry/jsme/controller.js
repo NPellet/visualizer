@@ -134,8 +134,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (
                 nopaste: 'Remove the paste menu',
                 border:
                   'With depict option, display the border around the molecule',
-                star:
-                  'Display star button allowing highlight of atoms (placed in the smiles)',
+                star: 'Display star button allowing highlight of atoms (placed in the smiles)',
                 depictaction: 'Allows to specify an action in depict mode',
                 oldlook: 'Use the old look',
                 atommovebutton: 'Add button to move atoms',
@@ -271,8 +270,9 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (
     if (
       !this.module.view._currentValue ||
       !this.module.view._currentValue._atoms
-    )
+    ) {
       return;
+    }
     var atoms = this.module.view._currentValue._atoms;
     var highlights = [];
     for (var key of Object.keys(atoms)) {

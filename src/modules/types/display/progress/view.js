@@ -6,39 +6,37 @@
 define([
   'modules/default/defaultview',
   'src/util/color',
-  'jquery-ui/ui/widgets/progressbar'
+  'jquery-ui/ui/widgets/progressbar',
 ], function (Default, Color) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       this.total = 0;
       this.curr = 0;
       this.tpl = this.module.getConfiguration('tpl', ':current / :total');
 
-      var progressBar = this.progressBar = $('<div>').css({
-        position: 'relative'
+      this.progressBar = $('<div>').css({
+        position: 'relative',
       });
 
-      var progressDiv = this.progressDiv = $('<div>').css({
+      this.progressDiv = $('<div>').css({
         position: 'absolute',
         left: '50%',
         top: '4px',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
       });
-      progressBar.append(progressDiv);
+      this.progressBar.append(this.progressDiv);
 
-      progressBar.progressbar({
-        value: 0
-      });
-
-      progressBar.find('.ui-progressbar-value').css({
-        background: Color.getColor(this.module.getConfiguration('barcolor'))
+      this.progressBar.progressbar({
+        value: 0,
       });
 
-      this.module.getDomContent().html(progressBar);
+      this.progressBar.find('.ui-progressbar-value').css({
+        background: Color.getColor(this.module.getConfiguration('barcolor')),
+      });
+
+      this.module.getDomContent().html(this.progressBar);
       this.resolveReady();
     },
 
@@ -47,7 +45,7 @@ define([
         this.total = 0;
         this.curr = 0;
         this.render();
-      }
+      },
     },
 
     update: {
@@ -55,7 +53,7 @@ define([
         this.total = total.get();
         this.start = Date.now();
         this.render();
-      }
+      },
     },
 
     onActionReceive: {
@@ -72,7 +70,7 @@ define([
       total: function (value) {
         this.total = +value;
         this.render();
-      }
+      },
     },
 
     render: function () {
@@ -81,22 +79,29 @@ define([
 
       var percent = ratio * 100;
 
-      if (this.curr === 0)
+      if (this.curr === 0) {
         this.start = Date.now();
+      }
 
       var elapsed = Date.now() - this.start;
-      var eta = (percent == 100) ? 0 : elapsed * (this.total / this.curr - 1);
+      var eta = percent === 100 ? 0 : elapsed * (this.total / this.curr - 1);
 
       var str = this.tpl
         .replace(':current', this.curr)
         .replace(':total', this.total)
-        .replace(':elapsed', isNaN(elapsed) ? '0.0' : (elapsed / 1000).toFixed(1))
-        .replace(':eta', (isNaN(eta) || !isFinite(eta)) ? '0.0' : (eta / 1000).toFixed(1))
+        .replace(
+          ':elapsed',
+          isNaN(elapsed) ? '0.0' : (elapsed / 1000).toFixed(1),
+        )
+        .replace(
+          ':eta',
+          isNaN(eta) || !isFinite(eta) ? '0.0' : (eta / 1000).toFixed(1),
+        )
         .replace(':percent', `${percent.toFixed(1)}%`);
 
       this.progressBar.progressbar('value', percent);
       this.progressDiv.text(str);
-    }
+    },
   });
 
   return View;

@@ -1,16 +1,16 @@
 'use strict';
 
 define(['modules/default/defaultview'], function (Default) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init: function () {
       this.dom = $('<iframe>');
 
       var that = this;
-      this.dom.load(function () { // we remove the loading message
-        if (that.dom.attr('src') != 'about:blank') {
+      this.dom.load(function () {
+        // we remove the loading message
+        if (that.dom.attr('src') !== 'about:blank') {
           if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
           else that.hideLoading();
         }
@@ -22,7 +22,7 @@ define(['modules/default/defaultview'], function (Default) {
     blank: {
       url: function () {
         this.dom.attr('src', 'about:blank');
-      }
+      },
     },
     update: {
       url: function (moduleValue) {
@@ -33,8 +33,8 @@ define(['modules/default/defaultview'], function (Default) {
           that.showLoading();
         }, 500);
         this.dom.attr('src', String(moduleValue.get()));
-      }
-    }
+      },
+    },
   });
 
   return View;

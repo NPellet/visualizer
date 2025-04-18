@@ -9,7 +9,7 @@ define([
   './debug',
   './color',
   '../data/structures',
-  'web-animations'
+  'web-animations',
 ], function (_, Debug, Color, structures) {
   var months = [
     'January',
@@ -23,7 +23,7 @@ define([
     'September',
     'October',
     'November',
-    'December'
+    'December',
   ];
   var days = [
     'Sunday',
@@ -32,7 +32,7 @@ define([
     'Wednesday',
     'Thursday',
     'Friday',
-    'Saturday'
+    'Saturday',
   ];
 
   function noop() {
@@ -70,7 +70,7 @@ define([
     eval(
       `functionEvaled = function( el ) { if (el && ${ifString}) return ${ifElement}['${splitted[
         l
-      ].replace(regQuote, '\\"')}']; };`
+      ].replace(regQuote, '\\"')}']; };`,
     );
     return functionEvaled;
   }
@@ -103,7 +103,7 @@ define([
           continue;
         }
 
-        if (cssRule.selectorText.toLowerCase() == ruleName) {
+        if (cssRule.selectorText.toLowerCase() === ruleName) {
           if (deleteFlag) {
             if (stylesheet.cssRules) {
               stylesheet.deleteRule(ii);
@@ -142,9 +142,9 @@ define([
               top: pos.top,
               left: pos.left,
               background: 'white',
-              opacity: 0.5
+              opacity: 0.5,
             })
-            .addClass('iframemask')
+            .addClass('iframemask'),
         );
       });
     },
@@ -178,7 +178,8 @@ define([
         if (that.loadedCss[url]) {
           // element is already loaded
           that.loadedCss[url].disabled = false;
-          return resolve(that.loadedCss[url]);
+          resolve(that.loadedCss[url]);
+          return;
         }
 
         var link = document.createElement('link');
@@ -251,7 +252,7 @@ define([
         { title: 'Palatino', key: 'Palatino' },
         { title: 'Times new roman', key: 'Times New Roman' },
         { title: 'Trebuchet MS', key: 'Trebuchet MS' },
-        { title: 'Verdana', key: 'Verdana' }
+        { title: 'Verdana', key: 'Verdana' },
       ];
     },
 
@@ -286,10 +287,13 @@ define([
     },
 
     // http://stackoverflow.com/questions/9318674/javascript-number-currency-formatting
-    formatMoney: function (n, decPlaces, thouSeparator, decSeparator) {
+    formatMoney: function (
+      n,
+      decPlaces,
+      thouSeparator = ',',
+      decSeparator = '.',
+    ) {
       decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces;
-      decSeparator = decSeparator == undefined ? '.' : decSeparator;
-      thouSeparator = thouSeparator == undefined ? ',' : thouSeparator;
 
       var sign = n < 0 ? '-' : '',
         i = `${parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`,
@@ -318,7 +322,7 @@ define([
       }
 
       return access;
-    }
+    },
   };
 
   /**
@@ -391,8 +395,8 @@ define([
         value: ctor,
         enumerable: false,
         writable: true,
-        configurable: true
-      }
+        configurable: true,
+      },
     });
     if (methods) {
       _.assign(ctor.prototype, methods);
@@ -436,7 +440,7 @@ define([
         `).attr({
       width: size,
       height: size,
-      fill: color
+      fill: color,
     });
     return $elem;
   };
@@ -464,7 +468,7 @@ define([
     var paths = {};
     paths[reqPathStr] = rewrittenUrl;
     require.config({
-      paths: paths
+      paths: paths,
     });
 
     return reqPathStr;
@@ -482,11 +486,11 @@ define([
   // Deprecated color methods. Moved to src/util/color
   exports.getDistinctColors = exports.deprecate(
     Color.getDistinctColors,
-    'use Color.getDistinctColors'
+    'use Color.getDistinctColors',
   );
   exports.getNextColorRGB = exports.deprecate(
     Color.getNextColorRGB,
-    'use Color.getNextColorRGB'
+    'use Color.getNextColorRGB',
   );
   exports.hsl2rgb = exports.deprecate(Color.hsl2rgb, 'use Color.hsl2rgb');
   exports.hueToRgb = exports.deprecate(Color.hue2rgb, 'use Color.hue2rgb');
@@ -512,7 +516,8 @@ define([
     }
   };
 
-  const isEmail = /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+  const isEmail =
+    /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
   exports.isEmail = function (str) {
     return isEmail.test(str);
   };
@@ -565,8 +570,8 @@ define([
           .replace(/\r|\n/g, '')
           .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
           .replace(/ +$/, '')
-          .split(' ')
-      )
+          .split(' '),
+      ),
     );
   };
 

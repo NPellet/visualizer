@@ -2,7 +2,7 @@
 
 define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
   $,
-  Config
+  Config,
 ) {
   var contextMenu;
 
@@ -18,15 +18,15 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           }
 
           for (let i = 0; i < elements.length; i++) {
-            // eslint-disable-next-line no-loop-func
             (function (element, callbackClick, callbackOpen) {
               if (
                 Config.contextMenu().indexOf('all') === -1 &&
                 Config.contextMenu().indexOf(
-                  element.attr('name') || 'undefined'
+                  element.attr('name') || 'undefined',
                 ) === -1
-              )
+              ) {
                 return;
+              }
               if ((callbackOpen && callbackOpen(e, element)) || !callbackOpen) {
                 contextMenu.append(element);
               }
@@ -44,7 +44,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
             onAfterShow(contextMenu);
           }
         },
-        true
+        true,
       );
     },
 
@@ -78,7 +78,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
               position: 'fixed',
               left: left,
               top: top,
-              'z-index': 10000
+              'z-index': 10000,
             })
             .appendTo($('body'));
 
@@ -98,7 +98,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
 
           $(document).bind('click', clickHandler);
         },
-        true
+        true,
       );
 
       dom.parentNode.addEventListener(
@@ -108,7 +108,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
             contextMenu.menu({
               select: function (event, ui) {
                 var moduleName = ui.item.attr('name');
-              }
+              },
             });
 
             e.preventDefault();
@@ -129,8 +129,8 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
             return false;
           }
         },
-        false
+        false,
       );
-    }
+    },
   };
 });

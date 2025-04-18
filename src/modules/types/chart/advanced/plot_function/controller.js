@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,14 +11,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Luc Patiny',
     date: '28.12.2013',
     license: 'MIT',
-    cssClass: 'plot_function'
+    cssClass: 'plot_function',
   };
 
   Controller.prototype.references = {
     function: {
       label: 'Mathematical function with x and y parameters',
-      type: 'string'
-    }
+      type: 'string',
+    },
   };
 
   Controller.prototype.variablesIn = ['function'];
@@ -29,50 +28,50 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             function: {
               type: 'text',
               default: 'sin(sqrt(0.01*x^2  + 0.01*y^2))*10',
-              title: 'Mathematical function'
+              title: 'Mathematical function',
             },
             xMin: {
               type: 'float',
               default: -100,
-              title: 'Min X'
+              title: 'Min X',
             },
             xMax: {
               type: 'float',
               default: 100,
-              title: 'Max X'
+              title: 'Max X',
             },
             yMin: {
               type: 'float',
               default: -100,
-              title: 'Min Y'
+              title: 'Min Y',
             },
             yMax: {
               type: 'float',
               default: 100,
-              title: 'Max Y'
+              title: 'Max Y',
             },
             zMin: {
               type: 'float',
-              title: 'Min Z'
+              title: 'Min Z',
             },
             zMax: {
               type: 'float',
-              title: 'Max Z'
+              title: 'Max Z',
             },
             segments: {
               type: 'float',
               default: 100,
-              title: 'Number segments'
-            }
-          }
-        }
-      }
+              title: 'Number segments',
+            },
+          },
+        },
+      },
     };
   };
 
@@ -84,7 +83,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     yMax: ['groups', 'group', 0, 'yMax', 0],
     zMin: ['groups', 'group', 0, 'zMin', 0],
     zMax: ['groups', 'group', 0, 'zMax', 0],
-    segments: ['groups', 'group', 0, 'segments', 0]
+    segments: ['groups', 'group', 0, 'segments', 0],
   };
 
   return Controller;

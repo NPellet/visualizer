@@ -34,7 +34,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       });
 
       this.system = $(
-        this._getTable(this.module.getConfiguration('systemSize')[0])
+        this._getTable(this.module.getConfiguration('systemSize')[0]),
       );
 
       if (!this.button) {
@@ -57,8 +57,8 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
               that.module.getConfiguration('buttonlabel'),
               function () {
                 that.module.controller.doAnalysis();
-              }
-            )).render()
+              },
+            )).render(),
           );
         });
       }
@@ -86,11 +86,11 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         content.push('<tr>');
         content.push(`<th>${i + 1}</th>`);
         content.push(
-          `<td><input type="text" size=4 value=${i + 1} name="delta_${i}">`
+          `<td><input type="text" size=4 value=${i + 1} name="delta_${i}">`,
         );
         for (var j = 0; j < i; j++) {
           content.push(
-            `<td><input type="text" size=3 value=0 name="coupling_${i}_${j}">`
+            `<td><input type="text" size=3 value=0 name="coupling_${i}_${j}">`,
           );
         }
         content.push('</tr>');
@@ -113,11 +113,11 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       content.push('</select></p>');
 
       content.push(
-        '<p>Line width: <input type="text" value=1 name="lineWidth" size=4 id="lineWidth" /> Hz.</p>'
+        '<p>Line width: <input type="text" value=1 name="lineWidth" size=4 id="lineWidth" /> Hz.</p>',
       );
 
       content.push(
-        '<p>Number of points: <select id="nbPoints" name="nbPoints">'
+        '<p>Number of points: <select id="nbPoints" name="nbPoints">',
       );
       content.push('<option value="1024">1k</option>');
       content.push('<option value="2048">2k</option>');
@@ -136,7 +136,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       this.locked = true;
       if (this.buttonInst) {
         this.buttonInst.setTitle(
-          this.module.getConfiguration('buttonlabel_exec')
+          this.module.getConfiguration('buttonlabel_exec'),
         );
         this.buttonInst.disable();
       }
@@ -148,7 +148,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
         this.buttonInst.setTitle(this.module.getConfiguration('buttonlabel'));
         this.buttonInst.enable();
       }
-    }
+    },
   });
 
   return View;

@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,20 +11,20 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Michaël Zasso',
     date: '05.03.2014',
     license: 'MIT',
-    cssClass: 'paste_text'
+    cssClass: 'paste_text',
   };
 
   Controller.prototype.references = {
     value: {
-      label: 'The parsed object'
-    }
+      label: 'The parsed object',
+    },
   };
 
   Controller.prototype.events = {
     onEditorChange: {
       label: 'The value in the editor has changed',
-      refVariable: ['value']
-    }
+      refVariable: ['value'],
+    },
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -33,14 +32,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             thevalue: {
               type: 'jscode',
               title: 'Value',
               mode: 'text',
-              default: ''
+              default: '',
             },
             type: {
               type: 'combo',
@@ -49,19 +48,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
                 { title: 'Text', key: 'text' },
                 { title: 'JSON', key: 'json' },
                 { title: 'XML', key: 'xml' },
-                { title: 'CSV', key: 'csv' }
+                { title: 'CSV', key: 'csv' },
               ],
-              default: 'text'
-            }
-          }
-        }
-      }
+              default: 'text',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     type: ['groups', 'group', 0, 'type', 0],
-    thevalue: ['groups', 'group', 0, 'thevalue', 0]
+    thevalue: ['groups', 'group', 0, 'thevalue', 0],
   };
 
   Controller.prototype.valueChanged = function (value) {
@@ -87,8 +86,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
         break;
     }
     def.done(function (data) {
-      if (that.module.definition.configuration.groups) that.module.definition.configuration.groups.group[0].thevalue[0] = value;
-      that.createDataFromEvent('onEditorChange', 'value', DataObject.check(data, true));
+      if (that.module.definition.configuration.groups) {
+        that.module.definition.configuration.groups.group[0].thevalue[0] =
+          value;
+      }
+      that.createDataFromEvent(
+        'onEditorChange',
+        'value',
+        DataObject.check(data, true),
+      );
     });
   };
 

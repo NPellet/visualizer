@@ -1,6 +1,6 @@
 'use strict';
 
-define(function() {
+define(function () {
   var structures = {
     //        'object': 'object', // Removed ! Object should by dynamic.
     latex: 'string',
@@ -544,11 +544,11 @@ define(function() {
     jsmolscript: 'string',
   };
 
-  var getList = function() {
+  var getList = function () {
     return Object.keys(this).sort();
   };
 
-  var parse = function(type, value) {
+  var parse = function (type, value) {
     if (!this[type]) return;
 
     var result = { type: type };

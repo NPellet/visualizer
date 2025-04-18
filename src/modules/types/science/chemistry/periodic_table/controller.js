@@ -1,8 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], function (Default, _, Util) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'lodash',
+  'src/util/util',
+], function (Default, _, Util) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,55 +15,55 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     author: 'Daniel Kostro',
     date: '09.06.2015',
     license: 'MIT',
-    cssClass: 'periodic-table'
+    cssClass: 'periodic-table',
   };
 
   Controller.prototype.references = {
     template: {
-      label: 'template'
+      label: 'template',
     },
     value: {
-      label: 'Periodic table elements'
+      label: 'Periodic table elements',
     },
     hltemplate: {
-      label: 'Highlight template'
+      label: 'Highlight template',
     },
     elements: {
-      label: 'A selection of elements'
+      label: 'A selection of elements',
     },
     element: {
-      label: 'An element'
-    }
+      label: 'An element',
+    },
   };
 
   Controller.prototype.events = {
     onPeriodSelect: {
       label: 'Period selected',
-      refVariable: ['elements']
+      refVariable: ['elements'],
     },
     onGroupSelect: {
       label: 'Group selected',
-      refVariable: ['elements']
+      refVariable: ['elements'],
     },
     onElementsSelect: {
       label: 'Elements selected',
-      refVariable: ['elements']
+      refVariable: ['elements'],
     },
     onElementSelect: {
       label: 'Element clicked',
-      refVariable: ['element']
+      refVariable: ['element'],
     },
     onElementHover: {
       label: 'Element hovered',
-      refVariable: ['element']
-    }
+      refVariable: ['element'],
+    },
   };
 
   Controller.prototype.variablesIn = ['template', 'hltemplate', 'value'];
 
   Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
     select: 'Select element(s)',
-    setSelected: 'Set selected element(s)'
+    setSelected: 'Set selected element(s)',
   });
 
   Controller.prototype.configurationStructure = function () {
@@ -69,7 +72,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     var background = {
       options: {
         type: 'list',
-        title: 'Background'
+        title: 'Background',
       },
       fields: {
         mode: {
@@ -79,10 +82,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
             { key: 'none', title: 'None' },
             { key: 'jpath', title: 'Based on color jpath' },
             { key: 'custom', title: 'Based on property' },
-            { key: 'fixed', title: 'Fixed' }
+            { key: 'fixed', title: 'Fixed' },
           ],
           displaySource: { custom: 'c', jpath: 'j', fixed: 'f' },
-          default: 'none'
+          default: 'none',
         },
         jpath: {
           type: 'combo',
@@ -90,101 +93,101 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
           options: jpaths,
           extractValue: Util.jpathToArray,
           insertValue: Util.jpathToString,
-          displayTarget: ['c', 'j']
+          displayTarget: ['c', 'j'],
         },
         min: {
           type: 'float',
           displayTarget: ['c'],
-          title: 'Min value'
+          title: 'Min value',
         },
         max: {
           type: 'float',
           title: 'Max value',
-          displayTarget: ['c']
+          displayTarget: ['c'],
         },
         val: {
           type: 'float',
           title: 'Default value',
-          displayTarget: ['c']
+          displayTarget: ['c'],
         },
         step: {
           type: 'float',
           title: 'Step',
-          displayTarget: ['c']
+          displayTarget: ['c'],
         },
         label: {
           type: 'text',
           title: 'Label',
           displayTarget: ['c'],
-          default: ''
+          default: '',
         },
         unit: {
           type: 'text',
           title: 'Unit',
           displayTarget: ['c'],
-          default: ''
+          default: '',
         },
         mincolor: {
           type: 'spectrum',
           title: 'Min color',
           displayTarget: ['c'],
-          default: [0, 0, 255, 1]
+          default: [0, 0, 255, 1],
         },
         neutralcolor: {
           type: 'spectrum',
           title: 'Neutral color',
           displayTarget: ['c'],
-          default: [255, 255, 255, 1]
+          default: [255, 255, 255, 1],
         },
         maxcolor: {
           type: 'spectrum',
           title: 'Max color',
           displayTarget: ['c'],
-          default: [255, 0, 0, 1]
+          default: [255, 0, 0, 1],
         },
         novaluecolor: {
           type: 'spectrum',
           title: 'No value color',
           displayTarget: ['c'],
-          default: [90, 90, 90, 0.4]
+          default: [90, 90, 90, 0.4],
         },
         fixedcolor: {
           type: 'spectrum',
           title: 'Fixed color',
           displayTarget: ['f'],
-          default: [255, 255, 255, 1]
+          default: [255, 255, 255, 1],
         },
         showslider: {
           type: 'checkbox',
           title: 'Show slider',
           options: {
-            yes: 'Yes'
+            yes: 'Yes',
           },
-          default: ['yes']
-        }
-      }
+          default: ['yes'],
+        },
+      },
     };
 
     var foreground = _.cloneDeep(background);
     foreground.options.title = 'Foreground';
     foreground.fields.mode.options.push({
-      key: 'state', title: 'State'
+      key: 'state',
+      title: 'State',
     });
     foreground.fields.fixedcolor.default = [0, 0, 0, 1];
-
 
     return {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             varName: {
               type: 'text',
               title: 'Variable name',
               displayTarget: ['elPref', 'elUrl'],
-              default: ''
+              default: '',
             },
             elementsSource: {
               type: 'combo',
@@ -192,27 +195,27 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
               options: [
                 { key: 'varin', title: 'Variable in' },
                 { key: 'pref', title: 'Preferences' },
-                { key: 'url', title: 'Url' }
+                { key: 'url', title: 'Url' },
               ],
               displaySource: {
                 url: 'elUrl',
                 pref: 'elPref',
-                varin: 'elVarin'
+                varin: 'elVarin',
               },
-              default: 'varin'
+              default: 'varin',
             },
             elementsUrl: {
               type: 'text',
               title: 'Elements url',
               default: '',
-              displayTarget: ['elUrl']
+              displayTarget: ['elUrl'],
             },
             elementsCode: {
               type: 'jscode',
               mode: 'text',
               title: 'Elements (JSON or csv)',
               default: '',
-              displayTarget: ['elPref']
+              displayTarget: ['elPref'],
             },
 
             templateSource: {
@@ -220,56 +223,58 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
               title: 'Table template',
               options: [
                 { key: 'varin', title: 'Variable in' },
-                { key: 'pref', title: 'Preferences' }
+                { key: 'pref', title: 'Preferences' },
               ],
               displaySource: { varin: 'v', pref: 'p' },
-              default: 'pref'
+              default: 'pref',
             },
             template: {
               type: 'jscode',
               title: 'Table template',
               mode: 'html',
               displayTarget: ['p'],
-              default: '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>'
+              default:
+                '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>',
             },
             hltemplateSource: {
               type: 'combo',
               title: 'Highlight template',
               options: [
                 { key: 'varin', title: 'Variable in' },
-                { key: 'pref', title: 'Preferences' }
+                { key: 'pref', title: 'Preferences' },
               ],
               displaySource: { varin: 'hv', pref: 'hp' },
-              default: 'pref'
+              default: 'pref',
             },
             hltemplate: {
               type: 'jscode',
               title: 'Highlight template',
               mode: 'html',
               displayTarget: ['hp'],
-              default: '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>'
+              default:
+                '<div class="element-data"><p class="Z">{{ element.Z }}</p><h2 class="element-name">{{ element.symbol }}</h2><p>{{ element.name }}</p></div>',
             },
             useHighlights: {
               type: 'checkbox',
               title: 'Use highlights',
               options: {
-                yes: 'Yes'
+                yes: 'Yes',
               },
-              default: ['yes']
+              default: ['yes'],
             },
             display: {
               type: 'checkbox',
               title: 'Display options',
               options: {
-                families: 'Show families'
+                families: 'Show families',
               },
-              default: ['families']
-            }
-          }
+              default: ['families'],
+            },
+          },
         },
         foreground,
-        background
-      }
+        background,
+      },
     };
   };
 
@@ -287,19 +292,44 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
     background: ['groups', 'background', 0, 'mode', 0],
     foregroundStep: ['groups', 'foreground', 0, 'step', 0],
     backgroundStep: ['groups', 'background', 0, 'step', 0],
-    display: ['groups', 'group', 0, 'display', 0]
+    display: ['groups', 'group', 0, 'display', 0],
   };
 
-  ['Min', 'Max', 'Val', 'MinColor', 'MaxColor', 'NeutralColor', 'FixedColor', 'Label', 'Unit', 'Mode', 'Jpath', 'NoValueColor', 'ShowSlider'].forEach((val) => {
-    Controller.prototype.configAliases[`foreground${val}`] = ['groups', 'foreground', 0, val.toLowerCase(), 0];
-    Controller.prototype.configAliases[`background${val}`] = ['groups', 'background', 0, val.toLowerCase(), 0];
+  [
+    'Min',
+    'Max',
+    'Val',
+    'MinColor',
+    'MaxColor',
+    'NeutralColor',
+    'FixedColor',
+    'Label',
+    'Unit',
+    'Mode',
+    'Jpath',
+    'NoValueColor',
+    'ShowSlider',
+  ].forEach((val) => {
+    Controller.prototype.configAliases[`foreground${val}`] = [
+      'groups',
+      'foreground',
+      0,
+      val.toLowerCase(),
+      0,
+    ];
+    Controller.prototype.configAliases[`background${val}`] = [
+      'groups',
+      'background',
+      0,
+      val.toLowerCase(),
+      0,
+    ];
   });
-
 
   Controller.prototype.periodSelected = function (period) {
     var elements = this.module.view.elements;
     elements = elements.filter((el) => {
-      return el.period == period;
+      return el.period === period;
     });
 
     this.createDataFromEvent('onPeriodSelect', 'elements', elements);
@@ -308,7 +338,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
   Controller.prototype.groupSelected = function (group) {
     var elements = this.module.view.elements;
     elements = elements.filter((el) => {
-      return el.group == group;
+      return el.group === group;
     });
 
     this.createDataFromEvent('onGroupSelect', 'elements', elements);
@@ -317,7 +347,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
   Controller.prototype.elementSelected = function (atomicNumber) {
     atomicNumber = +atomicNumber;
     var elements = this.module.view.elements;
-    var el = elements.find((el) => +DataObject.resurrect(el.Z) === atomicNumber);
+    var el = elements.find(
+      (el) => +DataObject.resurrect(el.Z) === atomicNumber,
+    );
     if (el) {
       this.createDataFromEvent('onElementSelect', 'element', el);
     }
@@ -326,7 +358,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'src/util/util'], functio
   Controller.prototype.elementHovered = function (atomicNumber) {
     atomicNumber = +atomicNumber;
     var elements = this.module.view.elements;
-    var el = elements.find((el) => +DataObject.resurrect(el.Z) === atomicNumber);
+    var el = elements.find(
+      (el) => +DataObject.resurrect(el.Z) === atomicNumber,
+    );
     if (el) {
       this.createDataFromEvent('onElementHover', 'element', el);
     }

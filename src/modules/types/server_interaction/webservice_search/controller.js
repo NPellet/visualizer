@@ -7,10 +7,9 @@ define([
   'superagent',
   'uri/URITemplate',
   'src/util/debug',
-  'lodash'
+  'lodash',
 ], function ($, Default, API, superagent, URITemplate, Debug, _) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -20,38 +19,38 @@ define([
     author: 'Norman Pellet, Michaël Zasso',
     date: '29.07.2014',
     license: 'MIT',
-    cssClass: 'webservice_search'
+    cssClass: 'webservice_search',
   };
 
   Controller.prototype.references = {
     vartrigger: {
-      label: 'A variable to trigger the query'
+      label: 'A variable to trigger the query',
     },
     varinput: {
-      label: 'A variable to add to the query'
+      label: 'A variable to add to the query',
     },
     results: {
-      label: 'Search results'
+      label: 'Search results',
     },
     url: {
       label: 'Lookup URL',
-      type: 'string'
-    }
+      type: 'string',
+    },
   };
 
   Controller.prototype.events = {
     onSearchReturn: {
       label: 'On search complete',
       refVariable: ['results', 'url'],
-      refAction: ['results']
-    }
+      refAction: ['results'],
+    },
   };
 
   Controller.prototype.variablesIn = ['vartrigger', 'url'];
 
   Controller.prototype.actionsIn = {
     doSearch: 'Trigger search',
-    buttonColor: 'Change button color'
+    buttonColor: 'Change button color',
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -59,12 +58,12 @@ define([
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             url: {
               type: 'text',
-              title: 'URL'
+              title: 'URL',
             },
             method: {
               type: 'combo',
@@ -74,60 +73,60 @@ define([
                 { key: 'POST', title: 'POST' },
                 { key: 'PUT', title: 'PUT' },
                 { key: 'DELETE', title: 'DELETE' },
-                { key: 'HEAD', title: 'HEAD' }
+                { key: 'HEAD', title: 'HEAD' },
               ],
-              default: 'POST'
+              default: 'POST',
             },
             dataType: {
               type: 'combo',
               title: 'Data type to send',
               options: [
                 { key: 'json', title: 'JSON' },
-                { key: 'form', title: 'Form data' }
+                { key: 'form', title: 'Form data' },
               ],
-              default: 'form'
+              default: 'form',
             },
             withCredentials: {
               type: 'checkbox',
               title: 'Send credentials (for cross origin requests)',
               options: {
-                yes: 'yes'
+                yes: 'yes',
               },
-              default: []
+              default: [],
             },
             showStatus: {
               type: 'checkbox',
               title: 'Show response status',
-              options: { display: 'Yes' }
+              options: { display: 'Yes' },
             },
             button: {
               type: 'checkbox',
               title: 'Search button',
               options: { button: '' },
-              displaySource: { button: 'b' }
+              displaySource: { button: 'b' },
             },
             buttonlabel: {
               type: 'text',
-              title: 'Button text'
+              title: 'Button text',
             },
             buttonlabel_exec: {
               type: 'text',
-              title: 'Button text (executing)'
+              title: 'Button text (executing)',
             },
             onloadsearch: {
               type: 'checkbox',
               title: 'Make one query on load',
-              options: { button: '' }
+              options: { button: '' },
             },
             debounce: {
               type: 'float',
               title: 'Request debouncing',
-              default: 0
+              default: 0,
             },
             resultfilter: {
               type: 'jscode',
               title: 'Result data filter',
-              default: 'return data;'
+              default: 'return data;',
             },
             askConfirm: {
               type: 'checkbox',
@@ -135,44 +134,44 @@ define([
               options: { yes: 'Yes' },
               default: [],
               displaySource: { yes: 'y' },
-              displayTarget: ['b']
+              displayTarget: ['b'],
             },
             confirmText: {
               type: 'jscode',
               mode: 'html',
               title: 'Confirmation text',
               default: 'Are you sure?',
-              displayTarget: ['y']
-            }
-          }
+              displayTarget: ['y'],
+            },
+          },
         },
         headers: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Request headers'
+            title: 'Request headers',
           },
           fields: {
             name: {
               type: 'text',
-              title: 'Name'
+              title: 'Name',
             },
             value: {
               type: 'text',
-              title: 'Value'
-            }
-          }
+              title: 'Value',
+            },
+          },
         },
         searchparams: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Form parameters'
+            title: 'Form parameters',
           },
           fields: {
             name: {
               type: 'text',
-              title: 'Parameter name'
+              title: 'Parameter name',
             },
             destination: {
               type: 'combo',
@@ -180,17 +179,17 @@ define([
               options: [
                 { key: 'url', title: 'URL' },
                 { key: 'query', title: 'Query string' },
-                { key: 'data', title: 'Post data' }
+                { key: 'data', title: 'Post data' },
               ],
-              default: 'url'
+              default: 'url',
             },
             label: {
               type: 'text',
-              title: 'Field label'
+              title: 'Field label',
             },
             defaultvalue: {
               type: 'text',
-              title: 'Default value'
+              title: 'Default value',
             },
             fieldtype: {
               type: 'combo',
@@ -200,33 +199,33 @@ define([
                 { key: 'float', title: 'Number' },
                 { key: 'textarea', title: 'Textarea' },
                 { key: 'combo', title: 'Combo' },
-                { key: 'checkbox', title: 'Checkbox' }
+                { key: 'checkbox', title: 'Checkbox' },
               ],
-              default: 'text'
+              default: 'text',
             },
             fieldoptions: {
               type: 'text',
-              title: 'Field options (a:b;)'
-            }
-          }
-        }
+              title: 'Field options (a:b;)',
+            },
+          },
+        },
       },
       sections: {
         postvariables: {
           options: {
             multiple: false,
-            title: 'Variable parameters'
+            title: 'Variable parameters',
           },
           groups: {
             postvariables: {
               options: {
                 type: 'table',
-                multiple: true
+                multiple: true,
               },
               fields: {
                 name: {
                   type: 'text',
-                  title: 'Parameter name'
+                  title: 'Parameter name',
                 },
                 destination: {
                   type: 'combo',
@@ -235,35 +234,35 @@ define([
                     { key: 'url', title: 'URL' },
                     { key: 'query', title: 'Query string' },
                     { key: 'data', title: 'Post data' },
-                    { key: 'header', title: 'Header' }
+                    { key: 'header', title: 'Header' },
                   ],
-                  default: 'data'
+                  default: 'data',
                 },
                 variable: {
                   type: 'text',
-                  title: 'Variable name'
+                  title: 'Variable name',
                 },
                 filter: {
                   type: 'combo',
                   title: 'Filter',
                   options: [
                     { key: 'none', title: 'None' },
-                    { key: 'value', title: 'Only value' }
+                    { key: 'value', title: 'Only value' },
                   ],
-                  default: 'none'
-                }
-              }
-            }
-          }
-        }
-      }
+                  default: 'none',
+                },
+              },
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configFunctions = {
     button: function (cfg) {
       return cfg.indexOf('button') > -1;
-    }
+    },
   };
 
   Controller.prototype.configAliases = {
@@ -277,12 +276,19 @@ define([
     buttonlabel_exec: ['groups', 'group', 0, 'buttonlabel_exec', 0],
     onloadsearch: ['groups', 'group', 0, 'onloadsearch', 0, 0],
     resultfilter: ['groups', 'group', 0, 'resultfilter', 0],
-    postvariables: ['sections', 'postvariables', 0, 'groups', 'postvariables', 0],
+    postvariables: [
+      'sections',
+      'postvariables',
+      0,
+      'groups',
+      'postvariables',
+      0,
+    ],
     headers: ['groups', 'headers', 0],
     dataType: ['groups', 'group', 0, 'dataType', 0],
     debounce: ['groups', 'group', 0, 'debounce', 0],
     askConfirm: ['groups', 'group', 0, 'askConfirm', 0],
-    confirmText: ['groups', 'group', 0, 'confirmText', 0]
+    confirmText: ['groups', 'group', 0, 'confirmText', 0],
   };
 
   Controller.prototype.initImpl = function () {
@@ -310,13 +316,16 @@ define([
     this.dataType = this.module.getConfiguration('dataType');
 
     if (this.module.getConfiguration('resultfilter')) {
-      eval(`this.module.resultfilter = function(data) { \n ${this.module.getConfiguration('resultfilter')}\n }`);
+      eval(
+        `this.module.resultfilter = function(data) { \n ${this.module.getConfiguration('resultfilter')}\n }`,
+      );
     } else {
       delete this.module.resultfilter;
     }
 
     var debounce = this.module.getConfiguration('debounce');
-    this.doSearch = debounce > 0 ? _.debounce(this._doSearch, debounce) : this._doSearch;
+    this.doSearch =
+      debounce > 0 ? _.debounce(this._doSearch, debounce) : this._doSearch;
 
     if (this.module.getConfiguration('onloadsearch')) {
       this.doSearch();
@@ -338,7 +347,11 @@ define([
         this.urlValues[option.name] = str ? value : JSON.stringify(value);
         break;
       case 'data':
-        this.dataValues[option.name] = str ? value : ((this.dataType === 'form') ? JSON.stringify(value) : value);
+        this.dataValues[option.name] = str
+          ? value
+          : this.dataType === 'form'
+            ? JSON.stringify(value)
+            : value;
         break;
       case 'header':
         if (str) {
@@ -350,7 +363,9 @@ define([
 
   Controller.prototype._doSearch = function () {
     var that = this,
-      urltemplate = new URITemplate(this.module.view._url || this.module.getConfiguration('url'));
+      urltemplate = new URITemplate(
+        this.module.view._url || this.module.getConfiguration('url'),
+      );
 
     var toPost = this.module.getConfiguration('postvariables', []);
     for (var i = 0, ii = toPost.length; i < ii; i++) {
@@ -362,8 +377,9 @@ define([
           value = valueToPost.get();
         } else if (toPost[i].filter === 'value') {
           value = valueToPost.get();
-          if (value.resurrect)
+          if (value.resurrect) {
             value = value.resurrect();
+          }
         } else {
           value = valueToPost.resurrect();
         }
@@ -382,7 +398,8 @@ define([
     if (this.module.getConfigurationCheckbox('withCredentials', 'yes')) {
       this.request.withCredentials();
     }
-    this.request.set(this.headers)
+    this.request
+      .set(this.headers)
       .query(this.queryValues)
       .send(this.dataValues)
       .type(this.dataType);
@@ -409,13 +426,15 @@ define([
           body = body.then(that.module.resultfilter);
         }
 
-        body.then(function (data) {
-          that.onSearchDone(data);
-          that.module.view.unlock();
-        }).catch(function (e) {
-          Debug.error(e, e.stack);
-          that.module.view.unlock();
-        });
+        body
+          .then(function (data) {
+            that.onSearchDone(data);
+            that.module.view.unlock();
+          })
+          .catch(function (e) {
+            Debug.error(e, e.stack);
+            that.module.view.unlock();
+          });
       }
     });
   };

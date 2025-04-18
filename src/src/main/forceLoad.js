@@ -16,7 +16,7 @@ define([
 
   'modules/default/defaultcontroller',
   'modules/default/defaultmodel',
-  'modules/default/defaultview'
+  'modules/default/defaultview',
 ], function () {
   return {};
 });

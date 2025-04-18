@@ -1,3 +1,4 @@
+/* eslint-disable no-implicit-globals */
 'use strict';
 
 var count = 0;
@@ -21,7 +22,7 @@ function getColorFromValue(value) {
     colors[color1Id],
     colors[color1Id + 1],
     color1Id * step + minValue,
-    (color1Id + 1) * step + minValue
+    (color1Id + 1) * step + minValue,
   );
 }
 
@@ -33,23 +34,23 @@ function getColorBetween(value, color1, color2, color1Val, color2Val) {
     parseInt(ratio * (color2[0] - color1[0]) + color1[0], 10),
     parseInt(ratio * (color2[1] - color1[1]) + color1[1], 10),
     parseInt(ratio * (color2[2] - color1[2]) + color1[2], 10),
-    parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10)
+    parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10),
   ];
 }
 
 function getRGB(color) {
   if (!color) return false;
-  if (color.length == 7) {
+  if (color.length === 7) {
     return [
       parseInt(`0x${color.substring(1, 3)}`, 16),
       parseInt(`0x${color.substring(3, 5)}`, 16),
-      parseInt(`0x${color.substring(5, 7)}`, 16)
+      parseInt(`0x${color.substring(5, 7)}`, 16),
     ];
-  } else if (color.length == 4) {
+  } else if (color.length === 4) {
     return [
       parseInt(`0x${color.substring(1, 2)}`, 16),
       parseInt(`0x${color.substring(2, 3)}`, 16),
-      parseInt(`0x${color.substring(3, 4)}`, 16)
+      parseInt(`0x${color.substring(3, 4)}`, 16),
     ];
   }
 }
@@ -111,16 +112,16 @@ var data, min, max, colors, pxPerCell, squareLoading, highContrast;
 self.onmessage = function (event) {
   var d = event.data;
 
-  if (d.title == 'init') {
+  if (d.title === 'init') {
     // pxPerCell = d.message.pxPerCell;
     colors = d.message.colors;
     squareLoading = d.message.squareLoading;
     highContrast = d.message.highcontrast;
-  } else if (d.title == 'changeData') {
+  } else if (d.title === 'changeData') {
     data = JSON.parse(d.message.data);
     min = d.message.min;
     max = d.message.max;
-  } else if (d.title == 'doPx') {
+  } else if (d.title === 'doPx') {
     pxPerCell = d.message.pxPerCell;
     postMessage({
       pxPerCell: pxPerCell,
@@ -130,8 +131,8 @@ self.onmessage = function (event) {
         d.message.indexX,
         d.message.indexY,
         d.message.buffer,
-        d.message.nbValX
-      )
+        d.message.nbValX,
+      ),
     });
   }
 };

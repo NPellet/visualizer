@@ -4,10 +4,9 @@ define([
   'jquery',
   'modules/default/defaultcontroller',
   'src/util/datatraversing',
-  'src/util/util'
+  'src/util/util',
 ], function ($, Default, Traversing, Util) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -17,18 +16,18 @@ define([
     author: 'Luc Patiny',
     date: '30.12.2013',
     license: 'MIT',
-    cssClass: 'dendrogram'
+    cssClass: 'dendrogram',
   };
 
   Controller.prototype.events = {
     onHover: {
       label: 'Hover a node',
-      refVariable: ['node']
+      refVariable: ['node'],
     },
     onClick: {
       label: 'Click a node',
-      refVariable: ['node']
-    }
+      refVariable: ['node'],
+    },
   };
 
   Controller.prototype.onHover = function (element) {
@@ -48,19 +47,19 @@ define([
   Controller.prototype.references = {
     tree: {
       type: ['tree', 'object'],
-      label: 'A Hierarchical tree'
+      label: 'A Hierarchical tree',
     },
     newTree: {
       type: ['tree', 'object'],
-      label: 'Annotated tree'
+      label: 'Annotated tree',
     },
     data: {
       type: ['array'],
-      label: 'Annotation data'
+      label: 'Annotation data',
     },
     node: {
-      label: 'Node'
-    }
+      label: 'Node',
+    },
   };
 
   Controller.prototype.variablesIn = ['tree', 'newTree', 'data'];
@@ -76,7 +75,7 @@ define([
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             jpathShape: {
@@ -84,7 +83,7 @@ define([
               title: 'Shape jpath',
               options: dataJPath,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             nodeType: {
               type: 'combo',
@@ -98,65 +97,65 @@ define([
                 { title: 'Ellipse', key: 'ellipse' },
                 { title: 'Rectangle', key: 'rectangle' },
                 { title: 'Image', key: 'image' },
-                { title: 'Pie chart', key: 'piechart' }
-              ]
+                { title: 'Pie chart', key: 'piechart' },
+              ],
             },
             jpathSize: {
               type: 'combo',
               title: 'Size jpath',
               options: dataJPath,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             nodeSize: {
               type: 'text',
-              title: 'Default node size'
+              title: 'Default node size',
             },
             jpathColor: {
               type: 'combo',
               title: 'Color jpath',
               options: dataJPath,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             nodeColor: {
               type: 'color',
-              title: 'Default node color'
+              title: 'Default node color',
             },
             jpathLabel: {
               type: 'combo',
               title: 'Label jpath',
               options: dataJPath,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             labelSize: {
               type: 'text',
-              title: 'Default label size'
+              title: 'Default label size',
             },
             labelColor: {
               type: 'color',
-              title: 'Default label color'
+              title: 'Default label color',
             },
             edgeWidth: {
               type: 'text',
-              title: 'Default edge width'
+              title: 'Default edge width',
             },
             edgeColor: {
               type: 'color',
-              title: 'Default edge color'
+              title: 'Default edge color',
             },
             strokeWidth: {
               type: 'text',
-              title: 'Background line width'
+              title: 'Background line width',
             },
             strokeColor: {
               type: 'color',
-              title: 'Background line color'
-            }
-          }
-        }
-      }
+              title: 'Background line color',
+            },
+          },
+        },
+      },
     };
   };
 

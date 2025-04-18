@@ -7,13 +7,13 @@ define([
   './util',
   './ui',
   './versioning',
-  'lib/couchdb/jquery.couch'
+  'lib/couchdb/jquery.couch',
 ], function ($, _, Button, Util, UI, Versioning) {
   function share(options) {
     return new Promise(function (resolve, reject) {
       var urlPrefix = (options.couchUrl || window.location.origin).replace(
         /\/$/,
-        ''
+        '',
       );
       var database = options.database || 'x';
       var tinyPrefix = `${(
@@ -27,10 +27,10 @@ define([
       // https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
 
       var encodedView = btoa(
-        unescape(encodeURIComponent(JSON.stringify(view)))
+        unescape(encodeURIComponent(JSON.stringify(view))),
       );
       var encodedData = btoa(
-        unescape(encodeURIComponent(Versioning.getDataJSON()))
+        unescape(encodeURIComponent(Versioning.getDataJSON())),
       );
 
       var docid = guid();
@@ -40,16 +40,16 @@ define([
         _attachments: {
           'view.json': {
             content_type: 'application/json',
-            data: encodedView
+            data: encodedView,
           },
           'data.json': {
             content_type: 'application/json',
-            data: encodedData
-          }
+            data: encodedData,
+          },
         },
         version: view.version,
         visualizer: window.location.origin + window.location.pathname,
-        couchdb: `${urlPrefix}/${database}/`
+        couchdb: `${urlPrefix}/${database}/`,
       };
 
       db.saveDoc(doc, {
@@ -59,7 +59,7 @@ define([
         },
         error: function (e) {
           return reject(e);
-        }
+        },
       });
     });
   }
@@ -80,7 +80,7 @@ define([
     shareOptions = _.defaults(shareOptions, {
       couchUrl: 'http://visualizer.epfl.ch',
       database: 'x',
-      tinyUrl: 'http://visualizer.epfl.ch/tiny'
+      tinyUrl: 'http://visualizer.epfl.ch/tiny',
     });
 
     if (!options.disabled) {
@@ -90,7 +90,7 @@ define([
             document.location.href
           }))`;
           var url = `https://github.com/NPellet/visualizer/issues/new?body=${encodeURIComponent(
-            description
+            description,
           )}`;
           var win = window.open(url, '_blank');
           win.focus();
@@ -98,7 +98,7 @@ define([
         .catch(() => {
           UI.showNotification(
             'Error with Feedback, maybe pop-up was blocked',
-            'error'
+            'error',
           );
         });
     }
@@ -108,7 +108,7 @@ define([
     var uniqid = Util.getNextUniqueId();
     var dialog = $('<div>')
       .html(
-        '<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>'
+        '<h3>Click the share button to make a snapshot of your view and generate a tiny URL</h3><br>',
       )
       .append(
         new Button(
@@ -118,20 +118,17 @@ define([
             if (!options.disabled) {
               share(options).then(
                 function (tinyUrl) {
-                  $(`#${uniqid}`)
-                    .val(tinyUrl)
-                    .focus()
-                    .select();
+                  $(`#${uniqid}`).val(tinyUrl).focus().select();
                   that.disable();
                 },
                 function () {
                   $(`#${uniqid}`).val('error');
-                }
+                },
               );
             }
           },
-          { color: 'blue' }
-        ).render()
+          { color: 'blue' },
+        ).render(),
       )
       .append($(`<input type="text" id="${uniqid}" />`).css('width', '400px'));
     UI.dialog(dialog, dialogOptions);
@@ -140,6 +137,6 @@ define([
   return {
     share,
     couchShare,
-    feedback
+    feedback,
   };
 });

@@ -4,7 +4,7 @@ define([
   'jquery',
   'src/header/components/default',
   'src/util/versioning',
-  'src/util/util'
+  'src/util/util',
 ], function ($, Default, Versioning, Util) {
   function Element() {}
 
@@ -27,8 +27,9 @@ define([
       this.interval = window.setInterval(function () {
         var view = Versioning.getView();
 
-        if (that.viewHandler.currentPath[3] !== 'head')
+        if (that.viewHandler.currentPath[3] !== 'head') {
           that.viewHandler.serverCopy(view);
+        }
 
         that.viewHandler._localSave(view, 'head', view._name);
         that.$_dom.css({ color: '#BCF2BB' });
@@ -45,7 +46,7 @@ define([
       window.clearTimeout(this.interval);
       this.$_dom.css({ color: '' });
       this.$_dom.removeClass('toggledOn');
-    }
+    },
   });
 
   return Element;

@@ -6,10 +6,9 @@ define([
   'src/util/versioning',
   'src/util/util',
   'uri/URI',
-  'lib/semver/semver'
+  'lib/semver/semver',
 ], function ($, Default, Versioning, Util, URI, semver) {
-  function VersionSelector() {
-  }
+  function VersionSelector() {}
 
   var versionURL;
   var versions;
@@ -25,7 +24,6 @@ define([
   }
 
   Util.inherits(VersionSelector, Default, {
-
     initImpl: function () {
       versionURL = this.options.url;
       type = this.options.queryType || 'query';
@@ -42,8 +40,9 @@ define([
       this.setStyleOpen(this._open);
 
       if (this._open) {
-        if (currentMenu && (currentMenu !== this) && currentMenu._open)
+        if (currentMenu && currentMenu !== this && currentMenu._open) {
           currentMenu.onClick();
+        }
         currentMenu = that;
 
         this.doElements();
@@ -63,7 +62,8 @@ define([
         currentVersion = `v${Versioning.version}`;
       }
       getVersions().then((versions) => {
-        var ul = that.$_elToOpen = $('<ul />');
+        var ul = $('<ul />');
+        that.$_elToOpen = ul;
         for (var i = 0; i < versions.length; i++) {
           var version = versions[i];
           if (semver.valid(version) && semver.lt(version, this.minVersion)) {
@@ -97,7 +97,7 @@ define([
           document.location.reload();
         }
       }
-    }
+    },
   });
 
   function getQuery(uri) {

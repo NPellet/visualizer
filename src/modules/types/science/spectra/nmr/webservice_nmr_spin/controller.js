@@ -3,7 +3,7 @@
 define([
   'jquery',
   'modules/default/defaultcontroller',
-  'nmr-simulation'
+  'nmr-simulation',
 ], function ($, Default, simulation) {
   function Controller() {}
 
@@ -15,7 +15,7 @@ define([
     author: 'Luc Patiny',
     date: '30.12.2013',
     license: 'MIT',
-    cssClass: 'webservice_nmr_spin'
+    cssClass: 'webservice_nmr_spin',
   };
 
   var regDelta = /^delta_(\d+)/;
@@ -61,7 +61,7 @@ define([
     var spinSystem = new simulation.SpinSystem(
       chemicalShifts,
       coupling,
-      multiplicity
+      multiplicity,
     );
     var spectrum = simulation.simulate1D(spinSystem, options);
 
@@ -69,9 +69,9 @@ define([
       data: [
         {
           x: getX(options.from, options.to, options.nbPoints),
-          y: spectrum
-        }
-      ]
+          y: spectrum,
+        },
+      ],
     };
 
     this.createDataFromEvent('onSearchReturn', 'results', chart);
@@ -90,15 +90,15 @@ define([
 
   Controller.prototype.references = {
     results: {
-      label: 'Spectrum'
-    }
+      label: 'Spectrum',
+    },
   };
 
   Controller.prototype.events = {
     onSearchReturn: {
       label: 'An analysis has been completed',
-      refVariable: ['results']
-    }
+      refVariable: ['results'],
+    },
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -106,7 +106,7 @@ define([
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             systemSize: {
@@ -120,34 +120,34 @@ define([
                 { key: '5', title: 'ABCDE' },
                 { key: '6', title: 'ABCDEF' },
                 { key: '7', title: 'ABCDEFG' },
-                { key: '8', title: 'ABCDEFGH' }
-              ]
+                { key: '8', title: 'ABCDEFGH' },
+              ],
             },
             button: {
               type: 'checkbox',
               title: 'Process button',
               default: 'button',
-              options: { button: '' }
+              options: { button: '' },
             },
             buttonlabel: {
               type: 'text',
               default: 'Calculate',
-              title: 'Button text'
+              title: 'Button text',
             },
             buttonlabel_exec: {
               type: 'text',
               default: 'Calculating',
-              title: 'Button text (executing)'
+              title: 'Button text (executing)',
             },
             onloadanalysis: {
               type: 'checkbox',
               title: 'Make one process on load',
               default: 'onload',
-              options: { onload: '' }
-            }
-          }
-        }
-      }
+              options: { onload: '' },
+            },
+          },
+        },
+      },
     };
   };
 
@@ -156,7 +156,7 @@ define([
     systemSize: ['groups', 'group', 0, 'systemSize'],
     buttonlabel: ['groups', 'group', 0, 'buttonlabel', 0],
     buttonlabel_exec: ['groups', 'group', 0, 'buttonlabel_exec', 0],
-    onloadanalysis: ['groups', 'group', 0, 'onloadanalysis', 0, 0]
+    onloadanalysis: ['groups', 'group', 0, 'onloadanalysis', 0, 0],
   };
 
   return Controller;

@@ -12,8 +12,9 @@ p {
 #ci-visualizer,
 .ci-visualizer-text,
 .ci-contextmenu li {
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
+  font-family:
+    'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica,
+    Arial, 'Lucida Grande', sans-serif;
   font-size: 11px;
   color: black;
 }
@@ -481,8 +482,9 @@ div.ci-module-wrapper.ci-module-jqgrid
   width: 120px;
   height: 100%;
 
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
+  font-family:
+    'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica,
+    Arial, 'Lucida Grande', sans-serif;
   font-weight: 300;
 
   /*float: left;*/

@@ -26,7 +26,7 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
       },
       _print(values) {
         this.module.printView(values);
-      }
+      },
     },
 
     inDom: Util.noop,
@@ -39,7 +39,7 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
       this.loadingElements = this.loadingElements || [];
       if (
         this.relsForLoading().indexOf(rel) > -1 &&
-                this.loadingElements.indexOf(rel) == -1
+        this.loadingElements.indexOf(rel) === -1
       ) {
         this.loadingElements.push(rel);
         this.showLoading();
@@ -50,13 +50,10 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
       this.loadingElements = this.loadingElements || [];
       if (
         this.relsForLoading().indexOf(rel) > -1 &&
-                this.loadingElements.indexOf(rel) > -1
+        this.loadingElements.indexOf(rel) > -1
       ) {
-        this.loadingElements.splice(
-          this.loadingElements.indexOf(rel),
-          1
-        );
-        if (this.loadingElements.length == 0) {
+        this.loadingElements.splice(this.loadingElements.indexOf(rel), 1);
+        if (this.loadingElements.length === 0) {
           this.hideLoading();
         }
       }
@@ -83,6 +80,6 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
       setImmediate(function () {
         el.show();
       });
-    }
+    },
   };
 });

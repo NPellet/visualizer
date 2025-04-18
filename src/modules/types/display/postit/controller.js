@@ -1,8 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
-  function Controller() {
-  }
+define(['modules/default/defaultcontroller', 'src/util/util'], function (
+  Default,
+  Util,
+) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -13,21 +15,21 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     date: '24.12.2013',
     license: 'MIT',
     cssClass: 'postit',
-    hidden: true
+    hidden: true,
   };
 
   Controller.prototype.references = {
     value: {
       label: 'Sticky note value',
-      type: 'string'
-    }
+      type: 'string',
+    },
   };
 
   Controller.prototype.events = {
     onChange: {
       label: 'Value is changed',
-      refVariable: ['value']
-    }
+      refVariable: ['value'],
+    },
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -37,31 +39,31 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             fontfamily: {
               type: 'combo',
               title: 'Font-family',
               default: 'Post_IT',
-              options: standardFonts
+              options: standardFonts,
             },
 
             editable: {
               type: 'checkbox',
               title: 'Is Editable',
               options: { isEditable: 'Yes' },
-              default: ['isEditable']
-            }
-          }
-        }
-      }
+              default: ['isEditable'],
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     fontfamily: ['groups', 'group', 0, 'fontfamily', 0],
-    editable: ['groups', 'group', 0, 'editable', 0]
+    editable: ['groups', 'group', 0, 'editable', 0],
   };
 
   return Controller;

@@ -51,7 +51,8 @@ define(['./util'], function (Util) {
       const attachments = this.view._attachments;
       if (attachments) {
         for (const att in attachments) {
-          size += attachments[att].length || (attachments[att].data.length * 0.75);
+          size +=
+            attachments[att].length || attachments[att].data.length * 0.75;
         }
       }
       return size;
@@ -104,18 +105,22 @@ define(['./util'], function (Util) {
 
     getViewUrl() {
       var query = this._revision ? `?rev=${this._revision}` : '';
-      return this.hasView() ? `${this.manager.rocDbUrl}/entry/${this.id}/view.json${query}` : null;
+      return this.hasView()
+        ? `${this.manager.rocDbUrl}/entry/${this.id}/view.json${query}`
+        : null;
     }
 
     getDataUrl() {
       var query = this._revision ? `?rev=${this._revision}` : '';
-      return this.hasData() ? `${this.manager.rocDbUrl}/entry/${this.id}/data.json${query}` : null;
+      return this.hasData()
+        ? `${this.manager.rocDbUrl}/entry/${this.id}/data.json${query}`
+        : null;
     }
 
     getViewSwitcher() {
       return {
         view: { url: this.getViewUrl() },
-        data: { url: this.getDataUrl() }
+        data: { url: this.getDataUrl() },
       };
     }
 
@@ -142,11 +147,11 @@ define(['./util'], function (Util) {
       };
 
       if (this.id) {
-        return this.manager.putRequestDB(`/entry/${this.id}`, this.view)
+        return this.manager
+          .putRequestDB(`/entry/${this.id}`, this.view)
           .then(afterRes);
       } else {
-        return this.manager.postRequestDB('/entry/', this.view)
-          .then(afterRes);
+        return this.manager.postRequestDB('/entry/', this.view).then(afterRes);
       }
     }
 
@@ -167,27 +172,25 @@ define(['./util'], function (Util) {
         this.view._attachments = {};
       }
       this.view._attachments['view.json'] = view.attachment;
-      return this.save()
-        .then(retTrue, () => {
-          this.content.title = oldTitle;
-          this.content.version = oldVersion;
-          if (oldAttachment) {
-            this.view._attachments['view.json'] = oldAttachment;
-          }
-          return false;
-        });
+      return this.save().then(retTrue, () => {
+        this.content.title = oldTitle;
+        this.content.version = oldVersion;
+        if (oldAttachment) {
+          this.view._attachments['view.json'] = oldAttachment;
+        }
+        return false;
+      });
     }
 
     remove() {
       const del = this.view.$deleted;
       this.view.$deleted = true;
-      return this.save()
-        .then(retTrue, () => {
-          if (typeof del === 'boolean') {
-            this.view.$deleted = del;
-          }
-          return false;
-        });
+      return this.save().then(retTrue, () => {
+        if (typeof del === 'boolean') {
+          this.view.$deleted = del;
+        }
+        return false;
+      });
     }
 
     getName(flavor) {
@@ -212,30 +215,44 @@ define(['./util'], function (Util) {
         }
         const oldValue = this.flavors[flavor];
         delete this.flavors[flavor];
-        return this.save().then(() => ({ state: 'removed' }), () => {
-          this.flavors[flavor] = oldValue;
-          return false;
-        });
+        return this.save().then(
+          () => ({ state: 'removed' }),
+          () => {
+            this.flavors[flavor] = oldValue;
+            return false;
+          },
+        );
       } else {
-        const name = this.flavors[currentFlavor][this.flavors[currentFlavor].length - 1];
+        const name =
+          this.flavors[currentFlavor][this.flavors[currentFlavor].length - 1];
         this.flavors[flavor] = [name];
-        return this.save().then(() => ({ state: 'added', name }), () => {
-          delete this.flavors[flavor];
-          return false;
-        });
+        return this.save().then(
+          () => ({ state: 'added', name }),
+          () => {
+            delete this.flavors[flavor];
+            return false;
+          },
+        );
       }
     }
 
     addGroup(name) {
-      return this.manager.putRequestDB(`/entry/${this.id}/_owner/${name}`).then(() => this.reload()).then(retTrue, retFalse);
+      return this.manager
+        .putRequestDB(`/entry/${this.id}/_owner/${name}`)
+        .then(() => this.reload())
+        .then(retTrue, retFalse);
     }
 
     removeGroup(name) {
-      return this.manager.deleteRequestDB(`/entry/${this.id}/_owner/${name}`).then(() => this.reload()).then(retTrue, retFalse);
+      return this.manager
+        .deleteRequestDB(`/entry/${this.id}/_owner/${name}`)
+        .then(() => this.reload())
+        .then(retTrue, retFalse);
     }
 
     reload() {
-      return this.manager.getRequestDB(`/entry/${this.id}`)
+      return this.manager
+        .getRequestDB(`/entry/${this.id}`)
         .then((getRes) => (this.view = getRes.body));
     }
 
@@ -249,8 +266,13 @@ define(['./util'], function (Util) {
 
     getRevisions(force) {
       if (this._revs && !force) return this._revs;
-      this._revs = this.manager.getRequestDB(`/entry/${this.id}`, { revs_info: true })
-        .then((doc) => doc.body._revs_info.filter((rev) => rev.status === 'available').map((rev) => rev.rev));
+      this._revs = this.manager
+        .getRequestDB(`/entry/${this.id}`, { revs_info: true })
+        .then((doc) =>
+          doc.body._revs_info
+            .filter((rev) => rev.status === 'available')
+            .map((rev) => rev.rev),
+        );
       return this._revs;
     }
 
@@ -259,7 +281,8 @@ define(['./util'], function (Util) {
     }
 
     getRevisionData(rev) {
-      return this.manager.getRequestDB(`/entry/${this.id}?rev=${rev}`)
+      return this.manager
+        .getRequestDB(`/entry/${this.id}?rev=${rev}`)
         .then((getRes) => getRes.body);
     }
   }

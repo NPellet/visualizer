@@ -4,7 +4,7 @@ define([
   'modules/default/defaultview',
   'src/util/util',
   'src/util/ui',
-  'lib/d3/d3.layout.cloud'
+  'lib/d3/d3.layout.cloud',
 ], function (Default, Util, ui, d3) {
   function View() {}
 
@@ -23,7 +23,7 @@ define([
       },
       textvalue: function () {
         this.dom.empty();
-      }
+      },
     },
     update: {
       arrayvalue: function (value) {
@@ -42,7 +42,7 @@ define([
         }
         value = value.get();
         this.processChart(value);
-      }
+      },
     },
     onActionReceive: {},
     inDom: function () {
@@ -64,9 +64,11 @@ define([
       var unicodePunctuationRe =
         '!-#%-*,-/:;?@\\[-\\]_{}¡§«¶·»¿;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･';
 
-      var stopWords = /^(i|me|my|myself|we|us|our|ours|ourselves|you|your|yours|yourself|yourselves|he|him|his|himself|she|her|hers|herself|it|its|itself|they|them|their|theirs|themselves|what|which|who|whom|whose|this|that|these|those|am|is|are|was|were|be|been|being|have|has|had|having|do|does|did|doing|will|would|should|can|could|ought|i'm|you're|he's|she's|it's|we're|they're|i've|you've|we've|they've|i'd|you'd|he'd|she'd|we'd|they'd|i'll|you'll|he'll|she'll|we'll|they'll|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't|doesn't|don't|didn't|won't|wouldn't|shan't|shouldn't|can't|cannot|couldn't|mustn't|let's|that's|who's|what's|here's|there's|when's|where's|why's|how's|a|an|the|and|but|if|or|because|as|until|while|of|at|by|for|with|about|against|between|into|through|during|before|after|above|below|to|from|up|upon|down|in|out|on|off|over|under|again|further|then|once|here|there|when|where|why|how|all|any|both|each|few|more|most|other|some|such|no|nor|not|only|own|same|so|than|too|very|say|says|said|shall)$/;
+      var stopWords =
+        /^(i|me|my|myself|we|us|our|ours|ourselves|you|your|yours|yourself|yourselves|he|him|his|himself|she|her|hers|herself|it|its|itself|they|them|their|theirs|themselves|what|which|who|whom|whose|this|that|these|those|am|is|are|was|were|be|been|being|have|has|had|having|do|does|did|doing|will|would|should|can|could|ought|i'm|you're|he's|she's|it's|we're|they're|i've|you've|we've|they've|i'd|you'd|he'd|she'd|we'd|they'd|i'll|you'll|he'll|she'll|we'll|they'll|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't|doesn't|don't|didn't|won't|wouldn't|shan't|shouldn't|can't|cannot|couldn't|mustn't|let's|that's|who's|what's|here's|there's|when's|where's|why's|how's|a|an|the|and|but|if|or|because|as|until|while|of|at|by|for|with|about|against|between|into|through|during|before|after|above|below|to|from|up|upon|down|in|out|on|off|over|under|again|further|then|once|here|there|when|where|why|how|all|any|both|each|few|more|most|other|some|such|no|nor|not|only|own|same|so|than|too|very|say|says|said|shall)$/;
       var punctuation = new RegExp(`[${unicodePunctuationRe}]`, 'g');
-      var wordSeparators = /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g;
+      var wordSeparators =
+        /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g;
       var discard = /^(@|https?:|\/\/)/;
 
       that.drawChart();
@@ -107,10 +109,10 @@ define([
           .split(
             that.module.getConfigurationCheckbox(
               'oneWordPerLine',
-              'oneWordPerLine'
+              'oneWordPerLine',
             )
               ? /\n/g
-              : wordSeparators
+              : wordSeparators,
           )
           .forEach(function (word) {
             if (discard.test(word)) return;
@@ -131,18 +133,16 @@ define([
       function generate() {
         that.layout.spiral(that.module.getConfiguration('spiral'));
         that.fontSize = d3.scale[that.module.getConfiguration('scale')]().range(
-          [10, 100]
+          [10, 100],
         );
-        if (tags.length)
+        if (tags.length) {
           that.fontSize.domain([
             +tags[tags.length - 1].value || 1,
-            +tags[0].value
+            +tags[0].value,
           ]);
+        }
         that.words = [];
-        that.layout
-          .stop()
-          .words(tags)
-          .start();
+        that.layout.stop().words(tags).start();
       }
 
       // ####### END FUNCTIONS ########
@@ -171,15 +171,15 @@ define([
           .attr('transform', `translate(${[w >> 1, h >> 1]})`);
       var from = that.module.getConfiguration('fromTo')
         ? Math.max(
-          -90,
-          Math.min(90, +that.module.getConfiguration('fromTo')[0])
-        )
+            -90,
+            Math.min(90, +that.module.getConfiguration('fromTo')[0]),
+          )
         : 0;
       var to = that.module.getConfiguration('fromTo')
         ? Math.max(
-          -90,
-          Math.min(90, +that.module.getConfiguration('fromTo')[1])
-        )
+            -90,
+            Math.min(90, +that.module.getConfiguration('fromTo')[1]),
+          )
         : 0;
       var count =
         that.module.getConfiguration('orientation') > 0
@@ -218,11 +218,11 @@ define([
       function draw(data, bounds) {
         var scale = bounds
           ? Math.min(
-            w / Math.abs(bounds[1].x - w / 2),
-            w / Math.abs(bounds[0].x - w / 2),
-            h / Math.abs(bounds[1].y - h / 2),
-            h / Math.abs(bounds[0].y - h / 2)
-          ) / 2
+              w / Math.abs(bounds[1].x - w / 2),
+              w / Math.abs(bounds[0].x - w / 2),
+              h / Math.abs(bounds[1].y - h / 2),
+              h / Math.abs(bounds[0].y - h / 2),
+            ) / 2
           : 1;
 
         that.words = data;
@@ -268,11 +268,7 @@ define([
         text.exit().each(function () {
           exitGroupNode.appendChild(this);
         });
-        exitGroup
-          .transition()
-          .duration(1000)
-          .style('opacity', 1e-6)
-          .remove();
+        exitGroup.transition().duration(1000).style('opacity', 1e-6).remove();
 
         vis
           .transition()
@@ -280,7 +276,7 @@ define([
           .duration(750)
           .attr('transform', `translate(${[w >> 1, h >> 1]})scale(${scale})`);
       }
-    }
+    },
   });
 
   return View;

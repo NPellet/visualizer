@@ -1,51 +1,70 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api', 'lib/formcreator/formcreator', 'src/util/util', 'src/util/debug'], function (Default, Traversing, API, FormCreator, Util, Debug) {
-  function View() {
-  }
+define([
+  'modules/default/defaultview',
+  'src/util/datatraversing',
+  'src/util/api',
+  'lib/formcreator/formcreator',
+  'src/util/util',
+  'src/util/debug',
+], function (Default, Traversing, API, FormCreator, Util, Debug) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       var that = this;
       var parentDom = $('<div>').css({
         position: 'relative',
         height: '100%',
-        weight: '100%'
+        weight: '100%',
       });
-      this.overlay = $('<div>').css({
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-        zIndex: 1000,
-        backgroundColor: 'rgba(200,200,200,0)',
-        color: 'rgba(50,50,50,0)',
-        display: 'none'
-      }).appendTo(parentDom).click(function (e) {
-        e.stopPropagation();
-        that.searchEnabled = true;
-        that.overlay.animate({
+      this.overlay = $('<div>')
+        .css({
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+          zIndex: 1000,
           backgroundColor: 'rgba(200,200,200,0)',
-          color: 'rgba(50,50,50,0)'
-        }, 500, function () {
-          that.overlay.css('display', 'none');
-        });
-        that.search();
-      }).append($(`<div>${this.module.getConfiguration('disableMessage')}</div>`).css({
-        textAlign: 'center',
-        width: '100%',
-        zIndex: 1001,
-        display: 'table-cell',
-        verticalAlign: 'middle',
-        fontSize: '20pt'
-      }));
+          color: 'rgba(50,50,50,0)',
+          display: 'none',
+        })
+        .appendTo(parentDom)
+        .click(function (e) {
+          e.stopPropagation();
+          that.searchEnabled = true;
+          that.overlay.animate(
+            {
+              backgroundColor: 'rgba(200,200,200,0)',
+              color: 'rgba(50,50,50,0)',
+            },
+            500,
+            function () {
+              that.overlay.css('display', 'none');
+            },
+          );
+          that.search();
+        })
+        .append(
+          $(`<div>${this.module.getConfiguration('disableMessage')}</div>`).css(
+            {
+              textAlign: 'center',
+              width: '100%',
+              zIndex: 1001,
+              display: 'table-cell',
+              verticalAlign: 'middle',
+              fontSize: '20pt',
+            },
+          ),
+        );
       this.searchEnabled = true;
 
       this.dom = $('<div>').appendTo(parentDom);
       this.module.getDomContent().html(parentDom);
       this.variables = {};
       this.cfgValue = {};
-      this.maxhits = parseInt(this.module.getConfiguration('maxhits'), 10) || Number.POSITIVE_INFINITY;
+      this.maxhits =
+        parseInt(this.module.getConfiguration('maxhits'), 10) ||
+        Number.POSITIVE_INFINITY;
 
       this._jpathsFcts = {};
 
@@ -60,23 +79,33 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
               groups: {
                 cfg: {
                   options: {
-                    type: 'list'
+                    type: 'list',
                   },
-                  fields: FormCreator.makeStructure(searchfields, function (field) {
-                    for (var k = 0, m = field.groups.general[0].searchOnField.length; field.groups.general[0].searchOnField[k]; k++) {
-                      Util.addjPathFunction(that._jpathsFcts, field.groups.general[0].searchOnField[k]);
-                    }
-                  })
-                }
-              }
-            }
-          }
+                  fields: FormCreator.makeStructure(
+                    searchfields,
+                    function (field) {
+                      for (
+                        var k = 0,
+                          m = field.groups.general[0].searchOnField.length;
+                        field.groups.general[0].searchOnField[k];
+                        k++
+                      ) {
+                        Util.addjPathFunction(
+                          that._jpathsFcts,
+                          field.groups.general[0].searchOnField[k],
+                        );
+                      }
+                    },
+                  ),
+                },
+              },
+            },
+          },
         };
 
       for (; j < k; j++) {
         varsout.push(varsoutCfg[j].name);
       }
-
 
       var form = FormCreator.makeForm();
 
@@ -91,7 +120,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
           $.extend(that.cfgValue, cfgFinal);
           that.search();
-        }
+        },
       });
 
       form.setStructure(cfg);
@@ -113,7 +142,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
     blank: {
       value: function (varName) {
         this.dom.empty();
-      }
+      },
     },
 
     search: function () {
@@ -135,7 +164,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         for (var key in keys) {
           val = this.variables[keys[key]];
           l = val.length;
-          for (i = 0; (i < l); i++) {
+          for (i = 0; i < l; i++) {
             if (this.searchElement(cfg, val.getChildSync([i]).get())) {
               if (count < max) target[count++] = val[i];
               flags[i] = true;
@@ -215,7 +244,6 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
 
       toEval += ' var el; ';
 
-
       toEval += ' return ';
       for (; i < l; i++) {
         searchOn = searchfields[i].groups.general[0].searchOnField || [];
@@ -235,14 +263,30 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
               toEval += ' || ';
             }
             var opts = {};
-            if (searchfields[i].groups.general[0].type[0] === 'float') opts.number = true;
-            if (searchfields[i].groups.text && searchfields[i].groups.text[0].case_sensitive[0][0] === 'case_sensitive') opts.caseSensitive = true;
+            if (searchfields[i].groups.general[0].type[0] === 'float') {
+              opts.number = true;
+            }
+            if (
+              searchfields[i].groups.text &&
+              searchfields[i].groups.text[0].case_sensitive[0][0] ===
+                'case_sensitive'
+            ) {
+              opts.caseSensitive = true;
+            }
             var allow_undefined = false;
-            if (searchfields[i].groups.general[0].allow_undefined && searchfields[i].groups.general[0].allow_undefined[0]) {
-              allow_undefined = !!searchfields[i].groups.general[0].allow_undefined[0].length;
+            if (
+              searchfields[i].groups.general[0].allow_undefined &&
+              searchfields[i].groups.general[0].allow_undefined[0]
+            ) {
+              allow_undefined =
+                !!searchfields[i].groups.general[0].allow_undefined[0].length;
             }
             toEval += ` ( ( el = this.getJpath( "${searchOn[j]}", row ) ) ? ( `;
-            toEval += this._makeOp(searchfields[i].groups.general[0].operator[0], searchfields[i].groups.general[0].name[0], opts);
+            toEval += this._makeOp(
+              searchfields[i].groups.general[0].operator[0],
+              searchfields[i].groups.general[0].name[0],
+              opts,
+            );
             toEval += ` ) : ${allow_undefined} ) `;
           }
           toEval += ' ) ';
@@ -273,7 +317,7 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
           this.variables[variableName] = variableValue.get();
           this.search();
         }
-      }
+      },
     },
 
     onActionReceive: {
@@ -281,13 +325,16 @@ define(['modules/default/defaultview', 'src/util/datatraversing', 'src/util/api'
         if (this.searchEnabled) {
           this.searchEnabled = false;
           this.overlay.css('display', 'table');
-          this.overlay.animate({
-            backgroundColor: 'rgba(200,200,200,0.6)',
-            color: 'rgba(50,50,50,1)'
-          }, 500);
+          this.overlay.animate(
+            {
+              backgroundColor: 'rgba(200,200,200,0.6)',
+              color: 'rgba(50,50,50,1)',
+            },
+            500,
+          );
         }
-      }
-    }
+      },
+    },
   });
 
   return View;

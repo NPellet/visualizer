@@ -16,18 +16,20 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
     author: 'Norman Pellet, Luc Patiny, Michaël Zasso',
     date: '11.01.2014',
     license: 'MIT',
-    cssClass: 'webservice_cron'
+    cssClass: 'webservice_cron',
   };
 
   Controller.prototype.start = function () {
-    if (this.running)
+    if (this.running) {
       this.stop();
+    }
     this.doVariables();
   };
 
   Controller.prototype.stop = function () {
-    if (!this.running)
+    if (!this.running) {
       return;
+    }
     for (var i = 0, ii = this.runners.length; i < ii; i++) {
       window.clearInterval(this.runners[i]);
     }
@@ -40,24 +42,28 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
     // ouput
     result: {
       label: 'Global result',
-      type: 'object'
-    }
+      type: 'object',
+    },
   };
 
   Controller.prototype.events = {
     // List of all possible events
     onUpdateResult: {
       label: 'Updated result',
-      refVariable: ['result']
-    }
+      refVariable: ['result'],
+    },
   };
 
   Controller.prototype.doVariables = function () {
     var cfg = this.module.getConfiguration('cronInfos'),
-      variable, time, url, datatype;
+      variable,
+      time,
+      url,
+      datatype;
 
-    if (!cfg)
+    if (!cfg) {
       return;
+    }
 
     for (var i = 0, l = cfg.length; i < l; i++) {
       variable = cfg[i].variable;
@@ -66,7 +72,14 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
       datatype = cfg[i].datatype;
 
       this.doAjax(this, variable, url, datatype);
-      this.runners[i] = window.setInterval(this.doAjax, time * 1000, this, variable, url, datatype);
+      this.runners[i] = window.setInterval(
+        this.doAjax,
+        time * 1000,
+        this,
+        variable,
+        url,
+        datatype,
+      );
     }
 
     this.running = true;
@@ -75,7 +88,7 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
   Controller.prototype.doAjax = function (self, variable, url, datatype) {
     var ajax = {
       url: url,
-      dataType: 'text'
+      dataType: 'text',
     };
 
     ajax.success = function (data) {
@@ -109,31 +122,31 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             max: {
               type: 'float',
               title: 'Max number of logs',
-              default: 10
-            }
-          }
+              default: 10,
+            },
+          },
         },
         cronInfos: {
           options: {
             type: 'table',
-            multiple: true
+            multiple: true,
           },
           fields: {
             variable: {
               type: 'text',
               title: 'Variable',
-              default: ''
+              default: '',
             },
             url: {
               type: 'text',
               title: 'URL',
-              default: ''
+              default: '',
             },
             datatype: {
               type: 'combo',
@@ -141,28 +154,30 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
               options: [
                 {
                   title: 'Text',
-                  key: 'text'
-                }, { title: 'JSON', key: 'json' }, {
+                  key: 'text',
+                },
+                { title: 'JSON', key: 'json' },
+                {
                   title: 'XML',
-                  key: 'xml'
-                }
+                  key: 'xml',
+                },
               ],
-              default: 'json'
+              default: 'json',
             },
             repeat: {
               type: 'text',
               title: 'Repetition time (s)',
-              default: '60'
-            }
-          }
-        }
-      }
+              default: '60',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     cronInfos: ['groups', 'cronInfos', 0],
-    maxLogs: ['groups', 'group', 0, 'max', 0]
+    maxLogs: ['groups', 'group', 0, 'max', 0],
   };
 
   Controller.prototype.onRemove = function () {

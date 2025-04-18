@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
+define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
@@ -55,13 +55,13 @@ define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
     },
   };
 
-  Controller.prototype.export = function() {
+  Controller.prototype.export = function () {
     return this.module.view.exportToHTML();
   };
 
   Controller.prototype.variablesIn = ['value', 'tpl', 'form', 'style'];
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {
@@ -125,7 +125,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
     setForm: 'Set form values',
   });
 
-  Controller.prototype.onRendered = function(renderedHtml) {
+  Controller.prototype.onRendered = function (renderedHtml) {
     setTimeout(() => {
       // Figure out why I have to set timeout
       this.createDataFromEvent('onRendered', 'renderedHtml', renderedHtml);
@@ -133,15 +133,15 @@ define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
     }, 0);
   };
 
-  Controller.prototype.onFormChanged = function(event, noChange) {
+  Controller.prototype.onFormChanged = function (event, noChange) {
     this._doForm('onFormChanged', event, noChange);
   };
 
-  Controller.prototype.onFormSubmitted = function(event) {
+  Controller.prototype.onFormSubmitted = function (event) {
     this._doForm('onFormSubmitted', event);
   };
 
-  Controller.prototype._doForm = function(name, data, noChange) {
+  Controller.prototype._doForm = function (name, data, noChange) {
     this.createDataFromEvent(name, 'form', data.data);
     this.sendActionFromEvent(name, 'form', data.data);
     this.createDataFromEvent(name, 'formFull', data);

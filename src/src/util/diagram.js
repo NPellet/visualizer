@@ -6,7 +6,7 @@ define([
   'src/util/debug',
   'lodash',
   'jquery',
-  'modules/modulefactory'
+  'modules/modulefactory',
 ], function (Util, ui, Debug, _, $, ModuleFactory) {
   function Rectangle(arg1) {
     var fail;
@@ -15,12 +15,13 @@ define([
     } else if (arguments.length === 4) {
       this.init2.apply(this, arguments);
     } else if (arguments.length === 1 && arg1 instanceof Array) {
-      if (arguments[0].length === 3)
+      if (arguments[0].length === 3) {
         this.init1.apply(this, arguments[0]);
-      else if (arguments.length === 4)
+      } else if (arguments.length === 4) {
         this.init2.apply(this, arguments[0]);
-      else
+      } else {
         fail = true;
+      }
     } else {
       fail = true;
     }
@@ -53,16 +54,29 @@ define([
     var x = _.map(corners, 'x');
     var y = _.map(corners, 'y');
     for (var i = 0; i < corners.length; i++) {
-      if (Math.max.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
+      if (
+        Math.max.apply(null, x) === corners[i].x &&
+        Math.max.apply(null, y) === corners[i].y
+      ) {
         this.maxmax = corners[i];
-      else if (Math.min.apply(null, x) === corners[i].x && Math.max.apply(null, y) === corners[i].y)
+      } else if (
+        Math.min.apply(null, x) === corners[i].x &&
+        Math.max.apply(null, y) === corners[i].y
+      ) {
         this.minmax = corners[i];
-      else if (Math.max.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
+      } else if (
+        Math.max.apply(null, x) === corners[i].x &&
+        Math.min.apply(null, y) === corners[i].y
+      ) {
         this.maxmin = corners[i];
-      else if (Math.min.apply(null, x) === corners[i].x && Math.min.apply(null, y) === corners[i].y)
+      } else if (
+        Math.min.apply(null, x) === corners[i].x &&
+        Math.min.apply(null, y) === corners[i].y
+      ) {
         this.minmin = corners[i];
-      else
+      } else {
         throw new Error('Rectangle initialisation failed');
+      }
     }
     this._init();
   };
@@ -79,7 +93,7 @@ define([
         { x: (this.miny - b) / a, y: this.miny },
         { x: (this.maxy - b) / a, y: this.maxy },
         { x: this.minx, y: a * this.minx + b },
-        { x: this.maxx, y: a * this.maxx + b }
+        { x: this.maxx, y: a * this.maxx + b },
       ];
 
       points = _.filter(points, function (p) {
@@ -88,10 +102,9 @@ define([
     } else {
       points = [
         { x: this.centerx, y: this.miny },
-        { x: this.centerx, y: this.maxy }
+        { x: this.centerx, y: this.maxy },
       ];
     }
-
 
     var distances = _.map(points, function (p) {
       return distance(p, point);
@@ -103,7 +116,12 @@ define([
   };
 
   Rectangle.prototype.isInside = function (point) {
-    return (point.x <= this.maxx && point.x >= this.minx && point.y <= this.maxy && point.y >= this.miny);
+    return (
+      point.x <= this.maxx &&
+      point.x >= this.minx &&
+      point.y <= this.maxy &&
+      point.y >= this.miny
+    );
   };
 
   function distance(a, b) {
@@ -120,7 +138,8 @@ define([
     var sources = [],
       targets = [],
       links = [],
-      i, j;
+      i,
+      j;
     var modules = ModuleFactory.getModules();
     for (i = 0; i < modules.length; i++) {
       var module = modules[i].definition;
@@ -133,7 +152,7 @@ define([
           module: modules[i],
           id: DataObject.resurrect(module.id),
           name: var_in.name,
-          rel: var_in.rel
+          rel: var_in.rel,
         });
       }
 
@@ -148,7 +167,7 @@ define([
           event: var_out.event,
           jpath: var_out.jpath,
           rel: var_out.rel,
-          module: modules[i]
+          module: modules[i],
         });
       }
     }
@@ -163,11 +182,11 @@ define([
           links.push({
             source: {
               module: source[j].module,
-              id: source[j].id
+              id: source[j].id,
             },
             target: {
               id: targets[i].id,
-              module: targets[i].module
+              module: targets[i].module,
             },
             type: 'normal',
             filter: source[j].filter || 'no filter',
@@ -175,7 +194,7 @@ define([
             name: source[j].name || 'no name',
             jpath: source[j].jpath || [],
             rel_out: source[j].rel,
-            rel_in: targets[j].rel
+            rel_in: targets[j].rel,
           });
         }
       }
@@ -194,7 +213,9 @@ define([
       });
 
       if (!target.length) {
-        Debug.warn(`The module ${sources[i].id} has a var_out ${sources[i].name} not used as an input of any other module`);
+        Debug.warn(
+          `The module ${sources[i].id} has a var_out ${sources[i].name} not used as an input of any other module`,
+        );
       }
     }
     return links;
@@ -205,8 +226,12 @@ define([
       height = 900;
     var nodes = {};
     links.forEach(function (link) {
-      link.source = nodes[link.source.id] || (nodes[link.source.id] = { info: link.source });
-      link.target = nodes[link.target.id] || (nodes[link.target.id] = { info: link.target });
+      link.source =
+        nodes[link.source.id] ||
+        (nodes[link.source.id] = { info: link.source });
+      link.target =
+        nodes[link.target.id] ||
+        (nodes[link.target.id] = { info: link.target });
     });
     var n = Object.keys(nodes).length,
       i = 0;
@@ -220,9 +245,11 @@ define([
     return nodes;
   }
 
-
   exports.showVariableDiagram = function () {
-    Promise.all([Util.require('d3'), Util.loadCss('src/util/diagram.css')]).then(function ([d3]) {
+    Promise.all([
+      Util.require('d3'),
+      Util.loadCss('src/util/diagram.css'),
+    ]).then(function ([d3]) {
       var type = 'rect'; // Use circ or rect
       var links = getLinks();
       var nodes = getNodes(links);
@@ -236,43 +263,48 @@ define([
         nodeBox = {
           width: nodeRadius * Math.sqrt(2), // Length of the biggest square in that circle
           height: nodeRadius * Math.sqrt(2),
-          padding: '2px 8px 2px 8px'
+          padding: '2px 8px 2px 8px',
         };
       } else {
         nodeBox = {
           width: 140,
           height: 90,
-          padding: '2px 8px 2px 8px'
+          padding: '2px 8px 2px 8px',
         };
       }
 
       var linkBox = {
         width: 150,
-        height: 200
+        height: 200,
       };
 
-
-      var force = d3.layout.force()
+      var force = d3.layout
+        .force()
         .nodes(d3.values(nodes))
         .links(links)
         .size([width, height])
-        .linkDistance((Math.max(nodeBox.width, nodeBox.height) + Math.max(linkBox.width, linkBox.height) * 1.7))
+        .linkDistance(
+          Math.max(nodeBox.width, nodeBox.height) +
+            Math.max(linkBox.width, linkBox.height) * 1.7,
+        )
         .charge(-4000)
         .on('tick', tick)
         .start();
 
       $diagram = $('<div class="ci-diagram">');
 
-      var zoom = d3.behavior.zoom()
-        .scaleExtent([0.2, 10])
-        .on('zoom', zoomed);
+      var zoom = d3.behavior.zoom().scaleExtent([0.2, 10]).on('zoom', zoomed);
 
-      var svg = d3.select($diagram[0]).append('svg')
+      var svg = d3
+        .select($diagram[0])
+        .append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('width', '100%')
         .attr('height', '100%');
 
-      svg.append('g').append('rect')
+      svg
+        .append('g')
+        .append('rect')
         .attr('width', width)
         .attr('height', height)
         .style('fill', 'rgba(255,255,255,1')
@@ -282,9 +314,12 @@ define([
       svg = svg.append('g');
 
       // Per-type markers, as they don't inherit styles.
-      svg.append('defs').selectAll('marker')
+      svg
+        .append('defs')
+        .selectAll('marker')
         .data(['normal'])
-        .enter().append('marker')
+        .enter()
+        .append('marker')
         .attr('id', function (d) {
           return d;
         })
@@ -297,9 +332,12 @@ define([
         .append('path')
         .attr('d', 'M0,-5L10,0L0,5');
 
-      var path = svg.append('g').selectAll('path')
+      var path = svg
+        .append('g')
+        .selectAll('path')
         .data(force.links())
-        .enter().append('path')
+        .enter()
+        .append('path')
         .attr('class', function (d) {
           return `link ${d.type}`;
         })
@@ -309,27 +347,33 @@ define([
 
       var node;
       if (type === 'circ') {
-        node = svg.append('g').selectAll('circle')
+        node = svg
+          .append('g')
+          .selectAll('circle')
           .data(force.nodes())
-          .enter().append('circle')
+          .enter()
+          .append('circle')
           .attr('r', nodeRadius)
-        // .call(zoom)
-        // .call(drag)
+          // .call(zoom)
+          // .call(drag)
           .call(force.drag);
       } else if (type === 'rect') {
-        node = svg.append('g').selectAll('rect')
+        node = svg
+          .append('g')
+          .selectAll('rect')
           .data(force.nodes())
-          .enter().append('rect')
+          .enter()
+          .append('rect')
           .attr('width', nodeBox.width)
           .attr('height', nodeBox.height)
-        // .call(zoom)
-        // .call(drag)
+          // .call(zoom)
+          // .call(drag)
           .call(force.drag);
       }
       // .call(drag1);
 
-
-      var linkText = svg.append('g')
+      var linkText = svg
+        .append('g')
         .selectAll('foreignObject')
         .data(force.links())
         .enter()
@@ -345,47 +389,56 @@ define([
           display: 'flex',
           'align-items': 'center',
           height: `${linkBox.height}px`,
-          width: `${linkBox.width}px`
+          width: `${linkBox.width}px`,
         })
         .attr('class', 'arrow-text')
         .html(linkTextContent);
 
-      var nodeText = svg.append('g')
+      var nodeText = svg
+        .append('g')
         .selectAll('foreignObject')
         .data(force.nodes())
-        .enter().append('foreignObject')
+        .enter()
+        .append('foreignObject')
         .style('pointer-events', 'none')
         .attr({
           width: nodeBox.width,
-          height: nodeBox.height
+          height: nodeBox.height,
         });
 
-      nodeText.append('xhtml:div')
+      nodeText
+        .append('xhtml:div')
         .append('div')
         .style({
           display: 'flex',
           height: `${nodeBox.height}px`,
           width: `${nodeBox.width}px`,
           padding: nodeBox.padding,
-          'box-sizing': 'border-box'
+          'box-sizing': 'border-box',
         })
         .attr('class', 'node-text')
         .html(nodeTextContent);
 
       function zoomed() {
-        svg.attr('transform', `translate(${d3.event.translate})scale(${d3.event.scale})`);
+        svg.attr(
+          'transform',
+          `translate(${d3.event.translate})scale(${d3.event.scale})`,
+        );
       }
 
       function nodeTextContent(d) {
         var res = [];
-        res.push(`${d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown'}<br/>`);
+        res.push(
+          `${d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown'}<br/>`,
+        );
         res.push(d.info.module.definition.title);
 
         return res.join('<br/>');
       }
 
       function linkTextContent(d) {
-        var template = 'Event:&nbsp;<%= event %><br/>\nName:&nbsp;<%= name %><br/>\n<!--<% if(rel_out) { %> Ref out:&nbsp;<%= rel_out %><br/><% } %>-->\n<!--<% if(rel_in) { %> Ref in:&nbsp;<%= rel_in %><br/><% } %>-->\n<% if(jpath.length > 0) { %> <br/>jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
+        var template =
+          'Event:&nbsp;<%= event %><br/>\nName:&nbsp;<%= name %><br/>\n<!--<% if(rel_out) { %> Ref out:&nbsp;<%= rel_out %><br/><% } %>-->\n<!--<% if(rel_in) { %> Ref in:&nbsp;<%= rel_in %><br/><% } %>-->\n<% if(jpath.length > 0) { %> <br/>jpath:&nbsp;<% print("[" + jpath.join(",") + "]"); %> <% } %>';
         var compiled = _.template(template);
         return compiled(DataObject.resurrect(d));
       }
@@ -410,10 +463,11 @@ define([
       }
 
       function transformNode(d) {
-        if (type === 'circ')
+        if (type === 'circ') {
           return `translate(${d.x},${d.y})`;
-        else
+        } else {
           return `translate(${d.x - nodeBox.width / 2},${d.y - nodeBox.height / 2})`;
+        }
       }
 
       function transformLink(d) {
@@ -431,52 +485,66 @@ define([
             var dx = d.target.x - d.source.x,
               dy = d.target.y - d.source.y,
               dr = Math.sqrt(dx * dx + dy * dy);
-            var factor = 1 - (nodeRadius / dr);
+            var factor = 1 - nodeRadius / dr;
             return {
               from: {
                 x: d.target.x - dx * factor,
-                y: d.target.y - dy * factor
+                y: d.target.y - dy * factor,
               },
               to: {
                 x: d.source.x + dx * factor,
-                y: d.source.y + dy * factor
-              }
+                y: d.source.y + dy * factor,
+              },
             };
           case 'rect':
-            var sourceRect = new Rectangle({
-              x: d.source.x - nodeBox.width / 2,
-              y: d.source.y - nodeBox.height / 2
-            }, nodeBox.width, nodeBox.height);
+            var sourceRect = new Rectangle(
+              {
+                x: d.source.x - nodeBox.width / 2,
+                y: d.source.y - nodeBox.height / 2,
+              },
+              nodeBox.width,
+              nodeBox.height,
+            );
 
-            var targetRect = new Rectangle({
-              x: d.target.x - nodeBox.width / 2,
-              y: d.target.y - nodeBox.height / 2
-            }, nodeBox.width, nodeBox.height);
+            var targetRect = new Rectangle(
+              {
+                x: d.target.x - nodeBox.width / 2,
+                y: d.target.y - nodeBox.height / 2,
+              },
+              nodeBox.width,
+              nodeBox.height,
+            );
 
             return {
               from: sourceRect.intersection(d.target),
-              to: targetRect.intersection(d.source)
+              to: targetRect.intersection(d.source),
             };
         }
       }
 
-      var ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-      var wh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      var ww = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0,
+      );
+      var wh = Math.max(
+        document.documentElement.clientHeight,
+        window.innerHeight || 0,
+      );
       var f = 0.94;
       var dw, dh; // dialog height and width
       if (ww / width < wh / height) {
         dw = f * ww;
-        dh = dw * height / width;
+        dh = (dw * height) / width;
       } else {
         dh = f * wh;
-        dw = dh * width / height;
+        dw = (dh * width) / height;
       }
 
       ui.dialog($diagram, {
         width: dw,
         height: dh,
         noHeader: false,
-        noWrap: true
+        noWrap: true,
       });
     });
   };

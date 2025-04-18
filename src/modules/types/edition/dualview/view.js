@@ -3,7 +3,7 @@
 define([
   'modules/default/defaultview',
   'modules/types/edition/onde/view',
-  'modules/types/display/template-twig/view'
+  'modules/types/display/template-twig/view',
 ], function (Default, OndeV, TwigV) {
   function View() {
     this.twigV = new TwigV();
@@ -34,7 +34,7 @@ define([
 
       this.dom = $(html).css({
         height: '100%',
-        width: '100%'
+        width: '100%',
       });
 
       this.twigV.init();
@@ -60,7 +60,7 @@ define([
         this._value = [val, name];
         this.twigV.update.value.apply(this.twigV, arguments);
         this.ondeV.update.inputValue.apply(this.ondeV, arguments);
-      }
+      },
     },
     loadOnde: function () {
       this.dom.html(this.ondeV.dom);
@@ -73,7 +73,7 @@ define([
       });
       if (this._value) this.twigV.update.value.apply(this.twigV, this._value);
       this.twigV.render();
-    }
+    },
   });
 
   return View;

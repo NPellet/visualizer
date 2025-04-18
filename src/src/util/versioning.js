@@ -8,23 +8,21 @@ define([
   './ui',
   'forms/button',
   'src/main/variables',
-  'version'
+  'version',
 ], function ($, Cache, VersionHandler, Debug, UI, Button, Variables, Version) {
   var version = Version.version;
   var originalVersion = 'none';
   var viewLocked = false;
 
-
-  var dataHandler = new VersionHandler(),
-    viewHandler = new VersionHandler(),
-    view = new DataObject(),
-    data = Variables.getData(),
-    lastLoaded = {
-      view: {},
-      data: {}
-    },
-    urlType = 'Search';
-
+  var dataHandler = new VersionHandler();
+  var viewHandler = new VersionHandler();
+  var view = new DataObject();
+  var data = Variables.getData();
+  var lastLoaded = {
+    view: {},
+    data: {},
+  };
+  var urlType = 'Search';
 
   viewHandler.version = version;
   dataHandler.setType('data');
@@ -47,17 +45,37 @@ define([
   function switchView(value, pushstate, options) {
     options = options || {};
     var def = Promise.resolve();
-    if (value.data && (lastLoaded.data.url !== value.data.url || (lastLoaded.data.urls !== value.data.urls && lastLoaded.data.branch !== value.data.branch))) {
+    if (
+      value.data &&
+      (lastLoaded.data.url !== value.data.url ||
+        (lastLoaded.data.urls !== value.data.urls &&
+          lastLoaded.data.branch !== value.data.branch))
+    ) {
       if (!options.doNotLoad) {
-        def = setData(value.data.urls, value.data.branch, value.data.url, options);
+        def = setData(
+          value.data.urls,
+          value.data.branch,
+          value.data.url,
+          options,
+        );
       }
       lastLoaded.data = value.data;
     }
-    if (value.view && (lastLoaded.view.url !== value.view.url || (lastLoaded.view.urls !== value.view.urls && lastLoaded.view.branch !== value.view.branch))) {
+    if (
+      value.view &&
+      (lastLoaded.view.url !== value.view.url ||
+        (lastLoaded.view.urls !== value.view.urls &&
+          lastLoaded.view.branch !== value.view.branch))
+    ) {
       def = def.then(function () {
         lastLoaded.view = value.view;
         if (!options.doNotLoad) {
-          return setView(value.view.urls, value.view.branch, value.view.url, options);
+          return setView(
+            value.view.urls,
+            value.view.branch,
+            value.view.url,
+            options,
+          );
         }
       });
     }
@@ -68,8 +86,9 @@ define([
           uri[`remove${urlType}`](['dataURL', 'dataBranch', 'results']);
           if (value.data.urls) {
             uri[`add${urlType}`]('results', value.data.urls);
-            if (value.data.branch)
+            if (value.data.branch) {
               uri[`add${urlType}`]('dataBranch', value.data.branch);
+            }
           } else if (value.data.url) {
             uri[`add${urlType}`]('dataURL', value.data.url);
           }
@@ -78,13 +97,18 @@ define([
           uri[`remove${urlType}`](['viewURL', 'viewBranch', 'views']);
           if (value.view.urls) {
             uri[`add${urlType}`]('views', value.view.urls);
-            if (value.view.branch)
+            if (value.view.branch) {
               uri[`add${urlType}`]('viewBranch', value.view.branch);
+            }
           } else if (value.view.url) {
             uri[`add${urlType}`]('viewURL', value.view.url);
           }
         }
-        window.history.pushState({ type: 'viewchange', value: value }, '', uri.href());
+        window.history.pushState(
+          { type: 'viewchange', value: value },
+          '',
+          uri.href(),
+        );
       });
     }
     return def;
@@ -149,7 +173,6 @@ define([
   }
 
   const exports = {
-
     get version() {
       return String(version);
     },
@@ -234,8 +257,7 @@ define([
       return viewLocked;
     },
 
-    lastLoaded: lastLoaded
-
+    lastLoaded: lastLoaded,
   };
 
   function copyView() {
@@ -243,11 +265,11 @@ define([
     var strlen = str.length;
     var txtarea = $('<textarea/>').text(str).css({
       width: '100%',
-      height: '95%'
+      height: '95%',
     });
     UI.dialog(txtarea, {
       width: '80%',
-      height: $('#ci-visualizer').height() * 0.7
+      height: $('#ci-visualizer').height() * 0.7,
     });
 
     var txtdom = txtarea.get(0);
@@ -262,7 +284,7 @@ define([
     var strlen = str.length;
     var txtarea = $('<textarea/>').text(str).css({
       width: '100%',
-      height: '200px'
+      height: '200px',
     });
     UI.dialog(txtarea, { width: '80%' });
     var txtdom = txtarea.get(0);
@@ -274,50 +296,54 @@ define([
 
   function pasteView() {
     var txtarea = $('<textarea></textarea>').css({
-        width: '100%',
-        height: '200px'
-      }),
-      val, keys,
-      btn = new Button('Paste', function () {
-        try {
-          val = JSON.parse(txtarea.val());
-          keys = Object.keys(val);
-          for (var i = 0, ii = keys.length; i < ii; i++) {
-            if (keys[i].charAt(0) === '_')
-              delete val[keys[i]];
+      width: '100%',
+      height: '200px',
+    });
+    var val;
+    var keys;
+    var btn = new Button('Paste', function () {
+      try {
+        val = JSON.parse(txtarea.val());
+        keys = Object.keys(val);
+        for (var i = 0, ii = keys.length; i < ii; i++) {
+          if (keys[i].charAt(0) === '_') {
+            delete val[keys[i]];
           }
-          exports.setViewJSON(val);
-        } catch (_) {
-          // do nothing
         }
+        exports.setViewJSON(val);
+      } catch (_) {
+        // do nothing
+      }
 
-        div.dialog('close');
-      });
+      div.dialog('close');
+    });
 
     var div = UI.dialog(txtarea, { width: '80%' }).append(btn.render());
   }
 
   function pasteData() {
     var txtarea = $('<textarea></textarea>').css({
-        width: '100%',
-        height: '200px'
-      }),
-      val, keys,
-      btn = new Button('Paste', function () {
-        try {
-          val = JSON.parse(txtarea.val());
-          keys = Object.keys(val);
-          for (var i = 0, ii = keys.length; i < ii; i++) {
-            if (keys[i].charAt(0) === '_')
-              delete val[keys[i]];
+      width: '100%',
+      height: '200px',
+    });
+    var val;
+    var keys;
+    var btn = new Button('Paste', function () {
+      try {
+        val = JSON.parse(txtarea.val());
+        keys = Object.keys(val);
+        for (var i = 0, ii = keys.length; i < ii; i++) {
+          if (keys[i].charAt(0) === '_') {
+            delete val[keys[i]];
           }
-          exports.setDataJSON(val);
-        } catch (_) {
-          // do nothing
         }
+        exports.setDataJSON(val);
+      } catch (_) {
+        // do nothing
+      }
 
-        div.dialog('close');
-      });
+      div.dialog('close');
+    });
 
     var div = UI.dialog(txtarea, { width: '80%' }).append(btn.render());
   }

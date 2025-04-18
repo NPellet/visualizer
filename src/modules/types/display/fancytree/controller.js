@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,19 +11,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Michaël Zasso',
     date: '02.06.2014',
     license: 'MIT',
-    cssClass: 'fancytree'
+    cssClass: 'fancytree',
   };
 
   Controller.prototype.references = {
     tree: {
-      label: 'Hierarchical structure (tree)'
+      label: 'Hierarchical structure (tree)',
     },
     nodeData: {
-      label: 'Node data (info property on node)'
+      label: 'Node data (info property on node)',
     },
     node: {
-      label: 'Node'
-    }
+      label: 'Node',
+    },
   };
 
   Controller.prototype.variablesIn = ['tree'];
@@ -32,16 +31,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
   Controller.prototype.events = {
     onActivate: {
       label: 'Select a node',
-      refVariable: ['nodeData', 'node']
+      refVariable: ['nodeData', 'node'],
     },
     onActivateLeaf: {
       label: 'Select a leaf',
-      refVariable: ['nodeData', 'node']
+      refVariable: ['nodeData', 'node'],
     },
     onActivateParent: {
       label: 'Select a parent',
-      refVariable: ['nodeData', 'node']
-    }
+      refVariable: ['nodeData', 'node'],
+    },
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -52,7 +51,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
         group: {
           options: {
             type: 'list',
-            multiple: false
+            multiple: false,
           },
           fields: {
             expand: {
@@ -62,53 +61,52 @@ define(['modules/default/defaultcontroller'], function (Default) {
               options: [
                 {
                   title: 'None',
-                  key: 'none'
+                  key: 'none',
                 },
                 {
                   title: 'First level',
-                  key: 'lvl1'
+                  key: 'lvl1',
                 },
                 {
                   title: 'All nodes',
-                  key: 'all'
-                }
-              ]
-            }
-          }
+                  key: 'all',
+                },
+              ],
+            },
+          },
         },
         cols: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Columns'
+            title: 'Columns',
           },
 
           fields: {
-
             name: {
               type: 'text',
-              title: 'Columns title'
+              title: 'Columns title',
             },
 
             jpath: {
               type: 'combo',
               title: 'jPath',
-              options: jpaths
+              options: jpaths,
             },
 
             width: {
               type: 'text',
-              title: 'Width'
-            }
-          }
-        }
-      }
+              title: 'Width',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     columns: ['groups', 'cols', 0],
-    expand: ['groups', 'group', 0, 'expand', 0]
+    expand: ['groups', 'group', 0, 'expand', 0],
   };
 
   Controller.prototype.onActivate = function (data) {

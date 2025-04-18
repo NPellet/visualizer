@@ -4,7 +4,7 @@ define([
   'modules/default/defaultview',
   'lib/plot/plot',
   'src/util/datatraversing',
-  'src/util/urldata'
+  'src/util/urldata',
 ], function (Default, Graph, Traversing, LRU) {
   function View() {}
 
@@ -12,7 +12,7 @@ define([
     init: function () {
       var html = [];
       html.push(
-        '<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>'
+        '<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>',
       );
       this.namedSeries = {};
       this.graphs = [];
@@ -27,17 +27,14 @@ define([
         '#999966',
         '#cc9900',
         '#669999',
-        '#000000'
+        '#000000',
       ];
       this.usedColors = [];
 
       this.legends = [];
       this.dom = $(html.join(''));
       this.legendDom = this.dom.find('.ivstablegend');
-      this.module
-        .getDomContent()
-        .html(this.dom)
-        .css('overflow', 'hidden');
+      this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
       this.resolveReady();
     },
 
@@ -67,7 +64,7 @@ define([
           left: true,
           right: true,
           top: true,
-          bottom: true
+          bottom: true,
         },
 
         title: '',
@@ -90,22 +87,22 @@ define([
         },
 
         onVerticalTracking: function (lineId, val, dasharray) {
-          for (var i in that.series) {
+          for (const i in that.series) {
             LRU.get(
-              `http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=${i}&date=${val}`
+              `http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=${i}&date=${val}`,
             ).done(function (data) {
-              for (var i in data) {
+              for (const i in data) {
                 that.doIv(
                   lineId,
                   i,
                   data[i],
                   that.graphs[0].getSerie(i).getLineColor(),
-                  dasharray
+                  dasharray,
                 );
               }
             });
           }
-        }
+        },
       };
 
       var axis = {
@@ -117,8 +114,8 @@ define([
             primaryGrid: false,
             nbTicksPrimary: 10,
             secondaryGrid: false,
-            axisDataSpacing: { min: 0, max: 0.1 }
-          }
+            axisDataSpacing: { min: 0, max: 0.1 },
+          },
         ],
 
         left: [
@@ -128,9 +125,9 @@ define([
             primaryGrid: true,
             secondaryGrid: false,
             nbTicksPrimary: 3,
-            forcedMin: 0
-          }
-        ]
+            forcedMin: 0,
+          },
+        ],
       };
 
       this.graphs.push(
@@ -138,9 +135,9 @@ define([
           this.dom.find('.ivstability-jsc').get(0),
           options,
           $.extend(true, {}, axis, {
-            left: [{ labelValue: 'Jsc (mA/cm2)' }]
-          })
-        )
+            left: [{ labelValue: 'Jsc (mA/cm2)' }],
+          }),
+        ),
       );
 
       this.graphs.push(
@@ -148,9 +145,9 @@ define([
           this.dom.find('.ivstability-voc').get(0),
           options,
           $.extend(true, {}, axis, {
-            left: [{ labelValue: 'Voc (mV)' }]
-          })
-        )
+            left: [{ labelValue: 'Voc (mV)' }],
+          }),
+        ),
       );
 
       this.graphs.push(
@@ -158,9 +155,9 @@ define([
           this.dom.find('.ivstability-ff').get(0),
           options,
           $.extend(true, {}, axis, {
-            left: [{ labelValue: 'FF (-)' }]
-          })
-        )
+            left: [{ labelValue: 'FF (-)' }],
+          }),
+        ),
       );
 
       this.graphs.push(
@@ -168,9 +165,9 @@ define([
           this.dom.find('.ivstability-efficiency').get(0),
           options,
           $.extend(true, {}, axis, {
-            left: [{ labelValue: 'Efficiency (%)' }]
-          })
-        )
+            left: [{ labelValue: 'Efficiency (%)' }],
+          }),
+        ),
       );
 
       this.iv = new Graph(this.dom.find('.ivcurve').get(0), options, {
@@ -181,8 +178,8 @@ define([
             shiftToZero: false,
             primaryGrid: false,
             secondaryGrid: false,
-            axisDataSpacing: { min: 0, max: 0.1 }
-          }
+            axisDataSpacing: { min: 0, max: 0.1 },
+          },
         ],
 
         left: [
@@ -191,14 +188,14 @@ define([
             ticklabelratio: 1,
             primaryGrid: true,
             secondaryGrid: false,
-            forcedMin: 0
-          }
-        ]
+            forcedMin: 0,
+          },
+        ],
       });
     },
 
     onResize: function () {
-      for (var i = 0; i < 4; i++) {
+      for (let i = 0; i < 4; i++) {
         this.graphs[i].resize(650, 175);
         this.graphs[i].drawSeries();
       }
@@ -209,7 +206,7 @@ define([
     update: {
       plotdata: function (moduleValue) {},
 
-      serieSet: function (moduleValue, name) {}
+      serieSet: function (moduleValue, name) {},
     },
 
     getNextColor: function () {
@@ -219,7 +216,7 @@ define([
     editCellComment: function (cellId, comment) {
       $.get('http://lpidb.epfl.ch/content/ajax/setcellcomment.ajax.php', {
         cellid: cellId,
-        comment: comment
+        comment: comment,
       });
     },
 
@@ -236,36 +233,37 @@ define([
         float: 'left',
         position: 'relative',
         marginTop: '0px',
-        marginBottom: '10px'
+        marginBottom: '10px',
       });
 
       var nameDom = $('<div />')
         .css({
           marginLeft: '35px',
-          fontSize: '1.1em'
+          fontSize: '1.1em',
         })
         .text(name);
 
       var descriptionDom = $('<div />')
         .css({
           marginLeft: '35px',
-          marginTop: '2px'
+          marginTop: '2px',
         })
         .attr('contentEditable', 'true')
         .text(description || defaultText)
 
         .bind('mousedown', function () {
-          if ($(this).text() == defaultText)
+          if ($(this).text() === defaultText) {
             $(this)
               .text('')
               .css({
                 color: 'black',
-                fontStyle: 'normal'
+                fontStyle: 'normal',
               })
               .focus();
+          }
         })
         .bind('keypress', function (e) {
-          if (e.keyCode == 13) {
+          if (e.keyCode === 13) {
             e.preventDefault();
             $(this).trigger('blur');
             return false;
@@ -273,21 +271,19 @@ define([
         })
         .bind('blur', function () {
           var text = $(this).text();
-          if (text == '' || text == null || text == defaultText)
-            $(this)
-              .text(defaultText)
-              .css({
-                color: 'grey',
-                fontStyle: 'italic'
-              });
-          else {
+          if (text === '' || text == null || text === defaultText) {
+            $(this).text(defaultText).css({
+              color: 'grey',
+              fontStyle: 'italic',
+            });
+          } else {
             that.editCellComment(id, text);
           }
         })
         .trigger('blur');
 
       var clearDom = $('<div />').css({
-        clear: 'both'
+        clear: 'both',
       });
 
       div
@@ -315,32 +311,32 @@ define([
 
         this.series[value.id] = [];
 
-        var serie = this.graphs[0].newSerie(value.id, options);
+        let serie = this.graphs[0].newSerie(value.id, options);
         serie.setLineColor(color);
         serie.autoAxis();
 
         serie.setData(value.curves.jsc);
         this.series[value.id].push(serie);
 
-        var serie = this.graphs[1].newSerie(value.id, options);
+        serie = this.graphs[1].newSerie(value.id, options);
         serie.setLineColor(color);
         serie.autoAxis();
         serie.setData(value.curves.voc);
         this.series[value.id].push(serie);
 
-        var serie = this.graphs[2].newSerie(value.id, options);
+        serie = this.graphs[2].newSerie(value.id, options);
         serie.setLineColor(color);
         serie.autoAxis();
         serie.setData(value.curves.ff);
         this.series[value.id].push(serie);
 
-        var serie = this.graphs[3].newSerie(value.id, options);
+        serie = this.graphs[3].newSerie(value.id, options);
         serie.setLineColor(color);
         serie.autoAxis();
         serie.setData(value.curves.eff);
         this.series[value.id].push(serie);
 
-        for (var i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
           this.graphs[i].redraw();
           this.graphs[i].drawSeries();
         }
@@ -357,7 +353,7 @@ define([
       removeSerieByName: function (serieName) {
         if (this.series[serieName]) {
           this.colors.unshift(this.series[serieName][0].getLineColor());
-          for (var i = 0; i < 4; i++) {
+          for (let i = 0; i < 4; i++) {
             this.series[serieName][i].kill();
           }
           delete this.series[serieName];
@@ -365,12 +361,13 @@ define([
 
         if (!this.ivseries[serieName]) return;
 
-        for (var i in this.ivseries[serieName])
+        for (let i in this.ivseries[serieName]) {
           this.ivseries[serieName][i].kill();
+        }
 
         delete this.ivseries[serieName];
-      }
-    }
+      },
+    },
   });
 
   return View;

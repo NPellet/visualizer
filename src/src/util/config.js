@@ -25,7 +25,7 @@ define(['./versioning'], function (Versioning) {
     'toback',
     'move',
     'custom',
-    'fullscreen'
+    'fullscreen',
   ];
   return {
     getConfig: function () {
@@ -44,6 +44,6 @@ define(['./versioning'], function (Versioning) {
       } else {
         return defaultContextMenu;
       }
-    }
+    },
   };
 });

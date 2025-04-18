@@ -1,12 +1,15 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
-  function Model() {
-  }
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
+  Default,
+  Traversing,
+) {
+  function Model() {}
 
   function getjPath(data) {
-    if (data == null)
+    if (data == null) {
       return [];
+    }
 
     var jpaths = [];
     Traversing.getJPathsFromElement(data, jpaths);
@@ -15,7 +18,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
   }
 
   $.extend(true, Model.prototype, Default, {
-
     getValue: function () {
       return this.dataValue;
     },
@@ -23,12 +25,14 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     getjPath: function (rel, accepts) {
       var data = this.module.getDataFromRel('matrix');
 
-      if (!data)
+      if (!data) {
         return;
+      }
 
       data = data.value;
-      if (!data)
+      if (!data) {
         return;
+      }
 
       switch (rel) {
         case 'row':
@@ -45,8 +49,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         default:
           return false;
       }
-    }
-
+    },
   });
 
   return Model;

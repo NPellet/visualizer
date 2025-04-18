@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,105 +11,107 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'loading_plot'
+    cssClass: 'loading_plot',
   };
 
   Controller.prototype.references = {
     // Input
     loading: {
       label: 'Loading variable',
-      type: ['loading', 'object']
+      type: ['loading', 'object'],
     },
     preferences: {
       label: 'Preferences',
-      type: 'object'
+      type: 'object',
     },
     // Output
     element: {
       label: 'Selected element',
-      type: 'object'
+      type: 'object',
     },
     // Mixed
     zoom: {
       label: 'Zoom',
-      type: 'string'
+      type: 'string',
     },
     center: {
       label: 'Coordinates of the center',
-      type: 'array'
+      type: 'array',
     },
     viewport: {
       label: 'Viewport',
-      type: 'object'
-    }
+      type: 'object',
+    },
   };
 
   Controller.prototype.events = {
     onHover: {
       label: 'Hovers an element',
-      refVariable: ['element']
+      refVariable: ['element'],
     },
     onMove: {
       label: 'Move the map',
-      refVariable: ['center', 'zoom', 'viewport']
+      refVariable: ['center', 'zoom', 'viewport'],
     },
     onZoomChange: {
       label: 'Change the zoom',
-      refVariable: ['center', 'zoom', 'viewport']
+      refVariable: ['center', 'zoom', 'viewport'],
     },
     onViewPortChange: {
       label: 'Viewport has changed',
-      refVariable: ['center', 'zoom', 'viewport']
-    }
+      refVariable: ['center', 'zoom', 'viewport'],
+    },
   };
 
   Controller.prototype.variablesIn = ['loading'];
 
   Controller.prototype.actionsIn = {
-    addElement: 'Add an element'
+    addElement: 'Add an element',
   };
 
   Controller.prototype.configurationStructure = function () {
     var data = this.module.getDataFromRel('loading'),
       opts = [];
-    if (data && data.value)
-      for (var i = 0; i < data.value.series.length; i++)
+    if (data && data.value) {
+      for (var i = 0; i < data.value.series.length; i++) {
         opts.push({
           title: data.value.series[i].label,
-          key: data.value.series[i].category
+          key: data.value.series[i].category,
         });
+      }
+    }
     return {
       groups: {
         general: {
           options: {
             type: 'list',
-            multiple: false
+            multiple: false,
           },
           fields: {
             navigation: {
               title: 'Navigation',
               type: 'checkbox',
-              options: { navigation: 'Navigation only' }
-            }
-          }
-        }
+              options: { navigation: 'Navigation only' },
+            },
+          },
+        },
       },
       sections: {
         module_layers: {
           options: {
             multiple: true,
-            title: 'Layers'
+            title: 'Layers',
           },
           groups: {
             group: {
               options: {
-                type: 'list'
+                type: 'list',
               },
               fields: {
                 el: {
                   type: 'combo',
                   title: 'Layer',
-                  options: opts
+                  options: opts,
                 },
                 type: {
                   type: 'combo',
@@ -118,15 +119,15 @@ define(['modules/default/defaultcontroller'], function (Default) {
                   options: [
                     {
                       key: 'ellipse',
-                      title: 'Ellipse / Circle'
+                      title: 'Ellipse / Circle',
                     },
                     { key: 'pie', title: 'Pie chart' },
-                    { key: 'img', title: 'Image' }
-                  ]
+                    { key: 'img', title: 'Image' },
+                  ],
                 },
                 color: {
                   type: 'color',
-                  title: 'Color (default)'
+                  title: 'Color (default)',
                 },
                 labels: {
                   type: 'checkbox',
@@ -135,39 +136,39 @@ define(['modules/default/defaultcontroller'], function (Default) {
                     display_labels: 'Display',
                     forcefield: 'Activate force field',
                     blackstroke: 'Add a black stroke around label',
-                    scalelabel: 'Scale label with zoom'
-                  }
+                    scalelabel: 'Scale label with zoom',
+                  },
                 },
                 labelsize: {
                   type: 'text',
-                  title: 'Label size'
+                  title: 'Label size',
                 },
                 labelzoomthreshold: {
                   type: 'text',
-                  title: 'Zoom above which labels are displayed'
+                  title: 'Zoom above which labels are displayed',
                 },
                 highlightmag: {
                   type: 'text',
-                  title: 'Highlight magnification'
+                  title: 'Highlight magnification',
                 },
                 highlighteffect: {
                   type: 'checkbox',
                   title: 'Highlight effect',
                   options: {
-                    stroke: 'Thick yellow stroke'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                    stroke: 'Thick yellow stroke',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     navigation: ['groups', 'general', 0, 'navigation'],
-    layers: ['sections', 'module_layers']
+    layers: ['sections', 'module_layers'],
   };
 
   Controller.prototype.hover = function (data) {

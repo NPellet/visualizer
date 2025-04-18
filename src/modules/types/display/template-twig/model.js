@@ -1,8 +1,7 @@
 'use strict';
 
 define(['jquery', 'modules/default/defaultmodel'], function ($, Default) {
-  function Model() {
-  }
+  function Model() {}
 
   $.extend(true, Model.prototype, Default);
 

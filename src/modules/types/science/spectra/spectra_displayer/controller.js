@@ -3,9 +3,9 @@
 define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
   Default,
   _,
-  $
+  $,
 ) {
-  function Controller() { }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -17,7 +17,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
         if (svgStr) {
           require(['file-saver'], function (fileSaver) {
             var blob = new Blob([`${svgStr}`], {
-              type: 'application/svg;charset=utf-8'
+              type: 'application/svg;charset=utf-8',
             });
             fileSaver(blob, 'graph.svg');
           });
@@ -25,7 +25,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       },
       title: 'Download as SVG vector file',
       cssClass: 'fa fa-file-image',
-      ifLocked: true
+      ifLocked: true,
     });
     return base;
   };
@@ -36,170 +36,170 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'spectra_displayer'
+    cssClass: 'spectra_displayer',
   };
 
   Controller.prototype.references = {
     // ouput
     x: {
       label: 'X value',
-      type: 'number'
+      type: 'number',
     },
     markerInfos: {
       label: 'Marker data',
-      type: 'object'
+      type: 'object',
     },
     markerXY: {
       label: 'Marker [x, y]',
-      type: 'array'
+      type: 'array',
     },
     shapeInfos: {
       label: 'Shape data',
-      type: 'object'
+      type: 'object',
     },
     shapeProperties: {
       label: 'Shape properties',
-      type: 'object'
+      type: 'object',
     },
     fromToX: {
       label: 'From - To X',
-      type: ['fromTo', 'object']
+      type: ['fromTo', 'object'],
     },
     fromToY: {
       label: 'From - To Y',
-      type: ['fromTo', 'object']
+      type: ['fromTo', 'object'],
     },
     fromToXY: {
       label: 'Axis boundaries',
-      type: 'object'
+      type: 'object',
     },
     trackData: {
       label: 'Tracking data',
-      type: 'object'
+      type: 'object',
     },
     mouseEvent: {
       label: 'jQuery mouse event',
-      type: 'object'
+      type: 'object',
     },
     dataAndEvent: {
       label: 'Mouse event and data',
-      type: 'object'
+      type: 'object',
     },
     svgString: {
       label: 'SVG string',
-      type: 'string'
+      type: 'string',
     },
     wheelDelta: {
       label: 'Mouse wheel delta',
-      type: 'number'
+      type: 'number',
     },
     // input
     chart: {
       type: ['chart', 'object', 'array'],
-      label: 'Chart object'
+      label: 'Chart object',
     },
     xArray: {
       type: 'array',
-      label: '1D Y array'
+      label: '1D Y array',
     },
     xyArray: {
       type: 'array',
-      label: '1D XY array'
+      label: '1D XY array',
     },
     jcamp: {
       type: ['jcamp', 'string', 'object'],
-      label: 'Jcamp data'
+      label: 'Jcamp data',
     },
     annotations: {
       type: ['array'],
-      label: 'Annotations'
+      label: 'Annotations',
     },
     series_xy1d: {
       type: 'array',
-      label: 'List of series in 1D format ( [[ x, y, x, y, ...], ...] )'
+      label: 'List of series in 1D format ( [[ x, y, x, y, ...], ...] )',
     },
     selectedShape: {
       type: 'object',
-      label: 'Shape data'
+      label: 'Shape data',
     },
     selectedData: {
       type: 'array',
-      label: 'Selected data'
-    }
+      label: 'Selected data',
+    },
   };
 
   Controller.prototype.events = {
     onZoomChange: {
       label: 'Zoom level changed',
       refAction: ['fromToX', 'fromToY', 'fromToXY'],
-      refVariable: ['fromToX', 'fromToY', 'fromToXY']
+      refVariable: ['fromToX', 'fromToY', 'fromToXY'],
     },
     onTrackMouse: {
       label: 'Mouse tracking (move)',
       refVariable: ['trackData'],
-      refAction: ['trackData', 'mouseEvent', 'dataAndEvent']
+      refAction: ['trackData', 'mouseEvent', 'dataAndEvent'],
     },
     onTrackClick: {
       label: 'Mouse tracking (click)',
       refVariable: ['trackData'],
-      refAction: ['trackData', 'mouseEvent', 'dataAndEvent']
+      refAction: ['trackData', 'mouseEvent', 'dataAndEvent'],
     },
     onMouseWheel: {
       label: 'Mouse wheel event',
-      refAction: ['mouseEvent', 'wheelDelta']
+      refAction: ['mouseEvent', 'wheelDelta'],
     },
     onMouseWheelShift: {
       label: 'Mouse wheel event (with shift key)',
-      refAction: ['mouseEvent', 'wheelDelta']
+      refAction: ['mouseEvent', 'wheelDelta'],
     },
     onAnnotationAdd: {
       label: 'Annotation added',
-      refAction: ['annotation']
+      refAction: ['annotation'],
     },
     onMouseOverMarker: {
       label: 'Mouse over a marker',
-      refVariable: ['markerInfos', 'markerXY']
+      refVariable: ['markerInfos', 'markerXY'],
     },
     onMouseOutMarker: {
-      label: 'Mouse out of a marker'
+      label: 'Mouse out of a marker',
     },
     onClickMarker: {
       label: 'Mouse clicks a marker',
-      refVariable: ['markerInfos', 'markerXY']
+      refVariable: ['markerInfos', 'markerXY'],
     },
     onSelectMarker: {
       label: 'Marker is selected',
-      refAction: ['markerInfos']
+      refAction: ['markerInfos'],
     },
     onUnselectMarker: {
       label: 'Marker is unselected',
-      refAction: ['markerInfos']
+      refAction: ['markerInfos'],
     },
     onMouseOverShape: {
       label: 'Mouse over a shape',
-      refVariable: ['shapeInfos', 'shapeProperties']
+      refVariable: ['shapeInfos', 'shapeProperties'],
     },
     onShapeSelect: {
       label: 'Shape is selected',
-      refAction: ['selectedShape']
+      refAction: ['selectedShape'],
     },
     onShapeUnselect: {
       label: 'Shape is unselected',
-      refAction: ['shapeInfos']
+      refAction: ['shapeInfos'],
     },
     onShapeClick: {
       label: 'Shape is clicked',
       refVariable: ['shapeInfos', 'shapeProperties'],
-      refAction: ['shapeInfos', 'dataAndEvent']
+      refAction: ['shapeInfos', 'dataAndEvent'],
     },
     onSelectScatter: {
       label: 'Selection on a scatter plot',
-      refVariable: ['selectedData']
+      refVariable: ['selectedData'],
     },
     onExportSVG: {
       label: 'SVG is exported',
-      refAction: ['svgString']
-    }
+      refAction: ['svgString'],
+    },
   };
 
   Controller.prototype.variablesIn = [
@@ -208,7 +208,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     'xyArray',
     'jcamp',
     'annotations',
-    'series_xy1d'
+    'series_xy1d',
   ];
 
   Controller.prototype.actionsIn = {
@@ -221,7 +221,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     unselectSerie: 'Unselect a serie',
     fullOut: 'Full zoom out (x, y or xy)',
     exportSVG: 'Export current state as SVG',
-    toggleGrid: 'Toggle grid'
+    toggleGrid: 'Toggle grid',
   };
 
   var axisFields = {
@@ -232,40 +232,40 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
         display: 'Display axis',
         flip: 'Flip axis',
         main: 'Show main grid',
-        sec: 'Show secondary grid'
+        sec: 'Show secondary grid',
       },
-      default: ['display']
+      default: ['display'],
     },
     label: {
       type: 'text',
       title: 'Axis label',
-      default: ''
+      default: '',
     },
     beforeSpacing: {
       type: 'text',
       title: 'Spacing before',
-      default: '0'
+      default: '0',
     },
     afterSpacing: {
       type: 'text',
       title: 'Spacing after',
-      default: 0
+      default: 0,
     },
     min: {
       type: 'text',
       title: 'Force min',
-      default: ''
+      default: '',
     },
     max: {
       type: 'text',
       title: 'Force max',
-      default: ''
+      default: '',
     },
     nbTicksPrimary: {
       type: 'float',
       title: 'Primary ticks',
-      default: 5
-    }
+      default: 5,
+    },
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -274,35 +274,32 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     var adaptAxis = [
       {
         title: 'None',
-        key: 'none'
-      }
+        key: 'none',
+      },
     ];
     var numAxis = 0;
     var currentCfg = this.module.definition.vars_in;
 
     if (currentCfg) {
-      var i = 0,
-        l = currentCfg.length;
-
-      for (; i < l; i++) {
+      for (let i = 0, l = currentCfg.length; i < l; i++) {
         if (
-          currentCfg[i].rel == 'jcamp' ||
-                    currentCfg[i].rel == 'xArray' ||
-                    currentCfg[i].rel == 'xyArray' ||
-                    currentCfg[i].rel == 'chart' ||
-                    currentCfg[i].rel == 'series_xy1d'
+          currentCfg[i].rel === 'jcamp' ||
+          currentCfg[i].rel === 'xArray' ||
+          currentCfg[i].rel === 'xyArray' ||
+          currentCfg[i].rel === 'chart' ||
+          currentCfg[i].rel === 'series_xy1d'
         ) {
           vars.push({
             title: currentCfg[i].name,
-            key: currentCfg[i].name
+            key: currentCfg[i].name,
           });
           varsAxis.push({
             title: String(numAxis),
-            key: String(numAxis)
+            key: String(numAxis),
           });
           adaptAxis.push({
             title: String(numAxis),
-            key: String(numAxis)
+            key: String(numAxis),
           });
           numAxis++;
         }
@@ -310,18 +307,18 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     }
 
     if (this.module.view.seriesActions) {
-      for (var i = 0, l = this.module.view.seriesActions.length; i < l; i++) {
+      for (let i = 0, l = this.module.view.seriesActions.length; i < l; i++) {
         vars.push({
           title: this.module.view.seriesActions[i][2],
-          key: this.module.view.seriesActions[i][2]
+          key: this.module.view.seriesActions[i][2],
         });
         varsAxis.push({
           title: String(numAxis),
-          key: String(numAxis)
+          key: String(numAxis),
         });
         adaptAxis.push({
           title: String(numAxis),
-          key: String(numAxis)
+          key: String(numAxis),
         });
         numAxis++;
       }
@@ -332,19 +329,19 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
         graph: {
           options: {
             title: 'Graph config',
-            multiple: false
+            multiple: false,
           },
           groups: {
             graph: {
               options: {
                 type: 'list',
-                multiple: false
+                multiple: false,
               },
               fields: {
                 url: {
                   type: 'text',
                   title: 'Graph URL',
-                  default: ''
+                  default: '',
                 },
                 zoom: {
                   type: 'combo',
@@ -352,22 +349,22 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'none',
-                      title: 'None'
+                      title: 'None',
                     },
                     {
                       key: 'x',
-                      title: 'X only'
+                      title: 'X only',
                     },
                     {
                       key: 'y',
-                      title: 'Y only'
+                      title: 'Y only',
                     },
                     {
                       key: 'xy',
-                      title: 'XY'
-                    }
+                      title: 'XY',
+                    },
                   ],
-                  default: 'none'
+                  default: 'none',
                 },
                 wheelAction: {
                   type: 'combo',
@@ -375,27 +372,27 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'zoomX',
-                      title: 'Zoom X'
+                      title: 'Zoom X',
                     },
                     {
                       key: 'zoomY',
-                      title: 'Zoom Y'
+                      title: 'Zoom Y',
                     },
                     {
                       key: 'zoomYMousePos',
-                      title: 'Zoom Y with baseline on mouse position'
+                      title: 'Zoom Y with baseline on mouse position',
                     },
                     {
                       key: 'none',
-                      title: 'None'
-                    }
+                      title: 'None',
+                    },
                   ],
-                  default: 'none'
+                  default: 'none',
                 },
                 wheelbaseline: {
                   type: 'float',
                   title: 'Wheel baseline',
-                  default: 0
+                  default: 0,
                 },
                 fullOut: {
                   type: 'combo',
@@ -403,26 +400,26 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'none',
-                      title: 'Never'
+                      title: 'Never',
                     },
                     {
                       key: 'xAxis',
-                      title: 'X axis'
+                      title: 'X axis',
                     },
                     {
                       key: 'yAxis',
-                      title: 'Y axis'
+                      title: 'Y axis',
                     },
                     {
                       key: 'both',
-                      title: 'Both axis'
+                      title: 'Both axis',
                     },
                     {
                       key: 'once',
-                      title: 'Once per input variable'
-                    }
+                      title: 'Once per input variable',
+                    },
                   ],
-                  default: 'both'
+                  default: 'both',
                 },
                 legend: {
                   type: 'combo',
@@ -430,25 +427,25 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'none',
-                      title: 'No legend'
+                      title: 'No legend',
                     },
                     {
                       key: 'left',
-                      title: 'Left'
+                      title: 'Left',
                     },
                     {
                       key: 'top',
-                      title: 'Top'
+                      title: 'Top',
                     },
                     {
                       key: 'bottom',
-                      title: 'Bottom'
+                      title: 'Bottom',
                     },
                     {
                       key: 'right',
-                      title: 'Right'
-                    }
-                  ]
+                      title: 'Right',
+                    },
+                  ],
                 },
                 legendOptions: {
                   type: 'checkbox',
@@ -456,9 +453,9 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: {
                     movable: 'Movable',
                     isSerieHideable: 'Hideable series',
-                    isSerieSelectable: 'Selectable series'
+                    isSerieSelectable: 'Selectable series',
                   },
-                  default: ['isSerieHideable', 'isSerieSelectable']
+                  default: ['isSerieHideable', 'isSerieSelectable'],
                 },
                 mouseTracking: {
                   type: 'checkbox',
@@ -466,8 +463,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: {
                     track: 'Enable mouse tracking',
                     legend:
-                                            'Display tracking legend (mouse tracking must be enabled)'
-                  }
+                      'Display tracking legend (mouse tracking must be enabled)',
+                  },
                 },
                 trackingAxis: {
                   type: 'combo',
@@ -475,49 +472,48 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'x',
-                      title: 'X'
+                      title: 'X',
                     },
                     {
                       key: 'y',
-                      title: 'Y'
+                      title: 'Y',
                     },
                     {
                       key: '',
-                      title: 'XY'
-                    }
+                      title: 'XY',
+                    },
                   ],
-                  default: 'x'
+                  default: 'x',
                 },
                 selectScatter: {
                   type: 'checkbox',
                   title: 'Scatter serie',
                   options: {
-                    yes: 'Enable scatter serie selection (ALT + draw)'
-                  }
+                    yes: 'Enable scatter serie selection (ALT + draw)',
+                  },
                 },
                 independantYZoom: {
                   type: 'checkbox',
                   title: 'Independant Y zoom',
                   options: {
-                    yes:
-                                            'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)'
-                  }
-                }
-              }
-            }
-          }
+                    yes: 'Allow Y axis to be scaled separatly for each input variable (only the first axis can be displayed)',
+                  },
+                },
+              },
+            },
+          },
         },
         axis: {
           options: {
             title: 'Axis config',
-            multiple: false
+            multiple: false,
           },
           groups: {
             xAxis: {
               options: {
                 title: 'X Axis',
                 type: 'list',
-                multiple: false
+                multiple: false,
               },
               fields: $.extend({}, axisFields, {
                 axismodification: {
@@ -526,54 +522,54 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'none',
-                      title: 'None'
+                      title: 'None',
                     },
                     {
                       key: 'timestamptotime',
-                      title: 'Timestamp to time'
+                      title: 'Timestamp to time',
                     },
                     {
                       key: 'valtotime',
-                      title: 'Value to time from 0'
+                      title: 'Value to time from 0',
                     },
                     {
                       key: 'valtotime:min.sec',
-                      title: 'Seconds to min.sec'
-                    }
+                      title: 'Seconds to min.sec',
+                    },
                   ],
-                  default: 'none'
-                }
-              })
+                  default: 'none',
+                },
+              }),
             },
             yAxis: {
               options: {
                 title: 'Y Axis',
                 type: 'list',
-                multiple: false
+                multiple: false,
               },
               fields: $.extend({}, axisFields, {
                 fitToAxisOnFromTo: {
                   type: 'checkbox',
                   title: 'Rescale axis on FromTo',
                   options: {
-                    rescale: ''
+                    rescale: '',
                   },
-                  default: []
-                }
-              })
-            }
-          }
+                  default: [],
+                },
+              }),
+            },
+          },
         },
         series: {
           options: {
             title: 'Global serie parameters',
-            multiple: false
+            multiple: false,
           },
           groups: {
             series: {
               options: {
                 type: 'list',
-                multiple: false
+                multiple: false,
               },
               fields: {
                 overflow: {
@@ -581,58 +577,58 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   title: 'Overflow',
                   options: {
                     overflowX: 'overflowX',
-                    overflowY: 'overflowY'
+                    overflowY: 'overflowY',
                   },
-                  default: []
+                  default: [],
                 },
                 stackVerticalSpacing: {
                   type: 'float',
                   title: 'Stack vertical spacing',
-                  default: 0
-                }
-              }
-            }
-          }
+                  default: 0,
+                },
+              },
+            },
+          },
         },
         variables: {
           options: {
             title: 'Variables',
-            multiple: false
+            multiple: false,
           },
           groups: {
             variables: {
               options: {
                 type: 'table',
-                multiple: true
+                multiple: true,
               },
               fields: {
                 variable: {
                   type: 'combo',
                   title: 'Variable',
                   options: vars,
-                  default: ''
+                  default: '',
                 },
                 axis: {
                   type: 'combo',
                   title: 'Axis',
                   options: varsAxis,
-                  default: '0'
+                  default: '0',
                 },
                 adaptTo: {
                   type: 'combo',
                   title: 'Adapt axis to',
                   options: adaptAxis,
-                  default: 'none'
+                  default: 'none',
                 },
                 plotcolor: {
                   type: 'color',
                   title: 'Color',
-                  default: [1, 1, 255, 1]
+                  default: [1, 1, 255, 1],
                 },
                 strokewidth: {
                   type: 'text',
                   title: 'Width (px)',
-                  default: '1'
+                  default: '1',
                 },
                 strokestyle: {
                   type: 'combo',
@@ -640,50 +636,50 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: '1',
-                      title: '1'
+                      title: '1',
                     },
                     {
                       key: '2',
-                      title: '2'
+                      title: '2',
                     },
                     {
                       key: '3',
-                      title: '3'
+                      title: '3',
                     },
                     {
                       key: '4',
-                      title: '4'
+                      title: '4',
                     },
                     {
                       key: '5',
-                      title: '5'
+                      title: '5',
                     },
                     {
                       key: '6',
-                      title: '6'
+                      title: '6',
                     },
                     {
                       key: '7',
-                      title: '7'
+                      title: '7',
                     },
                     {
                       key: '8',
-                      title: '8'
+                      title: '8',
                     },
                     {
                       key: '9',
-                      title: '9'
+                      title: '9',
                     },
                     {
                       key: '10',
-                      title: '10'
+                      title: '10',
                     },
                     {
                       key: '11',
-                      title: '11'
-                    }
+                      title: '11',
+                    },
                   ],
-                  default: '1'
+                  default: '1',
                 },
                 plotcontinuous: {
                   type: 'combo',
@@ -691,38 +687,38 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'continuous',
-                      title: 'Continuous'
+                      title: 'Continuous',
                     },
                     {
                       key: 'discrete',
-                      title: 'Discrete'
+                      title: 'Discrete',
                     },
                     {
                       key: 'auto',
-                      title: 'Auto'
+                      title: 'Auto',
                     },
                     {
                       key: 'automass',
-                      title: 'Auto Mass'
-                    }
+                      title: 'Auto Mass',
+                    },
                   ],
-                  default: 'continuous'
+                  default: 'continuous',
                 },
                 peakpicking: {
                   type: 'checkbox',
                   title: 'Peak Picking',
                   options: {
-                    picking: 'Peak Picking'
+                    picking: 'Peak Picking',
                   },
-                  default: []
+                  default: [],
                 },
                 markers: {
                   type: 'checkbox',
                   title: 'Markers',
                   options: {
-                    markers: 'Show markers'
+                    markers: 'Show markers',
                   },
-                  default: []
+                  default: [],
                 },
                 markerShape: {
                   type: 'combo',
@@ -730,27 +726,27 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: '1',
-                      title: 'Square'
+                      title: 'Square',
                     },
                     {
                       key: '2',
-                      title: 'X cross'
+                      title: 'X cross',
                     },
                     {
                       key: '3',
-                      title: '+ cross'
+                      title: '+ cross',
                     },
                     {
                       key: '4',
-                      title: 'Triangle'
-                    }
+                      title: 'Triangle',
+                    },
                   ],
-                  default: '1'
+                  default: '1',
                 },
                 markerSize: {
                   type: 'float',
                   title: 'Marker size',
-                  default: 2
+                  default: 2,
                 },
                 normalize: {
                   type: 'combo',
@@ -758,34 +754,34 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   options: [
                     {
                       key: 'none',
-                      title: 'None'
+                      title: 'None',
                     },
                     {
                       key: 'max1',
-                      title: 'Set max to 1'
+                      title: 'Set max to 1',
                     },
                     {
                       key: 'max100',
-                      title: 'Set max to 100'
+                      title: 'Set max to 100',
                     },
                     {
                       key: 'sum1',
-                      title: 'Set sum to 1'
+                      title: 'Set sum to 1',
                     },
                     {
                       key: 'max1min0',
-                      title: 'Max 1, Min 0'
-                    }
+                      title: 'Max 1, Min 0',
+                    },
                   ],
-                  default: 'none'
+                  default: 'none',
                 },
                 optimizeSlots: {
                   type: 'checkbox',
                   title: 'Optimize with slots',
                   options: {
-                    slots: ''
+                    slots: '',
                   },
-                  default: []
+                  default: [],
                 },
                 /*
                                                                                                                                                                                 degrade: {
@@ -798,36 +794,36 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   type: 'checkbox',
                   title: 'Display tracking info',
                   options: {
-                    yes: ''
+                    yes: '',
                   },
-                  default: []
-                }
-              }
-            }
-          }
+                  default: [],
+                },
+              },
+            },
+          },
         },
         misc: {
           options: {
             title: 'Misc',
-            multiple: false
+            multiple: false,
           },
           groups: {
             misc: {
               options: {
                 type: 'list',
-                multiple: false
+                multiple: false,
               },
               fields: {
                 highlightOptions: {
                   type: 'text',
                   title: 'Highlight options',
-                  default: '{}'
-                }
-              }
-            }
-          }
-        }
-      }
+                  default: '{}',
+                },
+              },
+            },
+          },
+        },
+      },
     };
   };
 
@@ -843,7 +839,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     maxX: getFloat,
     maxY: getFloat,
     flipX: indexOf('flip'),
-    flipY: indexOf('flip')
+    flipY: indexOf('flip'),
   };
 
   function indexOf(name) {
@@ -869,7 +865,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'wheelAction',
-      0
+      0,
     ],
     wheelbaseline: [
       'sections',
@@ -879,7 +875,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'wheelbaseline',
-      0
+      0,
     ],
     trackingAxis: [
       'sections',
@@ -889,7 +885,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'trackingAxis',
-      0
+      0,
     ],
     fullOut: ['sections', 'graph', 0, 'groups', 'graph', 0, 'fullOut', 0],
     legend: ['sections', 'graph', 0, 'groups', 'graph', 0, 'legend', 0],
@@ -901,7 +897,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'legendOptions',
-      0
+      0,
     ],
     mouseTracking: [
       'sections',
@@ -911,7 +907,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'mouseTracking',
-      0
+      0,
     ],
     selectScatter: [
       'sections',
@@ -921,7 +917,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'selectScatter',
-      0
+      0,
     ],
     independantYZoom: [
       'sections',
@@ -931,7 +927,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'graph',
       0,
       'independantYZoom',
-      0
+      0,
     ],
     // X Axis
     displayXAxis: [
@@ -942,7 +938,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'xAxis',
       0,
       'checkboxes',
-      0
+      0,
     ],
     flipX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
     vertGridMain: [
@@ -953,7 +949,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'xAxis',
       0,
       'checkboxes',
-      0
+      0,
     ],
     vertGridSec: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'checkboxes', 0],
     xLabel: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'label', 0],
@@ -965,7 +961,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'xAxis',
       0,
       'beforeSpacing',
-      0
+      0,
     ],
     xRightSpacing: [
       'sections',
@@ -975,7 +971,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'xAxis',
       0,
       'afterSpacing',
-      0
+      0,
     ],
     minX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'min', 0],
     maxX: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'max', 0],
@@ -987,7 +983,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'xAxis',
       0,
       'nbTicksPrimary',
-      0
+      0,
     ],
     xaxismodification: [
       'sections',
@@ -997,7 +993,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'xAxis',
       0,
       'axismodification',
-      0
+      0,
     ],
     // Y Axis
     displayYAxis: [
@@ -1008,7 +1004,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'yAxis',
       0,
       'checkboxes',
-      0
+      0,
     ],
     flipY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
     horGridMain: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'checkboxes', 0],
@@ -1022,7 +1018,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'yAxis',
       0,
       'beforeSpacing',
-      0
+      0,
     ],
     yTopSpacing: [
       'sections',
@@ -1032,7 +1028,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'yAxis',
       0,
       'afterSpacing',
-      0
+      0,
     ],
     minY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'min', 0],
     maxY: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'max', 0],
@@ -1044,7 +1040,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'yAxis',
       0,
       'nbTicksPrimary',
-      0
+      0,
     ],
     FitYToAxisOnFromTo: [
       'sections',
@@ -1054,7 +1050,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'yAxis',
       0,
       'fitToAxisOnFromTo',
-      0
+      0,
     ],
     // Serie parameters
     overflow: ['sections', 'series', 0, 'groups', 'series', 0, 'overflow', 0],
@@ -1066,7 +1062,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'series',
       0,
       'stackVerticalSpacing',
-      0
+      0,
     ],
     stackHorizontalSpacing: [
       'sections',
@@ -1076,7 +1072,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'series',
       0,
       'stackHorizontalSpacing',
-      0
+      0,
     ],
     // Variables
     plotinfos: ['sections', 'variables', 0, 'groups', 'variables', 0],
@@ -1088,8 +1084,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'misc',
       0,
       'highlightOptions',
-      0
-    ]
+      0,
+    ],
   };
 
   Controller.prototype.zoomChanged = function (axis, min, max) {
@@ -1097,8 +1093,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       type: 'fromTo',
       value: {
         from: min,
-        to: max
-      }
+        to: max,
+      },
     };
     this.sendActionFromEvent('onZoomChange', `fromTo${axis}`, obj);
     this.createDataFromEvent('onZoomChange', `fromTo${axis}`, obj);
@@ -1113,8 +1109,8 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     },
     1,
     {
-      leading: false
-    }
+      leading: false,
+    },
   );
 
   Controller.prototype.onMouseOverMarker = function (xy, infos) {
@@ -1152,18 +1148,25 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     this.sendActionFromEvent('onExportSVG', 'svgString', svgStr);
   };
 
+  function svg11(string) {
+    /*
+     currently jsgraph generates some properties that are not supported by the svg 1.1 standard
+     - color: transparent
+     - stroke="rgba(0,0,71,1)"
+     - fill="rgba(0,0,71,1)"
+    */
+    string = string
+      .replace(/fill="transparent"/g, 'fill-opacity="0"')
+      .replace(
+        /stroke="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g,
+        'stroke="rgb($1,$2,$3)" stroke-opacity="$4"',
+      )
+      .replace(
+        /fill="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g,
+        'fill="rgb($1,$2,$3) fill-opacity="$4"',
+      );
+    return string;
+  }
+
   return Controller;
 });
-
-function svg11(string) {
-  /*
-                       currently jsgraph generates some properties that are not supported by the svg 1.1 standard
-                       - color: transparent
-                       - stroke="rgba(0,0,71,1)"
-                       - fill="rgba(0,0,71,1)"
-                      */
-  string = string.replace(/fill="transparent"/g, 'fill-opacity="0"')
-    .replace(/stroke="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g, 'stroke="rgb($1,$2,$3)" stroke-opacity="$4"')
-    .replace(/fill="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g, 'fill="rgb($1,$2,$3) fill-opacity="$4"');
-  return string;
-}

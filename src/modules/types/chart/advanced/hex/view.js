@@ -2,23 +2,30 @@
 
 require.config({
   paths: {
-    'd3-plugins': 'components/d3-plugins'
+    'd3-plugins': 'components/d3-plugins',
   },
   shim: {
-    'd3-plugins': 'd3'
-  }
+    'd3-plugins': 'd3',
+  },
 });
 
-define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/util', 'd3', 'src/util/color', 'src/util/colorbar', 'src/util/ui', 'd3-plugins/hexbin/hexbin'], function (Default, _, Debug, Util, d3, colorUtil, colorbar, ui) {
+define([
+  'modules/default/defaultview',
+  'lodash',
+  'src/util/debug',
+  'src/util/util',
+  'd3',
+  'src/util/color',
+  'src/util/colorbar',
+  'src/util/ui',
+  'd3-plugins/hexbin/hexbin',
+], function (Default, _, Debug, Util, d3, colorUtil, colorbar, ui) {
   var DEFAULT_COLOR = 'lightblue';
 
-
-  function View() {
-  }
+  function View() {}
 
   View.prototype = $.extend(true, {}, Default, {
-    init: function () {
-    },
+    init: function () {},
     inDom: function () {
       this.id = Util.getNextUniqueId();
       this.dom = ui.getSafeElement('div').attr('id', this.id);
@@ -28,7 +35,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     blank: {
       chart: function () {
         this.reset();
-      }
+      },
     },
     update: {
       // Chart format expected
@@ -39,7 +46,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         this.chart = value.get();
         var data = chartToArray(this.chart);
         this.originalData = data;
-        this.coordinateSystem = this.module.getConfiguration('coordinateSystem');
+        this.coordinateSystem =
+          this.module.getConfiguration('coordinateSystem');
         this.axesType = this.module.getConfiguration('axesType');
         this.layout = 'vertical';
         switch (this.coordinateSystem) {
@@ -47,7 +55,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             this.origin = [
               this.module.getConfiguration('originX'),
               this.module.getConfiguration('originY'),
-              this.module.getConfiguration('originZ')
+              this.module.getConfiguration('originZ'),
             ];
             this.data = data;
             this._substractOrigin();
@@ -70,7 +78,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         this._processColors();
 
         this.draw();
-      }
+      },
     },
 
     _substractOrigin: function () {
@@ -158,18 +166,27 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
 
       if (stopType === 'percent') {
         this.colorDomain = _.filter(this.color, (v) => !isNaN(v));
-        this.colorDomain = [Math.min.apply(null, this.colorDomain), Math.max.apply(null, this.colorDomain)];
-      } else { // means values
-        this.colorDomain = [Math.min.apply(null, this.stopPositions), Math.max.apply(null, this.stopPositions)];
+        this.colorDomain = [
+          Math.min.apply(null, this.colorDomain),
+          Math.max.apply(null, this.colorDomain),
+        ];
+      } else {
+        // means values
+        this.colorDomain = [
+          Math.min.apply(null, this.stopPositions),
+          Math.max.apply(null, this.stopPositions),
+        ];
       }
 
-
-      this.stopColors = _(gradient).map('color').map(colorUtil.getColor).value();
+      this.stopColors = _(gradient)
+        .map('color')
+        .map(colorUtil.getColor)
+        .value();
       this.numberToColor = colorbar.getColorScale({
         stops: this.stopColors,
         stopPositions: this.stopPositions,
         domain: this.colorDomain,
-        stopType: stopType
+        stopType: stopType,
       });
       for (var i = 0; i < this.color.length; i++) {
         if (!isNaN(this.color[i])) {
@@ -196,7 +213,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
           return Math.max(p, c.length);
         }, 0);
         n = Math.max(n, arr.length);
-        return n ? px / n * 2 : maxFontSize;
+        return n ? (px / n) * 2 : maxFontSize;
       }
 
       var fontSize;
@@ -232,7 +249,11 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     },
 
     draw: function () {
-      if (this.coordinateSystem === 'combinatorial' && this.axes && this.axesType !== 'none') {
+      if (
+        this.coordinateSystem === 'combinatorial' &&
+        this.axes &&
+        this.axesType !== 'none'
+      ) {
         // Combinatorial coordinate system
         //      ZY  Y
         //       \ /
@@ -247,42 +268,65 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         this.axeData = {};
         var pointOffset = 3;
         this.axeData.points = [
-          [this.combXmax + pointOffset, 0, 0], [0, this.combYZmax + pointOffset, this.combYZmax + pointOffset],
-          [0, this.combYmax + pointOffset, 0], [this.combXZmax + pointOffset, 0, this.combXZmax + pointOffset],
-          [0, 0, this.combZmax + pointOffset], [this.combXYmax + pointOffset, this.combXYmax + pointOffset, 0]
+          [this.combXmax + pointOffset, 0, 0],
+          [0, this.combYZmax + pointOffset, this.combYZmax + pointOffset],
+          [0, this.combYmax + pointOffset, 0],
+          [this.combXZmax + pointOffset, 0, this.combXZmax + pointOffset],
+          [0, 0, this.combZmax + pointOffset],
+          [this.combXYmax + pointOffset, this.combXYmax + pointOffset, 0],
         ];
 
         var startOffset = 1;
         var endOffset = 2;
         this.axeData.startPoints = [
-          [this.combXmax + startOffset, 0, 0], [0, this.combYZmax + startOffset, this.combYZmax + startOffset],
-          [0, this.combYmax + startOffset, 0], [this.combXZmax + startOffset, 0, this.combXZmax + startOffset],
-          [0, 0, this.combZmax + startOffset], [this.combXYmax + startOffset, this.combXYmax + startOffset, 0]
+          [this.combXmax + startOffset, 0, 0],
+          [0, this.combYZmax + startOffset, this.combYZmax + startOffset],
+          [0, this.combYmax + startOffset, 0],
+          [this.combXZmax + startOffset, 0, this.combXZmax + startOffset],
+          [0, 0, this.combZmax + startOffset],
+          [this.combXYmax + startOffset, this.combXYmax + startOffset, 0],
         ];
 
         this.axeData.endPoints = [
-          [this.combXmax + endOffset, 0, 0], [0, this.combYZmax + endOffset, this.combYZmax + endOffset],
-          [0, this.combYmax + endOffset, 0], [this.combXZmax + endOffset, 0, this.combXZmax + endOffset],
-          [0, 0, this.combZmax + endOffset], [this.combXYmax + endOffset, this.combXYmax + endOffset, 0]
+          [this.combXmax + endOffset, 0, 0],
+          [0, this.combYZmax + endOffset, this.combYZmax + endOffset],
+          [0, this.combYmax + endOffset, 0],
+          [this.combXZmax + endOffset, 0, this.combXZmax + endOffset],
+          [0, 0, this.combZmax + endOffset],
+          [this.combXYmax + endOffset, this.combXYmax + endOffset, 0],
         ];
 
         this.axeLabels = [
-          this.axes[0].name, this.axes[1].name + this.axes[2].name,
-          this.axes[1].name, this.axes[0].name + this.axes[2].name,
-          this.axes[2].name, this.axes[0].name + this.axes[1].name
+          this.axes[0].name,
+          this.axes[1].name + this.axes[2].name,
+          this.axes[1].name,
+          this.axes[0].name + this.axes[2].name,
+          this.axes[2].name,
+          this.axes[0].name + this.axes[1].name,
         ];
 
         this.axeData.points = combinatorialToCubic(this.axeData.points);
         this.axeData.points = cubicToOddr(this.axeData.points);
-        this.axeData.startPoints = combinatorialToCubic(this.axeData.startPoints);
+        this.axeData.startPoints = combinatorialToCubic(
+          this.axeData.startPoints,
+        );
         this.axeData.startPoints = cubicToOddr(this.axeData.startPoints);
         this.axeData.endPoints = combinatorialToCubic(this.axeData.endPoints);
         this.axeData.endPoints = cubicToOddr(this.axeData.endPoints);
 
         for (var i = 0; i < this.axeData.points.length; i++) {
-          this.axeData.points[i] = offsetArray(this.axeData.points[i], this.normConstant);
-          this.axeData.startPoints[i] = offsetArray(this.axeData.startPoints[i], this.normConstant);
-          this.axeData.endPoints[i] = offsetArray(this.axeData.endPoints[i], this.normConstant);
+          this.axeData.points[i] = offsetArray(
+            this.axeData.points[i],
+            this.normConstant,
+          );
+          this.axeData.startPoints[i] = offsetArray(
+            this.axeData.startPoints[i],
+            this.normConstant,
+          );
+          this.axeData.endPoints[i] = offsetArray(
+            this.axeData.endPoints[i],
+            this.normConstant,
+          );
         }
         this._reMinMax(this.axeData.points);
       }
@@ -302,7 +346,10 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         points.push(toPixel(this.data[i]));
       }
 
-      var boundingBox = _.flatten([toPixel([this.minX - 0.3, this.minY - 0.8]), toPixel([this.lenX + 1.5, this.lenY + 1.5])]);
+      var boundingBox = _.flatten([
+        toPixel([this.minX - 0.3, this.minY - 0.8]),
+        toPixel([this.lenX + 1.5, this.lenY + 1.5]),
+      ]);
       if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
         boundingBox[0] -= 100; // Keep some room for color bar
         boundingBox[2] += 100;
@@ -315,19 +362,21 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       var width = this.width,
         height = this.height;
 
-      var motherSvg = d3.select(`#${this.id}`).append('svg')
+      var motherSvg = d3
+        .select(`#${this.id}`)
+        .append('svg')
         .attr('viewBox', boundingBox.join(','))
         .attr('width', width)
         .attr('height', height)
         .style('display', 'block');
-
 
       var svg = motherSvg.append('g');
 
       var tickMode = this.module.getConfiguration('tickMode');
       var tickNumber = this.module.getConfiguration('tickNumber');
       var tickValues = (this.module.getConfiguration('tickValues') || '')
-        .split(',').map(function (v) {
+        .split(',')
+        .map(function (v) {
           return +v;
         });
 
@@ -341,21 +390,19 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             orientation: 'left',
             ticks: tickMode === 'auto' ? tickNumber : undefined,
             tickValues: tickMode === 'manual' ? tickValues : undefined,
-            order: 'asc'
+            order: 'asc',
           },
           stops: this.stopColors,
           stopPositions: this.stopPositions,
           domain: this.colorDomain,
-          stopType: this.module.getConfiguration('stopType')
+          stopType: this.module.getConfiguration('stopType'),
         });
 
         svgMarkup = `<g transform="translate(${colorbarx},${colorbary})">${svgMarkup}</g>`;
         svg.html(svgMarkup);
       }
 
-
-      var hexbin = d3.hexbin()
-        .radius(hexRadius);
+      var hexbin = d3.hexbin().radius(hexRadius);
 
       var fontSize = that._fontSize(hexRadius);
 
@@ -363,9 +410,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       // Combinatorial axes
       if (this.coordinateSystem === 'combinatorial' && this.axes) {
         // Arrow definition
-        svg.append('defs').selectAll('marker')
+        svg
+          .append('defs')
+          .selectAll('marker')
           .data(['normal'])
-          .enter().append('marker')
+          .enter()
+          .append('marker')
           .attr('id', function (d) {
             return d;
           })
@@ -393,14 +443,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
           axePoints = hexbin(axePoints);
 
           // Axe text
-          svg.append('g')
+          svg
+            .append('g')
             .selectAll('.axes')
             .data(axePoints)
-            .enter().append('foreignObject')
+            .enter()
+            .append('foreignObject')
             .style('pointer-events', 'none')
             .attr({
               width: hexRadius,
-              height: hexRadius
+              height: hexRadius,
             })
             .attr('transform', function (d) {
               return `translate(${d.x - hexRadius / 2},${d.y - hexRadius / 2})`;
@@ -413,7 +465,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
               width: `${hexRadius}px`,
               'box-sizing': 'border-box',
               'align-items': 'center',
-              'font-size': fontSize
+              'font-size': fontSize,
             })
             .attr('class', 'axe-text')
             .html(function (d, i) {
@@ -421,7 +473,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             });
 
           // axe arrows
-          svg.append('g')
+          svg
+            .append('g')
             .selectAll('.axe-arrow')
             .data(axePoints)
             .enter()
@@ -440,14 +493,17 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
           var legendSize = 20;
 
           // Legend text
-          svg.append('g').attr('class', 'abcd')
+          svg
+            .append('g')
+            .attr('class', 'abcd')
             .selectAll('.axes-legend')
             .data(legendTextPoints)
-            .enter().append('foreignObject')
+            .enter()
+            .append('foreignObject')
             .style('pointer-events', 'none')
             .attr({
               width: legendSize,
-              height: legendSize
+              height: legendSize,
             })
             .attr('transform', function (d) {
               return `translate(${d.x - boundingBox[0] - legendSize / 2},${d.y + boundingBox[1] + radText - legendSize / 2})`;
@@ -460,7 +516,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
               width: `${hexRadius}px`,
               'box-sizing': 'border-box',
               'font-size': 16,
-              'align-items': 'center'
+              'align-items': 'center',
             })
             .attr('class', 'axe-corner-text')
             .html(function (d, i) {
@@ -468,7 +524,8 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
             });
 
           // Legend arrows
-          svg.append('g')
+          svg
+            .append('g')
             .selectAll('.axe-arrow-legend')
             .data(legendStartPoints)
             .enter()
@@ -484,10 +541,12 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
       // Generate hexgons
       var hexbinPoints = hexbin(points);
 
-      svg.append('g')
+      svg
+        .append('g')
         .selectAll('.hexagon')
         .data(hexbinPoints)
-        .enter().append('path')
+        .enter()
+        .append('path')
         .attr('class', 'hexagon')
         .attr('d', function (d) {
           return `M${d.x},${d.y}${hexbin.hexagon()}`;
@@ -501,20 +560,23 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
           return that.opacity[i];
         });
 
-      var nodeText = svg.append('g')
+      var nodeText = svg
+        .append('g')
         .selectAll('foreignObject')
         .data(hexbinPoints)
-        .enter().append('foreignObject')
+        .enter()
+        .append('foreignObject')
         .style('pointer-events', 'none')
         .attr({
           width: hexRadius,
           height: hexRadius,
           transform: function (d) {
             return `translate(${d.x - hexRadius / 2},${d.y - hexRadius / 2})`;
-          }
+          },
         });
 
-      nodeText.append('xhtml:div')
+      nodeText
+        .append('xhtml:div')
         .append('div')
         .style({
           display: 'flex',
@@ -524,18 +586,15 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
           'align-items': 'center',
           'justify-content': 'center',
           'box-sizing': 'border-box',
-          'font-size': fontSize
+          'font-size': fontSize,
         })
         .html(function (d, i) {
           return that.label[i];
         });
 
-
       // Zoom
       if (this.module.getConfigurationCheckbox('enableZoom', 'yes')) {
-        var zoom = d3.behavior.zoom()
-          .scaleExtent([0.2, 10])
-          .on('zoom', zoomed);
+        var zoom = d3.behavior.zoom().scaleExtent([0.2, 10]).on('zoom', zoomed);
 
         motherSvg.call(zoom).on('dblclick.zoom', function () {
           zoom.scale(1);
@@ -544,15 +603,17 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
         });
       }
 
-
       function zoomed() {
-        svg.attr('transform', `translate(${d3.event.translate})scale(${d3.event.scale})`);
+        svg.attr(
+          'transform',
+          `translate(${d3.event.translate})scale(${d3.event.scale})`,
+        );
       }
     },
 
     reset: function () {
       this.dom.html('');
-    }
+    },
   });
 
   function chartToArray(chart) {
@@ -565,7 +626,7 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     var result = [];
 
     // Series of the chart object are merged
-    var hasZ = (chart.data[0].z !== undefined);
+    var hasZ = chart.data[0].z !== undefined;
     for (var i = 0; i < chart.data.length; i++) {
       for (var j = 0; j < chart.data[i].x.length; j++) {
         var r = [chart.data[i].x[j], chart.data[i].y[j]];
@@ -700,10 +761,16 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
     if (minIdx === middleIdx) {
       return [0, 0, 0];
     }
-    if (middleIdx === 0 && maxIdx === 1 || middleIdx === 1 && maxIdx === 0) {
+    if (
+      (middleIdx === 0 && maxIdx === 1) ||
+      (middleIdx === 1 && maxIdx === 0)
+    ) {
       return multArray([1, -1, 0], arr[middleIdx]);
     }
-    if (middleIdx === 1 && maxIdx === 2 || middleIdx === 2 && maxIdx === 1) {
+    if (
+      (middleIdx === 1 && maxIdx === 2) ||
+      (middleIdx === 2 && maxIdx === 1)
+    ) {
       return multArray([0, 1, -1], arr[middleIdx]);
     }
     return multArray([-1, 0, 1], arr[middleIdx]);
@@ -736,14 +803,19 @@ define(['modules/default/defaultview', 'lodash', 'src/util/debug', 'src/util/uti
   function getLegendData(rad) {
     return [
       { x: rad * Math.cos(-Math.PI / 3), y: rad * Math.sin(Math.PI / 3) },
-      { x: rad * Math.cos(Math.PI * 2 / 3), y: rad * Math.sin(-Math.PI * 2 / 3) },
+      {
+        x: rad * Math.cos((Math.PI * 2) / 3),
+        y: rad * Math.sin((-Math.PI * 2) / 3),
+      },
       { x: rad * Math.cos(Math.PI / 3), y: rad * Math.sin(-Math.PI / 3) },
-      { x: rad * Math.cos(-Math.PI * 2 / 3), y: rad * Math.sin(Math.PI * 2 / 3) },
+      {
+        x: rad * Math.cos((-Math.PI * 2) / 3),
+        y: rad * Math.sin((Math.PI * 2) / 3),
+      },
       { x: rad * Math.cos(Math.PI), y: rad * Math.sin(Math.PI) },
-      { x: rad * Math.cos(0), y: rad * Math.sin(0) }
+      { x: rad * Math.cos(0), y: rad * Math.sin(0) },
     ];
   }
 
   return View;
 });
-

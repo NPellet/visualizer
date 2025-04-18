@@ -18,7 +18,7 @@ define(['src/util/ui'], function (ui) {
       oldStyle = fullscreenElement.getAttribute('style');
       fullscreenElement.setAttribute(
         'style',
-        'height:100%; width:100%; background-color:white;'
+        'height:100%; width:100%; background-color:white;',
       );
       currentFullscreenElement = fullscreenElement;
       oldViewDimensions = { height: view.height, width: view.width };
@@ -31,7 +31,9 @@ define(['src/util/ui'], function (ui) {
       currentFullscreenElement.setAttribute('style', oldStyle);
       view.height = oldViewDimensions.height;
       view.width = oldViewDimensions.width;
-      oldStyle = oldViewDimensions = currentFullscreenElement = null;
+      oldStyle = null;
+      oldViewDimensions = null;
+      currentFullscreenElement = null;
     }
     currentFullscreenModule.view.onResize(view.width, view.height);
   }
@@ -63,9 +65,9 @@ define(['src/util/ui'], function (ui) {
       } else {
         ui.showNotification(
           'Sorry, fullscreen not available in this context',
-          'info'
+          'info',
         );
       }
-    }
+    },
   };
 });

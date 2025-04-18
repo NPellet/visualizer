@@ -11,7 +11,6 @@ define(['../util'], function (Util) {
     _ = await Util.require('lodash');
   }
 
-
   const defaultChart = {
     axes: {
       x: {
@@ -19,21 +18,21 @@ define(['../util'], function (Util) {
       },
       y: {
         label: 'Y axis',
-      }
+      },
     },
     series: [
       {
         data: {
           x: [1, 2, 3],
-          y: [2, 3, 4]
+          y: [2, 3, 4],
         },
         style: {
           line: {
-            color: 'black'
-          }
-        }
-      }
-    ]
+            color: 'black',
+          },
+        },
+      },
+    ],
   };
 
   async function renderJcamp(el, value, rootVal, _options) {
@@ -43,27 +42,36 @@ define(['../util'], function (Util) {
     let chart = JSON.parse(JSON.stringify(defaultChart));
     let parsed = JcampConverter.convert(String(jcamp));
 
-    if (parsed.flatten[0] && parsed.flatten[0].spectra && parsed.flatten[0].spectra[0]) {
+    if (
+      parsed.flatten[0] &&
+      parsed.flatten[0].spectra &&
+      parsed.flatten[0].spectra[0]
+    ) {
       let spectrum = parsed.flatten[0].spectra[0];
       let options = JSON.parse(JSON.stringify(_options));
-      _.merge(chart, {
-        axes: {
-          x: {
-            label: spectrum.xUnits,
+      _.merge(
+        chart,
+        {
+          axes: {
+            x: {
+              label: spectrum.xUnits,
+            },
+            y: {
+              label: spectrum.yUnits,
+            },
           },
-          y: {
-            label: spectrum.yUnits,
-          }
-        }
-      }, options.chart);
-
+        },
+        options.chart,
+      );
 
       chart.series[0].data = spectrum.data;
-      const graph = Graph.fromJSON(chart, el.get(0), () => { });
-      graph.resize(Math.max(el.width() - 15, 20), Math.max(el.height() - 15, 20));
+      const graph = Graph.fromJSON(chart, el.get(0), () => {});
+      graph.resize(
+        Math.max(el.width() - 15, 20),
+        Math.max(el.height() - 15, 20),
+      );
       graph.draw();
     }
-
 
     return el;
   }

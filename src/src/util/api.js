@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-disable import/no-unresolved */
-
 /**
  * Main visualizer API
  * @module src/util/api
@@ -17,7 +15,7 @@ define([
   'src/main/datas',
   'lodash',
   'src/main/grid',
-], function(
+], function (
   Cache,
   ActionManager,
   Util,
@@ -47,32 +45,32 @@ define([
   }
 
   var exports = {
-    getRepositoryData: function() {
+    getRepositoryData: function () {
       return this.repositoryData;
     },
 
-    setRepositoryData: function(repo) {
+    setRepositoryData: function (repo) {
       this.repositoryData = repo;
     },
 
-    getRepositoryHighlights: function() {
+    getRepositoryHighlights: function () {
       return this.repositoryHighlights;
     },
 
-    setRepositoryHighlights: function(repo) {
+    setRepositoryHighlights: function (repo) {
       this.repositoryHighlights = repo;
     },
 
-    getRepositoryActions: function() {
+    getRepositoryActions: function () {
       return this.repositoryActions;
     },
 
-    setRepositoryActions: function(repo) {
+    setRepositoryActions: function (repo) {
       this.repositoryActions = repo;
     },
 
-    listenHighlight: function() {
-      if (!arguments[0] || typeof arguments[0]._highlight == 'undefined') {
+    listenHighlight: function () {
+      if (!arguments[0] || typeof arguments[0]._highlight === 'undefined') {
         return;
       }
 
@@ -83,7 +81,7 @@ define([
       );
     },
 
-    killHighlight: function() {
+    killHighlight: function () {
       this.repositoryHighlights.kill.apply(
         this.repositoryHighlights,
         arguments,
@@ -92,11 +90,11 @@ define([
 
     highlightId: setHighlightId,
 
-    getAllFilters: function() {
+    getAllFilters: function () {
       return variableFilters;
     },
 
-    setAllFilters: function(filters) {
+    setAllFilters: function (filters) {
       variableFilters = _([filters, variableFilters])
         .flatten()
         .filter((v) => v && v.name && v.file)
@@ -108,22 +106,22 @@ define([
         .value();
     },
 
-    isViewLocked: function() {
+    isViewLocked: function () {
       return Versioning.isViewLocked();
     },
 
-    viewLock: function() {
+    viewLock: function () {
       return Versioning.viewLock();
     },
 
-    getContextMenu: function() {
+    getContextMenu: function () {
       return Config.contextMenu();
     },
 
     /* Extra functions used in filter testsuite. Allows compatibility of filters */
-    dev_fctCalled: function(fct) {},
-    dev_fctUncalled: function(fct) {},
-    dev_assert: function(family, script, value) {},
+    dev_fctCalled: function (fct) {},
+    dev_fctUncalled: function (fct) {},
+    dev_assert: function (family, script, value) {},
   };
 
   /**
@@ -222,7 +220,7 @@ define([
       element = { _highlight: element };
     }
 
-    if (typeof element._highlight == 'undefined') {
+    if (typeof element._highlight === 'undefined') {
       return;
     }
 
@@ -240,7 +238,7 @@ define([
       message = id;
     }
 
-    if (loadingNumber == 0) {
+    if (loadingNumber === 0) {
       $('#ci-visualizer').append(loadingHtml);
     }
 
@@ -264,7 +262,7 @@ define([
       loading[id].detach();
       loading[id] = null;
 
-      if (loadingNumber == 0) {
+      if (loadingNumber === 0) {
         loadingHtml.detach();
       }
     }
@@ -411,7 +409,7 @@ define([
     }
 
     for (var i in values) {
-      if (values.hasOwnProperty(i)) {
+      if (Object.hasOwn(values, i)) {
         var alias = aliases[i];
         if (alias) {
           cfgEl = getCfgEl(aliases[i]);
@@ -454,26 +452,26 @@ define([
     return Cache.clear();
   };
 
-  exports.getLayerNames = function() {
+  exports.getLayerNames = function () {
     return require('src/main/grid').getLayerNames();
   };
 
-  exports.switchToLayer = function(name, options) {
+  exports.switchToLayer = function (name, options) {
     return require('src/main/grid').switchToLayer(name, options);
   };
 
-  exports.getActiveLayerName = function() {
+  exports.getActiveLayerName = function () {
     return require('src/main/grid').getActiveLayerName();
   };
 
-  exports.preventUnload = function(message) {
-    window.onbeforeunload = function(e) {
+  exports.preventUnload = function (message) {
+    window.onbeforeunload = function (e) {
       e.returnValue = message;
       return message;
     };
   };
 
-  exports.clearPreventUnload = function() {
+  exports.clearPreventUnload = function () {
     window.onbeforeunload = null;
   };
 
@@ -481,7 +479,7 @@ define([
     return exports.getRepositoryActions().listen(names, callback);
   };
 
-  exports.offAction = function(actionId) {
+  exports.offAction = function (actionId) {
     return exports.getRepositoryActions().unlisten(actionId);
   };
 

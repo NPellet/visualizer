@@ -1,6 +1,9 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
+  Default,
+  Traversing,
+) {
   function Model() {
     this.tmpVars = new DataObject();
   }
@@ -9,13 +12,12 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     filename: '',
     mimetype: '',
     contentType: '',
-    content: ''
+    content: '',
   });
 
   var standardArray = new DataArray([standardFile]);
 
   $.extend(true, Model.prototype, Default, {
-
     init: function () {
       this.tmpVars = new DataObject();
       this.tmpVarsArray = new DataObject();
@@ -24,7 +26,6 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
     getValue: function () {
       return this.dataValue;
     },
-
 
     getjPath: function (rel, accepts) {
       var jpaths = [];
@@ -47,21 +48,26 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
 
         for (i = 0; i < definedDrops.length; i++) {
           var def = definedDrops[i];
-          if (!def || !def.variable)
+          if (!def || !def.variable) {
             continue;
-          if (rel === 'data' && !this.tmpVars.hasOwnProperty(def.variable)) {
+          }
+          if (rel === 'data' && !Object.hasOwn(this.tmpVars, def.variable)) {
             this.tmpVars[def.variable] = standardFile;
-          } else if (rel === 'dataarray' && !this.tmpVarsArray.hasOwnProperty(def.variable)) {
+          } else if (
+            rel === 'dataarray' &&
+            !Object.hasOwn(this.tmpVarsArray, def.variable)
+          ) {
             this.tmpVarsArray[def.variable] = standardArray;
           }
         }
-        if (rel === 'data')
+        if (rel === 'data') {
           Traversing.getJPathsFromElement(this.tmpVars, jpaths);
-        else if (rel === 'dataarray')
+        } else if (rel === 'dataarray') {
           Traversing.getJPathsFromElement(this.tmpVarsArray, jpaths);
+        }
       }
       return jpaths;
-    }
+    },
   });
 
   return Model;

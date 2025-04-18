@@ -1,8 +1,6 @@
 'use strict';
 
-define(['version', 'babel'], function (Version, babel) {
-  const shouldUseBabel = !Version.isModernBrowser;
-
+define(function () {
   function Sandbox() {
     this.contextData = [];
     this.contextString = '';
@@ -25,15 +23,12 @@ define(['version', 'babel'], function (Version, babel) {
       script += `//# sourceURL=${sourceURL}@${this.scriptID++}`;
     }
     script = this.contextString + script;
-    if (shouldUseBabel) {
-      script = babel.transform(script, { presets: ['es2015', 'es2016', 'es2017'] }).code;
-    }
     return safeEval(script, this.contextData.slice());
   };
 
   return Sandbox;
 
   function safeEval(script, __ctx__, Sandbox, babel, safeEval) {
-    return eval(script); // eslint-disable-line no-eval
+    return eval(script);
   }
 });

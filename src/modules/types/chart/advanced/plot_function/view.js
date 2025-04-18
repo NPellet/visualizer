@@ -7,7 +7,7 @@ define([
   'threejs',
   'src/util/debug',
   'lib/parser/Parser',
-  'lib/threejs/TrackballControls'
+  'lib/threejs/TrackballControls',
 ], function (require, Default, Util, THREE, Debug, Parser) {
   function View() {}
 
@@ -35,10 +35,7 @@ define([
         .css('width', '100%')
         .css('overflow', 'hidden'); // .css('background','#33ccff');
       this.dom = $block;
-      this.module
-        .getDomContent()
-        .html(this.dom)
-        .css('overflow', 'hidden');
+      this.module.getDomContent().html(this.dom).css('overflow', 'hidden');
 
       this.zFunctionText =
         cfg('function') || 'sin(sqrt(0.01*x^2  + 0.01*y^2))*10';
@@ -85,7 +82,7 @@ define([
     blank: {
       function: function () {
         this.clearScene();
-      }
+      },
     },
 
     onResize: function () {
@@ -109,14 +106,15 @@ define([
         }
 
         var wireTexture = THREE.ImageUtils.loadTexture(
-          require.toUrl('./square.png')
+          require.toUrl('./square.png'),
         );
-        wireTexture.wrapS = wireTexture.wrapT = THREE.RepeatWrapping;
+        wireTexture.wrapT = THREE.RepeatWrapping;
+        wireTexture.wrapS = wireTexture.wrapT;
         wireTexture.repeat.set(40, 40);
         var wireMaterial = new THREE.MeshBasicMaterial({
           map: wireTexture,
           vertexColors: THREE.VertexColors,
-          side: THREE.DoubleSide
+          side: THREE.DoubleSide,
         });
 
         that.graphMesh = new THREE.Mesh(that.graphGeometry, wireMaterial);
@@ -139,7 +137,7 @@ define([
       var wireframeMaterial = new THREE.MeshBasicMaterial({
         color: 0x000088,
         wireframe: true,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
       });
       var floorGeometry = new THREE.PlaneBufferGeometry(1000, 1000, 10, 10);
       this.floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
@@ -153,7 +151,7 @@ define([
         this.zFunctionText = data.get();
         this.createGraph();
         this.onResize();
-      }
+      },
     },
 
     animate: function () {
@@ -181,7 +179,7 @@ define([
     setControls: function () {
       this.controls = new THREE.TrackballControls(
         this.camera,
-        this.renderer.domElement
+        this.renderer.domElement,
       );
     },
 
@@ -206,7 +204,7 @@ define([
         meshFunction,
         segments,
         segments,
-        true
+        true,
       );
 
       // /////////////////////////////////////////////
@@ -221,14 +219,14 @@ define([
       // faces are indexed using characters
       var faceIndices = ['a', 'b', 'c', 'd'];
       // first, assign colors to vertices as desired
-      for (var i = 0; i < graphGeometry.vertices.length; i++) {
+      for (let i = 0; i < graphGeometry.vertices.length; i++) {
         point = graphGeometry.vertices[i];
         color = new THREE.Color(0x0000ff);
         color.setHSL((0.7 * (that.zMax - point.z)) / that.zRange, 1, 0.5);
         graphGeometry.colors[i] = color; // use this array for convenience
       }
       // copy the colors as necessary to the face's vertexColors array.
-      for (var i = 0; i < graphGeometry.faces.length; i++) {
+      for (let i = 0; i < graphGeometry.faces.length; i++) {
         face = graphGeometry.faces[i];
         numberOfSides = face instanceof THREE.Face3 ? 3 : 4;
         for (var j = 0; j < numberOfSides; j++) {
@@ -251,7 +249,7 @@ define([
       that.dom.append(that.renderer.domElement);
 
       that.addFloor(that.scene);
-    }
+    },
   });
 
   return View;

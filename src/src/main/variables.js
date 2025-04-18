@@ -4,7 +4,7 @@ define([
   'jquery',
   'src/util/util',
   'src/main/datas',
-  'src/util/debug'
+  'src/util/debug',
 ], function ($, Util, Datas, Debug) {
   var data = new DataObject();
   data.onChange(handleChange);
@@ -138,7 +138,7 @@ define([
       if (!this._listenedBy.has(id)) {
         this._listeners.push({
           callback: callback,
-          id: id
+          id: id,
         });
         this._listenedBy.add(id);
       }
@@ -181,7 +181,7 @@ define([
                 (error) => {
                   Debug.warn('Error during variable filtering : ', error);
                   _reject(new Error('filter')); // todo remove this hack
-                }
+                },
               );
             } else {
               _resolve(value);
@@ -190,10 +190,8 @@ define([
           },
           (err) => {
             _reject(err);
-          }
+          },
         );
-
-        return null;
       }).then((value) => {
         this._setValue(value);
         return value;
@@ -207,7 +205,7 @@ define([
         }
         Debug.error(
           'Error in getting the variable through variable.js',
-          err.stack || err
+          err.stack || err,
         );
       });
 
@@ -294,6 +292,6 @@ define([
     unlisten: unlisten,
     eraseAll: function () {
       allVariables = new Map();
-    }
+    },
   };
 });

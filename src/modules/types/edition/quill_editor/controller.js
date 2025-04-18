@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
+define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
@@ -33,15 +33,15 @@ define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
     },
   };
 
-  Controller.prototype.export = function() {
+  Controller.prototype.export = function () {
     return this.module.view.exportToHTML();
   };
 
   Controller.prototype.variablesIn = ['html', 'quill', 'shortcuts'];
 
-  Controller.prototype.onRemove = function() {};
+  Controller.prototype.onRemove = function () {};
 
-  Controller.prototype.valueChanged = function(value) {
+  Controller.prototype.valueChanged = function (value) {
     const html = this.module.view.instance.root.innerHTML;
     if (this.module.getConfigurationCheckbox('storeInView', 'yes')) {
       this.module.definition.richtext = value;
@@ -62,7 +62,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function($, Default) {
     this.createDataFromEvent('onEditorChange', 'html', html);
   };
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {

@@ -12,7 +12,7 @@ define([
   'lodash',
   'jquery',
   'slickgrid',
-  'mime-types'
+  'mime-types',
 ], function (Util, Debug, ui, _, $, Slick, mimeTypes) {
   function attachmentsFromCouch(data, options) {
     var r = new Array(data.length);
@@ -22,7 +22,7 @@ define([
         name: d.name,
         contentType: d.content_type,
         size: d.length,
-        toDelete: false
+        toDelete: false,
       };
       if (options.docUrl) {
         r[i].downloadUrl = `${options.docUrl}/${d.name}`;
@@ -33,13 +33,13 @@ define([
 
   var modes = {
     couchdb: attachmentsFromCouch,
-    couch: attachmentsFromCouch
+    couch: attachmentsFromCouch,
   };
 
   var exports = {};
   var cssLoaded = Promise.all([
     Util.loadCss('components/slickgrid/slick.grid.css'),
-    Util.loadCss('src/util/uploadUi.css')
+    Util.loadCss('src/util/uploadUi.css'),
   ]);
 
   var prefix = 'upload/';
@@ -66,7 +66,7 @@ define([
           asyncEditorLoadDelay: 30,
           enableAsyncPostRender: true,
           asyncPostRenderDelay: 0,
-          rowHeight: 20
+          rowHeight: 20,
         };
 
         var columns = [
@@ -74,20 +74,20 @@ define([
             id: 'name',
             name: 'name',
             field: 'name',
-            sortable: true
+            sortable: true,
           },
           {
             id: 'contentType',
             name: 'contentType',
             field: 'contentType',
             editor: Slick.Editors.Text,
-            sortable: true
+            sortable: true,
           },
           {
             id: 'size',
             name: 'size',
             field: 'size',
-            sortable: true
+            sortable: true,
           },
           {
             id: 'toDelete',
@@ -96,8 +96,8 @@ define([
             width: 40,
             editor: Slick.Editors.Checkbox,
             formatter: Slick.Formatters.Checkmark,
-            sortable: true
-          }
+            sortable: true,
+          },
         ];
 
         if (data[0] && data[0].downloadUrl) {
@@ -107,13 +107,13 @@ define([
             field: '__download_attachment__',
             sortable: false,
             width: 30,
-            formatter: downloadFormatter
+            formatter: downloadFormatter,
           });
         }
         var $dialog = $('<div class="upload-ui">');
         var $slick = $('<div class="dropzone">');
         var $deleteAll = $(
-          '<input type="checkbox">Select/Unselect Delete</input>'
+          '<input type="checkbox">Select/Unselect Delete</input>',
         );
 
         $deleteAll.on('change', function () {
@@ -123,8 +123,9 @@ define([
               d.name !== 'view.json' ||
               d.name === 'data.json' ||
               d.name === 'meta.json'
-            )
+            ) {
               d.toDelete = toSet;
+            }
           });
           grid.invalidateAllRows();
           grid.render();
@@ -142,7 +143,7 @@ define([
               });
               resolve(toUpload);
               $(this).dialog('close');
-            }
+            },
           },
           close: function () {
             resolve(false);
@@ -162,7 +163,7 @@ define([
           },
           closeOnEscape: true,
           width: 700,
-          height: 500
+          height: 500,
         });
 
         var dragCount = 0;
@@ -203,7 +204,7 @@ define([
                 'application/octet-stream',
               size: file.size || 0,
               toDelete: false,
-              color: 'green'
+              color: 'green',
             });
           }
         }
@@ -231,7 +232,7 @@ define([
                       prom.push(doFile(fileEntry, name));
                     } else if (fileEntry.isDirectory) {
                       prom.push(
-                        traverseEntries(fileEntry, `${name}/${fileEntry.name}`)
+                        traverseEntries(fileEntry, `${name}/${fileEntry.name}`),
                       );
                     }
                   }

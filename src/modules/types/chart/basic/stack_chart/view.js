@@ -5,7 +5,7 @@ define([
   'src/util/datatraversing',
   'src/util/api',
   'src/util/util',
-  'lib/flot/jquery.flot'
+  'lib/flot/jquery.flot',
 ], function (Default, Traversing, API, Util) {
   function View() {}
 
@@ -23,7 +23,7 @@ define([
             this._id
           }" style="float:right; width:15%;"><br></p><div style="height: 100%;width: 80%" id="${
             this._id
-          }"></div>`
+          }"></div>`,
         );
         this.module.getDomContent().html(this.dom);
       }
@@ -56,13 +56,15 @@ define([
         $.each(that._data, function (key, val) {
           choiceContainer.append(
             `<br/><input type='checkbox' name='${key}' checked='checked' id='id${key}'></input>` +
-              `<label for='id${key}'>${val.label}</label>`
+              `<label for='id${key}'>${val.label}</label>`,
           );
         });
 
-        choiceContainer.find('input').bind('click', function (event, pos, item) {
-          that.plotAccordingToChoices(choiceContainer, that._id);
-        });
+        choiceContainer
+          .find('input')
+          .bind('click', function (event, pos, item) {
+            that.plotAccordingToChoices(choiceContainer, that._id);
+          });
       });
     },
 
@@ -81,7 +83,7 @@ define([
         this._plot = this.plot(this._id, this._data, this._options);
 
         this.loadedData.resolve();
-      }
+      },
     },
 
     _convertChartToData: function (value) {
@@ -97,19 +99,21 @@ define([
         var s = [];
 
         for (var i = 0; i < y.length; i++) {
-          if ($.isNumeric(x[i]))
+          if ($.isNumeric(x[i])) {
             s.push({
               0: x[i],
               1: y[i],
-              _highlight: highlight[i]
+              _highlight: highlight[i],
             });
-          else s.push({ 0: i, 1: y[i], _highlight: highlight[i] });
+          } else {
+            s.push({ 0: i, 1: y[i], _highlight: highlight[i] });
+          }
         }
 
         this._data[j] = {
           data: s,
           info: info,
-          label: label
+          label: label,
         };
         /* Traversing.getValueFromJPath(info[0],'element.name').done(function(elVal) {
                  self._data[j].label=elVal;
@@ -127,7 +131,7 @@ define([
       var ymax = null;
       var xunit = null;
       var yunit = null;
-      if (undefined != axis) {
+      if (undefined !== axis) {
         posx = axis[0].type;
         posy = axis[1].type;
         xmax = axis[0].max;
@@ -185,7 +189,7 @@ define([
           },
           ticks: xunit,
           labelWidth: xlabw,
-          labelHeight: xlabh
+          labelHeight: xlabh,
         },
         yaxis: {
           position: posy,
@@ -196,18 +200,18 @@ define([
             return val < axis.max ? val.toFixed(2) : ylab;
           },
           labelWidth: ylabw,
-          labelHeight: ylabh
+          labelHeight: ylabh,
         },
         grid: {
           clickable: true,
-          hoverable: true
+          hoverable: true,
         },
         series: {
           stack: stack,
 
           lines: { show: lines, fill: cfg('fill'), steps: steps },
-          bars: { show: bars, barWidth: barWidth }
-        }
+          bars: { show: bars, barWidth: barWidth },
+        },
       };
     },
 
@@ -220,7 +224,7 @@ define([
       $(`#${id}`).bind('plothover', function (event, pos, item) {
         if (item) {
           that.module.controller.elementHover(
-            that._data[item.seriesIndex].data[item.dataIndex]
+            that._data[item.seriesIndex].data[item.dataIndex],
           );
         } else {
           that.module.controller.elementOut();
@@ -240,7 +244,7 @@ define([
       if (data.length > 0) {
         this.plot(id, data, that._options);
       }
-    }
+    },
   });
 
   return View;

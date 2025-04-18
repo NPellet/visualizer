@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,13 +11,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Daniel Kostro',
     date: '12.06.2014',
     license: 'MIT',
-    cssClass: 'sequence_display'
+    cssClass: 'sequence_display',
   };
 
   Controller.prototype.references = {
     sequences: {
-      label: 'Array of sequences to align'
-    }
+      label: 'Array of sequences to align',
+    },
   };
 
   Controller.prototype.variablesIn = ['sequences'];
@@ -26,11 +25,10 @@ define(['modules/default/defaultcontroller'], function (Default) {
   Controller.prototype.configurationStructure = function () {
     return {
       groups: {
-
         group: {
           options: {
             type: 'list',
-            multiple: false
+            multiple: false,
           },
           fields: {
             colorSchema: {
@@ -38,17 +36,17 @@ define(['modules/default/defaultcontroller'], function (Default) {
               title: 'Slick options',
               options: [
                 { title: 'Default', key: 'default' },
-                { title: 'Match', key: 'match' }
-              ]
-            }
-          }
-        }
-      }
+                { title: 'Match', key: 'match' },
+              ],
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
-    colorSchema: ['groups', 'group', 0, 'colorSchema', 0]
+    colorSchema: ['groups', 'group', 0, 'colorSchema', 0],
   };
   return Controller;
 });

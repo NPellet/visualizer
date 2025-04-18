@@ -5,7 +5,7 @@ define([
   'modules/default/defaultview',
   'forms/button',
   'src/util/ui',
-  'src/util/typerenderer'
+  'src/util/typerenderer',
 ], function ($, Default, Button, ui, Renderer) {
   function View() {}
 
@@ -44,15 +44,15 @@ define([
             $div.find('img').css({
               width: this.width,
               height: this.height,
-              objectFit: 'contain'
+              objectFit: 'contain',
             });
             $div.css({
-              cursor: 'pointer'
+              cursor: 'pointer',
             });
 
             this.dom.html($div);
             this.dom.css({
-              overflow: 'hidden'
+              overflow: 'hidden',
             });
             this.updateOpacity($div);
           }
@@ -64,7 +64,7 @@ define([
             $div.css('cursor', 'pointer');
             Renderer.render($div, {
               type: 'svg',
-              value: content
+              value: content,
             });
             this.dom.html($div);
             this.updateOpacity($div);
@@ -78,22 +78,22 @@ define([
       if (this.isToggle) {
         if (this.currentState) {
           $div.css({
-            opacity: 1
+            opacity: 1,
           });
         } else {
           $div.css({
-            opacity: this.maskOpacity
+            opacity: this.maskOpacity,
           });
         }
       } else {
         $div.mousedown(() => {
           $div.css({
-            opacity: this.maskOpacity
+            opacity: this.maskOpacity,
           });
         });
         $div.mouseup(() => {
           $div.css({
-            opacity: 1
+            opacity: 1,
           });
         });
       }
@@ -108,7 +108,7 @@ define([
       var label;
       this.dom = $('<div></div>').css({
         width: '100%',
-        height: '100%'
+        height: '100%',
       });
       if (this.isToggle) {
         this.currentState = this.module.getConfiguration('startState') === 'on';
@@ -120,7 +120,7 @@ define([
           ok = await ui.confirm(
             that.module.getConfiguration('confirmText'),
             that.module.getConfiguration('okLabel'),
-            that.module.getConfiguration('cancelLabel')
+            that.module.getConfiguration('cancelLabel'),
           );
         }
 
@@ -165,7 +165,7 @@ define([
       $button.removeAttr('disabled');
       $button.css({
         cursor: 'pointer',
-        pointerEvent: 'auto'
+        pointerEvent: 'auto',
       });
     },
 
@@ -198,8 +198,8 @@ define([
       toggle: function () {
         this.toggle();
         this.redrawButton();
-      }
-    }
+      },
+    },
   });
 
   return View;

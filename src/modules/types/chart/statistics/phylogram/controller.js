@@ -4,7 +4,7 @@ define([
   'modules/default/defaultcontroller',
   'src/util/datatraversing',
   'src/util/util',
-], function(Default, Traversing, Util) {
+], function (Default, Traversing, Util) {
   function Controller() {
     this._data = new DataObject();
   }
@@ -20,7 +20,7 @@ define([
     cssClass: 'phylogram',
   };
 
-  Controller.prototype.mouseOverLeaf = function(data) {
+  Controller.prototype.mouseOverLeaf = function (data) {
     if (data.data) {
       this._data = DataObject.check(data.data);
       this.createDataFromEvent(
@@ -31,9 +31,9 @@ define([
     }
   };
 
-  Controller.prototype.mouseOutLeaf = function() {};
+  Controller.prototype.mouseOutLeaf = function () {};
 
-  Controller.prototype.clickLeaf = function(data) {
+  Controller.prototype.clickLeaf = function (data) {
     if (data.data) {
       this._data = DataObject.check(data.data);
       this.createDataFromEvent(
@@ -44,21 +44,21 @@ define([
     }
   };
 
-  Controller.prototype.mouseOverBranch = function(data) {
+  Controller.prototype.mouseOverBranch = function (data) {
     this.sendTreeFromEvent(data, 'onBranchHover');
   };
 
-  Controller.prototype.mouseOutBranch = function() {};
+  Controller.prototype.mouseOutBranch = function () {};
 
-  Controller.prototype.clickBranch = function(data) {
+  Controller.prototype.clickBranch = function (data) {
     this.sendTreeFromEvent(data, 'onBranchSelect');
   };
 
-  Controller.prototype.sendTreeFromEvent = function(data, name) {
+  Controller.prototype.sendTreeFromEvent = function (data, name) {
     var element = new DataObject({ type: 'tree', value: data }, true);
     this.sendActionFromEvent(name, 'tree', element);
     this.createDataFromEvent(name, 'tree', element);
-    this.createDataFromEvent(name, 'list', function() {
+    this.createDataFromEvent(name, 'list', function () {
       var arr = [];
       treeToArray(arr, data);
       return DataArray(arr);
@@ -75,7 +75,7 @@ define([
     }
   }
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     var dataJPath = [];
     var data = this.module.getDataFromRel('data');
     if (data) {

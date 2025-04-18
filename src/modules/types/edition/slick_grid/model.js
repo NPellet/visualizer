@@ -1,11 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
-  function Model() {
-  }
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
+  Default,
+  Traversing,
+) {
+  function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-
     getValue: function () {
       return this.dataValue;
     },
@@ -20,10 +21,16 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
           if (this.module.controller.lastClickedItem) {
             data = this.module.controller.lastClickedItem;
           } else {
-            data = (temporary && temporary.list) ? temporary.list : (this.module.getDataFromRel('list') || new DataArray());
+            data =
+              temporary && temporary.list
+                ? temporary.list
+                : this.module.getDataFromRel('list') || new DataArray();
             data = data.get(0);
             if (!data) {
-              data = (temporary && temporary.data) ? temporary.data : (this.module.getDataFromRel('data') || new DataArray());
+              data =
+                temporary && temporary.data
+                  ? temporary.data
+                  : this.module.getDataFromRel('data') || new DataArray();
               data = data.get(0);
             }
           }
@@ -54,9 +61,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
       }
 
       return jpaths;
-    }
+    },
   });
-
 
   return Model;
 });

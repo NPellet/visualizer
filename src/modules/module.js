@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-disable import/no-unresolved */
-
 define([
   'jquery',
   'lodash',
@@ -222,8 +220,9 @@ define([
       for (var i = 0; i < toolbar.length; i++) {
         if (!toolbar[i].ifLocked && isLocked) continue;
         const color = toolbar[i].color || 'rgba(100,100, 100, 1)';
-        html += `<li style="color:${toolbar[i].color}" + title="${toolbar[i]
-          .title || ''}">`;
+        html += `<li style="color:${toolbar[i].color}" + title="${
+          toolbar[i].title || ''
+        }">`;
         if (toolbar[i].icon) {
           html += `<div style="color=${color}"><i src="${toolbar[i].icon}"/></div>`;
         }
@@ -241,9 +240,7 @@ define([
         .find('.ci-module-header-toolbar ul')
         .on('click', 'li', (event) => {
           var toolbar = that.controller.getToolbar();
-          var title = $(event.target)
-            .closest('li')
-            .attr('title');
+          var title = $(event.target).closest('li').attr('title');
           var t = _.find(toolbar, (val) => val.title === title);
           if (t && t.onClick) {
             t.onClick.apply(that);
@@ -273,7 +270,6 @@ define([
       for (let i = 0; i < vars.length; i++) {
         const variable = API.getVar(vars[i].name);
         if (variable.isDefined()) {
-          // eslint-disable-next-line no-await-in-loop
           await this.model.onVarChange(variable);
         }
       }
@@ -301,7 +297,7 @@ define([
      * Returns the DOM object which corresponds to the module's view
      */
     getDomView() {
-      if (typeof this.view.getDom == 'function') {
+      if (typeof this.view.getDom === 'function') {
         return this.view.getDom();
       }
       throw new Error(
@@ -349,7 +345,7 @@ define([
     getNameFromRel(rel) {
       var vars = this.vars_in();
       for (var i = 0; i < vars.length; i++) {
-        if (vars[i].rel == rel) {
+        if (vars[i].rel === rel) {
           return vars[i].name;
         }
       }
@@ -364,7 +360,7 @@ define([
       var vars = this.vars_in();
       var rels = [];
       for (var i = 0; i < vars.length; i++) {
-        if (vars[i].name == name) {
+        if (vars[i].name === name) {
           rels.push(vars[i].rel);
         }
       }
@@ -374,7 +370,7 @@ define([
     getActionRelFromName(name) {
       var vars = this.actions_in();
       for (var i = 0; i < vars.length; i++) {
-        if (vars[i].name == name) {
+        if (vars[i].name === name) {
           return vars[i].rel;
         }
       }
@@ -466,9 +462,8 @@ define([
         if (modify_layer.remove) {
           delete this.definition.layers[modify_layer.remove];
         } else if (modify_layer.rename) {
-          this.definition.layers[
-            modify_layer.rename.new
-          ] = this.definition.layers[modify_layer.rename.old];
+          this.definition.layers[modify_layer.rename.new] =
+            this.definition.layers[modify_layer.rename.old];
           delete this.definition.layers[modify_layer.rename.old];
         }
       } else {
@@ -917,39 +912,39 @@ define([
             .getSection('vars_out')
             .getGroup('group')
             .getField('event').options.onChange = function (fieldElement) {
-              if (!fieldElement.groupElement) {
-                return;
+            if (!fieldElement.groupElement) {
+              return;
+            }
+            $.when(
+              fieldElement.groupElement.getFieldElementCorrespondingTo(
+                fieldElement,
+                'rel',
+              ),
+            ).then(function (el) {
+              if (el) {
+                el.setOptions(makeReferences(fieldElement.value, 'event'));
               }
-              $.when(
-                fieldElement.groupElement.getFieldElementCorrespondingTo(
-                  fieldElement,
-                  'rel',
-                ),
-              ).then(function (el) {
-                if (el) {
-                  el.setOptions(makeReferences(fieldElement.value, 'event'));
-                }
-              });
-            };
+            });
+          };
 
           form
             .getSection('vars_out')
             .getGroup('group')
             .getField('rel').options.onChange = function (fieldElement) {
-              if (!fieldElement.groupElement) {
-                return;
+            if (!fieldElement.groupElement) {
+              return;
+            }
+            $.when(
+              fieldElement.groupElement.getFieldElementCorrespondingTo(
+                fieldElement,
+                'jpath',
+              ),
+            ).then(function (el) {
+              if (el) {
+                el.setOptions(alljpaths[fieldElement.value]);
               }
-              $.when(
-                fieldElement.groupElement.getFieldElementCorrespondingTo(
-                  fieldElement,
-                  'jpath',
-                ),
-              ).then(function (el) {
-                if (el) {
-                  el.setOptions(alljpaths[fieldElement.value]);
-                }
-              });
-            };
+            });
+          };
         }
 
         if (form.getSection('actions_out')) {
@@ -957,46 +952,43 @@ define([
             .getSection('actions_out')
             .getGroup('group')
             .getField('event').options.onChange = function (fieldElement) {
-              if (!fieldElement.groupElement) {
-                return;
+            if (!fieldElement.groupElement) {
+              return;
+            }
+            $.when(
+              fieldElement.groupElement.getFieldElementCorrespondingTo(
+                fieldElement,
+                'rel',
+              ),
+            ).then(function (el) {
+              if (el) {
+                el.setOptions(makeReferences(fieldElement.value, 'action'));
               }
-              $.when(
-                fieldElement.groupElement.getFieldElementCorrespondingTo(
-                  fieldElement,
-                  'rel',
-                ),
-              ).then(function (el) {
-                if (el) {
-                  el.setOptions(makeReferences(fieldElement.value, 'action'));
-                }
-              });
-            };
+            });
+          };
 
           form
             .getSection('actions_out')
             .getGroup('group')
             .getField('rel').options.onChange = function (fieldElement) {
-              if (!fieldElement.groupElement) {
-                return;
+            if (!fieldElement.groupElement) {
+              return;
+            }
+            $.when(
+              fieldElement.groupElement.getFieldElementCorrespondingTo(
+                fieldElement,
+                'jpath',
+              ),
+            ).then(function (el) {
+              if (el) {
+                el.setOptions(alljpaths[fieldElement.value]);
               }
-              $.when(
-                fieldElement.groupElement.getFieldElementCorrespondingTo(
-                  fieldElement,
-                  'jpath',
-                ),
-              ).then(function (el) {
-                if (el) {
-                  el.setOptions(alljpaths[fieldElement.value]);
-                }
-              });
-            };
+            });
+          };
         }
 
         const moduleInfosHtml =
-          `${'<table class="moduleInformation">' +
-            '<tr><td>Module name</td><td>'}${
-            that.controller.moduleInformation.name
-          }</td></tr>` +
+          `<table class="moduleInformation"><tr><td>Module name</td><td>${that.controller.moduleInformation.name}</td></tr>` +
           `<tr><td></td><td><small>${that.controller.moduleInformation.description}</small></td></tr>` +
           `<tr><td>Module author</td><td>${that.controller.moduleInformation.author}</td></tr>` +
           `<tr><td>Creation date</td><td>${that.controller.moduleInformation.date}</td></tr>` +
@@ -1130,9 +1122,10 @@ define([
         Debug.warn(`Alias ${aliasName} not defined `);
       }
 
-      if (toReturn == undefined)
+      if (toReturn === undefined) {
         toReturn = this._doConfigurationFunction(cfgEl, aliasName);
-      if (toReturn == undefined) toReturn = fallbackValue;
+      }
+      if (toReturn === undefined) toReturn = fallbackValue;
 
       return resurrectValue ? Datas.resurrect(toReturn) : toReturn;
     },
@@ -1153,7 +1146,7 @@ define([
       var cfgEl = this._cfgStructure;
 
       for (var i = 0, l = alias.length; i < l; i++) {
-        if (typeof alias[i] == 'number') {
+        if (typeof alias[i] === 'number') {
           continue;
         }
 
@@ -1190,8 +1183,9 @@ define([
      * Returns the data for the module's model
      */
     getValue() {
-      if (typeof this.model.getValue == 'function')
+      if (typeof this.model.getValue === 'function') {
         return this.model.getValue();
+      }
     },
 
     /*
@@ -1250,7 +1244,7 @@ define([
       }
       this.definition.vars_in = this.definition.vars_in || new DataArray();
       return this.definition.vars_in.filter(function (val) {
-        return val ? (val.name && val.rel ? true : false) : false;
+        return val ? !!(val.name && val.rel) : false;
       });
     },
 
@@ -1270,8 +1264,9 @@ define([
         this.definition.actions_in = this.definition.actionsIn;
         delete this.definition.actionsIn;
       }
-      if (!this.definition.actions_in)
+      if (!this.definition.actions_in) {
         this.definition.actions_in = new DataArray();
+      }
       return this.definition.actions_in;
     },
 
@@ -1281,8 +1276,9 @@ define([
         this.definition.actions_out = this.definition.actionsOut;
         delete this.definition.actionsOut;
       }
-      if (!this.definition.actions_out)
+      if (!this.definition.actions_out) {
         this.definition.actions_out = new DataArray();
+      }
       return this.definition.actions_out;
     },
 
@@ -1315,10 +1311,11 @@ define([
 
     printView(options) {
       const domContent = this.controller.print();
+      let openWindow;
       if (options && options.window) {
-        var openWindow = options.window;
+        openWindow = options.window;
       } else {
-        var openWindow = window.open('', '', '');
+        openWindow = window.open('', '', '');
       }
       openWindow.document.body.appendChild(domContent);
       openWindow.document.close();
@@ -1336,11 +1333,11 @@ define([
 
     setDisplayWrapper(bln) {
       this.getDomWrapper()[
-        bln === true || bln == undefined ? 'addClass' : 'removeClass'
+        bln === true || bln === undefined ? 'addClass' : 'removeClass'
       ]('ci-module-displaywrapper');
       try {
         this.getDomWrapper().resizable(
-          bln === true || bln == undefined ? 'enable' : 'disable',
+          bln === true || bln === undefined ? 'enable' : 'disable',
         );
       } catch (e) {
         // do nothing
@@ -1352,15 +1349,13 @@ define([
       for (let i = 0; i < rels.length; i++) {
         if (!this.view.blank[rels[i]] && this.view[`_blank_${rels[i]}`]) {
           this.view[`_blank_${rels[i]}`](variableName);
+        } else if (this.view.blank[rels[i]]) {
+          this.view.blank[rels[i]].call(this.view, variableName);
         } else {
-          if (this.view.blank[rels[i]]) {
-            this.view.blank[rels[i]].call(this.view, variableName);
-          } else {
-            Util.warnOnce(
-              `missing-blank-${this.controller.moduleInformation.name}_${rels[i]}`,
-              `Module ${this.controller.moduleInformation.name}: no blank method defined for rel ${rels[i]}`,
-            );
-          }
+          Util.warnOnce(
+            `missing-blank-${this.controller.moduleInformation.name}_${rels[i]}`,
+            `Module ${this.controller.moduleInformation.name}: no blank method defined for rel ${rels[i]}`,
+          );
         }
       }
       return null;
@@ -1414,7 +1409,7 @@ define([
 
       var result = {};
       for (var i in aliases) {
-        if (aliases.hasOwnProperty(i)) {
+        if (Object.hasOwn(aliases, i)) {
           result[i] = getExampleFromAlias(definition, aliases[i]);
         }
       }
@@ -1515,9 +1510,9 @@ define([
   }
 
   function getTableFieldExample(field) {
-    var result = {};
-    for (var i in field) {
-      if (field.hasOwnProperty(i)) {
+    const result = {};
+    for (const i in field) {
+      if (Object.hasOwn(field, i)) {
         result[i] = getFieldExample(field[i]);
       }
     }

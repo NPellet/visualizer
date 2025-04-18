@@ -1,8 +1,6 @@
 'use strict';
 
 define(function () {
-  var reg = new RegExp('^data:([^;]+);base64,(.+)$');
-
   return {
     filter: function (dataObject, resolve, reject) {
       var image = new Image();
@@ -16,7 +14,6 @@ define(function () {
 
       image.src = dataObject.get();
 
-
       function doDecode() {
         var workerCount = 0;
         function receiveMessage(e) {
@@ -26,8 +23,14 @@ define(function () {
           if (e.data.finished) {
             workerCount--;
             if (workerCount) {
-              if (resultArray.length == 0) {
-                DecodeWorker.postMessage({ ImageData: ctx.getImageData(0, 0, Canvas.width, Canvas.height).data, Width: Canvas.width, Height: Canvas.height, cmd: 'flip' });
+              if (resultArray.length === 0) {
+                DecodeWorker.postMessage({
+                  ImageData: ctx.getImageData(0, 0, Canvas.width, Canvas.height)
+                    .data,
+                  Width: Canvas.width,
+                  Height: Canvas.height,
+                  cmd: 'flip',
+                });
               } else {
                 workerCount--;
               }
@@ -35,27 +38,25 @@ define(function () {
           }
           if (e.data.success) {
             var tempArray = e.data.result;
-            for (var i = 0; i < tempArray.length; i++) {
-              if (resultArray.indexOf(tempArray[i]) == -1) {
+            for (let i = 0; i < tempArray.length; i++) {
+              if (resultArray.indexOf(tempArray[i]) === -1) {
                 resultArray.push(tempArray[i]);
               }
             }
 
             var filteredResult = [];
-            for (var i = 0; i < resultArray.length; i++) {
+            for (let i = 0; i < resultArray.length; i++) {
               var m = resultArray[i].match(/^([^:]*):(.*)$/);
               if (m[1] && m[2]) {
                 filteredResult.push({
                   encoding: m[1],
-                  encoded: m[2]
+                  encoded: m[2],
                 });
               }
             }
             return resolve(filteredResult);
-          } else {
-            if (resultArray.length === 0 && workerCount === 0) {
-              return reject('Docuding failed');
-            }
+          } else if (resultArray.length === 0 && workerCount === 0) {
+            return reject('Docuding failed');
           }
         }
         var DecodeWorker = new Worker('lib/BarcodeReader/src/DecoderWorker.js');
@@ -64,10 +65,15 @@ define(function () {
         ctx.drawImage(image, 0, 0, Canvas.width, Canvas.height);
         resultArray = [];
         workerCount = 2;
-        DecodeWorker.postMessage({ ImageData: ctx.getImageData(0, 0, Canvas.width, Canvas.height).data, Width: Canvas.width, Height: Canvas.height, cmd: 'normal' });
+        DecodeWorker.postMessage({
+          ImageData: ctx.getImageData(0, 0, Canvas.width, Canvas.height).data,
+          Width: Canvas.width,
+          Height: Canvas.height,
+          cmd: 'normal',
+        });
       }
 
       // Expects a dataURL image
-    }
+    },
   };
 });

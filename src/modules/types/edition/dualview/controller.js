@@ -1,6 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'modules/types/edition/onde/controller', 'modules/types/display/template-twig/controller'], function (Default, OndeC, TwigC) {
+define([
+  'modules/default/defaultcontroller',
+  'modules/types/edition/onde/controller',
+  'modules/types/display/template-twig/controller',
+], function (Default, OndeC, TwigC) {
   function Controller() {
     this.twigC = new TwigC();
     this.ondeC = new OndeC();
@@ -23,18 +27,19 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
 
   Controller.prototype.moduleInformation = {
     name: 'Edit/Display',
-    description: 'Dual-view module, with a displayer that is based on Twig and a JSON editor based on Onde.',
+    description:
+      'Dual-view module, with a displayer that is based on Twig and a JSON editor based on Onde.',
     author: 'Michaël Zasso',
     date: '13.05.2014',
     license: 'MIT',
     cssClass: 'dualview',
-    hidden: true
+    hidden: true,
   };
 
   Controller.prototype.references = {
     value: {
-      label: 'Any object'
-    }
+      label: 'Any object',
+    },
   };
 
   Controller.prototype.variablesIn = ['value'];
@@ -44,29 +49,29 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             template: {
               type: 'jscode',
               title: 'Template',
               mode: 'html',
-              default: ''
+              default: '',
             },
             schema: {
               type: 'jscode',
               title: 'Schema',
               mode: 'json',
-              default: '{}'
+              default: '{}',
             },
             button_text: {
               type: 'text',
               title: 'Text of the save button',
-              default: 'Save'
-            }
-          }
-        }
-      }
+              default: 'Save',
+            },
+          },
+        },
+      },
     };
   };
 
@@ -79,7 +84,7 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
     },
     output: function () {
       return 'modified';
-    }
+    },
   };
 
   Controller.prototype.configAliases = {
@@ -88,7 +93,7 @@ define(['modules/default/defaultcontroller', 'modules/types/edition/onde/control
     button_text: ['groups', 'group', 0, 'button_text', 0],
     mode: [],
     schemaSource: [],
-    output: []
+    output: [],
   };
 
   return Controller;

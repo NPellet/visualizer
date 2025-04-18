@@ -5,10 +5,9 @@ define([
   'modules/default/defaultview',
   'jsgraph',
   'src/util/color',
-  'chroma'
+  'chroma',
 ], function ($, Default, Graph, Color, chroma) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -24,42 +23,46 @@ define([
     inDom() {
       var axisOptions = {
         primaryGrid: false,
-        secondaryGrid: false
+        secondaryGrid: false,
       };
-      this.graph = new Graph(this.dom, {
-        close: {
-          left: false,
-          right: false,
-          top: false,
-          bottom: false
-        },
-        plugins: {
-          zoom: {
-            zoomMode: 'xy'
+      this.graph = new Graph(
+        this.dom,
+        {
+          close: {
+            left: false,
+            right: false,
+            top: false,
+            bottom: false,
           },
-          drag: {}
-        },
-        pluginAction: {
-          zoom: {
-            shift: false,
-            ctrl: false
+          plugins: {
+            zoom: {
+              zoomMode: 'xy',
+            },
+            drag: {},
           },
-          drag: {
-            shift: true,
-            ctrl: false
-          }
+          pluginAction: {
+            zoom: {
+              shift: false,
+              ctrl: false,
+            },
+            drag: {
+              shift: true,
+              ctrl: false,
+            },
+          },
+          dblclick: {
+            type: 'plugin',
+            plugin: 'zoom',
+            options: {
+              mode: 'total',
+            },
+          },
         },
-        dblclick: {
-          type: 'plugin',
-          plugin: 'zoom',
-          options: {
-            mode: 'total'
-          }
-        }
-      }, {
-        bottom: [axisOptions],
-        left: [axisOptions]
-      });
+        {
+          bottom: [axisOptions],
+          left: [axisOptions],
+        },
+      );
 
       var that = this;
       this.graph.on('shapeMouseOver', function (shape) {
@@ -84,7 +87,7 @@ define([
         if (this.datasetInfo[name]) {
           this.datasetInfo[name] = null;
         }
-      }
+      },
     },
 
     update: {
@@ -117,7 +120,15 @@ define([
             }
           }
         }
-        const getColor = colorGenerator(cfg('bgType'), cfg('bgSpace'), cfg('bgColor1'), cfg('bgColor2'), field1, field2, field3);
+        const getColor = colorGenerator(
+          cfg('bgType'),
+          cfg('bgSpace'),
+          cfg('bgColor1'),
+          cfg('bgColor2'),
+          field1,
+          field2,
+          field3,
+        );
 
         // Set size of axes to fit the grid
         graph.getXAxis().forceMin(0).forceMax(x);
@@ -129,16 +140,16 @@ define([
               position: [
                 {
                   x: i,
-                  y: j
+                  y: j,
                 },
                 {
                   x: i + 1,
-                  y: j + 1
-                }
+                  y: j + 1,
+                },
               ],
               fillColor: getColor(data[i][j]),
               layer: 1,
-              info: data[i][j]
+              info: data[i][j],
             });
             shape.draw();
             shape.redraw();
@@ -170,7 +181,11 @@ define([
             case 'jpath':
               // TODO perf check
               getColor = function (value) {
-                return chroma(String(DataObject.check(value).getChildSync(theConfig.jpath1[0]))).css();
+                return chroma(
+                  String(
+                    DataObject.check(value).getChildSync(theConfig.jpath1[0]),
+                  ),
+                ).css();
               };
               break;
           }
@@ -187,26 +202,43 @@ define([
           theData[i * 2 + 1] = data.y[i];
           color = getColor(data.info[i]);
           colors[i] = {
-            fill: color
+            fill: color,
           };
         }
-        var serie = this.series[name] = this.graph.newSerie(name, {
-          layer: 2
-        }, 'scatter')
+        var serie = this.graph
+          .newSerie(
+            name,
+            {
+              layer: 2,
+            },
+            'scatter',
+          )
           .autoAxis()
           .setData(theData)
-          .setStyle({
-            shape: 'circle',
-            r: 3,
-            stroke: 'black'
-          }, colors)
-          .setStyle({
-            r: 6
-          }, 'selected');
+          .setStyle(
+            {
+              shape: 'circle',
+              r: 3,
+              stroke: 'black',
+            },
+            colors,
+          )
+          .setStyle(
+            {
+              r: 6,
+            },
+            'selected',
+          );
+        this.series[name] = serie;
+
         if (data.info) {
           serie.on('mouseover', function (id) {
             serie.selectPoint(id);
-            that.module.controller.onElementHover(data.x[id], data.y[id], data.info[id]);
+            that.module.controller.onElementHover(
+              data.x[id],
+              data.y[id],
+              data.info[id],
+            );
           });
           serie.on('mouseout', function (id) {
             serie.selectPoint(id, false);
@@ -214,7 +246,7 @@ define([
         }
 
         this.redraw();
-      }
+      },
     },
 
     onResize(width, height) {
@@ -229,13 +261,22 @@ define([
       this.graph.redraw();
       this.graph.autoscaleAxes();
       this.graph.drawSeries();
-    }
+    },
   });
 
-  function colorGenerator(type, space, colorA1, colorA2, field1, field2, field3) {
+  function colorGenerator(
+    type,
+    space,
+    colorA1,
+    colorA2,
+    field1,
+    field2,
+    field3,
+  ) {
     var color1 = chroma(colorA1),
       color2 = chroma(colorA2),
-      scale, val;
+      scale,
+      val;
     if (type === 'fixed') {
       val = color1.css();
       return function fixedColor() {
@@ -250,13 +291,22 @@ define([
       var interpolators = getInterpolators(colorA1, colorA2);
       var mean = (colorA1[3] + colorA2[3]) / 2;
       return function interpolatedColor(value) {
-        return chroma([interpolators[0](value[field1]), interpolators[1](value[field2]), interpolators[2](value[field3]), mean]).css();
+        return chroma([
+          interpolators[0](value[field1]),
+          interpolators[1](value[field2]),
+          interpolators[2](value[field3]),
+          mean,
+        ]).css();
       };
     }
   }
 
   function getInterpolators(color1, color2) {
-    return [getInterpolator(color1[0], color2[0]), getInterpolator(color1[1], color2[1]), getInterpolator(color1[2], color2[2])];
+    return [
+      getInterpolator(color1[0], color2[0]),
+      getInterpolator(color1[1], color2[1]),
+      getInterpolator(color1[2], color2[2]),
+    ];
   }
 
   function getInterpolator(a, b) {

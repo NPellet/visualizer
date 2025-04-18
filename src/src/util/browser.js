@@ -6,21 +6,21 @@ define([
   'lodash',
   'modernizr',
   'src/util/ui',
-  'jquery-cookie'
+  'jquery-cookie',
 ], function (Debug, bowser, _, modernizr, ui) {
   var features = {
     canvas: {
       name: 'Canvas',
-      type: 'recommended'
+      type: 'recommended',
     },
     webgl: {
       name: 'WebGL',
-      type: 'recommended'
+      type: 'recommended',
     },
     localstorage: {
       name: 'LocalStorage',
-      type: 'recommended'
-    }
+      type: 'recommended',
+    },
   };
 
   _.keys(features).forEach(function (f) {
@@ -33,15 +33,17 @@ define([
     }
   });
 
-  var browserHasAllFeatures = _.every(_.map(features, function (val) {
-    return val.has;
-  }));
+  var browserHasAllFeatures = _.every(
+    _.map(features, function (val) {
+      return val.has;
+    }),
+  );
 
   var browsers = {
     chrome: 5.0,
     msie: 11.0,
     firefox: 5.0,
-    msedge: 0
+    msedge: 0,
   };
 
   var recommendedBrowsers = {
@@ -51,13 +53,13 @@ define([
       {
         name: 'Chrome',
         url: 'https://www.google.com/intl/en/chrome/browser/',
-        message: '(Recommended)'
+        message: '(Recommended)',
       },
       {
         name: 'Firefox',
-        url: 'https://www.mozilla.org/en-US/firefox/new/'
-      }
-    ]
+        url: 'https://www.mozilla.org/en-US/firefox/new/',
+      },
+    ],
   };
 
   function checkBrowser() {
@@ -72,7 +74,6 @@ define([
     });
     var browserListed = _.some(bmap);
 
-
     if (!browserListed) {
       Debug.warn('browser not recognized');
       return true;
@@ -85,70 +86,80 @@ define([
 
   var browserIsCompatible = checkBrowser();
 
-
   function browserErrorMessage() {
     var tmpl = '<h1>Incompatible browser</h1>';
 
-    tmpl += '<b><%- browserName %> <%- browserVersion %> </b> is incompatible with the visualizer<br/>';
+    tmpl +=
+      '<b><%- browserName %> <%- browserVersion %> </b> is incompatible with the visualizer<br/>';
     tmpl += 'Please update your browser to one of the following: <br/>';
-    tmpl += '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
+    tmpl +=
+      '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
     return _.template(tmpl)(recommendedBrowsers);
   }
 
   function featureErrorMessage() {
     var tmpl = '<h1>Your browser is missing some important features </h1><br/>';
 
-
-    tmpl += '<table><% _.forEach(features, function(f) { %> <tr>  <td style="width:20px; background-color: <%- f.color %>;"></td> <td> <%- f.name %>  </td></tr> <% }); %> </table><br/>';
-    tmpl += '<p>We recommend updating your browser to one of the following:</p>';
-    tmpl += '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
+    tmpl +=
+      '<table><% _.forEach(features, function(f) { %> <tr>  <td style="width:20px; background-color: <%- f.color %>;"></td> <td> <%- f.name %>  </td></tr> <% }); %> </table><br/>';
+    tmpl +=
+      '<p>We recommend updating your browser to one of the following:</p>';
+    tmpl +=
+      '<ul class="browser-list"><% _.forEach(browsers, function(b) { %><li class="<%- b.name.toLowerCase() %>"><a href="<%- b.url %>"> <%- b.name %> </a> <span style="color:orange"><%- b.message %></span></li><% }); %></ul>';
 
     var feat = { features: _.cloneDeep(features) };
     return _.template(tmpl)(_.merge(feat, recommendedBrowsers));
   }
-
 
   return {
     checkCompatibility: function () {
       return new Promise(function (resolve) {
         // Bots always pass the test
         if (browserIsCompatible === 'bot') {
-          return resolve();
+          resolve();
+          return;
         }
         if (!browserIsCompatible) {
           Debug.error('browser is not compatible');
-          return resolve(browserErrorMessage());
+          resolve(browserErrorMessage());
+          return;
         }
 
         if ($.cookie('visualizer-skip-feature-warning')) {
           Debug.info('user does not want to see warning');
-          return resolve();
+          resolve();
+          return;
         }
 
         if (browserHasAllFeatures) {
-          return resolve();
+          resolve();
+          return;
         }
 
         var $dialog = $('<div>');
 
         $dialog.html(featureErrorMessage());
-        $dialog.append('<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>');
+        $dialog.append(
+          '<input id="skip-warning-checkbox" type="checkbox">Don\'t show this again</input>',
+        );
         ui.dialog($dialog, {
           buttons: {
             Ok: function () {
               $(this).dialog('close');
               if ($('#skip-warning-checkbox').is(':checked')) {
-                $.cookie('visualizer-skip-feature-warning', true, { path: '/' });
+                $.cookie('visualizer-skip-feature-warning', true, {
+                  path: '/',
+                });
               }
               resolve();
-            }
+            },
           },
           close: function () {
             resolve();
           },
-          width: 600
+          width: 600,
         });
       });
-    }
+    },
   };
 });

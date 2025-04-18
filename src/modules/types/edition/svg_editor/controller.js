@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -11,46 +10,53 @@ define(['modules/default/defaultcontroller'], function (Default) {
     description: 'SVG Editor',
     author: 'Daniel Kostro',
     date: '20.05.2014',
-    license: 'MIT'
+    license: 'MIT',
   };
 
   Controller.prototype.references = {
     svgString: {
       type: ['svg', 'string'],
-      label: 'Svg string'
+      label: 'Svg string',
     },
     svgInput: {
       label: 'Svg input',
-      type: 'string'
+      type: 'string',
     },
     svgModifier: {
-      label: 'An object describing svg modification'
+      label: 'An object describing svg modification',
     },
     info: {
-      label: 'An info object'
-    }
+      label: 'An info object',
+    },
   };
 
   Controller.prototype.events = {
     onChange: {
       label: 'The svg content changed',
-      refVariable: ['svgString']
+      refVariable: ['svgString'],
     },
     onHover: {
       label: 'An svg element is hovered',
-      refVariable: ['info']
+      refVariable: ['info'],
     },
     onClick: {
       label: 'An svg element is clicked',
-      refVariable: ['info']
-    }
+      refVariable: ['info'],
+    },
   };
 
   Controller.prototype.onChange = function (val) {
-    this.createDataFromEvent('onChange', 'svgString', DataObject.check({
-      type: 'svg',
-      value: val
-    }, true));
+    this.createDataFromEvent(
+      'onChange',
+      'svgString',
+      DataObject.check(
+        {
+          type: 'svg',
+          value: val,
+        },
+        true,
+      ),
+    );
   };
 
   Controller.prototype.onHover = function (val) {
@@ -68,37 +74,37 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             editable: {
               type: 'checkbox',
               title: 'Is Editable',
               options: { isEditable: 'Yes' },
-              default: []
+              default: [],
             },
             sanitize: {
               type: 'checkbox',
               title: 'Sanitize',
               options: { doSanitize: 'yes' },
-              default: []
+              default: [],
             },
             saveSvg: {
               type: 'checkbox',
               title: 'Save svg in module preferences',
               options: {
-                yes: 'Yes'
+                yes: 'Yes',
               },
-              default: ['yes']
+              default: ['yes'],
             },
             svgcode: {
               type: 'jscode',
               mode: 'svg',
-              title: 'SVG code'
-            }
-          }
-        }
-      }
+              title: 'SVG code',
+            },
+          },
+        },
+      },
     };
   };
 
@@ -106,7 +112,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     svgcode: ['groups', 'group', 0, 'svgcode', 0],
     editable: ['groups', 'group', 0, 'editable', 0],
     sanitize: ['groups', 'group', 0, 'sanitize', 0],
-    saveSvg: ['groups', 'group', 0, 'saveSvg', 0]
+    saveSvg: ['groups', 'group', 0, 'saveSvg', 0],
   };
 
   return Controller;

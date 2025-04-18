@@ -4,17 +4,16 @@
 }
 
 .ci-module-quill_editor .quill_editor {
-      flex: 1;
-      overflow: hidden;
-      flex-grow: 10000;
-  }
+  flex: 1;
+  overflow: hidden;
+  flex-grow: 10000;
+}
 
-  .ci-module-quill_editor .quill_wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    padding: 4px;
-    box-sizing: border-box;
-  }
-  
+.ci-module-quill_editor .quill_wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+}

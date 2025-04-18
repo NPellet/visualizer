@@ -8,7 +8,7 @@ define([
   'src/util/domdeferred',
   'src/util/datatraversing',
   'src/util/typerenderer',
-  'jqgrid'
+  'jqgrid',
 ], function (
   require,
   Default,
@@ -17,7 +17,7 @@ define([
   DomDeferred,
   Traversing,
   Renderer,
-  JQGrid
+  JQGrid,
 ) {
   Util.loadCss('components/jqgrid_edit/css/ui.jqgrid.css');
 
@@ -34,8 +34,9 @@ define([
           if (
             actionsOut[i].event === 'onToggleOn' ||
             actionsOut[i].event === 'onToggleOff'
-          )
+          ) {
             this.hasToggleAction = true;
+          }
         }
       }
 
@@ -56,9 +57,7 @@ define([
           if (this !== lastTr) {
             that.module.controller.lineHover(
               that.elements,
-              $(this)
-                .attr('id')
-                .replace(that.uniqId, '')
+              $(this).attr('id').replace(that.uniqId, ''),
             );
           }
           lastTr = e.currentTarget;
@@ -70,9 +69,7 @@ define([
           if (this === lastTr) {
             that.module.controller.lineOut(
               that.elements,
-              $(this)
-                .attr('id')
-                .replace(that.uniqId, '')
+              $(this).attr('id').replace(that.uniqId, ''),
             );
             lastTr = null;
           }
@@ -80,7 +77,7 @@ define([
 
       var filter = this.module.getConfiguration('filterRow');
       eval(
-        `that.filter = function(jqGrid, source, rowId) { try { \n ${filter}\n } catch(_) { console.log(_); } }`
+        `that.filter = function(jqGrid, source, rowId) { try { \n ${filter}\n } catch(_) { console.log(_); } }`,
       );
 
       this.module.getDomContent().html(this.dom);
@@ -92,24 +89,20 @@ define([
       }
 
       var result = [];
-      var allEls = [],
-        i = 0,
-        l = this.elements.length;
 
       var header = [];
-      for (var j = 0; j < this.jpaths.length; j++) {
+      for (let j = 0; j < this.jpaths.length; j++) {
         header.push(this.jpaths[j].name);
       }
       result.push(header.join('\t'));
 
-      for (; i < l; i++) {
-        var line = [];
+      for (let i = 0, l = this.elements.length; i < l; i++) {
+        const line = [];
         for (let j = 0; j < this.jpaths.length; j++) {
-          // eslint-disable-next-line no-loop-func
           Traversing.getValueFromJPath(
             this.elements[i],
-            this.jpaths[j].jpath
-          ).done(function (elVal) {
+            this.jpaths[j].jpath,
+          ).done((elVal) => {
             line.push(elVal);
           });
         }
@@ -134,7 +127,7 @@ define([
         jpaths = this.module.getConfiguration('colsjPaths'),
         l;
 
-      if (typeof jpaths == 'object') {
+      if (typeof jpaths === 'object') {
         l = jpaths.length;
 
         for (; j < l; j++) {
@@ -150,24 +143,22 @@ define([
             width: jpaths[j].width || 150,
             editable: editable,
             editoptions:
-              jpaths[j].editable == 'select'
+              jpaths[j].editable === 'select'
                 ? { value: jpaths[j].options }
                 : {},
             edittype: editable ? jpaths[j].editable : false,
             _jpath: jpaths[j].jpath,
             sortable: true,
-            sorttype: jpaths[j].number[0] ? 'float' : 'text'
+            sorttype: jpaths[j].number[0] ? 'float' : 'text',
           });
         }
       }
 
       var nbLines = this.module.getConfiguration('nbLines') || 20;
 
-      this.domTable = $('<table />')
-        .attr('id', this.uniqId)
-        .appendTo(this.dom);
+      this.domTable = $('<table />').attr('id', this.uniqId).appendTo(this.dom);
       this.domPaging = $('<div />', { id: `pager${this.uniqId}` }).appendTo(
-        this.dom
+        this.dom,
       );
 
       $(this.domTable).jqGrid({
@@ -206,7 +197,7 @@ define([
         rowattr: function () {
           if (arguments[1]._backgroundColor) {
             return {
-              style: `background-color: ${arguments[1]._backgroundColor}`
+              style: `background-color: ${arguments[1]._backgroundColor}`,
             };
           }
         },
@@ -219,7 +210,7 @@ define([
           that.module.model.dataSetChild(
             that.elements[rowId.replace(that.uniqId, '')], // source
             colModel[colNum]._jpath, // jpath
-            value // value
+            value, // value
           );
 
           that.applyFilterToRow(rowId.replace(that.uniqId, ''), rowId);
@@ -254,20 +245,20 @@ define([
                 .removeClass('ui-widget-content ui-state-highlight');
               that.module.controller.onToggleOn(
                 that.elements,
-                rowid.replace(that.uniqId, '')
+                rowid.replace(that.uniqId, ''),
               );
             } else {
               $(`#${rowid}`).removeClass('bg-orange');
               that.module.controller.onToggleOff(
                 that.elements,
-                rowid.replace(that.uniqId, '')
+                rowid.replace(that.uniqId, ''),
               );
             }
           }
 
           that.module.controller.lineClick(
             that.elements,
-            rowid.replace(that.uniqId, '')
+            rowid.replace(that.uniqId, ''),
           );
         },
 
@@ -279,7 +270,7 @@ define([
           for (; i < l; i++) {
             that.tableElements[i]._inDom.notify();
           }
-        }
+        },
       });
 
       this.jqGrid = $(this.domTable).jqGrid.bind(this.domTable);
@@ -307,7 +298,7 @@ define([
         API.killHighlight(this.module.getId());
         this.jqGrid('clearGridData');
         $(this.domTable).trigger('reloadGrid');
-      }
+      },
     },
 
     update: {
@@ -337,7 +328,7 @@ define([
           allEls.push(elements[i]);
         }
 
-        if (this.dataSize != l) {
+        if (this.dataSize !== l) {
           // if the size of the data change we reset the page
           this.currentPage = 1;
           this.dataSize = l;
@@ -345,13 +336,13 @@ define([
         this.jqGrid('setGridParam', {
           datatype: 'local',
           data: allEls,
-          page: this.currentPage
+          page: this.currentPage,
         });
 
         $(this.domTable).trigger('reloadGrid');
 
         this.module.model.getjPath('list', [0]);
-      }
+      },
     },
 
     buildElements: function (source, arrayToPush, jpaths) {
@@ -361,7 +352,7 @@ define([
 
       for (; i < l; i++) {
         arrayToPush.push(
-          this.buildElement(source.get(i), that.uniqId + i, jpaths)
+          this.buildElement(source.get(i), that.uniqId + i, jpaths),
         );
       }
     },
@@ -384,7 +375,7 @@ define([
           $(`#${i}`)[onOff ? 'addClass' : 'removeClass']('ci-highlight');
         },
         false,
-        this.module.getId()
+        this.module.getId(),
       );
 
       element._inDom = $.Deferred();
@@ -420,7 +411,7 @@ define([
           that.jqGrid(
             'setRowData',
             id,
-            that.buildElement(this, id, jpaths, true)
+            that.buildElement(this, id, jpaths, true),
           );
           var scroll = body.scrollTop();
           var target = $(`tr#${id}`, that.domTable).get(0);
@@ -429,7 +420,7 @@ define([
             body.scrollTop(scroll);
           }
         },
-        'list'
+        'list',
       );
     },
 
@@ -451,7 +442,7 @@ define([
         var id, index;
 
         for (var i = 0, l = this.gridElements.length; i < l; i++) {
-          if (this.gridElements[i].__source == el) {
+          if (this.gridElements[i].__source === el) {
             id = this.gridElements[i].id;
             index = i;
             break;
@@ -478,7 +469,7 @@ define([
           name: jpath2,
           editable: false,
           jpath: jpath,
-          number: false
+          number: false,
         });
         this.module.reload();
       },
@@ -490,14 +481,14 @@ define([
           l = jpaths.length;
 
         for (; i < l; i++) {
-          if (jpaths[i].jpath == jpath) {
+          if (jpaths[i].jpath === jpath) {
             jpaths.splice(i, 1);
             this.module.reload();
             break;
           }
         }
-      }
-    }
+      },
+    },
   });
 
   function getIDForCell(rowid, column) {

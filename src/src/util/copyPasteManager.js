@@ -6,7 +6,7 @@ define([
   'src/util/ui',
   'src/util/versioning',
   'src/main/grid',
-  'src/util/debug'
+  'src/util/debug',
 ], function (mouseTracker, ModuleFactory, ui, Versioning, Grid, Debug) {
   document.addEventListener('copy', function (event) {
     var currentFocus = document.activeElement;
@@ -24,7 +24,7 @@ define([
       });
       if (modules.length) {
         let currentDefinition = JSON.parse(
-          JSON.stringify(modules[0].definition)
+          JSON.stringify(modules[0].definition),
         );
         Object.keys(currentDefinition.layers).forEach((layer) => {
           if (layer !== 'Default layer') {
@@ -34,7 +34,7 @@ define([
 
         event.clipboardData.setData(
           'text/plain',
-          JSON.stringify(currentDefinition)
+          JSON.stringify(currentDefinition),
         );
         ui.showNotification('Module copied', 'success');
         success = true;

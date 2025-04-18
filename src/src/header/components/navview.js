@@ -8,31 +8,27 @@ define([
   'src/util/util',
   'fancytree',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
-  'jquery-ui/ui/widgets/dialog'
+  'jquery-ui/ui/widgets/dialog',
 ], function ($, Default, Versioning, Button, Util) {
-  function Element() {
-  }
+  function Element() {}
 
   Util.inherits(Element, Default, {
-
     initImpl: function () {
       var that = this;
       this.id = Util.getNextUniqueId();
       $.ui.fancytree.debugLevel = 0;
 
-      $(document).keydown(
-        function (event) {
-          // If Control or Command key is pressed and the S key is pressed
-          // run save function. 83 is the key code for S.
-          if ((event.ctrlKey || event.metaKey) && event.which == 83) {
-            // Save Function
-            event.preventDefault();
-            that.checkNode();
-            that.save();
-            return false;
-          }
+      $(document).keydown(function (event) {
+        // If Control or Command key is pressed and the S key is pressed
+        // run save function. 83 is the key code for S.
+        if ((event.ctrlKey || event.metaKey) && event.which === 83) {
+          // Save Function
+          event.preventDefault();
+          that.checkNode();
+          that.save();
+          return false;
         }
-      );
+      });
     },
 
     _onClick: function () {
@@ -48,8 +44,15 @@ define([
       this.setStyleOpen(this._open);
       if (this._open) {
         if (!this.$tree) {
-          this.$tree = this.$tree || $('<div/>').css('id', this.cssId('tree')).css('display', 'inline-block').css('margin-right', 20);
-          this.$_elToOpen.append('<div><p><label>Filter:</label><input name="search" placeholder="Filter..."><button id="btnResetSearch" disabled="disabled">×</button><span id="matches"></span></p></div>');
+          this.$tree =
+            this.$tree ||
+            $('<div/>')
+              .css('id', this.cssId('tree'))
+              .css('display', 'inline-block')
+              .css('margin-right', 20);
+          this.$_elToOpen.append(
+            '<div><p><label>Filter:</label><input name="search" placeholder="Filter..."><button id="btnResetSearch" disabled="disabled">×</button><span id="matches"></span></p></div>',
+          );
           this.$_elToOpen.append(this.$tree);
         }
         this.open();
@@ -86,7 +89,7 @@ define([
       node.load(true).then(function () {
         if (wasExpanded) {
           node.setExpanded(true, {
-            noAnimation: true
+            noAnimation: true,
           });
         }
       });
@@ -96,8 +99,7 @@ define([
       return path.replace(new RegExp(/\/[^/]+$/), '/');
     },
 
-    load: function (name) {
-    },
+    load: function (name) {},
 
     save: function () {
       var that = this;
@@ -118,17 +120,19 @@ define([
         return;
       }
 
-      confirm(`You are about to save the current view to: ${dir}${name}<br/>This operation will erase the previous content of this file and cannot be undone.`).then(function (ok) {
+      confirm(
+        `You are about to save the current view to: ${dir}${name}<br/>This operation will erase the previous content of this file and cannot be undone.`,
+      ).then(function (ok) {
         if (!ok) return;
         var req = $.ajax({
           url: '/navview/save',
           data: {
             dir: dir,
             name: name,
-            content: Versioning.getViewJSON('\t')
+            content: Versioning.getViewJSON('\t'),
           },
           type: 'POST',
-          dataType: 'json'
+          dataType: 'json',
         });
 
         req.done(function () {
@@ -154,9 +158,9 @@ define([
           type: 'POST',
           data: {
             dir: dir,
-            name: name
+            name: name,
           },
-          dataType: 'json'
+          dataType: 'json',
         });
         req.done(function () {
           that.log('success-log', 'Successfully created directory');
@@ -177,16 +181,18 @@ define([
       var dir = this.getDir(node.data.path);
       var name = node.title;
 
-      confirm(`<p>You are about to remove the file: <br/>${node.data.path}</p>Do you really want to do this? You cannot undo this operation`).then(function (ok) {
+      confirm(
+        `<p>You are about to remove the file: <br/>${node.data.path}</p>Do you really want to do this? You cannot undo this operation`,
+      ).then(function (ok) {
         if (!ok) return;
         var req = $.ajax({
           url: '/navview/file',
           type: 'DELETE',
           data: {
             dir: dir,
-            name: name
+            name: name,
           },
-          dataType: 'json'
+          dataType: 'json',
         });
 
         req.done(function () {
@@ -206,15 +212,17 @@ define([
         return this.log('error-log', 'Failed remove directory');
       }
 
-      confirm(`<p>You are about to remove the directory: <br/>${node.data.path}</p>Do you really want to do this? You cannot undo this operation`).then(function (ok) {
+      confirm(
+        `<p>You are about to remove the directory: <br/>${node.data.path}</p>Do you really want to do this? You cannot undo this operation`,
+      ).then(function (ok) {
         if (!ok) return;
         var req = $.ajax({
           url: '/navview/dir',
           type: 'DELETE',
           data: {
-            dir: node.data.path
+            dir: node.data.path,
           },
-          dataType: 'json'
+          dataType: 'json',
         });
 
         req.done(function () {
@@ -243,12 +251,11 @@ define([
       var newDir = dir;
       var name = m[2];
 
-
       var req = this.ajaxRename({
         dir: dir,
         newDir: newDir,
         name: name,
-        newName: newName
+        newName: newName,
       });
 
       req.done(function () {
@@ -265,7 +272,7 @@ define([
         url: '/navview/rename',
         type: 'PUT',
         data: data,
-        dataType: 'json'
+        dataType: 'json',
       });
     },
 
@@ -275,7 +282,7 @@ define([
         dir: node.data.dir,
         newDir: node.data.dir,
         newName: node.title,
-        name: that.inlineOldTitle
+        name: that.inlineOldTitle,
       };
       var req = this.ajaxRename(data);
 
@@ -301,9 +308,9 @@ define([
         type: 'POST',
         data: {
           dir: dir,
-          name: that.getFormContent(this.$filenameInput)
+          name: that.getFormContent(this.$filenameInput),
         },
-        dataType: 'json'
+        dataType: 'json',
       });
 
       req.done(function () {
@@ -316,8 +323,7 @@ define([
       });
     },
 
-    duplicate: function () {
-    },
+    duplicate: function () {},
 
     checkNode: function () {
       if (!this.activeNode) {
@@ -351,7 +357,7 @@ define([
       }
       return $.ajax({
         url: '/navview/list',
-        dataType: 'json'
+        dataType: 'json',
       });
     },
 
@@ -366,13 +372,13 @@ define([
           toggleEffect: false,
           extensions: ['edit', 'filter'],
           filter: {
-            mode: 'dimm'
+            mode: 'dimm',
           },
           source: source,
           lazyLoad: function (event, data) {
             data.result = $.ajax({
               url: `/navview/list?dir=${data.node.data.path}`,
-              dataType: 'json'
+              dataType: 'json',
             }).then(fancyTreeDirStructure);
           },
           activate: function (event, data) {
@@ -380,11 +386,14 @@ define([
             that.updateSaveViewText();
           },
           dblclick: function (event, data) {
-            Versioning.switchView({
-              view: {
-                url: data.node.data.url
-              }
-            }, true);
+            Versioning.switchView(
+              {
+                view: {
+                  url: data.node.data.url,
+                },
+              },
+              true,
+            );
           },
 
           keydown: function (event, data) {
@@ -430,31 +439,39 @@ define([
                 // Since we started an async request, mark the node as preliminary
                 $(data.node.span).addClass('pending');
               }
-            }
-          }
+            },
+          },
         });
         that.fancytreeOk = true;
         var tree = that.$tree.fancytree('getTree');
-        that.$_elToOpen.find('input[name=search]').keyup(function (e) {
-          var n,
-            match = $(this).val();
+        that.$_elToOpen
+          .find('input[name=search]')
+          .keyup(function (e) {
+            var n,
+              match = $(this).val();
 
-          if (e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === '') {
-            $('button#btnResetSearch').click();
-            return;
-          }
+            if (
+              (e && e.which === $.ui.keyCode.ESCAPE) ||
+              $.trim(match) === ''
+            ) {
+              $('button#btnResetSearch').click();
+              return;
+            }
 
-          // Pass a string to perform case insensitive matching
-          n = tree.filterNodes(match, false);
-          $('button#btnResetSearch').attr('disabled', false);
-          $('span#matches').text(`(${n} matches)`);
-        }).focus();
+            // Pass a string to perform case insensitive matching
+            n = tree.filterNodes(match, false);
+            $('button#btnResetSearch').attr('disabled', false);
+            $('span#matches').text(`(${n} matches)`);
+          })
+          .focus();
 
-        $('button#btnResetSearch').click(function () {
-          $('input[name=search]').val('');
-          $('span#matches').text('');
-          tree.clearFilter();
-        }).attr('disabled', true);
+        $('button#btnResetSearch')
+          .click(function () {
+            $('input[name=search]').val('');
+            $('span#matches').text('');
+            tree.clearFilter();
+          })
+          .attr('disabled', true);
       });
     },
 
@@ -462,19 +479,42 @@ define([
       var that = this;
       if (this._buttons) return;
 
-      this.$log = $('<div/>').attr('id', this.cssId('log')).css('margin-bottom', 10);
-      this.$_elToOpen.append('<div/>').children(':gt(1)').css('display', 'inline-block').css('vertical-align', 'top').append(this.$log);
-      this.$log.append($('<div/>').attr('id', this.cssId('error-log')).css('color', 'red'));
-      this.$log.append($('<div/>').attr('id', this.cssId('success-log')).css('color', 'green'));
+      this.$log = $('<div/>')
+        .attr('id', this.cssId('log'))
+        .css('margin-bottom', 10);
+      this.$_elToOpen
+        .append('<div/>')
+        .children(':gt(1)')
+        .css('display', 'inline-block')
+        .css('vertical-align', 'top')
+        .append(this.$log);
+      this.$log.append(
+        $('<div/>').attr('id', this.cssId('error-log')).css('color', 'red'),
+      );
+      this.$log.append(
+        $('<div/>').attr('id', this.cssId('success-log')).css('color', 'green'),
+      );
 
       // Append instructions
-      this.$log.parent().append(new Button('Refresh Tree', function () {
-        that.reloadTree();
-      }, { color: 'blue' }).render());
-      this.$log.parent().append('<br/><br/><br/><div>\n    <ul>\n        <li style="color:black;">Double-click a view to load it</li>\n        <li style="color: black;">Shift+click to rename a view</li>\n        <li style="color: black;">Press delete key to remove a view or a directory</li>\n    </ul>\n</div>');
+      this.$log.parent().append(
+        new Button(
+          'Refresh Tree',
+          function () {
+            that.reloadTree();
+          },
+          { color: 'blue' },
+        ).render(),
+      );
+      this.$log
+        .parent()
+        .append(
+          '<br/><br/><br/><div>\n    <ul>\n        <li style="color:black;">Double-click a view to load it</li>\n        <li style="color: black;">Shift+click to rename a view</li>\n        <li style="color: black;">Press delete key to remove a view or a directory</li>\n    </ul>\n</div>',
+        );
 
       // Append buttons
-      var $buttons = $('<div>\n    <table>\n        <tr>\n            <td></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n    </table>\n</div>');
+      var $buttons = $(
+        '<div>\n    <table>\n        <tr>\n            <td></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n        <tr>\n            <td><input type="text"/></td>\n            <td></td>\n        </tr>\n    </table>\n</div>',
+      );
       this.$_elToOpen.append($buttons);
       var $inputs = $buttons.find('input');
       this.$dirnameInput = $($inputs[0]);
@@ -482,20 +522,38 @@ define([
 
       var $tds = $buttons.find('td');
       this.$saveViewText = $($tds[0]);
-      $($tds[1]).append(new Button('Save view', function () {
-        that.checkNode();
-        that.save();
-      }, { color: 'red' }).render());
+      $($tds[1]).append(
+        new Button(
+          'Save view',
+          function () {
+            that.checkNode();
+            that.save();
+          },
+          { color: 'red' },
+        ).render(),
+      );
 
-      $($tds[3]).append(new Button('Mkdir', function () {
-        that.checkNode();
-        that.mkdir();
-      }, { color: 'blue' }).render());
+      $($tds[3]).append(
+        new Button(
+          'Mkdir',
+          function () {
+            that.checkNode();
+            that.mkdir();
+          },
+          { color: 'blue' },
+        ).render(),
+      );
 
-      $($tds[5]).append(new Button('New file', function () {
-        that.checkNode();
-        that.newFile();
-      }, { color: 'blue' }).render());
+      $($tds[5]).append(
+        new Button(
+          'New file',
+          function () {
+            that.checkNode();
+            that.newFile();
+          },
+          { color: 'blue' },
+        ).render(),
+      );
 
       // Remember we've already created the UI dom
       this._buttons = true;
@@ -506,15 +564,17 @@ define([
     },
 
     getFormContent: function (type) {
-      if (typeof type === 'string')
-        return $(`#${this.cssId(type)}`).val().trim();
-      else if (type instanceof jQuery) {
+      if (typeof type === 'string') {
+        return $(`#${this.cssId(type)}`)
+          .val()
+          .trim();
+      } else if (type instanceof jQuery) {
         return type.val().trim();
       }
     },
     setFormContent: function (type, value) {
       $(`#${this.cssId(type)}`).val(value);
-    }
+    },
   });
 
   function fancyTreeDirStructure(list) {
@@ -527,8 +587,8 @@ define([
         data: {
           url: el.url,
           path: el.rel + el.name,
-          dir: el.rel
-        }
+          dir: el.rel,
+        },
       };
     });
   }
@@ -550,12 +610,12 @@ define([
           Ok: function () {
             resolve(true);
             $(this).dialog('close');
-          }
+          },
         },
         close: function () {
           return resolve(false);
         },
-        width: 400
+        width: 400,
       });
     });
   }

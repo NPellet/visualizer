@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,13 +11,13 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Norman Pellet',
     date: '9.12.2014',
     license: 'MIT',
-    cssClass: 'xnav'
+    cssClass: 'xnav',
   };
 
   Controller.prototype.references = {
     xcoords: {
-      label: 'X Coords'
-    }
+      label: 'X Coords',
+    },
   };
 
   Controller.prototype.events = {
@@ -26,8 +25,8 @@ define(['modules/default/defaultcontroller'], function (Default) {
       label: 'Move',
       description: '',
       refVariable: ['xcoords'],
-      refAction: ['xcoords']
-    }
+      refAction: ['xcoords'],
+    },
   };
 
   Controller.prototype.move = function (x) {
@@ -38,7 +37,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   Controller.prototype.variablesIn = ['xcoords'];
 
   Controller.prototype.actionsIn = {
-    changeX: 'Change X center value'
+    changeX: 'Change X center value',
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -46,22 +45,22 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             step: {
               type: 'float',
               title: 'Step',
-              default: 1
-            }
-          }
-        }
-      }
+              default: 1,
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
-    step: ['groups', 'group', 0, 'step', 0]
+    step: ['groups', 'group', 0, 'step', 0],
   };
 
   return Controller;

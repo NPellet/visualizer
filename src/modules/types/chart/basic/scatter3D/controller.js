@@ -1,8 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/util'], function (Default, Traversing, API, Util) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'src/util/datatraversing',
+  'src/util/api',
+  'src/util/util',
+], function (Default, Traversing, API, Util) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,25 +16,25 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     author: 'Daniel Kostro',
     date: '01.04.2014',
     license: 'MIT',
-    cssClass: 'scatter_3D'
+    cssClass: 'scatter_3D',
   };
 
   Controller.prototype.events = {
     onHover: {
       label: 'Hover a 3D point',
-      refVariable: ['info', 'coordinates', 'point']
+      refVariable: ['info', 'coordinates', 'point'],
     },
     onClick: {
       label: 'Click a 3D point',
-      refVariable: ['info', 'coordinates', 'point']
-    }
+      refVariable: ['info', 'coordinates', 'point'],
+    },
   };
 
   Controller.prototype.onHover = function (row) {
     var coord = [
       this.module.view._data.x[row],
       this.module.view._data.y[row],
-      this.module.view._data.z[row]
+      this.module.view._data.z[row],
     ];
 
     this.setVarFromEvent('onHover', 'point', 'data3D', [row]);
@@ -42,26 +46,26 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
   Controller.prototype.references = {
     chart: {
       type: ['chart', 'object'],
-      label: 'A json describing a chart'
+      label: 'A json describing a chart',
     },
     boolArray: {
       type: 'array',
-      label: 'An array of boolean'
+      label: 'An array of boolean',
     },
     data3D: {
       type: 'array',
-      label: 'Array of {x, y, z, size, color} objects'
+      label: 'Array of {x, y, z, size, color} objects',
     },
     point: {
-      label: 'Point label'
+      label: 'Point label',
     },
     info: {
-      label: 'Point info'
+      label: 'Point info',
     },
     coordinates: {
       type: 'array',
-      label: 'Point coordinates'
-    }
+      label: 'Point coordinates',
+    },
   };
 
   Controller.prototype.elementHover = function (element) {
@@ -93,29 +97,28 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
 
           fields: {
-
             tooltip: {
               type: 'checkbox',
               title: 'Show tooltip',
-              options: { show: 'Yes' }
+              options: { show: 'Yes' },
             },
 
             tooltipJpath: {
               type: 'combo',
               title: 'Tooltip jPath',
-              options: jpath
+              options: jpath,
             },
 
             displayPointCoordinates: {
               type: 'checkbox',
               title: 'Display point coordinates',
               options: {
-                onhover: 'Yes (on hover)'
-              }
+                onhover: 'Yes (on hover)',
+              },
             },
 
             grid: {
@@ -127,42 +130,42 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 xz: 'XZ Main',
                 xysec: 'XY Secondary',
                 yzsec: 'YZ Secondary',
-                xzsec: 'XZ Secondary'
+                xzsec: 'XZ Secondary',
               },
-              default: ['xy', 'yz', 'xz']
+              default: ['xy', 'yz', 'xz'],
             },
 
             secondaryGrids: {
               type: 'text',
               title: 'Secondary grid',
-              default: 2
+              default: 2,
             },
 
             gridOriginX: {
               type: 'text',
               title: 'Grid Origin X',
-              default: ''
+              default: '',
             },
 
             gridOriginY: {
               type: 'text',
               title: 'Grid Origin Y',
-              default: ''
+              default: '',
             },
 
             gridOriginZ: {
               type: 'text',
               title: 'Grid Origin Z',
-              default: ''
+              default: '',
             },
 
             projection: {
               type: 'checkbox',
               title: 'Projections',
               options: {
-                show: 'Show'
+                show: 'Show',
               },
-              default: ['show']
+              default: ['show'],
             },
 
             ticks: {
@@ -174,9 +177,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 z: 'Show Z tick',
                 xlab: 'Show X tick label',
                 ylab: 'Show Y tick label',
-                zlab: 'Show Z tick label'
+                zlab: 'Show Z tick label',
               },
-              default: ['x', 'y', 'z', 'xlab', 'ylab', 'zlab']
+              default: ['x', 'y', 'z', 'xlab', 'ylab', 'zlab'],
             },
 
             labels: {
@@ -186,104 +189,104 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 { title: 'None', key: 'none' },
                 { title: 'As Legend', key: 'alegend' },
                 { title: 'On axis', key: 'axis' },
-                { title: 'Both', key: 'both' }
+                { title: 'Both', key: 'both' },
               ],
               displaySource: {
                 axis: 'l',
-                both: 'l'
-              }
+                both: 'l',
+              },
             },
 
             xLabel: {
               type: 'text',
               title: 'X Label',
-              displayTarget: ['l']
+              displayTarget: ['l'],
             },
 
             yLabel: {
               type: 'text',
               title: 'Y Label',
-              displayTarget: ['l']
+              displayTarget: ['l'],
             },
 
             zLabel: {
               type: 'text',
               title: 'Z Label',
-              displayTarget: ['l']
+              displayTarget: ['l'],
             },
 
             minX: {
               type: 'text',
               title: 'Min X',
-              default: ''
+              default: '',
             },
 
             maxX: {
               type: 'text',
               title: 'Max X',
-              default: ''
+              default: '',
             },
             minY: {
               type: 'text',
               title: 'Min Y',
-              default: ''
+              default: '',
             },
 
             maxY: {
               type: 'text',
               title: 'Max Y',
-              default: ''
+              default: '',
             },
             minZ: {
               type: 'text',
               title: 'Min Z',
-              default: ''
+              default: '',
             },
 
             maxZ: {
               type: 'text',
               title: 'Max Z',
-              default: ''
+              default: '',
             },
 
             backgroundColor: {
               type: 'spectrum',
               title: 'Background Color',
-              default: [230, 230, 230, 1]
+              default: [230, 230, 230, 1],
             },
 
             defaultPointColor: {
               type: 'spectrum',
               title: 'Default point color',
-              default: [50, 50, 50, 1]
+              default: [50, 50, 50, 1],
             },
 
             annotationColor: {
               type: 'spectrum',
               title: 'Annotation color',
-              default: [33, 33, 33, 1]
+              default: [33, 33, 33, 1],
             },
             sizeNormalization: {
               type: 'float',
               title: 'Size normalization',
-              default: 0.02
+              default: 0.02,
             },
             '3d': {
               type: 'combo',
               title: '3D',
               options: [
                 { title: 'None', key: 'none' },
-                { title: 'Side-by-side', key: 'sideBySide' }
+                { title: 'Side-by-side', key: 'sideBySide' },
               ],
-              default: 'none'
-            }
-          }
+              default: 'none',
+            },
+          },
         },
         dataJpaths: {
           options: {
             type: 'table',
             multiple: false,
-            title: 'Data jpaths'
+            title: 'Data jpaths',
           },
           fields: {
             x: {
@@ -291,71 +294,71 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
               title: 'x',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             y: {
               type: 'combo',
               title: 'y',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             z: {
               type: 'combo',
               title: 'z',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             color: {
               type: 'combo',
               title: 'color',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             size: {
               type: 'combo',
               title: 'size',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             shape: {
               type: 'combo',
               title: 'shape',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
+              insertValue: Util.jpathToString,
             },
             highlight: {
               type: 'combo',
               title: 'highlight',
               options: jpathPoint,
               extractValue: Util.jpathToArray,
-              insertValue: Util.jpathToString
-            }
-          }
+              insertValue: Util.jpathToString,
+            },
+          },
         },
         colorBar: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Color gradient (colors must be numbers)'
+            title: 'Color gradient (colors must be numbers)',
           },
           fields: {
             color: {
               type: 'spectrum',
-              title: 'Stop color'
+              title: 'Stop color',
             },
             stopPosition: {
               type: 'float',
               title: 'Stop position',
-              default: 0
-            }
-          }
-        }
-      }
+              default: 0,
+            },
+          },
+        },
+      },
     };
   };
 
@@ -379,7 +382,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     defaultPointColor: ['groups', 'group', 0, 'defaultPointColor', 0],
     secondaryGrids: ['groups', 'group', 0, 'secondaryGrids', 0],
     appearance: ['groups', 'group', 0, 'appearance', 0],
-    displayPointCoordinates: ['groups', 'group', 0, 'displayPointCoordinates', 0],
+    displayPointCoordinates: [
+      'groups',
+      'group',
+      0,
+      'displayPointCoordinates',
+      0,
+    ],
     annotationColor: ['groups', 'group', 0, 'annotationColor', 0],
     gridOriginX: ['groups', 'group', 0, 'gridOriginX', 0],
     gridOriginY: ['groups', 'group', 0, 'gridOriginY', 0],
@@ -388,7 +397,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     optimize: ['groups', 'group', 0, 'optimize', 0],
     dataJpaths: ['groups', 'dataJpaths', 0, 0],
     gradient: ['groups', 'colorBar', 0],
-    '3d': ['groups', 'group', 0, '3d', 0]
+    '3d': ['groups', 'group', 0, '3d', 0],
   };
 
   return Controller;

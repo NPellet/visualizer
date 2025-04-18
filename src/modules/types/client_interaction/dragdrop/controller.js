@@ -351,11 +351,11 @@ define([
     var cfg = this.fileCfg;
     var cfgString = this.stringCfg;
 
-    var i, item, meta, def;
+    let i, item, meta, def;
     if (items) {
       // only supported by Chrome
       if (multiplePaste) {
-        var meta = {};
+        meta = {};
         meta.cfg = cfgString;
         meta.def = $.Deferred();
         defs.push(meta.def);
@@ -450,7 +450,7 @@ define([
       ],
     }).then((row) => {
       if (row.type === 'auto') row.type = '';
-      if (row == undefined) {
+      if (row === undefined) {
         meta.def.resolve();
         return;
       }
@@ -478,7 +478,7 @@ define([
             );
           },
         }).then((val) => {
-          if (val == undefined) return;
+          if (val === undefined) return;
           var m = this.checkMetadata(
             item,
             meta.cfg,
@@ -599,7 +599,7 @@ define([
         meta.def.resolve();
         return;
       }
-      // eslint-disable-next-line require-atomic-updates
+
       meta.filename = `${value}.png`;
     }
     var reader = new FileReader();
@@ -641,8 +641,9 @@ define([
       contentType: meta.mime,
       content: obj,
     });
-    if (!this.module.model.tmpVarsArray[name])
+    if (!this.module.model.tmpVarsArray[name]) {
       this.module.model.tmpVarsArray[name] = new DataArray();
+    }
     this.module.model.tmpVarsArray[name].push(variable);
     this.module.model.tmpVars[name] = variable;
 
@@ -650,18 +651,16 @@ define([
   };
 
   Controller.prototype.emulDataTransfer = function (e) {
-    var emul = {};
+    const emul = {};
     emul.files = e.target.files;
     emul.items = [];
-    for (var i = 0; i < e.target.files.length; i++) {
-      (function (i) {
-        emul.items.push({
-          kind: 'file',
-          getAsFile: function () {
-            return e.target.files[i];
-          },
-        });
-      })(i);
+    for (let i = 0; i < e.target.files.length; i++) {
+      emul.items.push({
+        kind: 'file',
+        getAsFile: function () {
+          return e.target.files[i];
+        },
+      });
     }
     return emul;
   };

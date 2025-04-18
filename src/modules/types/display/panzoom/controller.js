@@ -219,10 +219,10 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     return this.module.view.export();
   };
 
+  function transformMatrix(ctx, transformMatrix) {
+    ctx.createDataFromEvent('transformChanged', 'transform', transformMatrix);
+    ctx.sendActionFromEvent('transformChanged', 'transform', transformMatrix);
+  }
+
   return Controller;
 });
-
-function transformMatrix(ctx, transformMatrix) {
-  ctx.createDataFromEvent('transformChanged', 'transform', transformMatrix);
-  ctx.sendActionFromEvent('transformChanged', 'transform', transformMatrix);
-}

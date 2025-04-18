@@ -4,15 +4,15 @@ define([
   'modules/default/defaultview',
   'src/util/ui',
   'openchemlib/openchemlib-full',
-], function(Default, ui, OCL) {
+], function (Default, ui, OCL) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function() {
+    init: function () {
       this.editor = null;
     },
 
-    inDom: function() {
+    inDom: function () {
       this.dom = $('<div>').css({
         height: '99%',
         width: '100%',
@@ -20,48 +20,48 @@ define([
       this.module.getDomContent().html(this.dom);
     },
 
-    onResize: function() {
+    onResize: function () {
       this.dom.empty();
       this.initEditor();
     },
 
     blank: {
-      mol: function() {
+      mol: function () {
         this.clearEditor();
       },
-      molV3: function() {
+      molV3: function () {
         this.clearEditor();
       },
-      smiles: function() {
+      smiles: function () {
         this.clearEditor();
       },
-      actid: function() {
+      actid: function () {
         this.clearEditor();
       },
     },
 
     onActionReceive: {
-      setMolfile: function(val) {
+      setMolfile: function (val) {
         const molecule = OCL.Molecule.formMolfile(val);
         setCurrentValue(this, molecule);
       },
-      setIDCode: function(val) {
+      setIDCode: function (val) {
         const molecule = OCL.Molecule.fromIDCode(val);
         setCurrentValue(this, molecule);
       },
-      copyMolfile: function() {
+      copyMolfile: function () {
         const molfile = this.editor.getMolFileV3();
         ui.copyToClipboard(molfile, {
           successMessage: 'Molfile copied to the clipboard',
         });
       },
-      copyIDCode: function() {
+      copyIDCode: function () {
         const idCode = this.editor.getIDCode();
         ui.copyToClipboard(idCode, {
           successMessage: 'IDCode copied to the clipboard',
         });
       },
-      downloadSvg: function(value = {}) {
+      downloadSvg: function (value = {}) {
         const { width = 800, height = 600 } = value;
         const molecule = this.editor.getMolecule();
         const svg = molecule.toSVG(width, height);
@@ -69,7 +69,7 @@ define([
           mimeType: 'application/svg;charset=utf-8',
         });
       },
-      downloadMolfile: function() {
+      downloadMolfile: function () {
         const molfile = this.editor.getMolFile();
         ui.downloadFile(molfile, 'molecule.mol', {
           mimeType: 'chemical/x-mdl-molfile',
@@ -78,25 +78,25 @@ define([
     },
 
     update: {
-      mol: function(val) {
+      mol: function (val) {
         this._currentValue = val;
         this._currentType = 'mol';
         this.editor.setMolFile(String(val.get()));
         this.setFragment();
       },
-      molV3: function(val) {
+      molV3: function (val) {
         this._currentValue = val;
         this._currentType = 'molV3';
         this.editor.setMolFile(String(val.get()));
         this.setFragment();
       },
-      smiles: function(val) {
+      smiles: function (val) {
         this._currentValue = val;
         this._currentType = 'smiles';
         this.editor.setSmiles(String(val.get()));
         this.setFragment();
       },
-      actid: function(val) {
+      actid: function (val) {
         this._currentValue = val;
         this._currentType = 'oclid';
         var value = String(val.get());
@@ -108,7 +108,7 @@ define([
       },
     },
 
-    initEditor: function() {
+    initEditor: function () {
       var controller = this.module.controller;
       var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
       this.editor = new OCL.StructureEditor(this.dom.get(0), useSVG, 1);
@@ -122,13 +122,13 @@ define([
       this.resolveReady();
     },
 
-    clearEditor: function() {
+    clearEditor: function () {
       this._currentValue = null;
       this._currentType = null;
       this.editor.setIDCode('');
     },
 
-    setFragment: function() {
+    setFragment: function () {
       if (this.module.getConfigurationCheckbox('prefs', 'queryFeatures')) {
         this.editor.setFragment(true);
       } else {
@@ -137,35 +137,35 @@ define([
     },
   });
 
+  function setCurrentValue(self, molecule) {
+    const setValue = (value) => {
+      if (self._currentValue && self._currentValue.setValue) {
+        self._currentValue.setValue(value);
+      } else {
+        self._currentValue = value;
+      }
+    };
+
+    switch (self._currentType) {
+      case 'mol':
+        setValue(molecule.toMolfile());
+        break;
+      case 'molV3':
+        setValue(molecule.toMolfileV3());
+        break;
+      case 'smiles':
+        setValue(molecule.toSmiles());
+        break;
+      case 'oclid':
+        setValue(molecule.getIDCode());
+        break;
+      default:
+        self._currentType = 'molV3';
+        self._currentValue = molecule.toMolfileV3();
+    }
+    self.editor.setIDCode(molecule.getIDCode());
+    self.setFragment();
+  }
+
   return View;
 });
-
-function setCurrentValue(self, molecule) {
-  const setValue = (value) => {
-    if (self._currentValue && self._currentValue.setValue) {
-      self._currentValue.setValue(value);
-    } else {
-      self._currentValue = value;
-    }
-  };
-
-  switch (self._currentType) {
-    case 'mol':
-      setValue(molecule.toMolfile());
-      break;
-    case 'molV3':
-      setValue(molecule.toMolfileV3());
-      break;
-    case 'smiles':
-      setValue(molecule.toSmiles());
-      break;
-    case 'oclid':
-      setValue(molecule.getIDCode());
-      break;
-    default:
-      self._currentType = 'molV3';
-      self._currentValue = molecule.toMolfileV3();
-  }
-  self.editor.setIDCode(molecule.getIDCode());
-  self.setFragment();
-}

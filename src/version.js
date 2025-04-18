@@ -1,6 +1,6 @@
 'use strict';
 
-define(['lib/semver/semver'], function (semver) {
+define(['lib/semver/semver'], (semver) => {
   /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
   const MAJOR = 2;
   const MINOR = 161;
@@ -20,15 +20,6 @@ define(['lib/semver/semver'], function (semver) {
     throw new Error(`Version number is invalid: ${version}`);
   }
 
-  let isModernBrowser;
-  try {
-    // eslint-disable-next-line no-eval
-    eval('(async function() {})()');
-    isModernBrowser = true;
-  } catch (e) {
-    isModernBrowser = false;
-  }
-
   let buildTime = null;
   let head = false;
   if (BUILD_TIME) {
@@ -39,17 +30,13 @@ define(['lib/semver/semver'], function (semver) {
         month: 'numeric',
         day: 'numeric',
         hour: 'numeric',
-        minute: 'numeric'
+        minute: 'numeric',
       }).format(date);
     } else {
       buildTime = date.toLocaleDateString();
     }
   } else {
     head = true;
-    if (!isModernBrowser) {
-      // eslint-disable-next-line no-alert
-      alert('To use the unbuilt HEAD of the visualizer, you need a browser that supports async/await features (like Chrome 55+).\nIf you are not on HEAD, please report a bug on GitHub.');
-    }
   }
 
   return {
@@ -59,10 +46,9 @@ define(['lib/semver/semver'], function (semver) {
     prerelease: PRERELEASE,
     isRelease: IS_RELEASE,
     includedModuleCss: INCLUDED_MODULE_CSS,
-    version: version,
-    buildTime: buildTime,
+    version,
+    buildTime,
     isBuild: buildTime != null,
-    head: head,
-    isModernBrowser: isModernBrowser
+    head,
   };
 });

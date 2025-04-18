@@ -1,6 +1,10 @@
 'use strict';
 
-define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versioning) {
+define(['require', 'jquery', 'src/util/versioning'], function (
+  require,
+  $,
+  Versioning,
+) {
   class Header {
     constructor(headerConfig) {
       this.elements = [];
@@ -19,18 +23,26 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
         .attr('contenteditable', 'true')
         .bind('keypress', function (e) {
           e.stopPropagation();
-          if (e.keyCode !== 13)
+          if (e.keyCode !== 13) {
             return;
+          }
           e.preventDefault();
           $(this).trigger('blur');
         })
         .bind('blur', function () {
-          Versioning.getView().configuration.set('title', $(this).text().replace(/[\r\n]/g, ''));
+          Versioning.getView().configuration.set(
+            'title',
+            $(this)
+              .text()
+              .replace(/[\r\n]/g, ''),
+          );
         });
 
-      Versioning.getViewHandler().versionChange().progress((el) => {
-        this.setTitle(el);
-      });
+      Versioning.getViewHandler()
+        .versionChange()
+        .progress((el) => {
+          this.setTitle(el);
+        });
     }
 
     setHeight(height) {
@@ -39,12 +51,15 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
     }
 
     setTitle(view) {
-      this._titleDiv.text(view.configuration ? view.configuration.title : 'Untitled');
+      this._titleDiv.text(
+        view.configuration ? view.configuration.title : 'Untitled',
+      );
     }
 
     loadHeaderElements(all) {
-      if (!Array.isArray(all))
+      if (!Array.isArray(all)) {
         return;
+      }
 
       for (let i = 0; i < all.length; i++) {
         this.addHeaderElement(i, this.createElement(all[i]));
@@ -88,6 +103,6 @@ define(['require', 'jquery', 'src/util/versioning'], function (require, $, Versi
   return {
     init(headerConfig) {
       headerSingleton = new Header(headerConfig);
-    }
+    },
   };
 });

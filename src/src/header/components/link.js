@@ -1,11 +1,12 @@
 'use strict';
 
-define(['src/header/components/default', 'src/util/util'], function (Default, Util) {
-  function Element() {
-  }
+define(['src/header/components/default', 'src/util/util'], function (
+  Default,
+  Util,
+) {
+  function Element() {}
 
   Util.inherits(Element, Default, {
-
     _onClick: function () {
       if (this.options.url) {
         if (this.options.blank) {
@@ -14,8 +15,7 @@ define(['src/header/components/default', 'src/util/util'], function (Default, Ut
           window.location.assign(this.options.url);
         }
       }
-    }
-
+    },
   });
 
   return Element;

@@ -117,7 +117,8 @@ define([
         var cfg = this.module.getConfiguration;
         var cfgCb = this.module.getConfigurationCheckbox;
 
-        var parcoords = (this.parcoords = d3.parcoords()(`#${this._id}`));
+        this.parcoords = d3.parcoords()(`#${this._id}`);
+        var parcoords = this.parcoords;
 
         parcoords.data(this._data);
         parcoords.detectDimensions();
@@ -138,7 +139,7 @@ define([
 
         var mode = cfg('brushMode');
         parcoords.brushMode(mode);
-        if (mode != 'None') {
+        if (mode !== 'None') {
           parcoords.brushPredicate(cfg('brushPredicate'));
         }
 

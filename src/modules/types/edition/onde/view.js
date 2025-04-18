@@ -23,13 +23,18 @@ define([
       if (filter) {
         const sandbox = new Sandbox();
         sandbox.setContext({ API });
-        this.filter = sandbox.run(`(function ondeOnChangeFilter(data, jpath) { try { \n ${filter}\n } catch(_) { console.log(_); } })`, 'ondeOnChangeFilter');
+        this.filter = sandbox.run(
+          `(function ondeOnChangeFilter(data, jpath) { try { \n ${filter}\n } catch(_) { console.log(_); } })`,
+          'ondeOnChangeFilter',
+        );
       }
-      this.dom = $(`<form id="${this._id}">`).css({
-        height: '100%',
-        width: '100%',
-        textAlign: 'left'
-      }).append($('<div class="onde-panel">'));
+      this.dom = $(`<form id="${this._id}">`)
+        .css({
+          height: '100%',
+          width: '100%',
+          textAlign: 'left',
+        })
+        .append($('<div class="onde-panel">'));
 
       if (this.module.getConfigurationCheckbox('hasButton', 'show')) {
         this.dom.append(
@@ -38,10 +43,12 @@ define([
             () => {
               this.exportForm();
             },
-            { color: 'green' }
-          ).render().css({
-            marginTop: '10px'
-          })
+            { color: 'green' },
+          )
+            .render()
+            .css({
+              marginTop: '10px',
+            }),
         );
       }
 
@@ -50,7 +57,6 @@ define([
         this.exportForm();
         return false;
       });
-
 
       const debouncing = this.module.getConfiguration('debouncing', -1);
       if (debouncing > -1) {
@@ -88,13 +94,16 @@ define([
         var $firstOl = $target.parents('ol').first();
         if (!$firstOl.length) break;
         if (!$.contains(this.dom[0], $firstOl[0])) break;
-        var idx = $firstOl.children('li').index($target.parents('li.field.array-item')[0]);
+        var idx = $firstOl
+          .children('li')
+          .index($target.parents('li.field.array-item')[0]);
         $target = $firstOl;
         jpath[jpath.indexOf('$array$')] = idx;
       }
       jpath = jpath.reverse();
-      if (jpath.indexOf('$array$') > -1 || jpath.indexOf(-1) > -1)
+      if (jpath.indexOf('$array$') > -1 || jpath.indexOf(-1) > -1) {
         jpathSuccess = false;
+      }
 
       if (jpathSuccess) {
         this.filter(this.form.getData(), jpath);
@@ -110,7 +119,7 @@ define([
       },
       schema() {
         this.module.controller.inputSchema = {};
-      }
+      },
     },
 
     inDom() {
@@ -122,9 +131,13 @@ define([
       }
 
       if (varname) {
-        API.createData(varname, JSON.parse(this.module.getConfiguration('data'))).then((data) => {
+        API.createData(
+          varname,
+          JSON.parse(this.module.getConfiguration('data')),
+        ).then((data) => {
           data.onChange(() => {
-            this.module.definition.configuration.groups.data[0].data[0] = JSON.stringify(data);
+            this.module.definition.configuration.groups.data[0].data[0] =
+              JSON.stringify(data);
           });
           this.resolveReady();
         });
@@ -150,7 +163,7 @@ define([
       schema: function (value) {
         this.module.controller.inputSchema = value.resurrect();
         this.renderForm();
-      }
+      },
     },
 
     renderForm() {
@@ -176,17 +189,17 @@ define([
         this._data = data.data;
         this.module.controller.onSubmit(data.data);
       }
-    }
+    },
   });
+
+  function registerCallback(dom, cb) {
+    // The problem with change on text inputs is that it fires when
+    // the input is blurred
+    // https://developer.mozilla.org/en-US/docs/Web/Events/input
+    dom.on('input', cb);
+    dom.on('change', '[type="checkbox"]', cb);
+    dom.on('change', '[type="radio"]', cb);
+  }
 
   return View;
 });
-
-function registerCallback(dom, cb) {
-  // The problem with change on text inputs is that it fires when
-  // the input is blurred
-  // https://developer.mozilla.org/en-US/docs/Web/Events/input
-  dom.on('input', cb);
-  dom.on('change', '[type="checkbox"]', cb);
-  dom.on('change', '[type="radio"]', cb);
-}

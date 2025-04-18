@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/module',
   'src/util/debug',
-  'src/util/util'
+  'src/util/util',
 ], function ($, Module, Debug, Util) {
   let incrementalId = 0;
 
@@ -15,43 +15,39 @@ define([
   function getSubFoldersFrom(folder) {
     return new Promise(function (resolve) {
       const result = {
-        folders: {}
+        folders: {},
       };
-      $.getJSON(require.toUrl(`${folder}/folder.json`)).then(function (
-        folderContent
-      ) {
-        result.name = folderContent.name;
-        result.modules = folderContent.modules;
-        if (
-          folderContent.folders &&
-                    Array.isArray(folderContent.folders)
-        ) {
-          const prom = [];
-          for (let i = 0; i < folderContent.folders.length; i++) {
-            prom.push(
-              getSubFoldersFrom(
-                `${folder}/${folderContent.folders[i]}`
-              )
-            );
-          }
-          Promise.all(prom).then(
-            function (results) {
-              for (let i = 0; i < results.length; i++) {
-                const res = results[i];
-                result.folders[res.name] = res;
-              }
-              resolve(result);
-            },
-            function (err) {
-              Debug.error('Caught error in ModuleFactory', err);
+      $.getJSON(require.toUrl(`${folder}/folder.json`)).then(
+        function (folderContent) {
+          result.name = folderContent.name;
+          result.modules = folderContent.modules;
+          if (folderContent.folders && Array.isArray(folderContent.folders)) {
+            const prom = [];
+            for (let i = 0; i < folderContent.folders.length; i++) {
+              prom.push(
+                getSubFoldersFrom(`${folder}/${folderContent.folders[i]}`),
+              );
             }
-          );
-        } else {
-          if (typeof folderContent.folders === 'object')
-            result.folders = folderContent.folders;
-          resolve(result);
-        }
-      });
+            Promise.all(prom).then(
+              function (results) {
+                for (let i = 0; i < results.length; i++) {
+                  const res = results[i];
+                  result.folders[res.name] = res;
+                }
+                resolve(result);
+              },
+              function (err) {
+                Debug.error('Caught error in ModuleFactory', err);
+              },
+            );
+          } else {
+            if (typeof folderContent.folders === 'object') {
+              result.folders = folderContent.folders;
+            }
+            resolve(result);
+          }
+        },
+      );
     });
   }
 
@@ -77,7 +73,7 @@ define([
       const prom = [];
       if (Array.isArray(list)) {
         throw new Error(
-          'Module configuration error : list of folders must be defined in a "folders" array.'
+          'Module configuration error : list of folders must be defined in a "folders" array.',
         );
       }
 
@@ -103,12 +99,9 @@ define([
                   // $.extend(true, allModules, finalList);
                 },
                 function (err) {
-                  Debug.error(
-                    'Caught error in ModuleFactory',
-                    err
-                  );
-                }
-              )
+                  Debug.error('Caught error in ModuleFactory', err);
+                },
+              ),
             );
           }
         }
@@ -170,6 +163,6 @@ define([
       const modulesById = {};
       this.traverseModules((mod) => (modulesById[mod.id] = mod));
       return modulesById;
-    }
+    },
   };
 });

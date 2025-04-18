@@ -3,13 +3,11 @@
 define([
   'modules/default/defaultview',
   'components/jsNMR/src/nmr',
-  'jcampconverter'
+  'jcampconverter',
 ], function (Default, NMR, JcampConverter) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       this.dom = $('<div />');
       this.module.getDomContent().html(this.dom);
@@ -21,7 +19,7 @@ define([
         dom: this.dom,
         mode: '2d',
         symmetric: true,
-        minimap: false
+        minimap: false,
       });
     },
 
@@ -42,11 +40,10 @@ define([
       jcampxy: function (varname) {
         this.nmr.removeSerie2DX(varname);
         this.nmr.removeSerie2DY(varname);
-      }
+      },
     },
 
     update: {
-
       jcampx: function (moduleValue) {
         this.addSerieJcampXOrY(moduleValue, true, false);
       },
@@ -62,7 +59,6 @@ define([
       jcamp2d: function (moduleValue, varName) {
         var that = this;
 
-
         function hue2rgb(p, q, t) {
           if (t < 0) t += 1;
           if (t > 1) t -= 1;
@@ -75,7 +71,8 @@ define([
         function hslToRgb(h, s, l) {
           var r, g, b;
 
-          if (s == 0) {
+          if (s === 0) {
+            // eslint-disable-next-line no-multi-assign
             r = g = b = l; // achromatic
           } else {
             var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
@@ -85,9 +82,12 @@ define([
             b = hue2rgb(p, q, h - 1 / 3);
           }
 
-          return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+          return [
+            Math.round(r * 255),
+            Math.round(g * 255),
+            Math.round(b * 255),
+          ];
         }
-
 
         var opts = {
           lineColor: `rgb(${hslToRgb(100 / 360, 0.8, 0.4).join()})`,
@@ -95,16 +95,17 @@ define([
             fromPositive: { h: 100, s: 0.3, l: 0.7 },
             toPositive: { h: 100, s: 1, l: 0.5 },
             fromNegative: { h: 100, s: 0.3, l: 0.5 },
-            toNegative: { h: 100, s: 1, l: 0.3 }
-          }
+            toNegative: { h: 100, s: 1, l: 0.3 },
+          },
         };
 
-
-        JcampConverter.convert(String(moduleValue.get()), true).then(function (result) {
-          var data = result.contourLines;
-          that.nmr.setSerie2D('SomeName', data, opts);
-          that.redraw();
-        });
+        JcampConverter.convert(String(moduleValue.get()), true).then(
+          function (result) {
+            var data = result.contourLines;
+            that.nmr.setSerie2D('SomeName', data, opts);
+            that.redraw();
+          },
+        );
       },
 
       annotations: function (value) {
@@ -118,16 +119,15 @@ define([
 
                  this.annotations = value;
                  this.resetAnnotations(true);*/
-      }
+      },
     },
-
 
     addSerieJcampXOrY: function (value, x, y) {
       var that = this;
 
       var name = 'SomeName';
       var options = {
-        label: 'Chemical 1'
+        label: 'Chemical 1',
       };
 
       JcampConverter.convert(String(value.get()), true).then(function (result) {
@@ -147,8 +147,7 @@ define([
 
     redraw: function () {
       this.nmr.redrawAll2D();
-    }
-
+    },
   });
 
   return View;

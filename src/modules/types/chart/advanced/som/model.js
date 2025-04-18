@@ -1,8 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
-  function Model() {
-  }
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
+  Default,
+  Traversing,
+) {
+  function Model() {}
 
   $.extend(true, Model.prototype, Default, {
     getjPath: function (rel) {
@@ -33,12 +35,12 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
             return Traversing.getJPathsFromElement({
               x: 0,
               y: 0,
-              info: data.data[0][0]
+              info: data.data[0][0],
             });
           }
       }
       return [];
-    }
+    },
   });
 
   return Model;

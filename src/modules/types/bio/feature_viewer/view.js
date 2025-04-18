@@ -5,28 +5,26 @@ define([
   'src/util/util',
   'BiojsCore',
   'jquery-ui/ui/widgets/slider',
-  'BiojsDasProteinFeatureViewer'
+  'BiojsDasProteinFeatureViewer',
 ], function (Default, Util, Biojs) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
-        this.dom = $(` <div id="${this._id}"></div>`).css('height', '100%').css('width', '100%');
+        this.dom = $(` <div id="${this._id}"></div>`)
+          .css('height', '100%')
+          .css('width', '100%');
         this.module.getDomContent().html(this.dom);
       }
     },
 
-
     blank: {
       feature: function () {
         this.dom.empty();
-      }
+      },
     },
-
 
     inDom: function () {
       this.resolveReady();
@@ -36,14 +34,13 @@ define([
       this.dom.find('table').attr('width', this.dom.width());
     },
 
-
     update: {
       feature: function (data) {
         var that = this;
         var myPainter = new Biojs.MyFeatureViewer({
           target: this._id,
           json: data,
-          imageWidth: 200
+          imageWidth: 200,
         });
 
         var dom = this.dom.find('svg').first();
@@ -63,12 +60,12 @@ define([
           delete data.shape;
           that.module.controller.onFeatureMouseOver(data);
         });
-      }
+      },
     },
 
     getDom: function () {
       return this.dom;
-    }
+    },
   });
 
   return View;

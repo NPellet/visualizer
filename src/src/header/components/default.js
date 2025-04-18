@@ -1,8 +1,7 @@
 'use strict';
 
 define(['jquery', 'src/util/util'], function ($, Util) {
-  function Header() {
-  }
+  function Header() {}
 
   Header.prototype.init = function (options) {
     this.options = options;
@@ -52,7 +51,8 @@ define(['jquery', 'src/util/util'], function ($, Util) {
       h = this.$_dom.outerHeight(true),
       pos = this.$_dom.position(),
       fullW = $('#header').outerWidth(true),
-      newLeft, newTop;
+      newLeft,
+      newTop;
 
     if (pos.left + w >= fullW) {
       newLeft = fullW - w;
@@ -63,13 +63,14 @@ define(['jquery', 'src/util/util'], function ($, Util) {
 
     this.$_elToOpen.css({
       top: newTop,
-      left: newLeft
+      left: newLeft,
     });
   };
 
   Header.prototype.close = function () {
-    if (this.$_elToOpen)
+    if (this.$_elToOpen) {
       this.$_elToOpen.hide();
+    }
   };
 
   return Header;

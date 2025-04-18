@@ -4,17 +4,17 @@ define([
   'modules/default/defaultview',
   'src/util/util',
   'BiojsSequence',
-  'BiojsTooltip'
+  'BiojsTooltip',
 ], function (Default, Util) {
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
-        this.dom = $(` <div id="${this._id}"></div>`).css('height', '100%').css('width', '100%');
+        this.dom = $(` <div id="${this._id}"></div>`)
+          .css('height', '100%')
+          .css('width', '100%');
         this.module.getDomContent().html(this.dom);
         this.resolveReady();
       }
@@ -29,14 +29,12 @@ define([
       annotations: function (value) {
         this.annotations = value;
         this.render();
-      }
+      },
     },
 
     blank: {
-      sequence: function () {
-      },
-      annotations: function () {
-      }
+      sequence: function () {},
+      annotations: function () {},
     },
 
     render: function () {
@@ -51,7 +49,7 @@ define([
         target: this.dom.attr('id'),
         format: 'CODATA',
         annotations: annotations.annotations,
-        highlights: annotations.highlights
+        highlights: annotations.highlights,
       });
 
       mySequence.onSelectionChange(function (data) {
@@ -73,8 +71,7 @@ define([
       //   sequenceUrl: 'http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=xml&compression=NO&structureId=100D',
       //   id: '100D'
       // });
-    }
-
+    },
   });
 
   return View;
