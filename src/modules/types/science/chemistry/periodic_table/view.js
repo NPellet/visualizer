@@ -675,7 +675,7 @@ define([
 
     _doHighlight(Z, state) {
       if (!this.elements) return;
-      var el = this.elements.find((el) => el.Z === Z);
+      var el = this.elements.find((el) => el.Z == Z);
       if (el) {
         API.highlightId(el.name, state, this.module.getId());
       }

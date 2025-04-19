@@ -63,7 +63,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
       sourcekeys = Array.isArray(sourcekeys) ? sourcekeys : [sourcekeys];
 
       for (var i = 0; i < sourcekeys.length; i++) {
-        if (this._keys[sourcekeys[i]] === undefined) {
+        if (this._keys[sourcekeys[i]] == undefined) {
           continue;
         }
         for (var j = 0; j < this._keys[sourcekeys[i]].length; j++) {
@@ -135,7 +135,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
       keys = [keys];
     }
 
-    if (!keys || keys.length === undefined || keys.length === 0) {
+    if (keys.length === 0) {
       return;
     }
 

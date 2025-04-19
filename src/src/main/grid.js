@@ -1036,7 +1036,7 @@ define([
                 .data('layerkey', key)
                 .appendTo(layersUl);
 
-              if (key === activeLayer) {
+              if (key == activeLayer) {
                 li.find('span').addClass('ui-icon ui-icon-check');
               }
             });
@@ -1062,11 +1062,11 @@ define([
               var layer = target.data('layerkey');
               if (layer !== '-1' && layer !== '-2' && layer !== '-3') {
                 switchToLayer(layer);
-              } else if (layer === '-1') {
+              } else if (layer == '-1') {
                 newLayer();
-              } else if (layer === '-2') {
+              } else if (layer == '-2') {
                 removeLayer();
-              } else if (layer === '-3') {
+              } else if (layer == '-3') {
                 renameLayer();
               }
             });

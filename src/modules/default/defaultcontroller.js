@@ -108,8 +108,8 @@ define([
       let first = true;
       for (let i = 0; i < varsOut.length; i++) {
         if (
-          varsOut[i].event === event &&
-          (varsOut[i].rel === rel || !rel) &&
+          varsOut[i].event == event &&
+          (varsOut[i].rel == rel || !rel) &&
           varsOut[i].name
         ) {
           if (first && callback) {
@@ -143,8 +143,8 @@ define([
       let first = true;
       for (let i = 0; i < varsOut.length; i++) {
         if (
-          varsOut[i].event === event &&
-          (varsOut[i].rel === rel || !rel) &&
+          varsOut[i].event == event &&
+          (varsOut[i].rel == rel || !rel) &&
           varsOut[i].name
         ) {
           if (first && callback) {
@@ -172,8 +172,8 @@ define([
       for (let i = actionsOut.length - 1; i >= 0; i--) {
         if (
           actionsOut[i].name &&
-          actionsOut[i].rel === rel &&
-          ((event && event === actionsOut[i].event) || !event)
+          actionsOut[i].rel == rel &&
+          ((event && event == actionsOut[i].event) || !event)
         ) {
           const actionName = actionsOut[i].name;
           const jpath = actionsOut[i].jpath;
@@ -204,7 +204,7 @@ define([
       }
 
       for (let i = 0; i < varsOut.length; i++) {
-        if (varsOut[i].event === event && (varsOut[i].rel === rel || !rel)) {
+        if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel)) {
           callback(varsOut[i]);
         }
       }

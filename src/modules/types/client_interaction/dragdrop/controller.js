@@ -450,7 +450,7 @@ define([
       ],
     }).then((row) => {
       if (row.type === 'auto') row.type = '';
-      if (row === undefined) {
+      if (row == undefined) {
         meta.def.resolve();
         return;
       }
@@ -478,7 +478,7 @@ define([
             );
           },
         }).then((val) => {
-          if (val === undefined) return;
+          if (val == undefined) return;
           var m = this.checkMetadata(
             item,
             meta.cfg,

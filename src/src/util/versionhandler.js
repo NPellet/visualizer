@@ -398,7 +398,7 @@ define([
             el = el.head;
           } else {
             for (var j = 0, l = el.list.length; j < l; j++) {
-              if (el.list[j]._time === i) {
+              if (el.list[j]._time == i) {
                 el = el.list[j];
                 break;
               }
@@ -506,6 +506,7 @@ define([
                 // Loads the latest file
                 el._name = branch;
 
+                // TODO: check history of this. 1 is never equal to 0.
                 if (savedLocal > saved && 1 === 0) {
                   // Prevent loading local for now
                   doLocal(el, el._name, el._time || 'head');

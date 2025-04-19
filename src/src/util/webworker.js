@@ -26,7 +26,7 @@ define(['jquery'], function ($) {
     },
 
     send: function (name, message, callback) {
-      if (_workers[name] === undefined) {
+      if (_workers[name] == undefined) {
         this.create(name, name);
       }
 
@@ -36,7 +36,7 @@ define(['jquery'], function ($) {
     },
 
     terminate: function (name) {
-      if (_workers[name] === undefined) {
+      if (_workers[name] == undefined) {
         return;
       }
 

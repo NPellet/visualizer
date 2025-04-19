@@ -252,7 +252,7 @@ define([
         .text(description || defaultText)
 
         .bind('mousedown', function () {
-          if ($(this).text() === defaultText) {
+          if ($(this).text() == defaultText) {
             $(this)
               .text('')
               .css({
@@ -271,7 +271,7 @@ define([
         })
         .bind('blur', function () {
           var text = $(this).text();
-          if (text === '' || text == null || text === defaultText) {
+          if (text === '' || text == null || text == defaultText) {
             $(this).text(defaultText).css({
               color: 'grey',
               fontStyle: 'italic',

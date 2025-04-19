@@ -374,7 +374,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
         self[prop] = DataObject.check(self[prop], true);
 
         var typeNow =
-          self[prop] !== undefined && self[prop].getType
+          self[prop] != undefined && self[prop].getType
             ? self[prop].getType()
             : undefined;
 
@@ -658,7 +658,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   var triggerChange = {
     value: function (noBubble, args, jpath, target) {
       if (!Array.isArray(args)) {
-        if (args === undefined) {
+        if (args == undefined) {
           args = [];
         } else {
           args = [args];

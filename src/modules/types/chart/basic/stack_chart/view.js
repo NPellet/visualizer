@@ -131,7 +131,7 @@ define([
       var ymax = null;
       var xunit = null;
       var yunit = null;
-      if (undefined !== axis) {
+      if (undefined != axis) {
         posx = axis[0].type;
         posy = axis[1].type;
         xmax = axis[0].max;

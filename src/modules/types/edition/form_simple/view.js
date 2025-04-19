@@ -189,7 +189,7 @@ define([
               : '';
 
             that.nb--;
-            if (that.nb === 0) {
+            if (that.nb == 0) {
               that.lockEvents = false;
             }
           });

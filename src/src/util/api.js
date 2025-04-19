@@ -238,7 +238,7 @@ define([
       message = id;
     }
 
-    if (loadingNumber === 0) {
+    if (loadingNumber == 0) {
       $('#ci-visualizer').append(loadingHtml);
     }
 
@@ -262,7 +262,7 @@ define([
       loading[id].detach();
       loading[id] = null;
 
-      if (loadingNumber === 0) {
+      if (loadingNumber == 0) {
         loadingHtml.detach();
       }
     }

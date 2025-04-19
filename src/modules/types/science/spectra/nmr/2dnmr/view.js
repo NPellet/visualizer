@@ -71,7 +71,7 @@ define([
         function hslToRgb(h, s, l) {
           var r, g, b;
 
-          if (s === 0) {
+          if (s == 0) {
             // eslint-disable-next-line no-multi-assign
             r = g = b = l; // achromatic
           } else {

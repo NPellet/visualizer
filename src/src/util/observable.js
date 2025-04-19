@@ -20,7 +20,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
 
   Observable.set = function (name, value) {
     var current = this.get(name);
-    if (current === value) return;
+    if (current == value) return;
     this.update(name, value);
     var to = this.get(name);
     this.trigger('change', name, to, current);

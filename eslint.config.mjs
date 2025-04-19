@@ -43,6 +43,7 @@ export default defineConfig(
       'block-scoped-var': 'off',
       camelcase: 'off',
       'default-case': 'off',
+      eqeqeq: 'off',
       'func-names': 'off',
       'new-cap': 'off',
       'no-await-in-loop': 'off',

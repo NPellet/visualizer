@@ -70,7 +70,7 @@ define([
       var that = this;
       this._radar.attachEvent('onMouseMove', function (id, ev, trg) {
         data.forEach(function (entry) {
-          if (entry.id === id) {
+          if (entry.id == id) {
             var obj = entry;
             if (
               ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] === 'd'

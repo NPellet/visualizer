@@ -77,7 +77,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
       if (jQuery.browser.msie) {
         // canvas does not work (not even with IE 9)
         var args = `segment=${this.opt.json.segment}`;
-        if (config.requestedStart !== 0 && config.requestedStop !== 0) {
+        if (config.requestedStart != 0 && config.requestedStop != 0) {
           args = `${args}:${config.requestedStart},${config.requestedStop}`;
         }
         args =
@@ -128,7 +128,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      */
     applyStyle: function (style) {
       if (
-        style !== undefined &&
+        style != undefined &&
         (style === 'centered' || style === 'nonOverlapping' || (style = 'rows'))
       ) {
         var config = this.opt.json.configuration;
@@ -144,7 +144,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * myPainter.showHideHorizontalGrid(true);
      */
     showHideHorizontalGrid: function (show) {
-      if (show !== undefined && (show === true || show === false)) {
+      if (show != undefined && (show == true || show == false)) {
         var config = this.opt.json.configuration;
         this.customize(config.style, show, config.verticalGrid);
       }
@@ -158,7 +158,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * myPainter.showHideVerticalGrid(true);
      */
     showHideVerticalGrid: function (show) {
-      if (show !== undefined && (show === true || show === false)) {
+      if (show != undefined && (show == true || show == false)) {
         var config = this.opt.json.configuration;
         this.customize(config.style, config.horizontalGrid, show);
       }

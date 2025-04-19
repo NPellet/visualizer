@@ -109,7 +109,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   }
 
   function getType(element) {
-    if (element === undefined) {
+    if (element == undefined) {
       return;
     }
 

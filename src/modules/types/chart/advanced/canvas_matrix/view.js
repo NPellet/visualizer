@@ -226,7 +226,7 @@ define([
     resetZoomPrefetch: function () {
       var currentIndex, i, len;
       for (i = 0; i < this.availableZooms.length; i++) {
-        if (this.availableZooms[i] === this.pxPerCell) {
+        if (this.availableZooms[i] == this.pxPerCell) {
           currentIndex = i;
           break;
         }
@@ -286,7 +286,7 @@ define([
         ),
       );
 
-      if (this.pxPerCell !== newPxPerCell) {
+      if (this.pxPerCell != newPxPerCell) {
         var zoomRatio = newPxPerCell / this.pxPerCell;
 
         var shift = this.getXYShift();
@@ -297,11 +297,11 @@ define([
         this.pxPerCell = newPxPerCell;
 
         if (
-          this.pxPerCell === this.availableZooms[this.availableZooms.length - 1]
+          this.pxPerCell == this.availableZooms[this.availableZooms.length - 1]
         ) {
           this.max = true;
           this.min = false;
-        } else if (this.pxPerCell === this.availableZooms[0]) {
+        } else if (this.pxPerCell == this.availableZooms[0]) {
           this.min = true;
           this.max = false;
         } else {
@@ -405,7 +405,7 @@ define([
 
           that.buffers[that.getBufferKey(pxPerCell, buffIndexX, buffIndexY)] =
             data.data;
-          if (that.getPxPerCell() === pxPerCell) {
+          if (that.getPxPerCell() == pxPerCell) {
             that.doCanvasDrawBuffer(buffIndexX, buffIndexY);
           }
 

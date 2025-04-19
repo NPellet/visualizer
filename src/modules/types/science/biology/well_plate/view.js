@@ -377,7 +377,7 @@ define([
         if (eval(`element.${previous}`) === undefined) return;
         const val = DataObject.resurrect(eval(`element.${colorJpath}`));
         if (jpathItems) {
-          const index = jpathItems.findIndex((item) => item === val);
+          const index = jpathItems.findIndex((item) => item == val);
           $(grid[currentItem].value)
             .find(':eq(1)')
             .css({ 'background-color': color[index] });

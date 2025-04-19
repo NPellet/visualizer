@@ -96,7 +96,7 @@ define(['jquery'], function ($) {
         // If there is none, let's create it
 
         if (branch) {
-          if (e.target.result === undefined) {
+          if (e.target.result == undefined) {
             that.create(type, key, branch).pipe(function (obj) {
               def.resolve(obj);
             });

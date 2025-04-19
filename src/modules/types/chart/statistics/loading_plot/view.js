@@ -45,7 +45,7 @@ define([
         }
         for (let i in moduleValue) {
           for (let j = 0; j < this._lastValue.series.length; j++) {
-            if (this._lastValue.series[j].category === i) {
+            if (this._lastValue.series[j].category == i) {
               for (let k = 0; k < this._lastValue.series[j].data.length; k++) {
                 this._instances[j][k].filter(moduleValue[i]);
               }

@@ -139,7 +139,7 @@ define([
       this.isValueChanged = function () {
         return (
           !($input.val() === '' && defaultValue == null) &&
-          $input.val() !== defaultValue
+          $input.val() != defaultValue
         );
       };
 
@@ -344,7 +344,7 @@ define([
       this.isValueChanged = function () {
         return (
           !(this.$input.val() === '' && defaultValue == null) &&
-          this.$input.val() !== defaultValue
+          this.$input.val() != defaultValue
         );
       };
 
@@ -664,7 +664,7 @@ define([
   function defaultIsValueChanged() {
     return (
       !(this.$input.val() === '' && this.defaultValue == null) &&
-      this.$input.val() !== this.defaultValue
+      this.$input.val() != this.defaultValue
     );
   }
 

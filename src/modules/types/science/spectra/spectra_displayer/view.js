@@ -568,7 +568,7 @@ define([
 
       if (plotinfos) {
         for (var i = 0, l = plotinfos.length; i < l; i++) {
-          if (varname === plotinfos[i].variable) {
+          if (varname == plotinfos[i].variable) {
             var continuous = plotinfos[i].plotcontinuous;
             if (continuous.startsWith('auto')) {
               continuous = analyzeContinuous(data, continuous);
@@ -640,7 +640,7 @@ define([
         const minAxis = Math.min(...axes);
         const nbAxes = axes.size || 1;
         for (var i = 0, l = plotinfos.length; i < l; i++) {
-          if (varname === plotinfos[i].variable) {
+          if (varname == plotinfos[i].variable) {
             foundInfo = true;
             const axisIdx =
               (plotinfos[i].axis ? Number(plotinfos[i].axis) : 0) - minAxis;
@@ -723,11 +723,11 @@ define([
                 var high = highlight[j];
                 if (Array.isArray(high)) {
                   for (var k = 0; k < high.length; k++) {
-                    if (high[k] === key) {
+                    if (high[k] == key) {
                       serie.toggleMarker(j, !!value, true);
                     }
                   }
-                } else if (high === key) {
+                } else if (high == key) {
                   serie.toggleMarker(j, !!value, true);
                 }
               }
@@ -921,7 +921,7 @@ define([
 
           if (
             serieType === 'line' ||
-            serieType === undefined ||
+            serieType == undefined ||
             serieType === 'scatter' ||
             serieType === 'line.color'
           ) {
@@ -1385,7 +1385,7 @@ define([
 
       removeSerie(value) {
         for (var i = 0, l = this.seriesActions.length; i < l; i++) {
-          if (this.seriesActions[i][0] === value) {
+          if (this.seriesActions[i][0] == value) {
             this.seriesActions[i][1].kill();
             this.seriesActions.splice(i, 1);
           }
@@ -1394,7 +1394,7 @@ define([
 
       removeSerieByName(value) {
         for (var i = 0; i < this.seriesActions.length; i++) {
-          if (this.seriesActions[i][2] === value) {
+          if (this.seriesActions[i][2] == value) {
             this.seriesActions[i][1].kill();
             this.seriesActions.splice(i, 1);
             i--;
@@ -1460,7 +1460,7 @@ define([
       if (!plotinfos) return;
       var normalize = '';
       for (i = 0, l = plotinfos.length; i < l; i++) {
-        if (varname === plotinfos[i].variable) {
+        if (varname == plotinfos[i].variable) {
           normalize = plotinfos[i].normalize;
         }
       }

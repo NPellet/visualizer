@@ -329,7 +329,7 @@ define([
   Controller.prototype.periodSelected = function (period) {
     var elements = this.module.view.elements;
     elements = elements.filter((el) => {
-      return el.period === period;
+      return el.period == period;
     });
 
     this.createDataFromEvent('onPeriodSelect', 'elements', elements);
@@ -338,7 +338,7 @@ define([
   Controller.prototype.groupSelected = function (group) {
     var elements = this.module.view.elements;
     elements = elements.filter((el) => {
-      return el.group === group;
+      return el.group == group;
     });
 
     this.createDataFromEvent('onGroupSelect', 'elements', elements);
@@ -347,9 +347,7 @@ define([
   Controller.prototype.elementSelected = function (atomicNumber) {
     atomicNumber = +atomicNumber;
     var elements = this.module.view.elements;
-    var el = elements.find(
-      (el) => +DataObject.resurrect(el.Z) === atomicNumber,
-    );
+    var el = elements.find((el) => +DataObject.resurrect(el.Z) == atomicNumber);
     if (el) {
       this.createDataFromEvent('onElementSelect', 'element', el);
     }
@@ -358,9 +356,7 @@ define([
   Controller.prototype.elementHovered = function (atomicNumber) {
     atomicNumber = +atomicNumber;
     var elements = this.module.view.elements;
-    var el = elements.find(
-      (el) => +DataObject.resurrect(el.Z) === atomicNumber,
-    );
+    var el = elements.find((el) => +DataObject.resurrect(el.Z) == atomicNumber);
     if (el) {
       this.createDataFromEvent('onElementHover', 'element', el);
     }

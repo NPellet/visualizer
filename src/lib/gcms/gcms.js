@@ -107,7 +107,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
 
           var i = Object.keys(val)[0];
 
-          if (val[i] === undefined || (!that.msData && !that.msDataRO)) {
+          if (val[i] == undefined || (!that.msData && !that.msDataRO)) {
             return;
           }
 

@@ -115,7 +115,7 @@ define([
             let proms = [];
             for (let i = 0; i < vars.length; i++) {
               if (
-                vars[i].name === varName &&
+                vars[i].name == varName &&
                 (this.module.view.update[vars[i].rel] ||
                   this.module.view[`_update_${vars[i].rel}`]) &&
                 varValue !== null
@@ -220,7 +220,7 @@ define([
       }
 
       for (var i = 0; i < sourceTypes.length; i++) {
-        if (sourceTypes[i] === dataType) {
+        if (sourceTypes[i] == dataType) {
           return data;
         }
       }
@@ -278,7 +278,7 @@ define([
       }
 
       const proxiedCallback = (target, moduleId) => {
-        if (moduleId === this.module.getId()) {
+        if (moduleId == this.module.getId()) {
           return; // Do not update itself;
         }
         callback.call(data, target);

@@ -153,10 +153,10 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
           var opts = (spec.fieldoptions || '').split(';'),
             opt,
             html = '';
-          html += `<option ${spec.defaultvalue === '' ? 'selected="selected" ' : ''}value=""></option>`;
+          html += `<option ${spec.defaultvalue == '' ? 'selected="selected" ' : ''}value=""></option>`;
           for (var i = 0, l = opts.length; i < l; i++) {
             opt = opts[i].split(':');
-            html += `<option ${spec.defaultvalue === opt[0] ? 'selected="selected" ' : ''}value="${opt[0]}">${opt[1] || opt[0]}</option>`;
+            html += `<option ${spec.defaultvalue == opt[0] ? 'selected="selected" ' : ''}value="${opt[0]}">${opt[1] || opt[0]}</option>`;
           }
           return `<select ${elemAttribute}>${html}</select>`;
 
@@ -204,7 +204,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
 
     update: {
       vartrigger: function (variable) {
-        if (variable === undefined) {
+        if (variable == undefined) {
           return;
         }
 

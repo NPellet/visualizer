@@ -442,7 +442,7 @@ define([
         var id, index;
 
         for (var i = 0, l = this.gridElements.length; i < l; i++) {
-          if (this.gridElements[i].__source === el) {
+          if (this.gridElements[i].__source == el) {
             id = this.gridElements[i].id;
             index = i;
             break;
@@ -481,7 +481,7 @@ define([
           l = jpaths.length;
 
         for (; i < l; i++) {
-          if (jpaths[i].jpath === jpath) {
+          if (jpaths[i].jpath == jpath) {
             jpaths.splice(i, 1);
             this.module.reload();
             break;

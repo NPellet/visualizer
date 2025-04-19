@@ -452,8 +452,8 @@ define([
                 for (var i = 0; i < data.rows.length; i++) {
                   // no point in moving before or after itself
                   if (
-                    data.rows[i] === data.insertBefore ||
-                    data.rows[i] === data.insertBefore - 1
+                    data.rows[i] == data.insertBefore ||
+                    data.rows[i] == data.insertBefore - 1
                   ) {
                     e.stopPropagation();
                     return false;

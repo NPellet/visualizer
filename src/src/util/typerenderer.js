@@ -816,7 +816,7 @@ define([
   const renderingMap = new WeakMap();
 
   async function _render($element, object, options) {
-    if (object === undefined) {
+    if (object == undefined) {
       $element.html('');
       return;
     }
@@ -858,7 +858,7 @@ define([
   }
 
   async function _renderAsString(object, options) {
-    if (object === undefined) {
+    if (object == undefined) {
       return '';
     }
     let value = object.get ? await object.get(true) : object;

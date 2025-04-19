@@ -269,8 +269,8 @@ define([
         for (let i = 0; i < data.rows.length; i++) {
           // no point in moving before or after itself
           if (
-            data.rows[i] === data.insertBefore ||
-            data.rows[i] === data.insertBefore - 1
+            data.rows[i] == data.insertBefore ||
+            data.rows[i] == data.insertBefore - 1
           ) {
             e.stopPropagation();
             return false;
@@ -2190,14 +2190,6 @@ define([
     return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
   }
 
-  function requiredFieldValidator(value) {
-    if (value === null || value === undefined || !value.length) {
-      return { valid: false, msg: 'This is a required field' };
-    } else {
-      return { valid: true, msg: null };
-    }
-  }
-
   function typeRenderer(cellNode, row, dataContext, colDef) {
     if (dataContext.__group) return;
     this.module.data.traceSync([row]);
@@ -2303,7 +2295,7 @@ define([
         };
       } else if (match[1] === '==' || match[1] === '=') {
         return function (val) {
-          return val === match[2];
+          return val == match[2];
         };
       }
     }

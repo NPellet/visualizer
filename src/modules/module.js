@@ -345,7 +345,7 @@ define([
     getNameFromRel(rel) {
       var vars = this.vars_in();
       for (var i = 0; i < vars.length; i++) {
-        if (vars[i].rel === rel) {
+        if (vars[i].rel == rel) {
           return vars[i].name;
         }
       }
@@ -360,7 +360,7 @@ define([
       var vars = this.vars_in();
       var rels = [];
       for (var i = 0; i < vars.length; i++) {
-        if (vars[i].name === name) {
+        if (vars[i].name == name) {
           rels.push(vars[i].rel);
         }
       }
@@ -370,7 +370,7 @@ define([
     getActionRelFromName(name) {
       var vars = this.actions_in();
       for (var i = 0; i < vars.length; i++) {
-        if (vars[i].name === name) {
+        if (vars[i].name == name) {
           return vars[i].rel;
         }
       }
@@ -1122,10 +1122,12 @@ define([
         Debug.warn(`Alias ${aliasName} not defined `);
       }
 
-      if (toReturn === undefined) {
+      if (toReturn == undefined) {
         toReturn = this._doConfigurationFunction(cfgEl, aliasName);
       }
-      if (toReturn === undefined) toReturn = fallbackValue;
+      if (toReturn == undefined) {
+        toReturn = fallbackValue;
+      }
 
       return resurrectValue ? Datas.resurrect(toReturn) : toReturn;
     },
@@ -1333,11 +1335,11 @@ define([
 
     setDisplayWrapper(bln) {
       this.getDomWrapper()[
-        bln === true || bln === undefined ? 'addClass' : 'removeClass'
+        bln === true || bln == undefined ? 'addClass' : 'removeClass'
       ]('ci-module-displaywrapper');
       try {
         this.getDomWrapper().resizable(
-          bln === true || bln === undefined ? 'enable' : 'disable',
+          bln === true || bln == undefined ? 'enable' : 'disable',
         );
       } catch (e) {
         // do nothing
