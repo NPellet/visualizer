@@ -208,6 +208,7 @@ require.config({
 window.CKEDITOR_BASEPATH = require.toUrl('components/ckeditor/');
 
 require([
+  'esm',
   'version',
   'jquery',
   'src/main/datas',
@@ -215,7 +216,7 @@ require([
   'uri/URI.fragmentQuery',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function (Version, $, Datas, EntryPoint, URI) {
+], function (_, Version, $, Datas, EntryPoint, URI) {
   $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);
