@@ -6,7 +6,7 @@ define([
   'src/util/api',
   'src/util/util',
   'lib/flot/jquery.flot',
-  'lib/flot/jquery.flot.pie'
+  'lib/flot/jquery.flot.pie',
 ], function (Default, Traversing, API, Util) {
   function View() {}
 
@@ -63,25 +63,23 @@ define([
 
         API.killHighlight(that.module.getId());
 
-        for (var i = 0; i < that._data.length; i++) {
+        for (let i = 0; i < that._data.length; i++) {
           if (!that._data[i]._highlight) continue;
-          (function (i) {
-            API.listenHighlight(
-              that._data[i],
-              function (onOff, key) {
-                // we need to highlight the correct shape ...
-                if (onOff) {
-                  // that.module.controller.elementHover(that._data[i]);
-                  that._plot.highlight(0, i);
-                } else {
-                  // that.module.controller.elementOut();
-                  that._plot.unhighlight(0, i);
-                }
-              },
-              false,
-              that.module.getId()
-            );
-          })(i);
+          API.listenHighlight(
+            that._data[i],
+            function (onOff, key) {
+              // we need to highlight the correct shape ...
+              if (onOff) {
+                // that.module.controller.elementHover(that._data[i]);
+                that._plot.highlight(0, i);
+              } else {
+                // that.module.controller.elementOut();
+                that._plot.unhighlight(0, i);
+              }
+            },
+            false,
+            that.module.getId(),
+          );
         }
       });
     },
@@ -106,7 +104,7 @@ define([
         this.loadedData.resolve();
 
         this.onResize();
-      }
+      },
     },
 
     _convertChartToData: function (value) {
@@ -116,14 +114,15 @@ define([
         !Array.isArray(value.data) ||
         !value.data[0] ||
         !Array.isArray(value.data[0].y)
-      )
+      ) {
         return;
+      }
       var y = value.data[0].y;
       var highlight = value.data[0]._highlight;
       var infos = value.data[0].info;
       for (let i = 0; i < y.length; i++) {
         this._data[i] = {
-          data: y[i]
+          data: y[i],
         };
         if (Array.isArray(highlight) && highlight.length > i) {
           if (Array.isArray(highlight[i])) {
@@ -134,12 +133,12 @@ define([
         }
         if (Array.isArray(infos) && infos.length > i) {
           // Data can be retrieved async so to fetch an information from the "info" object we need this strange code
-          Traversing.getValueFromJPath(infos[i], 'element.name').done(function (
-            elVal
-          ) {
-            that._data[i].label = elVal;
-            that._data[i].info = infos[i];
-          });
+          Traversing.getValueFromJPath(infos[i], 'element.name').done(
+            function (elVal) {
+              that._data[i].label = elVal;
+              that._data[i].info = infos[i];
+            },
+          );
         }
       }
     },
@@ -148,17 +147,17 @@ define([
       this._options = {
         grid: {
           clickable: true,
-          hoverable: true
+          hoverable: true,
         },
         series: {
           pie: {
-            show: true
-          }
-        }
+            show: true,
+          },
+        },
       };
 
       this._options.test = this.module.getConfiguration('nodeSize') || 1;
-    }
+    },
   });
 
   return View;

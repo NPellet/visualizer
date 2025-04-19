@@ -51,7 +51,7 @@ define([
   var $dialog;
 
   exports.showCode = function (opts) {
-    var opts = Object.assign(
+    opts = Object.assign(
       {
         mode: 'json',
         content: '',
@@ -117,7 +117,7 @@ define([
   };
 
   exports.renderTwig = async function renderTwig(template, data) {
-    var template = Twig.twig({
+    template = Twig.twig({
       data: DataObject.resurrect(template),
     });
     var renderer = await template.renderAsync(DataObject.resurrect(data));
@@ -366,7 +366,7 @@ define([
       height: 500,
     };
 
-    var slickOptions = _.defaults(slickOptions.slick, slickDefaultOptions);
+    slickOptions = _.defaults(slickOptions.slick, slickDefaultOptions);
 
     function getItemInfoFromRow(data, row) {
       if (_.isUndefined(row)) return null;
@@ -380,149 +380,146 @@ define([
     }
 
     return new Promise((resolve) => {
-      return Util.loadCss('components/slickgrid/slick.grid.css').then(
-        function () {
-          let status = false;
-          var $dialog = $('<div>');
-          var $slick = $('<div>')
-            .css('height', '100%')
-            .css('width', '100%')
-            .addClass('visualizer-slickgrid');
-          var $container = $('<div>').css('height', 410);
-          const dialogOptions = Object.assign(
-            {},
-            defaultDialogOptions,
-            slickOptions.dialog,
-            {
-              noWrap: true,
-              closeOnEscape: true,
-              buttons: {
-                cancel: function () {
-                  $(this).dialog('close');
-                },
-                confirm: function () {
-                  status = true;
-                  currentList = JSON.parse(JSON.stringify(list));
-                  list.length = 0;
-                  for (let idx = 0; idx < currentList.length; idx++) {
-                    list[idx] = currentList[idx];
-                  }
-                  $(this).dialog('close');
-                },
+      Util.loadCss('components/slickgrid/slick.grid.css').then(function () {
+        let status = false;
+        var $dialog = $('<div>');
+        var $slick = $('<div>')
+          .css('height', '100%')
+          .css('width', '100%')
+          .addClass('visualizer-slickgrid');
+        var $container = $('<div>').css('height', 410);
+        const dialogOptions = Object.assign(
+          defaultDialogOptions,
+          slickOptions.dialog,
+          {
+            noWrap: true,
+            closeOnEscape: true,
+            buttons: {
+              cancel: function () {
+                $(this).dialog('close');
               },
-
-              close: () => {
-                resolve(status);
-              },
-              resize: function () {
-                grid.resizeCanvas();
-              },
-              open: function () {
-                $container.addClass('flex-main-container');
-                $container.append($slick);
-                $dialog.append($container);
-                data = new Slick.Data.DataView();
-                $container.on('click', 'a.recycle-bin', function (e) {
-                  var columns = grid.getColumns();
-                  var args = grid.getCellFromEvent(e);
-                  if (
-                    columns[args.cell] &&
-                    columns[args.cell].id === 'rowDeletion'
-                  ) {
-                    // delete the row...
-                    var itemInfo = getItemInfoFromRow(data, args.row);
-                    data.deleteItem(itemInfo.id);
-                    grid.invalidateAllRows();
-                    grid.render();
-                  }
-                });
-                data.setItems(list, slickOptions.idField);
-                data.onRowCountChanged.subscribe(function (event, args) {
-                  grid.updateRowCount();
-                  grid.render();
-                });
-                grid = new Slick.Grid($slick, data, columns, slickOptions);
-
-                function compMove(a, b) {
-                  return a.__pos - b.__pos;
+              confirm: function () {
+                status = true;
+                currentList = JSON.parse(JSON.stringify(list));
+                list.length = 0;
+                for (let idx = 0; idx < currentList.length; idx++) {
+                  list[idx] = currentList[idx];
                 }
-
-                const moveRowsPlugin = new Slick.RowMoveManager({
-                  cancelEditOnDrag: true,
-                });
-                moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
-                  for (var i = 0; i < data.rows.length; i++) {
-                    // no point in moving before or after itself
-                    if (
-                      data.rows[i] == data.insertBefore ||
-                      data.rows[i] == data.insertBefore - 1
-                    ) {
-                      e.stopPropagation();
-                      return false;
-                    }
-                  }
-                  return true;
-                });
-
-                moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
-                  var rows = args.rows;
-                  rows = rows.map(function (r) {
-                    return getItemInfoFromRow(data, r).idx;
-                  });
-                  var insertBefore = getItemInfoFromRow(
-                    data,
-                    args.insertBefore,
-                  );
-                  if (insertBefore !== null) insertBefore = insertBefore.idx;
-
-                  var items = data.getItems();
-                  // Add a position indicatior ==> for stable sort
-                  for (var i = 0; i < items.length; i++) {
-                    if (rows.indexOf(i) !== -1) items[i].__pos = 2;
-                    else if (i < insertBefore || insertBefore === null)
-                      items[i].__pos = 1;
-                    else items[i].__pos = 3;
-                  }
-
-                  data.sort(compMove);
-
-                  for (var i = 0; i < items.length; i++) {
-                    delete items[i].__pos;
-                  }
-
-                  grid.invalidateAllRows();
-                  grid.render();
-                });
-                grid.registerPlugin(moveRowsPlugin);
-
-                // :(
-                grid.module = {
-                  view: {
-                    slick: {
-                      options: slickOptions,
-                    },
-                  },
-                };
-                grid.setSelectionModel(new Slick.CellSelectionModel());
-                grid.onAddNewRow.subscribe(function (event, args) {
-                  const item = args.item;
-                  if (!item[slickOptions.idField]) {
-                    item.setChildSync(
-                      [slickOptions.idField],
-                      Math.random().toString(36).slice(2),
-                    );
-                  }
-                  data.addItem(item);
-                });
-                grid.init();
-                grid.resizeCanvas();
-                grid.render();
+                $(this).dialog('close');
               },
             },
-          );
-          exports.dialog($dialog, dialogOptions);
-        },
-      );
+
+            close: () => {
+              resolve(status);
+            },
+            resize: function () {
+              grid.resizeCanvas();
+            },
+            open: function () {
+              $container.addClass('flex-main-container');
+              $container.append($slick);
+              $dialog.append($container);
+              data = new Slick.Data.DataView();
+              $container.on('click', 'a.recycle-bin', function (e) {
+                var columns = grid.getColumns();
+                var args = grid.getCellFromEvent(e);
+                if (
+                  columns[args.cell] &&
+                  columns[args.cell].id === 'rowDeletion'
+                ) {
+                  // delete the row...
+                  var itemInfo = getItemInfoFromRow(data, args.row);
+                  data.deleteItem(itemInfo.id);
+                  grid.invalidateAllRows();
+                  grid.render();
+                }
+              });
+              data.setItems(list, slickOptions.idField);
+              data.onRowCountChanged.subscribe(function (event, args) {
+                grid.updateRowCount();
+                grid.render();
+              });
+              grid = new Slick.Grid($slick, data, columns, slickOptions);
+
+              function compMove(a, b) {
+                return a.__pos - b.__pos;
+              }
+
+              const moveRowsPlugin = new Slick.RowMoveManager({
+                cancelEditOnDrag: true,
+              });
+              moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
+                for (var i = 0; i < data.rows.length; i++) {
+                  // no point in moving before or after itself
+                  if (
+                    data.rows[i] == data.insertBefore ||
+                    data.rows[i] == data.insertBefore - 1
+                  ) {
+                    e.stopPropagation();
+                    return false;
+                  }
+                }
+                return true;
+              });
+
+              moveRowsPlugin.onMoveRows.subscribe(function (event, args) {
+                var rows = args.rows;
+                rows = rows.map(function (r) {
+                  return getItemInfoFromRow(data, r).idx;
+                });
+                var insertBefore = getItemInfoFromRow(data, args.insertBefore);
+                if (insertBefore !== null) insertBefore = insertBefore.idx;
+
+                var items = data.getItems();
+                // Add a position indicatior ==> for stable sort
+                for (var i = 0; i < items.length; i++) {
+                  if (rows.indexOf(i) !== -1) {
+                    items[i].__pos = 2;
+                  } else if (i < insertBefore || insertBefore === null) {
+                    items[i].__pos = 1;
+                  } else {
+                    items[i].__pos = 3;
+                  }
+                }
+
+                data.sort(compMove);
+
+                for (let i = 0; i < items.length; i++) {
+                  delete items[i].__pos;
+                }
+
+                grid.invalidateAllRows();
+                grid.render();
+              });
+              grid.registerPlugin(moveRowsPlugin);
+
+              // :(
+              grid.module = {
+                view: {
+                  slick: {
+                    options: slickOptions,
+                  },
+                },
+              };
+              grid.setSelectionModel(new Slick.CellSelectionModel());
+              grid.onAddNewRow.subscribe(function (event, args) {
+                const item = args.item;
+                if (!item[slickOptions.idField]) {
+                  item.setChildSync(
+                    [slickOptions.idField],
+                    Math.random().toString(36).slice(2),
+                  );
+                }
+                data.addItem(item);
+              });
+              grid.init();
+              grid.resizeCanvas();
+              grid.render();
+            },
+          },
+        );
+        exports.dialog($dialog, dialogOptions);
+      });
     });
   };
 
@@ -551,11 +548,13 @@ define([
     function updateHeader() {
       $header.html(`
                 <table><tr><td>
-                ${sources
-    ? `${sources} sources left`
-    : `Sources loaded.${failedSources ? ` (${failedSources} failed)` : ''
-    }`
-}
+                ${
+                  sources
+                    ? `${sources} sources left`
+                    : `Sources loaded.${
+                        failedSources ? ` (${failedSources} failed)` : ''
+                      }`
+                }
                 </td>
                 <td id="abc">
                 </td></tr>
@@ -660,7 +659,7 @@ define([
       ];
     }
 
-    for (var i = 0; i < columns.length; i++) {
+    for (let i = 0; i < columns.length; i++) {
       columns[i] = _.defaults(columns[i], slickDefaultColumn);
       if (!columns[i].jpath && columns[i].field) {
         columns[i].jpath = [columns[i].field];
@@ -715,7 +714,6 @@ define([
         };
 
         const dialogOptions = Object.assign(
-          {},
           defaultDialogOptions,
           options.dialog,
           {
@@ -803,17 +801,19 @@ define([
         },
       );
 
-      if (okLabel !== null && okLabel !== '')
+      if (okLabel !== null && okLabel !== '') {
         dialogOptions.buttons[okLabel] = function () {
           resolve(true);
           $(this).dialog('close');
         };
+      }
 
-      if (cancelLabel !== null && cancelLabel !== '')
+      if (cancelLabel !== null && cancelLabel !== '') {
         dialogOptions.buttons[cancelLabel] = function () {
           resolve(false);
           $(this).dialog('close');
         };
+      }
 
       $dialog.dialog(dialogOptions);
     });
@@ -894,10 +894,8 @@ define([
   };
 
   exports.copyToClipboard = function (str, options = {}) {
-    const {
-      successMessage = 'Copy success',
-      failureMessage = 'Copy failure',
-    } = options;
+    const { successMessage = 'Copy success', failureMessage = 'Copy failure' } =
+      options;
     var strlen = str.length;
     var txtarea = $('<textarea/>').text(str).css({
       width: 0,

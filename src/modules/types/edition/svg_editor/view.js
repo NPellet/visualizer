@@ -3,21 +3,21 @@
 /* global EmbeddedSVGEdit*/
 require.config({
   paths: {
-    svgsanitize: 'lib/svg-edit/sanitize'
+    svgsanitize: 'lib/svg-edit/sanitize',
   },
   shim: {
     svgsanitize: [
       'lib/svg-edit/svgedit',
       'lib/svg-edit/browser',
-      'lib/svg-edit/svgutils'
+      'lib/svg-edit/svgutils',
     ],
     'lib/svg-edit/svgutils': [
       'lib/svg-edit/browser',
       'lib/svg-edit/svgtransformlist',
-      'lib/svg-edit/units'
+      'lib/svg-edit/units',
     ],
-    'lib/svg-edit/svgtransformlist': ['lib/svg-edit/browser']
-  }
+    'lib/svg-edit/svgtransformlist': ['lib/svg-edit/browser'],
+  },
 });
 
 define([
@@ -30,14 +30,16 @@ define([
   'src/util/util',
   'src/util/datatraversing',
   'lib/svg-edit/embedapi',
-  'svgsanitize'
+  'svgsanitize',
 ], function (require, API, _, Default, Debug, Renderer) {
   var saveSvgThrottled = _.throttle(function () {
     var args = arguments;
 
     function saveAndTrigger(data) {
       if (args[0].module.getConfigurationCheckbox('saveSvg', 'yes')) {
-        args[0].module.definition.configuration.groups.group[0].svgcode = [data];
+        args[0].module.definition.configuration.groups.group[0].svgcode = [
+          data,
+        ];
       }
       args[0].module.controller.onChange(data);
     }
@@ -61,10 +63,7 @@ define([
         .attr('width', viewbox[2])
         .attr('height', viewbox[3])
         .removeAttr('viewBox');
-      svgcode = svgcode
-        .wrap('<p/>')
-        .parent()
-        .html();
+      svgcode = svgcode.wrap('<p/>').parent().html();
       saveAndTrigger(svgcode);
     }
   }, 1000);
@@ -74,7 +73,7 @@ define([
     'set',
     'animateMotion',
     'animateColor',
-    'animateTransform'
+    'animateTransform',
   ];
   var defaultAnimAttributes = {
     begin: 'indefinite',
@@ -82,8 +81,8 @@ define([
       clearOnEnd: false,
       persistOnEnd: false,
       clearAnimationTagsOnEnd: false,
-      clearAnimationTagsBeforeBegin: false
-    }
+      clearAnimationTagsBeforeBegin: false,
+    },
   };
 
   var animationReserved = ['options', 'tag', 'attributes'];
@@ -118,7 +117,7 @@ define([
           this.dom = $(
             `<iframe src="lib/svg-edit/svg-editor.html?extensions=ext-xdomain-messaging.js${
               window.location.href.replace(/\?(.*)$/, '&$1') // Append arguments to this file onto the iframe
-            }"></iframe>`
+            }"></iframe>`,
           );
 
           this.module.getDomContent().html(this.dom);
@@ -144,9 +143,9 @@ define([
           });
         } else {
           var domContent = that.module.getDomContent();
-          return Renderer.render(domContent, {
+          Renderer.render(domContent, {
             type: 'svg',
-            value: svgCode
+            value: svgCode,
           })
             .catch(function () {
               domContent.html('<svg></svg>');
@@ -184,7 +183,7 @@ define([
       },
       svgInput: function (svgCode) {
         this._renderSvg(svgCode).then(this._saveSvg.bind(this));
-      }
+      },
     },
 
     addAnimation: function ($svgEl, anim) {
@@ -202,8 +201,9 @@ define([
 
       var thisDefault = {};
       for (var k in anim) {
-        if (animationReserved.indexOf(k) === -1)
+        if (animationReserved.indexOf(k) === -1) {
           thisDefault[k] = _.cloneDeep(anim[k]);
+        }
       }
       for (let i = 0; i < anim.attributes.length; i++) {
         anim.attributes[i] = _.defaults(anim.attributes[i], thisDefault);
@@ -211,7 +211,7 @@ define([
         $svgEl.each(function () {
           var animation = document.createElementNS(
             'http://www.w3.org/2000/svg',
-            anim.tag
+            anim.tag,
           );
           for (var attribute in anim.attributes[i]) {
             var attrValue = anim.attributes[i][attribute];
@@ -235,7 +235,7 @@ define([
             if (anim.tag === 'animate') {
               $svgEl.attr(
                 this.getAttribute('attributeName'),
-                this.getAttribute('to')
+                this.getAttribute('to'),
               );
             } else {
               Debug.warn('Could not persist animation');
@@ -261,10 +261,7 @@ define([
         });
         this.addEventListener('beginEvent', function () {
           if (anim.options.clearAnimationTagsBeforeBegin) {
-            that
-              .$getAnimationTags($svgEl)
-              .not($allAnimations)
-              .remove();
+            that.$getAnimationTags($svgEl).not($allAnimations).remove();
             highlightCount[highlightId] = 0;
             blockHighlight[highlightId] = true;
           }
@@ -430,7 +427,7 @@ define([
         animation.tag = 'animateTransform';
         animation.options = {
           clearOnEnd: false,
-          persistOnEnd: false
+          persistOnEnd: false,
         };
         animation.attributes = {
           attributeName: 'transform',
@@ -439,7 +436,7 @@ define([
           dur: '0.2s',
           additive: 'sum',
           accumulate: 'sum',
-          fill: 'freeze'
+          fill: 'freeze',
         };
         if (onOff && highlightCount[killId] === 0) {
           animation.options.clearAnimationTags = false;
@@ -469,7 +466,7 @@ define([
         }
 
         for (var j = 0; j < mouseEventNames.length; j++) {
-          if (obj.hasOwnProperty(mouseEventNames[j])) {
+          if (Object.hasOwn(obj, mouseEventNames[j])) {
             (function (eventName) {
               $svgEl.off(eventName);
               $svgEl.on(eventName, function () {
@@ -520,8 +517,9 @@ define([
         !anim.attributes ||
         !anim.attributes.to ||
         !anim.attributes.attributeName
-      )
+      ) {
         return;
+      }
       animMemory[id] = animMemory[id] || {};
       animMemory[id][anim.attributes.attributeName] =
         animMemory[id][anim.attributes.attributeName] || {};
@@ -534,8 +532,9 @@ define([
         !animMemory[id] ||
         !animMemory[id][anim.attributes.attributeName] ||
         !animMemory[id][anim.attributes.attributeName].to
-      )
+      ) {
         return;
+      }
       anim.attributes.from = animMemory[id][anim.attributes.attributeName].to;
     },
 
@@ -546,7 +545,7 @@ define([
         else $retEl = $retEl.add($el.find(animationTags[i]));
       }
       return $retEl;
-    }
+    },
   });
 
   return View;

@@ -1,6 +1,11 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/util/util'], function ($, Default, Versioning, Util) {
+define([
+  'jquery',
+  'src/header/components/default',
+  'src/util/versioning',
+  'src/util/util',
+], function ($, Default, Versioning, Util) {
   var defaults = {
     label: false,
     elements: false,
@@ -8,28 +13,28 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     dataURL: false,
     viewBranch: false,
     dataBranch: false,
-    toggle: false
+    toggle: false,
   };
 
-  function Element() {
-  }
+  function Element() {}
 
   var currentMenu;
 
   Util.inherits(Element, Default, {
-
     _onClick: function () {
       var that = this;
 
       this.setStyleOpen(this._open);
 
       if (this._open) {
-        if (currentMenu && (currentMenu !== this) && currentMenu._open)
+        if (currentMenu && currentMenu !== this && currentMenu._open) {
           currentMenu.onClick();
+        }
         currentMenu = that;
 
-        if (this.options.viewURL || this.options.dataURL)
+        if (this.options.viewURL || this.options.dataURL) {
           this.load(this.options);
+        }
 
         this.doElements();
       } else {
@@ -43,14 +48,14 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
         result.view = {
           url: el.viewURL,
           branch: el.viewBranch,
-          urls: el.views
+          urls: el.views,
         };
       }
       if (el.results || el.dataURL) {
         result.data = {
           url: el.dataURL,
           branch: el.branchURL,
-          urls: el.views
+          urls: el.views,
         };
       }
       Versioning.switchView(result, true);
@@ -62,8 +67,9 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
     },
 
     _doElements: function (elements) {
-      if (!elements)
+      if (!elements) {
         return;
+      }
 
       var ul = $('<ul />') || this.$_elToOpen.empty(),
         i = 0,
@@ -75,7 +81,6 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
           ul.append(this._doElements(elements[i].elements));
         }
       }
-
 
       return ul;
     },
@@ -91,7 +96,7 @@ define(['jquery', 'src/header/components/default', 'src/util/versioning', 'src/u
       }
 
       return dom;
-    }
+    },
   });
 
   return Element;

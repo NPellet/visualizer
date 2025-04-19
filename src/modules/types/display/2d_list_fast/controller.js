@@ -1,53 +1,56 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
+define(['modules/default/defaultcontroller', 'src/util/util'], function (
+  Default,
+  Util,
+) {
   var typeList = Util.getStructuresComboOptions();
 
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.moduleInformation = {
     name: 'Two dimensional list',
-    description: 'Display an array of data in 2 dimensions. Parts of the data can be selectively shown or hidden.',
+    description:
+      'Display an array of data in 2 dimensions. Parts of the data can be selectively shown or hidden.',
     author: 'Michaël Zasso',
     date: '05.05.2014',
     license: 'MIT',
-    cssClass: '2d_list_fast'
+    cssClass: '2d_list_fast',
   };
 
   Controller.prototype.references = {
     cell: {
       label: 'Data of the cell',
-      type: 'object'
+      type: 'object',
     },
     list: {
       label: 'The array of data to display',
-      type: 'array'
+      type: 'array',
     },
     showList: {
       label: 'Array of display flags',
-      type: 'array'
-    }
+      type: 'array',
+    },
   };
 
   Controller.prototype.events = {
     onHover: {
       label: 'Hover a cell',
-      refVariable: ['cell']
+      refVariable: ['cell'],
     },
     onClick: {
       label: 'Click a cell',
       refVariable: ['cell'],
-      refAction: ['cell']
-    }
+      refAction: ['cell'],
+    },
   };
 
   Controller.prototype.variablesIn = ['list', 'showList'];
 
   Controller.prototype.actionsIn = {
-    addElement: 'Add an element'
+    addElement: 'Add an element',
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -57,42 +60,42 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             colnumber: {
               type: 'text',
               default: 5,
-              title: 'Number of columns'
+              title: 'Number of columns',
             },
             valjPath: {
               type: 'combo',
               title: 'Value jPath',
-              options: jpaths
+              options: jpaths,
             },
             colorjPath: {
               type: 'combo',
               title: 'Color jPath',
-              options: jpaths
+              options: jpaths,
             },
             forceType: {
               type: 'combo',
               title: 'Force type',
               default: '',
-              options: typeList
+              options: typeList,
             },
             rendererOptions: {
               type: 'text',
               default: '',
-              title: 'Renderer options'
+              title: 'Renderer options',
             },
             height: {
               type: 'text',
-              title: 'Force height'
-            }
-          }
-        }
-      }
+              title: 'Force height',
+            },
+          },
+        },
+      },
     };
   };
 
@@ -102,7 +105,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     valjpath: ['groups', 'group', 0, 'valjPath', 0],
     height: ['groups', 'group', 0, 'height', 0],
     forceType: ['groups', 'group', 0, 'forceType', 0],
-    rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0]
+    rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0],
   };
 
   return Controller;

@@ -1,15 +1,19 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 'src/util/util'], function (Default, Renderer, API, Util) {
-  function View() {
-  }
+define([
+  'modules/default/defaultview',
+  'src/util/typerenderer',
+  'src/util/api',
+  'src/util/util',
+], function (Default, Renderer, API, Util) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       this.dom = $('<div class="ci-displaylist-list-2d-fast"></div>');
       this.module.getDomContent().html(this.dom);
-      this.rendererOptions = Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
+      this.rendererOptions =
+        Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
       var forceType = this.module.getConfiguration('forceType');
       if (forceType) this.rendererOptions.forceType = forceType;
     },
@@ -22,7 +26,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
       },
       showList: function () {
         this.showList = null;
-      }
+      },
     },
 
     inDom: function () {
@@ -39,12 +43,22 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           jpath = [row, col];
         }
         if (e.type === 'mouseenter') {
-          that.module.controller.setVarFromEvent('onHover', 'cell', 'list', jpath);
+          that.module.controller.setVarFromEvent(
+            'onHover',
+            'cell',
+            'list',
+            jpath,
+          );
           API.highlight(value, 1);
         } else if (e.type === 'mouseleave') {
           API.highlight(value, 0);
         } else if (e.type === 'click') {
-          that.module.controller.setVarFromEvent('onClick', 'cell', 'list', jpath);
+          that.module.controller.setVarFromEvent(
+            'onClick',
+            'cell',
+            'list',
+            jpath,
+          );
           that.module.controller.sendActionFromEvent('onClick', 'cell', value);
         }
       });
@@ -78,7 +92,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         var colorJpath = cfg('colorjpath', false),
           valJpath = cfg('valjpath', ''),
           dimensions = {
-            width: cols
+            width: cols,
           };
         var height = cfg('height');
         if (height) {
@@ -86,7 +100,12 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         }
 
         for (var i = 0; i < length; i++) {
-          var data = this.renderElement(this.list.getChildSync([i]), dimensions, colorJpath, valJpath);
+          var data = this.renderElement(
+            this.list.getChildSync([i]),
+            dimensions,
+            colorJpath,
+            valJpath,
+          );
           this.dataReady[i] = data[0];
           this.dataDivs[i] = data[1];
         }
@@ -103,12 +122,13 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
           this.showList = convert2Dto1D(list);
         }
         this.updateVisibility();
-      }
+      },
     },
 
     updateVisibility: function () {
-      if (!this.showList || !this.list)
+      if (!this.showList || !this.list) {
         return;
+      }
 
       var that = this;
 
@@ -133,13 +153,18 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         });
       }
 
-      API.listenHighlight(element, function (onOff) {
-        if (onOff) {
-          td.css('border-color', 'black');
-        } else {
-          td.css('border-color', '');
-        }
-      }, false, this.module.getId());
+      API.listenHighlight(
+        element,
+        function (onOff) {
+          if (onOff) {
+            td.css('border-color', 'black');
+          } else {
+            td.css('border-color', '');
+          }
+        },
+        false,
+        this.module.getId(),
+      );
 
       return [Renderer.render(td, element, valJpath, this.rendererOptions), td];
     },
@@ -156,8 +181,7 @@ define(['modules/default/defaultview', 'src/util/typerenderer', 'src/util/api', 
         this.dimWidth = val[0].length;
         this.dimHeight = val.length;
       }
-    }
-
+    },
   });
 
   function convert2Dto1D(val) {

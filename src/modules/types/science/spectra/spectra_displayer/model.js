@@ -1,18 +1,20 @@
 'use strict';
 
-define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (Default, Traversing) {
+define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
+  Default,
+  Traversing,
+) {
   function Model() {
     this.boundaries = {
       xMin: 0,
       xMax: 0,
       yMin: 0,
-      yMax: 0
+      yMax: 0,
     };
     this.trackData = {};
   }
 
   $.extend(true, Model.prototype, Default, {
-
     setXBoundaries: function (min, max) {
       min = min || 0;
       max = max || 0;
@@ -34,7 +36,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
         xMin: this.boundaries.xMin,
         xMax: this.boundaries.xMax,
         yMin: this.boundaries.yMin,
-        yMax: this.boundaries.yMax
+        yMax: this.boundaries.yMax,
       };
     },
 
@@ -75,8 +77,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (De
       }
 
       return jpaths;
-    }
-
+    },
   });
 
   return Model;

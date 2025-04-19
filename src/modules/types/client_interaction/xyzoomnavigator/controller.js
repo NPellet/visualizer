@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,16 +11,16 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Norman Pellet',
     date: '9.12.2014',
     license: 'MIT',
-    cssClass: 'xyzzoom'
+    cssClass: 'xyzzoom',
   };
 
   Controller.prototype.references = {
     xycoords: {
-      label: 'XY Coords'
+      label: 'XY Coords',
     },
     zoom: {
-      label: 'Zoom'
-    }
+      label: 'Zoom',
+    },
   };
 
   Controller.prototype.events = {
@@ -29,14 +28,14 @@ define(['modules/default/defaultcontroller'], function (Default) {
       label: 'Move',
       description: '',
       refVariable: ['xycoords'],
-      refAction: ['xycoords']
+      refAction: ['xycoords'],
     },
     onZoomChange: {
       label: 'Changes Zoom',
       description: '',
       refVariable: ['zoom'],
-      refAction: ['zoom']
-    }
+      refAction: ['zoom'],
+    },
   };
 
   Controller.prototype.move = function (x, y) {
@@ -54,7 +53,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
   Controller.prototype.actionsIn = {
     changeZoom: 'Change zoom value',
-    changeXY: 'Change XY center value'
+    changeXY: 'Change XY center value',
   };
 
   return Controller;

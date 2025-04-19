@@ -1,8 +1,8 @@
 'use strict';
 
-(function() {
+(function () {
   try {
-    eval('(function(){ var a = 0; var b = {a}; })()'); // eslint-disable-line no-eval
+    eval('(function(){ var a = 0; var b = {a}; })()');
   } catch (e) {
     // eslint-disable-next-line no-alert
     alert(
@@ -113,7 +113,7 @@ require.config({
     // },
     threejs: {
       exports: 'THREE',
-      init: function() {
+      init: function () {
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
       },
@@ -215,7 +215,7 @@ require([
   'uri/URI.fragmentQuery',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function(Version, $, Datas, EntryPoint, URI) {
+], function (Version, $, Datas, EntryPoint, URI) {
   $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);

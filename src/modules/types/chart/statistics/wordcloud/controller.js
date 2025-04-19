@@ -1,8 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing'], function (Default, Traversing) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'src/util/datatraversing',
+], function (Default, Traversing) {
+  function Controller() {}
 
   Controller.prototype = $.extend(true, {}, Default);
 
@@ -11,27 +13,25 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     description: 'Word visualization',
     author: 'Michaël Zasso',
     date: '19.03.2015',
-    license: 'MIT'
+    license: 'MIT',
   };
 
   Controller.prototype.references = {
     textvalue: {
       type: 'string',
-      label: 'A string of words'
+      label: 'A string of words',
     },
     arrayvalue: {
       type: 'array',
-      label: 'An array of words'
-    }
+      label: 'An array of words',
+    },
   };
 
-  Controller.prototype.events = {
-  };
+  Controller.prototype.events = {};
 
   Controller.prototype.variablesIn = ['arrayvalue', 'textvalue'];
 
-  Controller.prototype.actionsIn = {
-  };
+  Controller.prototype.actionsIn = {};
 
   Controller.prototype.configurationStructure = function () {
     return {
@@ -39,7 +39,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         group: {
           options: {
             type: 'list',
-            multiple: 'false'
+            multiple: 'false',
           },
           fields: {
             spiral: {
@@ -47,9 +47,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
               title: 'Spiral',
               options: [
                 { key: 'archimedean', title: 'Archimedean' },
-                { key: 'rectangular', title: 'Rectangular' }
+                { key: 'rectangular', title: 'Rectangular' },
               ],
-              default: 'archimedean'
+              default: 'archimedean',
             },
             scale: {
               type: 'combo',
@@ -57,22 +57,22 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
               options: [
                 { key: 'log', title: 'log n' },
                 { key: 'sqrt', title: '√n' },
-                { key: 'linear', title: 'n' }
+                { key: 'linear', title: 'n' },
               ],
-              default: 'log'
+              default: 'log',
             },
             orientation: {
               type: 'float',
               title: 'Orientation',
-              default: 5
+              default: 5,
             },
             oneWordPerLine: {
               type: 'checkbox',
               title: 'Options',
               options: {
-                oneWordPerLine: 'One Word Per Line'
+                oneWordPerLine: 'One Word Per Line',
               },
-              default: ['oneWordPerLine']
+              default: ['oneWordPerLine'],
             },
             fromTo: {
               type: 'slider',
@@ -81,11 +81,11 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
               min: -180,
               max: 180,
               step: 1,
-              default: [-60, 60]
-            }
-          }
-        }
-      }
+              default: [-60, 60],
+            },
+          },
+        },
+      },
     };
   };
 
@@ -94,7 +94,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     scale: ['groups', 'group', 0, 'scale', 0],
     orientation: ['groups', 'group', 0, 'orientation', 0],
     oneWordPerLine: ['groups', 'group', 0, 'oneWordPerLine', 0],
-    fromTo: ['groups', 'group', 0, 'fromTo', 0]
+    fromTo: ['groups', 'group', 0, 'fromTo', 0],
   };
   return Controller;
 });

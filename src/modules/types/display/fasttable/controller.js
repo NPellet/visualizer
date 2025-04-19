@@ -1,6 +1,9 @@
 'use strict';
 
-define(['modules/types/display/jqgrid/controller', 'src/util/util'], function (Controller, Util) {
+define(['modules/types/display/jqgrid/controller', 'src/util/util'], function (
+  Controller,
+  Util,
+) {
   function ControllerExtended() {
     Controller.call(this);
   }
@@ -13,12 +16,12 @@ define(['modules/types/display/jqgrid/controller', 'src/util/util'], function (C
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'fasttable'
+    cssClass: 'fasttable',
   };
 
   ControllerExtended.prototype.references.showList = {
     label: 'Array of display flags',
-    type: 'array'
+    type: 'array',
   };
 
   ControllerExtended.prototype.variablesIn.push('showList');

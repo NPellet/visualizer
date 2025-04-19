@@ -79,7 +79,7 @@ define([
         this.images = [];
         return;
       }
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         this.images[i].$panzoomEl.panzoom('destroy');
       }
       this.dom.html('');
@@ -126,7 +126,7 @@ define([
     },
 
     reorderImages: function () {
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         this.images[i].$panzoomEl.css(
           'z-index',
           parseInt(this.images[i].conf.order, 10) || i,
@@ -207,7 +207,8 @@ define([
         if (that.toHide && that.toHide[conf.variable]) {
           if ($previousImg) $previousImg.hide();
           $img.remove();
-          return resolve();
+          resolve();
+          return;
         }
 
         $img.css('opacity', conf.opacity).addClass(conf.rendering);
@@ -237,10 +238,11 @@ define([
           image.conf = conf;
           image.transform = null;
 
-          if (image.name === '__highlight__')
+          if (image.name === '__highlight__') {
             $parent.css({
               'pointer-events': 'none',
             });
+          }
 
           that.dom.append($parent);
 
@@ -305,10 +307,11 @@ define([
       var himg;
 
       this.highlights = null;
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         if (this.images[i].name === '__highlight__') continue;
-        if (API.getData(this.images[i].name)._highlightArray)
+        if (API.getData(this.images[i].name)._highlightArray) {
           himg = this.images[i];
+        }
       }
       if (!himg) return;
       var data = API.getData(himg.name);
@@ -333,12 +336,12 @@ define([
 
       // For speed, transform _highlight into Map
       var hMap = new Map();
-      for (var i = 0; i < this._highlight.length; i++) {
+      for (let i = 0; i < this._highlight.length; i++) {
         hMap.set(this._highlight[i], true);
       }
 
       // Map highlights to array of indexes in the image
-      for (i = 0; i < data._highlightArray.length; i++) {
+      for (let i = 0; i < data._highlightArray.length; i++) {
         var h = data._highlightArray[i];
         var left = i % himg.width;
         var top = (i / himg.width) | 0;
@@ -372,7 +375,7 @@ define([
       }
 
       var keys = Object.keys(this.highlights);
-      for (i = 0; i < keys.length; i++) {
+      for (let i = 0; i < keys.length; i++) {
         var key = keys[i];
         this.highlights[key].width =
           this.highlights[key].shiftX - this.highlights[key].shiftx + 1;
@@ -388,31 +391,29 @@ define([
       var hl = Object.keys(this.highlights);
 
       that._highlighted = [];
-      for (var i = 0; i < hl.length; i++) {
-        (function (i) {
-          API.listenHighlight(
-            { _highlight: hl[i] },
-            function (onOff, key, killerId, senderId) {
-              if (!Array.isArray(key)) {
-                key = [key];
-              }
-              if (onOff) {
-                that._highlighted = _(that._highlighted)
-                  .push(key)
-                  .flatten()
-                  .uniq()
-                  .value();
-              } else {
-                that._highlighted = _.filter(that._highlighted, function (val) {
-                  return key.indexOf(val) === -1;
-                });
-              }
-              that._drawHighlight(senderId);
-            },
-            false,
-            that.module.getId(),
-          );
-        })(i);
+      for (let i = 0; i < hl.length; i++) {
+        API.listenHighlight(
+          { _highlight: hl[i] },
+          function (onOff, key, killerId, senderId) {
+            if (!Array.isArray(key)) {
+              key = [key];
+            }
+            if (onOff) {
+              that._highlighted = _(that._highlighted)
+                .push(key)
+                .flatten()
+                .uniq()
+                .value();
+            } else {
+              that._highlighted = _.filter(that._highlighted, function (val) {
+                return key.indexOf(val) === -1;
+              });
+            }
+            that._drawHighlight(senderId);
+          },
+          false,
+          that.module.getId(),
+        );
       }
     },
 
@@ -428,9 +429,8 @@ define([
         this.highlightImage = this._createHighlight(this._highlighted);
       }
       this.doImage('__highlight__').then(function () {
-        const highlightStrategy = that.module.getConfiguration(
-          'highlightStrategy',
-        );
+        const highlightStrategy =
+          that.module.getConfiguration('highlightStrategy');
         if (highlightStrategy !== 'none' && senderId !== that.module.getId()) {
           var w = that.highlightImage.canvas.width;
           var h = that.highlightImage.canvas.height;
@@ -502,7 +502,7 @@ define([
         start = idx === -1 ? undefined : idx;
         l = idx + 1;
       }
-      for (var i = start; i < l; i++) {
+      for (let i = start; i < l; i++) {
         that.images[i].$panzoomEl
           .panzoom({
             increment: 0.1,
@@ -576,7 +576,7 @@ define([
       });
 
       function getPixels(e, allPixels, pixel) {
-        for (var i = 0; i < that.images.length; i++) {
+        for (let i = 0; i < that.images.length; i++) {
           var rect = that.images[i].$img[0].getBoundingClientRect();
           //      console.log('left', rect);
           var p = {
@@ -620,7 +620,7 @@ define([
           ctrlKey: e.ctrlKey,
           altKey: e.altKey,
         };
-        var clickedPixel = Object.assign({}, base);
+        var clickedPixel = { ...base };
         var allClickedPixels = {};
         getPixels(e, allClickedPixels, clickedPixel);
         if (Object.keys(clickedPixel).length !== 3) {
@@ -628,7 +628,7 @@ define([
         }
         if (Object.keys(allClickedPixels).length !== 0) {
           var keys = Object.keys(allClickedPixels);
-          for (var i = 0; i < keys.length; i++) {
+          for (let i = 0; i < keys.length; i++) {
             Object.assign(allClickedPixels[keys[i]], base);
           }
           that.module.controller.allClickedPixels(allClickedPixels);
@@ -647,7 +647,7 @@ define([
           return;
         }
         var allHoverPixels = {};
-        var hoverPixel = Object.assign({}, base);
+        var hoverPixel = { ...base };
         getPixels(e, allHoverPixels, hoverPixel);
 
         var hoverPixelKeys = Object.keys(hoverPixel);
@@ -673,7 +673,7 @@ define([
           )
         ) {
           var keys = Object.keys(allHoverPixels);
-          for (var i = 0; i < keys.length; i++) {
+          for (let i = 0; i < keys.length; i++) {
             Object.assign(allHoverPixels[keys[i]], base);
           }
           that.module.controller.allHoverPixels(allHoverPixels);
@@ -684,7 +684,7 @@ define([
       // Double click event
       this.dom.off('dblclick');
       this.dom.dblclick(function () {
-        for (var i = 0; i < that.images.length; i++) {
+        for (let i = 0; i < that.images.length; i++) {
           that.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {
             that.lastTransform = that.images[i].$panzoomEl.panzoom('getMatrix');
@@ -714,7 +714,7 @@ define([
         shifty = this.highlights[hl[0]].shifty;
       var shiftX = this.highlights[hl[0]].shiftx,
         shiftY = this.highlights[hl[0]].shiftY;
-      for (var i = 0; i < hl.length; i++) {
+      for (let i = 0; i < hl.length; i++) {
         var h = hl[i];
         shiftx = Math.min(shiftx, this.highlights[h].shiftx);
         shifty = Math.min(shifty, this.highlights[h].shifty);
@@ -738,7 +738,7 @@ define([
       // The property data will contain an array of int8
       var data = imageData.data;
       var idx;
-      for (var i = 0; i < height * width; i++) {
+      for (let i = 0; i < height * width; i++) {
         // Highlight color: see .ci-highlight in main.css
         idx = i * 4;
         data[idx] = 0xff | 0; // Red
@@ -748,9 +748,9 @@ define([
       }
 
       // Change opacity for pixels that need to be seen
-      for (var j = 0; j < hl.length; j++) {
+      for (let j = 0; j < hl.length; j++) {
         var hlj = hl[j];
-        for (i = 0; i < this.highlights[hlj].data.length; i++) {
+        for (let i = 0; i < this.highlights[hlj].data.length; i++) {
           idx = this.highlights[hlj].data[i];
           var x = idx % this.himg.width;
           var y = (idx / this.himg.width) | 0;
@@ -814,7 +814,7 @@ define([
     },
 
     doAllImages: function () {
-      for (var i = 0; i < this.images.length; i++) {
+      for (let i = 0; i < this.images.length; i++) {
         if (this.images[i].type === 'svg') {
           this.doSvg(this.images[i].name);
         } else {
@@ -891,7 +891,7 @@ define([
         this.setTransform(transformMatrix, true);
       },
       reset: function () {
-        for (var i = 0; i < this.images.length; i++) {
+        for (let i = 0; i < this.images.length; i++) {
           this.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {
             this.lastTransform = this.images[i].$panzoomEl.panzoom('getMatrix');
@@ -914,13 +914,14 @@ define([
       if (!conf) {
         return this._completeConf(this._getDefaultConf(), varname, options);
       }
-      if (varname === '__highlight__')
+      if (varname === '__highlight__') {
         options = {
           'z-index': 1000000,
           scaling: 'asHighlight',
           rendering: 'crisp-edges',
           opacity: 0.7,
         };
+      }
       conf.variable = varname;
       var x = _.assign(conf, options);
       return x;
@@ -929,7 +930,7 @@ define([
 
   // Unused for now but don't erase
   function applyTransform(v, t) {
-    var r = new Array(2);
+    const r = new Array(2);
     r[0] = v[0] * +t[0] + v[1] * +t[1] + +t[4];
     r[1] = v[0] * +t[2] + v[1] * +t[3] + +t[5];
     return r;

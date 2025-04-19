@@ -132,7 +132,9 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   Controller.prototype.export = function () {
-    return this.module.view.postMessage('executeScriptSync', ['write PNGJ jsmol.png', ]);
+    return this.module.view.postMessage('executeScriptSync', [
+      'write PNGJ jsmol.png',
+    ]);
   };
 
   return Controller;

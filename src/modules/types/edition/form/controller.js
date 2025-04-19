@@ -1,33 +1,33 @@
 'use strict';
 
 define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
   Controller.prototype.moduleInformation = {
     name: 'Templated form',
-    description: 'A complex module allowing one to display a templated form in the module',
+    description:
+      'A complex module allowing one to display a templated form in the module',
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'form'
+    cssClass: 'form',
   };
 
   Controller.prototype.references = {
     data: {
       type: 'object',
-      label: 'Form data'
-    }
+      label: 'Form data',
+    },
   };
 
   Controller.prototype.events = {
     onChange: {
       label: 'Form data has changed',
       refVariable: ['data'],
-      refAction: ['data']
-    }
+      refAction: ['data'],
+    },
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -35,55 +35,55 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
       sections: {
         structure: {
           options: {
-            title: 'Form structure'
+            title: 'Form structure',
           },
           groups: {
             group: {
               options: {
-                type: 'list'
+                type: 'list',
               },
               fields: {
                 json: {
                   type: 'jscode',
                   mode: 'json',
-                  title: 'Form structure'
-                }
-              }
-            }
-          }
+                  title: 'Form structure',
+                },
+              },
+            },
+          },
         },
         template: {
           options: {
-            title: 'Template'
+            title: 'Template',
           },
           groups: {
             template: {
               options: {
                 type: 'list',
-                multiple: false
+                multiple: false,
               },
               fields: {
                 options: {
                   type: 'checkbox',
                   options: {
-                    defaultTpl: 'Use default template'
+                    defaultTpl: 'Use default template',
                   },
-                  default: ['defaultTpl']
+                  default: ['defaultTpl'],
                 },
                 file: {
                   type: 'text',
-                  title: 'Template file'
+                  title: 'Template file',
                 },
                 html: {
                   type: 'jscode',
                   mode: 'html',
-                  title: 'HTML template'
-                }
-              }
-            }
-          }
-        }
-      }
+                  title: 'HTML template',
+                },
+              },
+            },
+          },
+        },
+      },
     };
   };
 
@@ -96,7 +96,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     structure: ['sections', 'structure', 0, 'groups', 'group', 0, 'json', 0],
     options: ['sections', 'template', 0, 'groups', 'template', 0, 'options', 0],
     tpl_file: ['sections', 'template', 0, 'groups', 'template', 0, 'file', 0],
-    tpl_html: ['sections', 'template', 0, 'groups', 'template', 0, 'html', 0]
+    tpl_html: ['sections', 'template', 0, 'groups', 'template', 0, 'html', 0],
   };
 
   return Controller;

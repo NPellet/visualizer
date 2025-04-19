@@ -1,8 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/formcreator/formcreator'], function (Default, Traversing, FormCreator) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'src/util/datatraversing',
+  'lib/formcreator/formcreator',
+], function (Default, Traversing, FormCreator) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,42 +15,42 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'configured_search'
+    cssClass: 'configured_search',
   };
 
   Controller.prototype.references = {
     array: {
       label: 'An input array', // The input array is never modified
-      type: 'array'
+      type: 'array',
     },
 
     filteredArray: {
       label: 'Filtered array',
-      type: 'array'
+      type: 'array',
     },
 
     flagArray: {
       label: 'Array of booleans',
-      type: 'array'
+      type: 'array',
     },
     countResult: {
       type: 'number',
-      label: 'Number of selected items'
-    }
+      label: 'Number of selected items',
+    },
   };
 
   Controller.prototype.events = {
     onSearchDone: {
       label: 'When a search is performed',
       refVariable: ['filteredArray', 'flagArray'],
-      refAction: ['filteredArray', 'flagArray', 'countResult']
-    }
+      refAction: ['filteredArray', 'flagArray', 'countResult'],
+    },
   };
 
   Controller.prototype.variablesIn = ['array'];
 
   Controller.prototype.actionsIn = {
-    disable: 'Disable the search'
+    disable: 'Disable the search',
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -63,28 +66,31 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             max: {
               type: 'text',
               title: 'Maximum hits',
-              default: '50'
+              default: '50',
             },
             disableMessage: {
               type: 'text',
               title: 'Disable message',
-              default: 'Click to enable search'
-            }
-          }
-        }
+              default: 'Click to enable search',
+            },
+          },
+        },
       },
       sections: {
-        searchFields: FormCreator.makeConfig({
-          name: 'Search on',
-          jpaths: all_jpaths
-        }, { name: 'Comparison' })
-      }
+        searchFields: FormCreator.makeConfig(
+          {
+            name: 'Search on',
+            jpaths: all_jpaths,
+          },
+          { name: 'Comparison' },
+        ),
+      },
     };
   };
 
@@ -105,13 +111,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'lib/for
         return [];
       }
       return cfg;
-    }
+    },
   };
 
   Controller.prototype.configAliases = {
     searchfields: ['sections', 'searchFields'],
     maxhits: ['groups', 'group', 0, 'max', 0],
-    disableMessage: ['groups', 'group', 0, 'disableMessage', 0]
+    disableMessage: ['groups', 'group', 0, 'disableMessage', 0],
   };
 
   return Controller;

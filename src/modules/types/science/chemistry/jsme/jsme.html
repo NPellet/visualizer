@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -15,7 +15,7 @@
     ></script>
   </head>
 
-  <body style="margin: 0; padding: 0; overflow: hidden;">
+  <body style="margin: 0; padding: 0; overflow: hidden">
     <div id="appletContainer"></div>
 
     <script type="text/javascript">
@@ -23,15 +23,15 @@
       var previousHighlight;
       var def = $.Deferred();
 
-      window.setMolFile = function(mol) {
+      window.setMolFile = function (mol) {
         jsmeApplet.readMolFile(mol);
       };
 
-      window.setJmeFile = function(mol) {
+      window.setJmeFile = function (mol) {
         jsmeApplet.readMolecule(mol);
       };
 
-      window.setSize = function(w, h) {
+      window.setSize = function (w, h) {
         var width = w + 'px';
         var height = h + 'px';
         JSApplet.JSME.clearFontCache(); // solve the problem of hidden JSME that are displayed
@@ -39,22 +39,22 @@
         //		jsmeApplet.repaint();
       };
 
-      window.setOptions = function(options) {
-        def.done(function() {
+      window.setOptions = function (options) {
+        def.done(function () {
           jsmeApplet.options(options);
         });
       };
 
-      window.clear = function() {
+      window.clear = function () {
         jsmeApplet.reset();
       };
 
       var highlightColor;
-      window.setHighlightColor = function(color) {
+      window.setHighlightColor = function (color) {
         highlightColor = color;
       };
 
-      window.setHighlight = function(atoms, onOff) {
+      window.setHighlight = function (atoms, onOff) {
         var molIndex = 1;
 
         // before highlight we systematically reset all the colors because there is a problem in case of
@@ -71,11 +71,11 @@
         }
       };
 
-      window.clearHighlight = function(molIndex, atomsIndex) {
+      window.clearHighlight = function (molIndex, atomsIndex) {
         jsmeApplet.resetAtomColors(molIndex);
       };
 
-      var changeCallback = function(result) {
+      var changeCallback = function (result) {
         var mol = window.jsmeApplet.molFile();
         var molV3 = window.jsmeApplet.molFile(true);
         var jme = window.jsmeApplet.jmeFile();
@@ -105,7 +105,7 @@
         var self = this;
         jsmeApplet = new JSApplet.JSME('appletContainer', w + 'px', h + 'px');
 
-        def.done(function(message) {
+        def.done(function (message) {
           jsmeApplet.options(message.prefs);
           setHighlightColor(message.highlightColor);
           jsmeApplet.setMolecularAreaLineWidth(message.bondwidth);
@@ -125,23 +125,23 @@
           '(function(mol,atom) {this.doPostMessage("doHighlight", {mol: mol, atom:atom});})',
         );
 
-        jsmeApplet.setCallBack('AtomHighlight', function(jsmeEvent) {
+        jsmeApplet.setCallBack('AtomHighlight', function (jsmeEvent) {
           this.doPostMessage('atomHover', { atom: jsmeEvent.atom });
         });
-        jsmeApplet.setCallBack('AtomClicked', function(jsmeEvent) {
+        jsmeApplet.setCallBack('AtomClicked', function (jsmeEvent) {
           this.doPostMessage('atomClicked', { atom: jsmeEvent.atom });
         });
-        jsmeApplet.setCallBack('BondHighlight', function(jsmeEvent) {
+        jsmeApplet.setCallBack('BondHighlight', function (jsmeEvent) {
           this.doPostMessage('bondHover', { bond: jsmeEvent.bond });
         });
-        jsmeApplet.setCallBack('BondClicked', function(jsmeEvent) {
+        jsmeApplet.setCallBack('BondClicked', function (jsmeEvent) {
           this.doPostMessage('bondClicked', { bond: jsmeEvent.bond });
         });
       }
 
       var parent;
 
-      window.doPostMessage = function(type, message) {
+      window.doPostMessage = function (type, message) {
         if (parent) {
           parent.window.postMessage(
             JSON.stringify({
@@ -155,7 +155,7 @@
         }
       };
 
-      window.addEventListener('message', function(event) {
+      window.addEventListener('message', function (event) {
         try {
           var message = JSON.parse(event.data);
         } catch (e) {

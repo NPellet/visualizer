@@ -38,7 +38,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
       allFeatures: true,
       allRectangles: false,
       allSameSize: false,
-      proxyUrl: '../biojs/dependencies/proxy/proxy.php'
+      proxyUrl: '../biojs/dependencies/proxy/proxy.php',
     },
 
     /*
@@ -96,24 +96,25 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         var oldH = $svg.attr('height');
         $svg.attr('width', `${$svg.width()}px`);
         $svg.attr('height', `${$svg.height()}px`);
-        var svg = document.getElementById('uniprotFeaturePainter-holder')
-          .innerHTML;
+        var svg = document.getElementById(
+          'uniprotFeaturePainter-holder',
+        ).innerHTML;
         var canvas = document.createElement('canvas');
         canvg(canvas, svg);
         dataURL = canvas.toDataURL();
         $svg.attr('width', `${$svg.width()}px`);
         $svg.attr('height', oldH).attr('width', oldW);
         this.$imageExported = jQuery(
-          '<div id="uniprotFeaturePainter-imageExportedDiv"></div>'
+          '<div id="uniprotFeaturePainter-imageExportedDiv"></div>',
         )
           .html(
-            `<img id="uniprotFeaturePainter-imageExported" alt="exported image" src="${dataURL}"/>`
+            `<img id="uniprotFeaturePainter-imageExported" alt="exported image" src="${dataURL}"/>`,
           )
           .dialog({
             autoOpen: true,
             title: 'Exported image',
             modal: true,
-            width: $svg.width() + 20
+            width: $svg.width() + 20,
           });
       }
     },
@@ -128,7 +129,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
     applyStyle: function (style) {
       if (
         style != undefined &&
-        (style == 'centered' || style == 'nonOverlapping' || (style = 'rows'))
+        (style === 'centered' || style === 'nonOverlapping' || (style = 'rows'))
       ) {
         var config = this.opt.json.configuration;
         this.customize(style, config.horizontalGrid, config.verticalGrid);
@@ -161,6 +162,6 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         var config = this.opt.json.configuration;
         this.customize(config.style, config.horizontalGrid, show);
       }
-    }
-  }
+    },
+  },
 );

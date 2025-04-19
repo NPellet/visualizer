@@ -6,15 +6,13 @@ define([
   'src/util/api',
   'src/util/ui',
   'lib/loadingplot/loadingplot',
-  'components/jquery-mousewheel/jquery.mousewheel.min'
+  'components/jquery-mousewheel/jquery.mousewheel.min',
 ], function (Default, Util, API, ui, LoadingPlot) {
   Util.loadCss('lib/loadingplot/svg.css');
 
-  function View() {
-  }
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       this.dom = ui.getSafeElement('div');
       this.module.getDomContent().html(this.dom);
@@ -36,20 +34,19 @@ define([
           this.dom.empty();
         }
         API.killHighlight(this.module.getId());
-      }
+      },
     },
 
     update: {
-
       preferences: function (moduleValue) {
         this._lastConf = moduleValue;
         if (!this._lastValue) {
           return;
         }
-        for (var i in moduleValue) {
-          for (var j = 0; j < this._lastValue.series.length; j++) {
+        for (let i in moduleValue) {
+          for (let j = 0; j < this._lastValue.series.length; j++) {
             if (this._lastValue.series[j].category == i) {
-              for (var k = 0; k < this._lastValue.series[j].data.length; k++) {
+              for (let k = 0; k < this._lastValue.series[j].data.length; k++) {
                 this._instances[j][k].filter(moduleValue[i]);
               }
             }
@@ -86,7 +83,13 @@ define([
 
         this._highlights = [];
 
-        var svg = new LoadingPlot.SVG(null, null, null, null, this.module.getConfiguration('navigation')[0][0] || false);
+        var svg = new LoadingPlot.SVG(
+          null,
+          null,
+          null,
+          null,
+          this.module.getConfiguration('navigation')[0][0] || false,
+        );
 
         svg._svgEl.style.display = 'block';
 
@@ -99,7 +102,6 @@ define([
           that.module.controller.onMove(cx, cy);
           that.module.controller.onChangeViewport(svg.getViewBox());
         });
-
 
         this._svg = svg;
 
@@ -147,28 +149,47 @@ define([
               var datas = moduleValue.value.series[j].data;
               var el;
               for (var k = 0, l = datas.length; k < l; k++) {
-                if (type === 'pie')
-                  el = new LoadingPlot.Pie(svg, datas[k].x, datas[k].y, datas[k]);
-                else if (type === 'ellipse')
-                  el = new LoadingPlot.Ellipse(svg, datas[k].x, datas[k].y, datas[k]);
-                else if (type === 'img')
-                  el = new LoadingPlot.Image(svg, datas[k].x, datas[k].y, datas[k]);
+                if (type === 'pie') {
+                  el = new LoadingPlot.Pie(
+                    svg,
+                    datas[k].x,
+                    datas[k].y,
+                    datas[k],
+                  );
+                } else if (type === 'ellipse') {
+                  el = new LoadingPlot.Ellipse(
+                    svg,
+                    datas[k].x,
+                    datas[k].y,
+                    datas[k],
+                  );
+                } else if (type === 'img') {
+                  el = new LoadingPlot.Image(
+                    svg,
+                    datas[k].x,
+                    datas[k].y,
+                    datas[k],
+                  );
+                }
                 el.allowLabelDisplay(theLabels.display_labels);
-                if (layer.labelsize[0])
+                if (layer.labelsize[0]) {
                   el.setLabelSize(layer.labelsize[0]);
+                }
                 el.forceField(theLabels.forcefield);
-                if (layer.labelzoomthreshold[0] !== '')
+                if (layer.labelzoomthreshold[0] !== '') {
                   el.setLabelDisplayThreshold(layer.labelzoomthreshold[0]);
+                }
 
-                var highlightMag = layer.highlightmag[0] ? (layer.highlightmag[0]) : 1;
-                var highlightStroke = layer.highlighteffect[0][0] ? true : false;
+                var highlightMag = layer.highlightmag[0]
+                  ? layer.highlightmag[0]
+                  : 1;
+                var highlightStroke = !!layer.highlighteffect[0][0];
 
                 el.setHighlightMag(highlightMag);
                 el.setHighlightEffect({
                   mag: highlightMag,
-                  yStroke: highlightStroke
+                  yStroke: highlightStroke,
                 });
-
 
                 el.setLabelStroke(theLabels.blackstroke);
                 el.setLabelScale(theLabels.scalelabel);
@@ -195,9 +216,8 @@ define([
         if (this._lastConf) {
           this.update.preferences.call(this, this._lastConf);
         }
-      }
-    }
-
+      },
+    },
   });
 
   return View;

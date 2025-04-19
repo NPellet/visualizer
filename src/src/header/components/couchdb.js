@@ -9,16 +9,18 @@ define([
   'src/util/debug',
   'lib/couchdb/jquery.couch',
   'fancytree',
-  'components/ui-contextmenu/jquery.ui-contextmenu.min'
+  'components/ui-contextmenu/jquery.ui-contextmenu.min',
 ], function ($, Default, Versioning, Button, Util, Debug) {
   function CouchDBManager() {}
 
   Util.inherits(CouchDBManager, Default, {
     initImpl: function () {
-      this.ok = this.loggedIn = false;
+      this.ok = false;
+      this.loggedIn = false;
       this.id = Util.getNextUniqueId();
-      if (this.options.url)
+      if (this.options.url) {
         $.couch.urlPrefix = this.options.url.replace(/\/$/, '');
+      }
       var db = this.options.database || 'visualizer';
       this.database = $.couch.db(db);
 
@@ -36,9 +38,9 @@ define([
         error: function (e, f, g) {
           Debug.error(
             `CouchDB header : database connection error. Code:${e}.`,
-            g
+            g,
           );
-        }
+        },
       });
     },
     cssId: function (name) {
@@ -78,13 +80,13 @@ define([
             that.username = data.userCtx.name;
             that.$_elToOpen.html(that.getMenuContent());
           }
-        }
+        },
       });
     },
     load: function (type, node, rev) {
       var result = {};
       result[type.toLowerCase()] = {
-        url: this.database.uri + node.data.id + (rev ? `?rev=${rev}` : '')
+        url: this.database.uri + node.data.id + (rev ? `?rev=${rev}` : ''),
       };
       Versioning.switchView(result, true);
     },
@@ -130,12 +132,12 @@ define([
               lazy: true,
               title: name,
               key: `${folderNode.key}:${name}`,
-              lastRev: data.rev
+              lastRev: data.rev,
             });
             if (!folderNode.expanded) folderNode.toggleExpanded();
           }
         },
-        error: this.showError
+        error: this.showError,
       });
     },
     mkdir: function (type, name) {
@@ -153,20 +155,19 @@ define([
       var children = folderNode.getChildren();
       if (children) {
         for (var i = 0; i < children.length; i++) {
-          if (children[i].title === name && children[i].folder)
+          if (children[i].title === name && children[i].folder) {
             return this.showError(12);
+          }
         }
       }
 
       var newNode = folderNode.addNode({
         folder: true,
         title: name,
-        key: `${folderNode.key}:${name}`
+        key: `${folderNode.key}:${name}`,
       });
       if (!folderNode.expanded) folderNode.toggleExpanded();
-      $(newNode.li)
-        .find('.fancytree-title')
-        .trigger('click');
+      $(newNode.li).find('.fancytree-title').trigger('click');
     },
     login: function (username, password) {
       var that = this;
@@ -178,7 +179,7 @@ define([
           that.username = username;
           that.$_elToOpen.html(that.getMenuContent());
         },
-        error: this.showError
+        error: this.showError,
       });
     },
     logout: function () {
@@ -188,7 +189,7 @@ define([
           that.loggedIn = false;
           that.username = null;
           that.$_elToOpen.html(that.getLoginForm());
-        }
+        },
       });
     },
     getLoginForm: function () {
@@ -197,48 +198,48 @@ define([
       function doLogin() {
         that.login(
           that.getFormContent('login-username'),
-          that.getFormContent('login-password')
+          that.getFormContent('login-password'),
         );
         return false;
       }
 
-      var loginForm = (this.loginForm = $('<div>'));
-      loginForm.append('<h1>Login</h1>');
-      loginForm.append(
+      this.loginForm = $('<div>');
+      this.loginForm.append('<h1>Login</h1>');
+      this.loginForm.append(
         `<label for="${this.cssId(
-          'login-username'
+          'login-username',
         )}">Username </label><input type="text" id="${this.cssId(
-          'login-username'
-        )}" /><br>`
+          'login-username',
+        )}" /><br>`,
       );
-      loginForm.append(
+      this.loginForm.append(
         `<label for="${this.cssId(
-          'login-password'
+          'login-password',
         )}">Password </label><input type="password" id="${this.cssId(
-          'login-password'
-        )}" />`
+          'login-password',
+        )}" />`,
       );
-      loginForm.append(
-        new Button('Login', doLogin, { color: 'green' }).render()
+      this.loginForm.append(
+        new Button('Login', doLogin, { color: 'green' }).render(),
       );
-      loginForm.bind('keypress', function (e) {
+      this.loginForm.bind('keypress', function (e) {
         if (e.charCode === 13) return doLogin();
       });
 
-      loginForm.append(this.errorP);
+      this.loginForm.append(this.errorP);
 
-      return loginForm;
+      return this.loginForm;
     },
     getMenuContent: function () {
-      var that = this;
-      var dom = (this.menuContent = $('<div>'));
+      const that = this;
+      this.menuContent = $('<div>');
 
-      var logout = $('<div>')
+      const logout = $('<div>')
         .append(
           $('<p>')
             .css('display', 'inline-block')
             .css('width', '50%')
-            .append('Click on an element to select it. Double-click to load.')
+            .append('Click on an element to select it. Double-click to load.'),
         )
         .append(
           $('<p>')
@@ -254,25 +255,25 @@ define([
                 .css({
                   color: 'blue',
                   'text-decoration': 'underline',
-                  cursor: 'pointer'
-                })
-            )
+                  cursor: 'pointer',
+                }),
+            ),
         );
-      dom.append(logout);
+      this.menuContent.append(logout);
 
-      var tableRow = $('<tr>').appendTo($('<table>').appendTo(dom));
+      var tableRow = $('<tr>').appendTo(
+        $('<table>').appendTo(this.menuContent),
+      );
       var treeCSS = {
         'overflow-y': 'auto',
         height: '200px',
-        width: '300px'
+        width: '300px',
       };
 
       var dataCol = $('<td valign="top">').appendTo(tableRow);
       dataCol.append('<h1>Data</h1>');
 
-      var dataTree = $('<div>')
-        .attr('id', this.cssId('datatree'))
-        .css(treeCSS);
+      var dataTree = $('<div>').attr('id', this.cssId('datatree')).css(treeCSS);
       dataCol.append(dataTree);
 
       dataCol.append(`<p id="${this.cssId('datadiv')}">&nbsp;</p>`);
@@ -285,8 +286,8 @@ define([
               function () {
                 that.save('Data', that.getFormContent('data'));
               },
-              { color: 'red' }
-            ).render()
+              { color: 'red' },
+            ).render(),
           )
           .append(
             new Button(
@@ -294,18 +295,16 @@ define([
               function () {
                 that.mkdir('Data', that.getFormContent('data'));
               },
-              { color: 'blue' }
-            ).render()
-          )
+              { color: 'blue' },
+            ).render(),
+          ),
       );
       this.lastDataFolder = { name: `${this.username}:data`, node: null };
 
       var viewCol = $('<td valign="top">').appendTo(tableRow);
       viewCol.append('<h1>View</h1>');
 
-      var viewTree = $('<div>')
-        .attr('id', this.cssId('viewtree'))
-        .css(treeCSS);
+      var viewTree = $('<div>').attr('id', this.cssId('viewtree')).css(treeCSS);
       viewCol.append(viewTree);
 
       viewCol.append(`<p id="${this.cssId('viewdiv')}">&nbsp;</p>`);
@@ -318,8 +317,8 @@ define([
               function () {
                 that.save('View', that.getFormContent('view'));
               },
-              { color: 'red' }
-            ).render()
+              { color: 'red' },
+            ).render(),
           )
           .append(
             new Button(
@@ -327,17 +326,16 @@ define([
               function () {
                 that.mkdir('View', that.getFormContent('view'));
               },
-              { color: 'blue' }
-            ).render()
-          )
+              { color: 'blue' },
+            ).render(),
+          ),
       );
-      this.lastViewFolder = { name: `${this.username}:view`, node: null };
 
-      dom.append(this.errorP);
+      this.menuContent.append(this.errorP);
 
       this.loadTree();
 
-      return dom;
+      return this.menuContent;
     },
     lazyLoad: function (event, result) {
       var id = result.node.data.id;
@@ -356,13 +354,13 @@ define([
                 title: `rev ${l - i}`,
                 id: data._id,
                 rev: true,
-                key: rev.rev
+                key: rev.rev,
               };
               revs.push(el);
             }
           }
           def.resolve(revs);
-        }
+        },
       });
     },
     clickNode: function (type, event, data) {
@@ -380,7 +378,7 @@ define([
           name: `${this.username}:${typeL}${
             folderName.length > 0 ? `:${folderName}` : ''
           }`,
-          node: node
+          node: node,
         };
       } else {
         var rev;
@@ -419,7 +417,7 @@ define([
         },
         createMenu(event) {
           $(event.target).css('z-index', 1000);
-        }
+        },
       };
 
       this.database.allDocs({
@@ -435,14 +433,11 @@ define([
               lazyload: proxyLazyLoad,
               click: proxyClickData,
               dblclick: proxyClickData,
-              debugLevel: 0
+              debugLevel: 0,
             })
             .children('ul')
             .css('box-sizing', 'border-box');
-          datatree
-            .data('ui-fancytree')
-            .getNodeByKey('root')
-            .toggleExpanded();
+          datatree.data('ui-fancytree').getNodeByKey('root').toggleExpanded();
           datatree.contextmenu(menuOptions);
 
           var viewtree = $(`#${that.cssId('viewtree')}`);
@@ -453,16 +448,13 @@ define([
               lazyload: proxyLazyLoad,
               click: proxyClickView,
               dblclick: proxyClickView,
-              debugLevel: 0
+              debugLevel: 0,
             })
             .children('ul')
             .css('box-sizing', 'border-box');
-          viewtree
-            .data('ui-fancytree')
-            .getNodeByKey('root')
-            .toggleExpanded();
+          viewtree.data('ui-fancytree').getNodeByKey('root').toggleExpanded();
           viewtree.contextmenu(menuOptions);
-        }
+        },
       });
     },
     contextClick(node, action) {
@@ -470,16 +462,16 @@ define([
         if (node.data.rev) node = node.parent;
         var doc = {
           _id: node.data.id,
-          _rev: node.data.lastRev
+          _rev: node.data.lastRev,
         };
         this.database.removeDoc(doc, {
           success: function () {
             node.remove();
           },
-          error: this.showError
+          error: this.showError,
         });
       }
-    }
+    },
   });
 
   function showError(e) {
@@ -549,23 +541,25 @@ define([
   function createFancyTree(object, currentPath) {
     var tree, root;
     if (currentPath.length) {
-      tree = root = [];
+      tree = [];
+      root = true;
     } else {
       root = [
         {
           key: 'root',
           title: 'root',
           folder: true,
-          children: []
-        }
+          children: [],
+        },
       ];
       tree = root[0].children;
       currentPath = 'root:';
     }
 
     for (var name in object) {
-      if (name === '__folder' || name === '__name' || name === '__rev')
+      if (name === '__folder' || name === '__name' || name === '__rev') {
         continue;
+      }
       var obj = object[name];
       var thisPath = currentPath + name;
       var el = { title: name, key: thisPath };
@@ -576,7 +570,7 @@ define([
             lazy: true,
             title: name,
             key: thisPath,
-            lastRev: obj.__rev
+            lastRev: obj.__rev,
           });
         }
         el.folder = true;

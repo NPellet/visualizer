@@ -1,15 +1,17 @@
 'use strict';
 
-define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/util'], function ($, Default, Grid, Util) {
-  function Element() {
-  }
+define([
+  'jquery',
+  'src/header/components/default',
+  'src/main/grid',
+  'src/util/util',
+], function ($, Default, Grid, Util) {
+  function Element() {}
 
   var currentMenu;
 
   Util.inherits(Element, Default, {
-
-    initImpl: function () {
-    },
+    initImpl: function () {},
 
     _onClick: function () {
       var that = this;
@@ -17,12 +19,14 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
       this.setStyleOpen(this._open);
 
       if (this._open) {
-        if (currentMenu && (currentMenu !== this) && currentMenu._open)
+        if (currentMenu && currentMenu !== this && currentMenu._open) {
           currentMenu.onClick();
+        }
         currentMenu = that;
 
-        if (this.options.viewURL || this.options.dataURL)
+        if (this.options.viewURL || this.options.dataURL) {
           this.load(this.options);
+        }
 
         this.doElements();
       } else {
@@ -48,7 +52,6 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
         ul.append(this._buildSubElement(layers[i]));
       }
 
-
       return ul;
     },
 
@@ -60,8 +63,7 @@ define(['jquery', 'src/header/components/default', 'src/main/grid', 'src/util/ut
         that.onClick();
       });
       return dom;
-    }
-
+    },
   });
 
   return Element;

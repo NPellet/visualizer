@@ -7,7 +7,7 @@ define([
   'ckeditor',
   'lodash',
   'src/main/grid',
-  'chroma'
+  'chroma',
 ], function ($, Default, Util, CKEDITOR, _, Grid, chroma) {
   function View() {
     this._id = Util.getNextUniqueId();
@@ -18,9 +18,15 @@ define([
       var that = this;
       this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
       this.debounce = this.module.getConfiguration('debouncing');
-      this.storeInView = this.module.getConfigurationCheckbox('storeInView', 'yes');
+      this.storeInView = this.module.getConfigurationCheckbox(
+        'storeInView',
+        'yes',
+      );
       this.valueChanged = _.debounce(function () {
-        that.module.controller.valueChanged.apply(that.module.controller, arguments);
+        that.module.controller.valueChanged.apply(
+          that.module.controller,
+          arguments,
+        );
       }, this.debounce);
     },
     inDom: function () {
@@ -29,7 +35,7 @@ define([
     blank: {
       html: function () {
         this.updateEditor('');
-      }
+      },
     },
     update: {
       html: function (moduleValue) {
@@ -39,12 +45,15 @@ define([
           this.module.definition.richtext = val;
         }
         this.updateEditor(val);
-      }
+      },
     },
     initEditor: function () {
       var that = this;
       var initText = this.module.definition.richtext || '';
-      this.readOnly = !this.module.getConfigurationCheckbox('editable', 'isEditable');
+      this.readOnly = !this.module.getConfigurationCheckbox(
+        'editable',
+        'isEditable',
+      );
       if (this.readOnly && this.plainHtml) {
         this.dom = $('<div>');
         if (this.storeInView) {
@@ -68,7 +77,8 @@ define([
           extraPlugins: 'mathjax,font,sourcedialog,codesnippet',
           removeButtons: '',
           language: 'en',
-          mathJaxLib: '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML'
+          mathJaxLib:
+            '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
         };
         if (this.readOnly) {
           options.readOnly = true;
@@ -113,7 +123,7 @@ define([
         setImmediate(() => {
           this.instance.insertText(text);
         });
-      }
+      },
     },
 
     _setCss: function () {
@@ -122,27 +132,31 @@ define([
         height: '100%',
         width: '100%',
         padding: '5px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
       });
       if (this.module.getConfigurationCheckbox('postit', 'yes')) {
         var ch = chroma(bgColor[0], bgColor[1], bgColor[2]);
         this.dom.addClass('richtext-postit');
-        this.dom.parents('.ci-module-wrapper').addClass('ci-module-richtext-postit');
+        this.dom
+          .parents('.ci-module-wrapper')
+          .addClass('ci-module-richtext-postit');
         this.dom.css({
-          background: `${Util.getCssVendorPrefix()}radial-gradient(center, ellipse cover, ${ch.brighter().hex()} 0%, ${ch.hex()} 100%)`
+          background: `${Util.getCssVendorPrefix()}radial-gradient(center, ellipse cover, ${ch.brighter().hex()} 0%, ${ch.hex()} 100%)`,
           // background: 'radial-gradient(ellipse at center, ' + ch.brighter().hex() + ' 0%,' + ch.hex() + ' 100%)',
         });
       } else {
         this.dom.css({
-          background: ''
+          background: '',
         });
         this.dom.css({
-          'background-color': `rgba(${bgColor.join(',')})`
+          'background-color': `rgba(${bgColor.join(',')})`,
         });
         this.dom.removeClass('richtext-postit');
-        this.dom.parents('.ci-module-wrapper').removeClass('ci-module-richtext-postit');
+        this.dom
+          .parents('.ci-module-wrapper')
+          .removeClass('ci-module-richtext-postit');
       }
-    }
+    },
   });
 
   return View;

@@ -6,12 +6,11 @@ define([
   'src/util/datatraversing',
   'lib/gcms/gcms',
   'jcampconverter',
-  'src/util/color'
+  'src/util/color',
 ], function ($, Default, Traversing, GCMS, Converter, Color) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-
     init: function () {
       var div1 = document.createElement('div');
       var div2 = document.createElement('div');
@@ -51,26 +50,45 @@ define([
         aucColor: aucColor,
         aucColorT: autColorT,
 
-
         onMsFromAUCChange: function (ms) {
           that.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
         },
 
         MZChange: function (ms) {
-          that.module.controller.sendActionFromEvent('onMZSelectionChange', 'mzList', ms);
+          that.module.controller.sendActionFromEvent(
+            'onMZSelectionChange',
+            'mzList',
+            ms,
+          );
         },
 
         MSChangeIndex: function (msIndex, ms) {
-          that.module.controller.sendActionFromEvent('onMSIndexChanged', 'msIndex', msIndex);
-          that.module.controller.createDataFromEvent('onMSIndexChanged', 'msMouse', ms);
+          that.module.controller.sendActionFromEvent(
+            'onMSIndexChanged',
+            'msIndex',
+            msIndex,
+          );
+          that.module.controller.createDataFromEvent(
+            'onMSIndexChanged',
+            'msMouse',
+            ms,
+          );
         },
 
         onZoomGC: function (from, to) {
-          that.module.controller.sendActionFromEvent('onZoomGCChange', 'fromtoGC', [from, to]);
-          that.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
+          that.module.controller.sendActionFromEvent(
+            'onZoomGCChange',
+            'fromtoGC',
+            [from, to],
+          );
+          that.module.controller.sendActionFromEvent(
+            'onZoomGCChange',
+            'centerGC',
+            (to + from) / 2,
+          );
         },
 
-        onlyOneMS: true
+        onlyOneMS: true,
       });
     },
 
@@ -88,33 +106,45 @@ define([
       },
       jcampRO() {
         this.gcmsInstance.blankRO();
-      }
+      },
     },
 
     update: {
       jcamp: function (moduleValue) {
         moduleValue = String(moduleValue.get());
-        Converter.convert(moduleValue, { chromatogram: true }, true).then((jcamp) => {
-          if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
-            this.gcmsInstance.setGC(jcamp.chromatogram);
-            this.gcmsInstance.setMS(jcamp.chromatogram.series.ms.data);
+        Converter.convert(moduleValue, { chromatogram: true }, true).then(
+          (jcamp) => {
+            if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
+              this.gcmsInstance.setGC(jcamp.chromatogram);
+              this.gcmsInstance.setMS(jcamp.chromatogram.series.ms.data);
 
-            this.module.controller.createDataFromEvent('onJCampParsed', 'msdata', jcamp.chromatogram.series.ms.data);
-            this.module.controller.createDataFromEvent('onJCampParsed', 'gcdata', jcamp.chromatogram);
+              this.module.controller.createDataFromEvent(
+                'onJCampParsed',
+                'msdata',
+                jcamp.chromatogram.series.ms.data,
+              );
+              this.module.controller.createDataFromEvent(
+                'onJCampParsed',
+                'gcdata',
+                jcamp.chromatogram,
+              );
 
-            this.jcamp = jcamp.chromatogram;
-          }
-        });
+              this.jcamp = jcamp.chromatogram;
+            }
+          },
+        );
       },
 
       jcampRO: function (moduleValue) {
         moduleValue = String(moduleValue.get());
-        Converter.convert(moduleValue, { chromatogram: true }, true).then((jcamp) => {
-          if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
-            this.gcmsInstance.setGCRO(jcamp.chromatogram);
-            this.gcmsInstance.setMSRO(jcamp.chromatogram.series.ms.data);
-          }
-        });
+        Converter.convert(moduleValue, { chromatogram: true }, true).then(
+          (jcamp) => {
+            if (jcamp.chromatogram && jcamp.chromatogram.series.ms) {
+              this.gcmsInstance.setGCRO(jcamp.chromatogram);
+              this.gcmsInstance.setMSRO(jcamp.chromatogram.series.ms.data);
+            }
+          },
+        );
       },
 
       annotationgc: function (value) {
@@ -124,7 +154,7 @@ define([
 
         this.resetAnnotationsGC();
         this.addAnnotations(value);
-      }
+      },
     },
 
     getDom: function () {
@@ -141,14 +171,17 @@ define([
 
     addAnnotations: function (a) {
       var that = this;
-      a.map(function (source) {
-        var shapeData = that.gcmsInstance.addAUC(source.from, source.to, source);
+      a.forEach(function (source) {
+        var shapeData = that.gcmsInstance.addAUC(
+          source.from,
+          source.to,
+          source,
+        );
         shapeData._originalSource = source;
       });
 
       this.annotations = a;
     },
-
 
     onActionReceive: {
       fromtoGC: function (value) {
@@ -159,21 +192,36 @@ define([
         this.gcmsInstance.getGC().redraw(true, true, false);
         this.gcmsInstance.getGC().drawSeries();
 
-        this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (to + from) / 2);
+        this.module.controller.sendActionFromEvent(
+          'onZoomGCChange',
+          'centerGC',
+          (to + from) / 2,
+        );
 
         this.gcmsInstance.updateIngredientPeaks();
       },
 
       fromtoMS: function (value) {
-        this.gcmsInstance.getMS().getBottomAxis()._doZoomVal(value.from, value.to, true);
+        this.gcmsInstance
+          .getMS()
+          .getBottomAxis()
+          ._doZoomVal(value.from, value.to, true);
       },
 
       zoomOnAnnotation: function (value) {
         if (!value.pos && !value.pos2) {
           return;
         }
-        this.gcmsInstance.zoomOn(value.pos.x, value.pos2.x, value._max || false);
-        this.module.controller.sendActionFromEvent('onZoomGCChange', 'centerGC', (value.pos.x + value.pos2.x) / 2);
+        this.gcmsInstance.zoomOn(
+          value.pos.x,
+          value.pos2.x,
+          value._max || false,
+        );
+        this.module.controller.sendActionFromEvent(
+          'onZoomGCChange',
+          'centerGC',
+          (value.pos.x + value.pos2.x) / 2,
+        );
         this.gcmsInstance.updateIngredientPeaks();
       },
 
@@ -192,8 +240,8 @@ define([
 
       setMSIndexData: function (x) {
         this.gcmsInstance.setMSIndexData(x);
-      }
-    }
+      },
+    },
   });
 
   return View;

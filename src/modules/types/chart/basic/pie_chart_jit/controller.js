@@ -1,8 +1,7 @@
 'use strict';
 
 define(['modules/default/defaultcontroller'], function (Default) {
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,18 +11,18 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Michaël Zasso',
     date: '16.01.2014',
     license: 'MIT',
-    cssClass: 'pie_chart_jit'
+    cssClass: 'pie_chart_jit',
   };
 
   Controller.prototype.references = {
     chart: {
       type: ['chart', 'object'],
-      label: 'A json describing a chart'
+      label: 'A json describing a chart',
     },
     yArray: {
       type: 'array',
-      label: '1D Y array'
-    }
+      label: '1D Y array',
+    },
   };
 
   Controller.prototype.variablesIn = ['chart', 'yArray'];
@@ -33,41 +32,41 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             sliceOffset: {
               type: 'text',
               title: 'Slice offset',
-              default: 1
+              default: 1,
             },
             updateHeights: {
               type: 'checkbox',
               title: 'Slice height proportional to value ?',
               options: {
-                updateHeights: 'Yes (Only for mono-serie pies)'
-              }
-            }
-          }
-        }
-      }
+                updateHeights: 'Yes (Only for mono-serie pies)',
+              },
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configFunctions = {
     updateHeights: boolCheckbox,
-    showLabels: boolCheckbox
+    showLabels: boolCheckbox,
   };
 
   Controller.prototype.configAliases = {
     sliceOffset: ['groups', 'group', 0, 'sliceOffset', 0],
     updateHeights: ['groups', 'group', 0, 'updateHeights', 0],
     showLabels: ['groups', 'group', 0, 'showLabels', 0],
-    labelColor: ['groups', 'group', 0, 'labelColor', 0]
+    labelColor: ['groups', 'group', 0, 'labelColor', 0],
   };
 
   function boolCheckbox(cfg) {
-    return (cfg.length !== 0);
+    return cfg.length !== 0;
   }
 
   return Controller;

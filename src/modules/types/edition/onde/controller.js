@@ -5,7 +5,7 @@ define([
   'lib/json-schema/schema',
   'lodash',
   'src/util/debug',
-  'js-yaml'
+  'js-yaml',
 ], function (Default, Schema, _, Debug, Yaml) {
   function Controller() {}
 
@@ -17,7 +17,7 @@ define([
     author: 'Michaël Zasso',
     date: '17.04.2014',
     license: 'MIT',
-    cssClass: 'onde'
+    cssClass: 'onde',
   };
 
   Controller.prototype.initImpl = function () {
@@ -27,22 +27,22 @@ define([
 
   Controller.prototype.references = {
     inputValue: {
-      label: 'Input object'
+      label: 'Input object',
     },
     outputValue: {
-      label: 'Output object'
+      label: 'Output object',
     },
     schema: {
-      label: 'JSON schema'
-    }
+      label: 'JSON schema',
+    },
   };
 
   Controller.prototype.events = {
     onFormSubmit: {
       label: 'The form was submitted',
       refVariable: ['outputValue'],
-      refAction: ['outputValue']
-    }
+      refAction: ['outputValue'],
+    },
   };
 
   Controller.prototype.variablesIn = ['inputValue', 'schema'];
@@ -54,7 +54,7 @@ define([
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             hasButton: {
@@ -63,18 +63,18 @@ define([
               default: ['show'],
               options: {
                 show: 'Show button',
-                onload: 'Export data on load'
-              }
+                onload: 'Export data on load',
+              },
             },
             button_text: {
               type: 'text',
               title: 'Text of the export button',
-              default: 'Export'
+              default: 'Export',
             },
             debouncing: {
               type: 'float',
               title: 'Debouncing',
-              default: -1
+              default: -1,
             },
             output: {
               type: 'combo',
@@ -82,11 +82,11 @@ define([
               options: [
                 {
                   title: 'Modified input object',
-                  key: 'modified'
+                  key: 'modified',
                 },
-                { title: 'New object', key: 'new' }
+                { title: 'New object', key: 'new' },
               ],
-              default: 'new'
+              default: 'new',
             },
             mode: {
               type: 'combo',
@@ -94,71 +94,71 @@ define([
               options: [
                 { title: 'Input object', key: 'object' },
                 { title: 'Schema', key: 'schema' },
-                { title: 'Both', key: 'both' }
+                { title: 'Both', key: 'both' },
               ],
               default: 'object',
               displaySource: {
                 object: 'o',
                 schema: 's',
-                both: 'b'
-              }
+                both: 'b',
+              },
             },
             schemaSource: {
               type: 'combo',
               title: 'Schema source',
               options: [
                 { title: 'Input variable', key: 'variable' },
-                { title: 'Config', key: 'config' }
+                { title: 'Config', key: 'config' },
               ],
               displayTarget: ['s', 'b'],
               displaySource: {
-                config: 'c'
+                config: 'c',
               },
-              default: 'config'
+              default: 'config',
             },
             schema: {
               type: 'jscode',
               mode: 'yaml',
               title: 'YAML schema',
               default: '{}',
-              displayTarget: ['c']
+              displayTarget: ['c'],
             },
             onchangeFilter: {
               type: 'jscode',
-              title: 'Execute on change'
-            }
-          }
+              title: 'Execute on change',
+            },
+          },
         },
         data: {
           options: {
             type: 'list',
-            title: 'Data'
+            title: 'Data',
           },
           fields: {
             saveInView: {
               type: 'checkbox',
               title: 'Save in view',
               options: {
-                yes: 'yes'
+                yes: 'yes',
               },
               displaySource: { yes: 'saveInView' },
-              default: []
+              default: [],
             },
             varname: {
               type: 'text',
               title: 'Variable name',
               default: '',
-              displayTarget: ['saveInView']
+              displayTarget: ['saveInView'],
             },
             data: {
               type: 'jscode',
               title: 'Data',
               default: '{}',
-              displayTarget: ['saveInView']
-            }
-          }
-        }
-      }
+              displayTarget: ['saveInView'],
+            },
+          },
+        },
+      },
     };
   };
 
@@ -173,7 +173,7 @@ define([
     onchangeFilter: ['groups', 'group', 0, 'onchangeFilter', 0],
     saveInView: ['groups', 'data', 0, 'saveInView', 0],
     data: ['groups', 'data', 0, 'data', 0],
-    varname: ['groups', 'data', 0, 'varname', 0]
+    varname: ['groups', 'data', 0, 'varname', 0],
   };
 
   Controller.prototype.onBeforeSave = function (formValue) {
@@ -184,7 +184,7 @@ define([
     var output = formValue.module_specific_config[0].groups.group[0].output[0];
     if (saveInView && output !== 'modified') {
       Debug.warn(
-        'onde: if save in view is activated you probably want to modify var in'
+        'onde: if save in view is activated you probably want to modify var in',
       );
     }
     var varin = vars_in.filter(function (v) {
@@ -196,7 +196,7 @@ define([
       } else {
         vars_in.push({
           rel: 'inputValue',
-          name: varname
+          name: varname,
         });
       }
     } else if (!saveInView) {
@@ -229,15 +229,15 @@ define([
 
   function schemaJpath(schema, jpath) {
     if (schema.type === 'object' && typeof schema.properties === 'object') {
-      for (var key in schema.properties) {
+      for (const key in schema.properties) {
         schema.jpath = jpath;
-        var njpath = jpath.slice();
+        const njpath = jpath.slice();
         njpath.push(key);
         schemaJpath(schema.properties[key], njpath);
       }
     } else if (schema.type === 'array' && schema.items) {
       schema.jpath = jpath;
-      var njpath = jpath.slice();
+      const njpath = jpath.slice();
       njpath.push('$array$');
       schemaJpath(schema.items, njpath);
     } else {

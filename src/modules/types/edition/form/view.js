@@ -1,8 +1,11 @@
 'use strict';
 
-define(['jquery', 'modules/default/defaultview', 'forms/form'], function ($, Default, Form) {
-  function View() {
-  }
+define(['jquery', 'modules/default/defaultview', 'forms/form'], function (
+  $,
+  Default,
+  Form,
+) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init: function () {
@@ -65,7 +68,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function ($, Def
     },
     onChange: function (fieldElement, data) {
       this.module.controller.dataChanged(data);
-    }
+    },
   });
 
   return View;

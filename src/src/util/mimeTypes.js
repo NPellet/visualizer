@@ -11,13 +11,14 @@ define(['mime-types'], function (mimeTypes) {
           contentType = 'chemical/seq-na-genbank';
         } else if (/\.genbank$/i.test(filename)) {
           contentType = 'chemical/seq-na-genbank';
-        } else if (/\.(fasta|fa|fna)$/i.test(filename)) { // is fsa nucleic or amino acid?
+        } else if (/\.(fasta|fa|fna)$/i.test(filename)) {
+          // is fsa nucleic or amino acid?
           contentType = 'chemical/seq-na-fasta';
         } else if (/\.(mpfa|faa)$/i.test(filename)) {
           contentType = 'chemical/seq-aa-fasta';
         }
       }
       return contentType;
-    }
+    },
   };
 });

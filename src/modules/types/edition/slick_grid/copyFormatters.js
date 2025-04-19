@@ -13,7 +13,7 @@ define(['src/util/api'], function (API) {
         val = val ? val.get() || '' : '';
         const ocl = OCL.Molecule.fromIDCode(val);
         return ocl.toMolfileV3();
-      }
-    }
+      },
+    },
   };
 });

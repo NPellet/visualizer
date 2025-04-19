@@ -6,7 +6,7 @@ define([
   'src/util/api',
   'src/util/domdeferred',
   'src/util/datatraversing',
-  'src/util/context'
+  'src/util/context',
 ], function (Default, Util, API, DomDeferred, Traversing, Context) {
   function View() {}
 
@@ -19,7 +19,7 @@ define([
 
       this.domTable = $('<table />', {
         cellpadding: 0,
-        cellspacing: 0
+        cellspacing: 0,
       }).css({ width: '100%' });
       this.domHead = $('<thead />').appendTo(this.domTable);
       this.domBody = $('<tbody />').appendTo(this.domTable);
@@ -51,10 +51,10 @@ define([
           that.module.controller.lineClick(that.module.data, $this.index());
 
           if (toggle) {
-            if (toggle == 'single' && that.selected[0] !== undefined) {
+            if (toggle === 'single' && that.selected[0] !== undefined) {
               that.module.controller.onToggleOff(
                 that.module.data,
-                that.selected[0]
+                that.selected[0],
               );
               $this
                 .parent()
@@ -93,7 +93,7 @@ define([
             currentColSort = {
               asc: true,
               col: jpathId,
-              span: $('<div class="sort up"></div>')
+              span: $('<div class="sort up"></div>'),
             };
 
             that.domTable
@@ -179,7 +179,7 @@ define([
             this.module.data[i].unbindChange(this.module.getId());
           }
         }
-      }
+      },
     },
 
     update: {
@@ -201,12 +201,11 @@ define([
         var that = this,
           nbLines = this.module.getConfiguration('nbLines') || 20,
           html = '',
-          i = 0,
           l = moduleValue.get().length;
 
         this.module.data = moduleValue;
 
-        for (i = 0; i < l; i++) {
+        for (let i = 0; i < l; i++) {
           html += this.buildElement(moduleValue.getChildSync([i]), i);
         }
 
@@ -221,38 +220,36 @@ define([
         this.timeout = window.setTimeout(function () {
           API.killHighlight(that.module.getId());
 
-          for (i = 0; i < l; i++) {
-            (function (j) {
-              API.listenHighlight(
-                that.module.data[j],
-                function (val) {
-                  that.doHighlight(j, val);
-                },
-                false,
-                that.module.getId()
-              );
+          for (let i = 0; i < l; i++) {
+            API.listenHighlight(
+              that.module.data[i],
+              function (val) {
+                that.doHighlight(i, val);
+              },
+              false,
+              that.module.getId(),
+            );
 
-              var dom = that.domBody.find(`#${that.module.getId()}_${j}`);
+            let dom = that.domBody.find(`#${that.module.getId()}_${i}`);
 
-              that.module.model.dataListenChange(
-                that.module.data.get(j),
-                function () {
-                  dom.replaceWith((dom = $(that.buildElement(this, j, true))));
-                },
-                'list'
-              );
+            that.module.model.dataListenChange(
+              that.module.data.get(i),
+              function () {
+                dom.replaceWith((dom = $(that.buildElement(this, i, true))));
+              },
+              'list',
+            );
 
-              if (that.module.data.get(j).removable) {
-                Context.listen(dom.get(0), [
-                  [
-                    '<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>',
-                    function () {
-                      that.onActionReceive.removeRowById.call(that, j);
-                    }
-                  ]
-                ]);
-              }
-            })(i);
+            if (that.module.data.get(i).removable) {
+              Context.listen(dom.get(0), [
+                [
+                  '<li><a><span class="ui-icon ui-icon-close"></span> Remove</a></li>',
+                  function () {
+                    that.onActionReceive.removeRowById.call(that, i);
+                  },
+                ],
+              ]);
+            }
           }
         }, 1000); // 1 sec timeout
 
@@ -267,7 +264,7 @@ define([
 
         this.showList = value;
         this.updateVisibility();
-      }
+      },
     },
 
     updateVisibility: function () {
@@ -320,7 +317,7 @@ define([
 
         html += '<td>';
         currentVar = Traversing.get(
-          this.getValue(Traversing.get(source), jpaths[j].jpath)
+          this.getValue(Traversing.get(source), jpaths[j].jpath),
         );
         if (typeof currentVar === 'undefined') {
           currentVar = '';
@@ -368,7 +365,7 @@ define([
       removeRow: function (source) {
         this.onActionReceive.removeRowById.call(
           this,
-          this.module.getDataFromRel('list').indexOf(source)
+          this.module.getDataFromRel('list').indexOf(source),
         );
       },
 
@@ -386,68 +383,53 @@ define([
           this.selected.splice(index, 1);
         }
 
-        this.domBody
-          .children()
-          .eq(rowId)
-          .remove();
+        this.domBody.children().eq(rowId).remove();
       },
 
       toggleOff: function (source) {
         var index = this.module.getDataFromRel('list').indexOf(source);
-        if (index == -1) {
+        if (index === -1) {
           return;
         }
 
         this.module.controller.onToggleOff(this.module.data, index);
-        this.domBody
-          .children()
-          .eq(index)
-          .removeClass('toggled');
+        this.domBody.children().eq(index).removeClass('toggled');
       },
 
       toggleOn: function (source) {
         var index = this.module.getDataFromRel('list').indexOf(source);
 
-        if (index == -1) {
+        if (index === -1) {
           return;
         }
 
         var toggle = this.module.getConfiguration('toggle'),
           that = this;
 
-        if (toggle == 'single' && that.selected[0] !== undefined) {
+        if (toggle === 'single' && that.selected[0] !== undefined) {
           that.module.controller.onToggleOff(
             that.module.data,
-            that.selected[0]
+            that.selected[0],
           );
-          that.domBody
-            .children()
-            .eq(that.selected[0])
-            .toggleClass('toggled');
+          that.domBody.children().eq(that.selected[0]).toggleClass('toggled');
           that.selected = [];
         }
 
         that.selected.push(index);
 
         this.module.controller.onToggleOn(this.module.data, index);
-        this.domBody
-          .children()
-          .eq(index)
-          .addClass('toggled');
+        this.domBody.children().eq(index).addClass('toggled');
       },
 
       scrollTo: function (source) {
         var index = this.module.getDataFromRel('list').indexOf(source);
-        if (index == -1) {
+        if (index === -1) {
           return;
         }
 
-        var el = this.domBody
-          .children()
-          .eq(index)
-          .get();
+        var el = this.domBody.children().eq(index).get();
         el.scrollIntoView();
-      }
+      },
     },
 
     exportToTabDelimited: function () {
@@ -468,20 +450,19 @@ define([
       result.push(header.join('\t'));
 
       for (let i = 0; i < l; i++) {
-        var line = [];
-        for (var j = 0; j < jpaths.length; j++) {
-          // eslint-disable-next-line no-loop-func
+        const line = [];
+        for (let j = 0; j < jpaths.length; j++) {
           Traversing.getValueFromJPath(this.elements[i], jpaths[j].jpath).done(
-            function (elVal) {
+            (elVal) => {
               line.push(elVal);
-            }
+            },
           );
         }
         result.push(line.join('\t'));
       }
 
       return result.join('\r\n');
-    }
+    },
   });
 
   return View;

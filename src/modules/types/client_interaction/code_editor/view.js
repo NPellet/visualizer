@@ -7,7 +7,7 @@ define([
   'src/util/util',
   'ace/ace',
   'src/util/context',
-  'src/util/aceHelper'
+  'src/util/aceHelper',
 ], function ($, _, Default, Util, ace, Context, aceHelper) {
   function View() {
     this._id = Util.getNextUniqueId();
@@ -17,25 +17,30 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init() {
-      var table = this.table = $('<table>').css({
+      this.table = $('<table>').css({
         height: '100%',
-        width: '100%'
+        width: '100%',
       });
-      var editorRow = $('<tr>').appendTo(table).css('height', 'auto');
-      this.buttonRow = $('<tr>').appendTo(table).css('height', '30px');
+      var editorRow = $('<tr>').appendTo(this.table).css('height', 'auto');
+      this.buttonRow = $('<tr>').appendTo(this.table).css('height', '30px');
       this.editorCell = $('<td>').css('height', '100%').appendTo(editorRow);
-      this.buttonCell = $('<td>').appendTo(this.buttonRow).css('text-align', 'center');
+      this.buttonCell = $('<td>')
+        .appendTo(this.buttonRow)
+        .css('text-align', 'center');
 
       var debouncing = this.module.getConfiguration('debouncing');
       if (debouncing > 0) {
-        this.editorChangedDebounced = _.debounce(this.editorChanged.bind(this, false), debouncing);
+        this.editorChangedDebounced = _.debounce(
+          this.editorChanged.bind(this, false),
+          debouncing,
+        );
       } else if (debouncing === -1) {
         this.editorChangedDebounced = this.editorChanged.bind(this, true);
       } else {
         this.editorChangedDebounced = this.editorChanged.bind(this, false);
       }
 
-      this.module.getDomContent().html(table);
+      this.module.getDomContent().html(this.table);
     },
     inDom() {
       var initVal = String(this.module.getConfiguration('script') || '');
@@ -43,7 +48,10 @@ define([
 
       if (this.module.getConfigurationCheckbox('iseditable', 'editable')) {
         this.editable = true;
-        $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%').appendTo(this.editorCell);
+        $(`<div id="${this._id}"></div>`)
+          .css('height', '100%')
+          .css('width', '100%')
+          .appendTo(this.editorCell);
         this.editor = ace.edit(this._id);
         var mode = `./mode/${this.module.getConfiguration('mode')}`;
 
@@ -59,7 +67,9 @@ define([
         this.buttonCell.append(
           $(`<button>${this.module.getConfiguration('btnvalue')}</button>`)
             .addClass('form-button')
-            .on('click', () => this.module.controller.onButtonClick(this.getCode()))
+            .on('click', () =>
+              this.module.controller.onButtonClick(this.getCode()),
+            ),
         );
       } else {
         this.buttonRow.remove();
@@ -73,7 +83,7 @@ define([
         if (this.editable) {
           this.editor.setValue('');
         }
-      }
+      },
     },
     update: {
       data(value) {
@@ -89,7 +99,7 @@ define([
           this.editor.scrollToLine(0);
           this.editor.clearSelection();
         }
-      }
+      },
     },
     editorChanged(noTrigger) {
       this.setCode(this.editor.getValue(), noTrigger, false);
@@ -105,7 +115,10 @@ define([
         return;
       }
       this._code = value;
-      if (this.module.getConfigurationCheckbox('storeOnChange', 'store') && this.module.definition.configuration.groups) {
+      if (
+        this.module.getConfigurationCheckbox('storeOnChange', 'store') &&
+        this.module.definition.configuration.groups
+      ) {
         this.module.definition.configuration.groups.group[0].script[0] = value;
       }
       if (!noTrigger) {
@@ -114,7 +127,7 @@ define([
     },
     getCode() {
       return this._code;
-    }
+    },
   });
 
   return View;

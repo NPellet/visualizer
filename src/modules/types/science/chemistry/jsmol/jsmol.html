@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title></title>
     <script>
       // jsmol prints too many debug lines
-      console.log = function() {};
+      console.log = function () {};
     </script>
     <script
       type="text/javascript"
@@ -51,7 +51,7 @@
       var deferred = $.Deferred();
       var self = window;
 
-      window.setInDom = function() {
+      window.setInDom = function () {
         var useSignedApplet = false;
         var self = this;
         var info = {
@@ -68,8 +68,8 @@
           hoverCallback: 'hoverCallback',
           pickCallback: 'clickCallback',
 
-          readyFunction: function(applet) {
-            deferred.done(function() {
+          readyFunction: function (applet) {
+            deferred.done(function () {
               self.doPostMessage('ready');
             });
           },
@@ -86,16 +86,16 @@
         window.applet = Jmol.getApplet('appletContainer', info);
       };
 
-      window.executeScript = function(actions) {
+      window.executeScript = function (actions) {
         if (window.applet) {
           Jmol.script(window.applet, actions.join('\r\n'));
         }
       };
 
-      window.executeScriptSync = function(actions) {
+      window.executeScriptSync = function (actions) {
         if (window.applet) {
           try {
-            setTimeout(function() {
+            setTimeout(function () {
               var result = Jmol.scriptWait(window.applet, actions.join('\r\n'));
               //                var result = Jmol.evaluateVar(window.applet, "script('" + actions.join('\r\n') + "')");
               //                var result = Jmol.evaluateVar(window.applet, "script('show file')");
@@ -109,7 +109,7 @@
         }
       };
 
-      window.setMolFile = function(data) {
+      window.setMolFile = function (data) {
         var actions = [];
         actions.push("load data 'model'");
         actions.push(data._modelLoad);
@@ -122,7 +122,7 @@
         this.executeScript(actions);
       };
 
-      window.saveOrientation = function() {
+      window.saveOrientation = function () {
         const orientation = Jmol.scriptWait(window.applet, 'show orientation;')
           .split(/\r?\n/)
           .filter((line) => line.match('reset;'))[0];
@@ -133,7 +133,7 @@
         window.orientation = orientation;
       };
 
-      window.setSize = function(w, h) {
+      window.setSize = function (w, h) {
         //     Jmol.resizeApplet(this.applet, [w, h]);
       };
 
@@ -144,7 +144,7 @@
     */
 
       // TODO !!!!
-      window.setHighlight = function(atoms, onOff) {
+      window.setHighlight = function (atoms, onOff) {
         var molIndex = 1;
         if (!onOff) {
           jsmeApplet.resetAtomColors(1);
@@ -159,7 +159,7 @@
       };
 
       // TODO !!!!
-      window.clearHighlight = function(molIndex, atomsIndex) {
+      window.clearHighlight = function (molIndex, atomsIndex) {
         jsmeApplet.resetAtomColors(molIndex);
       };
 
@@ -167,7 +167,7 @@
 
       var parent;
 
-      window.doPostMessage = function(type, message) {
+      window.doPostMessage = function (type, message) {
         if (parent) {
           parent.window.postMessage(
             JSON.stringify({
@@ -181,7 +181,7 @@
         }
       };
 
-      window.addEventListener('message', function(event) {
+      window.addEventListener('message', function (event) {
         try {
           var message = JSON.parse(event.data);
         } catch (e) {

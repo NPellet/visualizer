@@ -6,6 +6,6 @@ define(function () {
     notify: function (dom) {
       deferred.notify(dom);
     },
-    progress: deferred.progress
+    progress: deferred.progress,
   };
 });

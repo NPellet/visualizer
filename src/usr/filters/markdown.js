@@ -1,6 +1,10 @@
 'use strict';
 
-define(['src/util/util', 'marked', 'highlightjs'], function (Util, marked, highlights) {
+define(['src/util/util', 'marked', 'highlightjs'], function (
+  Util,
+  marked,
+  highlights,
+) {
   var cssPromises = [];
   cssPromises.push(Util.loadCss('lib/highlight.js/styles/default.css'));
   var cssLoaded = Promise.all(cssPromises);
@@ -11,12 +15,12 @@ define(['src/util/util', 'marked', 'highlightjs'], function (Util, marked, highl
         resolve({
           type: 'html',
           value: marked(md.resurrect(), {
-            highlight: function (code) {
+            highlight(code) {
               return highlights.highlightAuto(code).value;
-            }
-          })
+            },
+          }),
         });
       });
-    }
+    },
   };
 });

@@ -4,17 +4,17 @@ define([
   'modules/default/defaultcontroller',
   'openchemlib/openchemlib-full',
   'src/util/ui',
-], function(Default, OCL, ui) {
+], function (Default, OCL, ui) {
   function Controller() {
     this.currentMol = { idCode: '', coordinates: '' };
   }
 
   $.extend(true, Controller.prototype, Default);
 
-  Controller.prototype.getToolbar = function() {
+  Controller.prototype.getToolbar = function () {
     var base = Default.getToolbar.call(this);
     base.unshift({
-      onClick: function() {
+      onClick: function () {
         var w = $(window).width();
         var h = $(window).height();
         var url = require.toUrl(
@@ -134,7 +134,7 @@ define([
     copyMolfile: 'Copy Molfile to clipboard',
   });
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {
@@ -160,7 +160,7 @@ define([
     prefs: ['groups', 'group', 0, 'prefs', 0],
   };
 
-  Controller.prototype.onChange = function(idCode, molecule) {
+  Controller.prototype.onChange = function (idCode, molecule) {
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
 
     // In modify variable in mode
@@ -175,7 +175,7 @@ define([
     var idCodeOr = molecule.getCanonizedIDCode(
       OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS,
     );
-    var idCode = split[0];
+    idCode = split[0];
     var coordinates = split[1];
 
     if (

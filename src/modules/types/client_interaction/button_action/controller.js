@@ -11,33 +11,33 @@ define(['modules/default/defaultcontroller'], function (Default) {
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'button_action'
+    cssClass: 'button_action',
   };
 
   Controller.prototype.references = {
     actionText: {
       label: 'The action text to send',
-      type: 'string'
+      type: 'string',
     },
     actionValue: {
       label: 'Object with action information',
-      type: 'object'
-    }
+      type: 'object',
+    },
   };
 
   Controller.prototype.events = {
     onToggleOn: {
       label: 'Button is toggled on',
-      refAction: ['actionText', 'actionValue']
+      refAction: ['actionText', 'actionValue'],
     },
     onToggleOff: {
       label: 'Button is toggled off',
-      refAction: ['actionText', 'actionValue']
+      refAction: ['actionText', 'actionValue'],
     },
     onClick: {
       label: 'Button is clicked',
-      refAction: ['actionText', 'actionValue']
-    }
+      refAction: ['actionText', 'actionValue'],
+    },
   };
 
   Controller.prototype.onClick = function (view, action) {
@@ -45,19 +45,19 @@ define(['modules/default/defaultcontroller'], function (Default) {
     let value = {
       label: text,
       state: view.currentState,
-      isToggle: view.isToggle
+      isToggle: view.isToggle,
     };
     this.sendActionFromEvent('onClick', 'actionText', text);
     this.sendActionFromEvent('onClick', 'actionValue', value);
     this.sendActionFromEvent(
       view.currentState ? 'onToggleOn' : 'onToggleOff',
       'actionText',
-      text
+      text,
     );
     this.sendActionFromEvent(
       view.currentState ? 'onToggleOn' : 'onToggleOff',
       'actionValue',
-      value
+      value,
     );
   };
 
@@ -66,7 +66,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             toggle: {
@@ -75,35 +75,35 @@ define(['modules/default/defaultcontroller'], function (Default) {
               default: 'toggle',
               options: [
                 { key: 'click', title: 'Click' },
-                { key: 'toggle', title: 'Toggle' }
+                { key: 'toggle', title: 'Toggle' },
               ],
               displaySource: {
                 click: 'c',
-                toggle: 't'
-              }
+                toggle: 't',
+              },
             },
             label: {
               type: 'text',
               title: 'Button label',
               default: 'Action',
-              displayTarget: ['c']
+              displayTarget: ['c'],
             },
             onLabel: {
               type: 'text',
               title: 'Button label (on)',
               default: 'Toggle action off',
-              displayTarget: ['t']
+              displayTarget: ['t'],
             },
             offLabel: {
               type: 'text',
               title: 'Button label (off)',
               default: 'Toggle action on',
-              displayTarget: ['t']
+              displayTarget: ['t'],
             },
             title: {
               type: 'text',
               title: 'Tooltip',
-              default: ''
+              default: '',
             },
             css: {
               type: 'jscode',
@@ -115,7 +115,7 @@ border: 1px solid rgba(0, 0, 0, 0.2);
 height: 30px;
 padding: .5em 1em;
 font-weight: bold;`,
-              displayTarget: ['c']
+              displayTarget: ['c'],
             },
             cssOn: {
               type: 'jscode',
@@ -127,7 +127,7 @@ border: 1px solid rgba(0, 0, 0, 0.2);
 height: 30px;
 padding: .5em 1em;
 font-weight: bold;`,
-              displayTarget: ['t']
+              displayTarget: ['t'],
             },
             cssOff: {
               type: 'jscode',
@@ -139,46 +139,46 @@ border: 1px solid rgba(0, 0, 0, 0.2);
 height: 30px;
 padding: .5em 1em;
 font-weight: bold;`,
-              displayTarget: ['t']
+              displayTarget: ['t'],
             },
             startState: {
               type: 'combo',
               title: 'Start State',
               options: [
                 { key: 'on', title: 'On' },
-                { key: 'off', title: 'Off' }
+                { key: 'off', title: 'Off' },
               ],
               default: 'off',
-              displayTarget: ['t']
+              displayTarget: ['t'],
             },
             text: {
               type: 'text',
-              title: 'Action text to send'
+              title: 'Action text to send',
             },
             askConfirm: {
               type: 'checkbox',
               title: 'Ask for confirmation',
               options: { yes: 'Yes' },
               default: [],
-              displaySource: { yes: 'y' }
+              displaySource: { yes: 'y' },
             },
             confirmText: {
               type: 'wysiwyg',
               title: 'Confirmation text',
               default: 'Are you sure?',
-              displayTarget: ['y']
+              displayTarget: ['y'],
             },
             okLabel: {
               type: 'text',
               default: 'Ok',
               title: 'Ok label',
-              displayTarget: ['y']
+              displayTarget: ['y'],
             },
             cancelLabel: {
               type: 'text',
               title: 'Cancel label',
               default: 'Cancel',
-              displayTarget: ['y']
+              displayTarget: ['y'],
             },
             contentType: {
               type: 'combo',
@@ -186,26 +186,26 @@ font-weight: bold;`,
               options: [
                 { key: 'imageUrl', title: 'Image url' },
                 { key: 'svg', title: 'svg' },
-                { key: 'content', title: 'Button' }
+                { key: 'content', title: 'Button' },
               ],
               displaySource: { svg: 'svg', imageUrl: 'imageUrl' },
-              default: 'content'
+              default: 'content',
             },
             content: {
               type: 'jscode',
               title: 'Content',
               mode: 'html',
               default: '',
-              displayTarget: ['svg', 'imageUrl']
+              displayTarget: ['svg', 'imageUrl'],
             },
             maskOpacity: {
               type: 'float',
               title: 'Mask opacity',
-              default: 0.6
-            }
-          }
-        }
-      }
+              default: 0.6,
+            },
+          },
+        },
+      },
     };
   };
 
@@ -226,13 +226,13 @@ font-weight: bold;`,
     startState: ['groups', 'group', 0, 'startState', 0],
     content: ['groups', 'group', 0, 'content', 0],
     contentType: ['groups', 'group', 0, 'contentType', 0],
-    maskOpacity: ['groups', 'group', 0, 'maskOpacity', 0]
+    maskOpacity: ['groups', 'group', 0, 'maskOpacity', 0],
   };
 
   Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {
     activate: 'Activate button',
     deactivate: 'Deactivate button',
-    toggle: 'Toggle button'
+    toggle: 'Toggle button',
   });
 
   return Controller;

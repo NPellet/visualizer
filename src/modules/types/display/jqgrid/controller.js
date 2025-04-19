@@ -1,8 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/util/api', 'src/util/debug'], function (Default, Traversing, API, Debug) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'src/util/datatraversing',
+  'src/util/api',
+  'src/util/debug',
+], function (Default, Traversing, API, Debug) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -13,56 +17,61 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
 
   Controller.prototype.moduleInformation = {
     name: 'Table',
-    description: 'Displays a complex (but slower) grid with editable capability. Works async',
+    description:
+      'Displays a complex (but slower) grid with editable capability. Works async',
     author: 'Norman Pellet',
     date: '24.12.2013',
     license: 'MIT',
-    cssClass: 'jqgrid'
+    cssClass: 'jqgrid',
   };
 
   Controller.prototype.references = {
     row: {
-      label: 'Row'
+      label: 'Row',
     },
     list: {
-      label: 'Table'
+      label: 'Table',
     },
     selectedrows: {
-      label: 'Selected rows'
-    }
+      label: 'Selected rows',
+    },
   };
 
   Controller.prototype.events = {
     onSelect: {
       label: 'A line is selected',
       refVariable: ['row'],
-      refAction: ['row']
+      refAction: ['row'],
     },
     onHover: {
       label: 'Hovers a line',
       refVariable: ['row'],
-      refAction: ['row']
+      refAction: ['row'],
     },
     onToggleOn: {
       label: 'On Toggle On',
       refVariable: ['selectedrows'],
-      refAction: ['row']
+      refAction: ['row'],
     },
     onToggleOff: {
       label: 'On Toggle Off',
       refVariable: ['selectedrows'],
-      refAction: ['row']
-    }
+      refAction: ['row'],
+    },
   };
 
   Controller.prototype.variablesIn = ['list'];
 
-  Controller.prototype.actionsIn = $.extend({}, Controller.prototype.actionsIn, {
-    addRow: 'Add a new row',
-    addColumn: 'Add a new column',
-    removeColumn: 'Remove a column',
-    removeRow: 'Remove a row'
-  });
+  Controller.prototype.actionsIn = $.extend(
+    {},
+    Controller.prototype.actionsIn,
+    {
+      addRow: 'Add a new row',
+      addColumn: 'Add a new column',
+      removeColumn: 'Remove a column',
+      removeRow: 'Remove a row',
+    },
+  );
 
   Controller.prototype.configurationStructure = function () {
     var jpaths = this.module.model.getjPath('row', false);
@@ -72,13 +81,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
         group: {
           options: {
             type: 'list',
-            multiple: false
+            multiple: false,
           },
           fields: {
             nblines: {
               type: 'float',
               title: 'Lines per page',
-              default: 20
+              default: 20,
             },
             toggle: {
               type: 'combo',
@@ -86,48 +95,48 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
               options: [
                 { key: '0', title: 'No' },
                 { key: 'single', title: 'Single row' },
-                { key: 'multiple', title: 'Multiple rows' }
-              ]
+                { key: 'multiple', title: 'Multiple rows' },
+              ],
             },
             colorjpath: {
               type: 'combo',
               title: 'Color jPath',
-              options: jpaths
+              options: jpaths,
             },
             filterRow: {
               type: 'jscode',
-              title: 'Filter'
+              title: 'Filter',
             },
             highlightLine: {
               type: 'checkbox',
               title: 'Highlight on hover',
               options: {
-                Yes: 'Yes'
+                Yes: 'Yes',
               },
-              default: ['Yes']
-            }
-          }
+              default: ['Yes'],
+            },
+          },
         },
         cols: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Columns'
+            title: 'Columns',
           },
           fields: {
             name: {
               type: 'text',
-              title: 'Columns title'
+              title: 'Columns title',
             },
             jpath: {
               type: 'combo',
               title: 'jPath',
-              options: jpaths
+              options: jpaths,
             },
             number: {
               type: 'checkbox',
               title: 'Number ?',
-              options: { number: 'Yes' }
+              options: { number: 'Yes' },
             },
             editable: {
               type: 'combo',
@@ -137,42 +146,48 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
                 { key: 'none', title: 'No' },
                 { key: 'text', title: 'Text' },
                 { key: 'checkbox', title: 'Checkbox' },
-                { key: 'select', title: 'Combo' }
-              ]
+                { key: 'select', title: 'Combo' },
+              ],
             },
             options: {
               type: 'text',
-              title: 'Options (; separated)'
+              title: 'Options (; separated)',
             },
             width: {
               type: 'text',
-              title: 'Width'
-            }
-          }
-        }
-      }
+              title: 'Width',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.onVarReceiveChange = function (name, rel, confSection) {
     var data = API.getVar(name);
     var jpaths = [];
-    if (!data)
+    if (!data) {
       return;
+    }
 
-    if (data.getType() == 'array')
+    if (data.getType() === 'array') {
       Traversing.getJPathsFromElement(data.get(0), jpaths);
-    else if (data.getType() == 'arrayXY')
+    } else if (data.getType() === 'arrayXY') {
       Traversing.getJPathsFromElement(data, jpaths);
+    }
 
-    if (jpaths.length > 1)
-      confSection.getGroup('cols').getField('coljpath').implementation.setOptions(jpaths);
+    if (jpaths.length > 1) {
+      confSection
+        .getGroup('cols')
+        .getField('coljpath')
+        .implementation.setOptions(jpaths);
+    }
   };
 
   Controller.prototype.configFunctions = {
     colsjPaths: function (cfg) {
       return cfg || [];
-    }
+    },
   };
 
   Controller.prototype.configAliases = {
@@ -181,7 +196,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     toggle: ['groups', 'group', 0, 'toggle', 0],
     colorjPath: ['groups', 'group', 0, 'colorjpath', 0],
     filterRow: ['groups', 'group', 0, 'filterRow', 0],
-    highlightLine: ['groups', 'group', 0, 'highlightLine', 0]
+    highlightLine: ['groups', 'group', 0, 'highlightLine', 0],
   };
 
   Controller.prototype.lineHover = function (elements, row) {
@@ -224,22 +239,26 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing', 'src/uti
     var that = this,
       data = this.module.getDataFromRel('list');
 
-    this.allVariablesFor((act == 'on' ? 'onToggleOn' : 'onToggleOff'), 'selectedrows', function (varToSend) {
-      var results = new DataArray();
+    this.allVariablesFor(
+      act === 'on' ? 'onToggleOn' : 'onToggleOff',
+      'selectedrows',
+      function (varToSend) {
+        var results = new DataArray();
 
-      for (var i in that.toggleElements) {
-        if (!data[i]) {
-          continue;
+        for (var i in that.toggleElements) {
+          if (!data[i]) {
+            continue;
+          }
+
+          data.traceSync([i]);
+          Debug.warn('Warning. This is only sync');
+          var el = data[i].traceSync(varToSend.jpath.slice(0));
+          results.push(el);
         }
 
-        data.traceSync([i]);
-        Debug.warn('Warning. This is only sync');
-        var el = data[i].traceSync(varToSend.jpath.slice(0));
-        results.push(el);
-      }
-
-      API.createData(varToSend.name, results, varToSend.filter);
-    });
+        API.createData(varToSend.name, results, varToSend.filter);
+      },
+    );
   };
 
   Controller.prototype.export = function () {

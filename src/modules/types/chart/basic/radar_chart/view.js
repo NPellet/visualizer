@@ -4,7 +4,7 @@
 define([
   'modules/default/defaultview',
   'src/util/util',
-  'lib/dhtmlxchart/dhtmlxchart'
+  'lib/dhtmlxchart/dhtmlxchart',
 ], function (Default, Util) {
   function View() {}
 
@@ -14,7 +14,7 @@ define([
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(
-          `<div style="height: 100%;width: 100%" id="${this._id}"></div>`
+          `<div style="height: 100%;width: 100%" id="${this._id}"></div>`,
         );
         this.module.getDomContent().html(this.dom);
       }
@@ -36,7 +36,7 @@ define([
       chart: function (moduleValue) {
         this.value = moduleValue.get();
         this._redraw();
-      }
+      },
     },
 
     blank: {
@@ -44,7 +44,7 @@ define([
         if (this.dom) {
           this.dom.empty();
         }
-      }
+      },
     },
 
     _redraw: function () {
@@ -73,14 +73,14 @@ define([
           if (entry.id == id) {
             var obj = entry;
             if (
-              ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] == 'd'
+              ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] === 'd'
             ) {
               that.module.controller.elementHover(obj._highlight[0]);
             } else {
               that.module.controller.elementHover(
                 obj._highlight[
                   ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3]
-                ]
+                ],
               );
             }
           }
@@ -105,7 +105,7 @@ define([
             if (value.data[i]._highlight && value.data[i]._highlight[j]) {
               data[j]._highlight.push({
                 name: index,
-                _highlight: value.data[i]._highlight[j]
+                _highlight: value.data[i]._highlight[j],
               });
             }
           }
@@ -139,24 +139,24 @@ define([
             fill: chart.data[0].color,
             line: {
               color: chart.data[0].color,
-              width: 1
+              width: 1,
             },
             xAxis: {
-              template: '#xunit#'
+              template: '#xunit#',
             },
             yAxis: {
               lineShape: cfg('lineshape'),
               start: cfg('start'),
               end: cfg('end'),
-              step: cfg('step')
-            }
+              step: cfg('step'),
+            },
           };
           this._radar = new dhtmlXChart(options);
 
           var val = [];
 
           for (var i = 0; i < chart.data.length; i++) {
-            if (i != 0) {
+            if (i !== 0) {
               if (!chart.data[i].color) {
                 chart.data[i].color = this.getRandomColor(chart.data.length, i);
               }
@@ -166,33 +166,33 @@ define([
                 disableLines: cfg('line'),
                 line: {
                   color: chart.data[i].color,
-                  width: 1
-                }
+                  width: 1,
+                },
               });
             }
             val.push({
               text: chart.data[i].serieLabel,
-              color: chart.data[i].color
+              color: chart.data[i].color,
             });
           }
 
           break;
 
         case 'pie':
-          var options = {
+          options = {
             view: cfg('pie'),
             container: this._id,
             radius: 220,
             value: '#serie0#',
             color: chart.data[0].color,
-            pieInnerText: '<b>#xunit#</b>'
+            pieInnerText: '<b>#xunit#</b>',
           };
           this._radar = new dhtmlXChart(options);
 
           break;
       }
 
-      if (cfg('showlegend') == 'true') {
+      if (cfg('showlegend') === 'true') {
         switch (cfg('legendalign')) {
           case 'top-left':
             this._radar.define('legend', {
@@ -201,9 +201,9 @@ define([
               valign: 'top',
               marker: {
                 type: cfg('legendmarker'),
-                width: 15
+                width: 15,
               },
-              values: val
+              values: val,
             });
             break;
           case 'top-right':
@@ -213,9 +213,9 @@ define([
               valign: 'top',
               marker: {
                 type: cfg('legendmarker'),
-                width: 15
+                width: 15,
               },
-              values: val
+              values: val,
             });
             break;
           case 'bottom-left':
@@ -225,9 +225,9 @@ define([
               valign: 'bottom',
               marker: {
                 type: cfg('legendmarker'),
-                width: 15
+                width: 15,
               },
-              values: val
+              values: val,
             });
             break;
           case 'bottom-right':
@@ -237,14 +237,14 @@ define([
               valign: 'bottom',
               marker: {
                 type: cfg('legendmarker'),
-                width: 15
+                width: 15,
               },
-              values: val
+              values: val,
             });
             break;
         }
       }
-    }
+    },
   });
 
   return View;

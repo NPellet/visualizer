@@ -3,10 +3,9 @@
 define([
   'jquery',
   'modules/default/defaultmodel',
-  'src/util/datatraversing'
+  'src/util/datatraversing',
 ], function ($, Default, Traversing) {
-  function Model() {
-  }
+  function Model() {}
 
   $.extend(true, Model.prototype, Default, {
     getValue: function () {
@@ -25,7 +24,7 @@ define([
         default:
           return false;
       }
-    }
+    },
   });
 
   return Model;

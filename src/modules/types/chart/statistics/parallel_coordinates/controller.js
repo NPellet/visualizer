@@ -1,8 +1,10 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/datatraversing'], function (Default, Traversing) {
-  function Controller() {
-  }
+define([
+  'modules/default/defaultcontroller',
+  'src/util/datatraversing',
+], function (Default, Traversing) {
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -12,40 +14,40 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     author: 'Michaël Zasso',
     date: '11.03.2014',
     license: 'MIT',
-    cssClass: 'parallel_coordinates'
+    cssClass: 'parallel_coordinates',
   };
 
   Controller.prototype.references = {
     value: {
       type: 'array',
-      label: 'An array of data points'
+      label: 'An array of data points',
     },
     columns: {
       type: 'array',
-      label: 'Array of column descriptions'
+      label: 'Array of column descriptions',
     },
     flagResult: {
       type: 'array',
-      label: 'Array of boolean values'
+      label: 'Array of boolean values',
     },
     countResult: {
       type: 'number',
-      label: 'Number of selected items'
-    }
+      label: 'Number of selected items',
+    },
   };
 
   Controller.prototype.events = {
     onBrushSelection: {
       label: 'A selection has been made',
-      refVariable: ['value', 'flagResult', 'countResult']
-    }
+      refVariable: ['value', 'flagResult', 'countResult'],
+    },
   };
 
   Controller.prototype.variablesIn = ['value', 'columns'];
 
   Controller.prototype.actionsIn = {
     addColumn: 'Add a column',
-    removeColumn: 'Remove a column'
+    removeColumn: 'Remove a column',
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -55,13 +57,13 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
         group: {
           options: {
             type: 'list',
-            multiple: 'false'
+            multiple: 'false',
           },
           fields: {
             colJPath: {
               type: 'combo',
               title: 'Color jPath',
-              options: jpaths
+              options: jpaths,
             },
             options: {
               type: 'checkbox',
@@ -70,9 +72,9 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                 reorder: 'Reorderable',
                 shadow: 'Keep shadows while brushing',
                 hide: 'Prevent highlight of hidden lines',
-                brush: 'Export selection only on brush end'
+                brush: 'Export selection only on brush end',
               },
-              default: ['reorder']
+              default: ['reorder'],
             },
             brushMode: {
               type: 'combo',
@@ -82,7 +84,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                 { key: '1D-axes', title: '1D axes' },
                 { key: '1D-axes-multi', title: '1D axes multi' },
                 { key: '2D-strums', title: '2D strums' },
-                { key: 'angular', title: 'Angular' }
+                { key: 'angular', title: 'Angular' },
               ],
               default: '1D-axes-multi',
               displaySource: {
@@ -90,40 +92,40 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
                 '1D-axes': 'y',
                 '1D-axes-multi': 'y',
                 '2D-strums': 'y',
-                angular: 'y'
-              }
+                angular: 'y',
+              },
             },
             predicate: {
               type: 'combo',
               title: 'Predicate',
               options: [
                 { key: 'and', title: 'AND' },
-                { key: 'or', title: 'OR' }
+                { key: 'or', title: 'OR' },
               ],
               default: 'and',
-              displayTarget: ['y']
-            }
-          }
+              displayTarget: ['y'],
+            },
+          },
         },
         cols: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Columns'
+            title: 'Columns',
           },
           fields: {
             name: {
               type: 'text',
-              title: 'Columns name'
+              title: 'Columns name',
             },
             jpath: {
               type: 'combo',
               title: 'jPath',
-              options: jpaths
-            }
-          }
-        }
-      }
+              options: jpaths,
+            },
+          },
+        },
+      },
     };
   };
 
@@ -132,7 +134,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     colorjpath: ['groups', 'group', 0, 'colJPath', 0],
     brushMode: ['groups', 'group', 0, 'brushMode', 0],
     brushPredicate: ['groups', 'group', 0, 'predicate', 0],
-    options: ['groups', 'group', 0, 'options', 0]
+    options: ['groups', 'group', 0, 'options', 0],
   };
 
   Controller.prototype.onBrushSelection = function (value) {
@@ -141,7 +143,7 @@ define(['modules/default/defaultcontroller', 'src/util/datatraversing'], functio
     var original = this.module.view._value;
     var flags = new Array(original.length);
 
-    if (value[0] && value[0].hasOwnProperty('__id')) {
+    if (value[0] && Object.hasOwn(value[0], '__id')) {
       original = this.module.view._value;
       toSend = new Array(l);
 

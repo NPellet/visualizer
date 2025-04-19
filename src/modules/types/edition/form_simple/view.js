@@ -5,7 +5,7 @@ define([
   'src/util/datatraversing',
   'src/util/api',
   'lib/formcreator/formcreator',
-  'lodash'
+  'lodash',
 ], function (Default, DataTraversing, API, FormCreator, _) {
   function View() {}
 
@@ -32,14 +32,14 @@ define([
                 main: {
                   options: {
                     type: 'list',
-                    multiple: false
+                    multiple: false,
                   },
 
-                  fields: FormCreator.makeStructure(structure)
-                }
-              }
-            }
-          }
+                  fields: FormCreator.makeStructure(structure),
+                },
+              },
+            },
+          },
         };
 
       if (tpl_file) {
@@ -73,7 +73,7 @@ define([
                 that.form.sectionElements.main[0].groupElements.main[0]
                   .fieldElements[structure[i].groups.general[0].name[0]][0]
                   .value,
-                [that.module.getId()]
+                [that.module.getId()],
               );
             }
 
@@ -85,7 +85,7 @@ define([
                 jpath,
                 that.form.sectionElements.main[0].groupElements.main[0]
                   .fieldElements[structure[i].groups.general[0].name[0]][0]
-                  .value
+                  .value,
               );
               //      input.setChild( jpath, self.form.sectionElements.main[ 0 ].groupElements.main[ 0 ].fieldElements[ structure[ i ].groups.general[ 0 ].name[ 0 ] ][0].value );
             }
@@ -117,7 +117,7 @@ define([
             form.addButton(
               btnLabel,
               { color: 'blue' },
-              triggerFunction.bind(form)
+              triggerFunction.bind(form),
             );
           case 'change': // eslint-disable-line no-fallthrough
             var debounce = that.module.getConfiguration('debounce');
@@ -160,9 +160,9 @@ define([
           function () {
             that.newValue(this);
           },
-          'input_object'
+          'input_object',
         );
-      }
+      },
     },
 
     newValue: function (varValue) {
@@ -195,7 +195,7 @@ define([
           });
         })(i, jpath);
       }
-    }
+    },
   });
 
   return View;

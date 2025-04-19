@@ -1,10 +1,10 @@
 'use strict';
 
-define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function (
-  Versioning,
-  Debug,
-  semver
-) {
+define([
+  'src/util/versioning',
+  'src/util/debug',
+  'lib/semver/semver',
+], function (Versioning, Debug, semver) {
   var migrators = [
     '2.1.0',
     function (view) {
@@ -30,8 +30,9 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       if (view.modules) {
         for (var i = 0; i < view.modules.length; i++) {
           var module = view.modules[i];
-          if (module.type === 'grid' || module.type === 'editable_grid')
+          if (module.type === 'grid' || module.type === 'editable_grid') {
             module.type = 'jqgrid';
+          }
         }
       }
     },
@@ -56,7 +57,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         function (module) {
           module.url = './modules/types/array_search/configured_search/';
         },
-        'types/client_interaction/array_search'
+        'types/client_interaction/array_search',
       );
     },
 
@@ -73,8 +74,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         function (module) {
           var i;
           module.url = 'modules/types/client_interaction/code_editor/';
-          if (module.configuration.groups.group[0].iseditable[0][0] === 'true')
+          if (
+            module.configuration.groups.group[0].iseditable[0][0] === 'true'
+          ) {
             module.configuration.groups.group[0].iseditable[0][0] = 'editable';
+          }
           delete module.configuration.groups.group[0].padding;
           module.configuration.groups.group[0].mode = ['text'];
           for (i = 0; i < module.vars_out.length; i++) {
@@ -92,7 +96,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             }
           }
         },
-        'types/science/chemistry/jsmol_script'
+        'types/science/chemistry/jsmol_script',
       );
     },
 
@@ -107,7 +111,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, '{$1}');
           }
         },
-        'types/server_interaction/webservice_search'
+        'types/server_interaction/webservice_search',
       );
     },
 
@@ -119,15 +123,15 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
           for (var j = 0; j < module.vars_out.length; j++) {
             var var_out = module.vars_out[j];
             var_out.event = 'onRead';
-            if (var_out.rel === 'data')
+            if (var_out.rel === 'data') {
               var_out.jpath = `${var_out.jpath}.content`;
-            else if (var_out.rel === 'filename') {
+            } else if (var_out.rel === 'filename') {
               var_out.rel = 'data';
               var_out.jpath = `${var_out.jpath}.filename`;
             }
           }
         },
-        'types/client_interaction/dragdrop'
+        'types/client_interaction/dragdrop',
       );
     },
 
@@ -137,11 +141,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       view.grid = DataObject.recursiveTransform({
         layers: {
           'Default layer': {
-            name: 'Default layer'
-          }
+            name: 'Default layer',
+          },
         },
         xWidth: 10,
-        yHeight: 10
+        yHeight: 10,
       });
       eachModule(view, function (module) {
         if (!module.layers) {
@@ -150,11 +154,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
               position: {
                 left: module.position.left,
                 top: module.position.top,
-                right: 0
+                right: 0,
               },
               size: {
                 width: module.size.width,
-                height: module.size.height
+                height: module.size.height,
               },
               zIndex: module.zIndex,
               display: true,
@@ -162,8 +166,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
               bgColor: module.bgColor,
               wrapper: module.displayWrapper,
               created: true,
-              name: 'Default layer'
-            }
+              name: 'Default layer',
+            },
           });
           delete module.title;
           delete module.position;
@@ -208,7 +212,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             out[i].setChild(['rel'], 'output');
           }
         },
-        'types/edition/object_editor'
+        'types/edition/object_editor',
       );
     },
 
@@ -222,7 +226,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             out[i].setChild(['rel'], 'filteredObject');
           }
         },
-        'types/edition/filter_editor'
+        'types/edition/filter_editor',
       );
     },
 
@@ -260,8 +264,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                   name: input[i].name,
                   destination: 'url',
                   variable: input[i].name,
-                  filter: 'none'
-                }
+                  filter: 'none',
+                },
               );
               input.splice(i--, 1);
             } else if (input[i].rel === 'vartrigger') {
@@ -270,13 +274,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                   name: input[i].name,
                   destination: 'url',
                   variable: input[i].name,
-                  filter: 'none'
-                }
+                  filter: 'none',
+                },
               );
             }
           }
         },
-        'types/server_interaction/webservice_search'
+        'types/server_interaction/webservice_search',
       );
     },
 
@@ -284,8 +288,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     function (view) {
       eachModule(view, function (module) {
         if (module.layers) {
-          var layers = module.layers,
-            layer;
+          var layers = module.layers;
+          var layer;
           for (var i in layers) {
             layer = layers[i];
             if (layer.bgcolor) {
@@ -319,7 +323,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             });
           }
         },
-        'spectra_displayer'
+        'spectra_displayer',
       );
     },
 
@@ -332,13 +336,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'plotinfos',
-            0
+            0,
           ]);
           if (plotinfos) {
             plotinfos.forEach(function (infos) {
               if (infos.plotcontinuous) {
                 infos.plotcontinuous =
-                  infos.plotcontinuous[0] == 'continuous'
+                  infos.plotcontinuous[0] === 'continuous'
                     ? 'continuous'
                     : 'discrete';
               } else {
@@ -347,7 +351,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             });
           }
         },
-        'spectra_displayer'
+        'spectra_displayer',
       );
     },
 
@@ -360,14 +364,14 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'groupings',
-            0
+            0,
           ]);
           if (!groupings) return;
           for (var i = 0; i < groupings.length; i++) {
             groupings[i].getter = [groupings[i].getter];
           }
         },
-        'slick_grid'
+        'slick_grid',
       );
     },
 
@@ -380,7 +384,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'cols',
-            0
+            0,
           ]);
           for (var i = 0; i < cols.length; i++) {
             delete cols[i].selectable;
@@ -393,7 +397,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'group',
-            0
+            0,
           ]);
 
           delete group.toggle;
@@ -406,7 +410,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
           }
           delete group.filterRow;
         },
-        'slick_grid'
+        'slick_grid',
       );
     },
 
@@ -424,7 +428,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             });
           }
         },
-        'spectra_displayer'
+        'spectra_displayer',
       );
     },
     '2.16.1-1',
@@ -438,13 +442,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'group',
             0,
             'slickCheck',
-            0
+            0,
           ]);
           if (slickCheck instanceof Array) {
             checkboxAdd(slickCheck, 'highlightScroll');
           }
         },
-        'slick_grid'
+        'slick_grid',
       );
     },
     '2.22.3-1',
@@ -454,7 +458,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         function (module) {
           modifyRel(module, 'value', 'data');
         },
-        'code_editor'
+        'code_editor',
       );
     },
     '2.23.1-1',
@@ -466,7 +470,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'plotinfos',
-            0
+            0,
           ]);
           if (plotinfos) {
             plotinfos.forEach(function (plotinfo) {
@@ -475,7 +479,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             });
           }
         },
-        'spectra_displayer'
+        'spectra_displayer',
       );
     },
     '2.35.2-1',
@@ -489,7 +493,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'groups',
             'group',
             0,
-            'legend'
+            'legend',
           ]);
           if (legend) {
             switch (String(legend[0])) {
@@ -550,8 +554,8 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                         checkboxes: [xCheckBoxes],
                         label: getChild('xLabel'),
                         max: getChild('maxX'),
-                        min: getChild('minX')
-                      }
+                        min: getChild('minX'),
+                      },
                     ],
                     yAxis: [
                       {
@@ -561,11 +565,11 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                         fitToAxisOnFromTo: getChild('FitYToAxisOnFromTo'),
                         label: getChild('yLabel'),
                         max: getChild('maxY'),
-                        min: getChild('minY')
-                      }
-                    ]
-                  }
-                }
+                        min: getChild('minY'),
+                      },
+                    ],
+                  },
+                },
               ],
               graph: [
                 {
@@ -579,23 +583,23 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                         url: getChild('graphurl'),
                         wheelAction: getChild('wheelAction'),
                         wheelbaseline: getChild('wheelbaseline'),
-                        zoom: getChild('zoom')
-                      }
-                    ]
-                  }
-                }
+                        zoom: getChild('zoom'),
+                      },
+                    ],
+                  },
+                },
               ],
               variables: [
                 {
                   groups: {
-                    variables: oldConfig.getChildSync(['groups', 'plotinfos'])
-                  }
-                }
-              ]
-            }
+                    variables: oldConfig.getChildSync(['groups', 'plotinfos']),
+                  },
+                },
+              ],
+            },
           };
         },
-        'spectra_displayer'
+        'spectra_displayer',
       );
     },
     '2.47.3-1',
@@ -607,23 +611,23 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'string',
-            0
+            0,
           ]);
           if (str && str.length) {
             for (var i = 0; i < str.length; i++) {
               var extension = str.getChildSync([i, 'filter']);
               module.setChildSync(
                 ['configuration', 'groups', 'string', 0, i, 'extension'],
-                extension
+                extension,
               );
               module.setChildSync(
                 ['configuration', 'groups', 'string', 0, i, 'filter'],
-                'mime'
+                'mime',
               );
             }
           }
         },
-        'dragdrop'
+        'dragdrop',
       );
     },
     '2.49.1-1',
@@ -632,7 +636,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
         if (!module.toolbar) {
           module.toolbar = {
             custom: [[{ title: '', icon: '', action: '', position: 'begin' }]],
-            common: [{ toolbar: [['Open Preferences']] }]
+            common: [{ toolbar: [['Open Preferences']] }],
           };
         }
       });
@@ -647,16 +651,16 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'configuration',
             'groups',
             'actionCols',
-            0
+            0,
           ]);
           if (actionCols && !Array.isArray(actionCols)) {
             module.setChildSync(
               ['configuration', 'groups', 'actionCols', 0],
-              []
+              [],
             );
           }
         },
-        'slick_grid'
+        'slick_grid',
       );
     },
     '2.71.8-1',
@@ -669,16 +673,16 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
             'groups',
             'group',
             0,
-            'asyncAwait'
+            'asyncAwait',
           ]);
           if (!asyncAwait) {
             module.setChildSync(
               ['configuration', 'groups', 'group', 0, 'asyncAwait'],
-              [[]]
+              [[]],
             );
           }
         },
-        'code_executor'
+        'code_executor',
       );
     },
     '2.77.1-1',
@@ -709,11 +713,13 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
                 0,
                 'focusOnHighlight',
                 0,
-                0
-              ])
+                0,
+              ]),
             ) === 'yes'
           ) {
-            module.configuration.groups.group[0].highlightStrategy = ['panzoom'];
+            module.configuration.groups.group[0].highlightStrategy = [
+              'panzoom',
+            ];
           }
           if (
             module.getChildSync([
@@ -721,15 +727,15 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
               'groups',
               'group',
               0,
-              'focusOnHighlight'
+              'focusOnHighlight',
             ])
           ) {
             delete module.configuration.groups.group[0].focusOnHighlight;
           }
         },
-        'panzoom'
+        'panzoom',
       );
-    }
+    },
     //  Add new migration functions here
     //  Do not forget to `npm run prerelease` before creating your migration script
     //      'x.y.z', function (view) {
@@ -742,18 +748,22 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     var vars_out = module.getChildSync(['vars_out']);
     var actions_out = module.getChildSync(['actions_out']);
     vars_in.forEach(function (vars_in) {
-      if (vars_in && vars_in.rel && vars_in.rel === oldRel)
+      if (vars_in && vars_in.rel && vars_in.rel === oldRel) {
         vars_in.rel = newRel;
+      }
     });
     vars_out.forEach(function (vars_out) {
-      if (vars_out && vars_out.rel && vars_out.rel === oldRel)
+      if (vars_out && vars_out.rel && vars_out.rel === oldRel) {
         vars_out.rel = newRel;
+      }
     });
-    if (actions_out)
+    if (actions_out) {
       actions_out.forEach(function (actions_out) {
-        if (actions_out && actions_out.rel && actions_out.rel === oldRel)
+        if (actions_out && actions_out.rel && actions_out.rel === oldRel) {
           actions_out.rel = newRel;
+        }
       });
+    }
   }
 
   function checkboxRemove(checkbox, name) {
@@ -777,12 +787,12 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
       } else if (!Array.isArray(moduleNames)) {
         moduleNames = [''];
       }
-      var i = 0,
-        ii = view.modules.length,
-        module,
-        url;
-      var j,
-        jj = moduleNames.length;
+      var i = 0;
+      var ii = view.modules.length;
+      var module;
+      var url;
+      var j;
+      var jj = moduleNames.length;
       for (; i < ii; i++) {
         module = view.modules[i];
 
@@ -800,52 +810,67 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
   }
 
   function updateModule(type) {
-    if (type === 'display_value')
+    if (type === 'display_value') {
       return './modules/types/display/single_value/';
+    }
     if (type === 'jqgrid') return './modules/types/display/jqgrid/';
     if (type === 'fasttable') return './modules/types/display/fasttable/';
     if (type === '2d_list') return './modules/types/display/2d_list/';
     if (type === 'hashmap') return './modules/types/display/hashmap/';
     if (type === 'postit') return './modules/types/display/postit/';
     if (type === 'iframe') return './modules/types/display/iframe/';
-    if (type === 'webservice_search')
+    if (type === 'webservice_search') {
       return './modules/types/server_interaction/webservice_search/';
-    if (type === 'button_url')
+    }
+    if (type === 'button_url') {
       return './modules/types/server_interaction/button_url/';
+    }
     if (type === 'filter') return './modules/types/edition/filter/';
     if (type === 'form') return './modules/types/edition/form/';
     if (type === 'form_simple') return './modules/types/edition/form_simple/';
     if (type === 'var_editor') return './modules/types/edition/var_editor/';
-    if (type === 'graph_function')
+    if (type === 'graph_function') {
       return './modules/types/chart/advanced/plot_function/';
-    if (type === 'canvas_matrix')
+    }
+    if (type === 'canvas_matrix') {
       return './modules/types/chart/advanced/canvas_matrix/';
-    if (type === 'dendrogram')
+    }
+    if (type === 'dendrogram') {
       return './modules/types/chart/statistics/dendrogram/';
-    if (type === 'loading_plot')
+    }
+    if (type === 'loading_plot') {
       return './modules/types/chart/statistics/loading_plot/';
-    if (type === 'phylogram')
+    }
+    if (type === 'phylogram') {
       return './modules/types/chart/statistics/phylogram/';
-    if (type === 'spectra_displayer')
+    }
+    if (type === 'spectra_displayer') {
       return './modules/types/science/spectra/spectra_displayer/';
+    }
     if (type === 'jsme') return './modules/types/science/chemistry/jsme/';
     if (type === 'jsmol') return './modules/types/science/chemistry/jsmol/';
-    if (type === 'jsmol_script')
+    if (type === 'jsmol_script') {
       return './modules/types/science/chemistry/jsmol_script/';
+    }
     if (type === 'mol2d') return './modules/types/science/chemistry/mol2d/';
     if (type === '1dnmr') return './modules/types/science/spectra/nmr/1dnmr/';
     if (type === '2dnmr') return './modules/types/science/spectra/nmr/2dnmr/';
-    if (type === 'webservice_nmr_spin')
+    if (type === 'webservice_nmr_spin') {
       return './modules/types/science/spectra/nmr/webservice_nmr_spin/';
+    }
     if (type === 'gcms') return './modules/types/science/spectra/gcms/';
-    if (type === 'ivstability')
+    if (type === 'ivstability') {
       return './modules/types/science/spectra/ivstability/';
-    if (type === 'array_search')
+    }
+    if (type === 'array_search') {
       return './modules/types/client_interaction/array_search/';
-    if (type === 'dragdrop')
+    }
+    if (type === 'dragdrop') {
       return './modules/types/client_interaction/dragdrop/';
-    if (type === 'button_action')
+    }
+    if (type === 'button_action') {
       return './modules/types/client_interaction/button_action/';
+    }
     if (type === 'grid_selector') return './modules/types/grid_selector/';
     if (type === 'xyzoomnavigator') return './modules/types/xyzoomnavigator/';
     if (type === 'webservice_cron') return './modules/types/webservice_cron/';
@@ -899,7 +924,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     var viewVersion = semver.parse(view.version);
     if (!viewVersion) {
       Debug.error(
-        `View has an invalid version: ${view.version}. It cannot be migrated`
+        `View has an invalid version: ${view.version}. It cannot be migrated`,
       );
       return view;
     }
@@ -911,7 +936,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     }
 
     Debug.info(
-      `Migrating view from version ${view.version} to ${Versioning.version}`
+      `Migrating view from version ${view.version} to ${Versioning.version}`,
     );
 
     if (viewVersion.prerelease.length) {
@@ -920,14 +945,14 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 
     if (visualizerVersion.prerelease.length) {
       Debug.warn(
-        'Migrating to a prerelease version of the visualizer, anything can happen !'
+        'Migrating to a prerelease version of the visualizer, anything can happen !',
       );
     }
 
     for (var i = 0; i < migrationFunctions.length; i++) {
       if (semver.lt(viewVersion, migrationFunctions[i].version)) {
         Debug.debug(
-          `applying migration to v${migrationFunctions[i].version.version}`
+          `applying migration to v${migrationFunctions[i].version.version}`,
         );
         migrationFunctions[i].func(view);
       }
@@ -940,7 +965,7 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
 
   var migrationFunctions = [];
 
-  if (migrators.length % 2 == 1) {
+  if (migrators.length % 2 === 1) {
     throw new Error('Invalid length of the migrators array.');
   }
 
@@ -952,12 +977,12 @@ define(['src/util/versioning', 'src/util/debug', 'lib/semver/semver'], function 
     var func = migrators[i + 1];
     if (typeof func !== 'function') {
       throw new Error(
-        `object passed for migration ${migrators[i]} has to be a function`
+        `object passed for migration ${migrators[i]} has to be a function`,
       );
     }
     migrationFunctions.push({
       version: version,
-      func: func
+      func: func,
     });
   }
 

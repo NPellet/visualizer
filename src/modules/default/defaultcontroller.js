@@ -23,8 +23,7 @@ define([
     getToolbar() {
       var tb = this.module.definition.toolbar;
       if (tb) {
-        var common = this.module.definition.toolbar.common[0]
-          .toolbar[0];
+        var common = this.module.definition.toolbar.common[0].toolbar[0];
         var custom = this.module.definition.toolbar.custom[0];
       }
 
@@ -110,8 +109,8 @@ define([
       for (let i = 0; i < varsOut.length; i++) {
         if (
           varsOut[i].event == event &&
-                    (varsOut[i].rel == rel || !rel) &&
-                    varsOut[i].name
+          (varsOut[i].rel == rel || !rel) &&
+          varsOut[i].name
         ) {
           if (first && callback) {
             first = false;
@@ -120,7 +119,7 @@ define([
 
           varsOut[i].jpath = varsOut[i].jpath || []; // Need not be undefined
 
-          if (typeof varsOut[i].jpath == 'string') {
+          if (typeof varsOut[i].jpath === 'string') {
             varsOut[i].jpath = varsOut[i].jpath.split('.');
             varsOut[i].jpath.shift();
           }
@@ -129,7 +128,7 @@ define([
             varsOut[i].name,
             this.module.getVariableFromRel(relSource),
             jpath.concat(varsOut[i].jpath),
-            varsOut[i].filter
+            varsOut[i].filter,
           );
         }
       }
@@ -145,8 +144,8 @@ define([
       for (let i = 0; i < varsOut.length; i++) {
         if (
           varsOut[i].event == event &&
-                    (varsOut[i].rel == rel || !rel) &&
-                    varsOut[i].name
+          (varsOut[i].rel == rel || !rel) &&
+          varsOut[i].name
         ) {
           if (first && callback) {
             first = false;
@@ -157,7 +156,7 @@ define([
             varsOut[i].name,
             data,
             varsOut[i].jpath,
-            varsOut[i].filter
+            varsOut[i].filter,
           );
         }
       }
@@ -173,8 +172,8 @@ define([
       for (let i = actionsOut.length - 1; i >= 0; i--) {
         if (
           actionsOut[i].name &&
-                    actionsOut[i].rel === rel &&
-                    ((event && event === actionsOut[i].event) || !event)
+          actionsOut[i].rel == rel &&
+          ((event && event == actionsOut[i].event) || !event)
         ) {
           const actionName = actionsOut[i].name;
           const jpath = actionsOut[i].jpath;
@@ -205,10 +204,7 @@ define([
       }
 
       for (let i = 0; i < varsOut.length; i++) {
-        if (
-          varsOut[i].event == event &&
-                    (varsOut[i].rel == rel || !rel)
-        ) {
+        if (varsOut[i].event == event && (varsOut[i].rel == rel || !rel)) {
           callback(varsOut[i]);
         }
       }

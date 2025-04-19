@@ -9,7 +9,7 @@ define([
   'src/util/ui',
   'lib/jit/jit-custom',
   'src/util/tree',
-  'src/util/color'
+  'src/util/color',
 ], function ($, Default, Traversing, API, Util, ui, $jit, Tree, Color) {
   function View() {
     this._value = {};
@@ -79,7 +79,7 @@ define([
         this._data = null;
         this._value = {};
         this.updateTree();
-      }
+      },
     },
 
     update: {
@@ -94,7 +94,7 @@ define([
       data(data) {
         this._data = data.get();
         this.doAnnotation();
-      }
+      },
     },
 
     doAnnotation() {
@@ -148,13 +148,13 @@ define([
 
       this._options = {
         nodeSize: cfg('nodeSize') || 1,
-        nodeColor: Color.getColor(cfg('nodeColor')) || 'yellow'
+        nodeColor: Color.getColor(cfg('nodeColor')) || 'yellow',
       };
     },
 
     createDendrogram() {
       var actions = this.module.vars_out();
-      if (!actions || actions.length == 0) return;
+      if (!actions || actions.length === 0) return;
       var hover = (node) => {
         this.module.controller.onHover(this._idHash[node.id]);
       };
@@ -176,8 +176,8 @@ define([
         background: {
           CanvasStyles: {
             strokeStyle: Color.getColor(cfg('strokeColor')) || '#333',
-            lineWidth: cfg('strokeWidth') || '1'
-          }
+            lineWidth: cfg('strokeWidth') || '1',
+          },
         },
 
         // Add navigation capabilities:
@@ -185,14 +185,14 @@ define([
         Navigation: {
           enable: true,
           panning: true,
-          zooming: 50
+          zooming: 50,
         },
         // Set Node and Edge styles.
 
         Edge: {
           overridable: true,
           color: Color.getColor(cfg('edgeColor')) || 'green',
-          lineWidth: cfg('edgeWidth') || 0.5
+          lineWidth: cfg('edgeWidth') || 0.5,
         },
         Label: {
           overridable: true,
@@ -201,14 +201,14 @@ define([
           family: 'sans-serif',
           textAlign: 'center',
           textBaseline: 'alphabetic',
-          color: Color.getColor(cfg('labelColor')) || 'black'
+          color: Color.getColor(cfg('labelColor')) || 'black',
         },
 
         Node: {
           CanvasStyles: {
             // we need to specify it here so that we can change it later (mouse enter, leave or external highlight)
             shadowColor: 'rgb(0, 0, 0)',
-            shadowBlur: 0
+            shadowBlur: 0,
           },
 
           overridable: true,
@@ -217,7 +217,7 @@ define([
           dim: cfg('nodeSize') || 3,
           height: 3,
           width: 3,
-          lineWidth: 10
+          lineWidth: 10,
         },
 
         Events: {
@@ -268,23 +268,21 @@ define([
                   type: 'animate',
                   duration: 500,
                   hideLabels: false,
-                  transition: $jit.Trans.Quart.easeInOut
+                  transition: $jit.Trans.Quart.easeInOut,
                 });
               } else {
                 rgraph.op.contract(node.nodeFrom, {
                   type: 'animate',
                   duration: 500,
                   hideLabels: true,
-                  transition: $jit.Trans.Quart.easeInOut
+                  transition: $jit.Trans.Quart.easeInOut,
                 });
               }
-            } else {
+            } else if (!node.ignore) {
               // click on a node
-              if (!node.ignore) {
-                // hidden node ?
-                // rgraph.onClick(node.id);
-                click(node);
-              }
+              // hidden node ?
+              // rgraph.onClick(node.id);
+              click(node);
             }
           },
           onMouseEnter(node, eventInfo, e) {
@@ -293,11 +291,11 @@ define([
           },
           onMouseLeave(node, eventInfo, e) {
             this.getRgraph(e).canvas.getElement().style.cursor = '';
-          }
+          },
         },
         Tips: {
-          enable: false
-        }
+          enable: false,
+        },
       });
 
       // we store in a cache to have access to the rgraph from an ID
@@ -314,7 +312,7 @@ define([
           API.highlight(i, val);
         }
       }
-    }
+    },
   });
 
   return View;

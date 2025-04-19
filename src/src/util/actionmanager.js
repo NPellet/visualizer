@@ -18,7 +18,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
     for (let i = 0; i < data.length; i++) {
       const action = data[i].groups.action[0];
       evaled[action.name[0]] = evalSandbox.run(
-        `(function(value) { ${action.script[0]} })`
+        `(function(value) { ${action.script[0]} })`,
       );
     }
 
@@ -53,10 +53,10 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
 
     for (let i = 0, l = files[0].groups.action[0].length; i < l; i++) {
       actionsFiles[files[0].groups.action[0][i].name] =
-                actionsFiles[files[0].groups.action[0][i].name] || [];
+        actionsFiles[files[0].groups.action[0][i].name] || [];
       actionsFiles[files[0].groups.action[0][i].name].push({
         file: files[0].groups.action[0][i].file,
-        mode: files[0].groups.action[0][i].mode
+        mode: files[0].groups.action[0][i].mode,
       });
     }
   }
@@ -88,14 +88,12 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
               const variables = {};
               const varArray = event.data.variables;
               for (let i = 0; i < varArray.length; i++) {
-                variables[varArray[i]] = API.getVar(
-                  varArray[i]
-                );
+                variables[varArray[i]] = API.getVar(varArray[i]);
               }
 
               worker.postMessage({
                 method: 'getVar',
-                variables: variables
+                variables: variables,
               });
               break;
             }
@@ -118,10 +116,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
                 return;
               }
 
-              API.doAction(
-                event.data.actionName,
-                event.data.actionValue
-              );
+              API.doAction(event.data.actionName, event.data.actionValue);
               break;
             }
             case 'highlight': {
@@ -131,7 +126,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
 
               API.highlightId(
                 event.data.highlightId,
-                event.data.highlightValue || false
+                event.data.highlightValue || false,
               );
               break;
             }
@@ -192,6 +187,6 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
 
     setAPI(value) {
       API = value;
-    }
+    },
   };
 });

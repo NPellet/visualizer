@@ -15,8 +15,9 @@ define([
   'fancytree',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
   'jquery-ui/ui/widgets/accordion',
-  'jquery-ui/ui/widgets/tooltip'
-], function ($,
+  'jquery-ui/ui/widgets/tooltip',
+], function (
+  $,
   _,
   superagent,
   Default,
@@ -26,21 +27,26 @@ define([
   RocView,
   Versioning,
   CouchdbAttachments,
-  uploadUi) {
+  uploadUi,
+) {
   var UPLOAD_LIMIT = 50 * 1024 * 1024;
   var fakeLink = {
     color: 'blue',
     cursor: 'pointer',
-    textDecoration: 'underline'
+    textDecoration: 'underline',
   };
-  var compiled = _.template('<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>');
+  var compiled = _.template(
+    '<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>',
+  );
 
   class RocViewManager extends Default {
     get flavor() {
       if (this._flavor) {
         return this._flavor;
       } else {
-        return (this._flavor = window.localStorage.getItem('ci-visualizer-roc-views-flavor') || 'default');
+        return (this._flavor =
+          window.localStorage.getItem('ci-visualizer-roc-views-flavor') ||
+          'default');
       }
     }
 
@@ -71,14 +77,16 @@ define([
       this.verifyRoc();
 
       // setup CTRL + S for view saving
-      $(document).keydown(
-        (event) => {
-          if ((event.ctrlKey || event.metaKey) && !event.altKey && event.which === 83) {
-            event.preventDefault();
-            this.saveCurrentView('loaded');
-          }
+      $(document).keydown((event) => {
+        if (
+          (event.ctrlKey || event.metaKey) &&
+          !event.altKey &&
+          event.which === 83
+        ) {
+          event.preventDefault();
+          this.saveCurrentView('loaded');
         }
-      );
+      });
     }
 
     _onClick() {
@@ -176,12 +184,9 @@ define([
       var link = $('<a>', {
         text: 'here',
         href: '#',
-        click: () => this.login()
+        click: () => this.login(),
       });
-      login
-        .append('Click ')
-        .append(link)
-        .append(' to login');
+      login.append('Click ').append(link).append(' to login');
       return login;
     }
 
@@ -202,17 +207,19 @@ define([
         return this.$menuContent;
       }
 
-      var root = this.$menuContent = $('<div id="root">').css('position', 'relative');
+      this.$menuContent = $('<div id="root">').css('position', 'relative');
 
-      var hide = this.$hide = $('<div>').css({
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        zIndex: 2,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }).hide();
+      this.$hide = $('<div>')
+        .css({
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          zIndex: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        })
+        .hide();
 
       var dom = $('<div>').css('zIndex', 1);
 
@@ -221,64 +228,63 @@ define([
       var leftHeader = $('<p>', {
         css: {
           display: 'inline-block',
-          width: '50%'
-        }
+          width: '50%',
+        },
       });
 
-      leftHeader.append($('<a>', {
-        click: this.refresh.bind(this),
-        css: fakeLink,
-        text: 'refresh'
-      }));
+      leftHeader.append(
+        $('<a>', {
+          click: this.refresh.bind(this),
+          css: fakeLink,
+          text: 'refresh',
+        }),
+      );
 
       var rightHeader = $('<p>', {
         css: {
           display: 'inline-block',
           textAlign: 'right',
-          width: '50%'
-        }
+          width: '50%',
+        },
       });
 
-      rightHeader
-        .append(`${this.rocUsername} | `)
-        .append($('<a>', {
+      rightHeader.append(`${this.rocUsername} | `).append(
+        $('<a>', {
           click: this.logout.bind(this),
           css: fakeLink,
-          text: 'logout'
-        }));
+          text: 'logout',
+        }),
+      );
 
-      header
-        .append(leftHeader)
-        .append(rightHeader);
+      header.append(leftHeader).append(rightHeader);
 
       var main = $('<div>', {
         css: {
           marginTop: '20px',
-          width: '710px'
-        }
+          width: '710px',
+        },
       });
 
       var leftMain = $('<div>', {
         css: {
           verticalAlign: 'top',
           display: 'inline-block',
-          width: '360px'
-        }
+          width: '360px',
+        },
       });
 
       var searchBox = $('<div></div>', {
-        text: 'Search: '
+        text: 'Search: ',
       });
 
       var lastSearchValue = '';
-      var searchField = $('<input type="text" size="20">')
-        .keyup(() => {
-          var value = searchField.val();
-          if (value !== lastSearchValue) {
-            this.doSearch(value);
-            lastSearchValue = value;
-          }
-        });
+      var searchField = $('<input type="text" size="20">').keyup(() => {
+        var value = searchField.val();
+        if (value !== lastSearchValue) {
+          this.doSearch(value);
+          lastSearchValue = value;
+        }
+      });
 
       searchBox.append(searchField);
 
@@ -287,40 +293,36 @@ define([
       var tree = $('<div>', {
         css: {
           overflowY: 'auto',
-          maxHeight: '500px'
-        }
+          maxHeight: '500px',
+        },
       });
       this.$tree = tree;
 
-      leftMain
-        .append(searchBox)
-        .append(flavorSelect)
-        .append(tree);
+      leftMain.append(searchBox).append(flavorSelect).append(tree);
 
       var rightMain = $('<div>', {
         css: {
           display: 'inline-block',
           height: '100%',
           marginLeft: '10px',
-          width: '340px'
-        }
+          width: '340px',
+        },
       });
 
-      var title = this.$title = $('<div>', {
+      this.$title = $('<div>', {
         css: {
           width: '100%',
           textAlign: 'center',
-          paddingBottom: '5px'
-        }
+          paddingBottom: '5px',
+        },
       });
 
       var rightAccordion = $('<div>', {
         css: {
           height: '80%',
-          width: '100%'
-        }
+          width: '100%',
+        },
       });
-
 
       rightAccordion.append('<h3>View information</h3>');
       this.$infoBox = $('<div>').appendTo(rightAccordion);
@@ -328,15 +330,16 @@ define([
       rightAccordion.append('<h3>Revisions</h3>');
       this.$revBox = $('<div>', {
         css: {
-          maxHeight: '300px'
-        }
+          maxHeight: '300px',
+        },
       }).appendTo(rightAccordion);
 
       rightAccordion.append('<h3>Attachments</h3>');
       this.$attachmentsBox = $('<div>').appendTo(rightAccordion);
 
       var uploadButton = $('<button>Upload attachments</button>')
-        .button().click(() => this.uploadFiles());
+        .button()
+        .click(() => this.uploadFiles());
       this.$attachmentsBox.html(uploadButton);
 
       rightAccordion.append('<h3>Permissions</h3>');
@@ -345,72 +348,75 @@ define([
       rightAccordion.append('<h3>Metadata</h3>');
       this.$metaBox = $('<div>').appendTo(rightAccordion);
 
-      var publicCheckbox = this.$publicCheckbox = $('<input type="checkbox" />').click((e) => {
+      this.$publicCheckbox = $('<input type="checkbox" />').click((e) => {
         e.preventDefault();
         this.togglePublic();
       });
       var checkboxContainer = $('<div>')
-        .append(publicCheckbox)
+        .append(this.$publicCheckbox)
         .append('Public');
 
-      var ownersList = this.$ownersList = $('<div>').css({
+      var ownersList = $('<div>').css({
         marginTop: '5px',
-        marginBottom: '5px'
+        marginBottom: '5px',
       });
-      var addOwnerButton = $('<button>Add owner</button>').click(() => this.addOwner());
+      this.$ownersList = ownersList;
+      var addOwnerButton = $('<button>Add owner</button>').click(() =>
+        this.addOwner(),
+      );
       var ownersContainer = $('<div>')
         .append(ownersList)
         .append(addOwnerButton);
 
-      const permissionsContainer = this.$permissionsContainer = $('<div>');
-      this.$permissionsBox.html(permissionsContainer);
-      permissionsContainer
+      this.$permissionsContainer = $('<div>');
+      this.$permissionsBox.html(this.$permissionsContainer);
+      this.$permissionsContainer
         .append(checkboxContainer)
         .append(ownersContainer);
 
       rightAccordion.accordion({
-        heightStyle: 'content'
+        heightStyle: 'content',
       });
 
       var rightButtons = $('<div>', {
         css: {
           paddingTop: '20px',
-          height: '20%'
-        }
+          height: '20%',
+        },
       });
 
-      var closeButton = this.$closeButton = $('<button>Close view</button>').button({ disabled: true }).click(() => this.closeLoadedView());
-      var saveButton = this.$saveButton = $('<button>Save</button>').button({ disabled: true }).click(() => this.saveCurrentView('active'));
-      var saveAsButton = this.$saveAsButton = $('<button>Save as</button>').button({ disabled: true }).click(() => this.saveAs());
-      var saveAsText = this.$saveAsText = $('<input type="text" size="15" />').css('display', 'none');
+      this.$closeButton = $('<button>Close view</button>')
+        .button({ disabled: true })
+        .click(() => this.closeLoadedView());
+      this.$saveButton = $('<button>Save</button>')
+        .button({ disabled: true })
+        .click(() => this.saveCurrentView('active'));
+      this.$saveAsButton = $('<button>Save as</button>')
+        .button({ disabled: true })
+        .click(() => this.saveAs());
+      this.$saveAsText = $('<input type="text" size="15" />').css(
+        'display',
+        'none',
+      );
 
       rightButtons
-        .append(closeButton)
-        .append(saveButton)
+        .append(this.$closeButton)
+        .append(this.$saveButton)
         .append('<br>')
-        .append(saveAsButton)
-        .append(saveAsText);
+        .append(this.$saveAsButton)
+        .append(this.$saveAsText);
 
-      rightMain
-        .append(title)
-        .append(rightAccordion)
-        .append(rightButtons);
+      rightMain.append(this.$title).append(rightAccordion).append(rightButtons);
 
-      main
-        .append(leftMain)
-        .append(rightMain);
+      main.append(leftMain).append(rightMain);
 
-      dom
-        .append(header)
-        .append(main);
+      dom.append(header).append(main);
 
-      root
-        .append(hide)
-        .append(dom);
+      this.$menuContent.append(this.$hide).append(dom);
 
       this.refresh();
 
-      return root;
+      return this.$menuContent;
     }
 
     async getViews() {
@@ -456,31 +462,34 @@ define([
           dragDrop: (target, info) => {
             var theNode = info.otherNode;
             this.showHide(true);
-            theNode.data.view.moveTo(target)
-              .then((result) => {
-                this.showHide(false);
-                if (result) theNode.moveTo(target);
-                else UI.showNotification('View could not be moved', 'error');
-              });
-          }
+            theNode.data.view.moveTo(target).then((result) => {
+              this.showHide(false);
+              if (result) theNode.moveTo(target);
+              else UI.showNotification('View could not be moved', 'error');
+            });
+          },
         },
         filter: {
           mode: 'hide',
-          fuzzy: true
+          fuzzy: true,
         },
         // events
         activate: (event, data) => this.onActivate(event, data),
-        dblclick: (event, data) => this.onDblclick(event, data)
+        dblclick: (event, data) => this.onDblclick(event, data),
       });
 
-      this.$tree.on('mouseenter mouseleave', 'span.fancytree-title', (event) => {
-        const node = $.ui.fancytree.getNode(event);
-        if (event.type === 'mouseenter' && !node.folder) {
-          this.populateInfo(node);
-        } else {
-          this.populateInfo(this.activeView);
-        }
-      });
+      this.$tree.on(
+        'mouseenter mouseleave',
+        'span.fancytree-title',
+        (event) => {
+          const node = $.ui.fancytree.getNode(event);
+          if (event.type === 'mouseenter' && !node.folder) {
+            this.populateInfo(node);
+          } else {
+            this.populateInfo(this.activeView);
+          }
+        },
+      );
 
       this.tree = this.$tree.fancytree('getTree');
 
@@ -497,16 +506,28 @@ define([
 
           if (node.folder) {
             var path = node.data.path;
-            var menu = [{ title: 'Create folder', cmd: 'createFolder', uiIcon: 'ui-icon-folder-collapsed' }];
-            if (path.length === 1) { // root of flavor
-              menu.push({ title: 'New flavor...', cmd: 'newFlavor', uiIcon: 'ui-icon-document-b' });
+            var menu = [
+              {
+                title: 'Create folder',
+                cmd: 'createFolder',
+                uiIcon: 'ui-icon-folder-collapsed',
+              },
+            ];
+            if (path.length === 1) {
+              // root of flavor
+              menu.push({
+                title: 'New flavor...',
+                cmd: 'newFlavor',
+                uiIcon: 'ui-icon-document-b',
+              });
               menu.push({ title: '----' });
               const flavors = this.flavors;
-              for (var i = 0; i < flavors.length; i++) {
+              for (let i = 0; i < flavors.length; i++) {
                 menu.push({
                   title: flavors[i],
                   cmd: 'switchFlavor',
-                  uiIcon: (flavors[i] === this.flavor) ? 'ui-icon-check' : undefined
+                  uiIcon:
+                    flavors[i] === this.flavor ? 'ui-icon-check' : undefined,
                 });
               }
             }
@@ -515,18 +536,18 @@ define([
             var flavors = this.flavors;
             var menuFlavors = [];
             var viewFlavors = node.data.view.flavors;
-            for (var i = 0; i < flavors.length; i++) {
+            for (let i = 0; i < flavors.length; i++) {
               var has = !!viewFlavors[flavors[i]];
               menuFlavors.push({
                 title: flavors[i],
                 cmd: 'toggleFlavor',
-                uiIcon: has ? 'ui-icon-check' : undefined
+                uiIcon: has ? 'ui-icon-check' : undefined,
               });
             }
             this.$tree.contextmenu('replaceMenu', [
               { title: 'Rename', cmd: 'renameView', uiIcon: 'ui-icon-pencil' },
               { title: 'Delete', cmd: 'deleteView', uiIcon: 'ui-icon-trash' },
-              { title: 'Flavors', children: menuFlavors }
+              { title: 'Flavors', children: menuFlavors },
             ]);
           }
 
@@ -563,7 +584,7 @@ define([
         },
         createMenu(event) {
           $(event.target).css('z-index', 10000);
-        }
+        },
       });
 
       this.selectLoadedNode();
@@ -605,9 +626,11 @@ define([
 
     newFlavor() {
       var div = $('<div>Name of the new flavor: </div>');
-      var input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
-        if (evt.keyCode === 13) Create();
-      });
+      var input = $('<input type="text" />')
+        .appendTo(div)
+        .on('keypress', (evt) => {
+          if (evt.keyCode === 13) Create();
+        });
       const Create = () => {
         var name = validateFlavor(input.val());
         if (!name) {
@@ -617,7 +640,7 @@ define([
           this.tree.rootNode.addNode({
             folder: true,
             title: name,
-            path: [name]
+            path: [name],
           });
           this.flavors.push(name);
           this.flavors.sort();
@@ -630,9 +653,11 @@ define([
 
     createFolder(node) {
       var div = $('<div>Name of the directory: </div>');
-      var input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
-        if (evt.keyCode === 13) Save();
-      });
+      var input = $('<input type="text" />')
+        .appendTo(div)
+        .on('keypress', (evt) => {
+          if (evt.keyCode === 13) Save();
+        });
       const Save = () => {
         var name = validateName(input.val());
         if (!name) {
@@ -642,9 +667,12 @@ define([
         // Check if folder already exists
         var children = node.getChildren();
         if (children) {
-          for (var i = 0; i < children.length; i++) {
+          for (let i = 0; i < children.length; i++) {
             if (children[i].title === name && children[i].folder) {
-              return UI.showNotification(`Folder ${name} already exists`, 'error');
+              return UI.showNotification(
+                `Folder ${name} already exists`,
+                'error',
+              );
             }
           }
         }
@@ -653,7 +681,7 @@ define([
         var newNode = node.addNode({
           folder: true,
           title: name,
-          path: node.data.path.concat(name)
+          path: node.data.path.concat(name),
         });
         node.sortChildren(sortFancytree);
         newNode.setActive();
@@ -664,7 +692,13 @@ define([
     }
 
     async deleteView(node) {
-      if (await UI.confirm(`This will delete the view named "${node.title}" and all related data.<br>Are you sure?`, 'Yes, delete it!', 'Maybe not...')) {
+      if (
+        await UI.confirm(
+          `This will delete the view named "${node.title}" and all related data.<br>Are you sure?`,
+          'Yes, delete it!',
+          'Maybe not...',
+        )
+      ) {
         this.showHide(true);
         const ok = await node.data.view.remove();
         this.showHide(false);
@@ -673,7 +707,7 @@ define([
           node.remove();
           if (node === this.loadedNode) {
             Versioning.switchView({ view: {}, data: {} }, true, {
-              doNotLoad: true
+              doNotLoad: true,
             });
             this.setLoadedNode(null);
             this.setActiveView(null);
@@ -686,9 +720,14 @@ define([
 
     renameView(node) {
       var div = $(`<div>Renaming view "${node.title}"<br>New name: </div>`);
-      var input = $(`<input type="text" value="${node.data.view.getName(node.data.flavor)}"/>`).appendTo(div).on('keypress', (evt) => {
-        if (evt.keyCode === 13) Rename();
-      }).select();
+      var input = $(
+        `<input type="text" value="${node.data.view.getName(node.data.flavor)}"/>`,
+      )
+        .appendTo(div)
+        .on('keypress', (evt) => {
+          if (evt.keyCode === 13) Rename();
+        })
+        .select();
       const Rename = () => {
         var name = input.val().trim();
         if (name.length === 0) {
@@ -696,18 +735,17 @@ define([
         }
 
         this.showHide(true);
-        return node.data.view.rename(node.data.flavor, name)
-          .then((ok) => {
-            this.showHide(false);
-            if (ok) {
-              UI.showNotification('View was renamed', 'success');
-              node.setTitle(name);
-              this.renderActiveView();
-            } else {
-              UI.showNotification('Error while renaming view', 'error');
-            }
-            dialog.dialog('destroy');
-          });
+        return node.data.view.rename(node.data.flavor, name).then((ok) => {
+          this.showHide(false);
+          if (ok) {
+            UI.showNotification('View was renamed', 'success');
+            node.setTitle(name);
+            this.renderActiveView();
+          } else {
+            UI.showNotification('Error while renaming view', 'error');
+          }
+          dialog.dialog('destroy');
+        });
       };
       var dialog = UI.dialog(div, { buttons: { Rename } });
     }
@@ -724,8 +762,7 @@ define([
       } else if (result.state === 'removed') {
         let found;
         this.tree.rootNode.visit((theNode) => {
-          if (theNode.data.view === view &&
-                        theNode.data.flavor === flavor) {
+          if (theNode.data.view === view && theNode.data.flavor === flavor) {
             found = theNode;
             return false;
           }
@@ -744,7 +781,7 @@ define([
               title: result.name,
               folder: false,
               view,
-              flavor
+              flavor,
             });
             break;
           }
@@ -772,7 +809,10 @@ define([
       if (this.flavor !== flavorName) {
         this.flavor = flavorName;
         this.renderFlavor();
-        if (this.loadedNode && !this.loadedNode.data.view.hasFlavor(flavorName)) {
+        if (
+          this.loadedNode &&
+          !this.loadedNode.data.view.hasFlavor(flavorName)
+        ) {
           this.setLoadedNode(null);
           this.setActiveView(null);
         }
@@ -782,7 +822,11 @@ define([
     renderFlavor() {
       var found = false;
       this.tree.filterBranches((node) => {
-        if (node.folder && node.title === this.flavor && node.data.path.length === 1) {
+        if (
+          node.folder &&
+          node.title === this.flavor &&
+          node.data.path.length === 1
+        ) {
           found = true;
           node.setExpanded(true);
           return true;
@@ -796,7 +840,7 @@ define([
         this.tree.rootNode.addNode({
           folder: true,
           title: this.flavor,
-          path: [this.flavor]
+          path: [this.flavor],
         });
         this.flavors.push(this.flavor);
         this.flavors.sort();
@@ -828,8 +872,9 @@ define([
       }
       const view = node.data.view;
       this.$title.text(view.title);
-      this.$infoBox.html($('<p>').append(
-        `Name: <b>${_.escape(node.title)}</b><br>
+      this.$infoBox.html(
+        $('<p>').append(
+          `Name: <b>${_.escape(node.title)}</b><br>
                 Folder: ${view.getPath(node.data.flavor)}<br>
                 Visualizer version: ${view.version}<br><br>
                 Size: ${Util.formatSize(view.size)}<br>
@@ -837,26 +882,33 @@ define([
                 Last revision: ${view.revid}<br><br>
                 Created on: ${view.creationDate.toLocaleString()}<br>
                 Last modified: ${view.modificationDate.toLocaleString()}<br>
-                Owner: ${view.owner}`
-      ));
+                Owner: ${view.owner}`,
+        ),
+      );
 
-      this.$metaBox.html($('<p>').append(
-        `
+      this.$metaBox.html(
+        $('<p>').append(
+          `
                     <table>
                     <tr><td>Keywords:</td><td><input type="text" value="${view.keywords ? view.keywords.join(', ') : ''}"/></td></tr>
                     <tr><td>Icon:</td><td><input type="text" value="${view.icon || ''}" /></td></tr>
                     <tr><td>Short name:</td><td><input type="text" value="${view.name || ''}" /></td></tr>
                     <tr><td>Category:</td><td><input type="text" value="${view.category || ''}" /></td></tr>
                     </table>
-                `
-      ));
+                `,
+        ),
+      );
       if (this.loadedNode && this.loadedNode !== this.activeNode) {
         this.$infoBox.append('<br>');
-        this.$infoBox.append($('<p>').append($('<a>', {
-          click: this.selectLoadedNode.bind(this),
-          css: fakeLink,
-          text: 'Select current view'
-        })));
+        this.$infoBox.append(
+          $('<p>').append(
+            $('<a>', {
+              click: this.selectLoadedNode.bind(this),
+              css: fakeLink,
+              text: 'Select current view',
+            }),
+          ),
+        );
       }
       this.reloadRevisions(node);
       this.$permissionsContainer.show();
@@ -869,11 +921,15 @@ define([
       this.$revBox.html('loading...');
       const revs = await view.getRevisions(force);
       this.$revBox.empty();
-      this.$revBox.append($('<p>').html($('<a>', {
-        click: this.reloadRevisions.bind(this, node, true),
-        css: fakeLink,
-        text: 'refresh'
-      })));
+      this.$revBox.append(
+        $('<p>').html(
+          $('<a>', {
+            click: this.reloadRevisions.bind(this, node, true),
+            css: fakeLink,
+            text: 'refresh',
+          }),
+        ),
+      );
       this.$revBox.append('<br>');
       revs.forEach((rev) => {
         const revLink = $('<a>', {
@@ -881,11 +937,11 @@ define([
           css: fakeLink,
           class: 'roc-revision-link',
           text: rev,
-          title: ''
+          title: '',
         });
 
         revLink.tooltip({
-          content: this.updateRevInfo.bind(this, node, rev)
+          content: this.updateRevInfo.bind(this, node, rev),
         });
 
         const openRevLink = $('<p>').html(revLink);
@@ -937,7 +993,7 @@ define([
         const newFolder = folder.addNode({
           folder: true,
           title: name,
-          path: folder.data.path.concat(name)
+          path: folder.data.path.concat(name),
         });
 
         folder.sortChildren(sortFancytree);
@@ -954,12 +1010,12 @@ define([
           version: view.version,
           title: view.title,
           flavors: {
-            [flavor]: folder.data.path.slice(1).concat(name)
-          }
+            [flavor]: folder.data.path.slice(1).concat(name),
+          },
         },
         _attachments: {
-          'view.json': view.attachment
-        }
+          'view.json': view.attachment,
+        },
       };
       const newView = new RocView(doc, this);
       this.showHide(true);
@@ -978,10 +1034,10 @@ define([
         title: name,
         folder: false,
         view: newView,
-        flavor
+        flavor,
       });
       Versioning.switchView(newView.getViewSwitcher(), true, {
-        doNotLoad: true
+        doNotLoad: true,
       });
     }
 
@@ -999,18 +1055,19 @@ define([
         theView = this.loadedNode;
       }
       if (theView) {
-        const dialog = UI.dialog(compiled({
-          view: theView.data.view,
-          flavor: theView.data.flavor,
-          flavors: theView.data.view.flavors[theView.data.flavor]
-        }), {
-          width: '400px',
-          buttons: {
-            Save: () => {
-              dialog.dialog('close');
-              this.showHide(true);
-              theView.data.view.saveView(this.getCurrentView())
-                .then((ok) => {
+        const dialog = UI.dialog(
+          compiled({
+            view: theView.data.view,
+            flavor: theView.data.flavor,
+            flavors: theView.data.view.flavors[theView.data.flavor],
+          }),
+          {
+            width: '400px',
+            buttons: {
+              Save: () => {
+                dialog.dialog('close');
+                this.showHide(true);
+                theView.data.view.saveView(this.getCurrentView()).then((ok) => {
                   this.showHide(false);
                   if (ok) {
                     UI.showNotification('View saved', 'success');
@@ -1019,9 +1076,10 @@ define([
                     UI.showNotification('View could not be saved', 'error');
                   }
                 });
-            }
-          }
-        });
+              },
+            },
+          },
+        );
       } else {
         UI.showNotification('No view loaded in view manager', 'error');
       }
@@ -1047,7 +1105,7 @@ define([
       this.setLoadedNode(node);
       var view = node.data.view;
       Versioning.switchView(view.getViewSwitcher(), true, {
-        withCredentials: true
+        withCredentials: true,
       });
     }
 
@@ -1055,7 +1113,7 @@ define([
       var tree = new Map();
       var flavors = new Set();
 
-      for (var i = 0; i < views.length; i++) {
+      for (let i = 0; i < views.length; i++) {
         var view = new RocView(views[i], this);
         for (var flavor in view.content.flavors) {
           flavors.add(flavor);
@@ -1078,7 +1136,14 @@ define([
     buildFolder(fancytree, tree, path, firstLevel, flavor) {
       for (var element of tree) {
         var name = formatName(element[0]);
-        this.buildElement(fancytree, name, element[1], path.concat(name), firstLevel, flavor);
+        this.buildElement(
+          fancytree,
+          name,
+          element[1],
+          path.concat(name),
+          firstLevel,
+          flavor,
+        );
       }
       fancytree.sort(sortFancytree);
     }
@@ -1089,7 +1154,7 @@ define([
           title: name,
           folder: true,
           children: [],
-          path: path
+          path: path,
         };
         if (firstLevel && name === this.flavor) {
           element.expanded = true;
@@ -1101,7 +1166,7 @@ define([
           title: name,
           folder: false,
           view: value,
-          flavor: flavor
+          flavor: flavor,
         });
       }
     }
@@ -1163,7 +1228,7 @@ define([
       const attachments = await couchA.fetchList();
       const toUpload = await uploadUi.uploadDialog(attachments, {
         mode: 'couch',
-        docUrl
+        docUrl,
       });
 
       if (!toUpload || toUpload.length === 0) return;
@@ -1210,18 +1275,21 @@ define([
         await couchA.remove(_.map(toDelete, 'name'));
 
         for (let i = 0; i < largeUploads.length; i++) {
-          await couchA.upload(largeUploads[i]); // eslint-disable-line no-await-in-loop
+          await couchA.upload(largeUploads[i]);
         }
 
         for (let i = 0; i < inlineUploads.length; i++) {
-          await couchA.inlineUploads(inlineUploads[i]); // eslint-disable-line no-await-in-loop
+          await couchA.inlineUploads(inlineUploads[i]);
         }
 
         this.showHide(false);
         UI.showNotification('Files uploaded successfully', 'success');
       } catch (err) {
         this.showHide(false);
-        UI.showNotification('Files upload failed (at least partially)', 'error');
+        UI.showNotification(
+          'Files upload failed (at least partially)',
+          'error',
+        );
         Debug.error(err.message, err.stack);
         return;
       }
@@ -1249,9 +1317,11 @@ define([
     addOwner() {
       if (!this.activeView) return;
       var div = $('<div>User email address: </div>');
-      var input = $('<input type="text" />').appendTo(div).on('keypress', (evt) => {
-        if (evt.keyCode === 13) Add();
-      });
+      var input = $('<input type="text" />')
+        .appendTo(div)
+        .on('keypress', (evt) => {
+          if (evt.keyCode === 13) Add();
+        });
       const Add = () => {
         var value = input.val();
         if (!Util.isEmail(value)) {
@@ -1274,7 +1344,10 @@ define([
       const meta = {};
       var $input = this.$metaBox.find('input');
       if ($input[0]) {
-        meta.keywords = $input[0].value.split(',').map((val) => val.trim()).filter((val) => val);
+        meta.keywords = $input[0].value
+          .split(',')
+          .map((val) => val.trim())
+          .filter((val) => val);
       }
       if ($input[1]) {
         meta.icon = $input[1].value || undefined;
@@ -1297,8 +1370,8 @@ define([
         title,
         attachment: {
           content_type: 'application/json',
-          data: btoa(unescape(encodeURIComponent(json)))
-        }
+          data: btoa(unescape(encodeURIComponent(json))),
+        },
       });
     }
   }
@@ -1318,7 +1391,8 @@ define([
       map = new Map();
       tree.set(flavorName, map);
     }
-    for (var i = 0; i < flavor.length - 1; i++) {
+    let i = 0;
+    for (; i < flavor.length - 1; i++) {
       const folderKey = `__folder__${flavor[i]}`;
       if (!map.has(folderKey)) {
         map.set(folderKey, new Map());

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
+define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   Util,
   Debug,
   urlData,
@@ -11,7 +11,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     }
 
     for (var i in object) {
-      if (object.hasOwnProperty(i)) {
+      if (Object.hasOwn(object, i)) {
         object[i] = DataObject.check(object[i]);
       }
     }
@@ -22,7 +22,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   }
   var DataObjectProto = DataObject.prototype;
 
-  DataObject.check = function(object, transformNatives) {
+  DataObject.check = function (object, transformNatives) {
     var currentProto, nextProto;
     if (isSpecialObject(object)) {
       return object;
@@ -50,7 +50,6 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
       if (type === 'object') {
         currentProto = object;
         while (currentProto !== DataObjectProto) {
-          // eslint-disable-line no-constant-condition
           nextProto = Object.getPrototypeOf(currentProto);
           if (
             nextProto === null ||
@@ -74,14 +73,14 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     }
   };
 
-  DataObject.resurrect = function(obj) {
+  DataObject.resurrect = function (obj) {
     if (isSpecialObject(obj)) {
       return obj.resurrect();
     }
     return obj;
   };
 
-  DataObject.recursiveTransform = function(object, transformNatives) {
+  DataObject.recursiveTransform = function (object, transformNatives) {
     object = DataObject.check(object, transformNatives);
     var i, l;
 
@@ -143,7 +142,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   }
 
   var duplicator = {
-    value: function() {
+    value: function () {
       return duplicate(this);
     },
   };
@@ -155,7 +154,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     });
   }
 
-  DataString.cast = function(value) {
+  DataString.cast = function (value) {
     return String(value);
   };
 
@@ -186,15 +185,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     'trim',
   ];
 
-  for (var i = 0, l = StringProperties.length; i < l; i++) {
-    (function(j) {
-      DataString.prototype[StringProperties[j]] = function() {
-        return String.prototype[StringProperties[j]].apply(this.s_, arguments);
-      };
-    })(i);
+  for (let i = 0, l = StringProperties.length; i < l; i++) {
+    DataString.prototype[StringProperties[i]] = function () {
+      return String.prototype[StringProperties[i]].apply(this.s_, arguments);
+    };
   }
 
-  DataString.prototype.getType = function() {
+  DataString.prototype.getType = function () {
     return 'string';
   };
 
@@ -207,11 +204,11 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     });
   }
 
-  DataNumber.cast = function(value) {
+  DataNumber.cast = function (value) {
     return Number(value);
   };
 
-  DataNumber.prototype.getType = function() {
+  DataNumber.prototype.getType = function () {
     return 'number';
   };
 
@@ -224,14 +221,14 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     });
   }
 
-  DataBoolean.cast = function(value) {
+  DataBoolean.cast = function (value) {
     if (value instanceof DataBoolean) {
       return value.s_;
     }
     return Boolean(value);
   };
 
-  DataBoolean.prototype.getType = function() {
+  DataBoolean.prototype.getType = function () {
     return 'boolean';
   };
 
@@ -244,8 +241,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   function DataArray(arr, recursive, forceCopy) {
     var newArr = [];
     if (arr) {
-      if (!Array.isArray(arr))
+      if (!Array.isArray(arr)) {
         throw new Error('DataArray can only be constructed from arrays');
+      }
       for (var i = 0, l = arr.length; i < l; i++) {
         if (recursive) {
           newArr[i] = DataObject.check(arr[i], recursive, forceCopy);
@@ -258,14 +256,15 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
     return newArr;
   }
 
-  var DataArrayProto = (DataArray.prototype = Object.create(Array.prototype));
+  DataArray.prototype = Object.create(Array.prototype);
+  var DataArrayProto = DataArray.prototype;
   Object.defineProperty(DataArrayProto, 'constructor', { value: DataArray });
 
   window.DataObject = DataObject;
   window.DataArray = DataArray;
 
   var resurrectObject = {
-    value: function() {
+    value: function () {
       var obj = {};
 
       var enumerableKeys = Object.keys(this);
@@ -287,7 +286,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var resurrectArray = {
-    value: function() {
+    value: function () {
       var obj = [];
       for (var i = 0, l = this.length; i < l; i++) {
         if (isSpecialObject(this[i])) {
@@ -301,7 +300,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var dataGetter = {
-    value: function(prop, returnPromise, constructor) {
+    value: function (prop, returnPromise, constructor) {
       function processVal(val) {
         if (typeof val !== 'object' || val === null) return val;
         if (typeof val[prop] !== 'undefined') {
@@ -334,25 +333,21 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
           }
           return val[prop];
         }
-      } else {
-        if (prop === true) {
-          if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
-            return Promise.resolve(dataObjectify(this, 'value'));
-          } else if (
-            this.hasOwnProperty('type') &&
-            this.hasOwnProperty('url')
-          ) {
-            return this.fetch(true).then(function(self) {
-              return self.get();
-            });
-          } else {
-            return Promise.resolve(this);
-          }
+      } else if (prop === true) {
+        if (Object.hasOwn(this, 'type') && Object.hasOwn(this, 'value')) {
+          return Promise.resolve(dataObjectify(this, 'value'));
+        } else if (Object.hasOwn(this, 'type') && Object.hasOwn(this, 'url')) {
+          return this.fetch(true).then(function (self) {
+            return self.get();
+          });
         } else {
-          if (this.hasOwnProperty('value') && this.hasOwnProperty('type'))
-            return dataObjectify(this, 'value');
-          return this;
+          return Promise.resolve(this);
         }
+      } else {
+        if (Object.hasOwn(this, 'value') && Object.hasOwn(this, 'type')) {
+          return dataObjectify(this, 'value');
+        }
+        return this;
       }
     },
   };
@@ -365,7 +360,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   }
 
   var dataSetter = {
-    value: function(prop, value, noTrigger) {
+    value: function (prop, value, noTrigger) {
       var valueTyped = DataObject.check(value, true);
       var self = this.get();
 
@@ -418,7 +413,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   const getChild = {
-    value: async function(jpath) {
+    value: async function (jpath) {
       if (typeof jpath === 'string') {
         // Old version
         jpath = jpath.split('.');
@@ -444,7 +439,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   const trace = {
-    value: async function(jpath) {
+    value: async function (jpath) {
       if (jpath && jpath.split) {
         jpath = jpath.split('.');
         jpath.shift();
@@ -472,13 +467,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var traceSync = {
-    value: function(jpath) {
+    value: function (jpath) {
       return this.getChildSync(jpath, true);
     },
   };
 
   var getChildSync = {
-    value: function(jpath, setParents) {
+    value: function (jpath, setParents) {
       if (typeof jpath === 'string') {
         // Old version
         jpath = jpath.split('.');
@@ -511,7 +506,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var linkToParent = {
-    value: function(parent, name) {
+    value: function (parent, name) {
       if (this.__parent) {
         return;
       }
@@ -532,7 +527,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var setChild = {
-    value: function(jpath, newValue, triggerParams, constructor) {
+    value: function (jpath, newValue, triggerParams, constructor) {
       var that = this;
 
       if (typeof jpath === 'string') {
@@ -574,7 +569,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
 
       var args = [jpath, newValue, triggerParams, constructor];
 
-      return this.get(el, true, elementType).then(function(val) {
+      return this.get(el, true, elementType).then(function (val) {
         that.set(name, val, true);
         val.linkToParent(that, name);
         val.setChild(...args);
@@ -583,7 +578,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var setChildSync = {
-    value: function(jpath, newValue, triggerParams, constructor) {
+    value: function (jpath, newValue, triggerParams, constructor) {
       var that = this;
 
       if (typeof jpath === 'string') {
@@ -633,14 +628,14 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var triggerBubble = {
-    value: function(args) {
+    value: function (args) {
       if (this._dataChange) {
         for (var i in this._dataChange) {
           this._dataChange[i].apply(this, args);
         }
       }
 
-      if (this.type && this.url && this.hasOwnProperty('value')) {
+      if (this.type && this.url && Object.hasOwn(this, 'value')) {
         delete this.url;
         Object.defineProperty(this, 'value', {
           enumerable: true,
@@ -661,7 +656,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   // In order to prevent looping, the trigger and bind change should only be called via the module model.
 
   var triggerChange = {
-    value: function(noBubble, args, jpath, target) {
+    value: function (noBubble, args, jpath, target) {
       if (!Array.isArray(args)) {
         if (args == undefined) {
           args = [];
@@ -688,7 +683,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
         }
       }
 
-      if (this.type && this.url && this.hasOwnProperty('value')) {
+      if (this.type && this.url && Object.hasOwn(this, 'value')) {
         delete this.url;
         Object.defineProperty(this, 'value', {
           enumerable: true,
@@ -710,7 +705,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var bindChange = {
-    value: function(callback) {
+    value: function (callback) {
       if (!this._dataChange) {
         Object.defineProperty(this, '_dataChange', {
           value: {},
@@ -729,7 +724,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var unbindChange = {
-    value: function(idOrFunc) {
+    value: function (idOrFunc) {
       if (!this._dataChange) {
         Debug.info('Could not unbind event. No listener for this object');
         return false;
@@ -744,18 +739,19 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var getType = {
-    value: function() {
+    value: function () {
       var type = Util.objectToString(this).toLowerCase();
-      if (type !== 'object')
+      if (type !== 'object') {
         // Native types: number, string, boolean
         return type;
+      }
       if (Array.isArray(this)) return 'array';
       if (isTypedObject(this)) return this.type;
       return type;
     },
   };
 
-  DataObject.getType = function(value) {
+  DataObject.getType = function (value) {
     if (isSpecialObject(value)) {
       return value.getType();
     } else {
@@ -764,8 +760,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var fetch = {
-    value: function(forceJson) {
-      if (!this.url || !this.type || this.hasOwnProperty('value')) {
+    value: function (forceJson) {
+      if (!this.url || !this.type || Object.hasOwn(this, 'value')) {
         // No need for fetching. Still returning a promise, though.
         return Promise.resolve(this);
       }
@@ -853,20 +849,21 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   }
 
   var mergeWithObject = {
-    value: function(objectToMerge, moduleId, noBubble) {
+    value: function (objectToMerge, moduleId, noBubble) {
       if (
         typeof objectToMerge !== 'object' ||
         Array.isArray(objectToMerge) ||
         objectToMerge == null
-      )
+      ) {
         return;
+      }
       merge(this, objectToMerge);
       this.triggerChange(noBubble, [moduleId]);
     },
   };
 
   var mergeWithArray = {
-    value: function(objectToMerge, moduleId, noBubble) {
+    value: function (objectToMerge, moduleId, noBubble) {
       // TODO find a way to implement this
       this.triggerChange(noBubble, [moduleId]);
       return Debug.warn('mergeWith method not yet implemented for DataArray');
@@ -874,8 +871,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
   };
 
   var setValue = {
-    value: function(newValue, noTrigger) {
-      if (this.hasOwnProperty('type') && this.hasOwnProperty('value')) {
+    value: function (newValue, noTrigger) {
+      if (Object.hasOwn(this, 'type') && Object.hasOwn(this, 'value')) {
         if (
           this.value instanceof DataString ||
           this.value instanceof DataNumber ||
@@ -1020,8 +1017,8 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function(
 
   function isTypedObject(object) {
     return (
-      object.hasOwnProperty('type') &&
-      (object.hasOwnProperty('value') || object.hasOwnProperty('url'))
+      Object.hasOwn(object, 'type') &&
+      (Object.hasOwn(object, 'value') || Object.hasOwn(object, 'url'))
     );
   }
 

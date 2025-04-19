@@ -1,15 +1,19 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Default, Util, $) {
-  function View() {
-  }
+define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
+  Default,
+  Util,
+  $,
+) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init: function () {
       this.dom = $('<div />');
       var that = this;
       var img = $('<div class="ci-navigation-navigarrow"></div>');
-      this.domNavig = $('<div />').addClass('')
+      this.domNavig = $('<div />')
+        .addClass('')
         .append(img.clone().addClass('left'))
         .append(img.clone().addClass('right'))
         .on('mousedown', '.ci-navigation-navigarrow', function (event) {
@@ -24,14 +28,13 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     },
 
     update: {
-
       xcoords: function (value) {
         if (!value) {
           return;
         }
 
         this.cx = value;
-      }
+      },
     },
 
     moveStart: function (e) {
@@ -41,19 +44,23 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
       var that = this;
       var target = $(e.target || e.srcElement);
 
-      var mode = (target.hasClass('left') ? 'left' : (target.hasClass('right') ? 'right' : 'left'));
+      var mode = target.hasClass('left')
+        ? 'left'
+        : target.hasClass('right')
+          ? 'right'
+          : 'left';
       var timeout;
 
       var getInterval = function () {
-        return 300000 / ((Date.now() - started) + 1500) + 10;
+        return 300000 / (Date.now() - started + 1500) + 10;
       };
 
       var execute = function () {
-        if (mode == 'left')
+        if (mode === 'left') {
           that.cx -= that.step;
-        else if (mode == 'right')
+        } else if (mode === 'right') {
           that.cx += that.step;
-
+        }
 
         that.module.controller.move(that.cx);
         setTimeout();
@@ -76,9 +83,8 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (Def
     onActionReceive: {
       changeX: function (value) {
         this.cx = parseFloat(value.valueOf());
-      }
-    }
-
+      },
+    },
   });
 
   return View;

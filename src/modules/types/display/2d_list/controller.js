@@ -1,10 +1,12 @@
 'use strict';
 
-define(['modules/default/defaultcontroller', 'src/util/util'], function (Default, Util) {
+define(['modules/default/defaultcontroller', 'src/util/util'], function (
+  Default,
+  Util,
+) {
   var typeList = Util.getStructuresComboOptions();
 
-  function Controller() {
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -15,36 +17,36 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     date: '24.12.2013',
     license: 'MIT',
     cssClass: '2d_list',
-    hidden: true
+    hidden: true,
   };
 
   Controller.prototype.references = {
     cell: {
       label: 'Data of the cell',
-      type: 'object'
+      type: 'object',
     },
     list: {
       label: 'The array of data to display',
-      type: 'array'
-    }
+      type: 'array',
+    },
   };
 
   Controller.prototype.events = {
     onHover: {
       label: 'Hover a cell',
-      refVariable: ['cell']
+      refVariable: ['cell'],
     },
     onClick: {
       label: 'Click a cell',
       refVariable: ['cell'],
-      refAction: ['cell']
-    }
+      refAction: ['cell'],
+    },
   };
 
   Controller.prototype.variablesIn = ['list'];
 
   Controller.prototype.actionsIn = {
-    addElement: 'Add an element'
+    addElement: 'Add an element',
   };
 
   Controller.prototype.configurationStructure = function () {
@@ -54,42 +56,42 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             colnumber: {
               type: 'text',
               default: 5,
-              title: 'Number of columns'
+              title: 'Number of columns',
             },
             valjPath: {
               type: 'combo',
               title: 'Value jPath',
-              options: jpaths
+              options: jpaths,
             },
             colorjPath: {
               type: 'combo',
               title: 'Color jPath',
-              options: jpaths
+              options: jpaths,
             },
             height: {
               type: 'text',
-              title: 'Cell height'
+              title: 'Cell height',
             },
             forceType: {
               type: 'combo',
               title: 'Force type',
               default: '',
-              options: typeList
+              options: typeList,
             },
             rendererOptions: {
               type: 'text',
               default: '',
-              title: 'Renderer options'
-            }
-          }
-        }
-      }
+              title: 'Renderer options',
+            },
+          },
+        },
+      },
     };
   };
 
@@ -99,7 +101,7 @@ define(['modules/default/defaultcontroller', 'src/util/util'], function (Default
     valjpath: ['groups', 'group', 0, 'valjPath', 0],
     height: ['groups', 'group', 0, 'height', 0],
     forceType: ['groups', 'group', 0, 'forceType', 0],
-    rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0]
+    rendererOptions: ['groups', 'group', 0, 'rendererOptions', 0],
   };
 
   return Controller;

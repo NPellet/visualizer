@@ -9,7 +9,7 @@ define([
   'src/util/color',
   'src/util/debug',
   'src/util/util',
-], function($, Default, Graph, JSONChart, API, Color, Debug, Util) {
+], function ($, Default, Graph, JSONChart, API, Color, Debug, Util) {
   const defaultScatterStyle = {
     shape: 'circle',
     cx: 0,
@@ -44,12 +44,10 @@ define([
       this.colorId = 0;
       this.colors = ['red', 'blue', 'green', 'black'];
       this.onchanges = {};
-      this.highlightOptions = Object.assign(
-        {
-          fill: 'black',
-        },
-        Util.evalOptions(this.module.getConfiguration('highlightOptions')),
-      );
+      this.highlightOptions = {
+        fill: 'black',
+        ...Util.evalOptions(this.module.getConfiguration('highlightOptions')),
+      };
 
       this.serieHiddenState = new Map();
     },
@@ -140,7 +138,7 @@ define([
           if (wheel && wheel !== 'none') {
             var wheelOptions = {
               baseline:
-                wheel == 'zoomYMousePos'
+                wheel === 'zoomYMousePos'
                   ? 'mousePosition'
                   : cfg('wheelbaseline', 0),
             };
@@ -212,11 +210,11 @@ define([
             nbTicksPrimary: cfg('xnbTicksPrimary', 5),
           };
 
-          if (cfg('xaxismodification') == 'timestamptotime') {
+          if (cfg('xaxismodification') === 'timestamptotime') {
             xOptions.type = 'time';
-          } else if (cfg('xaxismodification') == 'valtotime') {
+          } else if (cfg('xaxismodification') === 'valtotime') {
             xOptions.unitModification = 'time';
-          } else if (cfg('xaxismodification') == 'valtotime:min.sec') {
+          } else if (cfg('xaxismodification') === 'valtotime:min.sec') {
             xOptions.unitModification = 'time:min.sec';
           }
 
@@ -257,7 +255,7 @@ define([
           xAxis.on('zoom', xZoomHandler);
           xAxis.on('zoomOutFull', xZoomHandler);
           if (cfgCheckbox('FitYToAxisOnFromTo', 'rescale')) {
-            xAxis.on('zoom', function() {
+            xAxis.on('zoom', function () {
               yAxis.scaleToFitAxis(this);
             });
           }
@@ -580,7 +578,7 @@ define([
               options.markersIndependent = false;
             }
 
-            options.lineToZero = continuous == 'discrete';
+            options.lineToZero = continuous === 'discrete';
             options.strokeWidth = parseInt(plotinfos[i].strokewidth, 10);
 
             var pp = plotinfos[i].peakpicking[0];
@@ -666,7 +664,8 @@ define([
             if (isNaN(lineWidth)) lineWidth = 1;
             serie.setLineWidth(lineWidth);
 
-            plotinfosStyle.lineStyle = parseInt(plotinfos[i].strokestyle) || 1;
+            plotinfosStyle.lineStyle =
+              parseInt(plotinfos[i].strokestyle, 10) || 1;
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
               var color = style.lineColor || plotinfos[i].plotcolor;
@@ -695,21 +694,19 @@ define([
         }
       }
 
-      let newUnselectedStyle = Object.assign(
-        {},
-        serie.getStyle(),
-        plotinfosStyle,
-        style,
-        styles.unselected,
-      );
+      let newUnselectedStyle = {
+        ...serie.getStyle(),
+        ...plotinfosStyle,
+        ...style,
+        ...styles.unselected,
+      };
       serie.setStyle(newUnselectedStyle, 'unselected');
-      let newSelectedStyle = Object.assign(
-        {},
-        serie.getStyle(),
-        plotinfosStyle,
-        style,
-        styles.selected,
-      );
+      let newSelectedStyle = {
+        ...serie.getStyle(),
+        ...plotinfosStyle,
+        ...style,
+        ...styles.selected,
+      };
       serie.setStyle(newSelectedStyle, 'selected');
 
       if (!foundInfo) {
@@ -812,10 +809,12 @@ define([
         }
 
         if (moduleValue.axes) {
-          if (moduleValue.axes.x)
+          if (moduleValue.axes.x) {
             setAxisOptions(this.xAxis, moduleValue.axes.x);
-          if (moduleValue.axes.y)
+          }
+          if (moduleValue.axes.y) {
             setAxisOptions(this.yAxis, moduleValue.axes.y);
+          }
         }
 
         function setAxisOptions(axis, options) {
@@ -866,7 +865,7 @@ define([
           switch (String(aData.type)) {
             case 'zone':
               if (aData.yMin && aData.yMax) {
-                for (var j = 0, l = aData.yMax.length; j < l; j++) {
+                for (let j = 0, l = aData.yMax.length; j < l; j++) {
                   valFinal.push(aData.x ? aData.x[j] : j);
                   valFinal.push(aData.yMin[j], aData.yMax[j]);
                 }
@@ -877,7 +876,7 @@ define([
               break;
             default:
               if (aData.y) {
-                for (var j = 0, l = aData.y.length; j < l; j++) {
+                for (let j = 0, l = aData.y.length; j < l; j++) {
                   valFinalX.push(aData.x ? aData.x[j] : j);
                   valFinalY.push(aData.y[j]);
                 }
@@ -888,7 +887,7 @@ define([
 
           var serieType = String(aData.type || 'line');
 
-          if (serieType == 'color') {
+          if (serieType === 'color') {
             serieType = 'line.color';
           }
           var hasColor = false;
@@ -921,10 +920,10 @@ define([
           //                    this.normalize(valFinal, varname);
 
           if (
-            serieType == 'line' ||
+            serieType === 'line' ||
             serieType == undefined ||
-            serieType == 'scatter' ||
-            serieType == 'line.color'
+            serieType === 'scatter' ||
+            serieType === 'line.color'
           ) {
             var wave = Graph.newWaveform();
 
@@ -939,17 +938,15 @@ define([
             serie.setWaveform(wave);
 
             for (let styleName of ['selected', 'unselected']) {
-              let style = Object.assign(
-                {
-                  lineWidth: styleName === 'selected' ? 2 : 1,
-                  lineColor: 'black',
-                  lineStyle: 0,
-                },
-                styleName === 'unselected' ? defaultStyle : undefined,
-                (defaultStyles || {})[styleName],
-                styleName === 'unselected' ? aData.style : undefined,
-                (aData.styles || {})[styleName],
-              );
+              let style = {
+                lineWidth: styleName === 'selected' ? 2 : 1,
+                lineColor: 'black',
+                lineStyle: 0,
+                ...(styleName === 'unselected' ? defaultStyle : undefined),
+                ...(defaultStyles || {})[styleName],
+                ...(styleName === 'unselected' ? aData.style : undefined),
+                ...(aData.styles || {})[styleName],
+              };
               serie.setStyle(style, styleName);
             }
           } else {
@@ -974,7 +971,7 @@ define([
             let modifiers = [];
             if (Array.isArray(aData.styles)) {
               modifiers = aData.styles;
-            } else if (typeof aData.styles == 'object') {
+            } else if (typeof aData.styles === 'object') {
               modifiers = aData.styles;
             }
 
@@ -1000,12 +997,11 @@ define([
             );
             for (const styleName of keys) {
               serie.setMarkerStyle(
-                Object.assign(
-                  {},
-                  defaultScatterStyle,
-                  defaultStyle,
-                  defaultStyles[styleName] || {},
-                ),
+                {
+                  ...defaultScatterStyle,
+                  ...defaultStyle,
+                  ...(defaultStyles[styleName] || {}),
+                },
                 modifiers[styleName] || [],
                 styleName,
               );
@@ -1015,30 +1011,26 @@ define([
               var plugin = this.graph.getPlugin('selectScatter');
               plugin.setSerie(serie);
             }
+          } else if (aData.styles && aData.styles instanceof Object) {
+            this.setSerieParameters(serie, varname, {
+              styles: aData.styles,
+            });
+          } else if (aData.style) {
+            this.setSerieParameters(serie, varname, {
+              style: aData.style,
+            });
           } else {
-            if (aData.styles && aData.styles instanceof Object) {
-              this.setSerieParameters(serie, varname, {
-                styles: aData.styles,
-              });
-            } else if (aData.style) {
-              this.setSerieParameters(serie, varname, {
-                style: aData.style,
-              });
-            } else {
-              var color =
-                defaultStyle.lineColor ||
-                (data.length > 1
-                  ? Color.getNextColorRGB(i, data.length)
-                  : null);
-              let style = {};
-              if (color) {
-                style.lineColor = Color.getColor(color);
-              }
-              this.setSerieParameters(serie, varname, {
-                highlight: aData._highlight,
-                style,
-              });
+            var color =
+              defaultStyle.lineColor ||
+              (data.length > 1 ? Color.getNextColorRGB(i, data.length) : null);
+            let style = {};
+            if (color) {
+              style.lineColor = Color.getColor(color);
             }
+            this.setSerieParameters(serie, varname, {
+              highlight: aData._highlight,
+              style,
+            });
           }
 
           if (aData.annotations) {
@@ -1245,6 +1237,8 @@ define([
             }
 
             if (!Array.isArray(spectra)) return;
+            // TODO: this should be a bug
+            // eslint-disable-next-line no-unreachable-loop
             for (let spectrum of spectra) {
               let data = spectrum.data;
 
@@ -1279,14 +1273,8 @@ define([
         // Receives an array of series. Blank the other ones.
         require(['src/util/color'], (Color) => {
           var colors = Color.getDistinctColors(data.length);
-          //   self.graph.removeSeries();
 
-          // data = data.get();
-
-          var i = 0,
-            l = data.length;
-
-          for (; i < l; i++) {
+          for (let i = 0, l = data.length; i < l; i++) {
             var opts = this.getSerieOptions(varname, null, data[i].data);
 
             var serie = this.graph.newSerie(data[i].name, opts.options);
@@ -1299,7 +1287,6 @@ define([
               serie.setData(data[i].data);
             }
 
-            // serie.setLabel( data[ i ].label.toString( ) );
             serie.setLineWidth(data[i].lineWidth || opts.strokeWidth || 1);
 
             serie.setLineColor(
@@ -1585,75 +1572,73 @@ define([
     return true;
   }
 
+  function convertSeries(series) {
+    let data = [];
+    for (let serie of series) {
+      data.push({
+        x: serie.data.x,
+        y: serie.data.y,
+        color: serie.data.color,
+        styles: convertStyle(serie.style),
+        label: serie.name,
+        annotations: serie.annotations,
+      });
+    }
+    return data;
+  }
+
+  function convertStyle(styles) {
+    if (!Array.isArray(styles)) {
+      styles = [
+        {
+          name: 'unselected',
+          style: styles,
+        },
+      ];
+    }
+    let newStyles = {};
+
+    for (let style of styles) {
+      let newStyle = {};
+      if (style.style && style.style.line) {
+        newStyle.lineStyle = style.style.line.dash;
+        newStyle.lineWidth = style.style.line.width;
+        newStyle.lineColor = style.style.line.color;
+      }
+      newStyles[style.name || 'unselected'] = newStyle;
+    }
+    if (!newStyles.selected && newStyles.unselected) {
+      newStyles.selected = { ...newStyles.unselected, lineWidth: 3 };
+    }
+    return newStyles;
+  }
+
+  /**
+   * Recursively change the typed arrays to normal arrays
+   * The changes are done in-place !
+   * @param object
+   * @returns
+   */
+  function recursiveUntypeArrays(object) {
+    if (typeof object !== 'object') return object;
+    object = modifier(object);
+    return object;
+  }
+
+  function modifier(object) {
+    if (typeof object !== 'object') return object;
+    if (ArrayBuffer.isView(object)) {
+      return Array.from(object);
+    }
+    for (const key in object) {
+      if (ArrayBuffer.isView(object[key])) {
+        object[key] = Array.from(object[key]);
+      } else if (typeof object[key] === 'object') {
+        modifier(object[key]);
+      }
+    }
+    return object;
+  }
+
   return View;
 });
-
-function convertSeries(series) {
-  let data = [];
-  for (let serie of series) {
-    data.push({
-      x: serie.data.x,
-      y: serie.data.y,
-      color: serie.data.color,
-      styles: convertStyle(serie.style),
-      label: serie.name,
-      annotations: serie.annotations,
-    });
-  }
-  return data;
-}
-
-function convertStyle(styles) {
-  if (!Array.isArray(styles)) {
-    styles = [
-      {
-        name: 'unselected',
-        style: styles,
-      },
-    ];
-  }
-  let newStyles = {};
-
-  for (let style of styles) {
-    let newStyle = {};
-    if (style.style && style.style.line) {
-      newStyle.lineStyle = style.style.line.dash;
-      newStyle.lineWidth = style.style.line.width;
-      newStyle.lineColor = style.style.line.color;
-    }
-    newStyles[style.name || 'unselected'] = newStyle;
-  }
-  if (!newStyles.selected && newStyles.unselected) {
-    newStyles.selected = Object.assign({}, newStyles.unselected, {
-      lineWidth: 3,
-    });
-  }
-  return newStyles;
-}
-
-/**
- * Recursively change the typed arrays to normal arrays
- * The changes are done in-place !
- * @param object
- * @returns
- */
-function recursiveUntypeArrays(object) {
-  if (typeof object !== 'object') return object;
-  object = modifier(object);
-  return object;
-}
-
-function modifier(object) {
-  if (typeof object !== 'object') return object;
-  if (ArrayBuffer.isView(object)) {
-    return Array.from(object);
-  }
-  for (const key in object) {
-    if (ArrayBuffer.isView(object[key])) {
-      object[key] = Array.from(object[key]);
-    } else if (typeof object[key] === 'object') {
-      modifier(object[key]);
-    }
-  }
-  return object;
-}

@@ -23,13 +23,7 @@
     },
   });
 
-  function PercentCompleteFormatter(
-    row,
-    cell,
-    value,
-    columnDef,
-    dataContext
-  ) {
+  function PercentCompleteFormatter(row, cell, value, columnDef, dataContext) {
     if (value == null || value === '') {
       return '-';
     } else if (value < 50) {
@@ -44,7 +38,7 @@
     cell,
     value,
     columnDef,
-    dataContext
+    dataContext,
   ) {
     if (value == null || value === '') {
       return '';

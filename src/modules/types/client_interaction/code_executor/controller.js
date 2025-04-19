@@ -6,7 +6,7 @@ define([
   'src/util/api',
   'src/util/debug',
   'src/util/sandbox',
-  'src/util/util'
+  'src/util/util',
 ], function ($, CodeEditor, API, Debug, Sandbox, Util) {
   function Controller() {
     CodeEditor.call(this);
@@ -25,23 +25,23 @@ define([
       'Write code that can be executed on input variable, action or just the push of a button',
     author: 'Michaël Zasso',
     date: '12.01.2015',
-    license: 'MIT'
+    license: 'MIT',
   };
 
   Controller.prototype.references = {
     inputValue: {
-      label: 'Input value'
+      label: 'Input value',
     },
     outputValue: {
-      label: 'Output value'
-    }
+      label: 'Output value',
+    },
   };
 
   Controller.prototype.events = {
     onScriptEnded: {
       label: 'Code execution ended',
-      refVariable: ['outputValue']
-    }
+      refVariable: ['outputValue'],
+    },
   };
 
   Controller.prototype.variablesIn = ['inputValue'];
@@ -49,7 +49,7 @@ define([
   Controller.prototype.actionsIn = $.extend(
     {},
     Controller.prototype.actionsIn,
-    { execute: 'Execute the code' }
+    { execute: 'Execute the code' },
   );
 
   Controller.prototype.configurationStructure = function () {
@@ -57,7 +57,7 @@ define([
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             display: {
@@ -65,86 +65,86 @@ define([
               title: 'Display',
               options: {
                 editor: 'Code editor',
-                buttons: 'Buttons'
+                buttons: 'Buttons',
               },
-              default: ['editor', 'buttons']
+              default: ['editor', 'buttons'],
             },
             execOnLoad: {
               type: 'checkbox',
               title: 'Execute on load',
               options: {
-                yes: 'Yes'
+                yes: 'Yes',
               },
-              default: []
+              default: [],
             },
             asyncAwait: {
               type: 'checkbox',
               title: 'Async/Await support',
               options: {
-                top: 'Top-level await'
+                top: 'Top-level await',
               },
-              default: ['top']
+              default: ['top'],
             },
             script: {
               type: 'jscode',
               title: 'Code',
-              default: ''
-            }
-          }
+              default: '',
+            },
+          },
         },
         libs: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Required libraries'
+            title: 'Required libraries',
           },
           fields: {
             lib: {
               type: 'text',
-              title: 'url'
+              title: 'url',
             },
             alias: {
               type: 'text',
-              title: 'alias'
-            }
-          }
+              title: 'alias',
+            },
+          },
         },
         buttons: {
           options: {
             type: 'table',
             multiple: true,
-            title: 'Buttons'
+            title: 'Buttons',
           },
           fields: {
             name: {
               type: 'text',
               title: 'Name',
-              default: 'button1'
+              default: 'button1',
             },
             label: {
               type: 'text',
               title: 'Label',
-              default: 'Execute'
+              default: 'Execute',
             },
             hide: {
               type: 'checkbox',
               title: 'Hide on load',
               options: {
-                hide: 'Yes'
+                hide: 'Yes',
               },
-              default: []
+              default: [],
             },
             disable: {
               type: 'checkbox',
               title: 'Disable on load',
               options: {
-                disable: 'Yes'
+                disable: 'Yes',
               },
-              default: []
-            }
-          }
-        }
-      }
+              default: [],
+            },
+          },
+        },
+      },
     };
   };
 
@@ -154,7 +154,7 @@ define([
     asyncAwait: ['groups', 'group', 0, 'asyncAwait', 0],
     display: ['groups', 'group', 0, 'display', 0],
     libs: ['groups', 'libs', 0],
-    buttons: ['groups', 'buttons', 0]
+    buttons: ['groups', 'buttons', 0],
   };
 
   Controller.prototype.onButtonClick = function (name) {
@@ -219,7 +219,7 @@ define([
   Controller.prototype.initExecutor = function () {
     var promise;
     var newScript = this.module.view._code;
-    if (!this.reloaded && this.currentScript == newScript) {
+    if (!this.reloaded && this.currentScript === newScript) {
       promise = Promise.resolve(this._executor || this._loadingExecutor);
     } else {
       this.reloaded = false;
@@ -231,7 +231,7 @@ define([
           }
 
           var executor = new ScriptExecutor(this, libs, {
-            topAwait: this.module.getConfigurationCheckbox('asyncAwait', 'top')
+            topAwait: this.module.getConfigurationCheckbox('asyncAwait', 'top'),
           });
           this.currentScript = newScript;
           this._executor = executor;
@@ -284,7 +284,11 @@ define([
     this._changeButton(name, 'enable');
   };
 
-  Controller.prototype._changeButtonProperty = function (name, property, value) {
+  Controller.prototype._changeButtonProperty = function (
+    name,
+    property,
+    value,
+  ) {
     if (!this.module.view.buttons) return;
     var button = this.module.view.buttons.find((b) => b.name === name);
     if (button) {
@@ -321,7 +325,7 @@ define([
         `(${options.topAwait ? 'async ' : ''}function(${
           controller.neededAliases
         }) {${theCode}\n})`,
-        `CodeExecutor${this.controller.module.getId()}`
+        `CodeExecutor${this.controller.module.getId()}`,
       );
     } catch (e) {
       reportError(this.title, e);
@@ -390,9 +394,10 @@ define([
       enableButton,
       disableButton,
       getButton,
-      moduleTriggerChange: executor.controller.module.model.dataTriggerChange.bind(
-        executor.controller.module.model
-      )
+      moduleTriggerChange:
+        executor.controller.module.model.dataTriggerChange.bind(
+          executor.controller.module.model,
+        ),
     };
 
     var ctx = {
@@ -424,7 +429,7 @@ define([
       clear,
       unset,
       showButton,
-      hideButton
+      hideButton,
     };
     executor.context = context;
     return ctx;
@@ -457,7 +462,7 @@ define([
     this.context.event = 'action';
     this.context.action = {
       name: name,
-      value: value
+      value: value,
     };
   };
 
@@ -486,7 +491,7 @@ define([
 
     try {
       var result = Promise.resolve(
-        this.theFunction.apply(this.context, this.libs)
+        this.theFunction.apply(this.context, this.libs),
       );
       if (!this._async) {
         this._done = result;
@@ -507,14 +512,14 @@ define([
             that.controller.createDataFromEvent(
               'onScriptEnded',
               'outputValue',
-              that.controller.outputObject
+              that.controller.outputObject,
             );
           }
           return null;
         },
         function (e) {
           reportError(that.title, e);
-        }
+        },
       )
       .then(function () {
         that.controller.stopExecution();

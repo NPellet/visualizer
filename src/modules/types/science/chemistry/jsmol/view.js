@@ -1,4 +1,3 @@
-/* eslint-disable array-bracket-spacing */
 'use strict';
 
 define([
@@ -73,15 +72,12 @@ define([
         height: '100%',
         width: '100%',
       });
-      this.module
-        .getDomContent()
-        .html(this.dom)
-        .css({
-          overflow: 'hidden',
-          height: '100%',
-          width: '100%',
-          display: 'block',
-        });
+      this.module.getDomContent().html(this.dom).css({
+        overflow: 'hidden',
+        height: '100%',
+        width: '100%',
+        display: 'block',
+      });
 
       this._highlights = this._highlights || [];
 
@@ -138,13 +134,17 @@ define([
         });
 
         if (that.module.getConfiguration('script')) {
-          that.postMessage('executeScript', [that.module.getConfiguration('script'), ]);
+          that.postMessage('executeScript', [
+            that.module.getConfiguration('script'),
+          ]);
         }
         if (that.actionOnloadScript) {
           that.postMessage('executeScript', [that.actionOnloadScript]);
         }
         if (that.module.getConfiguration('syncScript')) {
-          that.postMessage('executeScriptSync', [that.module.getConfiguration('syncScript'), ]);
+          that.postMessage('executeScriptSync', [
+            that.module.getConfiguration('syncScript'),
+          ]);
         }
 
         this._activateHighlights();
@@ -191,7 +191,8 @@ define([
     },
 
     parseAtom: function (atom) {
-      var reg = /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
+      var reg =
+        /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
       var m = reg.exec(atom);
       return {
         id: m[2],
@@ -232,42 +233,38 @@ define([
       var that = this;
       if (!this.module.data._highlight) return;
       if (!this.module.data._atoms) {
+        // eslint-disable-next-line no-console
         console.log(
           'JSmol highlight module requires an object _atoms with list of atoms to hightlight',
         );
         return;
       }
-      var highlight = _(this.module.data._highlight)
-        .flatten()
-        .uniq()
-        .value();
+      var highlight = _(this.module.data._highlight).flatten().uniq().value();
 
       that._highlighted = [];
 
       API.killHighlight(this.module.getId());
-      for (var i = 0; i < highlight.length; i++) {
-        (function (i) {
-          API.listenHighlight(
-            { _highlight: highlight[i] },
-            function (onOff, key) {
-              if (Array.isArray(key)) {
-                key = [key];
-              }
-              if (onOff) {
-                that._highlighted = _(that._highlighted)
-                  .push(key)
-                  .flatten()
-                  .uniq()
-                  .value();
-              } else {
-                that._highlighted = [];
-              }
-              _HighlightsDebounced(that);
-            },
-            false,
-            that.module.getId(),
-          );
-        })(i);
+      for (let i = 0; i < highlight.length; i++) {
+        API.listenHighlight(
+          { _highlight: highlight[i] },
+          function (onOff, key) {
+            if (Array.isArray(key)) {
+              key = [key];
+            }
+            if (onOff) {
+              that._highlighted = _(that._highlighted)
+                .push(key)
+                .flatten()
+                .uniq()
+                .value();
+            } else {
+              that._highlighted = [];
+            }
+            _HighlightsDebounced(that);
+          },
+          false,
+          that.module.getId(),
+        );
       }
     },
   });

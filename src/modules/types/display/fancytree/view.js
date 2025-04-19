@@ -1,20 +1,26 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (Default, Util) {
-  function View() {
-  }
+define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
+  Default,
+  Util,
+) {
+  function View() {}
 
   $.extend(true, View.prototype, Default, {
     init: function () {
       var id = Util.getNextUniqueId();
       this.dom = $(`<table id="${id}">`).css({
-        width: '100%'
+        width: '100%',
       });
 
       var columns = this.module.getConfiguration('columns') || [],
         colgroup = $('<colgroup><col></col></colgroup>').appendTo(this.dom),
-        thead = $('<tr><th></th></tr>').appendTo($('<thead></thead>').appendTo(this.dom)),
-        trow = $('<tr><td></td></tr>').appendTo($('<tbody></tbody>').appendTo(this.dom)),
+        thead = $('<tr><th></th></tr>').appendTo(
+          $('<thead></thead>').appendTo(this.dom),
+        ),
+        trow = $('<tr><td></td></tr>').appendTo(
+          $('<tbody></tbody>').appendTo(this.dom),
+        ),
         jpaths = [];
       this.jpathsF = {};
 
@@ -23,7 +29,9 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         for (var i = 0; i < columns.length; i++) {
           col = columns[i];
           if (col.jpath) {
-            colgroup.append($(`<col${col.width ? ` width="${col.width}px"` : ''}></col>`));
+            colgroup.append(
+              $(`<col${col.width ? ` width="${col.width}px"` : ''}></col>`),
+            );
             thead.append(`<th>${col.name || ''}</th>`);
             trow.append('<td></td>');
             jpaths.push(col.jpath);
@@ -45,7 +53,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         extensions: ['table'],
         table: {
           indentation: 20,
-          nodeColumnIdx: 0
+          nodeColumnIdx: 0,
         },
         icon: false,
         renderColumns: function (event, data) {
@@ -61,7 +69,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         },
         activate: function (event, data) {
           that.module.controller.onActivate(data.node.data.dataObj);
-        }
+        },
       });
 
       this.tree = this.dom.fancytree('getTree');
@@ -84,13 +92,13 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
             node.setExpanded(true);
           });
         }
-      }
+      },
     },
     blank: {
       tree: function () {
         this.tree.reload();
-      }
-    }
+      },
+    },
   });
 
   function treeToFancy(tree) {
@@ -101,12 +109,13 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
     }
     return {
       fancy: fancyTree,
-      model: objectModel
+      model: objectModel,
     };
   }
 
   function addFancyChildren(fancyTree, children, objectModel) {
-    var child, fancyChild,
+    var child,
+      fancyChild,
       i = 0,
       l = children.length;
     for (; i < l; i++) {
@@ -119,7 +128,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
             key;
           for (var j = 0; j < keys.length; j++) {
             key = keys[j];
-            if (!objectModel.hasOwnProperty(key)) {
+            if (!Object.hasOwn(objectModel, key)) {
               objectModel[key] = child.info[key];
             }
           }
@@ -128,7 +137,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
 
       fancyChild = {
         title: child.label || 'Untitled node',
-        dataObj: DataObject.check(child)
+        dataObj: DataObject.check(child),
       };
       fancyTree.push(fancyChild);
       if (child.children && child.children.length) {

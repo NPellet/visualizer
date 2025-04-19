@@ -33,7 +33,7 @@ define(function () {
           success: function (response) {
             crons[cronName][4](response);
             start(cronName);
-          }
+          },
         });
       }, crons[cronName][1]);
     })(name);
@@ -63,6 +63,6 @@ define(function () {
     stop: stop,
     pause: stop,
     create: create,
-    make: create
+    make: create,
   };
 });

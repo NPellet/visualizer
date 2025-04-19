@@ -9,11 +9,11 @@ define([
   'src/util/color',
   'sprintf',
   'lodash',
-], function(Default, Util, API, UI, Renderer, Color, sprintf, _) {
+], function (Default, Util, API, UI, Renderer, Color, sprintf, _) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function() {
+    init: function () {
       var html = '<div></div>';
       if (this.module.getConfigurationCheckbox('append', 'yes')) {
         this.dom = $(html).css({
@@ -42,7 +42,7 @@ define([
     },
 
     blank: {
-      value: function() {
+      value: function () {
         if (this.module.getConfigurationCheckbox('append', 'yes')) {
           var maxEntries = this.module.getConfiguration('maxEntries');
           var children = this.dom.children();
@@ -54,17 +54,17 @@ define([
           this.dom.empty();
         }
       },
-      color: function() {
+      color: function () {
         this.module.getDomContent().css('background-color', '#FFF');
       },
     },
 
     update: {
-      color: function(color) {
+      color: function (color) {
         this.module.getDomContent().css('background-color', color.get());
       },
 
-      value: function(varValue, varName) {
+      value: function (varValue, varName) {
         if (varValue instanceof DataNumber || varValue.type === 'number') {
           this._lastValueNumber = true;
         }
@@ -93,12 +93,12 @@ define([
       },
     },
 
-    onResize: function() {
+    onResize: function () {
       this.renderAll();
       this.refresh();
     },
 
-    renderAll: function() {
+    renderAll: function () {
       var val = this._lastValue;
       if (!val) return;
 
@@ -118,7 +118,7 @@ define([
           for (var value of that.values) {
             prom.push(this.renderVal(value.value));
           }
-          Promise.all(prom).then(function(rendered) {
+          Promise.all(prom).then(function (rendered) {
             var args = [sprintfVal].concat(rendered);
             that.fillWithVal(sprintf.sprintf.apply(null, args), {
               forceType: 'html',
@@ -141,29 +141,29 @@ define([
       }
     },
 
-    exportToHTML: function() {
+    exportToHTML: function () {
       API.domToHTML(this.divForExportation[0]).then((html) => {
         API.copyHTMLToClipboard(html);
       });
     },
 
-    _scrollDown: function() {
+    _scrollDown: function () {
       var scroll_height = this.dom[0].scrollHeight;
       this.dom.scrollTop(scroll_height);
     },
 
-    renderVal: function(val, options) {
+    renderVal: function (val, options) {
       var $span = $('<span>');
       return Renderer.render($span, val, options)
-        .then(function() {
+        .then(function () {
           return $span.html();
         })
-        .catch(function() {
+        .catch(function () {
           return '[failed]';
         });
     },
 
-    fillWithVal: function(val, rendererOptions) {
+    fillWithVal: function (val, rendererOptions) {
       var that = this;
       var valign = this.module.getConfiguration('valign');
       var align = this.module.getConfiguration('align');
@@ -224,27 +224,27 @@ define([
             'input',
             that.module.getConfiguration('debounce') > 0
               ? _.debounce(
-                triggerChange,
-                that.module.getConfiguration('debounce'),
-              ).bind(that)
+                  triggerChange,
+                  that.module.getConfiguration('debounce'),
+                ).bind(that)
               : triggerChange.bind(that),
           );
-          div.on('keyup', function(e) {
+          div.on('keyup', function (e) {
             if (e.keyCode === 27) {
               // Esc character
               div.blur();
             }
           });
-          div.on('click', function() {
+          div.on('click', function () {
             if (isEditing) return;
             isEditing = true;
             div.html(String(val));
             div.focus();
           });
 
-          div.on('blur', function() {
+          div.on('blur', function () {
             isEditing = false;
-            Renderer.render(div, val, rendererOptions).then(function() {
+            Renderer.render(div, val, rendererOptions).then(function () {
               that._scrollDown();
             });
           });

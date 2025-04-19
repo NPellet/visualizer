@@ -20,7 +20,7 @@ define(['src/main/datas'], function (Data) {
     ++uniqueID;
     node.data = {};
     // add data to the currentNode
-    if (node.hasOwnProperty('index')) {
+    if (Object.hasOwn(node, 'index')) {
       var element = data[node.index];
       if (element) {
         node.data.data = element;
@@ -42,6 +42,6 @@ define(['src/main/datas'], function (Data) {
   }
 
   return {
-    annotateTree: annotateTree
+    annotateTree: annotateTree,
   };
 });

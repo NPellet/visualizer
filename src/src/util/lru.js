@@ -22,7 +22,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             data: {},
             store: storeName,
             _count: 0,
-            _limit: limit
+            _limit: limit,
           };
           if (lru) {
             toStore.data = lru.data;
@@ -43,7 +43,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
       function () {
         Debug.warn('IDB opening failure');
         deferred.reject();
-      }
+      },
     );
 
     return deferred;
@@ -96,8 +96,9 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           objectStore.createIndex('key', 'key', { unique: true });
           objectStore.createIndex('store', 'store', { unique: false });
         case 1: // eslint-disable-line no-fallthrough
-          if (!objectStore)
+          if (!objectStore) {
             objectStore = e.currentTarget.transaction.objectStore('lru');
+          }
           objectStore.deleteIndex('key');
       }
     };
@@ -141,13 +142,13 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           },
           function () {
             deferred.reject();
-          }
+          },
         );
       },
       function () {
         Debug.warn('IDB opening failure');
         deferred.reject();
-      }
+      },
     );
 
     return deferred;
@@ -164,10 +165,10 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
         var storingRequest = store.put({
           data: {
             data: data,
-            timeout: Date.now()
+            timeout: Date.now(),
           },
           index: storeName + index,
-          store: storeName
+          store: storeName,
         });
 
         storingRequest.onsuccess = function (e) {
@@ -215,7 +216,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             data: lru.data,
             store: storeName,
             _count: lru._count,
-            _limit: lru._limit
+            _limit: lru._limit,
           });
         };
 
@@ -224,16 +225,14 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
       function () {
         Debug.warn('IDB opening failure');
         deferred.reject();
-      }
+      },
     );
 
     return deferred;
   }
 
   function emptyDb(store) {
-    db.transaction(['lru'], 'readwrite')
-      .objectStore('lru')
-      .delete(store);
+    db.transaction(['lru'], 'readwrite').objectStore('lru').delete(store);
   }
 
   return {
@@ -252,6 +251,6 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
     empty: function (store) {
       emptyDb(store);
-    }
+    },
   };
 });

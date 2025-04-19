@@ -36,9 +36,7 @@ define(function () {
   };
 
   Storage.prototype.getStore = function () {
-    return this.db
-      .transaction(['store'], 'readwrite')
-      .objectStore('store');
+    return this.db.transaction(['store'], 'readwrite').objectStore('store');
   };
 
   Storage.prototype.set = function (key, value) {

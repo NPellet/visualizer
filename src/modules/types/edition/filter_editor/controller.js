@@ -1,6 +1,10 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/controller', 'src/util/util', 'src/util/debug'], function (CodeEditor, Util, Debug) {
+define([
+  'modules/types/client_interaction/code_editor/controller',
+  'src/util/util',
+  'src/util/debug',
+], function (CodeEditor, Util, Debug) {
   function Controller() {
     CodeEditor.call(this);
   }
@@ -12,74 +16,90 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
     description: 'Write code for a filter and test it in real time',
     author: 'Michaël Zasso',
     date: '04.02.2014',
-    license: 'MIT'
+    license: 'MIT',
   };
 
-  Controller.prototype.references = $.extend({}, Controller.prototype.references, {
-    dataobject: { label: 'Object to filter' },
-    filteredObject: { label: 'Filtered object' }
-  });
+  Controller.prototype.references = $.extend(
+    {},
+    Controller.prototype.references,
+    {
+      dataobject: { label: 'Object to filter' },
+      filteredObject: { label: 'Filtered object' },
+    },
+  );
 
   Controller.prototype.events = {
     onButtonClick: {
       label: 'Button was clicked / Incoming variable',
-      refVariable: ['filteredObject']
-    }
+      refVariable: ['filteredObject'],
+    },
   };
 
   Controller.prototype.variablesIn = ['dataobject'];
 
-  Controller.prototype.actionsIn = $.extend({}, Controller.prototype.actionsIn, { doFilter: 'Trigger the filter' });
+  Controller.prototype.actionsIn = $.extend(
+    {},
+    Controller.prototype.actionsIn,
+    { doFilter: 'Trigger the filter' },
+  );
 
   Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {
           options: {
-            type: 'list'
+            type: 'list',
           },
           fields: {
             script: {
               type: 'jscode',
               title: 'Code',
-              default: '//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\nresolve(value);'
-            }
-          }
+              default:
+                '//When the result is ready, use resolve(result) to send it.\n//In case of an error, use reject(error)\nresolve(value);',
+            },
+          },
         },
         libs: {
           options: {
             type: 'table',
-            multiple: 'true'
+            multiple: 'true',
           },
           fields: {
             lib: {
               type: 'text',
-              title: 'url'
+              title: 'url',
             },
             alias: {
               type: 'text',
-              title: 'alias'
-            }
-          }
-        }
-      }
+              title: 'alias',
+            },
+          },
+        },
+      },
     };
   };
 
   Controller.prototype.configAliases = {
     script: ['groups', 'group', 0, 'script', 0],
-    libs: ['groups', 'libs', 0]
+    libs: ['groups', 'libs', 0],
   };
 
   Controller.prototype.onButtonClick = function (value, object) {
     var that = this;
     var result = this.executeFilter(value, object);
-    result.then(function (data) {
-      if (typeof data !== 'undefined')
-        that.createDataFromEvent('onButtonClick', 'filteredObject', data);
-    }, function (error) {
-      Debug.error(`Filter execution error (filter title: ${that.module.definition.title}) : `, error);
-    });
+    result.then(
+      function (data) {
+        if (typeof data !== 'undefined') {
+          that.createDataFromEvent('onButtonClick', 'filteredObject', data);
+        }
+      },
+      function (error) {
+        Debug.error(
+          `Filter execution error (filter title: ${that.module.definition.title}) : `,
+          error,
+        );
+      },
+    );
   };
 
   Controller.prototype.executeFilter = function (filter, object) {
@@ -89,7 +109,6 @@ define(['modules/types/client_interaction/code_editor/controller', 'src/util/uti
     var requireBody = `(function(value, resolve, reject){${filter}\n})(object, resolve, reject);`;
 
     var requireEnd = '});';
-
 
     return new Promise(function (resolve, reject) {
       eval(`"use strict";${requireStart}${requireBody}${requireEnd}`);

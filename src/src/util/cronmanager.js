@@ -29,7 +29,7 @@ define(['require'], function (require) {
       eval(
         `evaled[ [ data[ i ].groups.action[ 0 ].name[ 0 ] ] ] = function(value) { ${
           data[i].groups.action[0].script[0]
-        } }`
+        } }`,
       );
     }
 
@@ -70,7 +70,7 @@ define(['require'], function (require) {
         actionsFiles[files[0].groups.action[0][i].name] || [];
       actionsFiles[files[0].groups.action[0][i].name].push({
         file: files[0].groups.action[0][i].file,
-        mode: files[0].groups.action[0][i].mode
+        mode: files[0].groups.action[0][i].mode,
       });
     }
   }
@@ -102,19 +102,18 @@ define(['require'], function (require) {
                 return;
               }
 
-              var variables = {},
-                i = 0,
-                l = event.data.variables.length;
+              var variables = {};
+              var l = event.data.variables.length;
 
-              for (; i < l; i++) {
+              for (let i = 0; i < l; i++) {
                 variables[event.data.variables[i]] = API.getVar(
-                  event.data.variables[i]
+                  event.data.variables[i],
                 );
               }
 
               worker.postMessage({
                 method: 'getVar',
-                variables: variables
+                variables: variables,
               });
 
               break;
@@ -124,7 +123,7 @@ define(['require'], function (require) {
                 return;
               }
 
-              for (var i in event.data.variables) {
+              for (let i in event.data.variables) {
                 API.setVar(i, event.data.variables[i]);
               }
 
@@ -150,7 +149,7 @@ define(['require'], function (require) {
 
               API.highlightId(
                 event.data.highlightId,
-                event.data.highlightValue || false
+                event.data.highlightValue || false,
               );
 
               break;
@@ -196,6 +195,6 @@ define(['require'], function (require) {
           executeActionFile(actionsFiles[actionName][i], actionValue);
         }
       }
-    }
+    },
   };
 });

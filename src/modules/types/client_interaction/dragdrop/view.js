@@ -6,12 +6,10 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
   $.extend(true, View.prototype, Default, {
     init: function () {
       var that = this;
-      var $fileInput = $('<input/>')
-        .css('display', 'none')
-        .attr({
-          type: 'file',
-          multiple: true
-        });
+      var $fileInput = $('<input/>').css('display', 'none').attr({
+        type: 'file',
+        multiple: true,
+      });
 
       this.canDropOrPaste =
         this.module.getConfigurationCheckbox('inputOptions', 'allowDrop') ||
@@ -23,7 +21,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         left: 0,
         height: 0,
         width: 0,
-        opacity: 0
+        opacity: 0,
       });
 
       var defaultMessage = this.module.getConfiguration('label');
@@ -31,7 +29,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         default: defaultMessage,
         drag: this.module.getConfiguration('dragoverlabel') || defaultMessage,
         hover: this.module.getConfiguration('hoverlabel'),
-        fileSelect: this.module.getConfiguration('fileSelectLabel')
+        fileSelect: this.module.getConfiguration('fileSelectLabel'),
       };
 
       this.$messages = $('<div class="flex-container">');
@@ -43,7 +41,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       this.dom = $('<div />', {
         class: this.canDropOrPaste
           ? 'content-zone dragdropzone'
-          : 'content-zone'
+          : 'content-zone',
       })
         .html(this.$messages)
         .on('click mousemove', function () {
@@ -68,17 +66,17 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       if (
         this.module.getConfigurationCheckbox(
           'inputOptions',
-          'allowFileInput'
+          'allowFileInput',
         ) &&
         this.module.getConfigurationCheckbox(
           'inputOptions',
-          'showFileInputButton'
+          'showFileInputButton',
         )
       ) {
         const $fileDialogButton = $(
           `<button type="button" class="form-button blue"><i class="fa fa-file fa-lg"/>&nbsp; &nbsp; ${
             this.messages.fileSelect
-          }</button>`
+          }</button>`,
         );
         this.$messages.append($fileDialogButton);
         $fileDialogButton.on('click', function (event) {
@@ -98,15 +96,15 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
 
       if (this.module.getConfigurationCheckbox('inputOptions', 'allowCamera')) {
         const $cameraDialogButton = $(
-          '<button type="button" class="form-button red"><i class="fa fa-camera fa-lg"/>&nbsp; &nbsp; Take picture</button>'
+          '<button type="button" class="form-button red"><i class="fa fa-camera fa-lg"/>&nbsp; &nbsp; Take picture</button>',
         );
         this.$messages.append($cameraDialogButton);
         $cameraDialogButton.on('click', function (event) {
           event.stopPropagation();
           confirm(
             $(
-              '<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>'
-            )
+              '<video id="video"></video><canvas id="canvas" style="display:none;"></canvas>',
+            ),
           ).then(function (value) {
             if (!value) return;
             if (value) {
@@ -187,7 +185,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       }
 
       this.resolveReady();
-    }
+    },
   });
 
   var stream;
@@ -219,13 +217,13 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       navigator.getMedia(
         {
           video: true,
-          audio: false
+          audio: false,
         },
         treatStream,
         function (err) {
           UI.showNotification(err.message);
           $dialog.dialog('close');
-        }
+        },
       );
 
       video.addEventListener(
@@ -240,7 +238,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
             streaming = true;
           }
         },
-        false
+        false,
       );
 
       function treatStream(s) {
@@ -277,7 +275,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
             takepicture();
             resolve(imgData);
             $(this).dialog('close');
-          }
+          },
         },
         close: function () {
           if (!stream) {
@@ -286,7 +284,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
           stopTracks(stream);
           return resolve(imgData);
         },
-        width: 400
+        width: 400,
       });
     });
   }

@@ -3,10 +3,9 @@
 define([
   'jquery',
   'modules/default/defaultmodel',
-  'src/util/datatraversing'
+  'src/util/datatraversing',
 ], function ($, Default, Traversing) {
-  function Model() {
-  }
+  function Model() {}
 
   $.extend(true, Model.prototype, Default, {
     getjPath: function (rel) {
@@ -17,8 +16,8 @@ define([
           if (view.annotations) data = view.annotations[0];
           break;
 
-        default:
         case 'gcdata':
+        default:
           if (view.jcamp) data = view.jcamp.gcms.gc;
 
           break;
@@ -28,7 +27,7 @@ define([
       Traversing.getJPathsFromElement(data, jpaths);
 
       return jpaths;
-    }
+    },
   });
 
   return Model;

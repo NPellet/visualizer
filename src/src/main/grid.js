@@ -13,7 +13,7 @@ define([
   'src/util/debug',
   'version',
   'src/util/config',
-  'delay'
+  'delay',
 ], function (
   $,
   ui,
@@ -27,7 +27,7 @@ define([
   Debug,
   Version,
   Config,
-  delay
+  delay,
 ) {
   var definition, jqdom, moduleMove;
   var isInit = false;
@@ -39,39 +39,37 @@ define([
     {
       name: '1080',
       width: 1920,
-      height: 1080
+      height: 1080,
     },
     {
       name: '768',
       width: 1366,
-      height: 768
+      height: 768,
     },
     {
       name: '1440',
       width: 2560,
-      height: 1440
-    }
+      height: 1440,
+    },
   ];
 
   const defaults = {
     xWidth: 10,
-    yHeight: 10
+    yHeight: 10,
   };
 
   const infoCss = {
     position: 'absolute',
-    fontSize: '16pt'
+    fontSize: '16pt',
   };
   const widthInfo = $('<span>').css(infoCss);
   const heightInfo = $('<span>').css(infoCss);
-  const positionInfo = $('<span>')
-    .css(infoCss)
-    .css({ top: -2, left: 4 });
+  const positionInfo = $('<span>').css(infoCss).css({ top: -2, left: 4 });
 
   function checkDimensions(extend) {
     var modules = ModuleFactory.getModules();
     var bottomMax = 0;
-    for (var i in modules) {
+    for (let i in modules) {
       var pos = modules[i].getPosition(getActiveLayer()),
         size = modules[i].getSize(getActiveLayer());
 
@@ -88,8 +86,8 @@ define([
       'height',
       Math.max(
         $('#ci-visualizer').height() - $('#header').outerHeight(true) - 5,
-        defaults.yHeight * bottomMax + (extend ? 400 : 0)
-      )
+        defaults.yHeight * bottomMax + (extend ? 400 : 0),
+      ),
     );
   }
 
@@ -101,7 +99,7 @@ define([
 
   function duplicateModule(module) {
     const def = DataObject.recursiveTransform(
-      JSON.parse(JSON.stringify(module.definition))
+      JSON.parse(JSON.stringify(module.definition)),
     );
 
     def.layers[getActiveLayer()].position.left += 2;
@@ -124,7 +122,7 @@ define([
       left: Math.round(modulePos.left) * definition.xWidth,
       width: Math.round(moduleSize.width) * definition.xWidth,
       height: Math.round(moduleSize.height) * definition.yHeight,
-      position: 'absolute' // We have to explicitly set the position in JS to avoid problems when the visualizer is in a display:none iframe.
+      position: 'absolute', // We have to explicitly set the position in JS to avoid problems when the visualizer is in a display:none iframe.
       // jquery-ui/draggable forces the position to relative in this case because styles are not computed until the element is visible.
       // Refs: https://bugzilla.mozilla.org/show_bug.cgi?id=548397 and https://github.com/whatwg/html/issues/1813
     });
@@ -136,7 +134,7 @@ define([
       true,
       false,
       false,
-      getActiveLayer()
+      getActiveLayer(),
     );
 
     module.ready.then(
@@ -149,21 +147,21 @@ define([
               '<li name="tofront"><a><span class="ui-icon ui-icon-arrowreturn-1-n"></span> Move to front</a></li>',
               function () {
                 moveToFront(module);
-              }
+              },
             ],
 
             [
               '<li name="toback"><a><span class="ui-icon ui-icon-arrowreturn-1-s"></span> Move to back</a></li>',
               function () {
                 moveToBack(module);
-              }
+              },
             ],
 
             [
               '<li name="remove"><a><span class="ui-icon ui-icon-close"></span> Remove module</a></li>',
               function () {
                 removeModule(module);
-              }
+              },
             ],
 
             [
@@ -173,21 +171,21 @@ define([
                 var shiftX = e.pageX - pos.left;
                 var shiftY = e.pageY - pos.top;
                 moveModule(module, shiftX, shiftY);
-              }
+              },
             ],
 
             [
               '<li name="duplicate"><a><span class="ui-icon ui-icon-copy"></span> Duplicate</a></li>',
               function () {
                 duplicateModule(module);
-              }
+              },
             ],
 
             [
               '<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module</a></li>',
               function () {
                 let currentDefinition = JSON.parse(
-                  JSON.stringify(module.definition)
+                  JSON.stringify(module.definition),
                 );
                 Object.keys(currentDefinition.layers).forEach((layer) => {
                   if (layer !== 'Default layer') {
@@ -196,10 +194,10 @@ define([
                 });
                 window.localStorage.setItem(
                   'ci-copy-module',
-                  JSON.stringify(currentDefinition)
+                  JSON.stringify(currentDefinition),
                 );
-              }
-            ]
+              },
+            ],
           ]);
         }
 
@@ -228,7 +226,7 @@ define([
                 showModuleDimensions(module, ui.size);
                 checkDimensions(true);
               },
-              containment: 'parent'
+              containment: 'parent',
             })
             .draggable({
               grid: [definition.xWidth, definition.yHeight],
@@ -255,7 +253,7 @@ define([
               drag(event, ui) {
                 showModulePosition(module, ui.position);
                 checkDimensions(true);
-              }
+              },
             })
             .trigger('resize');
         }
@@ -296,7 +294,7 @@ define([
             .getDomWrapper()
             .height(
               module.getDomContent().outerHeight() +
-                module.getDomHeader().outerHeight(true)
+                module.getDomHeader().outerHeight(true),
             );
           moduleResize(module);
         });
@@ -307,7 +305,7 @@ define([
       },
       function (err) {
         Debug.error('Error during module dom initialization', err);
-      }
+      },
     );
   }
 
@@ -319,14 +317,14 @@ define([
     widthInfo
       .css({
         top: size.height,
-        left: size.width / 2
+        left: size.width / 2,
       })
       .text(String(width));
     domWrapper.append(heightInfo);
     heightInfo
       .css({
         top: size.height / 2,
-        left: size.width + 4
+        left: size.width + 4,
       })
       .text(String(height));
   }
@@ -365,7 +363,7 @@ define([
         : 0);
 
     module.getDomContent().css({
-      height: containerHeight
+      height: containerHeight,
     });
 
     module.view.width = module.getDomContent().width();
@@ -379,7 +377,7 @@ define([
     var mouseUpHandler = function () {
       var gridPos = jqdom.position();
       var left = Math.round(
-        (modulePos.left - gridPos.left) / definition.xWidth
+        (modulePos.left - gridPos.left) / definition.xWidth,
       );
       var top = Math.round((modulePos.top - gridPos.top) / definition.yHeight);
       var width = Math.round(modulePos.width / definition.xWidth);
@@ -391,8 +389,8 @@ define([
       var module = ModuleFactory.newModule(
         new DataObject({
           // type: type,
-          url: url
-        })
+          url: url,
+        }),
       );
 
       addModule(module);
@@ -431,7 +429,7 @@ define([
           height: 0,
           left: modulePos.left,
           top: modulePos.top,
-          position: 'absolute'
+          position: 'absolute',
         })
         .appendTo($('body'));
     };
@@ -449,7 +447,7 @@ define([
         width: modulePos.width,
         height: modulePos.height,
         left: modulePos.left,
-        top: modulePos.top
+        top: modulePos.top,
       });
     };
 
@@ -469,8 +467,9 @@ define([
       i;
     for (i in modules) {
       modules[i].definition.zindex = modules[i].definition.zindex || 1;
-      if (modules[i].definition.zindex >= myZIndex)
+      if (modules[i].definition.zindex >= myZIndex) {
         modules[i].definition.zindex--;
+      }
       modules[i].dom.css('zIndex', modules[i].definition.zindex);
       count++;
     }
@@ -487,8 +486,9 @@ define([
 
     for (i in modules) {
       modules[i].definition.zindex = modules[i].definition.zindex || 1;
-      if (modules[i].definition.zindex <= myZIndex)
+      if (modules[i].definition.zindex <= myZIndex) {
         modules[i].definition.zindex++;
+      }
       modules[i].dom.css('zIndex', modules[i].definition.zindex);
       count++;
     }
@@ -505,18 +505,12 @@ define([
     }
 
     try {
-      module
-        .getDomWrapper()
-        .remove()
-        .unbind();
+      module.getDomWrapper().remove().unbind();
     } catch (e) {
       module
         .onReady()
         .then(function () {
-          module
-            .getDomWrapper()
-            .remove()
-            .unbind();
+          module.getDomWrapper().remove().unbind();
         })
         .catch(function (e) {
           Debug.warn('Could not remove module from dom.', e);
@@ -543,7 +537,7 @@ define([
       moduleMove.left = e.pageX - shiftX;
       moduleMove.div.css({
         top: moduleMove.top,
-        left: moduleMove.left
+        left: moduleMove.left,
       });
     };
 
@@ -560,25 +554,21 @@ define([
 
       moduleMove.div.css({
         top: top * definition.yHeight,
-        left: left * definition.xWidth
+        left: left * definition.xWidth,
       });
 
       Util.unmaskIframes();
       moduleMove = null;
-      $(document)
-        .off('click', clickHandler)
-        .off('mousemove', mouseMoveHandler);
+      $(document).off('click', clickHandler).off('mousemove', mouseMoveHandler);
     };
 
-    $(document)
-      .on('click', clickHandler)
-      .on('mousemove', mouseMoveHandler);
+    $(document).on('click', clickHandler).on('mousemove', mouseMoveHandler);
   }
 
   var eachModules = function (callback) {
     var modules = ModuleFactory.getModules();
 
-    for (var i = 0, l = modules.length; i < l; i++) {
+    for (let i = 0, l = modules.length; i < l; i++) {
       callback(modules[i]);
     }
   };
@@ -597,7 +587,7 @@ define([
     var div = ui.dialog({
         autoPosition: true,
         title: 'New layer',
-        width: '600px'
+        width: '600px',
       }),
       form = new Form({});
 
@@ -610,7 +600,7 @@ define([
             layeropts: {
               options: {
                 type: 'list',
-                multiple: true
+                multiple: true,
               },
               fields: {
                 layername: {
@@ -622,24 +612,24 @@ define([
                         nonEmpty: true,
                         feedback: {
                           _class: true,
-                          message: 'The layer name cannot be empty'
-                        }
-                      }
-                    ]
-                  }
+                          message: 'The layer name cannot be empty',
+                        },
+                      },
+                    ],
+                  },
                 },
                 blanklayer: {
                   type: 'checkbox',
                   title: 'Blank layer?',
                   options: {
-                    blank: ' yes / no'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                    blank: ' yes / no',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     form.onStructureLoaded().done(function () {
@@ -679,7 +669,7 @@ define([
     var div = ui.dialog({
         autoPosition: true,
         title: 'Remove layer',
-        width: '600px'
+        width: '600px',
       }),
       form = new Form({});
 
@@ -692,7 +682,7 @@ define([
             layeropts: {
               options: {
                 type: 'list',
-                multiple: true
+                multiple: true,
               },
               fields: {
                 layername: {
@@ -704,17 +694,17 @@ define([
                         nonEmpty: true,
                         feedback: {
                           _class: true,
-                          message: 'The layer name cannot be empty'
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                          message: 'The layer name cannot be empty',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     form.onStructureLoaded().done(function () {
@@ -735,7 +725,7 @@ define([
             layer.name
           }"</p>`,
           'Confirm',
-          'Cancel'
+          'Cancel',
         ).then(function (conf) {
           if (conf) {
             // changes to other layer if is in the actual
@@ -769,7 +759,7 @@ define([
     var div = ui.dialog({
         autoPosition: true,
         title: 'Rename layer',
-        width: '600px'
+        width: '600px',
       }),
       form = new Form({});
 
@@ -782,7 +772,7 @@ define([
             layeropts: {
               options: {
                 type: 'list',
-                multiple: true
+                multiple: true,
               },
               fields: {
                 originalname: {
@@ -794,11 +784,11 @@ define([
                         nonEmpty: true,
                         feedback: {
                           _class: true,
-                          message: 'The layer name cannot be empty'
-                        }
-                      }
-                    ]
-                  }
+                          message: 'The layer name cannot be empty',
+                        },
+                      },
+                    ],
+                  },
                 },
                 newname: {
                   type: 'text',
@@ -809,17 +799,17 @@ define([
                         nonEmpty: true,
                         feedback: {
                           _class: true,
-                          message: 'The layer name cannot be empty'
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                          message: 'The layer name cannot be empty',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     form.onStructureLoaded().done(function () {
@@ -842,7 +832,7 @@ define([
           }
           ui.showNotification(
             `Layer "${layer.old}" renamed to "${layer.new}"`,
-            'success'
+            'success',
           );
         }
       } else {
@@ -867,7 +857,7 @@ define([
         newIsBlank,
         modify_layer,
         blank,
-        getActiveLayer()
+        getActiveLayer(),
       );
     });
   }
@@ -940,7 +930,7 @@ define([
   }
 
   function eachLayer(callback) {
-    for (var i in definition.layers) {
+    for (let i in definition.layers) {
       callback(definition.layers[i], i);
     }
   }
@@ -956,21 +946,21 @@ define([
 
       function makeRecursiveMenu(elements, dom) {
         if (elements.modules) {
-          for (var i = 0, l = elements.modules.length; i < l; i++) {
+          for (let i = 0, l = elements.modules.length; i < l; i++) {
             if (elements.modules[i].hidden) {
               continue;
             }
             dom.append(
               `<li class="ci-item-newmodule" data-url="${encodeURIComponent(
-                elements.modules[i].url
-              )}"><a>${elements.modules[i].moduleName}</a></li>`
+                elements.modules[i].url,
+              )}"><a>${elements.modules[i].moduleName}</a></li>`,
             );
           }
         }
 
         if (elements.folders) {
           // List of folders
-          for (var i in elements.folders) {
+          for (let i in elements.folders) {
             var el = $(`<li><a>${i}</a></li>`);
             var ul = $('<ul />').appendTo(el);
             makeRecursiveMenu(elements.folders[i], ul);
@@ -985,11 +975,11 @@ define([
             '<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
             function () {
               var module = DataObject.recursiveTransform(
-                JSON.parse(window.localStorage.getItem('ci-copy-module'))
+                JSON.parse(window.localStorage.getItem('ci-copy-module')),
               );
               addModuleFromJSON(module);
-            }
-          ]
+            },
+          ],
         ]);
 
         if (
@@ -1007,7 +997,7 @@ define([
               }
 
               if (Array.isArray(json)) {
-                for (var i = 0, l = json.length; i < l; i++) {
+                for (let i = 0, l = json.length; i < l; i++) {
                   makeRecursiveMenu(json[i], $ulModules);
                 }
               }
@@ -1040,8 +1030,8 @@ define([
             eachLayer(function (layer, key) {
               var li = $(
                 `<li data-layer="${encodeURIComponent(
-                  key
-                )}"><a><span />${key}</a></li>`
+                  key,
+                )}"><a><span />${key}</a></li>`,
               )
                 .data('layerkey', key)
                 .appendTo(layersUl);
@@ -1095,37 +1085,37 @@ define([
             utilUl.append(
               $('<li data-util="copyview"><a><span/>Copy view</a></li>').data(
                 'utilkey',
-                'copyview'
-              )
+                'copyview',
+              ),
             );
             utilUl.append(
               $('<li data-util="copydata"><a><span/>Copy data</a></li>').data(
                 'utilkey',
-                'copydata'
-              )
+                'copydata',
+              ),
             );
             utilUl.append(
               $('<li data-util="pasteview"><a><span/>Paste view</a></li>').data(
                 'utilkey',
-                'pasteview'
-              )
+                'pasteview',
+              ),
             );
             utilUl.append(
               $('<li data-util="pastedata"><a><span/>Paste data</a></li>').data(
                 'utilkey',
-                'pastedata'
-              )
+                'pastedata',
+              ),
             );
             utilUl.append(
               $('<li data-util="blankview"><a><span/>Blank view</a></li>').data(
                 'utilkey',
-                'blankview'
-              )
+                'blankview',
+              ),
             );
             utilUl.append(
               $(
-                '<li data-util="feedback"><a><span/>Send Feedback</a></li>'
-              ).data('utilkey', 'feedback')
+                '<li data-util="feedback"><a><span/>Send Feedback</a></li>',
+              ).data('utilkey', 'feedback'),
             );
             $(contextDom).append(utilLi);
 
@@ -1163,8 +1153,8 @@ define([
             '<li name="diagram"><a><span class="ui-icon ui-icon-zoomin"></span>View Diagram</a></li>',
             function () {
               diagram.showVariableDiagram();
-            }
-          ]
+            },
+          ],
         ]);
         Context.listen(
           Context.getRootDom(),
@@ -1175,8 +1165,8 @@ define([
               } </a></li>`,
               function () {
                 window.open('https://github.com/NPellet/visualizer', '_blank');
-              }
-            ]
+              },
+            ],
           ],
           null,
           function ($ctxmenu) {
@@ -1190,9 +1180,9 @@ define([
               .html(
                 `<span class="ui-icon ui-icon-info"></span>${prefix}${
                   Versioning.version
-                }${Version.isRelease ? '' : ' (pre)'}`
+                }${Version.isRelease ? '' : ' (pre)'}`,
               );
-          }
+          },
         );
 
         if (Version.buildTime) {
@@ -1203,15 +1193,15 @@ define([
                 `<li id="context-menu-build-info"><a class="ui-state-disabled"><span class="ui-icon ui-icon-info"></span>Built ${
                   Version.buildTime
                 }</a></li>`,
-                Util.noop
-              ]
+                Util.noop,
+              ],
             ],
             null,
             function ($ctxmenu) {
               $ctxmenu
                 .find('#context-menu-build-info')
                 .insertAfter($ctxmenu.find('#context-menu-version'));
-            }
+            },
           );
         }
       }
@@ -1255,6 +1245,6 @@ define([
     addModuleFromJSON: addModuleFromJSON,
     checkDimensions: checkDimensions,
     moduleResize: moduleResize,
-    setModuleSize: setModuleSize
+    setModuleSize: setModuleSize,
   };
 });

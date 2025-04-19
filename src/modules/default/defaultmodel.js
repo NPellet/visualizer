@@ -1,6 +1,12 @@
 'use strict';
 
-define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/util/debug', 'src/util/util'], function (Entry, Traversing, API, Debug, Util) {
+define([
+  'src/main/entrypoint',
+  'src/util/datatraversing',
+  'src/util/api',
+  'src/util/debug',
+  'src/util/util',
+], function (Entry, Traversing, API, Debug, Util) {
   const model = {
     setModule(module) {
       this.module = module;
@@ -26,13 +32,19 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
     resetListeners() {
       this.sourceMap = null;
       this.mapVars();
-      API.getRepositoryActions().unListen(this.getActionNameList(), this._actionlisten);
+      API.getRepositoryActions().unListen(
+        this.getActionNameList(),
+        this._actionlisten,
+      );
 
       var list = this.getVarNameList();
       for (var i = 0, l = list.length; i < l; i++) {
         API.getVar(list[i]).listen(this.module, this.onVarChange.bind(this));
       }
-      this._actionlisten = API.getRepositoryActions().listen(this.getActionNameList(), this.onActionTrigger.bind(this));
+      this._actionlisten = API.getRepositoryActions().listen(
+        this.getActionNameList(),
+        this.onActionTrigger.bind(this),
+      );
     },
 
     mapVars() {
@@ -73,60 +85,114 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
     },
 
     onVarChange(variable) {
-      return Promise.all([this.module.onReady(), variable.onReady()]).then(() => {
-        const varName = variable.getName();
-        this.module.blankVariable(varName);
+      return Promise.all([this.module.onReady(), variable.onReady()])
+        .then(
+          () => {
+            const varName = variable.getName();
+            this.module.blankVariable(varName);
 
-        const varValue = variable.getValue();
+            const varValue = variable.getValue();
 
-        if (!varName || !this.sourceMap || !this.sourceMap[varName] || !this.module.controller.references[this.sourceMap[varName].rel]) {
-          return null;
-        }
+            if (
+              !varName ||
+              !this.sourceMap ||
+              !this.sourceMap[varName] ||
+              !this.module.controller.references[this.sourceMap[varName].rel]
+            ) {
+              return null;
+            }
 
-        let data = this.buildData(varValue, this.module.controller.references[this.sourceMap[varName].rel].type);
-        if (!data) {
-          return null;
-        }
+            let data = this.buildData(
+              varValue,
+              this.module.controller.references[this.sourceMap[varName].rel]
+                .type,
+            );
+            if (!data) {
+              return null;
+            }
 
-        const vars = this.module.vars_in();
-        let proms = [];
-        for (let i = 0; i < vars.length; i++) {
-          if (vars[i].name == varName && (this.module.view.update[vars[i].rel] || this.module.view[`_update_${vars[i].rel}`]) && varValue !== null) {
-            proms.push(new Promise((resolve, reject) => { // todo clean this mess
-              if (vars[i].filter) {
-                require([vars[i].filter], function (filterFunction) {
-                  if (filterFunction.filter) {
-                    return filterFunction.filter(varValue, resolve, reject);
-                  }
-                  reject(new Error('No filter function defined'));
-                });
-              } else {
-                resolve(varValue);
+            const vars = this.module.vars_in();
+            let proms = [];
+            for (let i = 0; i < vars.length; i++) {
+              if (
+                vars[i].name == varName &&
+                (this.module.view.update[vars[i].rel] ||
+                  this.module.view[`_update_${vars[i].rel}`]) &&
+                varValue !== null
+              ) {
+                proms.push(
+                  new Promise((resolve, reject) => {
+                    // todo clean this mess
+                    if (vars[i].filter) {
+                      require([vars[i].filter], function (filterFunction) {
+                        if (filterFunction.filter) {
+                          return filterFunction.filter(
+                            varValue,
+                            resolve,
+                            reject,
+                          );
+                        }
+                        reject(new Error('No filter function defined'));
+                      });
+                    } else {
+                      resolve(varValue);
+                    }
+                  })
+                    .then(
+                      (varValue) => {
+                        this.setData(vars[i].rel, varName, varValue);
+                        this.removeAllChangeListeners(vars[i].rel);
+                        return this.module.updateView(
+                          vars[i].rel,
+                          varValue,
+                          varName,
+                        );
+                      },
+                      (err) => {
+                        Debug.error(
+                          'Error while filtering the data : ',
+                          err.message,
+                          err.stack,
+                        );
+                      },
+                    )
+                    .catch((err) => {
+                      Debug.error(
+                        'Error while updating module : ',
+                        err.message,
+                        err.stack,
+                      );
+                    }),
+                );
               }
-            }).then((varValue) => {
-              this.setData(vars[i].rel, varName, varValue);
-              this.removeAllChangeListeners(vars[i].rel);
-              return this.module.updateView(vars[i].rel, varValue, varName);
-            }, (err) => {
-              Debug.error('Error while filtering the data : ', err.message, err.stack);
-            }).catch((err) => {
-              Debug.error('Error while updating module : ', err.message, err.stack);
-            }));
-          }
-        }
-        return proms;
-      }, function () {
-        // ignore
-      }).catch(function (err) {
-        Debug.error('Error while updating variable : ', err.message, err.stack);
-      });
+            }
+            return proms;
+          },
+          function () {
+            // ignore
+          },
+        )
+        .catch(function (err) {
+          Debug.error(
+            'Error while updating variable : ',
+            err.message,
+            err.stack,
+          );
+        });
     },
 
     async onActionTrigger(value, actionName) {
       await this.module.onReady();
       const actionRel = this.module.getActionRelFromName(actionName[0]);
-      if (this.module.view.onActionReceive && this.module.view.onActionReceive[actionRel]) {
-        this.module.view.onActionReceive[actionRel].call(this.module.view, value, actionName[0]);
+      if (
+        this.module.view.onActionReceive &&
+        this.module.view.onActionReceive[actionRel]
+      ) {
+        this.module.view.onActionReceive[actionRel].call(
+          this.module.view,
+          value,
+          actionName[0],
+        );
       }
     },
 
@@ -136,7 +202,8 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
       }
 
       var dataRebuilt = {};
-      if (!sourceTypes) { // Accepts everything
+      if (!sourceTypes) {
+        // Accepts everything
         return data;
       }
 
@@ -148,7 +215,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         mustRebuild = false;
 
       // If no in type is defined, the module accepts anything
-      if (sourceTypes.length == 0) {
+      if (sourceTypes.length === 0) {
         return data;
       }
 
@@ -212,7 +279,7 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
 
       const proxiedCallback = (target, moduleId) => {
         if (moduleId == this.module.getId()) {
-          return;// Do not update itself;
+          return; // Do not update itself;
         }
         callback.call(data, target);
       };
@@ -221,7 +288,9 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         data.onChange(proxiedCallback);
       } else {
         Debug.setDebugLevel(1);
-        Debug.error('Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks');
+        Debug.error(
+          'Adding the change callback is forbidden as no rel has been defined ! Aborting callback binding to prevent leaks',
+        );
       }
     },
 
@@ -229,7 +298,8 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
       API.highlightId(key, onOff, this.module.getId());
     },
 
-    dataTriggerChange(data) { // self is not available
+    dataTriggerChange(data) {
+      // self is not available
       data.triggerChange(false, [this.module.getId()]);
     },
 
@@ -250,8 +320,12 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         return false;
       }
 
-      this.triggerChangeCallbacksByRels[rel] = this.triggerChangeCallbacksByRels[rel] || [];
-      this.triggerChangeCallbacksByRels[rel].push({ data: data, callback: callback });
+      this.triggerChangeCallbacksByRels[rel] =
+        this.triggerChangeCallbacksByRels[rel] || [];
+      this.triggerChangeCallbacksByRels[rel].push({
+        data: data,
+        callback: callback,
+      });
 
       return true;
     },
@@ -261,14 +335,21 @@ define(['src/main/entrypoint', 'src/util/datatraversing', 'src/util/api', 'src/u
         return;
       }
 
-      for (var i = 0, l = this.triggerChangeCallbacksByRels[rel].length; i < l; i++) {
-        this.removeChangeListener(this.triggerChangeCallbacksByRels[rel][i].data, this.triggerChangeCallbacksByRels[rel][i].callback);
+      for (
+        var i = 0, l = this.triggerChangeCallbacksByRels[rel].length;
+        i < l;
+        i++
+      ) {
+        this.removeChangeListener(
+          this.triggerChangeCallbacksByRels[rel][i].data,
+          this.triggerChangeCallbacksByRels[rel][i].callback,
+        );
       }
     },
 
     removeChangeListener(data, callback) {
       data.unbindChange(callback);
-    }
+    },
   };
 
   model.setHighlightId = model.highlightId;

@@ -1,6 +1,12 @@
 'use strict';
 
-define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'ace/ace', 'src/util/context', 'jquery'], function (CodeEditor, Util, ace, Context, $) {
+define([
+  'modules/types/client_interaction/code_editor/view',
+  'src/util/util',
+  'ace/ace',
+  'src/util/context',
+  'jquery',
+], function (CodeEditor, Util, ace, Context, $) {
   function View() {
     CodeEditor.call(this);
   }
@@ -11,7 +17,10 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
     var that = this;
 
     this.editable = true;
-    $(`<div id="${this._id}"></div>`).css('height', '100%').css('width', '100%').appendTo(this.editorCell);
+    $(`<div id="${this._id}"></div>`)
+      .css('height', '100%')
+      .css('width', '100%')
+      .appendTo(this.editorCell);
     this.editor = ace.edit(this._id);
     var initVal = this.module.getConfiguration('script') || '';
     this._code = initVal;
@@ -28,10 +37,15 @@ define(['modules/types/client_interaction/code_editor/view', 'src/util/util', 'a
         .addClass('form-button')
         .on('click', function () {
           that.module.controller.onButtonClick(that._code, that._object);
-        })
+        }),
     );
 
-    this.table.prepend($('<tr><td>function(value, resolve, reject) {</td></tr>').css('height', '10px'));
+    this.table.prepend(
+      $('<tr><td>function(value, resolve, reject) {</td></tr>').css(
+        'height',
+        '10px',
+      ),
+    );
     $('<tr><td>}</td></tr>').css('height', '10px').insertBefore(this.buttonRow);
 
     this.resolveReady();

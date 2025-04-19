@@ -6,7 +6,7 @@ define([
   'lodash',
   'src/util/api',
   'src/util/typerenderer',
-], function(Default, Util, _, API, Renderer) {
+], function (Default, Util, _, API, Renderer) {
   function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
@@ -20,7 +20,7 @@ define([
     cssClass: 'slickgrid',
   };
 
-  Controller.prototype.configurationStructure = function() {
+  Controller.prototype.configurationStructure = function () {
     var that = this;
 
     var typeList = Renderer.getRendererComboOptions();
@@ -412,7 +412,7 @@ define([
     };
   };
 
-  Controller.prototype.onBeforeSave = function(formValue) {
+  Controller.prototype.onBeforeSave = function (formValue) {
     var varname = formValue.module_specific_config[0].groups.data[0].varname[0];
     var saveInView =
       formValue.module_specific_config[0].groups.data[0].saveInView[0].length;
@@ -428,7 +428,7 @@ define([
         });
       }
     } else if (!saveInView) {
-      formValue.vars_in[0].groups.group[0] = vars_in.filter(function(v) {
+      formValue.vars_in[0].groups.group[0] = vars_in.filter(function (v) {
         return v.name !== varname;
       });
     }
@@ -550,25 +550,25 @@ define([
     },
   };
 
-  Controller.prototype.onLastSelectedRow = function(row, item) {
+  Controller.prototype.onLastSelectedRow = function (row, item) {
     this.setVarFromEvent('onLastSelectedRow', 'row', 'list', [row]);
     this.sendActionFromEvent('onLastSelectedRow', 'row', item);
   };
 
-  Controller.prototype.unselectLastRow = function() {
+  Controller.prototype.unselectLastRow = function () {
     this.createDataFromEvent('onLastSelectedRow', 'row');
     this.sendActionFromEvent('onRowActive', 'row', null);
   };
 
-  Controller.prototype.onRowsSelected = function(items) {
-    items = items.filter(function(v) {
+  Controller.prototype.onRowsSelected = function (items) {
+    items = items.filter(function (v) {
       return !!v;
     });
     this.createDataFromEvent('onRowsSelect', 'rows', items);
     this.sendActionFromEvent('onRowsSelect', 'rows', items);
   };
 
-  Controller.prototype.onHover = function(row, item) {
+  Controller.prototype.onHover = function (row, item) {
     var itemId = item[this.module.view.idPropertyName];
     if (this.lastHoveredItemId === itemId) return;
     this.lastHoveredItemId = itemId;
@@ -577,7 +577,7 @@ define([
   };
 
   Controller.prototype.onClick = _.throttle(
-    function(row, item) {
+    function (row, item) {
       this.lastClickedItem = item;
       this.setVarFromEvent('onSelect', 'row', 'list', [row]);
       this.sendActionFromEvent('onSelect', 'row', item);
@@ -586,41 +586,41 @@ define([
     { trailing: false },
   );
 
-  Controller.prototype.unselectRow = function() {
+  Controller.prototype.unselectRow = function () {
     this.createDataFromEvent('onSelect', 'row');
     this.createDataFromEvent('onRowActive', 'row');
   };
 
-  Controller.prototype.onDoubleClick = function(row, item) {
+  Controller.prototype.onDoubleClick = function (row, item) {
     this.setVarFromEvent('onDoubleClick', 'row', 'list', [row]);
     this.sendActionFromEvent('onDoubleClick', 'row', item);
   };
 
-  Controller.prototype.onActive = function(row, item) {
+  Controller.prototype.onActive = function (row, item) {
     this.setVarFromEvent('onRowActive', 'row', 'list', [row]);
     this.sendActionFromEvent('onRowActive', 'row', item);
   };
 
-  Controller.prototype.onRowChange = function(row, item) {
+  Controller.prototype.onRowChange = function (row, item) {
     this.setVarFromEvent('onRowChange', 'row', 'list', [row]);
     this.sendActionFromEvent('onRowChange', 'row', item);
   };
 
-  Controller.prototype.onRowNew = function(row, item) {
+  Controller.prototype.onRowNew = function (row, item) {
     this.setVarFromEvent('onRowNew', 'row', 'list', [row]);
     this.sendActionFromEvent('onRowNew', 'row', item);
   };
 
-  Controller.prototype.onRowsDelete = function(items) {
+  Controller.prototype.onRowsDelete = function (items) {
     this.createDataFromEvent('onRowsDelete', 'rows', items);
     this.sendActionFromEvent('onRowsDelete', 'rows', items);
   };
 
-  Controller.prototype.export = function() {
+  Controller.prototype.export = function () {
     return this.module.view.exportToTabDelimited();
   };
 
-  Controller.prototype.sendActionButton = function(name, items) {
+  Controller.prototype.sendActionButton = function (name, items) {
     API.doAction(name, items);
   };
 

@@ -9,7 +9,7 @@ define([
   'components/papa-parse/papaparse.min',
   'src/util/api',
   'lodash',
-  'src/util/urldata'
+  'src/util/urldata',
 ], function (Default, Twig, Debug, Colorbar, Color, Papa, API, _, urlData) {
   const MIN_TEMPERATURE = 0;
   const MAX_TEMPERATURE = 6000;
@@ -26,7 +26,7 @@ define([
     'metalloid',
     'nonmetal',
     'halogen',
-    'noble'
+    'noble',
   ];
 
   function View() {}
@@ -47,19 +47,19 @@ define([
     blank: {
       template() {
         this.template = Twig.twig({
-          data: ''
+          data: '',
         });
         this.dom.empty().unbind();
       },
       hltemplate() {
         this.hltemplate = Twig.twig({
-          data: ''
+          data: '',
         });
         this.dom.empty().unbind();
       },
       value() {
         this.dom.empty().unbind();
-      }
+      },
     },
     inDom() {
       this.module.getDomContent().html(this.dom);
@@ -76,11 +76,11 @@ define([
       if (source === 'pref') {
         var tpl = this.module.getConfiguration(`${name}template`);
         this[`${name}template`] = Twig.twig({
-          data: tpl
+          data: tpl,
         });
       } else {
         this[`${name}template`] = Twig.twig({
-          data: ''
+          data: '',
         });
       }
     },
@@ -90,7 +90,7 @@ define([
       source = this.module.getConfiguration(source);
       if (source === 'varin') {
         this[`${name}template`] = Twig.twig({
-          data: tpl
+          data: tpl,
         });
       }
     },
@@ -124,7 +124,7 @@ define([
         } catch (e) {
           Debug.info(`Problem with highlight template: ${e}`);
         }
-      }
+      },
     },
 
     getElements(value) {
@@ -170,7 +170,7 @@ define([
 
       this.dataElements = DataObject.check(elements, true);
       this.elements = JSON.parse(
-        JSON.stringify(DataObject.resurrect(elements))
+        JSON.stringify(DataObject.resurrect(elements)),
       );
     },
 
@@ -187,7 +187,7 @@ define([
             obj = Papa.parse(toParse, {
               delimiter: '\t',
               header: true,
-              dynamicTyping: true
+              dynamicTyping: true,
             });
             obj = obj.data;
           } catch (error2) {
@@ -215,7 +215,7 @@ define([
 
       for (let i = 0; i < this.elements.length; i++) {
         var $element = $(
-          `<div>${this.template.render({ element: this.elements[i] })}</div>`
+          `<div>${this.template.render({ element: this.elements[i] })}</div>`,
         ).data('idx', i);
 
         $element.addClass(
@@ -223,7 +223,7 @@ define([
             this.elements[i].period
           } group${this.elements[i].group} block-${this.elements[i].block} ${
             this.elements[i].serie
-          }`
+          }`,
         );
 
         that.dom.append($element);
@@ -256,7 +256,7 @@ define([
                 </ul>`);
       that.innerLegend.append(that.colorSerie);
 
-      var $elements = (that.$elements = that.dom.find('.element'));
+      that.$elements = that.dom.find('.element');
 
       that.innerLegend.append('<div class="stateOfMatter"></div>');
       that.stateOfMatter = that.innerLegend.find('.stateOfMatter');
@@ -267,47 +267,45 @@ define([
                 <tr><td class="gas"">G</td><td>Gas</td><td class="unknown">U</td><td>Unknown</td></tr>
                 </tbody></table>`);
         that.stateOfMatter.append(
-          '<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>'
+          '<dl class="periodic-value-list"><dt>Pressure</dt><dd>101.325 kPa</dd></dl></div>',
         );
       }
 
       if (that.foreground.mode === 'state') {
         that.defaultLegend.append(
-          `<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`
+          `<div class="periodicSlider" id="foregroundSlider"><input type="range" min="${MIN_TEMPERATURE}" max="${MAX_TEMPERATURE}" step="${STEP_TEMPERATURE}" value="${INITIAL_TEMPERATURE}"/></div>`,
         );
         that.innerLegend
           .find('dl')
           .append(
-            `<dt>Temperature</dt><dd id="foregroundVal">${INITIAL_TEMPERATURE} K</dd>`
+            `<dt>Temperature</dt><dd id="foregroundVal">${INITIAL_TEMPERATURE} K</dd>`,
           );
         this.updateElementPhase(INITIAL_TEMPERATURE);
       } else if (that.foreground.mode === 'custom') {
         that._addSlider('foreground');
         that.updateColors('foreground', that.foreground.val);
       } else if (that.foreground.mode === 'fixed') {
-        $elements.css('color', that.foreground.fixedcolor);
+        that.$elements.css('color', that.foreground.fixedcolor);
       }
 
       if (that.background.mode === 'custom') {
         that._addSlider('background');
         that.updateColors('background', that.background.val);
       } else if (that.background.mode === 'fixed') {
-        $elements.css('background-color', that.background.fixedcolor);
+        that.$elements.css('background-color', that.background.fixedcolor);
       }
 
       var isFixed = false;
 
       this.innerLegend.on('click', 'ul.color-serie li', (event) => {
-        that.unselectElements(event, $elements);
-        var classes = $(event.target)
-          .attr('class')
-          .split(' ');
+        that.unselectElements(event, that.$elements);
+        var classes = $(event.target).attr('class').split(' ');
         var found = series.find((s) => {
           return classes.some((c) => c === s);
         });
 
         if (!found) return;
-        $elements.filter(`.${found}`).toggleClass('el-selected');
+        that.$elements.filter(`.${found}`).toggleClass('el-selected');
         that.elementsSelected();
         event.stopPropagation();
       });
@@ -334,10 +332,7 @@ define([
       });
 
       var showDefaultLegend = _.debounce(() => {
-        $('.element-zoom')
-          .delay(50000)
-          .empty()
-          .unbind();
+        $('.element-zoom').delay(50000).empty().unbind();
         that.defaultLegend.removeClass('hidden');
         if (this.module.getConfigurationCheckbox('display', 'families')) {
           that.colorSerie.removeClass('hidden');
@@ -348,7 +343,7 @@ define([
 
       showDefaultLegend();
 
-      $elements.mouseenter(function () {
+      that.$elements.mouseenter(function () {
         var $el = $(this);
         var Z = that.getZ($el);
         that._doHighlight(Z, true);
@@ -358,7 +353,7 @@ define([
         renderElement($el);
       });
 
-      $elements.mouseleave(function () {
+      that.$elements.mouseleave(function () {
         var $el = $(this);
         var Z = that.getZ($el);
         that._doHighlight(Z, false);
@@ -366,8 +361,8 @@ define([
         showDefaultLegend();
       });
 
-      $elements.click(function (event) {
-        that.unselectElements(event, $elements);
+      that.$elements.click(function (event) {
+        that.unselectElements(event, that.$elements);
         var $el = $(this);
         $el.toggleClass('el-selected');
         that.elementSelected($el);
@@ -377,7 +372,7 @@ define([
         event.stopPropagation();
       });
 
-      $elements.dblclick(function () {
+      that.$elements.dblclick(function () {
         var $el = $(this);
         $el.removeClass('el-selected');
         isFixed = false;
@@ -389,8 +384,8 @@ define([
           .attr('class')
           .replace(/^.*(period\d+).*$/, '$1');
         var pN = p.substr(6);
-        that.unselectElements(event, $elements);
-        var $selected = $elements.filter(`.${p}`);
+        that.unselectElements(event, that.$elements);
+        var $selected = that.$elements.filter(`.${p}`);
         $selected.toggleClass('el-selected');
         that.module.controller.periodSelected(pN);
         that.elementsSelected();
@@ -400,8 +395,10 @@ define([
       that.module.getDomContent().on('click', function () {
         isFixed = false;
         showDefaultLegend();
-        $elements.removeClass('el-selected');
-        that.module.controller.elementsSelected(that.elements.map((el) => el.Z));
+        that.$elements.removeClass('el-selected');
+        that.module.controller.elementsSelected(
+          that.elements.map((el) => el.Z),
+        );
       });
 
       that.dom.on('click', '.indic-g', function (event) {
@@ -410,8 +407,8 @@ define([
           .attr('class')
           .replace(/^.*(group\d+).*$/, '$1');
         var gN = g.substr(5);
-        that.unselectElements(event, $elements);
-        var $selected = $elements.filter(`.${g}`);
+        that.unselectElements(event, that.$elements);
+        var $selected = that.$elements.filter(`.${g}`);
         $selected.toggleClass('el-selected');
         that.module.controller.groupSelected(gN);
         that.elementsSelected();
@@ -458,7 +455,7 @@ define([
         'Label',
         'Unit',
         'Mode',
-        'Jpath'
+        'Jpath',
       ].forEach((val) => {
         var prop = val.toLowerCase();
         r[prop] = cfg(`${type}${val}`);
@@ -469,7 +466,7 @@ define([
       [['ShowSlider', 'yes']].forEach((val) => {
         r[val[0].toLowerCase()] = this.module.getConfigurationCheckbox(
           `${type}${val[0]}`,
-          val[1]
+          val[1],
         );
       });
       return r;
@@ -482,7 +479,7 @@ define([
         stops: [
           this[type].mincolor,
           this[type].neutralcolor,
-          this[type].maxcolor
+          this[type].maxcolor,
         ],
         stopPositions: [this[type].min, value, this[type].max],
         domain: [this[type].min, this[type].max],
@@ -491,8 +488,8 @@ define([
         height,
         returnMode: 'svg',
         axis: {
-          orientation: 'top'
-        }
+          orientation: 'top',
+        },
       };
       options.axis.tickValues = options.stopPositions;
       var $div = this.defaultLegend.find(`#${type}Slider .periodicGradient`);
@@ -510,7 +507,7 @@ define([
             this[type].min
           }" max="${this[type].max}" step="${this[type].step}" value="${
             this[type].val
-          }"/><div class="periodicGradient"></div></div>`
+          }"/><div class="periodicGradient"></div></div>`,
         );
       }
       this.innerLegend
@@ -518,7 +515,7 @@ define([
         .append(
           `<dt>${this[type].label}</dt><dd id="${type}Val">${this[type].val} ${
             this[type].unit
-          }</dd>`
+          }</dd>`,
         );
     },
 
@@ -552,7 +549,7 @@ define([
         var $elements = this.dom.find('.element');
         this.unselectElements({}, $elements);
         this._selectElements($elements.toArray(), val);
-      }
+      },
     },
 
     // helper function for selecting elements with actions
@@ -587,11 +584,11 @@ define([
         let $el = $($elements[i]);
         var idx = $el.data('idx');
         var elVal = Number(
-          this.dataElements.getChildSync([idx].concat(this[type].jpath))
+          this.dataElements.getChildSync([idx].concat(this[type].jpath)),
         );
         if (isNaN(elVal)) {
           var c = {
-            rgba: this[type].novaluecolor
+            rgba: this[type].novaluecolor,
           };
         } else {
           c = fn(elVal);
@@ -600,11 +597,11 @@ define([
 
         if (type === 'foreground') {
           $el.css({
-            color: c.rgba
+            color: c.rgba,
           });
         } else {
           $el.css({
-            backgroundColor: c.rgba
+            backgroundColor: c.rgba,
           });
         }
       }
@@ -671,7 +668,7 @@ define([
             that._drawHighlight();
           },
           false,
-          that.module.getId()
+          that.module.getId(),
         );
       }
     },
@@ -702,7 +699,7 @@ define([
       this.$elements.css({
         border: '',
         transform: 'scale(1)',
-        zIndex: 0
+        zIndex: 0,
       });
     },
 
@@ -711,9 +708,9 @@ define([
       $el.css({
         border: 'solid 2px red',
         transform: 'scale(1.1)',
-        zIndex: 1
+        zIndex: 1,
       });
-    }
+    },
   });
 
   return View;

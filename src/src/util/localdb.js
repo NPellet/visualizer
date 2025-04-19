@@ -78,15 +78,18 @@ define(['jquery'], function ($) {
     getAll: function (type, key, branch) {
       var def = $.Deferred(),
         that = this;
-      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
+      type =
+        type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
 
       var trans = db.transaction([type], 'readwrite');
       var store = trans.objectStore(type);
       var stack = {};
 
-      if (branch) var req = store.get(`${key};${branch}`);
-      else {
-        var req = store.openCursor();
+      var req;
+      if (branch) {
+        req = store.get(`${key};${branch}`);
+      } else {
+        req = store.openCursor();
       }
 
       req.onsuccess = function (e) {
@@ -101,11 +104,13 @@ define(['jquery'], function ($) {
             def.resolve(e.target.result);
           }
         } else {
-          if (e.target.result && e.target.result.key.indexOf(key) > -1)
+          if (e.target.result && e.target.result.key.indexOf(key) > -1) {
             stack[e.target.result.value.branch] = e.target.result.value;
+          }
 
-          if (e.target.result) e.target.result.continue();
-          else {
+          if (e.target.result) {
+            e.target.result.continue();
+          } else {
             def.resolve(stack);
           }
         }
@@ -126,12 +131,13 @@ define(['jquery'], function ($) {
         url: key,
         branch: branch,
         list: [],
-        head: '{}'
+        head: '{}',
       };
 
       var def = $.Deferred();
 
-      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
+      type =
+        type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
       var store = trans.objectStore(type);
       var req = store.put(obj);
@@ -146,7 +152,8 @@ define(['jquery'], function ($) {
     storeToHead: function (type, key, branch, obj) {
       var def = $.Deferred(),
         that = this;
-      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
+      type =
+        type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
       var store = trans.objectStore(type);
 
@@ -172,13 +179,14 @@ define(['jquery'], function ($) {
 
     store: function (type, key, branch, obj) {
       var def = $.Deferred();
-      type = type == 'data' || type == 'localdata' ? 'localdata' : 'localview';
+      type =
+        type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
 
       var store = trans.objectStore(type);
 
-      var req = store.get(`${key};${branch}`),
-        obj = JSON.stringify(obj);
+      var req = store.get(`${key};${branch}`);
+      obj = JSON.stringify(obj);
 
       req.onsuccess = function (e) {
         if (e.target.result == null) {
@@ -217,6 +225,6 @@ define(['jquery'], function ($) {
       return db.getAll(type, key, branch).pipe(function (obj) {
         return obj.list;
       });
-    }
+    },
   };
 });
