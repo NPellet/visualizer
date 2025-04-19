@@ -1,7 +1,6 @@
 /* eslint-env node*/
-'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   var walk = require('walk');
   var fs = require('fs');
   var _ = require('lodash');
@@ -15,6 +14,85 @@ module.exports = function(grunt) {
   var addStream = require('add-stream');
 
   var usrPath = grunt.option('usr') || './src/usr';
+
+  grunt.registerMultiTask('rename', 'Move and/or rename files.', function () {
+    /*
+     * grunt-rename
+     * https://github.com/jdavis/grunt-rename
+     *
+     * Copyright (c) 2013 Josh Davis
+     * Licensed under the MIT license.
+     */
+    var done = this.async(),
+      options = this.options({
+        ignore: false,
+      });
+
+    if (!this.files.length) {
+      grunt.log.writeln(`Moved ${'0'.cyan} files.`);
+      return done();
+    }
+
+    this.files.forEach(function (f) {
+      var dest = f.dest,
+        dir = path.dirname(dest);
+
+      // Check if no source files were found
+      if (f.src.length === 0) {
+        // Continue if ignore is set
+        if (options.ignore) {
+          return done();
+        } else {
+          grunt.fail.warn(`Could not move file to ${f.dest} it did not exist.`);
+          return done();
+        }
+      }
+
+      f.src.filter(function (file) {
+        // Resolve some conflicts because path doesn't work as I would
+        // expect
+        if (dest.lastIndexOf(path.sep) === dest.length - 1) {
+          dir = dest;
+          dest = path.join(dir, path.basename(file));
+        }
+
+        grunt.file.mkdir(dir);
+
+        // First try builtin rename ability
+        fs.rename(file, dest, function (err) {
+          // Easy peasy
+          if (!err) {
+            grunt.verbose.writeln(`Moved ${file} to ${dest}`);
+            return done();
+          }
+
+          // Now fallback to copying/unlinking
+          var read = fs.createReadStream(file);
+          var write = fs.createWriteStream(dest);
+
+          read.on('error', function (err) {
+            grunt.fail.warn(`Failed to read ${file}`);
+            return done();
+          });
+
+          write.on('error', function (err) {
+            grunt.fail.warn(`Failed to write to ${dest}`);
+            return done();
+          });
+
+          write.on('close', function () {
+            // Now remove original file
+            grunt.file.delete(file);
+
+            grunt.verbose.writeln(`Moved ${file} to ${dest}`);
+            return done();
+          });
+
+          read.pipe(write);
+        });
+      });
+    });
+  });
 
   function mapPath(path) {
     // Map a relative application path to a relative build path
@@ -368,7 +446,7 @@ module.exports = function(grunt) {
             expand: true,
             cwd: `${usrPath}/filters/`,
             src: '**',
-            filter: function(filePath) {
+            filter: function (filePath) {
               var files = grunt.option('filterFiles');
               for (var i = 0, l = files.length; i < l; i++) {
                 if (path.relative(mapPath(files[i]), filePath) == '') {
@@ -398,7 +476,7 @@ module.exports = function(grunt) {
             cwd: usrPath,
             src: ['./modules/**'],
             dest: './build/usr/',
-            filter: function(filepath) {
+            filter: function (filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
               for (var i in modulesStack) {
@@ -414,7 +492,7 @@ module.exports = function(grunt) {
             cwd: './src/',
             src: ['./modules/**'],
             dest: './build/',
-            filter: function(filepath) {
+            filter: function (filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
               for (var i in modulesStack) {
@@ -455,14 +533,14 @@ module.exports = function(grunt) {
 
       modulesJson: {
         src: ['build/modules/**/*.json'],
-        filter: function(filepath) {
+        filter: function (filepath) {
           return !filepath.match('/lib/') && !filepath.match(/folder\.json$/);
         },
       },
 
       modulesJsonErase: {
         src: ['src/modules/**/*.json'],
-        filter: function(filepath) {
+        filter: function (filepath) {
           return !filepath.match('/lib/');
         },
       },
@@ -504,7 +582,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-rename');
   grunt.loadNpmTasks('grunt-browserify');
 
-  grunt.registerTask('manifest:generate', function() {
+  grunt.registerTask('manifest:generate', function () {
     var files = recursivelyLookupDirectory('build', true);
     fs.writeFileSync('build/cache.appcache', 'CACHE MANIFEST\n\nCACHE:\n\n');
     for (var i = 0; i < files.length; i++) {
@@ -536,7 +614,7 @@ module.exports = function(grunt) {
     // var stats = fs.lstatSync(relPath);
     var options = {
       listeners: {
-        file: function(root, fileStats, next) {
+        file: function (root, fileStats, next) {
           // console.log(root, fileStats);
           var p;
           if (root === '.') {
@@ -549,7 +627,7 @@ module.exports = function(grunt) {
           files.push(p);
           next();
         },
-        errors: function(root, nodeStatsArray, next) {
+        errors: function (root, nodeStatsArray, next) {
           console.log('An error occured in walk', root, nodeStatsArray);
           next();
         },
@@ -583,7 +661,7 @@ module.exports = function(grunt) {
   }
   grunt.registerTask('build', buildTasks);
 
-  grunt.registerTask('buildProject', 'Build project', function() {
+  grunt.registerTask('buildProject', 'Build project', function () {
     if (!fs.existsSync('./build/')) {
       fs.mkdirSync('build/');
     }
@@ -779,13 +857,13 @@ module.exports = function(grunt) {
   grunt.registerTask(
     'createJSONModules',
     'Create all modules json',
-    function() {
+    function () {
       recurseFolder('./src/modules/types', 'modules/types');
       recurseFolder('./src/usr/modules', 'usr/modules');
     },
   );
 
-  grunt.registerTask('recurseFolder', 'Recurse Folder', function() {
+  grunt.registerTask('recurseFolder', 'Recurse Folder', function () {
     var from = grunt.option('recurseFolderFrom');
     var to = grunt.option('recurseFolderTo');
 
@@ -875,7 +953,7 @@ module.exports = function(grunt) {
       target.name = basePath.split('/').pop();
     }
 
-    target.modules.sort(function(module1, module2) {
+    target.modules.sort(function (module1, module2) {
       return module1.moduleName
         .toLowerCase()
         .localeCompare(module2.moduleName.toLowerCase());
@@ -887,7 +965,7 @@ module.exports = function(grunt) {
     );
   }
 
-  grunt.registerTask('bump', function(version) {
+  grunt.registerTask('bump', function (version) {
     var done = this.async();
 
     var versionJS = fs.readFileSync('./src/version.js', 'utf8');
@@ -943,7 +1021,7 @@ module.exports = function(grunt) {
       changelogStream
         .pipe(addStream(fs.createReadStream('History.md')))
         .pipe(fs.createWriteStream(tmp))
-        .on('finish', function() {
+        .on('finish', function () {
           fs.createReadStream(tmp)
             .pipe(fs.createWriteStream('History.md'))
             .on('finish', publish);
@@ -1011,7 +1089,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('buildTime', function(setting) {
+  grunt.registerTask('buildTime', function (setting) {
     var versionJS = fs.readFileSync('./src/version.js', 'utf8');
     if (setting === 'set') {
       versionJS = setVersionValue(versionJS, 'BUILD_TIME', Date.now());
@@ -1031,11 +1109,11 @@ module.exports = function(grunt) {
     return str.replace(reg, `const ${name} = ${value};\n`);
   }
 
-  grunt.registerTask('css:modules', function() {
+  grunt.registerTask('css:modules', function () {
     var folderJson = JSON.parse(
       fs.readFileSync('./build/modules/types/folder.json'),
     );
-    var mIds = applyModules(folderJson, moduleProcessCss).filter(function(v) {
+    var mIds = applyModules(folderJson, moduleProcessCss).filter(function (v) {
       return v !== undefined;
     });
     var versionJS = fs.readFileSync('./build/version.js', 'utf8');
