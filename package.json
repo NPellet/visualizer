@@ -45,7 +45,7 @@
     "add-stream": "^1.0.0",
     "bower": "^1.8.14",
     "conventional-changelog": "^3.1.25",
-    "documentation": "^9.3.1",
+    "documentation": "^14.0.3",
     "eslint": "^9.24.0",
     "eslint-config-cheminfo": "^14.0.0",
     "extend": "^3.0.2",
