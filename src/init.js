@@ -1,16 +1,5 @@
 'use strict';
 
-(function () {
-  try {
-    eval('(function(){ var a = 0; var b = {a}; })()');
-  } catch (e) {
-    // eslint-disable-next-line no-alert
-    alert(
-      'Your browser is not supported by this application.\nPlease upgrade to a more modern browser like Microsoft Edge, Google Chrome or Firefox.',
-    );
-  }
-})();
-
 require.config({
   waitSeconds: 0,
   paths: {
@@ -205,10 +194,22 @@ require.config({
   },
 });
 
+define('esm', {
+  load: function (url, req, onload) {
+    import(url).then(
+      function (mod) {
+        onload(mod);
+      },
+      function (error) {
+        onload.error(error);
+      },
+    );
+  },
+});
+
 window.CKEDITOR_BASEPATH = require.toUrl('components/ckeditor/');
 
 require([
-  'esm',
   'version',
   'jquery',
   'src/main/datas',
@@ -216,7 +217,7 @@ require([
   'uri/URI.fragmentQuery',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
-], function (_, Version, $, Datas, EntryPoint, URI) {
+], function (Version, $, Datas, EntryPoint, URI) {
   $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);
