@@ -196,7 +196,9 @@ require.config({
 
 define('esm', {
   load: function (url, req, onload) {
-    import(url).then(
+    const urlString = JSON.stringify(url);
+    const importPromise = eval(`import(${urlString})`);
+    importPromise.then(
       function (mod) {
         onload(mod);
       },
