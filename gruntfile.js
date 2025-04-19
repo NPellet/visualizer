@@ -237,6 +237,7 @@ module.exports = function (grunt) {
             expand: true, // Enable dynamic expansion.
             cwd: './build/', // Src matches are relative to this path.
             src: [
+              'esm.js',
               'init.js',
               'version.js',
               'components/jsgraph/dist/jsgraph-es6.js',
@@ -273,6 +274,7 @@ module.exports = function (grunt) {
             expand: true, // Enable dynamic expansion.
             cwd: './build2/', // Src matches are relative to this path.
             src: [
+              'esm.js',
               'init.js',
               // 'components/jsgraph/dist/jsgraph-es6.js',
               'modules/**/*.js',
@@ -427,6 +429,7 @@ module.exports = function (grunt) {
             cwd: './src/',
             src: [
               './index.html',
+              'esm.js',
               'init.js',
               'version.js',
               'css/**',
