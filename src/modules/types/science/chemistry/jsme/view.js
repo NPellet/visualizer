@@ -6,7 +6,7 @@ define([
   'src/util/api',
   'src/util/ui',
   'src/util/debug',
-  'openchemlib/openchemlib-core',
+  'openchemlib',
 ], function (require, Default, API, ui, Debug, OCL) {
   function View() {}
 
@@ -165,7 +165,7 @@ define([
         this._currentValue = moduleValue;
         this._currentType = 'smiles';
 
-        require(['openchemlib/openchemlib-core'], function (OCL) {
+        require(['openchemlib'], function (OCL) {
           var smiles = String(moduleValue.get());
           var mol = OCL.Molecule.fromSmiles(smiles);
           that.postMessage('setMolFile', mol.toMolfile());

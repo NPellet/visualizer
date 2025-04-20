@@ -1,10 +1,10 @@
 'use strict';
 
-define([
-  'modules/default/defaultview',
-  'src/util/ui',
-  'openchemlib/openchemlib-full',
-], function (Default, ui, OCL) {
+define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
+  Default,
+  ui,
+  OCL,
+) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
@@ -81,42 +81,44 @@ define([
       mol(val) {
         this._currentValue = val;
         this._currentType = 'mol';
-        this.editor.setMolFile(String(val.get()));
+        this.editor.setMolecule(OCL.Molecule.fromMolfile(String(val.get())));
         this.setFragment();
       },
       molV3(val) {
         this._currentValue = val;
         this._currentType = 'molV3';
-        this.editor.setMolFile(String(val.get()));
+        this.editor.setMolecule(OCL.Molecule.fromMolfile(String(val.get())));
         this.setFragment();
       },
       smiles(val) {
         this._currentValue = val;
         this._currentType = 'smiles';
-        this.editor.setSmiles(String(val.get()));
+        this.editor.setMolecule(OCL.Molecule.fromSmiles(String(val.get())));
         this.setFragment();
       },
       actid(val) {
         this._currentValue = val;
         this._currentType = 'oclid';
-        var value = String(val.get());
-        if (val.coordinates) {
-          value += ` ${val.coordinates}`;
-        }
-        this.editor.setIDCode(value);
+        const molecule = OCL.Molecule.fromIDCode(
+          String(val.get()),
+          val.coordinates || undefined,
+        );
+        this.editor.setMolecule(molecule);
         this.setFragment();
       },
     },
 
     initEditor() {
-      var controller = this.module.controller;
-      var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
-      this.editor = new OCL.StructureEditor(this.dom.get(0), useSVG, 1);
-      this.editor.setChangeListenerCallback(
-        this.module.controller.onChange.bind(controller),
+      const controller = this.module.controller;
+      this.editor = new OCL.CanvasEditor(this.dom.get(0));
+      this.editor.setOnChangeListener((event) =>
+        controller.onChange(event, this.editor.getMolecule()),
       );
-      this.editor.setIDCode(
-        `${controller.currentMol.idCode} ${controller.currentMol.coordinates}`,
+      this.editor.setMolecule(
+        OCL.Molecule.fromIDCode(
+          controller.currentMol.idCode,
+          controller.currentMol.coordinates,
+        ),
       );
       this.setFragment();
       this.resolveReady();
@@ -125,15 +127,17 @@ define([
     clearEditor() {
       this._currentValue = null;
       this._currentType = null;
-      this.editor.setIDCode('');
+      this.editor.getMolecule().clear();
+      this.editor.moleculeChanged();
     },
 
     setFragment() {
       if (this.module.getConfigurationCheckbox('prefs', 'queryFeatures')) {
-        this.editor.setFragment(true);
+        this.editor.getMolecule().setFragment(true);
       } else {
-        this.editor.setFragment(false);
+        this.editor.getMolecule().setFragment(false);
       }
+      this.editor.moleculeChanged();
     },
   });
 
@@ -163,7 +167,7 @@ define([
         self._currentType = 'molV3';
         self._currentValue = molecule.toMolfileV3();
     }
-    self.editor.setIDCode(molecule.getIDCode());
+    self.editor.setMolecule(molecule);
     self.setFragment();
   }
 

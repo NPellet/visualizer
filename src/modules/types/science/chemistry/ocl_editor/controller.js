@@ -2,7 +2,7 @@
 
 define([
   'modules/default/defaultcontroller',
-  'openchemlib/openchemlib-full',
+  'openchemlib',
   'src/util/ui',
 ], function (Default, OCL, ui) {
   function Controller() {
@@ -18,7 +18,7 @@ define([
         var w = $(window).width();
         var h = $(window).height();
         var url = require.toUrl(
-          'modules/types/science/chemistry/ocl_editor/help/index.html',
+          'modules/types/science/chemistry/ocl_editor/help.html',
         );
         ui.dialog(
           `<iframe src=${url} width="100%", height="100%" frameBorder="0"></iframe>`,
@@ -146,7 +146,6 @@ define([
               default: ['svg'],
               options: {
                 queryFeatures: 'Enable query features',
-                svg: 'Use SVG toolbar',
                 inPlace: 'Modify input variable',
               },
             },
@@ -160,7 +159,7 @@ define([
     prefs: ['groups', 'group', 0, 'prefs', 0],
   };
 
-  Controller.prototype.onChange = function (idCode, molecule) {
+  Controller.prototype.onChange = function (event, molecule) {
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
 
     // In modify variable in mode
@@ -170,13 +169,17 @@ define([
     if (inPlace && this.module.view._currentValue === null) {
       return;
     }
-    var split = (idCode || ' ').split(' ');
+    const idCodeAndCoordinates = molecule.getIDCodeAndCoordinates();
+    const split = [
+      idCodeAndCoordinates.idCode,
+      idCodeAndCoordinates.coordinates,
+    ];
 
-    var idCodeOr = molecule.getCanonizedIDCode(
+    const idCodeOr = molecule.getCanonizedIDCode(
       OCL.Molecule.CANONIZER_DISTINGUISH_RACEMIC_OR_GROUPS,
     );
-    idCode = split[0];
-    var coordinates = split[1];
+    const idCode = split[0];
+    const coordinates = split[1];
 
     if (
       idCodeOr !== this.currentMol.idCodeOr
