@@ -42,7 +42,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
 
     onActionReceive: {
       setMolfile(val) {
-        const molecule = OCL.Molecule.formMolfile(val);
+        const molecule = OCL.Molecule.fromMolfile(val);
         setCurrentValue(this, molecule);
       },
       setIDCode(val) {
@@ -50,16 +50,20 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         setCurrentValue(this, molecule);
       },
       copyMolfile() {
-        const molfile = this.editor.getMolFileV3();
+        const molfile = this.editor.getMolecule().toMolfileV3();
         ui.copyToClipboard(molfile, {
           successMessage: 'Molfile copied to the clipboard',
         });
       },
       copyIDCode() {
-        const idCode = this.editor.getIDCode();
-        ui.copyToClipboard(idCode, {
-          successMessage: 'IDCode copied to the clipboard',
-        });
+        const molecule = this.editor.getMolecule();
+        const idCodeAndCoordinates = molecule.getIDCodeAndCoordinates();
+        ui.copyToClipboard(
+          `${idCodeAndCoordinates.idCode} ${idCodeAndCoordinates.coordinates}`,
+          {
+            successMessage: 'IDCode copied to the clipboard',
+          },
+        );
       },
       downloadSvg(value = {}) {
         const { width = 800, height = 600 } = value;
@@ -70,7 +74,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         });
       },
       downloadMolfile() {
-        const molfile = this.editor.getMolFile();
+        const molfile = this.editor.getMolecule().toMolfile();
         ui.downloadFile(molfile, 'molecule.mol', {
           mimeType: 'chemical/x-mdl-molfile',
         });
