@@ -24,6 +24,18 @@ export default defineConfig(
     },
   },
   {
+    files: ['gruntfile.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     languageOptions: {
       globals: {
         ...globals.browser,

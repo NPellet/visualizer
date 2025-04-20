@@ -1,19 +1,18 @@
-/* eslint-env node*/
+'use strict';
 
 module.exports = function (grunt) {
-  var walk = require('walk');
-  var fs = require('fs');
-  var _ = require('lodash');
-  var mkpath = require('mkpath');
-  var path = require('path');
-  var extend = require('extend');
-  var child_process = require('child_process');
-  var semver = require('semver');
-  var changelog = require('conventional-changelog').default;
-  var tempfile = require('tempfile');
-  var addStream = require('add-stream');
+  const walk = require('walk');
+  const fs = require('fs');
+  const mkpath = require('mkpath');
+  const path = require('path');
+  const extend = require('extend');
+  const child_process = require('child_process');
+  const semver = require('semver');
+  const changelog = require('conventional-changelog').default;
+  const tempfile = require('tempfile');
+  const addStream = require('add-stream');
 
-  var usrPath = grunt.option('usr') || './src/usr';
+  const usrPath = grunt.option('usr') || './src/usr';
 
   grunt.registerMultiTask('rename', 'Move and/or rename files.', function () {
     /*
@@ -23,10 +22,10 @@ module.exports = function (grunt) {
      * Copyright (c) 2013 Josh Davis
      * Licensed under the MIT license.
      */
-    var done = this.async(),
-      options = this.options({
-        ignore: false,
-      });
+    const done = this.async();
+    const options = this.options({
+      ignore: false,
+    });
 
     if (!this.files.length) {
       grunt.log.writeln(`Moved ${'0'.cyan} files.`);
@@ -34,8 +33,8 @@ module.exports = function (grunt) {
     }
 
     this.files.forEach(function (f) {
-      var dest = f.dest,
-        dir = path.dirname(dest);
+      let dest = f.dest;
+      let dir = path.dirname(dest);
 
       // Check if no source files were found
       if (f.src.length === 0) {
@@ -70,18 +69,18 @@ module.exports = function (grunt) {
           var read = fs.createReadStream(file);
           var write = fs.createWriteStream(dest);
 
-          read.on('error', function (err) {
+          read.on('error', function () {
             grunt.fail.warn(`Failed to read ${file}`);
             return done();
           });
 
-          write.on('error', function (err) {
+          write.on('error', function () {
             grunt.fail.warn(`Failed to write to ${dest}`);
             return done();
           });
 
           write.on('close', function () {
-            // Now remove original file
+            // Now remove the original file
             grunt.file.delete(file);
 
             grunt.verbose.writeln(`Moved ${file} to ${dest}`);
@@ -105,6 +104,7 @@ module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     browserify: {
       countries: {
         files: {
@@ -211,7 +211,6 @@ module.exports = function (grunt) {
         },
       },
     },
-    pkg: grunt.file.readJSON('package.json'),
     babel: {
       transpile: {
         options: {
@@ -249,7 +248,6 @@ module.exports = function (grunt) {
               'lib/twigjs/*.js',
             ], // Actual pattern(s) to match.
             dest: './build/', // Destination path prefix.
-            // overwrite: true,
             ext: '.js', // Dest filepaths will have this extension.
           },
         ],
@@ -274,7 +272,6 @@ module.exports = function (grunt) {
             cwd: './build2/', // Src matches are relative to this path.
             src: [
               'init.js',
-              // 'components/jsgraph/dist/jsgraph-es6.js',
               'modules/**/*.js',
               '!modules/**/lib/**/*.js',
               'src/**/*.js',
@@ -285,7 +282,6 @@ module.exports = function (grunt) {
               'lib/loadingplot/*.js',
             ], // Actual pattern(s) to match.
             dest: './build2/', // Destination path prefix.
-            // overwrite: true,
             ext: '.js', // Dest filepaths will have this extension.
           },
         ],
@@ -448,8 +444,8 @@ module.exports = function (grunt) {
             src: '**',
             filter(filePath) {
               var files = grunt.option('filterFiles');
-              for (var i = 0, l = files.length; i < l; i++) {
-                if (path.relative(mapPath(files[i]), filePath) == '') {
+              for (let i = 0, l = files.length; i < l; i++) {
+                if (path.relative(mapPath(files[i]), filePath) === '') {
                   return true;
                 }
               }
@@ -479,7 +475,7 @@ module.exports = function (grunt) {
             filter(filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
-              for (var i in modulesStack) {
+              for (const i in modulesStack) {
                 if (filepath.indexOf(i.substr(4)) > -1) {
                   return true;
                 }
@@ -495,7 +491,7 @@ module.exports = function (grunt) {
             filter(filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
-              for (var i in modulesStack) {
+              for (const i in modulesStack) {
                 if (filepath.indexOf(i) > -1) {
                   return true;
                 }
@@ -517,7 +513,6 @@ module.exports = function (grunt) {
         ],
       },
     },
-
     clean: {
       build: {
         src: ['build'],
@@ -545,14 +540,12 @@ module.exports = function (grunt) {
         },
       },
     },
-
     rename: {
       afterBuild: {
         src: 'build2',
         dest: 'build',
       },
     },
-
     requirejs: {
       compile: {
         options: {
@@ -584,7 +577,7 @@ module.exports = function (grunt) {
   grunt.registerTask('manifest:generate', function () {
     var files = recursivelyLookupDirectory('build', true);
     fs.writeFileSync('build/cache.appcache', 'CACHE MANIFEST\n\nCACHE:\n\n');
-    for (var i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       fs.appendFileSync('build/cache.appcache', `${files[i]}\n`);
     }
     fs.appendFileSync('build/cache.appcache', '\n\nNETWORK:\n*\n');
@@ -593,29 +586,28 @@ module.exports = function (grunt) {
   });
 
   function enableManifest(file, manifest) {
-    var content = fs.readFileSync(file);
-    content = content
-      .toString()
-      .replace('<html>', `<html manifest="${manifest || 'cache.appcache'}">`);
+    var content = fs.readFileSync(file, 'utf8');
+    content = content.replace(
+      '<html>',
+      `<html manifest="${manifest || 'cache.appcache'}">`,
+    );
     fs.writeFileSync(file, content);
   }
 
   function recursivelyLookupDirectory(path, asCwd) {
-    var relPath;
-    var cd = process.cwd();
+    let relPath;
+    const cd = process.cwd();
     if (asCwd) {
       process.chdir(`${process.cwd()}/${path}`);
       relPath = '.';
     } else {
       relPath = path;
     }
-    var files = [];
-    // var stats = fs.lstatSync(relPath);
-    var options = {
+    const files = [];
+    const options = {
       listeners: {
         file(root, fileStats, next) {
-          // console.log(root, fileStats);
-          var p;
+          let p;
           if (root === '.') {
             p = fileStats.name;
           } else if (root.substr(0, 2) === './') {
@@ -637,7 +629,7 @@ module.exports = function (grunt) {
     return files;
   }
 
-  var buildTasks = [
+  const buildTasks = [
     'buildTime:set',
     'clean:build',
     'buildProject',
@@ -665,27 +657,25 @@ module.exports = function (grunt) {
       fs.mkdirSync('build/');
     }
 
-    var modulesStack = {};
+    const modulesStack = {};
     grunt.option('modulesStack', modulesStack);
 
-    var config = grunt.option('config') || './src/usr/config/default.json';
+    const config = grunt.option('config') || './src/usr/config/default.json';
 
     if (!fs.existsSync(config)) {
       console.log(`File config (${config}) does not exist`);
       return;
     }
 
-    var cfg = grunt.file.readJSON(config),
-      file,
-      modules = {},
-      jsonStructure = {},
-      modulesFinal = {};
+    const cfg = grunt.file.readJSON(config);
+    const modules = {};
+    let modulesFinal = {};
 
-    var usrDir = cfg.usrDir || 'usr';
+    const usrDir = cfg.usrDir || 'usr';
     cfg.usrDir = 'usr'; // after the build, it will be in usr
 
     function oldLoadFile() {
-      var fileName;
+      let fileName;
       if (typeof arguments[0] === 'object') {
         fileName = arguments[0];
       } else if (arguments.length === 1) {
@@ -693,18 +683,14 @@ module.exports = function (grunt) {
       } else {
         fileName = arguments[1] + arguments[0];
       }
-      var file,
-        j = 0,
-        i = 0,
-        l,
-        jsonStructure = { modules: [], folders: {} };
-      // console.log( fileName );
+      let file;
+      const jsonStructure = { modules: [], folders: {} };
       if (typeof fileName !== 'object') {
         if (!fs.existsSync(fileName)) {
           if (arguments.length === 1) {
             console.log('arguments[0]', arguments[0]);
             // Not a very neat fix but whatever
-            var pos = arguments[0].search('usr');
+            const pos = arguments[0].search('usr');
             if (pos > -1) {
               console.log('new : ', arguments[0].substring(pos + 1));
               arguments[0] = arguments[0].substring(pos + 1);
@@ -714,13 +700,12 @@ module.exports = function (grunt) {
           console.log(`Folder file ${fileName} does not exist`);
           return;
         }
-        // console.log( 'Fetching file ' + fileName);
         file = grunt.file.readJSON(fileName);
       } else {
         file = fileName;
       }
 
-      for (var k in file.folders) {
+      for (const k in file.folders) {
         if (arguments.length === 1) {
           jsonStructure.folders[k] = oldLoadFile(
             `${file.folders[k]}folder.json`,
@@ -736,11 +721,10 @@ module.exports = function (grunt) {
             arguments[1],
           );
         }
-        // jsonStructure.folders[ k ] = oldLoadFile( './src/' + file.folders[ k ] + 'folder.json');
       }
 
       if (file.modules) {
-        for (j = 0, l = file.modules.length; j < l; j++) {
+        for (let j = 0, l = file.modules.length; j < l; j++) {
           modules[file.modules[j].url] = true;
           modulesStack[file.modules[j].url] = true;
           if (arguments.length === 2) {
@@ -761,11 +745,8 @@ module.exports = function (grunt) {
     }
 
     function loadFile(fileName) {
-      var file;
-      var j = 0;
-      var i = 0;
-      var l;
-      var jsonStructure = { modules: [], folders: {} };
+      let file;
+      const jsonStructure = { modules: [], folders: {} };
       if (typeof fileName === 'string') {
         if (!fs.existsSync(fileName)) {
           return console.log(`Folder file ${fileName} does not exist`);
@@ -777,14 +758,14 @@ module.exports = function (grunt) {
 
       jsonStructure.name = file.name;
       if (file.folders && file.folders instanceof Array) {
-        for (var i = 0; i < file.folders.length; i++) {
-          var res = loadFile(`${fileName}/${file.folders[i]}`);
+        for (let i = 0; i < file.folders.length; i++) {
+          const res = loadFile(`${fileName}/${file.folders[i]}`);
           jsonStructure.folders[res.name] = res;
         }
       }
 
       if (file.modules) {
-        for (j = 0, l = file.modules.length; j < l; j++) {
+        for (let j = 0, l = file.modules.length; j < l; j++) {
           modules[file.modules[j].url] = true;
           modulesStack[file.modules[j].url] = true;
           jsonStructure.modules.push(file.modules[j]);
@@ -796,27 +777,25 @@ module.exports = function (grunt) {
     if (cfg.modules) {
       if (cfg.modules instanceof Array) {
         // Backwards compatibility
-        for (var i = 0, l = cfg.modules.length; i < l; i++) {
+        for (let i = 0; i < cfg.modules.length; i++) {
           if (typeof cfg.modules[i] == 'object') {
             extend(true, modulesFinal, oldLoadFile(cfg.modules[i]));
           } else {
             extend(true, modulesFinal, oldLoadFile(cfg.modules[i]));
-            //        console.log( oldLoadFile( './src/' + cfg.modules[ i ] ) );
-            //       console.log( "___" );
           }
         }
       } else if (cfg.modules.folders instanceof Array) {
-        var list = cfg.modules;
+        const list = cfg.modules;
         if (list.modules) {
           modulesFinal.modules = [];
-          for (var j = 0, l = list.modules.length; j < l; j++) {
+          for (let j = 0; j < list.modules.length; j++) {
             modules[list.modules[j].url] = true;
             modulesStack[list.modules[j].url] = true;
             modulesFinal.modules.push(list.modules[j]);
           }
         }
         modulesFinal.folders = {};
-        for (var i = 0; i < list.folders.length; i++) {
+        for (let i = 0; i < list.folders.length; i++) {
           extend(true, modulesFinal, loadFile(getRealPath(list.folders[i])));
         }
       } else {
@@ -825,17 +804,13 @@ module.exports = function (grunt) {
     }
 
     /* Find filter files from the config.json and puts them in an option */
-    var filterFiles = [];
-    for (var i in cfg.filters) {
+    const filterFiles = [];
+    for (const i in cfg.filters) {
       filterFiles.push(cfg.filters[i].file);
     }
     grunt.option('filterFiles', filterFiles);
 
-    // modulesFinal = modules;
     cfg.modules = modulesFinal;
-
-    // fs.writeFileSync( './build/modules.json', JSON.stringify( jsonStructure, false, '\t' ) );
-    // cfg.modules = jsonStructure;//'./modules.json';
 
     mkpath.sync('./build/modules/types/');
     fs.writeFileSync(
@@ -848,7 +823,6 @@ module.exports = function (grunt) {
       './build/usr/config/default.json',
       JSON.stringify(cfg, false, '\t'),
     );
-    // grunt.task.run('clean:buildTemp');
   });
 
   // Takes care of module jsons
@@ -863,8 +837,8 @@ module.exports = function (grunt) {
   );
 
   grunt.registerTask('recurseFolder', 'Recurse Folder', function () {
-    var from = grunt.option('recurseFolderFrom');
-    var to = grunt.option('recurseFolderTo');
+    const from = grunt.option('recurseFolderFrom');
+    const to = grunt.option('recurseFolderTo');
 
     if (from && to) {
       recurseFolder(from, to);
@@ -872,17 +846,16 @@ module.exports = function (grunt) {
   });
 
   function recurseFolder(basePath, relPath) {
-    var folders = fs.readdirSync(basePath),
-      allFolders = [],
-      allModules = [],
-      containsModule = false,
-      target = {},
-      subFolder;
+    const folders = fs.readdirSync(basePath);
+    const allFolders = [];
+    const allModules = [];
+    let containsModule = false;
+    let target = {};
 
-    for (var i = 0, l = folders.length; i < l; i++) {
+    for (let i = 0; i < folders.length; i++) {
       if (
         !fs.statSync(`${basePath}/${folders[i]}`).isDirectory() ||
-        folders[i] == 'lib'
+        folders[i] === 'lib'
       ) {
         continue;
       }
@@ -897,25 +870,25 @@ module.exports = function (grunt) {
         containsModule || fs.existsSync(`${basePath}/${folders[i]}/model.js`);
     }
 
-    if (allFolders.length == 0 && allModules.length == 0) {
+    if (allFolders.length === 0 && allModules.length === 0) {
       return;
     }
 
     target.modules = [];
-    for (var i = 0, l = allModules.length; i < l; i++) {
-      var moduleInfo = /moduleInformation[^{]+(\{[^}]+})/.exec(
+    for (let i = 0; i < allModules.length; i++) {
+      let moduleInfo = /moduleInformation[^{]+(\{[^}]+})/.exec(
         grunt.file.read(`${basePath}/${allModules[i]}/controller.js`),
       );
 
       try {
         eval(`moduleInfo = ${moduleInfo[1]}`);
-      } catch (e) {
+      } catch {
         throw new Error(
           `Could not find module information for ${basePath}/${allModules[i]}`,
         );
       }
 
-      var info = {
+      const info = {
         moduleName: moduleInfo.name || allModules[i],
         url: `${relPath}/${allModules[i]}/`,
       };
@@ -928,22 +901,19 @@ module.exports = function (grunt) {
     }
 
     target.folders = [];
-    for (var i = 0, l = allFolders.length; i < l; i++) {
+    for (let i = 0; i < allFolders.length; i++) {
       recurseFolder(
         `${basePath}/${allFolders[i]}`,
         `${relPath}/${allFolders[i]}`,
       );
 
       if (fs.existsSync(`${basePath}/${allFolders[i]}/folder.json`)) {
-        subFolder = grunt.file.readJSON(
-          `${basePath}/${allFolders[i]}/folder.json`,
-        );
         target.folders.push(allFolders[i]);
       }
     }
 
     if (fs.existsSync(`${basePath}/folder.json`)) {
-      var json = grunt.file.readJSON(`${basePath}/folder.json`);
+      const json = grunt.file.readJSON(`${basePath}/folder.json`);
       json.folders = target.folders;
       json.modules = target.modules;
 
@@ -965,21 +935,21 @@ module.exports = function (grunt) {
   }
 
   grunt.registerTask('bump', function (version) {
-    var done = this.async();
+    const done = this.async();
 
-    var versionJS = fs.readFileSync('./src/version.js', 'utf8');
+    let versionJS = fs.readFileSync('./src/version.js', 'utf8');
 
-    var major = getVersionValue(versionJS, 'MAJOR');
-    var minor = getVersionValue(versionJS, 'MINOR');
-    var patch = getVersionValue(versionJS, 'PATCH');
-    var prerelease = getVersionValue(versionJS, 'PRERELEASE');
+    const major = getVersionValue(versionJS, 'MAJOR');
+    const minor = getVersionValue(versionJS, 'MINOR');
+    const patch = getVersionValue(versionJS, 'PATCH');
+    const prerelease = getVersionValue(versionJS, 'PRERELEASE');
 
-    var v = `${major}.${minor}.${patch}`;
+    let v = `${major}.${minor}.${patch}`;
     if (prerelease !== 'false') {
       v += `-${prerelease}`;
     }
 
-    var semVersion = semver.parse(v);
+    const semVersion = semver.parse(v);
 
     console.log(`Current version is ${semVersion}`);
 
@@ -1002,20 +972,20 @@ module.exports = function (grunt) {
       fs.writeFileSync('./src/version.js', versionJS);
 
       // Bump version in package.json
-      var pkg = fs.readFileSync('./package.json', 'utf8');
+      let pkg = fs.readFileSync('./package.json', 'utf8');
       pkg = pkg.replace(/"version": ".+",/, `"version": "${semVersion}",`);
       fs.writeFileSync('./package.json', pkg);
 
       // Bump version in bower.json
-      var bower = fs.readFileSync('./bower.json', 'utf8');
+      let bower = fs.readFileSync('./bower.json', 'utf8');
       bower = bower.replace(/"version": ".+",/, `"version": "${semVersion}",`);
       fs.writeFileSync('./bower.json', bower);
 
       console.log('Writing changelog');
-      var changelogStream = changelog({
+      const changelogStream = changelog({
         preset: 'angular',
       });
-      var tmp = tempfile();
+      const tmp = tempfile();
 
       changelogStream
         .pipe(addStream(fs.createReadStream('History.md')))
@@ -1089,7 +1059,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('buildTime', function (setting) {
-    var versionJS = fs.readFileSync('./src/version.js', 'utf8');
+    let versionJS = fs.readFileSync('./src/version.js', 'utf8');
     if (setting === 'set') {
       versionJS = setVersionValue(versionJS, 'BUILD_TIME', Date.now());
     } else {
@@ -1109,14 +1079,16 @@ module.exports = function (grunt) {
   }
 
   grunt.registerTask('css:modules', function () {
-    var folderJson = JSON.parse(
+    const folderJson = JSON.parse(
       fs.readFileSync('./build/modules/types/folder.json'),
     );
-    var mIds = applyModules(folderJson, moduleProcessCss).filter(function (v) {
-      return v !== undefined;
-    });
-    var versionJS = fs.readFileSync('./build/version.js', 'utf8');
-    var newVersionJS = setVersionValue(
+    const mIds = applyModules(folderJson, moduleProcessCss).filter(
+      function (v) {
+        return v !== undefined;
+      },
+    );
+    const versionJS = fs.readFileSync('./build/version.js', 'utf8');
+    const newVersionJS = setVersionValue(
       versionJS,
       'INCLUDED_MODULE_CSS',
       JSON.stringify(mIds),
@@ -1125,17 +1097,17 @@ module.exports = function (grunt) {
   });
 
   function applyModules(folderJson, callback) {
-    var res = [];
+    let res = [];
     if (Array.isArray(folderJson)) {
-      for (var i = 0; i < folderJson.length; i++) {
-        var el = folderJson[i];
+      for (let i = 0; i < folderJson.length; i++) {
+        const el = folderJson[i];
         res = res.concat(applyModules(el, callback));
       }
     } else if (typeof folderJson === 'object') {
-      for (var key in folderJson) {
+      for (const key in folderJson) {
         if (key === 'modules' && Array.isArray(folderJson[key])) {
-          for (var i = 0; i < folderJson[key].length; i++) {
-            var obj = folderJson[key][i];
+          for (let i = 0; i < folderJson[key].length; i++) {
+            const obj = folderJson[key][i];
             res.push(callback(obj));
           }
         } else {
@@ -1147,7 +1119,7 @@ module.exports = function (grunt) {
   }
 
   function moduleProcessCss(module) {
-    var p = path.join('./build/', module.url, 'style.css');
+    const p = path.join('./build/', module.url, 'style.css');
     if (module.url && fs.existsSync(p)) {
       append(p, './build/css/main.css');
       return moduleIdFromUrl(module.url);
@@ -1156,8 +1128,8 @@ module.exports = function (grunt) {
   }
 
   function moduleIdFromUrl(url) {
-    var reg = /([^/]+)(\/)?$/;
-    var res = url.match(reg);
+    const reg = /([^/]+)(\/)?$/;
+    const res = url.match(reg);
     return res[1];
   }
 
