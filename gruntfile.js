@@ -446,7 +446,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: `${usrPath}/filters/`,
             src: '**',
-            filter: function (filePath) {
+            filter(filePath) {
               var files = grunt.option('filterFiles');
               for (var i = 0, l = files.length; i < l; i++) {
                 if (path.relative(mapPath(files[i]), filePath) == '') {
@@ -476,7 +476,7 @@ module.exports = function (grunt) {
             cwd: usrPath,
             src: ['./modules/**'],
             dest: './build/usr/',
-            filter: function (filepath) {
+            filter(filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
               for (var i in modulesStack) {
@@ -492,7 +492,7 @@ module.exports = function (grunt) {
             cwd: './src/',
             src: ['./modules/**'],
             dest: './build/',
-            filter: function (filepath) {
+            filter(filepath) {
               var modulesStack = grunt.option('modulesStack');
               filepath = filepath.replace(/\\/g, '/');
               for (var i in modulesStack) {
@@ -533,14 +533,14 @@ module.exports = function (grunt) {
 
       modulesJson: {
         src: ['build/modules/**/*.json'],
-        filter: function (filepath) {
+        filter(filepath) {
           return !filepath.match('/lib/') && !filepath.match(/folder\.json$/);
         },
       },
 
       modulesJsonErase: {
         src: ['src/modules/**/*.json'],
-        filter: function (filepath) {
+        filter(filepath) {
           return !filepath.match('/lib/');
         },
       },
@@ -579,7 +579,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-rename');
   grunt.loadNpmTasks('grunt-browserify');
 
   grunt.registerTask('manifest:generate', function () {
@@ -614,7 +613,7 @@ module.exports = function (grunt) {
     // var stats = fs.lstatSync(relPath);
     var options = {
       listeners: {
-        file: function (root, fileStats, next) {
+        file(root, fileStats, next) {
           // console.log(root, fileStats);
           var p;
           if (root === '.') {
@@ -627,7 +626,7 @@ module.exports = function (grunt) {
           files.push(p);
           next();
         },
-        errors: function (root, nodeStatsArray, next) {
+        errors(root, nodeStatsArray, next) {
           console.log('An error occured in walk', root, nodeStatsArray);
           next();
         },
