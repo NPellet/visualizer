@@ -9,7 +9,7 @@ module.exports = function (grunt) {
   var extend = require('extend');
   var child_process = require('child_process');
   var semver = require('semver');
-  var changelog = require('conventional-changelog');
+  var changelog = require('conventional-changelog').default;
   var tempfile = require('tempfile');
   var addStream = require('add-stream');
 

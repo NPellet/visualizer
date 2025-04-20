@@ -10,8 +10,6 @@
   "scripts": {
     "build": "grunt build",
     "build-debug": "node --inspect --debug-brk ./node_modules/grunt-cli/bin/grunt build",
-    "build-doc": "documentation build src/src/** --github --output docs --format html --sort-order alpha",
-    "publish-doc": "npm run build-doc && git add docs && git commit -m \"doc: rebuild docs\" && git push origin master",
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install-components": "bower install",
@@ -44,8 +42,7 @@
     "@babel/types": "^7.27.0",
     "add-stream": "^1.0.0",
     "bower": "^1.8.14",
-    "conventional-changelog": "^3.1.25",
-    "documentation": "^9.3.1",
+    "conventional-changelog": "^6.0.0",
     "eslint": "^9.24.0",
     "eslint-config-cheminfo": "^14.0.0",
     "extend": "^3.0.2",
