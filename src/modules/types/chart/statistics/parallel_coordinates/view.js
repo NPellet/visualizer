@@ -263,11 +263,11 @@ define([
       }
     },
     updateHighlight: _.throttle(function () {
-      var toHighlight = this._highlighted;
+      let toHighlight = this._highlighted;
       if (this.preventHighlight) {
         toHighlight = [];
-        var brushed = this.parcoords.brushed();
-        for (var i = 0, ii = this._highlighted.length; i < ii; i++) {
+        const brushed = this.parcoords.brushed();
+        for (let i = 0; i < this._highlighted.length; i++) {
           if (brushed.indexOf(this._highlighted[i]) > -1) {
             toHighlight.push(this._highlighted[i]);
           }

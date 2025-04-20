@@ -166,34 +166,31 @@ define([
     },
 
     newValue: function (varValue) {
-      var that = this,
-        structure = this.module.getConfiguration('structure') || [],
-        jpath;
+      const that = this;
+      const structure = this.module.getConfiguration('structure') || [];
 
       that.lockEvents = true;
       that.nb = 0;
 
-      for (var i = 0, l = structure.length; i < l; i++) {
-        jpath = structure[i].groups.general[0].searchOnField[0];
+      for (let i = 0; i < structure.length; i++) {
+        const jpath = structure[i].groups.general[0].searchOnField[0];
 
-        (function (j, jpath) {
-          that.nb++;
+        that.nb++;
 
-          varValue.getChild(jpath, true).then(function (returned) {
-            that.form.sectionElements.main[0].groupElements.main[0].fieldElements[
-              structure[j].groups.general[0].name[0]
-            ][0].value = returned
-              ? returned.get
-                ? returned.get()
-                : returned.toString()
-              : '';
+        varValue.getChild(jpath, true).then(function (returned) {
+          that.form.sectionElements.main[0].groupElements.main[0].fieldElements[
+            structure[i].groups.general[0].name[0]
+          ][0].value = returned
+            ? returned.get
+              ? returned.get()
+              : returned.toString()
+            : '';
 
-            that.nb--;
-            if (that.nb == 0) {
-              that.lockEvents = false;
-            }
-          });
-        })(i, jpath);
+          that.nb--;
+          if (that.nb === 0) {
+            that.lockEvents = false;
+          }
+        });
       }
     },
   });

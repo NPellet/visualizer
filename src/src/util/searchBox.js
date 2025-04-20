@@ -16,7 +16,7 @@ define([
       var layers = API.getLayerNames();
       var activeLayer = API.getActiveLayerName();
       var layersArr = [];
-      for (var i = 0; i < keys.length; i++) {
+      for (let i = 0; i < keys.length; i++) {
         if (!modules[keys[i]].hidden) {
           const module = modules[keys[i]];
           modulesArr.push(module);
@@ -25,22 +25,22 @@ define([
         }
       }
 
-      for (i = 0; i < layers.length; i++) {
-        var l = {};
+      for (let i = 0; i < layers.length; i++) {
+        const l = {};
         l.text = layers[i];
         l.cat = 'layer';
         l.id = `layer-${layers[i]}`;
         if (layers[i] === activeLayer) l.disabled = true;
         layersArr.push(l);
       }
-      var $select2 = '<div><div style="height:50px"></div> <select>';
-      var selectWidth = 500;
+      let $select2 = '<div><div style="height:50px"></div> <select>';
+      const selectWidth = 500;
 
-      var ww = Math.max(
+      const ww = Math.max(
         document.documentElement.clientWidth,
         window.innerWidth || 0,
       );
-      var wh = Math.max(
+      const wh = Math.max(
         document.documentElement.clientHeight,
         window.innerHeight || 0,
       );
@@ -75,7 +75,7 @@ define([
         return module.moduleName || module.text;
       }
 
-      var selectData = [];
+      const selectData = [];
       if (layersArr.length) {
         selectData.push({
           id: 'layer-list',

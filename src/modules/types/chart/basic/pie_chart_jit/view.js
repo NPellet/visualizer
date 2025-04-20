@@ -84,12 +84,13 @@ define([
   });
 
   function convertChartToJson(chart) {
-    var data = chart.data;
-    var json;
+    let data = chart.data;
+    let json;
+    let arr;
     if (data.length === 1) {
       // simple chart
       data = data[0];
-      var arr = data.y;
+      arr = data.y;
       const ii = arr.length;
       json = { values: new Array(ii) };
 

@@ -362,17 +362,16 @@ define([
   };
 
   Controller.prototype._doSearch = function () {
-    var that = this,
-      urltemplate = new URITemplate(
-        this.module.view._url || this.module.getConfiguration('url'),
-      );
+    const urltemplate = new URITemplate(
+      this.module.view._url || this.module.getConfiguration('url'),
+    );
 
-    var toPost = this.module.getConfiguration('postvariables', []);
-    for (var i = 0, ii = toPost.length; i < ii; i++) {
-      var valueToPost = API.getVar(toPost[i].variable).getData();
+    const toPost = this.module.getConfiguration('postvariables', []);
+    for (let i = 0; i < toPost.length; i++) {
+      const valueToPost = API.getVar(toPost[i].variable).getData();
       if (valueToPost) {
-        var value;
-        var type = valueToPost.getType();
+        let value;
+        const type = valueToPost.getType();
         if (type === 'string' || type === 'number' || type === 'boolean') {
           value = valueToPost.get();
         } else if (toPost[i].filter === 'value') {
@@ -406,34 +405,34 @@ define([
 
     this.module.view.lock();
 
-    this.request.end(function (err, response) {
+    this.request.end((err, response) => {
       if (err) {
         Debug.warn('Webservice search: request failed', err);
-        if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
-          that.module.view.showError();
+        if (this.module.getConfigurationCheckbox('showStatus', 'display')) {
+          this.module.view.showError();
         }
-        that.module.view.unlock();
+        this.module.view.unlock();
       } else {
-        if (that.module.getConfigurationCheckbox('showStatus', 'display')) {
-          that.module.view.showSuccess(response.status);
+        if (this.module.getConfigurationCheckbox('showStatus', 'display')) {
+          this.module.view.showSuccess(response.status);
         }
-        var body = response.body;
+        let body = response.body;
         if (body == null) {
           body = response.text;
         }
         body = Promise.resolve(body);
-        if (that.module.resultfilter) {
-          body = body.then(that.module.resultfilter);
+        if (this.module.resultfilter) {
+          body = body.then(this.module.resultfilter);
         }
 
         body
-          .then(function (data) {
-            that.onSearchDone(data);
-            that.module.view.unlock();
+          .then((data) => {
+            this.onSearchDone(data);
+            this.module.view.unlock();
           })
-          .catch(function (e) {
+          .catch((e) => {
             Debug.error(e, e.stack);
-            that.module.view.unlock();
+            this.module.view.unlock();
           });
       }
     });

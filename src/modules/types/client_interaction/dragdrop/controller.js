@@ -247,12 +247,12 @@ define([
   };
 
   Controller.prototype.initImpl = function () {
-    var i, ii, cfgEl, eCfgEl;
+    var cfgEl, eCfgEl;
 
     var fileCfg = this.module.getConfiguration('vars');
     if (fileCfg) {
       var enhancedFileCfg = [];
-      for (i = 0, ii = fileCfg.length; i < ii; i++) {
+      for (let i = 0; i < fileCfg.length; i++) {
         cfgEl = fileCfg[i];
         eCfgEl = $.extend({}, cfgEl);
         enhancedFileCfg.push(eCfgEl);
@@ -274,7 +274,7 @@ define([
     var stringCfg = this.module.getConfiguration('string');
     if (stringCfg) {
       var enhancedStringCfg = [];
-      for (i = 0, ii = stringCfg.length; i < ii; i++) {
+      for (let i = 0; i < stringCfg.length; i++) {
         cfgEl = stringCfg[i];
         eCfgEl = $.extend({}, cfgEl);
         enhancedStringCfg.push(eCfgEl);

@@ -146,7 +146,7 @@ define([
 
     unlisten(moduleId) {
       if (this._listenedBy.has(moduleId)) {
-        for (var i = 0, ii = this._listeners.length; i < ii; i++) {
+        for (let i = 0; i < this._listeners.length; i++) {
           if (this._listeners[i].id === moduleId) {
             this._listeners.splice(i, 1);
             break; // There should only be one listener per id, do not check further

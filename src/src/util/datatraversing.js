@@ -238,9 +238,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
         return;
       }
 
-      var children = [],
-        len,
-        i;
+      const children = [];
 
       if (structure.elements) {
         if (!jpathString) {
@@ -251,15 +249,15 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
         }
 
         jpathspool.push({
-          title: title,
-          children: children,
+          title,
+          children,
           key: jpathString,
         });
 
         switch (structure.type) {
-          case 'object':
+          case 'object': {
             // The type is object (native). Then look for its children (structure.elements)
-            for (i in structure.elements) {
+            for (const i in structure.elements) {
               this.getJPathsFromStructure(
                 structure.elements[i],
                 `${i}`,
@@ -269,23 +267,23 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
             }
 
             break;
-
-          // It it's an array, look for the children
-          case 'array':
+          }
+          // If it's an array, look for the children
+          case 'array': {
             // Array which length is nown => Then it's an object type
             if (!Array.isArray(structure.elements)) {
               structure.elements = [structure.elements];
             }
 
             // Look for how many elements to display
-            len = Math.min(5, structure.elements.length || 0);
+            let len = Math.min(5, structure.elements.length || 0);
 
             // Can be overridden in the structure.
             if (structure.nbElements) {
               len = structure.nbElements;
             }
 
-            for (i = 0; i < len; i++) {
+            for (let i = 0; i < len; i++) {
               this.getJPathsFromStructure(
                 structure.elements[i] || structure.elements[0],
                 `${i}`,
@@ -300,6 +298,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
               children: [],
             });
             break;
+          }
         }
       } else if (
         typeof structure === 'string' &&

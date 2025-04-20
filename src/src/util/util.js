@@ -82,15 +82,10 @@ define([
       return;
     }
 
-    var i = 0,
-      stylesheet,
-      ii,
-      cssRule;
-
-    for (; i < document.styleSheets.length; i++) {
-      stylesheet = document.styleSheets[i];
-      ii = 0;
-      cssRule = false;
+    for (let i = 0; i < document.styleSheets.length; i++) {
+      const stylesheet = document.styleSheets[i];
+      let ii = 0;
+      let cssRule = false;
       do {
         // For each rule in stylesheet
         cssRule = stylesheet.cssRules
@@ -618,12 +613,10 @@ define([
   };
 
   exports.hashCode = function (str) {
-    var hash = 0,
-      i,
-      chr,
-      len = str.length;
-    if (len === 0) return hash;
-    for (i = 0; i < len; i++) {
+    let hash = 0;
+    let chr;
+    if (str.length === 0) return hash;
+    for (let i = 0; i < str.length; i++) {
       chr = str.charCodeAt(i);
       hash = (hash << 5) - hash + chr;
       hash |= 0;

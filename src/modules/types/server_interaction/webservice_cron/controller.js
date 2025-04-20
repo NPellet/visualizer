@@ -30,7 +30,7 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
     if (!this.running) {
       return;
     }
-    for (var i = 0, ii = this.runners.length; i < ii; i++) {
+    for (let i = 0; i < this.runners.length; i++) {
       window.clearInterval(this.runners[i]);
     }
     this.runners = [];

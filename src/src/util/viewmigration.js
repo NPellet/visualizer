@@ -72,7 +72,6 @@ define([
       eachModule(
         view,
         function (module) {
-          var i;
           module.url = 'modules/types/client_interaction/code_editor/';
           if (
             module.configuration.groups.group[0].iseditable[0][0] === 'true'
@@ -81,14 +80,14 @@ define([
           }
           delete module.configuration.groups.group[0].padding;
           module.configuration.groups.group[0].mode = ['text'];
-          for (i = 0; i < module.vars_out.length; i++) {
+          for (let i = 0; i < module.vars_out.length; i++) {
             var varout = module.vars_out[i];
             if (varout.event) {
               varout.event = 'onEditorChange';
               varout.rel = 'value';
             }
           }
-          for (i = 0; i < module.actions_out.length; i++) {
+          for (let i = 0; i < module.actions_out.length; i++) {
             var actout = module.actions_out[i];
             if (actout.event) {
               actout.event = 'onButtonClick';
@@ -188,14 +187,13 @@ define([
       }
 
       eachModule(view, function (module) {
-        var i;
         if (module.vars_out) {
-          for (i = 0; i < module.vars_out.length; i++) {
+          for (let i = 0; i < module.vars_out.length; i++) {
             updateJpath(module.vars_out[i]);
           }
         }
         if (module.actions_out) {
-          for (i = 0; i < module.actions_out.length; i++) {
+          for (let i = 0; i < module.actions_out.length; i++) {
             updateJpath(module.actions_out[i]);
           }
         }
@@ -235,11 +233,10 @@ define([
       eachModule(
         view,
         function (module) {
-          var i;
           var postvariables =
             module.configuration.sections.postvariables[0].groups
               .postvariables[0];
-          for (i = 0; i < postvariables.length; i++) {
+          for (let i = 0; i < postvariables.length; i++) {
             if (!postvariables[i].variable) {
               postvariables.splice(i--, 1);
             } else {
@@ -247,7 +244,7 @@ define([
             }
           }
           var searchparams = module.configuration.groups.searchparams[0];
-          for (i = 0; i < searchparams.length; i++) {
+          for (let i = 0; i < searchparams.length; i++) {
             if (!searchparams[i].name) {
               searchparams.splice(i--, 1);
             } else {
@@ -255,7 +252,7 @@ define([
             }
           }
           var input = module.vars_in;
-          for (i = 0; i < input.length; i++) {
+          for (let i = 0; i < input.length; i++) {
             if (!input[i].rel) {
               input.splice(i--, 1);
             } else if (input[i].rel === 'varinput') {
@@ -787,18 +784,14 @@ define([
       } else if (!Array.isArray(moduleNames)) {
         moduleNames = [''];
       }
-      var i = 0;
-      var ii = view.modules.length;
       var module;
       var url;
-      var j;
-      var jj = moduleNames.length;
-      for (; i < ii; i++) {
+      for (let i = 0; i < view.modules.length; i++) {
         module = view.modules[i];
 
         url = module.getChildSync(['url']);
         if (url) {
-          for (j = 0; j < jj; j++) {
+          for (let j = 0; j < moduleNames.length; j++) {
             if (String(url).indexOf(moduleNames[j]) >= 0) {
               callback(module);
               break;

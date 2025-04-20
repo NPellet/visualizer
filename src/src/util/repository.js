@@ -34,12 +34,9 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   };
 
   var compareKeysRecursively = function (set1, set2, or) {
-    var i,
-      l,
-      set2el,
-      set3 = [];
-    for (i = 0, l = set2.length; i < l; i++) {
-      set2el = set2[i];
+    const set3 = [];
+    for (let i = 0; i < set2.length; i++) {
+      let set2el = set2[i];
       if (Array.isArray(set2el)) {
         set2el = compareKeysRecursively(set1, set2el, !or);
       }

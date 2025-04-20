@@ -70,15 +70,13 @@ define([
     var div = $('<div></div>');
     var gradient = 'linear-gradient(to right';
 
-    var total = 0,
-      i = 0,
-      l = value.length;
-    for (; i < l; total += value[i++][0]);
+    let total = 0;
+    for (let i = 0; i < value.length; total += value[i++][0]);
 
     var start = 0,
       end,
       color;
-    for (i = 0; i < l; i++) {
+    for (let i = 0; i < value.length; i++) {
       end = start + (value[i][0] / total) * 100;
       color = value[i][1];
       gradient += `, ${color} ${start}%, ${color} ${end}%`;

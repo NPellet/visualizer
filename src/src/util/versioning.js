@@ -10,19 +10,19 @@ define([
   'src/main/variables',
   'version',
 ], function ($, Cache, VersionHandler, Debug, UI, Button, Variables, Version) {
-  var version = Version.version;
-  var originalVersion = 'none';
-  var viewLocked = false;
+  const version = Version.version;
+  let originalVersion = 'none';
+  let viewLocked = false;
 
-  var dataHandler = new VersionHandler();
-  var viewHandler = new VersionHandler();
-  var view = new DataObject();
-  var data = Variables.getData();
-  var lastLoaded = {
+  const dataHandler = new VersionHandler();
+  const viewHandler = new VersionHandler();
+  const view = new DataObject();
+  const data = Variables.getData();
+  const lastLoaded = {
     view: {},
     data: {},
   };
-  var urlType = 'Search';
+  let urlType = 'Search';
 
   viewHandler.version = version;
   dataHandler.setType('data');
@@ -44,7 +44,7 @@ define([
 
   function switchView(value, pushstate, options) {
     options = options || {};
-    var def = Promise.resolve();
+    let def = Promise.resolve();
     if (
       value.data &&
       (lastLoaded.data.url !== value.data.url ||
@@ -81,7 +81,7 @@ define([
     }
     if (pushstate) {
       require(['uri/URI.fragmentQuery'], function (URI) {
-        var uri = new URI(window.location.href);
+        const uri = new URI(window.location.href);
         if (value.data) {
           uri[`remove${urlType}`](['dataURL', 'dataBranch', 'results']);
           if (value.data.urls) {
@@ -126,9 +126,8 @@ define([
     if (newView && newView.version) {
       originalVersion = newView.version;
     }
-    var i;
     // clear current view
-    for (i in view) {
+    for (const i in view) {
       delete view[i];
     }
     // clear current variables
@@ -136,18 +135,17 @@ define([
     // clear cache
     Cache.clear();
 
-    for (i in newView) {
+    for (const i in newView) {
       view[i] = DataObject.recursiveTransform(newView[i]);
     }
   }
 
   function updateData(newData) {
-    var i, child;
-    for (i in data) {
+    for (const i in data) {
       delete data[i];
     }
-    for (i in newData) {
-      child = DataObject.check(newData[i], true);
+    for (const i in newData) {
+      const child = DataObject.check(newData[i], true);
       if (child) {
         data[i] = child;
         child.linkToParent(data, i);
@@ -193,38 +191,36 @@ define([
     copyData,
     pasteData,
 
-    getViewHandler: function () {
+    getViewHandler() {
       return viewHandler;
     },
 
-    getDataHandler: function () {
+    getDataHandler() {
       return dataHandler;
     },
 
-    setViewLoadCallback: function (c) {
-      this.viewCallback = c;
-      var that = this;
+    setViewLoadCallback(callback) {
+      this.viewCallback = callback;
 
-      viewHandler.onLoaded = function (v) {
+      viewHandler.onLoaded = (v) => {
         updateView(v);
-        c.call(that, view);
+        callback.call(this, view);
       };
-      viewHandler.onReload = function (v) {
+      viewHandler.onReload = (v) => {
         updateView(v);
-        c.call(that, view, true);
+        callback.call(this, view, true);
       };
     },
 
-    setDataLoadCallback: function (c) {
-      this.dataCallback = c;
-      var that = this;
-      dataHandler.onLoaded = function (d) {
+    setDataLoadCallback(callback) {
+      this.dataCallback = callback;
+      dataHandler.onLoaded = (d) => {
         updateData(d);
-        c.call(that, data);
+        callback.call(this, data);
       };
-      dataHandler.onReload = function (d) {
+      dataHandler.onReload = (d) => {
         updateData(d);
-        c.call(that, data, true);
+        callback.call(this, data, true);
       };
     },
 
@@ -261,9 +257,9 @@ define([
   };
 
   function copyView() {
-    var str = getViewJSON('  ');
-    var strlen = str.length;
-    var txtarea = $('<textarea/>').text(str).css({
+    const str = getViewJSON('  ');
+    const strlen = str.length;
+    const txtarea = $('<textarea/>').text(str).css({
       width: '100%',
       height: '95%',
     });
@@ -272,7 +268,7 @@ define([
       height: $('#ci-visualizer').height() * 0.7,
     });
 
-    var txtdom = txtarea.get(0);
+    const txtdom = txtarea.get(0);
 
     txtdom.selectionStart = 0;
     txtdom.selectionEnd = strlen;
@@ -280,14 +276,14 @@ define([
   }
 
   function copyData() {
-    var str = getDataJSON('  ');
-    var strlen = str.length;
-    var txtarea = $('<textarea/>').text(str).css({
+    const str = getDataJSON('  ');
+    const strlen = str.length;
+    const txtarea = $('<textarea/>').text(str).css({
       width: '100%',
       height: '200px',
     });
     UI.dialog(txtarea, { width: '80%' });
-    var txtdom = txtarea.get(0);
+    const txtdom = txtarea.get(0);
 
     txtdom.selectionStart = 0;
     txtdom.selectionEnd = strlen;
@@ -295,19 +291,16 @@ define([
   }
 
   function pasteView() {
-    var txtarea = $('<textarea></textarea>').css({
+    const txtarea = $('<textarea></textarea>').css({
       width: '100%',
       height: '200px',
     });
-    var val;
-    var keys;
-    var btn = new Button('Paste', function () {
+    const btn = new Button('Paste', function () {
       try {
-        val = JSON.parse(txtarea.val());
-        keys = Object.keys(val);
-        for (var i = 0, ii = keys.length; i < ii; i++) {
-          if (keys[i].charAt(0) === '_') {
-            delete val[keys[i]];
+        const val = JSON.parse(txtarea.val());
+        for (const key of Object.keys(val)) {
+          if (key.charAt(0) === '_') {
+            delete val[key];
           }
         }
         exports.setViewJSON(val);
@@ -318,23 +311,20 @@ define([
       div.dialog('close');
     });
 
-    var div = UI.dialog(txtarea, { width: '80%' }).append(btn.render());
+    const div = UI.dialog(txtarea, { width: '80%' }).append(btn.render());
   }
 
   function pasteData() {
-    var txtarea = $('<textarea></textarea>').css({
+    const txtarea = $('<textarea></textarea>').css({
       width: '100%',
       height: '200px',
     });
-    var val;
-    var keys;
-    var btn = new Button('Paste', function () {
+    const btn = new Button('Paste', function () {
       try {
-        val = JSON.parse(txtarea.val());
-        keys = Object.keys(val);
-        for (var i = 0, ii = keys.length; i < ii; i++) {
-          if (keys[i].charAt(0) === '_') {
-            delete val[keys[i]];
+        const val = JSON.parse(txtarea.val());
+        for (const key of Object.keys(val)) {
+          if (key.charAt(0) === '_') {
+            delete val[key];
           }
         }
         exports.setDataJSON(val);
@@ -345,7 +335,7 @@ define([
       div.dialog('close');
     });
 
-    var div = UI.dialog(txtarea, { width: '80%' }).append(btn.render());
+    const div = UI.dialog(txtarea, { width: '80%' }).append(btn.render());
   }
 
   return exports;

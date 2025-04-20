@@ -67,7 +67,7 @@ define([
 
   function treeToArray(arr, tree) {
     if (tree.children) {
-      for (var i = 0, ii = tree.children.length; i < ii; i++) {
+      for (let i = 0; i < tree.children.length; i++) {
         treeToArray(arr, tree.children[i]);
       }
     } else if (tree.data) {

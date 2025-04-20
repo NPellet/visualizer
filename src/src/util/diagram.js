@@ -130,22 +130,19 @@ define([
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  var exports = {};
-  var $diagram;
+  const exports = {};
 
   function getLinks() {
     // targets are vars_in, sources are vars_out
-    var sources = [],
-      targets = [],
-      links = [],
-      i,
-      j;
-    var modules = ModuleFactory.getModules();
-    for (i = 0; i < modules.length; i++) {
+    const sources = [];
+    const targets = [];
+    const links = [];
+    const modules = ModuleFactory.getModules();
+    for (let i = 0; i < modules.length; i++) {
       var module = modules[i].definition;
 
       var vars_in = module.vars_in || [];
-      for (j = 0; j < vars_in.length; j++) {
+      for (let j = 0; j < vars_in.length; j++) {
         var var_in = module.vars_in[j];
         if (!var_in.name) continue;
         targets.push({
@@ -156,9 +153,9 @@ define([
         });
       }
 
-      var vars_out = module.vars_out || [];
-      for (j = 0; j < vars_out.length; j++) {
-        var var_out = module.vars_out[j];
+      const vars_out = module.vars_out || [];
+      for (let j = 0; j < vars_out.length; j++) {
+        const var_out = vars_out[j];
         if (!var_out.name || !var_out.event) continue;
         sources.push({
           id: DataObject.resurrect(module.id),
@@ -178,7 +175,7 @@ define([
       });
 
       if (source) {
-        for (j = 0; j < source.length; j++) {
+        for (let j = 0; j < source.length; j++) {
           links.push({
             source: {
               module: source[j].module,
@@ -291,7 +288,7 @@ define([
         .on('tick', tick)
         .start();
 
-      $diagram = $('<div class="ci-diagram">');
+      const $diagram = $('<div class="ci-diagram">');
 
       var zoom = d3.behavior.zoom().scaleExtent([0.2, 10]).on('zoom', zoomed);
 

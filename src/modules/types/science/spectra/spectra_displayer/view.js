@@ -717,12 +717,12 @@ define([
         API.listenHighlight(
           { _highlight: highlight },
           (value, commonKeys) => {
-            for (var i = 0, ii = commonKeys.length; i < ii; i++) {
-              var key = commonKeys[i];
-              for (var j = 0, jj = highlight.length; j < jj; j++) {
+            for (let i = 0; i < commonKeys.length; i++) {
+              const key = commonKeys[i];
+              for (let j = 0; j < highlight.length; j++) {
                 var high = highlight[j];
                 if (Array.isArray(high)) {
-                  for (var k = 0; k < high.length; k++) {
+                  for (let k = 0; k < high.length; k++) {
                     if (high[k] == key) {
                       serie.toggleMarker(j, !!value, true);
                     }
@@ -1474,12 +1474,12 @@ define([
     if (Array.isArray(data)) {
       var minInterval = Infinity;
       var maxInterval = -Infinity;
-      var interval, i, ii;
+      var interval;
       var MIN_FOR_CONTINUOUS = 20;
 
       if (typeof data[0] === 'number') {
         if (data.length < MIN_FOR_CONTINUOUS * 2 - 1) return 'discrete';
-        for (i = 0, ii = data.length - 2; i < ii; i += 2) {
+        for (let i = 0; i < data.length - 2; i += 2) {
           interval = data[i + 2] - data[i];
           if (interval > maxInterval) maxInterval = interval;
           if (interval < minInterval) minInterval = interval;
@@ -1501,7 +1501,7 @@ define([
         }
       } else {
         if (data.length < MIN_FOR_CONTINUOUS) return 'discrete';
-        for (i = 0, ii = data.length - 1; i < ii; i++) {
+        for (let i = 0; i < data.length - 1; i++) {
           interval = data[i + 1][0] - data[i][0];
           if (interval > maxInterval) maxInterval = interval;
           if (interval < minInterval) minInterval = interval;

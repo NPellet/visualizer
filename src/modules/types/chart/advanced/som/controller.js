@@ -67,7 +67,7 @@ define([
     for (const i in datasets) {
       const dataset = datasets[i].getChildSync(['data', 0]);
       result[i] = [];
-      for (let j = 0, jj = dataset.x.length; j < jj; j++) {
+      for (let j = 0; j < dataset.x.length; j++) {
         if (Math.floor(dataset.x[j]) === x && Math.floor(dataset.y[j]) === y) {
           result[i].push(dataset.info[j]);
         }
@@ -92,7 +92,7 @@ define([
           modelOptions.push({ key: i, title: i });
         }
       } else {
-        for (let i = 0, ii = fields.length; i < ii; i++) {
+        for (let i = 0; i < fields.length; i++) {
           modelOptions.push({
             key: fields[i].name,
             title: fields[i].name,
