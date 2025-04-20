@@ -160,7 +160,7 @@ define([
             this.dom.hide();
             this.getForm();
           })
-          .catch((event) => {
+          .catch(() => {
             Debug.warn('Error');
           });
         return null;

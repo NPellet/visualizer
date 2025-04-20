@@ -20,7 +20,7 @@ define([
             !!window.WebGLRenderingContext &&
             !!document.createElement('canvas').getContext('experimental-webgl')
           );
-        } catch (e) {
+        } catch {
           return false;
         }
       })();
@@ -92,9 +92,6 @@ define([
       }
       var that = this;
       this.module.viewReady.then(function () {
-        var cfg = that.module.getConfiguration;
-        var segments = cfg('segments');
-
         // /////////////////////
         // end vertex colors //
         // /////////////////////

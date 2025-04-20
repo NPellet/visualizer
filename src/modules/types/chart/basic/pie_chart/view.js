@@ -67,7 +67,7 @@ define([
           if (!that._data[i]._highlight) continue;
           API.listenHighlight(
             that._data[i],
-            function (onOff, key) {
+            function (onOff) {
               // we need to highlight the correct shape ...
               if (onOff) {
                 // that.module.controller.elementHover(that._data[i]);

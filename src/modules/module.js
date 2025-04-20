@@ -38,19 +38,19 @@ define([
       moduleURL = `${moduleURL}/`;
     }
 
-    module.viewReady = new Promise(function (res, rej) {
+    module.viewReady = new Promise(function (res) {
       module._resolveView = res;
     });
 
-    module.controllerReady = new Promise(function (res, rej) {
+    module.controllerReady = new Promise(function (res) {
       module._resolveController = res;
     });
 
-    module.modelReady = new Promise(function (res, rej) {
+    module.modelReady = new Promise(function (res) {
       module._resolveModel = res;
     });
 
-    module.globalInitializationReady = new Promise(function (res, rej) {
+    module.globalInitializationReady = new Promise(function (res) {
       module.resolveGlobal = res;
     });
 
@@ -425,7 +425,7 @@ define([
       Fullscreen.requestFullscreen(this);
     },
 
-    toggleLayer(newLayerShown, layerOut) {
+    toggleLayer(newLayerShown) {
       var layer;
       this.activeLayerName = newLayerShown;
       if ((layer = this.getLayer(newLayerShown))) {
@@ -1174,7 +1174,7 @@ define([
       if (this.controller.configFunctions[aliasName]) {
         try {
           return this.controller.configFunctions[aliasName](element);
-        } catch (e) {
+        } catch {
           return element;
         }
       }
@@ -1341,7 +1341,7 @@ define([
         this.getDomWrapper().resizable(
           bln === true || bln == undefined ? 'enable' : 'disable',
         );
-      } catch (e) {
+      } catch {
         // do nothing
       }
     },

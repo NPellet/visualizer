@@ -76,7 +76,7 @@ define([
       return options;
     },
 
-    drawPhylogram(data, view) {
+    drawPhylogram() {
       if (!this._value) return;
 
       var dataD = this._value;
@@ -138,7 +138,7 @@ define([
           if (dataNode.data && dataNode.data._highlight) {
             API.listenHighlight(
               dataNode.data,
-              function (value, what) {
+              function (value) {
                 var point = leaf.select('circle');
                 point.attr('fill', function (a) {
                   if (a.data && a.data.$color) return a.data.$color;

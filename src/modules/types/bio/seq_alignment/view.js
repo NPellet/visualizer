@@ -59,7 +59,7 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
         }
 
         m.render();
-      } catch (e) {
+      } catch {
         this.clear();
       }
     },

@@ -118,7 +118,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         that.module.controller.open(that.module.controller.emulDataTransfer(e));
       });
 
-      $fileInput.on('load', function (event) {});
+      $fileInput.on('load', function () {});
 
       this.module.getDomContent().html(this.dom);
     },
@@ -228,7 +228,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
 
       video.addEventListener(
         'canplay',
-        function (ev) {
+        function () {
           if (!streaming) {
             height = video.videoHeight / (video.videoWidth / width);
             video.setAttribute('width', width);

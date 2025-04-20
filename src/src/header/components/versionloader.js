@@ -6,16 +6,6 @@ define([
   'src/util/versioning',
   'src/util/util',
 ], function ($, Default, Versioning, Util) {
-  var defaults = {
-    label: false,
-    elements: false,
-    viewURL: false,
-    dataURL: false,
-    viewBranch: false,
-    dataBranch: false,
-    toggle: false,
-  };
-
   function Element() {}
 
   var currentMenu;

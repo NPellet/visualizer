@@ -76,7 +76,7 @@ define([
         that.launchWorkers(true);
       });
 
-      $(this.canvasContainer).drag('start', function (e1, e2) {
+      $(this.canvasContainer).drag('start', function (e1) {
         e1.preventDefault();
         that.baseShift = $.extend({}, that.getXYShift());
       });
@@ -264,8 +264,7 @@ define([
     },
 
     getClosest(haystack, needle) {
-      var closest = false,
-        newClosest;
+      let closest = false;
       for (var i = 0; i < haystack.length; i++) {
         if (
           !closest ||
@@ -465,9 +464,6 @@ define([
           }
         }
       }
-
-      var maxXBuffer = Math.ceil(this.canvasNbX / this.squareLoading) - 1;
-      var maxYBuffer = Math.ceil(this.canvasNbY / this.squareLoading) - 1;
 
       return false;
     },

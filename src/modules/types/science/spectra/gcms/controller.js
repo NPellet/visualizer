@@ -210,7 +210,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     setMSIndexData: 'Change MS data index',
   };
 
-  Controller.prototype.configurationStructure = function (section) {
+  Controller.prototype.configurationStructure = function () {
     return {
       groups: {
         group: {

@@ -1022,7 +1022,7 @@ define([
 
       try {
         await newView.save();
-      } catch (error) {
+      } catch {
         this.showHide(false);
         UI.showNotification('View could not be saved', 'error');
         return;

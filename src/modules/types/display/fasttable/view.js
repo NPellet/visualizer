@@ -199,7 +199,6 @@ define([
         this.elements = moduleValue;
 
         var that = this,
-          nbLines = this.module.getConfiguration('nbLines') || 20,
           html = '',
           l = moduleValue.get().length;
 
@@ -438,8 +437,6 @@ define([
       }
 
       var result = [];
-      var allEls = [],
-        l = this.elements.length;
 
       var jpaths = this.colsjPaths;
 
@@ -449,7 +446,7 @@ define([
       }
       result.push(header.join('\t'));
 
-      for (let i = 0; i < l; i++) {
+      for (let i = 0; i < this.elements.length; i++) {
         const line = [];
         for (let j = 0; j < jpaths.length; j++) {
           Traversing.getValueFromJPath(this.elements[i], jpaths[j].jpath).done(

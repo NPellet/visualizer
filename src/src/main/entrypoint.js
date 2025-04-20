@@ -119,6 +119,7 @@ define([
     _check('data');
   }
 
+  // eslint-disable-next-line no-unused-vars
   function _check(loading) {
     if (!_dataLoaded || !_viewLoaded) {
       return;
@@ -354,7 +355,7 @@ define([
       var form = new Form();
 
       form.init({
-        onValueChanged(value) {},
+        onValueChanged() {},
       });
 
       form.setStructure({

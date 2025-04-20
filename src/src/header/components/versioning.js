@@ -7,21 +7,10 @@ define([
   'forms/button',
   'src/util/util',
 ], function ($, Default, Versioning, Button, Util) {
-  var defaults = {
-    label: false,
-    elements: false,
-    viewURL: false,
-    dataURL: false,
-    viewBranch: false,
-    dataBranch: false,
-    toggle: false,
-  };
-
   var buttons = { view: {}, data: {} };
 
   function makeHandlerButtons() {
     var pos = ['view', 'data'];
-    var pos2 = ['View', 'Data'];
 
     for (let i = 0; i < pos.length; i++) {
       const subject = i === 0 ? Versioning.getView() : Versioning.getData();
@@ -234,7 +223,7 @@ define([
     },
 
     _onClick() {
-      var el = this.getReady();
+      this.getReady();
       this.setStyleOpen(this._open);
       if (this._open) {
         this.open();

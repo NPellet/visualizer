@@ -2,7 +2,7 @@
 
 // LRU
 define(['jquery', 'src/util/debug'], function ($, Debug) {
-  var indexedDB, IDBTransaction, IDBKeyRange;
+  var indexedDB;
   var db,
     dbname = 'cilru';
 
@@ -62,12 +62,6 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
       window.mozIndexedDB ||
       window.webkitIndexedDB ||
       window.msIndexedDB;
-    IDBTransaction =
-      window.IDBTransaction ||
-      window.webkitIDBTransaction ||
-      window.msIDBTransaction;
-    IDBKeyRange =
-      window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
     if (!indexedDB) {
       ready.reject();
@@ -129,7 +123,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             lru.data[index] = Date.now(); // Update the date of the object
             var setter = store.put(lru);
 
-            setter.onsuccess = function (event) {
+            setter.onsuccess = () => {
               Debug.info("success update resource's timestamp");
             };
           }

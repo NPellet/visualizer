@@ -49,7 +49,6 @@ export default defineConfig(
       'no-empty-function': 'off',
       'no-eval': 'off',
       'no-invalid-this': 'off',
-      'no-unused-vars': 'off',
       'no-var': 'off',
       'one-var': 'off',
       'prefer-named-capture-group': 'off',

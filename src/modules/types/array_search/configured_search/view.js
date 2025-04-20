@@ -85,8 +85,7 @@ define([
                     searchfields,
                     function (field) {
                       for (
-                        var k = 0,
-                          m = field.groups.general[0].searchOnField.length;
+                        let k = 0;
                         field.groups.general[0].searchOnField[k];
                         k++
                       ) {
@@ -110,7 +109,7 @@ define([
       var form = FormCreator.makeForm();
 
       form.init({
-        onValueChanged(value) {
+        onValueChanged() {
           var cfg = form.getValue().sections.cfg[0].groups.cfg[0],
             cfgFinal = {};
 
@@ -140,7 +139,7 @@ define([
     },
 
     blank: {
-      value(varName) {
+      value() {
         this.dom.empty();
       },
     },
@@ -298,7 +297,7 @@ define([
       try {
         this._searchFunc = null;
         eval(toEval);
-      } catch (e) {
+      } catch {
         Debug.error('Error while evaluating function.', toEval);
       }
     },

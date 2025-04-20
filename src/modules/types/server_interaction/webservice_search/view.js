@@ -35,7 +35,6 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
           );
         }
 
-        var url = cfg('url');
         this.button = cfg('button', false);
 
         if (this.button) {
@@ -145,7 +144,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
       this.resolveReady();
     },
 
-    _makeFormEl(spec, name) {
+    _makeFormEl(spec) {
       var elemAttribute = `name="${spec.name}" data-dest="${spec.destination}" data-type="${spec.fieldtype}"`;
 
       switch (spec.fieldtype) {

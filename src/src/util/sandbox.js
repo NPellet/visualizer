@@ -28,6 +28,7 @@ define(function () {
 
   return Sandbox;
 
+  // eslint-disable-next-line no-unused-vars
   function safeEval(script, __ctx__, Sandbox, babel, safeEval) {
     return eval(script);
   }

@@ -40,7 +40,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     },
   };
 
-  Controller.prototype.onClick = function (view, action) {
+  Controller.prototype.onClick = function (view) {
     var text = this.module.getConfiguration('text');
     let value = {
       label: text,

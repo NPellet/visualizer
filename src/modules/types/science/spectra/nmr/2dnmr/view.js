@@ -56,7 +56,7 @@ define([
         this.addSerieJcampXOrY(moduleValue, true, true);
       },
 
-      jcamp2d(moduleValue, varName) {
+      jcamp2d(moduleValue) {
         var that = this;
 
         function hue2rgb(p, q, t) {
@@ -108,7 +108,7 @@ define([
         );
       },
 
-      annotations(value) {
+      annotations() {
         /*
                  TODO annotations ?
                  */

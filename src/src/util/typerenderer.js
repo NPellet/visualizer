@@ -101,7 +101,7 @@ define([
     countryData = await asyncRequire('countryData');
     await css;
   };
-  functions.country.toscreen = function ($element, val, rootVal, options) {
+  functions.country.toscreen = function ($element, val) {
     val = String(val);
     var country;
     if (val.length === 2) {
@@ -130,7 +130,7 @@ define([
     try {
       var d = new Date(val);
       $element.html(d.toLocaleString());
-    } catch (e) {
+    } catch {
       $element.html('Invalid date');
     }
   };
@@ -148,7 +148,7 @@ define([
   };
 
   functions.elecconfig = {};
-  functions.elecconfig.toscreen = function ($element, value, root, options) {
+  functions.elecconfig.toscreen = function ($element, value) {
     if (value) {
       $element.html(value.replace(/([a-z])([0-9]+)/g, '$1<sup>$2</sup>'));
     } else {
@@ -219,7 +219,7 @@ define([
       }, 500);
     });
 
-    $modulesGrid.on('mouseleave', '[data-tooltip]', function (event) {
+    $modulesGrid.on('mouseleave', '[data-tooltip]', () => {
       clearTimeout(current);
       tooltip.css({
         opacity: 0,
@@ -292,7 +292,7 @@ define([
   };
 
   functions.jpath = {};
-  functions.jpath.toscreen = function ($element, val, rootVal, options) {
+  functions.jpath.toscreen = function ($element, val) {
     $element.html(val.join('.'));
   };
 
@@ -317,7 +317,7 @@ define([
         value = String(value).replace(/([0-9])(-+)/, '$1($2)');
 
         $element.html(functions.mf.parseToHtml(String(value)));
-      } catch (error) {
+      } catch {
         $element.html(value.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
       }
     } else {
@@ -559,7 +559,7 @@ define([
       var search;
       try {
         search = new RegExp(options.search);
-      } catch (e) {
+      } catch {
         search = options.search;
       }
       val = val.replace(search, options.replace || '');
@@ -911,12 +911,7 @@ define([
       html: (value) => (renderedValue = value),
     };
 
-    const result = await functions[type].toscreen(
-      $element,
-      value,
-      object,
-      options,
-    );
+    await functions[type].toscreen($element, value, object, options);
 
     return renderedValue;
   }

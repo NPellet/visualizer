@@ -21,11 +21,9 @@ define([
   };
 
   Controller.prototype.configurationStructure = function () {
-    var that = this;
+    const typeList = Renderer.getRendererComboOptions();
 
-    var typeList = Renderer.getRendererComboOptions();
-
-    var jpaths = this.module.model.getjPath('row', false);
+    const jpaths = this.module.model.getjPath('row', false);
 
     return {
       groups: {

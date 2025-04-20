@@ -8,9 +8,8 @@ define([
   'quill',
   'quillImageResizeModule',
   'lodash',
-  'src/main/grid',
   'quillImageDropModule',
-], function ($, Default, Util, API, Quill, ImageResize, _, Grid) {
+], function ($, Default, Util, API, Quill, ImageResize, _) {
   Quill.register('modules/ImageResize', ImageResize.default);
   function View() {
     this._id = Util.getNextUniqueId();
@@ -21,7 +20,6 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init() {
-      var that = this;
       this.debounce = this.module.getConfiguration('debouncing');
       this.storeInView = this.module.getConfigurationCheckbox(
         'storeInView',
@@ -29,9 +27,9 @@ define([
       );
       this.module.currentWord = ''; // used for shortcut expansion
       this.module.shortcuts = [];
-      this.valueChanged = _.debounce(function () {
-        that.module.controller.valueChanged.apply(
-          that.module.controller,
+      this.valueChanged = _.debounce(() => {
+        this.module.controller.valueChanged.apply(
+          this.module.controller,
           arguments,
         );
       }, this.debounce);

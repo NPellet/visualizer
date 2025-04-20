@@ -102,6 +102,7 @@ define([
     );
   };
 
+  // eslint-disable-next-line no-unused-vars
   Controller.prototype.executeFilter = function (filter, object) {
     var neededLibs = this.module.getConfiguration('libs');
     var requireStart = `require${getRequireStart(neededLibs)}`;
@@ -110,6 +111,7 @@ define([
 
     var requireEnd = '});';
 
+    // eslint-disable-next-line no-unused-vars
     return new Promise(function (resolve, reject) {
       eval(`"use strict";${requireStart}${requireBody}${requireEnd}`);
     });

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'src/util/versioning'], function ($, Versioning) {
+define(['jquery'], function ($) {
   $(document).keydown(function (event) {
     // If Control or Command key is pressed and the S key is pressed
     // run save function. 83 is the key code for S.

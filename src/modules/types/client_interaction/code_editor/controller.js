@@ -197,7 +197,7 @@ define([
   function getJsonValue(str) {
     try {
       return JSON.parse(str);
-    } catch (e) {
+    } catch {
       return null;
     }
   }

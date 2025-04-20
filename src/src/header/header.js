@@ -98,11 +98,10 @@ define(['require', 'jquery', 'src/util/versioning'], function (
     }
   }
 
-  let headerSingleton = null;
-
   return {
     init(headerConfig) {
-      headerSingleton = new Header(headerConfig);
+      // eslint-disable-next-line no-new
+      new Header(headerConfig);
     },
   };
 });

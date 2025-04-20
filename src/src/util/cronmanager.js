@@ -57,7 +57,6 @@ define(['require'], function (require) {
 
   function doFiles() {
     var files = Versioning.getView().actionfiles;
-    var fileName, fileMode, actionName;
 
     actionsFiles = {};
 

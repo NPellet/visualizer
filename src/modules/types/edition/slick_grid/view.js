@@ -312,7 +312,7 @@ define([
         ctx.module.model.dataTriggerChange(ctx.module.data);
       });
       ctx.grid.registerPlugin(moveRowsPlugin);
-      ctx.grid.onDragInit.subscribe(function (e, dd) {
+      ctx.grid.onDragInit.subscribe((e) => {
         // prevent the ctx.grid.from cancelling drag'n'drop by default
         e.stopImmediatePropagation();
       });
@@ -372,7 +372,7 @@ define([
     $(ctx.grid.getHeaderRow()).delegate(
       ':input',
       'change keyup',
-      _.debounce(function (event) {
+      _.debounce(function () {
         let columnId = $(this).data('columnId');
         if (columnId != null) {
           ctx.columnFilters[columnId] = $.trim($(this).val());
@@ -413,7 +413,7 @@ define([
     }
 
     // wire up model events to drive the grid
-    ctx.slick.data.onRowCountChanged.subscribe(function (event, args) {
+    ctx.slick.data.onRowCountChanged.subscribe(() => {
       ctx.grid.updateRowCount();
       ctx.grid.render();
     });
@@ -1249,7 +1249,7 @@ define([
         asyncPostRenderDelay: 0,
         defaultColumnWidth:
           that.module.getConfiguration('slick.defaultColumnWidth') || 80,
-        dataItemColumnValueExtractor(item, coldef) {
+        dataItemColumnValueExtractor(item) {
           // In order to use jpath, we return the row instead of the column
           // TODO: use jpath in coldef here?
           return item;
@@ -1347,7 +1347,7 @@ define([
         this.update.list.call(this, moduleValue, varName);
       },
 
-      list(moduleValue, varName) {
+      list(moduleValue) {
         let that = this;
 
         this.module.controller.lastClickedItem = undefined;
@@ -1391,7 +1391,7 @@ define([
                 if (!that.columnFilterFunctions[columnId](val)) {
                   return false;
                 }
-              } catch (e) {
+              } catch {
                 return true;
               }
             }
@@ -1411,10 +1411,10 @@ define([
     },
 
     blank: {
-      list(varname) {
+      list() {
         this.$container.html('');
       },
-      script(varname) {
+      script() {
         if (this.module.getConfiguration('filterType') === 'invar') {
           this._setScript('');
         }
@@ -1638,20 +1638,14 @@ define([
     },
 
     _inViewFilter() {
-      let that = this;
-      if (!that.hasFilter || !that.lastViewport) return;
-      let rows = that._getRowsFromViewport();
-      let items = that._getItemsInfo(rows);
-      const context = that._runFilter({
+      if (!this.hasFilter || !this.lastViewport) return;
+      let rows = this._getRowsFromViewport();
+      let items = this._getItemsInfo(rows);
+      this._runFilter({
         rows: items,
         cell: null,
         event: 'inView',
-        // renderOptions: {}
       });
-
-      // If used asynchronously (e.g. in debounce)
-      // that.grid.invalidateAllRows();
-      // that.grid.render();
     },
 
     _deleteFilter(deletedRows) {
@@ -2049,7 +2043,7 @@ define([
       appendRow(items) {
         this.onActionReceive.addRow.call(this, items);
       },
-      prependRow(items, ...args) {
+      prependRow(items) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2207,14 +2201,6 @@ define([
   }
 
   function getColumnFilterFunction(query) {
-    function pad(n, width, z) {
-      z = z || '0';
-      n = `${n}`;
-      return n.length >= width
-        ? n
-        : new Array(width - n.length + 1).join(z) + n;
-    }
-
     let match;
 
     // Force string matcher

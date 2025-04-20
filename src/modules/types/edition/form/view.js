@@ -23,7 +23,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function (
       var json;
       try {
         json = JSON.parse(structure);
-      } catch (e) {
+      } catch {
         return;
       }
 

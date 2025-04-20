@@ -11,7 +11,6 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     return this._value[name];
   };
 
-  var slicer = Array.prototype.slice;
   Observable.update = function (name, value) {
     this._value = this._value || {};
     this._value[name] = value;

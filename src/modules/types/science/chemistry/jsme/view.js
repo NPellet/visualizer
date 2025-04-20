@@ -16,7 +16,7 @@ define([
     let message;
     try {
       message = JSON.parse(event.data);
-    } catch (e) {
+    } catch {
       return;
     }
     if (message.module !== 'jsme') {

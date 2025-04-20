@@ -119,9 +119,11 @@ define([
     },
 
     /* Extra functions used in filter testsuite. Allows compatibility of filters */
+    /* eslint-disable no-unused-vars */
     dev_fctCalled(fct) {},
     dev_fctUncalled(fct) {},
     dev_assert(family, script, value) {},
+    /* eslint-enable no-unused-vars */
   };
 
   /**
@@ -314,7 +316,7 @@ define([
       });
       const url = URL.createObjectURL(svg);
 
-      const promise = new Promise((resolve, reject) => {
+      const promise = new Promise((resolve) => {
         image.onload = () => {
           ctx.drawImage(image, 0, 0);
           const png = canvas.toDataURL('image/png');

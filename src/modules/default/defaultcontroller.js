@@ -1,12 +1,11 @@
 'use strict';
 
-define([
-  'jquery',
-  'src/util/api',
-  'src/util/util',
-  'src/util/color',
-  'src/main/grid',
-], function ($, API, Util, Color, Grid) {
+define(['jquery', 'src/util/api', 'src/util/util', 'src/util/color'], function (
+  $,
+  API,
+  Util,
+  Color,
+) {
   return {
     setModule(module) {
       this.module = module;

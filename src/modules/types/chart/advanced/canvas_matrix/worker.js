@@ -1,8 +1,6 @@
 /* eslint-disable no-implicit-globals */
 'use strict';
 
-var count = 0;
-
 function getColorFromValue(value) {
   var minValue = min;
   var maxValue = max;
@@ -10,7 +8,6 @@ function getColorFromValue(value) {
     minValue = 0;
     maxValue = 1;
   }
-  var ratio = 1 / (maxValue - minValue);
   var diff = maxValue - minValue;
   var segNb = colors.length - 1;
   var step = diff / segNb;
@@ -36,23 +33,6 @@ function getColorBetween(value, color1, color2, color1Val, color2Val) {
     parseInt(ratio * (color2[2] - color1[2]) + color1[2], 10),
     parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10),
   ];
-}
-
-function getRGB(color) {
-  if (!color) return false;
-  if (color.length === 7) {
-    return [
-      parseInt(`0x${color.substring(1, 3)}`, 16),
-      parseInt(`0x${color.substring(3, 5)}`, 16),
-      parseInt(`0x${color.substring(5, 7)}`, 16),
-    ];
-  } else if (color.length === 4) {
-    return [
-      parseInt(`0x${color.substring(1, 2)}`, 16),
-      parseInt(`0x${color.substring(2, 3)}`, 16),
-      parseInt(`0x${color.substring(3, 4)}`, 16),
-    ];
-  }
 }
 
 function generate(indexX, indexY, buffer, nbValX) {
@@ -94,7 +74,6 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
     pixelNum;
   while (j < pxPerCell) {
     while (i < pxPerCell) {
-      count++;
       pixelNum =
         4 * (startX * pxPerCell + i + (startY * pxPerCell + j) * squareWidth);
       bufferData[pixelNum + 0] = color[0]; // Red value

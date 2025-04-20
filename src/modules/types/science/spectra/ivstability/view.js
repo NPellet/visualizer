@@ -76,7 +76,7 @@ define([
         fontSize: 12,
         fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-        onMouseMoveData(event, val) {
+        onMouseMoveData() {
           /* for(var i in val) {
                      LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
                      for(var i in data) {
@@ -204,9 +204,9 @@ define([
     },
 
     update: {
-      plotdata(moduleValue) {},
+      plotdata() {},
 
-      serieSet(moduleValue, name) {},
+      serieSet() {},
     },
 
     getNextColor() {

@@ -1,7 +1,7 @@
 'use strict';
 
 define(['jquery'], function ($) {
-  var db, process;
+  var db;
 
   return {
     open() {
@@ -33,16 +33,12 @@ define(['jquery'], function ($) {
       var req = indexedDB.open('ci', 26);
 
       req.onsuccess = function (e) {
-        process = false;
         db = e.target.result;
         def.resolve();
       };
 
       req.onupgradeneeded = function (e) {
-        process = false;
         db = e.target.result;
-        var def1 = $.Deferred(),
-          def2 = $.Deferred();
         if (db.objectStoreNames.contains('localview')) {
           db.deleteObjectStore('localview');
         }

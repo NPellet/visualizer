@@ -300,7 +300,7 @@ define([
           }
         }
         exports.setViewJSON(val);
-      } catch (_) {
+      } catch {
         // do nothing
       }
 
@@ -324,7 +324,7 @@ define([
           }
         }
         exports.setDataJSON(val);
-      } catch (_) {
+      } catch {
         // do nothing
       }
 

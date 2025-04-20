@@ -97,7 +97,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
           }
         },
 
-        onAnnotationUnselect(annot) {
+        onAnnotationUnselect() {
           that.killMsFromAUC();
         },
         onMouseMoveData(event, val) {
@@ -297,7 +297,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.gcGraph.redraw();
       this.msGraph.redraw();
 
-      this.gcGraph.on('click', function (event) {
+      this.gcGraph.on('click', function () {
         // todo what is this?
         // e = e[3];
         // if (e.target.nodeName === 'path' || e.target.nodeName === 'text') {
@@ -320,11 +320,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       shape.lock();
       shape.redraw();
 
-      this.msGraph.on('shapeSelect', function (shape) {
+      this.msGraph.on('shapeSelect', function () {
         that.msShapesSelectChange();
       });
 
-      this.msGraph.on('shapeUnselect', function (shape) {
+      this.msGraph.on('shapeUnselect', function () {
         that.msShapesSelectChange();
       });
 
@@ -610,7 +610,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.msGraph.kill();
     },
 
-    zoomOnGC(start, end, y) {
+    zoomOnGC(start, end) {
       this.gcGraph
         .getBottomAxis()
         .zoom(start - (end - start) * 0.4, end + (end - start) * 0.4);

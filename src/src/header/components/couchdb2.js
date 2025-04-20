@@ -31,7 +31,6 @@ define([
   CouchdbAttachments,
   uploadUi,
   Debug,
-  fileSaver,
 ) {
   function CouchDBManager() {}
 
@@ -241,7 +240,7 @@ define([
     checkDatabase() {
       var that = this;
       $.couch.info({
-        success(event) {
+        success() {
           that.ok = true;
         },
         error(e, f, g) {
@@ -536,7 +535,7 @@ define([
       $.couch.login({
         name: username,
         password,
-        success(data) {
+        success() {
           that.loggedIn = true;
           that.username = username;
           that.openMenu('tree');
@@ -722,7 +721,7 @@ define([
         height: '200px',
         width: '300px',
       };
-      var treeContainer = $('<div>')
+      $('<div>')
         .attr('id', this.cssId('tree'))
         .css(treeCSS)
         .appendTo(this.menuContent);
@@ -1076,12 +1075,11 @@ define([
       var form = new Form({});
 
       form.init({
-        onValueChanged(value) {},
+        onValueChanged() {},
       });
 
       form.setStructure(structure);
       form.onStructureLoaded().done(function () {
-        var fill = {};
         var prom;
         if (!that.currentDocument.data.hasMeta) {
           prom = Promise.resolve({});
@@ -1089,7 +1087,7 @@ define([
           prom = that.getMetaForm(that.currentDocument);
         }
 
-        prom.then(function (fill) {
+        prom.then((fill) => {
           form.fill(fill);
         });
       });

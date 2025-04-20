@@ -15,7 +15,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
     var storeName = options.storeName || DEFAULT_STORE_NAME;
     try {
       host = new URL(url).host;
-    } catch (e) {
+    } catch {
       // `new URL()` can fail with relative URLs. Use current host in that case.
       host = window.location.host;
     }

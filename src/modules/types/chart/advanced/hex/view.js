@@ -618,8 +618,9 @@ define([
 
   function chartToArray(chart) {
     try {
-      var x = chart.data[0].x;
-    } catch (e) {
+      // eslint-disable-next-line no-unused-expressions
+      chart.data[0].x;
+    } catch {
       Debug.warn('no chart data');
       return [];
     }
@@ -668,36 +669,6 @@ define([
     return result;
   }
 
-  function combinatorialToEvenq(data) {
-    var r = combinatorialToCubic(data);
-    r = cubicToEvenq(r);
-    return r;
-  }
-
-  function cubicToEvenq(data) {
-    var r = new Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-      if (!checkCubic(data[i])) continue;
-      var col = data[i][0],
-        z = data[i][2];
-      var row = z + (col + (col & 1)) / 2;
-      r[i] = [col, row];
-    }
-    return r;
-  }
-
-  function cubicToEvenr(data) {
-    var r = new Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-      if (!checkCubic(data[i])) continue;
-      var row = data[i][2],
-        x = data[i][0];
-      var col = x + (row + (row & 1)) / 2;
-      r[i] = [col, row];
-    }
-    return r;
-  }
-
   function cubicToOddr(data) {
     var r = new Array(data.length);
     for (let i = 0; i < data.length; i++) {
@@ -705,18 +676,6 @@ define([
       var row = data[i][2],
         x = data[i][0];
       var col = x + (row - (row & 1)) / 2;
-      r[i] = [col, row];
-    }
-    return r;
-  }
-
-  function cubicToOddq(data) {
-    var r = new Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-      if (!checkCubic(data[i])) continue;
-      var col = data[i][0],
-        z = data[i][2];
-      var row = z + (col - (col & 1)) / 2;
       r[i] = [col, row];
     }
     return r;

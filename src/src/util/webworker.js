@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery'], function ($) {
+define([], function () {
   const _workers = {};
   const _callbacks = {};
 

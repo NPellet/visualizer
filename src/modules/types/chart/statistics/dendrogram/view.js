@@ -16,7 +16,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    highlightNode(nodeID) {
+    highlightNode() {
       // TODO fix ?
       // node.setCanvasStyle('shadowBlur', 0, 'start');
       // node.setCanvasStyle('shadowBlur', 10, 'end');
@@ -166,7 +166,6 @@ define([
 
       this.dom.empty();
 
-      var options = this._options;
       this._rgraph = new $jit.RGraph({
         injectInto: this._id,
         // withLabels: true,

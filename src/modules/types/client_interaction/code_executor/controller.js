@@ -223,7 +223,7 @@ define([
       promise = Promise.resolve(this._executor || this._loadingExecutor);
     } else {
       this.reloaded = false;
-      var prom = new Promise((resolve, reject) => {
+      var prom = new Promise((resolve) => {
         require(this.neededUrls, (...args) => {
           var libs = new Array(this.neededUrls.length);
           for (var i = 0; i < this.neededUrls.length; i++) {

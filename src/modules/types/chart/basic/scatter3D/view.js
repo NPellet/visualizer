@@ -63,14 +63,6 @@ define([
     }
   }
 
-  function generateRandomArray(n, min, max) {
-    var result = [];
-    for (let i = 0; i < n; i++) {
-      result.push(Math.random() * (max - min) + min);
-    }
-    return result;
-  }
-
   function componentToHex(c) {
     var hex = c.toString(16);
     return hex.length === 1 ? `0${hex}` : hex;
@@ -85,13 +77,6 @@ define([
     var idx = num.indexOf('.');
     if (idx === -1) return +num;
     return num.slice(0, idx + n + 1);
-  }
-
-  function rotateAroundObjectAxis(object, axis, radians) {
-    var rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
-    object.applyMatrix(rotObjectMatrix);
-    // object.rotation.setEulerFromRotationMatrix(object.matrix);
   }
 
   var NORM_CONSTANT = 1000;
@@ -129,7 +114,7 @@ define([
   preloadImages(shapeImages);
 
   $.fn.listHandlers = function (events, outputFunction) {
-    return this.each(function (i) {
+    return this.each(function () {
       var that = this,
         dEvents = $(this).data('events');
       if (!dEvents) return;
@@ -198,11 +183,9 @@ define([
           vector.sub(that.camera.position).normalize(),
         );
 
-        var count = 0;
         var intersects = [];
         for (let i = 0; i < that.mathPoints.length; i++) {
           if (ray.isIntersectionSphere(that.mathPoints[i])) {
-            count++;
             intersects.push({
               index: that.mathPoints[i].index,
               distance: that.camera.position.distanceTo(
@@ -505,7 +488,7 @@ define([
           );
         }
 
-        $(that.renderer.domElement).listHandlers('mousemove', function (a, b) {
+        $(that.renderer.domElement).listHandlers('mousemove', function () {
           // List jquery handlers (to debug...)
         });
       }
@@ -817,7 +800,7 @@ define([
              0.0000341 (-5) (3.41) (5) => 0.00005
              */
 
-      var nbTicks = valrange / unitPerTickCorrect;
+      // var nbTicks = valrange / unitPerTickCorrect;
 
       that._data.realMin[axis] =
         Math.floor(that._data.min[axis] / unitPerTickCorrect) *
@@ -826,13 +809,13 @@ define([
         Math.ceil(that._data.max[axis] / unitPerTickCorrect) *
         unitPerTickCorrect;
 
-      if (that._data.realMin[axis] !== that._data.min[axis]) {
-        nbTicks++;
-      }
+      // if (that._data.realMin[axis] !== that._data.min[axis]) {
+      //   nbTicks++;
+      // }
 
-      if (that._data.realMax[axis] !== that._data.max[axis]) {
-        nbTicks++;
-      }
+      // if (that._data.realMax[axis] !== that._data.max[axis]) {
+      //   nbTicks++;
+      // }
 
       // self._data.nbTicks[axis] = Math.floor(nbTicks) + 1;
       that._data.intervalVal[axis] = unitPerTickCorrect;
@@ -901,7 +884,6 @@ define([
       var vX = new THREE.Vector3(1, 0, 0);
       var vY = new THREE.Vector3(0, 1, 0);
       var vZ = new THREE.Vector3(0, 0, -1);
-      var origin = new THREE.Vector3(0, 0, 0);
       var color = 0x000000;
 
       var axX = new THREE.ArrowHelper(

@@ -57,7 +57,7 @@ define([
         } else if (obj.url) {
           Grid.addModuleFromJSON(obj);
         }
-      } catch (error) {
+      } catch {
         Debug.info('Ignored error while pasting');
       }
     });

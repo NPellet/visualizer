@@ -23,7 +23,7 @@
     },
   });
 
-  function PercentCompleteFormatter(row, cell, value, columnDef, dataContext) {
+  function PercentCompleteFormatter(row, cell, value) {
     if (value == null || value === '') {
       return '-';
     } else if (value < 50) {
@@ -33,13 +33,7 @@
     }
   }
 
-  function PercentCompleteBarFormatter(
-    row,
-    cell,
-    value,
-    columnDef,
-    dataContext,
-  ) {
+  function PercentCompleteBarFormatter(row, cell, value) {
     if (value == null || value === '') {
       return '';
     }
@@ -57,11 +51,11 @@
     return `<span class="percent-complete-bar" style="background:${color};width:${value}%"></span>`;
   }
 
-  function YesNoFormatter(row, cell, value, columnDef, dataContext) {
+  function YesNoFormatter(row, cell, value) {
     return value ? 'Yes' : 'No';
   }
 
-  function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
+  function CheckmarkFormatter(row, cell, value) {
     return value
       ? '<span style="color: green;">&#10004;</span>'
       : '<span style="color: red;">&#10008;</span>';

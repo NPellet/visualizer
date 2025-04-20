@@ -6,7 +6,7 @@ define([
   'src/util/localdb',
   'src/util/ui',
 ], function ($, Util, db, UI) {
-  var DataViewHandler = function (dirUrl, defaultBranch, defaultUrl) {
+  var DataViewHandler = function () {
     this.currentPath = [];
     this._allData = {};
     this.dom = $('<div />');
@@ -99,7 +99,7 @@ define([
       });
     },
 
-    getElements(level) {
+    getElements() {
       var that = this;
       var branch = this.currentPath[2];
       return $.when(this.getData()).pipe(function (alldata) {
@@ -118,7 +118,7 @@ define([
       });
     },
 
-    makeFilename(el, head) {
+    makeFilename(el) {
       if (!el._time) return 'Head';
 
       var time = new Date(el._time);
@@ -167,7 +167,6 @@ define([
     makeMenu(level) {
       var toOpen = this.structure,
         that = this;
-      var i = 0;
       // Want to display the top level (server/local)
       if (level === 1) {
         toOpen = { server: 'Server', local: 'Local Database' };
@@ -356,7 +355,7 @@ define([
       }
     },
 
-    make(el, branch, head) {
+    make(el) {
       this.currentElement = el;
       this.doUpdateButtons();
       var html = $(this.buildDom(el));
@@ -477,7 +476,6 @@ define([
         branch,
         action: 'Load',
       });
-      var defLocal = that._getLocalHead(branch);
 
       // First load the server
       // Needed to identify branch and revision of the file
@@ -520,7 +518,7 @@ define([
             },
           );
         },
-        function (server) {
+        function () {
           $.when(that._getLocalHead(branch)).then(function (el) {
             doLocal(el, branch, el._time || 'head');
           });
@@ -722,7 +720,7 @@ define([
       return def;
     },
 
-    serverCopy(data, branch, rev) {
+    serverCopy(data, branch) {
       var that = this;
 
       data._name = data._name || branch || 'Master';

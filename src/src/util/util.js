@@ -500,7 +500,7 @@ define([
     try {
       eval(`result = ${options}`);
       return result;
-    } catch (e) {
+    } catch {
       Debug.warn('could not eval options');
       return undefined;
     }

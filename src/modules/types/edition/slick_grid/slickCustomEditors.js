@@ -284,7 +284,7 @@ define([
             that.changed = true;
             args.commitChanges('next');
           },
-          move(color) {},
+          move() {},
           show() {},
           hide() {
             if (!that.changed) {
@@ -298,7 +298,7 @@ define([
       };
 
       this.destroy = function () {
-        var d = this.$input.data();
+        this.$input.data();
         this.$input.spectrum('destroy');
         this.$div.remove();
         // this.$input.remove();
@@ -417,7 +417,7 @@ define([
           );
           $link.appendTo($wrapper);
 
-          $link.on('mousedown', async function (e) {
+          $link.on('mousedown', async function () {
             editing = true;
             const jpath = await UI.selectJpath(inspectData);
             editing = false;

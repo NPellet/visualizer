@@ -107,7 +107,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           if (contextMenu.children().length > 0) {
             contextMenu.menu({
               select(event, ui) {
-                var moduleName = ui.item.attr('name');
+                ui.item.attr('name');
               },
             });
 

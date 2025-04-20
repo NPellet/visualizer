@@ -99,7 +99,7 @@ define([
       return path.replace(new RegExp(/\/[^/]+$/), '/');
     },
 
-    load(name) {},
+    load() {},
 
     save() {
       var that = this;
@@ -417,10 +417,10 @@ define([
               that.inlineOldTitle = data.node.title;
               // Return false to prevent edit mode
             },
-            edit(event, data) {
+            edit() {
               // Editor was opened (available as data.input)
             },
-            beforeClose(event, data) {
+            beforeClose() {
               // Return false to prevent cancel/save (data.input is available)
             },
             save(event, data) {

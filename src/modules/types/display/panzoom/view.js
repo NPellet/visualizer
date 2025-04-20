@@ -929,6 +929,7 @@ define([
   });
 
   // Unused for now but don't erase
+  // eslint-disable-next-line no-unused-vars
   function applyTransform(v, t) {
     const r = new Array(2);
     r[0] = v[0] * +t[0] + v[1] * +t[1] + +t[4];

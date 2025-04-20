@@ -19,7 +19,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         if (!Biojs.Utils.isEmpty(this.opt.json)) {
           this.paintFeatures(this.opt.json);
         }
-      } catch (err) {
+      } catch {
         document.getElementById(this.opt.target).innerHTML = '';
         document.getElementById(this.opt.target).innerHTML =
           'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
@@ -55,7 +55,6 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      *
      */
     showGeneralLegend() {
-      var config = this.opt.json.configuration;
       var dataURL = `${this._webservice}?`;
       window.open(dataURL); // open generated image in new tab/window
     },

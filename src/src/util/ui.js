@@ -283,7 +283,7 @@ define([
       _resolve(event.params.data.original);
     });
 
-    $select2.on('select2:close', function (event) {
+    $select2.on('select2:close', () => {
       if (!selecting) {
         $select2.select2('destroy');
         $select2.parent().remove();
@@ -296,7 +296,7 @@ define([
   function binFormatter() {
     return '<div style="width:100%; height: 100%;"><a class="icon-clickable recycle-bin"><i class="centered-icon fa fa-trash"></i></a></div>';
   }
-  exports.editTable = async function editTable(list, slickOptions, options) {
+  exports.editTable = async function editTable(list, slickOptions) {
     // Keep original list in case of cancellation
     let currentList = JSON.parse(JSON.stringify(list));
     const Slick = await Util.require('slickgrid');
@@ -435,7 +435,7 @@ define([
                 }
               });
               data.setItems(list, slickOptions.idField);
-              data.onRowCountChanged.subscribe(function (event, args) {
+              data.onRowCountChanged.subscribe(() => {
                 grid.updateRowCount();
                 grid.render();
               });

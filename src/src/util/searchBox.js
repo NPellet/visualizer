@@ -101,7 +101,7 @@ define([
         .trigger('change');
 
       var selecting;
-      $select2.on('select2:selecting', function (event) {
+      $select2.on('select2:selecting', () => {
         selecting = true;
       });
       $select2.on('select2:select', function (e) {
@@ -117,7 +117,7 @@ define([
         }
       });
 
-      $select2.on('select2:close', function (event) {
+      $select2.on('select2:close', () => {
         if (!selecting) {
           $select2.select2('destroy');
           $select2.parent().remove();

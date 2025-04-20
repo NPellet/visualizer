@@ -1,9 +1,6 @@
 'use strict';
 
-define([
-  'modules/default/defaultcontroller',
-  'src/util/datatraversing',
-], function (Default, Traversing) {
+define(['modules/default/defaultcontroller'], function (Default) {
   function Controller() {}
 
   Controller.prototype = $.extend(true, {}, Default);

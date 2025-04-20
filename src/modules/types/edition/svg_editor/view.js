@@ -190,7 +190,7 @@ define([
       var that = this;
       var $allAnimations = $([]);
       if (!anim.attributes) return;
-      var id = $svgEl.attr('id');
+      $svgEl.attr('id');
       anim.tag = anim.tag || 'animate';
       if (animationTags.indexOf(anim.tag) === -1) return;
       if (!Array.isArray(anim.attributes)) {

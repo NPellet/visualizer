@@ -32,7 +32,7 @@ define([
     checkDatabase() {
       var that = this;
       $.couch.info({
-        success(event) {
+        success() {
           that.ok = true;
         },
         error(e, f, g) {
@@ -174,7 +174,7 @@ define([
       $.couch.login({
         name: username,
         password,
-        success(data) {
+        success() {
           that.loggedIn = true;
           that.username = username;
           that.$_elToOpen.html(that.getMenuContent());

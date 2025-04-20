@@ -480,17 +480,14 @@ define([
   function moveToBack(module) {
     var modules = ModuleFactory.getModules(),
       dom = module.dom,
-      myZIndex = module.definition.zindex || 1,
-      count = 0,
-      i;
+      myZIndex = module.definition.zindex || 1;
 
-    for (i in modules) {
+    for (const i in modules) {
       modules[i].definition.zindex = modules[i].definition.zindex || 1;
       if (modules[i].definition.zindex <= myZIndex) {
         modules[i].definition.zindex++;
       }
       modules[i].dom.css('zIndex', modules[i].definition.zindex);
-      count++;
     }
 
     $(dom).css('zIndex', 1);
@@ -506,7 +503,7 @@ define([
 
     try {
       module.getDomWrapper().remove().unbind();
-    } catch (e) {
+    } catch {
       module
         .onReady()
         .then(function () {
@@ -531,8 +528,6 @@ define([
     Util.maskIframes();
 
     var mouseMoveHandler = function (e) {
-      var gridPos = jqdom.position();
-
       moduleMove.top = e.pageY - shiftY;
       moduleMove.left = e.pageX - shiftX;
       moduleMove.div.css({
@@ -543,8 +538,6 @@ define([
 
     var clickHandler = function () {
       if (!moduleMove.left) return;
-
-      var gridPos = jqdom.position();
 
       var left = Math.max(-3, Math.round(moduleMove.left / definition.xWidth));
       var top = Math.max(-3, Math.round(moduleMove.top / definition.yHeight));

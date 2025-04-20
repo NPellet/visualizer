@@ -1,9 +1,7 @@
 'use strict';
 
 define(function () {
-  var setTimeout = window.setInterval,
-    clearTimeout = window.clearTimeout,
-    crons = {};
+  const crons = {};
 
   var create = function (url, interval, callback, overwrite, cancelStart) {
     var name = url;

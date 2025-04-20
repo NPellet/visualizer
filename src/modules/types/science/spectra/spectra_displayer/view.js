@@ -1106,7 +1106,6 @@ define([
 
         var minX = this.module.getConfiguration('minX', 0);
         var maxX = this.module.getConfiguration('maxX', val.length - 1);
-        var step = (maxX - minX) / (val.length - 1);
 
         var waveform = Graph.newWaveform();
         waveform.setData(val);
@@ -1172,7 +1171,7 @@ define([
 
           this.module.model.dataListenChange(
             annotations.traceSync([i]),
-            (v) => {
+            () => {
               shape.redraw();
             },
             'annotations',
@@ -1416,7 +1415,7 @@ define([
         }
       },
 
-      toggleGrid(options) {
+      toggleGrid() {
         let gridShow = !this.xAxis.options.primaryGrid;
         this.xAxis.setPrimaryGrid(gridShow);
         this.xAxis.setSecondaryGrid(gridShow);
@@ -1455,11 +1454,10 @@ define([
 
     normalize(waveform, varname) {
       var plotinfos = this.module.getConfiguration('plotinfos');
-      var maxValue, minValue, total, ratio, i, l;
 
       if (!plotinfos) return;
-      var normalize = '';
-      for (i = 0, l = plotinfos.length; i < l; i++) {
+      let normalize = '';
+      for (let i = 0; i < plotinfos.length; i++) {
         if (varname == plotinfos[i].variable) {
           normalize = plotinfos[i].normalize;
         }

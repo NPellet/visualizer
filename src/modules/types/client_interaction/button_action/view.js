@@ -105,7 +105,6 @@ define([
       this.isToggle = this.module.getConfiguration('toggle') === 'toggle';
       this.isButton = this.module.getConfiguration('contentType') === 'content';
 
-      var label;
       this.dom = $('<div></div>').css({
         width: '100%',
         height: '100%',
@@ -114,7 +113,7 @@ define([
         this.currentState = this.module.getConfiguration('startState') === 'on';
       }
 
-      onClick = async function (event, val) {
+      onClick = async function () {
         let ok = true;
         if (that.module.getConfigurationCheckbox('askConfirm', 'yes')) {
           ok = await ui.confirm(

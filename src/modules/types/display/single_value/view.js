@@ -132,7 +132,7 @@ define([
             );
             val = sprintf.sprintf.apply(this, args);
             that.fillWithVal(val, rendererOptions);
-          } catch (e) {
+          } catch {
             that.fillWithVal(val, rendererOptions);
           }
         }

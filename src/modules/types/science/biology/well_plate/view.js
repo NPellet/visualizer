@@ -186,6 +186,7 @@ define([
           arrayPath.shift();
           arrayPath = arrayPath.join('.');
           let jpathItems = [];
+          // eslint-disable-next-line no-unused-vars
           moduleValue.filter(function (item) {
             let previous = arrayPath.split('.');
             if (previous.length !== 1) {
@@ -322,6 +323,7 @@ define([
           arrayPath.shift();
           arrayPath = arrayPath.join('.');
           let jpathItems = [];
+          // eslint-disable-next-line no-unused-vars
           this.wellsList.filter(function (item) {
             let previous = arrayPath.split('.');
             if (previous.length !== 1) {
@@ -411,7 +413,7 @@ define([
       const that = this;
       API.listenHighlight(
         { _highlight: highlight },
-        function (onOff, key) {
+        function (onOff) {
           if (onOff === 1) {
             if (!grid[i]) return;
             $(grid[i].value).find(':eq(0)').css({

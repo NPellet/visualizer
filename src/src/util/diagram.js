@@ -230,14 +230,11 @@ define([
         nodes[link.target.id] ||
         (nodes[link.target.id] = { info: link.target });
     });
-    var n = Object.keys(nodes).length,
-      i = 0;
-    for (var key in nodes) {
+    for (const key in nodes) {
       // nodes[key].x = i*width/n + (Math.random()-0.5) * i/n/10 * width;
       // nodes[key].y = i*height/n + (Math.random()-0.5) *i/n/10 * height;
       nodes[key].x = Math.random() * width;
       nodes[key].y = Math.random() * height;
-      i++;
     }
     return nodes;
   }
@@ -445,13 +442,6 @@ define([
         node.attr('transform', transformNode);
         linkText.attr('transform', transformLink);
         nodeText.attr('transform', transformNodeText);
-      }
-
-      function linkArc(d) {
-        var dx = d.target.x - d.source.x,
-          dy = d.target.y - d.source.y,
-          dr = Math.sqrt(dx * dx + dy * dy);
-        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y + -40}`;
       }
 
       function linkLine(d) {

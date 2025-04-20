@@ -38,7 +38,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
       }
       this._input.val(this._query);
 
-      var debounce = this.module.getConfiguration('debounce');
+      const debounce = this.module.getConfiguration('debounce');
 
       this._input.on(
         'keyup',
@@ -100,7 +100,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
       },
     },
     resizeInput() {
-      var width = this._div.width();
+      const width = this._div.width();
       this._input.css('width', width - this._fontSize * 2);
     },
     onResize() {

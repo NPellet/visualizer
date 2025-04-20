@@ -5,11 +5,8 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   Structures,
   Debug,
 ) {
-  var asyncId = 0;
-
   function _getValueFromJPath(element, jpath) {
     var el = getValueIfNeeded(element),
-      type,
       jpathElement = jpath.shift();
 
     if (jpathElement) {
@@ -30,7 +27,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
 
   function _setValueFromJPath(element, jpath, newValue, moduleId, mute) {
     var el = getValueIfNeeded(element);
-    var type, subelement;
+    var subelement;
     if (typeof el !== 'object' && jpath.length > 0) {
       el = {};
     }

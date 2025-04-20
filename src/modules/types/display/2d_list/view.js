@@ -64,8 +64,6 @@ define([
 
         this.list = val;
 
-        var height = cfg('height');
-
         var css = {
           width: `${Math.round(100 / cols)}%`,
           height: `${cfg('height', 0)}px`,
@@ -106,7 +104,7 @@ define([
 
         API.listenHighlight(
           element,
-          function (onOff, key) {
+          function (onOff) {
             if (onOff) {
               td.css('border-color', 'black');
             } else {

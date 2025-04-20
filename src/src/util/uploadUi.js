@@ -223,7 +223,7 @@ define([
           if (entry.isDirectory) {
             return Promise.resolve().then(function () {
               var dirReader = entry.createReader();
-              return new Promise(function (resolve, reject) {
+              return new Promise(function (resolve) {
                 dirReader.readEntries(function (fileEntries) {
                   var prom = [];
                   for (var i = 0; i < fileEntries.length; i++) {

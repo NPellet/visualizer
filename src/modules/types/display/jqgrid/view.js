@@ -9,16 +9,7 @@ define([
   'src/util/datatraversing',
   'src/util/typerenderer',
   'jqgrid',
-], function (
-  require,
-  Default,
-  Util,
-  API,
-  DomDeferred,
-  Traversing,
-  Renderer,
-  JQGrid,
-) {
+], function (require, Default, Util, API, DomDeferred, Traversing, Renderer) {
   Util.loadCss('components/jqgrid_edit/css/ui.jqgrid.css');
 
   function View() {}
@@ -183,7 +174,7 @@ define([
           return $(value).text();
         },
 
-        resizeStop(width, index) {
+        resizeStop() {
           that.domTable
             .children()
             .children()
@@ -371,7 +362,7 @@ define([
 
       API.listenHighlight(
         s,
-        function (onOff, key) {
+        function (onOff) {
           $(`#${i}`)[onOff ? 'addClass' : 'removeClass']('ci-highlight');
         },
         false,

@@ -58,7 +58,7 @@ define([
     processChart(myvalues) {
       // ####### BEGIN VARS ########
       var that = this;
-      var tags, fetcher;
+      var tags;
       that.words = [];
 
       var unicodePunctuationRe =
@@ -194,7 +194,7 @@ define([
         that.layout = d3.layout
           .cloud()
           .timeInterval(10)
-          .rotate(function (d) {
+          .rotate(function () {
             return ~~(Math.random() * count) * from - to;
           })
           .size([w, h])
@@ -207,7 +207,7 @@ define([
           .on('end', draw);
       } else {
         that.layout
-          .rotate(function (d) {
+          .rotate(function () {
             return ~~(Math.random() * count) * from - to;
           })
           .size([w, h])

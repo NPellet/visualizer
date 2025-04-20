@@ -68,7 +68,7 @@ define([
       this._radar.parse(data, 'json');
 
       var that = this;
-      this._radar.attachEvent('onMouseMove', function (id, ev, trg) {
+      this._radar.attachEvent('onMouseMove', function (id, ev) {
         data.forEach(function (entry) {
           if (entry.id == id) {
             var obj = entry;
@@ -87,7 +87,7 @@ define([
         });
         return true;
       });
-      this._radar.attachEvent('onMouseOut', function (id, ev, trg) {
+      this._radar.attachEvent('onMouseOut', function () {
         that.module.controller.elementOut();
       });
     },
@@ -120,7 +120,7 @@ define([
       return color;
     },
 
-    createChart(chart, data) {
+    createChart(chart) {
       const cfg = this.module.getConfiguration;
       let val;
       switch (cfg('preference')) {

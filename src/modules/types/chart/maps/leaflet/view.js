@@ -27,8 +27,8 @@ define([
   Util.loadCss('components/leaflet/dist/leaflet.css');
 
   // Custom icon that accepts Marker objects
-  var CustomIcon = L.Icon.extend({
-    createIcon(oldIcon) {
+  L.Icon.extend({
+    createIcon() {
       this._marker = this.options.marker;
       var div = this._marker.div[0];
       this._setIconStyles(div, 'icon');
@@ -38,10 +38,6 @@ define([
       return null;
     },
   });
-
-  function customIcon(marker) {
-    return new CustomIcon({ marker, iconAnchor: marker.center });
-  }
 
   function Marker(options) {
     this.options = $.extend({}, Marker.defaultOptions, options);
@@ -210,7 +206,7 @@ define([
             },
           });
           this.addGeoJSON(converted, varname);
-        } catch (e) {
+        } catch {
           // do nothing
         }
         this.updateFit(varname);
@@ -218,7 +214,7 @@ define([
       csv(csv, varname) {
         try {
           this.addGeoJSON(omnivore.csv.parse(String(csv.get())), varname);
-        } catch (e) {
+        } catch {
           // do nothing
         }
         this.updateFit(varname);
@@ -226,7 +222,7 @@ define([
       kml(kml, varname) {
         try {
           this.addGeoJSON(omnivore.kml.parse(String(kml.get())), varname);
-        } catch (e) {
+        } catch {
           // do nothing
         }
         this.updateFit(varname);
@@ -234,7 +230,7 @@ define([
       gpx(gpx, varname) {
         try {
           this.addGeoJSON(omnivore.gpx.parse(String(gpx.get())), varname);
-        } catch (e) {
+        } catch {
           // do nothing
         }
         this.updateFit(varname);
@@ -242,7 +238,7 @@ define([
       wkt(wkt, varname) {
         try {
           this.addGeoJSON(omnivore.wkt.parse(String(wkt.get())), varname);
-        } catch (e) {
+        } catch {
           // do nothing
         }
         this.updateFit(varname);
@@ -250,7 +246,7 @@ define([
       topojson(topojson, varname) {
         try {
           this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
-        } catch (e) {
+        } catch {
           // do nothing
         }
         this.updateFit(varname);
@@ -345,64 +341,6 @@ define([
       return L.tileLayer(tileLayer.template, tileLayer.parameters);
     },
   });
-
-  function addEvents(layer, varname) {
-    var data = layer.feature.properties || {};
-    var that = this;
-
-    this.module.data = data;
-
-    var icon;
-    if (layer instanceof L.Marker) {
-      var options = {};
-      if (DataObject.isDataObject(data)) {
-        $.extend(options, data.getChildSync(this.markerjpath));
-      }
-      var marker = new Marker(options);
-      icon = customIcon(marker);
-      layer.setIcon(icon);
-    }
-
-    API.listenHighlight(
-      data,
-      function (onOff) {
-        if (onOff) {
-          if (layer instanceof L.Marker) {
-            icon._marker.highlight(true);
-          } else {
-            layer.setStyle({ color: '#ff3300' });
-          }
-        } else if (layer instanceof L.Marker) {
-          icon._marker.highlight(false);
-        } else if (
-          layer.feature &&
-          layer.feature.properties &&
-          layer.feature.properties.style
-        ) {
-          layer.setStyle(layer.feature.properties.style);
-        } else {
-          layer.setStyle({ color: '#0033ff' });
-        }
-      },
-      false,
-      `${this.module.getId()}_${varname}`,
-    );
-
-    layer.addEventListener(
-      {
-        mouseover() {
-          that.module.controller.hoverElement(data);
-        },
-        click() {
-          that.module.controller.clickElement(data);
-        },
-        mouseout() {
-          API.highlight(data, 0);
-        },
-      },
-      this,
-    );
-  }
 
   function clearLayer(varname) {
     API.killHighlight(`${this.module.getId()}_${varname}`);

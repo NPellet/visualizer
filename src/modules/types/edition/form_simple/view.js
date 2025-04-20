@@ -22,7 +22,6 @@ define([
         tpl_file = this.module.getConfiguration('tpl_file'),
         trigger = this.module.getConfiguration('trigger'),
         tpl_html = this.module.getConfiguration('tpl_html'),
-        form,
         def,
         options = {},
         formStructure = {
