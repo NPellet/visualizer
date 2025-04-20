@@ -297,17 +297,17 @@ define([
     this.dataValues = {};
     this.method = this.module.getConfiguration('method') || 'POST';
 
-    var searchparams = this.module.getConfiguration('searchparams') || [];
-    for (var i = 0; i < searchparams.length; i++) {
+    const searchparams = this.module.getConfiguration('searchparams') || [];
+    for (let i = 0; i < searchparams.length; i++) {
       if (searchparams[i].name && searchparams[i].defaultvalue) {
         this.addValue(searchparams[i], searchparams[i].defaultvalue);
       }
     }
 
     this.headers = {};
-    var headerList = this.module.getConfiguration('headers') || [];
-    for (i = 0; i < headerList.length; i++) {
-      var header = headerList[i];
+    const headerList = this.module.getConfiguration('headers') || [];
+    for (let i = 0; i < headerList.length; i++) {
+      const header = headerList[i];
       if (header.name && header.value) {
         this.headers[header.name] = header.value;
       }
@@ -323,7 +323,7 @@ define([
       delete this.module.resultfilter;
     }
 
-    var debounce = this.module.getConfiguration('debounce');
+    const debounce = this.module.getConfiguration('debounce');
     this.doSearch =
       debounce > 0 ? _.debounce(this._doSearch, debounce) : this._doSearch;
 
@@ -338,23 +338,25 @@ define([
     if (typeof value.resurrect === 'function') {
       value = value.resurrect();
     }
-    var str = typeof value === 'string';
+    const isString = typeof value === 'string';
     switch (option.destination) {
       case 'query':
-        this.queryValues[option.name] = str ? value : JSON.stringify(value);
+        this.queryValues[option.name] = isString
+          ? value
+          : JSON.stringify(value);
         break;
       case 'url':
-        this.urlValues[option.name] = str ? value : JSON.stringify(value);
+        this.urlValues[option.name] = isString ? value : JSON.stringify(value);
         break;
       case 'data':
-        this.dataValues[option.name] = str
+        this.dataValues[option.name] = isString
           ? value
           : this.dataType === 'form'
             ? JSON.stringify(value)
             : value;
         break;
       case 'header':
-        if (str) {
+        if (isString) {
           this.headers[option.name] = value;
         }
         break;

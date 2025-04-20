@@ -82,7 +82,7 @@ define([
     },
 
     _substractOrigin: function () {
-      for (var i = 0; i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i] = addArray(this.data[i], multArray(this.origin, -1));
       }
     },
@@ -131,7 +131,7 @@ define([
       if (min % 2 !== 0) min = min - 1;
       this.normConstant = -min;
 
-      for (var i = 0; i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i][0] += this.normConstant;
         this.data[i][1] += this.normConstant;
       }
@@ -142,8 +142,8 @@ define([
     },
 
     _ignored: function () {
-      var ignored = [];
-      for (var i = 0; i < this.data.length; i++) {
+      const ignored = [];
+      for (let i = 0; i < this.data.length; i++) {
         if (this.data[i] === undefined) {
           ignored.push(i);
         }
@@ -188,7 +188,7 @@ define([
         domain: this.colorDomain,
         stopType: stopType,
       });
-      for (var i = 0; i < this.color.length; i++) {
+      for (let i = 0; i < this.color.length; i++) {
         if (!isNaN(this.color[i])) {
           var c = this.numberToColor(this.color[i]);
           this.color[i] = c.color;
@@ -230,7 +230,7 @@ define([
       this.color = [];
       this.label = [];
       this.opacity = [];
-      for (var i = 0; i < this.chart.data.length; i++) {
+      for (let i = 0; i < this.chart.data.length; i++) {
         var d = this.chart.data[i];
         this.color.push(_.map(d.info, 'color'));
         this.label.push(_.map(d.info, 'label'));
@@ -314,7 +314,7 @@ define([
         this.axeData.endPoints = combinatorialToCubic(this.axeData.endPoints);
         this.axeData.endPoints = cubicToOddr(this.axeData.endPoints);
 
-        for (var i = 0; i < this.axeData.points.length; i++) {
+        for (let i = 0; i < this.axeData.points.length; i++) {
           this.axeData.points[i] = offsetArray(
             this.axeData.points[i],
             this.normConstant,
@@ -342,7 +342,7 @@ define([
       var r2 = this.dom.height() / ((this.lenX + 1) * 1.75);
       var hexRadius = Math.min(r1, r2);
       var points = [];
-      for (var i = 0; i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         points.push(toPixel(this.data[i]));
       }
 
@@ -433,7 +433,7 @@ define([
           var axePoints = [];
           var startAxePoints = [];
           var endAxePoints = [];
-          for (i = 0; i < this.axeData.points.length; i++) {
+          for (let i = 0; i < this.axeData.points.length; i++) {
             axePoints.push(toPixel(this.axeData.points[i]));
             startAxePoints.push(toPixel(this.axeData.startPoints[i]));
             endAxePoints.push(toPixel(this.axeData.endPoints[i]));
@@ -627,9 +627,9 @@ define([
 
     // Series of the chart object are merged
     var hasZ = chart.data[0].z !== undefined;
-    for (var i = 0; i < chart.data.length; i++) {
-      for (var j = 0; j < chart.data[i].x.length; j++) {
-        var r = [chart.data[i].x[j], chart.data[i].y[j]];
+    for (let i = 0; i < chart.data.length; i++) {
+      for (let j = 0; j < chart.data[i].x.length; j++) {
+        const r = [chart.data[i].x[j], chart.data[i].y[j]];
         if (hasZ) r.push(chart.data[i].z[j]);
         result.push(r);
       }
@@ -647,7 +647,7 @@ define([
 
   function combinatorialToCubic(data) {
     var result = [];
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       var v = data[i];
       var min = Math.min.apply(null, v);
       var max = Math.max.apply(null, v);
@@ -676,7 +676,7 @@ define([
 
   function cubicToEvenq(data) {
     var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
       var col = data[i][0],
         z = data[i][2];
@@ -688,7 +688,7 @@ define([
 
   function cubicToEvenr(data) {
     var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
       var row = data[i][2],
         x = data[i][0];
@@ -700,7 +700,7 @@ define([
 
   function cubicToOddr(data) {
     var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
       var row = data[i][2],
         x = data[i][0];
@@ -712,7 +712,7 @@ define([
 
   function cubicToOddq(data) {
     var r = new Array(data.length);
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
       var col = data[i][0],
         z = data[i][2];
@@ -727,7 +727,7 @@ define([
       throw new Error('Array not the same size in addition');
     }
     var r = arr1.slice(0);
-    for (var i = 0; i < arr1.length; i++) {
+    for (let i = 0; i < arr1.length; i++) {
       r[i] += arr2[i];
     }
     return r;
@@ -735,15 +735,15 @@ define([
 
   function multArray(arr, c) {
     var r = arr.slice(0);
-    for (var i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       r[i] *= c;
     }
     return r;
   }
 
   function offsetArray(arr, c) {
-    var r = arr.slice(0);
-    for (var i = 0; i < arr.length; i++) {
+    const r = arr.slice(0);
+    for (let i = 0; i < arr.length; i++) {
       r[i] += c;
     }
     return r;
@@ -751,7 +751,7 @@ define([
 
   function fillArray(d, l) {
     var arr = new Array(l);
-    for (var i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       arr[i] = d;
     }
     return arr;
@@ -794,7 +794,7 @@ define([
 
   function commonMax(a, b) {
     var m = 0;
-    for (var i = 0; i < a.length; i++) {
+    for (let i = 0; i < a.length; i++) {
       if (a[i] === b[i] && a[i] > m) m = a[i];
     }
     return m;

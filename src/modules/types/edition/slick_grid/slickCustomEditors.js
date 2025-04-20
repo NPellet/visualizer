@@ -816,9 +816,10 @@ define([
   function booleanLoadValue(item) {
     DataObject.check(item, true);
     this.defaultValue = item.getChildSync(this.args.column.jpath);
+    let val;
     if (this.defaultValue) {
       this.defaultValue = this.defaultValue.get();
-      var val = this.defaultValue;
+      val = this.defaultValue;
     }
     if (val) {
       if (val instanceof DataBoolean && !val.get()) {

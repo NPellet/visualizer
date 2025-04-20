@@ -103,8 +103,9 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
 
   function treeToFancy(tree) {
     var fancyTree = [];
+    let objectModel;
     if (tree.children && tree.children.length) {
-      var objectModel = new DataObject();
+      objectModel = new DataObject();
       addFancyChildren(fancyTree, tree.children, objectModel);
     }
     return {

@@ -40,7 +40,6 @@ export default defineConfig(
     rules: {
       'import/no-dynamic-require': 'off',
       'array-callback-return': 'off',
-      'block-scoped-var': 'off',
       camelcase: 'off',
       'default-case': 'off',
       eqeqeq: 'off',

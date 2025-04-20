@@ -298,8 +298,9 @@ define([
 
   Controller.prototype.parseString = function (value, meta) {
     try {
+      let result;
       if (meta.cfg.type) {
-        var result = Structure._parse(meta.cfg.type, value);
+        result = Structure._parse(meta.cfg.type, value);
       } else {
         result = value;
       }

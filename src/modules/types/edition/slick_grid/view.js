@@ -530,11 +530,13 @@ define([
     });
 
     ctx.grid.onCellChange.subscribe(function (event, args) {
+      let columns;
+      let column;
       if (ctx.fromPopup) {
         // We don't really know what has been edited...
-        var columns = ctx.getColumnsGivenEditContext();
+        columns = ctx.getColumnsGivenEditContext();
       } else {
-        var column = ctx._getChangedColumn(args.cell);
+        column = ctx._getChangedColumn(args.cell);
       }
 
       // When copy-pasting, it is possible this callback gets called
@@ -852,11 +854,12 @@ define([
       };
 
       this.actionRenderer = function (cellNode, row, dataContext, colDef) {
+        let context;
         function sendAction() {
           API.doAction(context.renderOptions.action, dataContext);
         }
         if (cellNode) {
-          var context = {
+          context = {
             event: 'renderAction',
             column: colDef,
             row: {

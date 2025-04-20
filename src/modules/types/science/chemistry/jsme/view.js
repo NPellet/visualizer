@@ -13,8 +13,9 @@ define([
   var views = {};
 
   window.addEventListener('message', function (event) {
+    let message;
     try {
-      var message = JSON.parse(event.data);
+      message = JSON.parse(event.data);
     } catch (e) {
       return;
     }

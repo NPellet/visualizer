@@ -69,15 +69,16 @@ function generate(indexX, indexY, buffer, nbValX) {
   for (; x < endX; x++) {
     y = startY;
     for (; y < endY; y++) {
+      let val;
       if (typeof data[y] === 'undefined' || typeof data[y][x] === 'undefined') {
         // throw "Errrrror !!!";
         continue;
       } else {
-        var val = data[y][x];
+        val = data[y][x];
         if (val.value) val = val.value;
       }
 
-      var color = getColorFromValue(val);
+      const color = getColorFromValue(val);
       drawCell(val, x - startX, y - startY, color, bufferData, nbValX);
     }
   }

@@ -473,9 +473,10 @@ define([
     },
 
     doPostNextMessageToWorker: function (pxPerCell, indexX, indexY) {
+      let w;
       if (!this.buffers[this.getBufferKey(pxPerCell, indexX, indexY)]) {
-        var w = this.squareLoading,
-          h = this.squareLoading;
+        w = this.squareLoading;
+        let h = this.squareLoading;
 
         if ((indexX + 1) * this.squareLoading > this.canvasNbX) {
           w = this.canvasNbX % this.squareLoading;

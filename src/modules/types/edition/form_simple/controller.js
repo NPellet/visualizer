@@ -207,6 +207,7 @@ define([
   };
 
   Controller.prototype.formTriggered = function (newValue) {
+    let formattedValue;
     if (this.module.getConfiguration('replaceObj')) {
       this.setVarFromEvent(
         'formTriggered',
@@ -215,7 +216,7 @@ define([
         [],
       );
     } else {
-      var formattedValue = formatValue(newValue);
+      formattedValue = formatValue(newValue);
       this.createDataFromEvent(
         'formTriggered',
         'formatted_output',

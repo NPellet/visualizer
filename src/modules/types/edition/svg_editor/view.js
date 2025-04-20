@@ -197,7 +197,7 @@ define([
         anim.attributes = [anim.attributes];
       }
       anim = _.defaults(anim, defaultAnimAttributes);
-      var highlightId = that.getHighlightId($svgEl);
+      const highlightId = that.getHighlightId($svgEl);
 
       var thisDefault = {};
       for (var k in anim) {
@@ -413,41 +413,41 @@ define([
 
       // Listen to highlights
       if (doHighlight) {
-        var killId = that.getHighlightId($svgEl);
+        let killId = that.getHighlightId($svgEl);
         API.killHighlight(killId);
         API.listenHighlight({ _highlight: obj._highlight }, cb, false, killId);
         highlightCount[killId] = highlightCount[killId] || 0;
-      }
 
-      function cb(onOff) {
-        if (blockHighlight[killId]) {
-          return;
+        function cb(onOff) {
+          if (blockHighlight[killId]) {
+            return;
+          }
+          var animation = {};
+          animation.tag = 'animateTransform';
+          animation.options = {
+            clearOnEnd: false,
+            persistOnEnd: false,
+          };
+          animation.attributes = {
+            attributeName: 'transform',
+            type: 'scale',
+            from: '1.0',
+            dur: '0.2s',
+            additive: 'sum',
+            accumulate: 'sum',
+            fill: 'freeze',
+          };
+          if (onOff && highlightCount[killId] === 0) {
+            animation.options.clearAnimationTags = false;
+            animation.attributes.to = '1.25';
+            highlightCount[killId]++;
+          } else if (!onOff && highlightCount[killId] === 1) {
+            animation.options.clearAnimationTags = false;
+            animation.attributes.to = '0.8';
+            highlightCount[killId]--;
+          }
+          that.addAnimation($svgEl, animation);
         }
-        var animation = {};
-        animation.tag = 'animateTransform';
-        animation.options = {
-          clearOnEnd: false,
-          persistOnEnd: false,
-        };
-        animation.attributes = {
-          attributeName: 'transform',
-          type: 'scale',
-          from: '1.0',
-          dur: '0.2s',
-          additive: 'sum',
-          accumulate: 'sum',
-          fill: 'freeze',
-        };
-        if (onOff && highlightCount[killId] === 0) {
-          animation.options.clearAnimationTags = false;
-          animation.attributes.to = '1.25';
-          highlightCount[killId]++;
-        } else if (!onOff && highlightCount[killId] === 1) {
-          animation.options.clearAnimationTags = false;
-          animation.attributes.to = '0.8';
-          highlightCount[killId]--;
-        }
-        that.addAnimation($svgEl, animation);
       }
 
       // Set mouse event callbacks
@@ -482,7 +482,7 @@ define([
     },
 
     getHighlightId: function ($svgEl) {
-      $svgEl
+      return $svgEl
         .map(function () {
           return this.getAttribute('id');
         })

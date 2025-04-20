@@ -21,15 +21,17 @@ define([
     },
 
     getToolbar() {
-      var tb = this.module.definition.toolbar;
+      const tb = this.module.definition.toolbar;
+      let common;
+      let custom;
       if (tb) {
-        var common = this.module.definition.toolbar.common[0].toolbar[0];
-        var custom = this.module.definition.toolbar.custom[0];
+        common = this.module.definition.toolbar.common[0].toolbar[0];
+        custom = this.module.definition.toolbar.custom[0];
       }
 
       if (!common) common = ['Open Preferences'];
 
-      var toolbar = [
+      let toolbar = [
         {
           onClick() {
             this.exportData();

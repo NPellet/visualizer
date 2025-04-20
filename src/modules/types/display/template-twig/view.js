@@ -31,8 +31,9 @@ define([
       });
 
       var debouncing = this.module.getConfiguration('debouncing');
+      let submitChange;
       if (debouncing) {
-        var submitChange = _.debounce(this.submitChange, debouncing).bind(this);
+        submitChange = _.debounce(this.submitChange, debouncing).bind(this);
       } else {
         submitChange = this.submitChange.bind(this);
       }
@@ -100,8 +101,9 @@ define([
       }
 
       for (let i = 0; i < style.length; i++) {
+        let selector;
         if (style[i].input) {
-          var selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"],select[name="${style[i].input}"]`;
+          selector = `input[name="${style[i].input}"],textarea[name="${style[i].input}"],select[name="${style[i].input}"]`;
         } else {
           selector = style[i].selector;
         }

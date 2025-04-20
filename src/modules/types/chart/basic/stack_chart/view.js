@@ -90,7 +90,7 @@ define([
       this._data = [];
       if (!Array.isArray(value) || !value || !Array.isArray(value.x)) return;
 
-      for (var j = 0; j < value.length; j++) {
+      for (let j = 0; j < value.length; j++) {
         var x = value[j].x;
         var y = value[j].y;
         var highlight = value[j]._highlight;
@@ -98,7 +98,7 @@ define([
         var label = value[j].info[0].name;
         var s = [];
 
-        for (var i = 0; i < y.length; i++) {
+        for (let i = 0; i < y.length; i++) {
           if ($.isNumeric(x[i])) {
             s.push({
               0: x[i],
@@ -138,16 +138,17 @@ define([
         ymax = axis[1].max;
         xmin = axis[0].min;
         ymin = axis[1].min;
+        let u;
         if (Array.isArray(x)) {
-          var u = [];
-          for (var i = 0; i < x.length; i++) {
+          u = [];
+          for (let i = 0; i < x.length; i++) {
             u.push([i, x[i]]);
           }
           xunit = u;
         }
         if (Array.isArray(axis[1].unit)) {
           u = [];
-          for (i = 0; i < axis[1].unit.length; i++) {
+          for (let i = 0; i < axis[1].unit.length; i++) {
             u.push([i, axis[1].unit[i]]);
           }
           yunit = u;

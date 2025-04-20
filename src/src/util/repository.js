@@ -55,20 +55,20 @@ define(['jquery', 'src/util/event'], function ($, Event) {
     this.options = options || { doNotSave: false };
 
     this.on('change', function (sourcekeys, value, senderId) {
-      var callbacks = {};
+      const callbacks = {};
       this._keys = this._keys || [];
       sourcekeys = Array.isArray(sourcekeys) ? sourcekeys : [sourcekeys];
 
-      for (var i = 0; i < sourcekeys.length; i++) {
+      for (let i = 0; i < sourcekeys.length; i++) {
         if (this._keys[sourcekeys[i]] == undefined) {
           continue;
         }
-        for (var j = 0; j < this._keys[sourcekeys[i]].length; j++) {
+        for (let j = 0; j < this._keys[sourcekeys[i]].length; j++) {
           callbacks[this._keys[sourcekeys[i]][j]] = true;
         }
       }
 
-      loop1: for (i in callbacks) {
+      loop1: for (const i in callbacks) {
         var currentCallback = this._callbacks[i];
 
         if (!currentCallback) {

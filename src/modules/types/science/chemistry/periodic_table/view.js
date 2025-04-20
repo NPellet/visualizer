@@ -555,9 +555,10 @@ define([
     // helper function for selecting elements with actions
     _selectElements(elements, val) {
       if (Array.isArray(val)) {
-        const finder = (element) => element.Z === val[num];
-        for (var num = 0; num < val.length; num++) {
-          var z = this.elements.findIndex(finder);
+        for (let num = 0; num < val.length; num++) {
+          const z = this.elements.findIndex(
+            (element) => element.Z === val[num],
+          );
           if (z >= 0) {
             $(elements[z]).addClass('el-selected');
           }
@@ -586,8 +587,9 @@ define([
         var elVal = Number(
           this.dataElements.getChildSync([idx].concat(this[type].jpath)),
         );
+        let c;
         if (isNaN(elVal)) {
-          var c = {
+          c = {
             rgba: this[type].novaluecolor,
           };
         } else {

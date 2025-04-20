@@ -606,8 +606,9 @@ define([
       columns,
       sources,
       failedSources = 0,
-      $header;
-    var fromArray = Array.isArray(list);
+      $header,
+      allProm;
+    const fromArray = Array.isArray(list);
 
     if (!options.asynchronous) {
       if (fromArray) {
@@ -626,7 +627,7 @@ define([
       allProm = [_ready];
     } else if (fromArray) {
       sources = list.length;
-      var allProm = new Array(list.length);
+      allProm = new Array(list.length);
       for (let i = 0; i < list.length; i++) {
         // eslint-disable-next-line no-loop-func
         allProm[i] = list[i].promise.then(addItems).catch(function (e) {
@@ -640,7 +641,7 @@ define([
       throw new Error('Invalid arguments');
     }
 
-    var slickOptions = _.defaults(options.slick, slickDefaultOptions);
+    const slickOptions = _.defaults(options.slick, slickDefaultOptions);
 
     if (options.columns) {
       columns = options.columns;

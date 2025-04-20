@@ -121,14 +121,15 @@ define([
     },
 
     createChart: function (chart, data) {
-      var cfg = this.module.getConfiguration;
+      const cfg = this.module.getConfiguration;
+      let val;
       switch (cfg('preference')) {
-        case 'radar':
+        case 'radar': {
           if (!chart.data[0].color) {
             chart.data[0].color = this.getRandomColor(chart.data.length, 0);
           }
 
-          var options = {
+          const options = {
             view: 'radar',
             container: this._id,
             alpha: 0.2,
@@ -153,9 +154,9 @@ define([
           };
           this._radar = new dhtmlXChart(options);
 
-          var val = [];
+          val = [];
 
-          for (var i = 0; i < chart.data.length; i++) {
+          for (let i = 0; i < chart.data.length; i++) {
             if (i !== 0) {
               if (!chart.data[i].color) {
                 chart.data[i].color = this.getRandomColor(chart.data.length, i);
@@ -177,9 +178,9 @@ define([
           }
 
           break;
-
-        case 'pie':
-          options = {
+        }
+        case 'pie': {
+          const options = {
             view: cfg('pie'),
             container: this._id,
             radius: 220,
@@ -190,6 +191,7 @@ define([
           this._radar = new dhtmlXChart(options);
 
           break;
+        }
       }
 
       if (cfg('showlegend') === 'true') {
