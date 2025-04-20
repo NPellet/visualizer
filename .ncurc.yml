@@ -1,0 +1,5 @@
+reject:
+  # Now ESM, which is not supported by browserify.
+  - delay
+  # Now ESM and depends on top-level await.
+  - tempfile
