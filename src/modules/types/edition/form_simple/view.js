@@ -10,13 +10,13 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div />');
       this.module.getDomContent().html(this.dom);
       this.callback = null;
     },
 
-    inDom: function () {
+    inDom() {
       var that = this,
         structure = this.module.getConfiguration('structure') || [],
         tpl_file = this.module.getConfiguration('tpl_file'),
@@ -151,7 +151,7 @@ define([
     },
 
     update: {
-      input_object: function (varValue) {
+      input_object(varValue) {
         var that = this;
         this.newValue(varValue);
 
@@ -165,7 +165,7 @@ define([
       },
     },
 
-    newValue: function (varValue) {
+    newValue(varValue) {
       const that = this;
       const structure = this.module.getConfiguration('structure') || [];
 

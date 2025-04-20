@@ -7,7 +7,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getjPath: function () {
+    getjPath() {
       var jpaths = [];
       Traversing.getJPathsFromElement(this.module.view._data, jpaths);
       return jpaths;

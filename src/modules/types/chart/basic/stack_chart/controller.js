@@ -145,10 +145,10 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    stack: function (cfg) {
+    stack(cfg) {
       return cfg.indexOf('stack') !== -1;
     },
-    fill: function (cfg) {
+    fill(cfg) {
       return cfg.indexOf('fill') !== -1;
     },
   };

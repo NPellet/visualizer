@@ -7,11 +7,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
 
-    getjPath: function (rel, temporary) {
+    getjPath(rel, temporary) {
       var data;
 
       switch (rel) {

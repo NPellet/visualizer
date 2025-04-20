@@ -49,7 +49,7 @@ define([
       this.editor = new jsoneditor(document.getElementById(this._id), {
         mode,
         modes: ['view', 'tree', 'code'],
-        ace: ace,
+        ace,
         theme: 'ace/theme/textmate',
         onChange: () => {
           var result;
@@ -73,7 +73,7 @@ define([
       this.resolveReady();
     },
 
-    setSendButton: function () {
+    setSendButton() {
       var sendButton = this.dom
         .find('.jsoneditor-menu')
         .prepend(

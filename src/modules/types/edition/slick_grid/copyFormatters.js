@@ -4,10 +4,10 @@ define(['src/util/api'], function (API) {
   let OCL;
   return {
     OCLToMolfile: {
-      load: async function () {
+      async load() {
         OCL = await API.require('openchemlib/openchemlib-core');
       },
-      extract: function (item, colDef) {
+      extract(item, colDef) {
         DataObject.check(item, true);
         let val = item.getChildSync(colDef.jpath);
         val = val ? val.get() || '' : '';

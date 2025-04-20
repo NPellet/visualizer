@@ -323,8 +323,8 @@ define([
       this.triggerChangeCallbacksByRels[rel] =
         this.triggerChangeCallbacksByRels[rel] || [];
       this.triggerChangeCallbacksByRels[rel].push({
-        data: data,
-        callback: callback,
+        data,
+        callback,
       });
 
       return true;

@@ -3,7 +3,7 @@
 define(function () {
   var deferred = $.Deferred();
   return {
-    notify: function (dom) {
+    notify(dom) {
       deferred.notify(dom);
     },
     progress: deferred.progress,

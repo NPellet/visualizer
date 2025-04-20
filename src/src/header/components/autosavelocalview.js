@@ -9,11 +9,11 @@ define([
   function Element() {}
 
   Util.inherits(Element, Default, {
-    initImpl: function () {
+    initImpl() {
       this.viewHandler = Versioning.getViewHandler();
     },
 
-    _onClick: function () {
+    _onClick() {
       // Overwrite usual onclick which loads a list / loads views/datas
       if (this._open) {
         this.open();
@@ -22,7 +22,7 @@ define([
       }
     },
 
-    open: function () {
+    open() {
       var that = this;
       this.interval = window.setInterval(function () {
         var view = Versioning.getView();
@@ -42,7 +42,7 @@ define([
       this.$_dom.addClass('toggledOn');
     },
 
-    close: function () {
+    close() {
       window.clearTimeout(this.interval);
       this.$_dom.css({ color: '' });
       this.$_dom.removeClass('toggledOn');

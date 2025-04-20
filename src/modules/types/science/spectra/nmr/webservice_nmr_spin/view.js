@@ -4,7 +4,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
 
       this.button = this.module.getConfiguration('button')[0] === 'button';
@@ -70,7 +70,7 @@ define(['jquery', 'modules/default/defaultview'], function ($, Default) {
       this.resolveReady();
     },
 
-    _getTable: function (size) {
+    _getTable(size) {
       var content = [];
       var i;
 

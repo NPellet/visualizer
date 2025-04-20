@@ -11,7 +11,7 @@ define([
   function Element() {}
 
   Util.inherits(Element, Default, {
-    initImpl: function () {
+    initImpl() {
       var id = Util.getNextUniqueId();
       var db = new PouchDB('localViews');
       this.dialog = $(
@@ -21,7 +21,7 @@ define([
       this.dialogOptions = {
         title: 'Load view',
         buttons: {
-          Load: function () {
+          Load() {
             var text = $(`#${id}`).val();
             text = text.replace(/[^a-zA-Z0-9-_]*/g, '');
             db.get(text, function (err, data) {
@@ -35,14 +35,14 @@ define([
             });
             $(this).dialog('close');
           },
-          Cancel: function () {
+          Cancel() {
             $(this).dialog('close');
           },
         },
       };
     },
 
-    _onClick: function () {
+    _onClick() {
       ui.dialog(this.dialog, this.dialogOptions);
     },
   });

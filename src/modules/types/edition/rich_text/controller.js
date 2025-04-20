@@ -54,7 +54,7 @@ define(['jquery', 'modules/default/defaultcontroller', 'ckeditor'], function (
       DataObject.check(
         {
           type: 'html',
-          value: value,
+          value,
         },
         true,
       ),

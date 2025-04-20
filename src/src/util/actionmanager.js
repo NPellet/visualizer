@@ -72,7 +72,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
       case 'worker': {
         const worker = new Worker(file.file);
 
-        worker.postMessage({ method: 'actionValue', value: value });
+        worker.postMessage({ method: 'actionValue', value });
 
         worker.onmessage = function (event) {
           if (!event.data.method) {
@@ -93,7 +93,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
 
               worker.postMessage({
                 method: 'getVar',
-                variables: variables,
+                variables,
               });
               break;
             }

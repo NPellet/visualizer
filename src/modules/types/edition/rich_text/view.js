@@ -14,7 +14,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       this.plainHtml = this.module.getConfigurationCheckbox('plainHtml', 'yes');
       this.debounce = this.module.getConfiguration('debouncing');
@@ -29,16 +29,16 @@ define([
         );
       }, this.debounce);
     },
-    inDom: function () {
+    inDom() {
       this.initEditor();
     },
     blank: {
-      html: function () {
+      html() {
         this.updateEditor('');
       },
     },
     update: {
-      html: function (moduleValue) {
+      html(moduleValue) {
         this.module.data = moduleValue;
         var val = moduleValue.get();
         if (this.storeInView) {
@@ -47,7 +47,7 @@ define([
         this.updateEditor(val);
       },
     },
-    initEditor: function () {
+    initEditor() {
       var that = this;
       var initText = this.module.definition.richtext || '';
       this.readOnly = !this.module.getConfigurationCheckbox(
@@ -99,7 +99,7 @@ define([
         });
       }
     },
-    updateEditor: function (html) {
+    updateEditor(html) {
       html = String(html);
       if (this.plainHtml) {
         this.dom.html(html);
@@ -107,7 +107,7 @@ define([
         this.instance.setData(html);
       }
     },
-    getContentHeight: function () {
+    getContentHeight() {
       var height = 0;
       this.dom.children().each(function () {
         height += $(this).height();
@@ -116,17 +116,17 @@ define([
     },
 
     onActionReceive: {
-      insertHtml: function (html) {
+      insertHtml(html) {
         this.instance.insertHtml(html, 'unfiltered_html');
       },
-      insertText: function (text) {
+      insertText(text) {
         setImmediate(() => {
           this.instance.insertText(text);
         });
       },
     },
 
-    _setCss: function () {
+    _setCss() {
       var bgColor = this.module.getConfiguration('bgColor');
       this.dom.css({
         height: '100%',

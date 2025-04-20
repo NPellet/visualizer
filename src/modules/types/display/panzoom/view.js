@@ -18,7 +18,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.currentPromise = Promise.resolve();
       this.toHide = this.toHide || {};
       this.transforms = this.transforms || {};
@@ -39,20 +39,20 @@ define([
     },
 
     blank: {
-      picture: function (varname) {
+      picture(varname) {
         this.clearImage(varname);
       },
 
-      image: function (varname) {
+      image(varname) {
         this.clearImage(varname);
       },
 
-      svg: function (varname) {
+      svg(varname) {
         this.clearImage(varname);
       },
     },
 
-    inDom: function () {
+    inDom() {
       var transformThrottling = this.module.getConfiguration(
         'transformThrottling',
       );
@@ -61,20 +61,20 @@ define([
     },
 
     update: {
-      picture: function (value, varname) {
+      picture(value, varname) {
         return this.doImage(varname, value, {}, true);
       },
 
-      svg: function (value, varname) {
+      svg(value, varname) {
         this.doSvg(varname, value, {}, true);
       },
 
-      image: function (value, varname) {
+      image(value, varname) {
         this.doImage(varname, value, {}, true);
       },
     },
 
-    clearImages: function () {
+    clearImages() {
       if (!this.images) {
         this.images = [];
         return;
@@ -86,7 +86,7 @@ define([
       this.images = [];
     },
 
-    clearImage: function (varname) {
+    clearImage(varname) {
       this.currentPromise = this.currentPromise.then(() => {
         var idx = _.findIndex(this.images, (img) => img.name === varname);
         if (idx === -1) return;
@@ -96,7 +96,7 @@ define([
       });
     },
 
-    doImage: function (varname, value, options, updateHighlights) {
+    doImage(varname, value, options, updateHighlights) {
       var that = this;
       this.currentPromise = this.currentPromise
         .then(function () {
@@ -119,13 +119,13 @@ define([
       return this.currentPromise;
     },
 
-    doSvg: function (varname, value, options, updateHighlights) {
+    doSvg(varname, value, options, updateHighlights) {
       options = options || {};
       options.isSvg = true;
       return this.doImage(varname, value, options, updateHighlights);
     },
 
-    reorderImages: function () {
+    reorderImages() {
       for (let i = 0; i < this.images.length; i++) {
         this.images[i].$panzoomEl.css(
           'z-index',
@@ -134,7 +134,7 @@ define([
       }
     },
 
-    addImage: function (varname, variable, options) {
+    addImage(varname, variable, options) {
       var that = this;
 
       return new Promise(function (resolve, reject) {
@@ -303,7 +303,7 @@ define([
       });
     },
 
-    processHighlights: function () {
+    processHighlights() {
       var himg;
 
       this.highlights = null;
@@ -384,7 +384,7 @@ define([
       }
     },
 
-    listenHighlights: function () {
+    listenHighlights() {
       var that = this;
       API.killHighlight(this.module.getId());
       if (!this.highlights) return;
@@ -417,7 +417,7 @@ define([
       }
     },
 
-    _drawHighlight: function (senderId) {
+    _drawHighlight(senderId) {
       var that = this;
       if (!this._highlighted || !this._highlighted.length) {
         this.toHide.__highlight__ = true;
@@ -461,7 +461,7 @@ define([
       });
     },
 
-    newImageDom: function (varname) {
+    newImageDom(varname) {
       return $(
         `<div class="ci-panzoom-parent" id="${this.getImageDomId(
           varname,
@@ -469,7 +469,7 @@ define([
       );
     },
 
-    newCanvasDom: function (varname) {
+    newCanvasDom(varname) {
       return $(
         `<div class="ci-panzoom-parent" id="${this.getImageDomId(
           varname,
@@ -477,7 +477,7 @@ define([
       );
     },
 
-    newSvgDom: function (varname) {
+    newSvgDom(varname) {
       return $(
         `<div class="ci-panzoom-parent" id="${this.getImageDomId(
           varname,
@@ -485,11 +485,11 @@ define([
       );
     },
 
-    getImageDomId: function (varname) {
+    getImageDomId(varname) {
       return `ci-panzoom-image-${varname}`;
     },
 
-    panzoomMode: function (varname) {
+    panzoomMode(varname) {
       var that = this;
       var start = 0;
       var l = this.images.length;
@@ -510,7 +510,7 @@ define([
             minScale: 0.000001,
             duration: 0,
             startTransform: 'none',
-            onEnd: function () {
+            onEnd() {
               // Set the pointer to cursor only if
               if (that.state === 'pan') {
                 $(this).css('cursor', 'pointer');
@@ -561,7 +561,7 @@ define([
         // Use zoom on the first image, and use the resulting
         // transform on all other panzoom elements
         that.images[0].$panzoomEl.panzoom('zoom', zoomOut, {
-          increment: increment,
+          increment,
           animate: false,
           focal: e,
         });
@@ -694,7 +694,7 @@ define([
       });
     },
 
-    setTransform: function (transform, noEvent) {
+    setTransform(transform, noEvent) {
       this.lastTransform = transform;
       if (!noEvent) {
         this.module.controller.transformChanged(this.lastTransform);
@@ -705,7 +705,7 @@ define([
       }
     },
 
-    _createHighlight: function (hl) {
+    _createHighlight(hl) {
       if (!this.highlights) return null;
       if (!Array.isArray(hl)) {
         hl = [hl];
@@ -763,13 +763,13 @@ define([
       // we put this random image in the context
       context.putImageData(imageData, 0, 0); // at coords 0,0
       return {
-        canvas: canvas,
-        shiftx: shiftx,
-        shifty: shifty,
+        canvas,
+        shiftx,
+        shifty,
       };
     },
 
-    highlightOn: function (pixel) {
+    highlightOn(pixel) {
       var that = this;
       if (that._highlightArray) {
         var idx = pixel.x + that.himg.width * pixel.y;
@@ -786,7 +786,7 @@ define([
       }
     },
 
-    highlightOff: function () {
+    highlightOff() {
       if (this._hl !== undefined) {
         this.module.model.highlightId(this._hl, 0);
         this._hl = undefined;
@@ -808,12 +808,12 @@ define([
       }
     }, 300),
 
-    onResize: function () {
+    onResize() {
       // Rerender all images
       this.doAllImages();
     },
 
-    doAllImages: function () {
+    doAllImages() {
       for (let i = 0; i < this.images.length; i++) {
         if (this.images[i].type === 'svg') {
           this.doSvg(this.images[i].name);
@@ -823,11 +823,11 @@ define([
       }
     },
 
-    getDom: function () {
+    getDom() {
       return this.dom;
     },
 
-    export: function () {
+    export() {
       var images = this.images.filter(
         (img) => img.type === 'image' || img.type === 'svg',
       );
@@ -869,7 +869,7 @@ define([
     },
 
     onActionReceive: {
-      hide: function (data) {
+      hide(data) {
         var varname;
         if (typeof data === 'string') varname = data;
         else varname = data.name;
@@ -877,7 +877,7 @@ define([
         this.toHide[varname] = true;
         this.doImage(varname);
       },
-      show: function (data) {
+      show(data) {
         this.toHide = this.toHide || {};
         var varname;
         if (typeof data === 'string') varname = data;
@@ -887,10 +887,10 @@ define([
         this.toHide[varname] = false;
         this.doImage(varname);
       },
-      transform: function (transformMatrix) {
+      transform(transformMatrix) {
         this.setTransform(transformMatrix, true);
       },
-      reset: function () {
+      reset() {
         for (let i = 0; i < this.images.length; i++) {
           this.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {
@@ -901,7 +901,7 @@ define([
       },
     },
 
-    _getDefaultConf: function () {
+    _getDefaultConf() {
       return {
         opacity: 1,
         'z-index': 1,
@@ -910,7 +910,7 @@ define([
       };
     },
 
-    _completeConf: function (conf, varname, options) {
+    _completeConf(conf, varname, options) {
       if (!conf) {
         return this._completeConf(this._getDefaultConf(), varname, options);
       }

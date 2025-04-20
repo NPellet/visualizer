@@ -57,7 +57,7 @@ define([
   });
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       this.actionOnloadScript = '';
       var id = this.module.getId();
@@ -84,12 +84,12 @@ define([
 
       this.dom.bind('load', function () {
         that.postMessage('init', {
-          id: id,
+          id,
         });
       });
     },
 
-    onResize: function () {
+    onResize() {
       /*
             this.dom.height(this.height).width(this.width);
             console.log('resize', this.height, this.width);
@@ -100,7 +100,7 @@ define([
             */
     },
 
-    inDom: function () {
+    inDom() {
       var that = this;
       this.dom.parent().on('mouseleave', function () {
         if (that.lastHoveredAtom) {
@@ -111,7 +111,7 @@ define([
     },
 
     blank: {
-      data: function () {
+      data() {
         if (
           (
             (this.module.data && this.module.getConfiguration('prefs')) ||
@@ -125,7 +125,7 @@ define([
     },
 
     update: {
-      data: function (data) {
+      data(data) {
         var that = this;
         this.module.data = data;
         that.postMessage('setMolFile', {
@@ -155,43 +155,43 @@ define([
     },
 
     onActionReceive: {
-      jsmolscript: function (a) {
+      jsmolscript(a) {
         this.executeScript(a);
       },
-      jsmolscriptSync: function (a) {
+      jsmolscriptSync(a) {
         this.executeScriptSync(a);
       },
-      setTempJsmolScript: function (value) {
+      setTempJsmolScript(value) {
         this.actionOnloadScript = value;
       },
     },
 
-    executeScriptSync: function (src) {
+    executeScriptSync(src) {
       this.postMessage('executeScriptSync', [src]);
     },
 
-    executeScript: function (src) {
+    executeScript(src) {
       this.postMessage('executeScript', [src]);
     },
 
-    postMessage: function (type, message) {
+    postMessage(type, message) {
       var cw = this.dom.get(0).contentWindow;
       if (cw) {
         cw.postMessage(
           JSON.stringify({
-            type: type,
-            message: message,
+            type,
+            message,
           }),
           '*',
         );
       }
     },
 
-    remove: function (id) {
+    remove(id) {
       delete views[id];
     },
 
-    parseAtom: function (atom) {
+    parseAtom(atom) {
       var reg =
         /^([^\s]+)\s+([^\s]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)\s+([-+]?[0-9]*\.?[0-9]+)/;
       var m = reg.exec(atom);
@@ -204,11 +204,11 @@ define([
       };
     },
 
-    storeOrientation: function () {
+    storeOrientation() {
       this.postMessage('saveOrientation', []);
     },
 
-    _doHighlights: function (atom) {
+    _doHighlights(atom) {
       if (this.lastHoveredAtom) {
         if (this.lastHoveredAtom.label === atom.label) {
           this._undoHighlightsDebounced();
@@ -222,15 +222,15 @@ define([
       this._undoHighlightsDebounced();
     },
 
-    _undoHighlights: function () {
+    _undoHighlights() {
       _undoHighlights.call(this);
     },
 
-    _undoHighlightsDebounced: function () {
+    _undoHighlightsDebounced() {
       _undoHighlightsDebounced.call(this);
     },
 
-    _activateHighlights: function () {
+    _activateHighlights() {
       var that = this;
       if (!this.module.data._highlight) return;
       if (!this.module.data._atoms) {

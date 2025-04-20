@@ -83,7 +83,7 @@ define(function () {
       g = exports.hue2rgb(m1, m2, hue);
       b = exports.hue2rgb(m1, m2, hue - 1 / 3);
     }
-    return { r: r, g: g, b: b };
+    return { r, g, b };
   };
 
   exports.getDistinctColors = function getDistinctColors(numColors) {

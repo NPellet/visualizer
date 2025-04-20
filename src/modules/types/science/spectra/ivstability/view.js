@@ -9,7 +9,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var html = [];
       html.push(
         '<div class="ivstab"><div class="iv"><h2>IV Curve</h2><div class="ivcurve"></div><h2>Legend</h2><div class="ivstablegend"></div></div><div class="stab"><div><h2>Voc</h2><div class="ivstability-voc"></div><h2>Jsc</h2><div class="ivstability-jsc"></div><h2>Fill Factor</h2><div class="ivstability-ff"></div><h2>Efficiency</h2><div class="ivstability-efficiency"></div></div></div></div>',
@@ -38,7 +38,7 @@ define([
       this.resolveReady();
     },
 
-    doIv: function (lineId, name, val, color, dashing) {
+    doIv(lineId, name, val, color, dashing) {
       if (!this.ivseries[name]) this.ivseries[name] = {};
 
       if (!this.ivseries[name][lineId]) {
@@ -52,7 +52,7 @@ define([
       this.iv.drawSeries();
     },
 
-    inDom: function () {
+    inDom() {
       var that = this;
       var options = {
         paddingTop: 5,
@@ -76,7 +76,7 @@ define([
         fontSize: 12,
         fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-        onMouseMoveData: function (event, val) {
+        onMouseMoveData(event, val) {
           /* for(var i in val) {
                      LRU.get('http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=' + i +'&date=' + val[i].xBefore).done(function(data) {
                      for(var i in data) {
@@ -86,7 +86,7 @@ define([
                      }*/
         },
 
-        onVerticalTracking: function (lineId, val, dasharray) {
+        onVerticalTracking(lineId, val, dasharray) {
           for (const i in that.series) {
             LRU.get(
               `http://lpidb.epfl.ch/content/ajax/getstabilityiv.ajax.php?id=${i}&date=${val}`,
@@ -194,7 +194,7 @@ define([
       });
     },
 
-    onResize: function () {
+    onResize() {
       for (let i = 0; i < 4; i++) {
         this.graphs[i].resize(650, 175);
         this.graphs[i].drawSeries();
@@ -204,23 +204,23 @@ define([
     },
 
     update: {
-      plotdata: function (moduleValue) {},
+      plotdata(moduleValue) {},
 
-      serieSet: function (moduleValue, name) {},
+      serieSet(moduleValue, name) {},
     },
 
-    getNextColor: function () {
+    getNextColor() {
       return this.colors.shift();
     },
 
-    editCellComment: function (cellId, comment) {
+    editCellComment(cellId, comment) {
       $.get('http://lpidb.epfl.ch/content/ajax/setcellcomment.ajax.php', {
         cellid: cellId,
-        comment: comment,
+        comment,
       });
     },
 
-    addLegend: function (id, name, description, color) {
+    addLegend(id, name, description, color) {
       var div = $('<div />');
       this.legends[id] = div;
       var that = this;
@@ -294,7 +294,7 @@ define([
       this.legendDom.append(div);
     },
 
-    removeLegend: function (name) {
+    removeLegend(name) {
       if (!this.legends[name]) return;
 
       this.legends[name].remove();
@@ -302,7 +302,7 @@ define([
     },
 
     onActionReceive: {
-      addSerie: function (value) {
+      addSerie(value) {
         value = Traversing.getValueIfNeeded(value);
         var options = { trackMouse: true };
 
@@ -344,13 +344,13 @@ define([
         this.addLegend(value.id, value.name, value.description, color);
       },
 
-      removeSerie: function (serie) {
+      removeSerie(serie) {
         var val = Traversing.getValueIfNeeded(serie);
         this.removeLegend(val.id);
         this.onActionReceive.removeSerieByName.call(this, val.name);
       },
 
-      removeSerieByName: function (serieName) {
+      removeSerieByName(serieName) {
         if (this.series[serieName]) {
           this.colors.unshift(this.series[serieName][0].getLineColor());
           for (let i = 0; i < 4; i++) {

@@ -107,7 +107,7 @@ define([
         buttons: {
           [opts.buttonLabel]: done,
         },
-        close: function () {
+        close() {
           resolve(null);
           dialog.dialog('destroy');
         },
@@ -165,7 +165,7 @@ define([
       });
 
       const dialogOptions = Object.assign({ buttons: {} }, opts.dialog, {
-        close: function () {
+        close() {
           form.unbind();
           resolve(null);
           dialog.dialog('destroy');
@@ -356,7 +356,7 @@ define([
         selectable: false,
         resizable: false,
         cssClass: 'cell-reorder dnd',
-        formatter: function () {
+        formatter() {
           return '';
         },
       });
@@ -373,7 +373,7 @@ define([
       var id = data.mapRowsToIds([row])[0];
       if (!id) return null;
       return {
-        id: id,
+        id,
         idx: data.getIdxById(id),
         item: data.getItemById(id),
       };
@@ -395,10 +395,10 @@ define([
             noWrap: true,
             closeOnEscape: true,
             buttons: {
-              cancel: function () {
+              cancel() {
                 $(this).dialog('close');
               },
-              confirm: function () {
+              confirm() {
                 status = true;
                 currentList = JSON.parse(JSON.stringify(list));
                 list.length = 0;
@@ -412,10 +412,10 @@ define([
             close: () => {
               resolve(status);
             },
-            resize: function () {
+            resize() {
               grid.resizeCanvas();
             },
-            open: function () {
+            open() {
               $container.addClass('flex-main-container');
               $container.append($slick);
               $dialog.append($container);
@@ -699,10 +699,10 @@ define([
           buttons = {};
         } else {
           buttons = {
-            Cancel: function () {
+            Cancel() {
               $(this).dialog('close');
             },
-            Select: function () {
+            Select() {
               resolve(lastClickedId);
               $(this).dialog('close');
             },
@@ -720,14 +720,14 @@ define([
           {
             noWrap: true,
             closeOnEscape: false,
-            buttons: buttons,
-            close: function () {
+            buttons,
+            close() {
               resolve(null);
             },
-            resize: function () {
+            resize() {
               grid.resizeCanvas();
             },
-            open: function () {
+            open() {
               var that = this;
               $container.addClass('flex-main-container');
               $slick.addClass('flex-1');
@@ -795,7 +795,7 @@ define([
         },
         dialogOptions,
         {
-          close: function () {
+          close() {
             resolve(false);
           },
           buttons: {},
@@ -872,7 +872,7 @@ define([
     div.fancytree(
       Object.assign({}, fancytreeOptions, {
         source: { children: jpaths, id: 'element' },
-        activate: function (event, data) {
+        activate(event, data) {
           selected = data.node.key;
         },
         toggleEffect: false,

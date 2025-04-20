@@ -8,14 +8,14 @@ define([
   function Element() {}
 
   Util.inherits(Element, Default, {
-    initImpl: function () {
+    initImpl() {
       this.dialogOptions = {
         title: 'Share view',
         width: 550,
         height: 170,
       };
     },
-    _onClick: function () {
+    _onClick() {
       couchshare.couchShare(this.options, this.dialogOptions);
     },
   });

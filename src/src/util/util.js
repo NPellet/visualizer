@@ -119,10 +119,10 @@ define([
   }
 
   var exports = {
-    getCurrentLang: function () {
+    getCurrentLang() {
       return 'en';
     },
-    maskIframes: function () {
+    maskIframes() {
       $('iframe').each(function () {
         var iframe = $(this);
         var pos = iframe.position();
@@ -132,8 +132,8 @@ define([
           $('<div />')
             .css({
               position: 'absolute',
-              width: width,
-              height: height,
+              width,
+              height,
               top: pos.top,
               left: pos.left,
               background: 'white',
@@ -143,10 +143,10 @@ define([
         );
       });
     },
-    unmaskIframes: function () {
+    unmaskIframes() {
       $('.iframemask').remove();
     },
-    formatSize: function (size) {
+    formatSize(size) {
       let i = 0;
       while (size > 1024) {
         size = size / 1024;
@@ -154,16 +154,16 @@ define([
       }
       return `${Math.round(size * 100) / 100} ${units[i]}`;
     },
-    pad: function (val) {
+    pad(val) {
       return val < 10 ? `0${val}` : val;
     },
-    getMonth: function (month) {
+    getMonth(month) {
       return months[month];
     },
-    getDay: function (day) {
+    getDay(day) {
       return days[day];
     },
-    loadCss: function (url) {
+    loadCss(url) {
       var that = this;
       return new Promise(function (resolve, reject) {
         url = require.toUrl(url);
@@ -193,7 +193,7 @@ define([
         }
       });
     },
-    unloadCss: function (url) {
+    unloadCss(url) {
       var that = this;
       url = require.toUrl(url);
       if (that.loadedCss[url]) {
@@ -201,7 +201,7 @@ define([
       }
     },
 
-    getCssVendorPrefix: function () {
+    getCssVendorPrefix() {
       var styles = window.getComputedStyle(document.documentElement, '');
       var pre = (Array.prototype.slice
         .call(styles)
@@ -211,13 +211,13 @@ define([
       return `-${pre}-`;
     },
 
-    makejPathFunction: makejPathFunction,
+    makejPathFunction,
 
-    addjPathFunction: function (stack, jpath) {
+    addjPathFunction(stack, jpath) {
       stack[jpath] = makejPathFunction(jpath);
     },
 
-    jpathToArray: function (val) {
+    jpathToArray(val) {
       if (val) {
         var val2 = val.split('.');
         val2.shift();
@@ -227,14 +227,14 @@ define([
       }
     },
 
-    jpathToString: function (val) {
+    jpathToString(val) {
       val = val || [];
       val = val.slice();
       val.unshift('element');
       return val.join('.');
     },
 
-    getWebsafeFonts: function () {
+    getWebsafeFonts() {
       return [
         { title: 'Arial', key: 'Arial' },
         { title: 'Arial Black', key: 'Arial Black' },
@@ -256,13 +256,13 @@ define([
     // See http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript
     // for original source
 
-    getCSS: getCSS,
+    getCSS,
 
-    removeCSS: function (ruleName) {
+    removeCSS(ruleName) {
       return getCSS(ruleName, true);
     },
 
-    addCSS: function (ruleName) {
+    addCSS(ruleName) {
       if (!document.styleSheets) {
         return;
       }
@@ -282,12 +282,7 @@ define([
     },
 
     // http://stackoverflow.com/questions/9318674/javascript-number-currency-formatting
-    formatMoney: function (
-      n,
-      decPlaces,
-      thouSeparator = ',',
-      decSeparator = '.',
-    ) {
+    formatMoney(n, decPlaces, thouSeparator = ',', decSeparator = '.') {
       decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces;
 
       var sign = n < 0 ? '-' : '',
@@ -307,7 +302,7 @@ define([
       );
     },
 
-    safeAccess: function () {
+    safeAccess() {
       var access = arguments[0];
 
       for (var i = 1; i < arguments.length; i++) {
@@ -463,7 +458,7 @@ define([
     var paths = {};
     paths[reqPathStr] = rewrittenUrl;
     require.config({
-      paths: paths,
+      paths,
     });
 
     return reqPathStr;

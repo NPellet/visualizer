@@ -2,7 +2,7 @@
 
 define(['mime-types'], function (mimeTypes) {
   return {
-    lookup: function (filename, override) {
+    lookup(filename, override) {
       var contentType = mimeTypes.lookup(filename);
       if (!contentType || override) {
         if (/\.j?dx$/i.test(filename)) {

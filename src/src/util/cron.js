@@ -30,7 +30,7 @@ define(function () {
           url: crons[cronName][0],
           timeout: 1200,
           method: 'get',
-          success: function (response) {
+          success(response) {
             crons[cronName][4](response);
             start(cronName);
           },
@@ -57,12 +57,12 @@ define(function () {
   };
 
   return {
-    start: start,
-    remove: remove,
+    start,
+    remove,
     erase: remove,
-    stop: stop,
+    stop,
     pause: stop,
-    create: create,
+    create,
     make: create,
   };
 });

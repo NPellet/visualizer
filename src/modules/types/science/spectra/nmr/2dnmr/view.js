@@ -8,13 +8,13 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div />');
       this.module.getDomContent().html(this.dom);
       this.resolveReady();
     },
 
-    inDom: function () {
+    inDom() {
       this.nmr = new NMR({
         dom: this.dom,
         mode: '2d',
@@ -23,40 +23,40 @@ define([
       });
     },
 
-    onResize: function () {
+    onResize() {
       this.nmr.resize2DTo(this.width, this.height);
     },
 
     blank: {
-      jcampx: function (varname) {
+      jcampx(varname) {
         this.nmr.removeSerie2DX(varname);
       },
-      jcampy: function (varname) {
+      jcampy(varname) {
         this.nmr.removeSerie2DY(varname);
       },
-      jcamp2d: function (varname) {
+      jcamp2d(varname) {
         this.nmr.removeSerie2D(varname);
       },
-      jcampxy: function (varname) {
+      jcampxy(varname) {
         this.nmr.removeSerie2DX(varname);
         this.nmr.removeSerie2DY(varname);
       },
     },
 
     update: {
-      jcampx: function (moduleValue) {
+      jcampx(moduleValue) {
         this.addSerieJcampXOrY(moduleValue, true, false);
       },
 
-      jcampy: function (moduleValue) {
+      jcampy(moduleValue) {
         this.addSerieJcampXOrY(moduleValue, false, true);
       },
 
-      jcampxy: function (moduleValue) {
+      jcampxy(moduleValue) {
         this.addSerieJcampXOrY(moduleValue, true, true);
       },
 
-      jcamp2d: function (moduleValue, varName) {
+      jcamp2d(moduleValue, varName) {
         var that = this;
 
         function hue2rgb(p, q, t) {
@@ -108,7 +108,7 @@ define([
         );
       },
 
-      annotations: function (value) {
+      annotations(value) {
         /*
                  TODO annotations ?
                  */
@@ -122,7 +122,7 @@ define([
       },
     },
 
-    addSerieJcampXOrY: function (value, x, y) {
+    addSerieJcampXOrY(value, x, y) {
       var that = this;
 
       var name = 'SomeName';
@@ -145,7 +145,7 @@ define([
       });
     },
 
-    redraw: function () {
+    redraw() {
       this.nmr.redrawAll2D();
     },
   });

@@ -153,10 +153,10 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    point: function (cfg) {
+    point(cfg) {
       return cfg.indexOf('point') === -1;
     },
-    line: function (cfg) {
+    line(cfg) {
       return cfg.indexOf('line') !== -1;
     },
   };

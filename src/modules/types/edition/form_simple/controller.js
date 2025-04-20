@@ -61,7 +61,7 @@ define([
     return {
       sections: {
         structure: FormCreator.makeConfig({
-          jpaths: jpaths,
+          jpaths,
           name: 'Fill with',
         }),
         trigger: {
@@ -151,7 +151,7 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    replaceObj: function (val) {
+    replaceObj(val) {
       return val === 'replace';
     },
   };

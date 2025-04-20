@@ -78,8 +78,8 @@ define(['jquery', 'modules/default/defaultcontroller', 'lodash'], function (
       }
 
       controller.createDataFromEvent(name, 'point', {
-        row: row,
-        column: column,
+        row,
+        column,
         value: data[row][column],
       });
 

@@ -8,7 +8,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       var cfg = this.module.getConfiguration;
 
@@ -145,7 +145,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
       this.resolveReady();
     },
 
-    _makeFormEl: function (spec, name) {
+    _makeFormEl(spec, name) {
       var elemAttribute = `name="${spec.name}" data-dest="${spec.destination}" data-type="${spec.fieldtype}"`;
 
       switch (spec.fieldtype) {
@@ -177,11 +177,11 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
       }
     },
 
-    inDom: function () {
+    inDom() {
       this.search.find('input:last').trigger('change');
     },
 
-    lock: function () {
+    lock() {
       this.locked = true;
       if (this.buttonInst) {
         this.buttonInst.setTitle(
@@ -192,7 +192,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
       }
     },
 
-    unlock: function () {
+    unlock() {
       this.locked = false;
       if (this.buttonInst) {
         this.buttonInst.setTitle(
@@ -203,42 +203,42 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
     },
 
     update: {
-      vartrigger: function (variable) {
+      vartrigger(variable) {
         if (variable == undefined) {
           return;
         }
 
         this.module.controller.doSearch();
       },
-      url: function (val) {
+      url(val) {
         this._url = val.get();
       },
     },
 
     onActionReceive: {
-      doSearch: function () {
+      doSearch() {
         this.module.controller.doSearch();
       },
-      buttonColor: function (newColor) {
+      buttonColor(newColor) {
         if (this.buttonInst) {
           this.buttonInst.setColor(newColor);
         }
       },
     },
 
-    showError: function () {
+    showError() {
       this.$feedback.html('Error').css('color', 'red');
       this._feedbackTimeout();
     },
 
-    showSuccess: function (status) {
+    showSuccess(status) {
       this.$feedback
         .html(`Request successful with status ${status}`)
         .css('color', 'green');
       this._feedbackTimeout();
     },
 
-    _feedbackTimeout: function () {
+    _feedbackTimeout() {
       var that = this;
       if (this._ftimeout) {
         clearTimeout(this._ftimeout);

@@ -4,7 +4,7 @@ define(['modules/default/defaultmodel'], function (Default) {
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
   });

@@ -134,10 +134,10 @@ define([
 
         ui.dialog($dialog, {
           buttons: {
-            Cancel: function () {
+            Cancel() {
               $(this).dialog('close');
             },
-            Upload: function () {
+            Upload() {
               var toUpload = _.filter(data, function (v) {
                 return v.file || v.toDelete;
               });
@@ -145,13 +145,13 @@ define([
               $(this).dialog('close');
             },
           },
-          close: function () {
+          close() {
             resolve(false);
           },
-          resize: function () {
+          resize() {
             grid.resizeCanvas();
           },
-          open: function () {
+          open() {
             $dialog.append($slick);
             $dialog.append($deleteAll);
             slickData = new Slick.Data.DataView();
@@ -197,7 +197,7 @@ define([
           } else {
             slickData.addItem({
               name: filePath,
-              file: file,
+              file,
               contentType:
                 file.type ||
                 mimeTypes.lookup(filePath) ||

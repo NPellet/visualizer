@@ -164,7 +164,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
         var storingRequest = store.put({
           data: {
-            data: data,
+            data,
             timeout: Date.now(),
           },
           index: storeName + index,
@@ -236,20 +236,20 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
   }
 
   return {
-    create: function (store, limit) {
+    create(store, limit) {
       createStoreDB(store, limit);
     },
 
-    get: function (store, index) {
+    get(store, index) {
       return getFromDB(store, index);
     },
 
-    store: function (store, index, value) {
+    store(store, index, value) {
       storeInDb(store, index, value); // Remember, this is asynchronous, but never mind, we don't need to wait to continue
       return value;
     },
 
-    empty: function (store) {
+    empty(store) {
       emptyDb(store);
     },
   };

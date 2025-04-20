@@ -112,7 +112,7 @@ define([
   }
 
   return {
-    checkCompatibility: function () {
+    checkCompatibility() {
       return new Promise(function (resolve) {
         // Bots always pass the test
         if (browserIsCompatible === 'bot') {
@@ -144,7 +144,7 @@ define([
         );
         ui.dialog($dialog, {
           buttons: {
-            Ok: function () {
+            Ok() {
               $(this).dialog('close');
               if ($('#skip-warning-checkbox').is(':checked')) {
                 $.cookie('visualizer-skip-feature-warning', true, {
@@ -154,7 +154,7 @@ define([
               resolve();
             },
           },
-          close: function () {
+          close() {
             resolve();
           },
           width: 600,

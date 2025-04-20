@@ -15,7 +15,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   }
 
   $.extend(true, Model.prototype, Default, {
-    setXBoundaries: function (min, max) {
+    setXBoundaries(min, max) {
       min = min || 0;
       max = max || 0;
       this.boundaries.xMin = min;
@@ -23,7 +23,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
       this.module.controller.zoomChanged('X', min, max);
     },
 
-    setYBoundaries: function (min, max) {
+    setYBoundaries(min, max) {
       min = min || 0;
       max = max || 0;
       this.boundaries.yMin = min;
@@ -31,7 +31,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
       this.module.controller.zoomChanged('Y', min, max);
     },
 
-    getBoundaries: function () {
+    getBoundaries() {
       return {
         xMin: this.boundaries.xMin,
         xMax: this.boundaries.xMax,
@@ -40,11 +40,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
       };
     },
 
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
 
-    getjPath: function (rel, accepts) {
+    getjPath(rel, accepts) {
       var jpaths = [],
         data;
 

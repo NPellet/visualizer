@@ -94,7 +94,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       require(['src/util/urldata'], function (urlData) {
         urlData.get(element.url, false, element.timeout).then(
           function (data) {
-            data = { type: type, value: data };
+            data = { type, value: data };
             deferred.resolve(data);
           },
           function (err) {
@@ -179,12 +179,12 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   }
 
   return {
-    getType: getType,
+    getType,
 
-    getValueIfNeeded: getValueIfNeeded,
-    fetchElementIfNeeded: fetchElementIfNeeded,
+    getValueIfNeeded,
+    fetchElementIfNeeded,
 
-    getValueFromJPath: function (element, jpath) {
+    getValueFromJPath(element, jpath) {
       if (!jpath) {
         return $.Deferred().resolve(element);
       }
@@ -196,7 +196,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       return _getValueFromJPath(element, jpathSplitted);
     },
 
-    setValueFromJPath: function (element, jpath, newValue, moduleId, mute) {
+    setValueFromJPath(element, jpath, newValue, moduleId, mute) {
       if (!jpath.split) {
         jpath = '';
       }
@@ -217,7 +217,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       );
     },
 
-    addJpathToTree: function (tree, customJpaths) {
+    addJpathToTree(tree, customJpaths) {
       if (tree.length === 0) {
         tree.push({
           title: 'element',
@@ -228,12 +228,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       return addToTree(tree[0], customJpaths);
     },
 
-    getJPathsFromStructure: function (
-      structure,
-      title,
-      jpathspool,
-      jpathString,
-    ) {
+    getJPathsFromStructure(structure, title, jpathspool, jpathString) {
       if (!structure) {
         return;
       }
@@ -320,8 +315,8 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
         }
 
         jpathspool.push({
-          title: title,
-          children: children,
+          title,
+          children,
           key: jpathString,
         });
       }
@@ -384,7 +379,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       return structure;
     },
 
-    getJPathsFromElement: function (element, jpaths) {
+    getJPathsFromElement(element, jpaths) {
       if (!jpaths) {
         jpaths = [];
       }
@@ -413,7 +408,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       return jpaths;
     },
 
-    get: function (data) {
+    get(data) {
       if (data) {
         if (typeof data.get === 'function') {
           return data.get();
@@ -425,10 +420,10 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       return data;
     },
 
-    getHighlights: getHighlights,
-    getOptions: getOptions,
+    getHighlights,
+    getOptions,
 
-    triggerDataChange: triggerDataChange,
-    listenDataChange: listenDataChange,
+    triggerDataChange,
+    listenDataChange,
   };
 });

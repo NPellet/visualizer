@@ -467,7 +467,7 @@ define([
     item.getAsString((str) => {
       if (this.module.getConfigurationCheckbox('askFilename', 'yes')) {
         ui.enterValue({
-          description: description,
+          description,
           label: 'Enter filename',
           validationMessage: 'Incorrect file extension',
           validation: (val) => {
@@ -658,7 +658,7 @@ define([
     for (let i = 0; i < e.target.files.length; i++) {
       emul.items.push({
         kind: 'file',
-        getAsFile: function () {
+        getAsFile() {
           return e.target.files[i];
         },
       });

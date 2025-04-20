@@ -25,15 +25,15 @@ define([
   function View() {}
 
   View.prototype = $.extend(true, {}, Default, {
-    init: function () {},
-    inDom: function () {
+    init() {},
+    inDom() {
       this.id = Util.getNextUniqueId();
       this.dom = ui.getSafeElement('div').attr('id', this.id);
       this.module.getDomContent().html(this.dom);
       this.resolveReady();
     },
     blank: {
-      chart: function () {
+      chart() {
         this.reset();
       },
     },
@@ -41,7 +41,7 @@ define([
       // Chart format expected
       // Color and labels should be in chart.data[].info[].color
       //                               chart.data[].info[].label
-      chart: function (value) {
+      chart(value) {
         this.ignored = [];
         this.chart = value.get();
         var data = chartToArray(this.chart);
@@ -81,13 +81,13 @@ define([
       },
     },
 
-    _substractOrigin: function () {
+    _substractOrigin() {
       for (let i = 0; i < this.data.length; i++) {
         this.data[i] = addArray(this.data[i], multArray(this.origin, -1));
       }
     },
 
-    _combinatorialBoundaries: function () {
+    _combinatorialBoundaries() {
       // compute boundaries for each axis
       var x = _.map(this.originalData, 0);
       var y = _.map(this.originalData, 1);
@@ -109,7 +109,7 @@ define([
       // this.combYZmax = Math.max(this.combYmax, this.combZmax);
     },
 
-    _reMinMax: function (data) {
+    _reMinMax(data) {
       this.minX = Math.min(this.minX, Math.min.apply(null, _.map(data, 0)));
       this.minY = Math.min(this.minY, Math.min.apply(null, _.map(data, 1)));
       this.maxX = Math.max(this.maxX, Math.max.apply(null, _.map(data, 0)));
@@ -118,7 +118,7 @@ define([
       this.lenY = this.maxY - this.minY;
     },
 
-    _normalize: function () {
+    _normalize() {
       var x = _.map(this.data, 0);
       var y = _.map(this.data, 1);
       var minX = Math.min.apply(null, x);
@@ -141,7 +141,7 @@ define([
       this.maxY = maxY + this.normConstant;
     },
 
-    _ignored: function () {
+    _ignored() {
       const ignored = [];
       for (let i = 0; i < this.data.length; i++) {
         if (this.data[i] === undefined) {
@@ -158,7 +158,7 @@ define([
       _.pullAt(this.label, ignored);
     },
 
-    _processColors: function () {
+    _processColors() {
       var gradient = this.module.getConfiguration('gradient');
       var stopType = this.module.getConfiguration('stopType');
       gradient = _.filter(gradient, (v) => v.stopPosition !== undefined);
@@ -186,7 +186,7 @@ define([
         stops: this.stopColors,
         stopPositions: this.stopPositions,
         domain: this.colorDomain,
-        stopType: stopType,
+        stopType,
       });
       for (let i = 0; i < this.color.length; i++) {
         if (!isNaN(this.color[i])) {
@@ -204,7 +204,7 @@ define([
       });
     },
 
-    _fontSize: function (px) {
+    _fontSize(px) {
       var maxFontSize = 50;
 
       function findFontSize(text) {
@@ -226,7 +226,7 @@ define([
       return `${fontSize | 0}px`;
     },
 
-    _chartData: function () {
+    _chartData() {
       this.color = [];
       this.label = [];
       this.opacity = [];
@@ -244,11 +244,11 @@ define([
       }
     },
 
-    onResize: function () {
+    onResize() {
       this.redraw();
     },
 
-    draw: function () {
+    draw() {
       if (
         this.coordinateSystem === 'combinatorial' &&
         this.axes &&
@@ -334,7 +334,7 @@ define([
       this.redraw();
     },
 
-    redraw: function () {
+    redraw() {
       if (!this.data || this.data.length === 0) return;
       var that = this;
       this.reset();
@@ -570,7 +570,7 @@ define([
         .attr({
           width: hexRadius,
           height: hexRadius,
-          transform: function (d) {
+          transform(d) {
             return `translate(${d.x - hexRadius / 2},${d.y - hexRadius / 2})`;
           },
         });
@@ -611,7 +611,7 @@ define([
       }
     },
 
-    reset: function () {
+    reset() {
       this.dom.html('');
     },
   });

@@ -10,7 +10,7 @@ define([
   }
 
   Util.inherits(Model, CodeEditor, {
-    getjPath: function (rel) {
+    getjPath(rel) {
       var jpath = [];
 
       if (rel === 'outputValue' && this.module.controller.outputObject) {

@@ -123,7 +123,7 @@ define([
         // eslint-disable-next-line
         '<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>',
         {
-          columns: columns,
+          columns,
         },
       );
       if (ctx.columnSelectionShown) {
@@ -224,7 +224,7 @@ define([
             'copyPasteOptions',
             'readOnly',
           ),
-          newRowCreator: function (nb) {
+          newRowCreator(nb) {
             if (
               !ctx.module.getConfigurationCheckbox(
                 'copyPasteOptions',
@@ -239,7 +239,7 @@ define([
             }
             ctx.onActionReceive.addRow.call(ctx, rows);
           },
-          dataItemColumnValueExtractor: function (item, colDef) {
+          dataItemColumnValueExtractor(item, colDef) {
             const cpFormatter = copyFormatters[colDef.colDef.copyFormatter];
             if (cpFormatter) {
               return cpFormatter.extract(item, colDef);
@@ -565,7 +565,7 @@ define([
               event: 'cellChanged',
               row: itemInfo,
               cell: ctx._getCell(args),
-              column: column,
+              column,
               previous: args.previous,
             });
           }
@@ -777,7 +777,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: async function () {
+    async init() {
       let that = this,
         varname;
       this.columnFilters = {};
@@ -928,7 +928,7 @@ define([
       }
     },
 
-    loadEditors: async function () {
+    async loadEditors() {
       const columns = this.getAllSlickColumns();
       const loadableColumns = columns.filter(
         (col) => col.editor && col.editor.load,
@@ -936,16 +936,16 @@ define([
       await Promise.all(loadableColumns.map((col) => col.editor.load()));
     },
 
-    postUpdateCell: function (cellNode, renderOptions) {
+    postUpdateCell(cellNode, renderOptions) {
       let $cellNode = $(cellNode);
       $cellNode.css(renderOptions);
     },
 
-    preventRowHelp: function () {
+    preventRowHelp() {
       this._preventRowHelp = true;
     },
 
-    deleteRowSelection: function () {
+    deleteRowSelection() {
       let rows = this.grid.getSelectedRows();
       let data = this.module.data.get();
       let idx = new Array(rows.length);
@@ -968,7 +968,7 @@ define([
       }
     },
 
-    getAllSlickColumns: function () {
+    getAllSlickColumns() {
       let that = this;
       let tp = typeRenderer.bind(this);
 
@@ -1040,7 +1040,7 @@ define([
             focusable: true,
             sortable: true,
             defaultSortAsc: true,
-            editor: editor,
+            editor,
             CpEditor,
             compositeEditor:
               editor === Slick.CustomEditors.LongText
@@ -1057,7 +1057,7 @@ define([
             renderType: row.forceType,
             colDef: row,
             editorOptions: row.editorOptions,
-            rendererOptions: rendererOptions,
+            rendererOptions,
           };
         });
 
@@ -1138,7 +1138,7 @@ define([
           selectable: false,
           resizable: false,
           cssClass: 'cell-reorder dnd',
-          formatter: function () {
+          formatter() {
             return '';
           },
         });
@@ -1147,7 +1147,7 @@ define([
       return slickCols;
     },
 
-    getSlickColumns: function () {
+    getSlickColumns() {
       let that = this;
       let slickCols = this.getAllSlickColumns();
 
@@ -1156,7 +1156,7 @@ define([
       });
     },
 
-    getInMainColumns: function () {
+    getInMainColumns() {
       return this.getSlickColumns().filter(function (col) {
         if (isSpecialColumn(col)) {
           // Special columns always in main
@@ -1171,7 +1171,7 @@ define([
       });
     },
 
-    getInPopupColumns: function () {
+    getInPopupColumns() {
       return this.getAllSlickColumns()
         .filter(function (col) {
           if (isSpecialColumn(col)) {
@@ -1189,7 +1189,7 @@ define([
         .filter(filterSpecialColumns);
     },
 
-    getActionColumns: function () {
+    getActionColumns() {
       let that = this;
       return this.actionColConfig.map((col) => {
         return {
@@ -1209,7 +1209,7 @@ define([
       });
     },
 
-    getColumnsGivenEditContext: function () {
+    getColumnsGivenEditContext() {
       if (this.fromPopup) {
         return this.getInPopupColumns();
       } else {
@@ -1217,7 +1217,7 @@ define([
       }
     },
 
-    getSlickOptions: function () {
+    getSlickOptions() {
       let that = this;
       return {
         editable: that.module.getConfigurationCheckbox(
@@ -1249,7 +1249,7 @@ define([
         asyncPostRenderDelay: 0,
         defaultColumnWidth:
           that.module.getConfiguration('slick.defaultColumnWidth') || 80,
-        dataItemColumnValueExtractor: function (item, coldef) {
+        dataItemColumnValueExtractor(item, coldef) {
           // In order to use jpath, we return the row instead of the column
           // TODO: use jpath in coldef here?
           return item;
@@ -1264,7 +1264,7 @@ define([
       };
     },
 
-    _openDetails: function () {
+    _openDetails() {
       let that = this;
       if (
         this.grid.getEditorLock().isActive() &&
@@ -1321,7 +1321,7 @@ define([
         editableColumns,
         containers,
         {
-          destroy: function () {
+          destroy() {
             $modal.remove();
           },
         },
@@ -1329,10 +1329,10 @@ define([
       if (!this.grid.editActiveCell(compositeEditor)) $modal.remove();
     },
 
-    inDom: function () {},
+    inDom() {},
 
     update: {
-      script: function (moduleValue) {
+      script(moduleValue) {
         if (this.module.getConfiguration('filterType') === 'invar') {
           this._setScript(moduleValue.get());
           this._runFilter({
@@ -1343,11 +1343,11 @@ define([
         this.rerender();
       },
 
-      data: function (moduleValue, varName) {
+      data(moduleValue, varName) {
         this.update.list.call(this, moduleValue, varName);
       },
 
-      list: function (moduleValue, varName) {
+      list(moduleValue, varName) {
         let that = this;
 
         this.module.controller.lastClickedItem = undefined;
@@ -1411,17 +1411,17 @@ define([
     },
 
     blank: {
-      list: function (varname) {
+      list(varname) {
         this.$container.html('');
       },
-      script: function (varname) {
+      script(varname) {
         if (this.module.getConfiguration('filterType') === 'invar') {
           this._setScript('');
         }
       },
     },
 
-    _newRow: function (newRow, args) {
+    _newRow(newRow, args) {
       this.module.controller.onRowNew(this.slick.data.getLength() - 1, newRow);
       this.module.model.dataTriggerChange(this.module.data);
       this._runFilter({
@@ -1434,7 +1434,7 @@ define([
       });
     },
 
-    _setBaseCellCssStyle: function () {
+    _setBaseCellCssStyle() {
       let cols = this.grid.getColumns();
       this.baseCellCssStyle = {};
       for (let i = 0; i < cols.length; i++) {
@@ -1442,7 +1442,7 @@ define([
       }
     },
 
-    _setDeleteRowListener: function () {
+    _setDeleteRowListener() {
       let that = this;
       this.$container.on('click', 'a.recycle-bin', function (e) {
         let columns = that.grid.getColumns();
@@ -1467,32 +1467,32 @@ define([
       });
     },
 
-    _getItemInfoFromEvent: function (e) {
+    _getItemInfoFromEvent(e) {
       let that = this;
       let cell = this.grid.getCellFromEvent(e);
       if (!cell) return null;
       let id = that.slick.data.mapRowsToIds([cell.row])[0];
       if (!id) return null;
       return {
-        id: id,
+        id,
         idx: that.slick.data.getIdxById(id),
         item: that.slick.data.getItemById(id),
       };
     },
 
-    _getItemInfoFromRow: function (row) {
+    _getItemInfoFromRow(row) {
       let that = this;
       if (_.isUndefined(row)) return null;
       let id = that.slick.data.mapRowsToIds([row])[0];
       if (!id) return null;
       return {
-        id: id,
+        id,
         idx: that.slick.data.getIdxById(id),
         item: that.slick.data.getItemById(id),
       };
     },
 
-    _jpathColor: function () {
+    _jpathColor() {
       let that = this;
       if (!that.lastViewport) return;
       let colorjPath = that.module.getConfiguration('colorjPath');
@@ -1565,13 +1565,13 @@ define([
     //    scriptChanged       The filter script changed
     //    renderAction        Called before each rendering of an action cell. Allows to dynamically set rendering
     //    postRender          Called on each row after rendering
-    _setScript: function (script) {
+    _setScript(script) {
       this.filterScript = script || '';
       this.hasFilter = this._hasFilter();
       this._newSandbox();
     },
 
-    _newSandbox: function () {
+    _newSandbox() {
       this._sandbox = new Sandbox();
       this._sandbox.setContext(this._getNewContext());
       try {
@@ -1584,7 +1584,7 @@ define([
       }
     },
 
-    _runFilter: function (context) {
+    _runFilter(context) {
       if (this.hasFilter) {
         try {
           this.filter.call(context);
@@ -1594,23 +1594,23 @@ define([
       }
     },
 
-    _getNewContext: function () {
+    _getNewContext() {
       let that = this;
       return {
-        getSlick: function () {
+        getSlick() {
           return that.slick;
         },
-        getData: function () {
+        getData() {
           return that.module.data && that.module.data.get();
         },
-        rerender: function (rows) {
+        rerender(rows) {
           that.rerender(rows);
         },
-        API: API,
+        API,
       };
     },
 
-    rerender: function (rows) {
+    rerender(rows) {
       if (!this.grid) return;
       if (!rows) {
         this.grid.invalidateAllRows();
@@ -1620,7 +1620,7 @@ define([
       this.grid.render();
     },
 
-    _reportError: function (e) {
+    _reportError(e) {
       let message = '';
       if (e && e.stack) {
         message = e.message;
@@ -1637,7 +1637,7 @@ define([
       Debug.warn(e);
     },
 
-    _inViewFilter: function () {
+    _inViewFilter() {
       let that = this;
       if (!that.hasFilter || !that.lastViewport) return;
       let rows = that._getRowsFromViewport();
@@ -1654,7 +1654,7 @@ define([
       // that.grid.render();
     },
 
-    _deleteFilter: function (deletedRows) {
+    _deleteFilter(deletedRows) {
       if (!this.hasFilter) return;
       this._runFilter({
         event: 'rowsDeleted',
@@ -1662,7 +1662,7 @@ define([
       });
     },
 
-    _selectHighlight: function () {
+    _selectHighlight() {
       if (this.hovering) {
         return;
       }
@@ -1696,11 +1696,11 @@ define([
       }
     },
 
-    _updateHighlights: function () {
+    _updateHighlights() {
       this._highlights = _.map(this.module.data.get(), '_highlight');
     },
 
-    _drawHighlight: function () {
+    _drawHighlight() {
       let that = this;
       this.grid.removeCellCssStyles('highlight');
       let tmp = {};
@@ -1725,7 +1725,7 @@ define([
       this.grid.setCellCssStyles('highlight', tmp);
     },
 
-    _activateHighlights: function () {
+    _activateHighlights() {
       let that = this;
       let hl = _(this.module.data.get())
         .map('_highlight')
@@ -1766,7 +1766,7 @@ define([
       }
     },
 
-    _makeDataObjects: function () {
+    _makeDataObjects() {
       if (this.dataObjectsDone) return;
       let data = this.module.data.get();
       for (let i = 0; i < data.length; i++) {
@@ -1775,7 +1775,7 @@ define([
       this.dataObjectsDone = true;
     },
 
-    _getRowsFromViewport: function () {
+    _getRowsFromViewport() {
       if (!this.lastViewport) return [];
       let rowCount = this.lastViewport.bottom - this.lastViewport.top + 1;
       if (Number.isNaN(rowCount) || rowCount < 0) return [];
@@ -1788,7 +1788,7 @@ define([
       });
     },
 
-    _getItemsInfo: function (rows) {
+    _getItemsInfo(rows) {
       let selected = [];
       if (!this.slick.data) return selected;
       for (let i = 0; i < rows.length; i++) {
@@ -1798,7 +1798,7 @@ define([
       return selected;
     },
 
-    _getLastSelectedRows: function (rows) {
+    _getLastSelectedRows(rows) {
       let selected = [];
       if (!this.slick.data) return selected;
       for (let i = 0; i < rows.length; i++) {
@@ -1808,16 +1808,16 @@ define([
       return selected;
     },
 
-    _getItems: function (rows) {
+    _getItems(rows) {
       let items = this._getItemsInfo(rows);
       return _.map(items, 'item');
     },
 
-    _getChangedColumn: function (cell) {
+    _getChangedColumn(cell) {
       return this.getColumnsGivenEditContext()[cell];
     },
 
-    _getCell: function (args) {
+    _getCell(args) {
       if (!args || args.row === undefined || args.cell === undefined) {
         return null;
       }
@@ -1830,11 +1830,11 @@ define([
       return r;
     },
 
-    _getSelectedItems: function () {
+    _getSelectedItems() {
       return this._getItems(this.grid.getSelectedRows());
     },
 
-    onResize: function () {
+    onResize() {
       if (this.grid) {
         this.grid.resizeCanvas();
       }
@@ -1843,11 +1843,11 @@ define([
       });
     },
 
-    getNextIncrementalId: function () {
+    getNextIncrementalId() {
       return ++uniqueID;
     },
 
-    generateUniqIds: function () {
+    generateUniqIds() {
       if (!this.module.data) return;
       let data = this.module.data.get();
       for (let i = 0; i < data.length; i++) {
@@ -1855,7 +1855,7 @@ define([
       }
     },
 
-    setNextUniqId: function (item, force) {
+    setNextUniqId(item, force) {
       if (item[this.idPropertyName]) return;
       if (
         this.autoIdProperty &&
@@ -1869,7 +1869,7 @@ define([
       }
     },
 
-    _hasFilter: function () {
+    _hasFilter() {
       return _.some(this.filterScript.split('\n'), function (line) {
         let l = line.replace(' ', '');
         // return false if void line
@@ -1877,7 +1877,7 @@ define([
       });
     },
 
-    _findItem: function (row) {
+    _findItem(row) {
       let item;
       if (!this.module.data) return null;
       let data = this.module.data.get();
@@ -1896,7 +1896,7 @@ define([
       return item;
     },
 
-    exportToTabDelimited: function () {
+    exportToTabDelimited() {
       this._makeDataObjects();
       let cols = this.grid.getColumns();
       let choices = [
@@ -1983,7 +1983,7 @@ define([
       });
     },
 
-    hideColumn: function (column) {
+    hideColumn(column) {
       if (!this.hiddenColumns) return;
       if (this.hiddenColumns.indexOf(column) === -1) {
         this.hiddenColumns.push(column);
@@ -1991,7 +1991,7 @@ define([
       }
     },
 
-    showColumn: function (column) {
+    showColumn(column) {
       if (!this.hiddenColumns) return;
       let idx = this.hiddenColumns.indexOf(column);
       if (idx > -1) {
@@ -2000,7 +2000,7 @@ define([
       }
     },
 
-    toggleColumn: function (column) {
+    toggleColumn(column) {
       let idx = this.hiddenColumns.indexOf(column);
       if (idx === -1) {
         this.hideColumn(column);
@@ -2009,7 +2009,7 @@ define([
       }
     },
 
-    getRowIndexes: function (rows) {
+    getRowIndexes(rows) {
       let data = this.module.data.get();
       let srows, items;
       if (typeof rows === 'function') {
@@ -2046,10 +2046,10 @@ define([
     },
 
     onActionReceive: {
-      appendRow: function (items) {
+      appendRow(items) {
         this.onActionReceive.addRow.call(this, items);
       },
-      prependRow: function (items, ...args) {
+      prependRow(items, ...args) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2063,7 +2063,7 @@ define([
           }
         }
       },
-      addRow: function (items) {
+      addRow(items) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2077,7 +2077,7 @@ define([
           }
         }
       },
-      insertRow: function (items) {
+      insertRow(items) {
         if (this.slick.data) {
           if (!Array.isArray(items)) {
             items = [items];
@@ -2090,13 +2090,13 @@ define([
           }
         }
       },
-      rerender: function () {
+      rerender() {
         if (this.grid) {
           this.grid.invalidateAllRows();
           this.grid.render();
         }
       },
-      hoverRow: function (row) {
+      hoverRow(row) {
         // row can be the row itself or the array's index
         let item = this._findItem(row);
 
@@ -2109,7 +2109,7 @@ define([
         }
       },
 
-      unsetActiveRow: function () {
+      unsetActiveRow() {
         this.grid.setSelectedRows(
           this.grid
             .getSelectedRows()
@@ -2120,7 +2120,7 @@ define([
       },
 
       // "mimick click row"
-      selectRow: function (cell) {
+      selectRow(cell) {
         if (typeof cell === 'number') {
           cell = {
             row: cell,
@@ -2145,41 +2145,41 @@ define([
         }
       },
 
-      selectRows: function (rows) {
+      selectRows(rows) {
         const nrows = this.getRowIndexes(rows);
         if (nrows) {
           this.grid.setSelectedRows(nrows);
         }
       },
 
-      unselectRows: function (rows) {
+      unselectRows(rows) {
         const srows = this.getRowIndexes(rows);
         const crows = this.grid.getSelectedRows();
         const nrows = _.difference(crows, srows);
         this.grid.setSelectedRows(nrows);
       },
 
-      scrollToRow: function (row) {
+      scrollToRow(row) {
         const [nrow] = this.getRowIndexes(row);
         this.grid.scrollRowToTop(nrow);
       },
 
-      selectRowsAdd: function (rows) {
+      selectRowsAdd(rows) {
         const srows = this.getRowIndexes(rows) || [];
         const crows = this.grid.getSelectedRows();
         const nrows = _.uniq(_.concat(srows, crows));
         this.grid.setSelectedRows(nrows);
       },
 
-      showColumn: function (column) {
+      showColumn(column) {
         this.showColumn(column);
       },
 
-      hideColumn: function (column) {
+      hideColumn(column) {
         this.hideColumn(column);
       },
 
-      toggleColumn: function (column) {
+      toggleColumn(column) {
         this.toggleColumn(column);
       },
     },

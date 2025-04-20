@@ -13,7 +13,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var html = '<div></div>';
       if (this.module.getConfigurationCheckbox('append', 'yes')) {
         this.dom = $(html).css({
@@ -42,7 +42,7 @@ define([
     },
 
     blank: {
-      value: function () {
+      value() {
         if (this.module.getConfigurationCheckbox('append', 'yes')) {
           var maxEntries = this.module.getConfiguration('maxEntries');
           var children = this.dom.children();
@@ -54,17 +54,17 @@ define([
           this.dom.empty();
         }
       },
-      color: function () {
+      color() {
         this.module.getDomContent().css('background-color', '#FFF');
       },
     },
 
     update: {
-      color: function (color) {
+      color(color) {
         this.module.getDomContent().css('background-color', color.get());
       },
 
-      value: function (varValue, varName) {
+      value(varValue, varName) {
         if (varValue instanceof DataNumber || varValue.type === 'number') {
           this._lastValueNumber = true;
         }
@@ -93,12 +93,12 @@ define([
       },
     },
 
-    onResize: function () {
+    onResize() {
       this.renderAll();
       this.refresh();
     },
 
-    renderAll: function () {
+    renderAll() {
       var val = this._lastValue;
       if (!val) return;
 
@@ -141,18 +141,18 @@ define([
       }
     },
 
-    exportToHTML: function () {
+    exportToHTML() {
       API.domToHTML(this.divForExportation[0]).then((html) => {
         API.copyHTMLToClipboard(html);
       });
     },
 
-    _scrollDown: function () {
+    _scrollDown() {
       var scroll_height = this.dom[0].scrollHeight;
       this.dom.scrollTop(scroll_height);
     },
 
-    renderVal: function (val, options) {
+    renderVal(val, options) {
       var $span = $('<span>');
       return Renderer.render($span, val, options)
         .then(function () {
@@ -163,7 +163,7 @@ define([
         });
     },
 
-    fillWithVal: function (val, rendererOptions) {
+    fillWithVal(val, rendererOptions) {
       var that = this;
       var valign = this.module.getConfiguration('valign');
       var align = this.module.getConfiguration('align');

@@ -9,7 +9,7 @@ define([
   function Element() {}
 
   Util.inherits(Element, Default, {
-    _onClick: function () {
+    _onClick() {
       Versioning.blankView();
     },
   });

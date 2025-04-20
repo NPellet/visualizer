@@ -7,7 +7,7 @@ define(['src/header/components/default', 'src/util/util'], function (
   function Element() {}
 
   Util.inherits(Element, Default, {
-    _onClick: function () {
+    _onClick() {
       if (this.options.url) {
         if (this.options.blank) {
           window.open(this.options.url);

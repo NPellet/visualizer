@@ -21,7 +21,7 @@ define([
   Util.loadCss('lib/d3/d3.parcoords.css');
 
   $.extend(true, View.prototype, Default, {
-    inDom: function () {
+    inDom() {
       this.dom = ui.getSafeElement('div').attr({
         id: this._id,
         class: 'parcoords',
@@ -51,10 +51,10 @@ define([
       this.resolveReady();
     },
     blank: {
-      value: function () {
+      value() {
         if (this.dom) this.dom.empty();
       },
-      columns: function () {
+      columns() {
         for (var i = 0; i < this._previousColumns.length; i++) {
           delete this._currentColumns[this._previousColumns[i].name];
         }
@@ -62,7 +62,7 @@ define([
       },
     },
     update: {
-      value: function (value) {
+      value(value) {
         if (!value) {
           this._value = [];
         } else {
@@ -76,7 +76,7 @@ define([
 
         this.redrawChart();
       },
-      columns: function (value) {
+      columns(value) {
         if (!Array.isArray(value)) return;
 
         for (var i = 0; i < value.length; i++) {
@@ -87,24 +87,24 @@ define([
       },
     },
     onActionReceive: {
-      addColumn: function (value) {
+      addColumn(value) {
         if (value && value.name && value.jpath) {
           this._addedColumns[value.name] = value;
           this.redrawChart();
         }
       },
-      removeColumn: function (value) {
+      removeColumn(value) {
         if (value && value.name) {
           delete this._addedColumns[value.name];
           this.redrawChart();
         }
       },
     },
-    onResize: function () {
+    onResize() {
       this.dom.css('width', this.width - 2);
       this.redrawChart();
     },
-    redrawChart: function () {
+    redrawChart() {
       var that = this;
       this.createIntermediateData();
       this.dom.empty();
@@ -162,7 +162,7 @@ define([
       }
       this.module.controller.onBrushSelection(this._data);
     },
-    createIntermediateData: function () {
+    createIntermediateData() {
       var columns = this.getColumns(),
         l = columns.length,
         colorJpath = this.module.getConfiguration('colorjpath'),
@@ -229,7 +229,7 @@ define([
       }
       this._data = newValue;
     },
-    getColumns: function () {
+    getColumns() {
       var totalConfig = [],
         i;
       var objConfig = {};
@@ -256,7 +256,7 @@ define([
       }
       return totalConfig;
     },
-    resetBrush: function () {
+    resetBrush() {
       if (this._parcoords) {
         this._parcoords.brushReset();
         this.module.controller.onBrushSelection(this._data);

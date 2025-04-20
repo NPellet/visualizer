@@ -28,15 +28,15 @@ define(['./versioning'], function (Versioning) {
     'fullscreen',
   ];
   return {
-    getConfig: function () {
+    getConfig() {
       return config;
     },
 
-    setConfig: function (c) {
+    setConfig(c) {
       config = c;
     },
 
-    contextMenu: function () {
+    contextMenu() {
       if (config && config.contextMenu) {
         return config.contextMenu;
       } else if (Versioning.isViewLocked()) {

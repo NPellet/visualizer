@@ -12,7 +12,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       this.webgl = (function () {
         try {
@@ -66,7 +66,7 @@ define([
       });
     },
 
-    clearScene: function () {
+    clearScene() {
       if (this.scene) {
         // this.scene.remove
 
@@ -80,12 +80,12 @@ define([
     },
 
     blank: {
-      function: function () {
+      function() {
         this.clearScene();
       },
     },
 
-    onResize: function () {
+    onResize() {
       if (!this.webgl) {
         Debug.warn('webgl context does not exist');
         return;
@@ -132,7 +132,7 @@ define([
       });
     },
 
-    addFloor: function (scene) {
+    addFloor(scene) {
       // scene.add( new THREE.AxisHelper() );
       var wireframeMaterial = new THREE.MeshBasicMaterial({
         color: 0x000088,
@@ -147,14 +147,14 @@ define([
     },
 
     update: {
-      function: function (data) {
+      function(data) {
         this.zFunctionText = data.get();
         this.createGraph();
         this.onResize();
       },
     },
 
-    animate: function () {
+    animate() {
       var that = this;
       requestAnimationFrame(that.animate.bind(that));
       if (that.doAnimation || that.firstAnimation > 0) {
@@ -164,7 +164,7 @@ define([
       }
     },
 
-    setCamera: function () {
+    setCamera() {
       var VIEW_ANGLE = 45,
         ASPECT = this.width / this.height,
         NEAR = 0.1,
@@ -176,14 +176,14 @@ define([
       this.scene.add(this.camera);
     },
 
-    setControls: function () {
+    setControls() {
       this.controls = new THREE.TrackballControls(
         this.camera,
         this.renderer.domElement,
       );
     },
 
-    createGraph: function () {
+    createGraph() {
       var that = this;
       var cfg = that.module.getConfiguration;
       var segments = cfg('segments');

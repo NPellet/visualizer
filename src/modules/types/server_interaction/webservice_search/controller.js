@@ -260,7 +260,7 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    button: function (cfg) {
+    button(cfg) {
       return cfg.indexOf('button') > -1;
     },
   };

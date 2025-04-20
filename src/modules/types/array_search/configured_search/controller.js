@@ -106,7 +106,7 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    searchfields: function (cfg) {
+    searchfields(cfg) {
       if (!Array.isArray(cfg)) {
         return [];
       }

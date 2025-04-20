@@ -91,7 +91,7 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (
         y1: linearg[1],
         x2: linearg[2],
         y2: linearg[3],
-        id: id,
+        id,
       })
       .selectAll('stop')
       .data(options.stops)

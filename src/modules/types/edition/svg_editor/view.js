@@ -101,7 +101,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    _renderSvg: function (svgCode) {
+    _renderSvg(svgCode) {
       var that = this;
       if (svgCode) {
         svgCode = String(svgCode.get());
@@ -160,13 +160,13 @@ define([
       });
     },
 
-    init: function () {
+    init() {
       this._renderSvg().then(() => {
         this.resolveReady();
       });
     },
 
-    onResize: function () {
+    onResize() {
       if (this._configCheckBox('editable', 'isEditable') && this.dom) {
         this.dom.parent().css({ overflow: 'hidden' });
         this.dom.height(this.height).width(this.width);
@@ -177,16 +177,16 @@ define([
     },
 
     update: {
-      svgModifier: function (data) {
+      svgModifier(data) {
         this.queuedSvgModifier = data;
         this.modifySvgFromArray(this.queuedSvgModifier, true);
       },
-      svgInput: function (svgCode) {
+      svgInput(svgCode) {
         this._renderSvg(svgCode).then(this._saveSvg.bind(this));
       },
     },
 
-    addAnimation: function ($svgEl, anim) {
+    addAnimation($svgEl, anim) {
       var that = this;
       var $allAnimations = $([]);
       if (!anim.attributes) return;
@@ -270,7 +270,7 @@ define([
       });
     },
 
-    addAnimations: function ($svgEl, animation) {
+    addAnimations($svgEl, animation) {
       if (Array.isArray(animation)) {
         for (var i = 0; i < animation.length; i++) {
           this.addAnimation($svgEl, animation[i]);
@@ -280,7 +280,7 @@ define([
       }
     },
 
-    setAttributesOneByOne: function ($svgEl, attributes) {
+    setAttributesOneByOne($svgEl, attributes) {
       for (const key in attributes) {
         if (typeof attributes[key] === 'function') {
           $svgEl.each(function () {
@@ -292,7 +292,7 @@ define([
       }
     },
 
-    removeStyleProperties: function ($svgEl, attributes) {
+    removeStyleProperties($svgEl, attributes) {
       // We don't use jquery .css() because we want
       // to override style properties defined in stylesheet
       $svgEl.each(function () {
@@ -303,7 +303,7 @@ define([
       });
     },
 
-    modifySvgFromArray: function (arr, isPrimaryCall) {
+    modifySvgFromArray(arr, isPrimaryCall) {
       var that = this;
 
       if (!arr) return;
@@ -325,7 +325,7 @@ define([
       that._saveSvg();
     },
 
-    modifySvgFromObject: function (obj, isPrimaryCall) {
+    modifySvgFromObject(obj, isPrimaryCall) {
       var that = this;
       var selector = obj.selector;
       if (!selector) return;
@@ -481,7 +481,7 @@ define([
       })($svgEl);
     },
 
-    getHighlightId: function ($svgEl) {
+    getHighlightId($svgEl) {
       return $svgEl
         .map(function () {
           return this.getAttribute('id');
@@ -490,28 +490,28 @@ define([
         .join(',');
     },
 
-    getDom: function () {
+    getDom() {
       return this.dom;
     },
 
-    _loadSvg: function () {
+    _loadSvg() {
       var svgcode = this.module.getConfiguration('svgcode');
       this.svgCanvas.setSvgString(svgcode);
       this.module.controller.onChange(svgcode);
     },
 
-    _saveSvg: function () {
+    _saveSvg() {
       saveSvgThrottled(this);
     },
 
-    _configCheckBox: function (config, option) {
+    _configCheckBox(config, option) {
       return (
         this.module.getConfiguration(config) &&
         _.find(this.module.getConfiguration(config), (val) => val === option)
       );
     },
 
-    memorizeAnim: function (anim, id) {
+    memorizeAnim(anim, id) {
       if (
         !id ||
         !anim.attributes ||
@@ -526,7 +526,7 @@ define([
       animMemory[id][anim.attributes.attributeName].to = anim.attributes.to;
     },
 
-    rememberAnim: function (anim, id) {
+    rememberAnim(anim, id) {
       if (!anim.attributes || anim.attributes.from || !id) return;
       if (
         !animMemory[id] ||
@@ -538,7 +538,7 @@ define([
       anim.attributes.from = animMemory[id][anim.attributes.attributeName].to;
     },
 
-    $getAnimationTags: function ($el) {
+    $getAnimationTags($el) {
       var $retEl;
       for (var i = 0; i < animationTags.length; i++) {
         if (i === 0) $retEl = $el.find(animationTags[i]);

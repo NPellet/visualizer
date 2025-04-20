@@ -24,7 +24,7 @@ define([
   }
 
   Util.inherits(VersionSelector, Default, {
-    initImpl: function () {
+    initImpl() {
       versionURL = this.options.url;
       type = this.options.queryType || 'query';
       if (this.options.minVersion && semver.valid(this.options.minVersion)) {
@@ -34,7 +34,7 @@ define([
       }
     },
 
-    _onClick: function () {
+    _onClick() {
       var that = this;
 
       this.setStyleOpen(this._open);
@@ -51,7 +51,7 @@ define([
       }
     },
 
-    doElements: function () {
+    doElements() {
       var that = this;
       var uri = new URI(document.location.href);
       var query = getQuery(uri);
@@ -76,7 +76,7 @@ define([
       });
     },
 
-    _buildSubElement: function (version, isSame) {
+    _buildSubElement(version, isSame) {
       var text = (isSame ? '• ' : '') + version;
       var that = this,
         dom = $('<li />').text(text);
@@ -87,7 +87,7 @@ define([
       return dom;
     },
 
-    load: function (version) {
+    load(version) {
       var uri = new URI(document.location.href);
       var query = getQuery(uri);
       if (query.v !== version) {

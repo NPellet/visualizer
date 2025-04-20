@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div />');
       var that = this;
       var img = $('<div class="ci-navigation-navigarrow"></div>');
@@ -31,7 +31,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
         step: 0.01,
         max: 1,
         value: 0.5,
-        slide: function (event, ui) {
+        slide(event, ui) {
           that.zoom(ui.value);
         },
       });
@@ -45,7 +45,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
     },
 
     update: {
-      xycoords: function (value) {
+      xycoords(value) {
         if (!value) {
           return;
         }
@@ -53,7 +53,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
         this.cy = value[1];
       },
 
-      zoom: function (zoom) {
+      zoom(zoom) {
         if (!zoom) {
           return;
         }
@@ -64,11 +64,11 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
       },
     },
 
-    zoom: function (val) {
+    zoom(val) {
       this.module.controller.zoom(val);
     },
 
-    moveStart: function (e) {
+    moveStart(e) {
       var started = Date.now();
       // self.moveStart(event);
 
@@ -120,7 +120,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
     },
 
     onActionReceive: {
-      changeXY: function (value) {
+      changeXY(value) {
         this.cx = parseFloat(value);
       },
     },

@@ -8,13 +8,13 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function (
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div />');
       this.module.getDomContent().html(this.dom);
       this.callback = null;
     },
 
-    inDom: function () {
+    inDom() {
       var that = this;
       var structure = this.module.getConfiguration('structure');
       var tpl_file = this.module.getConfiguration('tpl_file');
@@ -66,7 +66,7 @@ define(['jquery', 'modules/default/defaultview', 'forms/form'], function (
         });
       });
     },
-    onChange: function (fieldElement, data) {
+    onChange(fieldElement, data) {
       this.module.controller.dataChanged(data);
     },
   });

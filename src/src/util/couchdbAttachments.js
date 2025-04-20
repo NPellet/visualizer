@@ -128,7 +128,7 @@ define([
             if (item.encoding === 'base64') {
               this.lastDoc._attachments[name] = {
                 content_type: item.contentType,
-                data: data,
+                data,
               };
             } else {
               let dataUrl = base64DataUrlReg.exec(data.slice(0, 64));
@@ -155,7 +155,7 @@ define([
               let reader = new FileReader();
               reader.onload = function (e) {
                 return resolve({
-                  item: item,
+                  item,
                   base64data: dataURLtoBase64(e.target.result),
                 });
               };

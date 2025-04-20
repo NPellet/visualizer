@@ -974,8 +974,8 @@ define([
       );
     }
     migrationFunctions.push({
-      version: version,
-      func: func,
+      version,
+      func,
     });
   }
 

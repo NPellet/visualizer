@@ -84,7 +84,7 @@ define([
             title: custom[i].title,
             cssClass: `fa ${custom[i].icon}`,
             color: Color.array2rgba(custom[i].color),
-            onClick: function () {
+            onClick() {
               API.doAction(custom[i].action, this.getId());
             },
           };

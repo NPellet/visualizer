@@ -9,7 +9,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       // When we change configuration the method init is called again. Also the case when we change completely of view
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
@@ -24,7 +24,7 @@ define([
       this.resolveReady();
     },
 
-    onResize: function () {
+    onResize() {
       this._redraw();
     },
 
@@ -33,21 +33,21 @@ define([
          It will also be called at the beginning and in this case the value is null !
          */
     update: {
-      chart: function (moduleValue) {
+      chart(moduleValue) {
         this.value = moduleValue.get();
         this._redraw();
       },
     },
 
     blank: {
-      chart: function () {
+      chart() {
         if (this.dom) {
           this.dom.empty();
         }
       },
     },
 
-    _redraw: function () {
+    _redraw() {
       if (!this.value) {
         return;
       }
@@ -92,7 +92,7 @@ define([
       });
     },
 
-    _convertChartToData: function (value) {
+    _convertChartToData(value) {
       var data = [];
       if (value && Array.isArray(value.data)) {
         for (var j = 0; j < value.data[0].x.length; j++) {
@@ -113,14 +113,14 @@ define([
       }
       return data;
     },
-    getRandomColor: function (nbColor, i) {
+    getRandomColor(nbColor, i) {
       var currentColor = (360 / nbColor) * i;
       var color = `hsla(${currentColor},100%,50%,0.3)`;
 
       return color;
     },
 
-    createChart: function (chart, data) {
+    createChart(chart, data) {
       const cfg = this.module.getConfiguration;
       let val;
       switch (cfg('preference')) {

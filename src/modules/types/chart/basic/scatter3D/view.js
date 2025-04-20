@@ -153,7 +153,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    _initThreejs: function () {
+    _initThreejs() {
       var that = this;
       var container;
       var pointedObjects = [];
@@ -562,7 +562,7 @@ define([
       }
     },
 
-    _drawGraph: function () {
+    _drawGraph() {
       var that = this;
       // Remove all objects
       _.keys(that.scene.children).forEach(function (key) {
@@ -596,7 +596,7 @@ define([
       that._render();
     },
 
-    _drawPointsQuick: function () {
+    _drawPointsQuick() {
       var that = this;
       if (that._mainParticleObjects) {
         for (const shape in that._mainParticleObjects) {
@@ -612,7 +612,7 @@ define([
 
       for (const shape in m) {
         that._mainParticleObjects[shape] = that._newParticleObject(m[shape], {
-          shape: shape,
+          shape,
         });
         that._updateParticleObject(that._mainParticleObjects[shape]);
         that.scene.add(that._mainParticleObjects[shape]);
@@ -621,7 +621,7 @@ define([
       that._doRender();
     },
 
-    _configCheckBox: function (config, option) {
+    _configCheckBox(config, option) {
       return (
         this.module.getConfiguration(config) &&
         _.find(this.module.getConfiguration(config), function (val) {
@@ -630,14 +630,14 @@ define([
       );
     },
 
-    _getDataField: function (field) {
+    _getDataField(field) {
       if (!this._data) {
         return [];
       }
       return _.flatten(_.map(this._data.data, field));
     },
 
-    _normalizeData: function () {
+    _normalizeData() {
       var that = this;
       if (!this._data) {
         return;
@@ -671,7 +671,7 @@ define([
       });
     },
 
-    _processColors: function () {
+    _processColors() {
       this.colorDomain = _.filter(this._data.color, function (v) {
         return !isNaN(v);
       });
@@ -712,7 +712,7 @@ define([
       }
     },
 
-    _computeMinMax: function () {
+    _computeMinMax() {
       var that = this;
       if (!that._data) {
         return;
@@ -762,7 +762,7 @@ define([
       that._data.len.z = that._data.max.z - that._data.min.z;
     },
 
-    _getUnitPerTick: function (px, nbTick, valrange, axis) {
+    _getUnitPerTick(px, nbTick, valrange, axis) {
       var that = this;
       if (!nbTick) {
         nbTick = px / 10;
@@ -873,7 +873,7 @@ define([
       }
     },
 
-    _computeTickInfo: function () {
+    _computeTickInfo() {
       var that = this;
       that._data.realMin = {};
       that._data.realMax = {};
@@ -890,7 +890,7 @@ define([
       that._getUnitPerTick(NORM_CONSTANT, 3, that._data.len.z, 'z');
     },
 
-    _drawAxes: function () {
+    _drawAxes() {
       var that = this;
       if (!that._data) {
         return;
@@ -936,7 +936,7 @@ define([
       this.scene.add(axZ);
     },
 
-    _drawCircle: function (options) {
+    _drawCircle(options) {
       options = options || {};
       var circle = new THREE.Shape();
       var radius = options.radius || DEFAULT_POINT_RADIUS;
@@ -980,7 +980,7 @@ define([
       return mesh;
     },
 
-    _drawColorBar: function () {
+    _drawColorBar() {
       this.$colorbar.empty();
       this.$colorbar.css({
         position: 'absolute',
@@ -1006,7 +1006,7 @@ define([
       });
     },
 
-    _drawLine: function (p1, p2, options) {
+    _drawLine(p1, p2, options) {
       options = options || {};
       var material = new THREE.LineBasicMaterial({
         color: options.color || 0x000000,
@@ -1019,7 +1019,7 @@ define([
       return line;
     },
 
-    _reinitObject3DArray: function (name) {
+    _reinitObject3DArray(name) {
       this[name] = this[name] || [];
       for (let i = 0; i < this[name].length; i++) {
         this.scene.remove(this[name][i]);
@@ -1027,7 +1027,7 @@ define([
       this[name] = [];
     },
 
-    _setGridOrigin: function () {
+    _setGridOrigin() {
       this.gorigin = {};
       this.gorigin.x = parseFloat(
         this.module.getConfiguration('gridOriginX') || this._data.realMin.x,
@@ -1049,7 +1049,7 @@ define([
         this._data.realLen.z;
     },
 
-    _drawSecondaryGrid: function () {
+    _drawSecondaryGrid() {
       var that = this;
       that._reinitObject3DArray('secondaryGrid');
       var options = { color: 0x888888 };
@@ -1188,7 +1188,7 @@ define([
       }
     },
 
-    _drawGrid: function () {
+    _drawGrid() {
       const that = this;
       that._reinitObject3DArray('grid');
       // x lines
@@ -1300,7 +1300,7 @@ define([
       }
     },
 
-    _drawTicks: function () {
+    _drawTicks() {
       const that = this;
       that._reinitObject3DArray('ticks');
 
@@ -1352,7 +1352,7 @@ define([
       }
     },
 
-    _addText: function (text, x, y, z, options) {
+    _addText(text, x, y, z, options) {
       const that = this;
       options = options || {};
 
@@ -1411,7 +1411,7 @@ define([
       return mesh;
     },
 
-    _drawTickLabels: function () {
+    _drawTickLabels() {
       var that = this;
 
       that._reinitObject3DArray('tickLabels');
@@ -1481,7 +1481,7 @@ define([
       }
     },
 
-    _drawGraphTitle: function () {
+    _drawGraphTitle() {
       var that = this;
 
       that._reinitObject3DArray('graphTitle');
@@ -1501,7 +1501,7 @@ define([
       }
     },
 
-    _drawAxisLabels: function () {
+    _drawAxisLabels() {
       var that = this;
 
       that._reinitObject3DArray('axisLabels');
@@ -1632,7 +1632,7 @@ define([
       }
     },
 
-    _drawFaces: function () {
+    _drawFaces() {
       var that = this;
       if (!that._data) {
         return;
@@ -1738,7 +1738,7 @@ define([
       }
     },
 
-    _inBoundary: function (point) {
+    _inBoundary(point) {
       var that = this;
       if (_.isObject(point)) {
         if (point.x < that._data.realMin.x || point.x > that._data.realMax.x) {
@@ -1765,7 +1765,7 @@ define([
       }
     },
 
-    _computeInBoundaryIndexes: function () {
+    _computeInBoundaryIndexes() {
       const that = this;
       that._data.inBoundary = [];
       for (let i = 0; i < that._data.x.length; i++) {
@@ -1783,7 +1783,7 @@ define([
       }
     },
 
-    _mathPoints: function () {
+    _mathPoints() {
       var that = this;
       if (!that._data) return;
       that.mathPoints = [];
@@ -1809,7 +1809,7 @@ define([
       }
     },
 
-    _updateMathPoints: function (options) {
+    _updateMathPoints(options) {
       var that = this;
       var filter;
       if (options.applyFilter) {
@@ -1828,7 +1828,7 @@ define([
       }
     },
 
-    _zoomToFit: function () {
+    _zoomToFit() {
       var that = this;
       var theta = Math.PI / 3;
       var phi = Math.PI / 4;
@@ -1851,14 +1851,14 @@ define([
       that.cameraRight.lookAt(target);
     },
 
-    _polarToCartesian: function (theta, phi, r) {
+    _polarToCartesian(theta, phi, r) {
       var x = Math.sin(phi) * Math.cos(theta) * r;
       var y = Math.sin(phi) * Math.sin(theta) * r;
       var z = Math.cos(phi) * r;
       return [x, y, z];
     },
 
-    init: function () {
+    init() {
       var that = this;
       var c = this.module.getConfiguration('defaultPointColor');
       DEFAULT_POINT_COLOR = rgbToHex(c[0], c[1], c[2]);
@@ -1885,7 +1885,7 @@ define([
       this.resolveReady();
     },
 
-    onResize: function () {
+    onResize() {
       var that = this;
 
       // the size is now really defined (we are after inDom)
@@ -1921,13 +1921,13 @@ define([
       });
     },
 
-    _setBackgroundColor: function () {
+    _setBackgroundColor() {
       var bgColor = this.module.getConfiguration('backgroundColor');
       DEFAULT_BACKGROUND_COLOR = rgbToHex(bgColor[0], bgColor[1], bgColor[2]);
       this.renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 1);
     },
 
-    _newParticleObject: function (indexes, options) {
+    _newParticleObject(indexes, options) {
       var that = this;
       options = options || {};
       var image =
@@ -1948,8 +1948,8 @@ define([
       // uniforms.texture.value.wrapS = uniforms.texture.value.wrapT = THREE.RepeatWrapping;
 
       var shaderMaterial = new THREE.ShaderMaterial({
-        uniforms: uniforms,
-        attributes: attributes,
+        uniforms,
+        attributes,
         vertexShader:
           '      attribute float size;      attribute vec4 ca;      varying vec4 vColor;      void main() {        vColor = ca;        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );        gl_PointSize = size * ( 1.0 / length( mvPosition.xyz ) );        gl_Position = projectionMatrix * mvPosition;      }',
         fragmentShader:
@@ -1982,7 +1982,7 @@ define([
       return object;
     },
 
-    _updateParticleObject: function (object, options) {
+    _updateParticleObject(object, options) {
       if (!object) {
         return;
       }
@@ -2039,7 +2039,7 @@ define([
       object.material.attributes.ca.needsUpdate = true;
     },
 
-    _prepareHighlights: function (hl) {
+    _prepareHighlights(hl) {
       var that = this;
       that._highlightParticleObjects = {};
       var m = {};
@@ -2074,7 +2074,7 @@ define([
          It will also be called at the beginning and in this case the value is null !
          */
     update: {
-      chart: function (moduleValue) {
+      chart(moduleValue) {
         this._3d = this.module.getConfiguration('3d');
         this.module.data = moduleValue;
         if (!moduleValue.get()) {
@@ -2101,7 +2101,7 @@ define([
           this._drawGraph();
         }
       },
-      data3D: function (moduleValue) {
+      data3D(moduleValue) {
         this._3d = this.module.getConfiguration('3d');
         this.module.data = moduleValue;
         if (!moduleValue || !moduleValue.get()) {
@@ -2129,7 +2129,7 @@ define([
         }
       },
 
-      boolArray: function (moduleValue) {
+      boolArray(moduleValue) {
         if (!this._data || !this._mainParticleObjects) {
           return;
         }
@@ -2163,14 +2163,14 @@ define([
       },
     },
 
-    _render: function () {
+    _render() {
       var that = this;
       setTimeout(function () {
         that._doRender();
       }, 20);
     },
 
-    _doRender: function () {
+    _doRender() {
       if (this._3d === 'sideBySide') {
         var width = this.width / 2;
         var height = this.height;
@@ -2197,7 +2197,7 @@ define([
       this.renderer.render(this.scene, this.camera);
     },
 
-    _convertData3dToData: function (value) {
+    _convertData3dToData(value) {
       var that = this;
       if (!Array.isArray(value) || value.length === 0) {
         Debug.error('Data 3D not valid');
@@ -2254,7 +2254,7 @@ define([
       that._dispFilter = that._dispFilter || [];
     },
 
-    _convertChartToData: function (value) {
+    _convertChartToData(value) {
       this._data = new DataObject();
       this._meta = new DataObject();
       var that = this;
@@ -2298,7 +2298,7 @@ define([
       that._dispFilter = that._dispFilter || [];
     },
 
-    _completeData: function (name, defaultValue) {
+    _completeData(name, defaultValue) {
       var that = this;
       that._data[name] = that._data[name] || [];
       for (let i = 0; i < that._data.x.length; i++) {
@@ -2308,13 +2308,13 @@ define([
       }
     },
 
-    _completeChartData: function () {
+    _completeChartData() {
       this._completeData('size', DEFAULT_POINT_RADIUS);
       this._completeData('color', DEFAULT_POINT_COLOR);
       this._completeData('shape', DEFAULT_POINT_SHAPE);
     },
 
-    _activateHighlights: function () {
+    _activateHighlights() {
       var that = this;
       if (that._data) {
         API.killHighlight(that.module.getId());
@@ -2377,7 +2377,7 @@ define([
       }
     },
 
-    updateOptions: function () {
+    updateOptions() {
       this._options = {
         grid: {
           clickable: true,

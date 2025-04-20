@@ -35,7 +35,7 @@ define(['jquery', 'lodash'], function ($, _) {
   );
 
   return {
-    getState: function () {
+    getState() {
       return state;
     },
   };

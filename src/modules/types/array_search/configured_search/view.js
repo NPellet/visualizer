@@ -11,7 +11,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       var parentDom = $('<div>').css({
         position: 'relative',
@@ -110,7 +110,7 @@ define([
       var form = FormCreator.makeForm();
 
       form.init({
-        onValueChanged: function (value) {
+        onValueChanged(value) {
           var cfg = form.getValue().sections.cfg[0].groups.cfg[0],
             cfgFinal = {};
 
@@ -140,12 +140,12 @@ define([
     },
 
     blank: {
-      value: function (varName) {
+      value(varName) {
         this.dom.empty();
       },
     },
 
-    search: function () {
+    search() {
       if (this.searchEnabled) {
         var cfg = this.cfgValue,
           i,
@@ -178,7 +178,7 @@ define([
       }
     },
 
-    _makeOp: function (op, val, options) {
+    _makeOp(op, val, options) {
       val = `cfg[ "${val}" ]`;
       var numPrefix = '',
         numSuffix = '';
@@ -233,7 +233,7 @@ define([
       }
     },
 
-    makeSearchFilter: function () {
+    makeSearchFilter() {
       var searchfields = this.module.getConfiguration('searchfields'),
         i = 0,
         l = searchfields.length,
@@ -303,16 +303,16 @@ define([
       }
     },
 
-    searchElement: function (cfg, row) {
+    searchElement(cfg, row) {
       return this._searchFunc(cfg, row);
     },
 
-    getJpath: function (jpathEl, row) {
+    getJpath(jpathEl, row) {
       return this._jpathsFcts[jpathEl](row);
     },
 
     update: {
-      array: function (variableValue, variableName) {
+      array(variableValue, variableName) {
         if (variableValue) {
           this.variables[variableName] = variableValue.get();
           this.search();
@@ -321,7 +321,7 @@ define([
     },
 
     onActionReceive: {
-      disable: function () {
+      disable() {
         if (this.searchEnabled) {
           this.searchEnabled = false;
           this.overlay.css('display', 'table');

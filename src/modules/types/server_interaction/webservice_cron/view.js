@@ -4,7 +4,7 @@ define(['modules/default/defaultview'], function (Default) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div></div>');
       this.logList = this.dom[0].children;
       this.module.getDomContent().html(this.dom);
@@ -12,7 +12,7 @@ define(['modules/default/defaultview'], function (Default) {
       this.maxLogs = this.module.getConfiguration('maxLogs');
       this.resolveReady();
     },
-    log: function (success, variable) {
+    log(success, variable) {
       var time = new Date();
       var color = success ? '#77DD77' : '#FF6961';
       this.dom.prepend(

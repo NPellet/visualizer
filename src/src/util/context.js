@@ -7,7 +7,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
   var contextMenu;
 
   return {
-    listen: function (dom, elements, onBeforeShow, onAfterShow) {
+    listen(dom, elements, onBeforeShow, onAfterShow) {
       if (!Array.isArray(elements[0])) elements = [elements];
 
       dom.addEventListener(
@@ -48,15 +48,15 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
       );
     },
 
-    unlisten: function (dom) {
+    unlisten(dom) {
       dom.removeEventListener('contextmenu');
     },
 
-    getRootDom: function () {
+    getRootDom() {
       return this.dom;
     },
 
-    init: function (dom) {
+    init(dom) {
       this.dom = dom;
       var top, left;
       dom.addEventListener(
@@ -76,8 +76,8 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           var $menu = $('<ul class="ci-contextmenu"></ul>')
             .css({
               position: 'fixed',
-              left: left,
-              top: top,
+              left,
+              top,
               'z-index': 10000,
             })
             .appendTo($('body'));
@@ -106,7 +106,7 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
         function (e) {
           if (contextMenu.children().length > 0) {
             contextMenu.menu({
-              select: function (event, ui) {
+              select(event, ui) {
                 var moduleName = ui.item.attr('name');
               },
             });

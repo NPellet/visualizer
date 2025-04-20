@@ -87,7 +87,7 @@ define(['modules/default/defaultcontroller', 'x2js'], function (Default, X2JS) {
 
   Controller.prototype.doAjax = function (self, variable, url, datatype) {
     var ajax = {
-      url: url,
+      url,
       dataType: 'text',
     };
 

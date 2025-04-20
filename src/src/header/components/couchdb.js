@@ -14,7 +14,7 @@ define([
   function CouchDBManager() {}
 
   Util.inherits(CouchDBManager, Default, {
-    initImpl: function () {
+    initImpl() {
       this.ok = false;
       this.loggedIn = false;
       this.id = Util.getNextUniqueId();
@@ -29,13 +29,13 @@ define([
 
       this.checkDatabase();
     },
-    checkDatabase: function () {
+    checkDatabase() {
       var that = this;
       $.couch.info({
-        success: function (event) {
+        success(event) {
           that.ok = true;
         },
-        error: function (e, f, g) {
+        error(e, f, g) {
           Debug.error(
             `CouchDB header : database connection error. Code:${e}.`,
             g,
@@ -43,10 +43,10 @@ define([
         },
       });
     },
-    cssId: function (name) {
+    cssId(name) {
       return `ci-couchdb-header-${this.id}-${name}`;
     },
-    _onClick: function () {
+    _onClick() {
       if (this.ok) {
         this.setStyleOpen(this._open);
         if (this._open) {
@@ -60,7 +60,7 @@ define([
         Debug.error('CouchDB header : unreachable database.');
       }
     },
-    createMenu: function () {
+    createMenu() {
       if (this.$_elToOpen) {
         if (this.loggedIn) this.$_elToOpen.html(this.getMenuContent());
         else this.$_elToOpen.html(this.getLoginForm());
@@ -72,7 +72,7 @@ define([
       this.errorP = $(`<p id="${this.cssId('error')}" style="color: red;">`);
 
       $.couch.session({
-        success: function (data) {
+        success(data) {
           if (data.userCtx.name === null) {
             that.$_elToOpen.html(that.getLoginForm());
           } else {
@@ -83,14 +83,14 @@ define([
         },
       });
     },
-    load: function (type, node, rev) {
+    load(type, node, rev) {
       var result = {};
       result[type.toLowerCase()] = {
         url: this.database.uri + node.data.id + (rev ? `?rev=${rev}` : ''),
       };
       Versioning.switchView(result, true);
     },
-    save: function (type, name) {
+    save(type, name) {
       if (name.length < 1) return;
       if (name.indexOf(':') !== -1) return this.showError(10);
 
@@ -122,7 +122,7 @@ define([
       }
 
       this.database.saveDoc(content, {
-        success: function (data) {
+        success(data) {
           if (update) {
             last.node.data.lastRev = data.rev;
             if (last.node.children) last.node.load(true);
@@ -140,7 +140,7 @@ define([
         error: this.showError,
       });
     },
-    mkdir: function (type, name) {
+    mkdir(type, name) {
       if (name.length < 1) return;
       if (name.indexOf(':') !== -1) return this.showError(10);
 
@@ -169,12 +169,12 @@ define([
       if (!folderNode.expanded) folderNode.toggleExpanded();
       $(newNode.li).find('.fancytree-title').trigger('click');
     },
-    login: function (username, password) {
+    login(username, password) {
       var that = this;
       $.couch.login({
         name: username,
-        password: password,
-        success: function (data) {
+        password,
+        success(data) {
           that.loggedIn = true;
           that.username = username;
           that.$_elToOpen.html(that.getMenuContent());
@@ -182,17 +182,17 @@ define([
         error: this.showError,
       });
     },
-    logout: function () {
+    logout() {
       var that = this;
       $.couch.logout({
-        success: function () {
+        success() {
           that.loggedIn = false;
           that.username = null;
           that.$_elToOpen.html(that.getLoginForm());
         },
       });
     },
-    getLoginForm: function () {
+    getLoginForm() {
       var that = this;
 
       function doLogin() {
@@ -230,7 +230,7 @@ define([
 
       return this.loginForm;
     },
-    getMenuContent: function () {
+    getMenuContent() {
       const that = this;
       this.menuContent = $('<div>');
 
@@ -337,13 +337,13 @@ define([
 
       return this.menuContent;
     },
-    lazyLoad: function (event, result) {
+    lazyLoad(event, result) {
       var id = result.node.data.id;
       var def = $.Deferred();
       result.result = def.promise();
       this.database.openDoc(id, {
         revs_info: true,
-        success: function (data) {
+        success(data) {
           var info = data._revs_info,
             l = info.length,
             revs = [];
@@ -363,7 +363,7 @@ define([
         },
       });
     },
-    clickNode: function (type, event, data) {
+    clickNode(type, event, data) {
       if (data.targetType !== 'title' && data.targetType !== 'icon') return;
 
       var node = data.node,
@@ -378,7 +378,7 @@ define([
           name: `${this.username}:${typeL}${
             folderName.length > 0 ? `:${folderName}` : ''
           }`,
-          node: node,
+          node,
         };
       } else {
         var rev;
@@ -388,7 +388,7 @@ define([
           node = node.parent;
         }
         $(`#${this.cssId(typeL)}`).val(node.title);
-        last = { name: node.data.id, node: node };
+        last = { name: node.data.id, node };
         if (event.type === 'fancytreedblclick') this.load(type, node, rev);
       }
 
@@ -397,7 +397,7 @@ define([
 
       if (event.type === 'fancytreedblclick' && !node.folder) return false;
     },
-    loadTree: function () {
+    loadTree() {
       const proxyLazyLoad = this.lazyLoad.bind(this);
       const proxyClickData = this.clickNode.bind(this, 'Data');
       const proxyClickView = this.clickNode.bind(this, 'View');
@@ -465,7 +465,7 @@ define([
           _rev: node.data.lastRev,
         };
         this.database.removeDoc(doc, {
-          success: function () {
+          success() {
             node.remove();
           },
           error: this.showError,

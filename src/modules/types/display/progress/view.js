@@ -11,7 +11,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.total = 0;
       this.curr = 0;
       this.tpl = this.module.getConfiguration('tpl', ':current / :total');
@@ -41,7 +41,7 @@ define([
     },
 
     blank: {
-      total: function () {
+      total() {
         this.total = 0;
         this.curr = 0;
         this.render();
@@ -49,7 +49,7 @@ define([
     },
 
     update: {
-      total: function (total) {
+      total(total) {
         this.total = total.get();
         this.start = Date.now();
         this.render();
@@ -57,23 +57,23 @@ define([
     },
 
     onActionReceive: {
-      inc: function (value) {
+      inc(value) {
         if (value !== 0) {
           value = value || 1;
         }
         this.curr += +value;
         this.render();
       },
-      set: function (value) {
+      set(value) {
         this.onActionReceive.inc.call(this, +value - this.curr);
       },
-      total: function (value) {
+      total(value) {
         this.total = +value;
         this.render();
       },
     },
 
-    render: function () {
+    render() {
       var ratio = this.curr / this.total;
       ratio = Math.min(Math.max(ratio, 0), 1);
 

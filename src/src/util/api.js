@@ -45,31 +45,31 @@ define([
   }
 
   var exports = {
-    getRepositoryData: function () {
+    getRepositoryData() {
       return this.repositoryData;
     },
 
-    setRepositoryData: function (repo) {
+    setRepositoryData(repo) {
       this.repositoryData = repo;
     },
 
-    getRepositoryHighlights: function () {
+    getRepositoryHighlights() {
       return this.repositoryHighlights;
     },
 
-    setRepositoryHighlights: function (repo) {
+    setRepositoryHighlights(repo) {
       this.repositoryHighlights = repo;
     },
 
-    getRepositoryActions: function () {
+    getRepositoryActions() {
       return this.repositoryActions;
     },
 
-    setRepositoryActions: function (repo) {
+    setRepositoryActions(repo) {
       this.repositoryActions = repo;
     },
 
-    listenHighlight: function () {
+    listenHighlight() {
       if (!arguments[0] || typeof arguments[0]._highlight === 'undefined') {
         return;
       }
@@ -81,7 +81,7 @@ define([
       );
     },
 
-    killHighlight: function () {
+    killHighlight() {
       this.repositoryHighlights.kill.apply(
         this.repositoryHighlights,
         arguments,
@@ -90,11 +90,11 @@ define([
 
     highlightId: setHighlightId,
 
-    getAllFilters: function () {
+    getAllFilters() {
       return variableFilters;
     },
 
-    setAllFilters: function (filters) {
+    setAllFilters(filters) {
       variableFilters = _([filters, variableFilters])
         .flatten()
         .filter((v) => v && v.name && v.file)
@@ -106,22 +106,22 @@ define([
         .value();
     },
 
-    isViewLocked: function () {
+    isViewLocked() {
       return Versioning.isViewLocked();
     },
 
-    viewLock: function () {
+    viewLock() {
       return Versioning.viewLock();
     },
 
-    getContextMenu: function () {
+    getContextMenu() {
       return Config.contextMenu();
     },
 
     /* Extra functions used in filter testsuite. Allows compatibility of filters */
-    dev_fctCalled: function (fct) {},
-    dev_fctUncalled: function (fct) {},
-    dev_assert: function (family, script, value) {},
+    dev_fctCalled(fct) {},
+    dev_fctUncalled(fct) {},
+    dev_assert(family, script, value) {},
   };
 
   /**

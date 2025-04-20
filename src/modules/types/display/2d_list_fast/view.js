@@ -9,7 +9,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div class="ci-displaylist-list-2d-fast"></div>');
       this.module.getDomContent().html(this.dom);
       this.rendererOptions =
@@ -19,17 +19,17 @@ define([
     },
 
     blank: {
-      list: function () {
+      list() {
         this.list = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
-      showList: function () {
+      showList() {
         this.showList = null;
       },
     },
 
-    inDom: function () {
+    inDom() {
       var that = this;
       this.dom.on('mouseenter mouseleave click', '> div', function (e) {
         var elementId = $(this).index();
@@ -66,7 +66,7 @@ define([
     },
 
     update: {
-      list: function (moduleValue) {
+      list(moduleValue) {
         var val = moduleValue.get();
         this.setDim(val);
 
@@ -113,7 +113,7 @@ define([
         this.updateVisibility();
       },
 
-      showList: function (value) {
+      showList(value) {
         var list = value.get();
         this.setDim(list);
         if (this.dim === 1) {
@@ -125,7 +125,7 @@ define([
       },
     },
 
-    updateVisibility: function () {
+    updateVisibility() {
       if (!this.showList || !this.list) {
         return;
       }
@@ -144,7 +144,7 @@ define([
       });
     },
 
-    renderElement: function (element, dimensions, colorJpath, valJpath) {
+    renderElement(element, dimensions, colorJpath, valJpath) {
       var td = $('<div>').css(dimensions).appendTo(this.dom);
 
       if (colorJpath) {
@@ -169,7 +169,7 @@ define([
       return [Renderer.render(td, element, valJpath, this.rendererOptions), td];
     },
 
-    setDim: function (val) {
+    setDim(val) {
       var currentDim = this.dim;
       var newDim = Array.isArray(val[0]) ? 2 : 1;
       if (newDim !== currentDim) {

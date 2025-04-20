@@ -151,7 +151,7 @@ define([
   function VersioningElement() {}
 
   Util.inherits(VersioningElement, Default, {
-    getReady: function () {
+    getReady() {
       // Gets DOM ready
       if (this.$_elToOpen) return this.$_elToOpen;
 
@@ -205,7 +205,7 @@ define([
       Versioning.getDataHandler().doUpdateButtons();
     },
 
-    updateButtons: function (type, head, path) {
+    updateButtons(type, head, path) {
       if (!buttons[type].autosaveLocal) return;
 
       if (head !== 'head' || path !== 'local') {
@@ -233,7 +233,7 @@ define([
       }
     },
 
-    _onClick: function () {
+    _onClick() {
       var el = this.getReady();
       this.setStyleOpen(this._open);
       if (this._open) {

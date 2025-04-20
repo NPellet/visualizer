@@ -142,7 +142,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   var duplicator = {
-    value: function () {
+    value() {
       return duplicate(this);
     },
   };
@@ -264,7 +264,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   window.DataArray = DataArray;
 
   var resurrectObject = {
-    value: function () {
+    value() {
       var obj = {};
 
       var enumerableKeys = Object.keys(this);
@@ -286,7 +286,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var resurrectArray = {
-    value: function () {
+    value() {
       var obj = [];
       for (var i = 0, l = this.length; i < l; i++) {
         if (isSpecialObject(this[i])) {
@@ -300,7 +300,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var dataGetter = {
-    value: function (prop, returnPromise, constructor) {
+    value(prop, returnPromise, constructor) {
       function processVal(val) {
         if (typeof val !== 'object' || val === null) return val;
         if (typeof val[prop] !== 'undefined') {
@@ -360,7 +360,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   var dataSetter = {
-    value: function (prop, value, noTrigger) {
+    value(prop, value, noTrigger) {
       var valueTyped = DataObject.check(value, true);
       var self = this.get();
 
@@ -413,7 +413,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   const getChild = {
-    value: async function (jpath) {
+    async value(jpath) {
       if (typeof jpath === 'string') {
         // Old version
         jpath = jpath.split('.');
@@ -439,7 +439,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   const trace = {
-    value: async function (jpath) {
+    async value(jpath) {
       if (jpath && jpath.split) {
         jpath = jpath.split('.');
         jpath.shift();
@@ -467,13 +467,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var traceSync = {
-    value: function (jpath) {
+    value(jpath) {
       return this.getChildSync(jpath, true);
     },
   };
 
   var getChildSync = {
-    value: function (jpath, setParents) {
+    value(jpath, setParents) {
       if (typeof jpath === 'string') {
         // Old version
         jpath = jpath.split('.');
@@ -506,7 +506,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var linkToParent = {
-    value: function (parent, name) {
+    value(parent, name) {
       if (this.__parent) {
         return;
       }
@@ -527,7 +527,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var setChild = {
-    value: function (jpath, newValue, triggerParams, constructor) {
+    value(jpath, newValue, triggerParams, constructor) {
       var that = this;
 
       if (typeof jpath === 'string') {
@@ -578,7 +578,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var setChildSync = {
-    value: function (jpath, newValue, triggerParams, constructor) {
+    value(jpath, newValue, triggerParams, constructor) {
       var that = this;
 
       if (typeof jpath === 'string') {
@@ -628,7 +628,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var triggerBubble = {
-    value: function (args) {
+    value(args) {
       if (this._dataChange) {
         for (var i in this._dataChange) {
           this._dataChange[i].apply(this, args);
@@ -656,7 +656,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   // In order to prevent looping, the trigger and bind change should only be called via the module model.
 
   var triggerChange = {
-    value: function (noBubble, args, jpath, target) {
+    value(noBubble, args, jpath, target) {
       if (!Array.isArray(args)) {
         if (args == undefined) {
           args = [];
@@ -667,7 +667,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
       if (jpath) {
         args.unshift({
-          target: target,
+          target,
           jpath: [jpath],
         });
       } else {
@@ -705,7 +705,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var bindChange = {
-    value: function (callback) {
+    value(callback) {
       if (!this._dataChange) {
         Object.defineProperty(this, '_dataChange', {
           value: {},
@@ -724,7 +724,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var unbindChange = {
-    value: function (idOrFunc) {
+    value(idOrFunc) {
       if (!this._dataChange) {
         Debug.info('Could not unbind event. No listener for this object');
         return false;
@@ -739,7 +739,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var getType = {
-    value: function () {
+    value() {
       var type = Util.objectToString(this).toLowerCase();
       if (type !== 'object') {
         // Native types: number, string, boolean
@@ -760,7 +760,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var fetch = {
-    value: function (forceJson) {
+    value(forceJson) {
       if (!this.url || !this.type || Object.hasOwn(this, 'value')) {
         // No need for fetching. Still returning a promise, though.
         return Promise.resolve(this);
@@ -849,7 +849,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   var mergeWithObject = {
-    value: function (objectToMerge, moduleId, noBubble) {
+    value(objectToMerge, moduleId, noBubble) {
       if (
         typeof objectToMerge !== 'object' ||
         Array.isArray(objectToMerge) ||
@@ -863,7 +863,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var mergeWithArray = {
-    value: function (objectToMerge, moduleId, noBubble) {
+    value(objectToMerge, moduleId, noBubble) {
       // TODO find a way to implement this
       this.triggerChange(noBubble, [moduleId]);
       return Debug.warn('mergeWith method not yet implemented for DataArray');
@@ -871,7 +871,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   };
 
   var setValue = {
-    value: function (newValue, noTrigger) {
+    value(newValue, noTrigger) {
       if (Object.hasOwn(this, 'type') && Object.hasOwn(this, 'value')) {
         if (
           this.value instanceof DataString ||
@@ -894,20 +894,20 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   var commonProperties = {
     set: dataSetter,
     get: dataGetter,
-    setChild: setChild,
-    setChildSync: setChildSync,
-    getChild: getChild,
-    getChildSync: getChildSync,
-    trace: trace,
+    setChild,
+    setChildSync,
+    getChild,
+    getChildSync,
+    trace,
     duplicate: duplicator,
-    traceSync: traceSync,
+    traceSync,
     onChange: bindChange,
-    unbindChange: unbindChange,
-    triggerChange: triggerChange,
+    unbindChange,
+    triggerChange,
     _triggerBubble: triggerBubble,
-    linkToParent: linkToParent,
-    getType: getType,
-    setValue: setValue,
+    linkToParent,
+    getType,
+    setValue,
   };
 
   Object.defineProperties(DataObjectProto, commonProperties);
@@ -966,9 +966,9 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   const commonNativeProperties = {
     trace: traceNative,
     onChange: bindChange,
-    unbindChange: unbindChange,
-    triggerChange: triggerChange,
-    linkToParent: linkToParent,
+    unbindChange,
+    triggerChange,
+    linkToParent,
     toJSON: getNative, // The toJSON method is automatically called when JSON.stringify is used
     get: getNative,
     resurrect: getNative,
@@ -1045,13 +1045,13 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   }
 
   return {
-    DataObject: DataObject,
-    DataArray: DataArray,
-    DataString: DataString,
-    DataBoolean: DataBoolean,
-    DataNumber: DataNumber,
-    isSpecialObject: isSpecialObject,
-    isSpecialNativeObject: isSpecialNativeObject,
+    DataObject,
+    DataArray,
+    DataString,
+    DataBoolean,
+    DataNumber,
+    isSpecialObject,
+    isSpecialNativeObject,
     resurrect: DataObject.resurrect,
     check: DataObject.check,
   };

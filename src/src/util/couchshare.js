@@ -53,11 +53,11 @@ define([
       };
 
       db.saveDoc(doc, {
-        success: function () {
+        success() {
           var tinyUrl = tinyPrefix + docid;
           return resolve(tinyUrl);
         },
-        error: function (e) {
+        error(e) {
           return reject(e);
         },
       });

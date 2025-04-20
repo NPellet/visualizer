@@ -9,7 +9,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this,
         id = Util.getNextUniqueId(),
         done = false;
@@ -17,7 +17,7 @@ define([
       this._id = id;
       if (this.module.getConfigurationCheckbox('editable', 'isEditable')) {
         this.inside = $('<div>', {
-          id: id,
+          id,
           class: 'inside',
           contentEditable: 'true',
         }).html(that.module.definition.text || '');
@@ -41,7 +41,7 @@ define([
         });
       } else {
         this.inside = $('<div>', {
-          id: id,
+          id,
           class: 'inside',
         }).html(that.module.definition.text || '');
       }

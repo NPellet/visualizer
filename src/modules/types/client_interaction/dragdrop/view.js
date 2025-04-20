@@ -4,7 +4,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       var $fileInput = $('<input/>').css('display', 'none').attr({
         type: 'file',
@@ -123,7 +123,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       this.module.getDomContent().html(this.dom);
     },
 
-    inDom: function () {
+    inDom() {
       var that = this,
         dom = this.dom.get(0);
 
@@ -268,16 +268,16 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       $dialog.dialog({
         modal: true,
         buttons: {
-          Cancel: function () {
+          Cancel() {
             $(this).dialog('close');
           },
-          'Take Picture': function () {
+          'Take Picture'() {
             takepicture();
             resolve(imgData);
             $(this).dialog('close');
           },
         },
-        close: function () {
+        close() {
           if (!stream) {
             return resolve(false);
           }

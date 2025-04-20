@@ -7,7 +7,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var id = Util.getNextUniqueId();
       this.dom = $(`<table id="${id}">`).css({
         width: '100%',
@@ -46,7 +46,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
 
       this.module.getDomContent().html(this.dom);
     },
-    inDom: function () {
+    inDom() {
       var that = this;
 
       this.dom.fancytree({
@@ -56,7 +56,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
           nodeColumnIdx: 0,
         },
         icon: false,
-        renderColumns: function (event, data) {
+        renderColumns(event, data) {
           var node = data.node,
             dataObj = node.data.dataObj,
             $tdList = $(node.tr).find('>td'),
@@ -67,7 +67,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
             }
           }
         },
-        activate: function (event, data) {
+        activate(event, data) {
           that.module.controller.onActivate(data.node.data.dataObj);
         },
       });
@@ -78,7 +78,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
     },
 
     update: {
-      tree: function (value) {
+      tree(value) {
         var result = treeToFancy(value.get());
         this.module.model._objectModel = result.model;
         this.tree.reload(result.fancy);
@@ -95,7 +95,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
       },
     },
     blank: {
-      tree: function () {
+      tree() {
         this.tree.reload();
       },
     },

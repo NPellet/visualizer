@@ -551,7 +551,7 @@ define(function () {
   var parse = function (type, value) {
     if (!this[type]) return;
 
-    var result = { type: type };
+    var result = { type };
     var val;
 
     if (typeof this[type] === 'string') {

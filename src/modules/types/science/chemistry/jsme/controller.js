@@ -11,7 +11,7 @@ define(['modules/default/defaultcontroller', 'src/util/ui'], function (
   Controller.prototype.getToolbar = function () {
     var base = Default.getToolbar.call(this);
     base.unshift({
-      onClick: function () {
+      onClick() {
         var w = $(window).width();
         var h = $(window).height();
         var url = require.toUrl(

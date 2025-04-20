@@ -179,7 +179,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (
   };
 
   Controller.prototype.configFunctions = {
-    mapcenter: function (cfg) {
+    mapcenter(cfg) {
       var split = cfg.split(',');
       return [parseFloat(split[0]), parseFloat(split[1])];
     },

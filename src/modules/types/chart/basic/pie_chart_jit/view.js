@@ -16,7 +16,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       if (!this.dom) {
         this.dom = $(`<div id="${this._id}"></div>`).css({
           height: '100%',
@@ -48,7 +48,7 @@ define([
         },
       };
     },
-    onResize: function () {
+    onResize() {
       this.dom.empty();
       this.chart = new $jit.PieChart(this.chartOptions);
       if (this._data) {
@@ -57,7 +57,7 @@ define([
       this.resolveReady();
     },
     update: {
-      chart: function (moduleValue) {
+      chart(moduleValue) {
         if (!moduleValue) {
           return;
         }
@@ -65,7 +65,7 @@ define([
         this._data = chartJson;
         this.setData(chartJson);
       },
-      yArray: function (moduleValue) {
+      yArray(moduleValue) {
         if (!moduleValue) {
           return;
         }
@@ -74,7 +74,7 @@ define([
         this.setData(arrayJson);
       },
     },
-    setData: function (dataJson) {
+    setData(dataJson) {
       this.chart.loadJSON(dataJson);
     },
     blank: {

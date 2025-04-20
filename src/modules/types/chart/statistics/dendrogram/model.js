@@ -8,10 +8,10 @@ define([
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
-    getjPath: function (rel) {
+    getjPath(rel) {
       var value = this.module.view._value || {};
       while (value.children && value.children.length > 0) {
         value = value.children[0];

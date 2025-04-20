@@ -2,7 +2,7 @@
 
 define(function () {
   return {
-    filter: function (dataObject, resolve, reject) {
+    filter(dataObject, resolve, reject) {
       var image = new Image();
       var $c = $('<canvas/>');
       var Canvas = $c[0];

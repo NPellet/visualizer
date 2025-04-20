@@ -137,8 +137,8 @@ define([
       // If the module already listens for this variable, we should definitely not listen for it again.
       if (!this._listenedBy.has(id)) {
         this._listeners.push({
-          callback: callback,
-          id: id,
+          callback,
+          id,
         });
         this._listenedBy.add(id);
       }
@@ -280,17 +280,17 @@ define([
   }
 
   return {
-    getVariable: getVariable,
-    setVariable: setVariable,
-    getNames: getNames,
-    getData: function () {
+    getVariable,
+    setVariable,
+    getNames,
+    getData() {
       return data;
     },
-    exist: function (varName) {
+    exist(varName) {
       return allVariables.has(varName);
     },
-    unlisten: unlisten,
-    eraseAll: function () {
+    unlisten,
+    eraseAll() {
       allVariables = new Map();
     },
   };

@@ -87,7 +87,7 @@ define(['require'], function (require) {
       case 'worker':
         var worker = new Worker(file.file);
 
-        worker.postMessage({ method: 'actionValue', value: value });
+        worker.postMessage({ method: 'actionValue', value });
 
         worker.onmessage = function (event) {
           // Do something. We need to invent an API here.
@@ -113,7 +113,7 @@ define(['require'], function (require) {
 
               worker.postMessage({
                 method: 'getVar',
-                variables: variables,
+                variables,
               });
 
               break;
@@ -161,28 +161,28 @@ define(['require'], function (require) {
   }
 
   return {
-    setScriptsFromForm: function (form) {
+    setScriptsFromForm(form) {
       setActionScripts(form);
     },
 
-    setFilesFromForm: function (form) {
+    setFilesFromForm(form) {
       setActionFiles(form);
     },
 
-    viewHasChanged: function (view) {
+    viewHasChanged(view) {
       setActionScripts(view.actionscripts);
       doFiles();
     },
 
-    getScriptsForm: function () {
+    getScriptsForm() {
       return Versioning.getView().actionscripts || [];
     },
 
-    getFilesForm: function () {
+    getFilesForm() {
       return Versioning.getView().actionfiles || [];
     },
 
-    execute: function (actionName, actionValue) {
+    execute(actionName, actionValue) {
       if (evaluatedScripts[actionName]) {
         evaluatedScripts[actionName](actionValue);
       }

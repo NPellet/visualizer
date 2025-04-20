@@ -7,11 +7,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
 
-    getjPath: function () {
+    getjPath() {
       var data = this.module.getDataFromRel('list');
 
       if (!data || data == null) {

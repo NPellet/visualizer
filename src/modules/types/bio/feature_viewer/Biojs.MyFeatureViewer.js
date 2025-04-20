@@ -13,7 +13,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * Default values for the options
      * @name Biojs.DasProteinFeatureViewer-constructor
      */
-    constructor: function (options) {
+    constructor(options) {
       this.base(options);
       try {
         if (!Biojs.Utils.isEmpty(this.opt.json)) {
@@ -54,7 +54,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * myPainter.showGeneralLegend();
      *
      */
-    showGeneralLegend: function () {
+    showGeneralLegend() {
       var config = this.opt.json.configuration;
       var dataURL = `${this._webservice}?`;
       window.open(dataURL); // open generated image in new tab/window
@@ -68,7 +68,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * myPainter.exportFeaturesToImage();
      *
      */
-    exportFeaturesToImage: function () {
+    exportFeaturesToImage() {
       //        if (typeof FlashCanvas != 'undefined') {
       //            FlashCanvas.initElement(canvas);
       //        }
@@ -126,7 +126,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * @example
      * myPainter.applyStyle("centered");
      */
-    applyStyle: function (style) {
+    applyStyle(style) {
       if (
         style != undefined &&
         (style === 'centered' || style === 'nonOverlapping' || (style = 'rows'))
@@ -143,7 +143,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * @example
      * myPainter.showHideHorizontalGrid(true);
      */
-    showHideHorizontalGrid: function (show) {
+    showHideHorizontalGrid(show) {
       if (show != undefined && (show == true || show == false)) {
         var config = this.opt.json.configuration;
         this.customize(config.style, show, config.verticalGrid);
@@ -157,7 +157,7 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
      * @example
      * myPainter.showHideVerticalGrid(true);
      */
-    showHideVerticalGrid: function (show) {
+    showHideVerticalGrid(show) {
       if (show != undefined && (show == true || show == false)) {
         var config = this.opt.json.configuration;
         this.customize(config.style, config.horizontalGrid, show);

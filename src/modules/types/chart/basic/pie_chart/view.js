@@ -11,7 +11,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       // When we change configuration the method init is called again. Also the case when we change completely of view
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
@@ -41,7 +41,7 @@ define([
       this.resolveReady();
     },
 
-    onResize: function () {
+    onResize() {
       var that = this;
       // the size is now really defined (we are after inDom)
       // and we received the data ...
@@ -89,7 +89,7 @@ define([
          It will also be called at the beginning and in this case the value is null !
          */
     update: {
-      chart: function (moduleValue) {
+      chart(moduleValue) {
         if (!moduleValue || !moduleValue.value) return;
 
         this._convertChartToData(moduleValue.get());
@@ -99,7 +99,7 @@ define([
 
         this.onResize();
       },
-      yArray: function (moduleValue) {
+      yArray(moduleValue) {
         this._data = moduleValue.get();
         this.loadedData.resolve();
 
@@ -107,7 +107,7 @@ define([
       },
     },
 
-    _convertChartToData: function (value) {
+    _convertChartToData(value) {
       this._data = [];
       var that = this;
       if (

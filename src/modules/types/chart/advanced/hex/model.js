@@ -7,7 +7,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getjPath: function (rel) {
+    getjPath(rel) {
       var data;
       switch (rel) {
         case 'point':

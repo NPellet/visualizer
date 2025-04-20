@@ -8,11 +8,11 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.editor = null;
     },
 
-    inDom: function () {
+    inDom() {
       this.dom = $('<div>').css({
         height: '99%',
         width: '100%',
@@ -20,48 +20,48 @@ define([
       this.module.getDomContent().html(this.dom);
     },
 
-    onResize: function () {
+    onResize() {
       this.dom.empty();
       this.initEditor();
     },
 
     blank: {
-      mol: function () {
+      mol() {
         this.clearEditor();
       },
-      molV3: function () {
+      molV3() {
         this.clearEditor();
       },
-      smiles: function () {
+      smiles() {
         this.clearEditor();
       },
-      actid: function () {
+      actid() {
         this.clearEditor();
       },
     },
 
     onActionReceive: {
-      setMolfile: function (val) {
+      setMolfile(val) {
         const molecule = OCL.Molecule.formMolfile(val);
         setCurrentValue(this, molecule);
       },
-      setIDCode: function (val) {
+      setIDCode(val) {
         const molecule = OCL.Molecule.fromIDCode(val);
         setCurrentValue(this, molecule);
       },
-      copyMolfile: function () {
+      copyMolfile() {
         const molfile = this.editor.getMolFileV3();
         ui.copyToClipboard(molfile, {
           successMessage: 'Molfile copied to the clipboard',
         });
       },
-      copyIDCode: function () {
+      copyIDCode() {
         const idCode = this.editor.getIDCode();
         ui.copyToClipboard(idCode, {
           successMessage: 'IDCode copied to the clipboard',
         });
       },
-      downloadSvg: function (value = {}) {
+      downloadSvg(value = {}) {
         const { width = 800, height = 600 } = value;
         const molecule = this.editor.getMolecule();
         const svg = molecule.toSVG(width, height);
@@ -69,7 +69,7 @@ define([
           mimeType: 'application/svg;charset=utf-8',
         });
       },
-      downloadMolfile: function () {
+      downloadMolfile() {
         const molfile = this.editor.getMolFile();
         ui.downloadFile(molfile, 'molecule.mol', {
           mimeType: 'chemical/x-mdl-molfile',
@@ -78,25 +78,25 @@ define([
     },
 
     update: {
-      mol: function (val) {
+      mol(val) {
         this._currentValue = val;
         this._currentType = 'mol';
         this.editor.setMolFile(String(val.get()));
         this.setFragment();
       },
-      molV3: function (val) {
+      molV3(val) {
         this._currentValue = val;
         this._currentType = 'molV3';
         this.editor.setMolFile(String(val.get()));
         this.setFragment();
       },
-      smiles: function (val) {
+      smiles(val) {
         this._currentValue = val;
         this._currentType = 'smiles';
         this.editor.setSmiles(String(val.get()));
         this.setFragment();
       },
-      actid: function (val) {
+      actid(val) {
         this._currentValue = val;
         this._currentType = 'oclid';
         var value = String(val.get());
@@ -108,7 +108,7 @@ define([
       },
     },
 
-    initEditor: function () {
+    initEditor() {
       var controller = this.module.controller;
       var useSVG = this.module.getConfigurationCheckbox('prefs', 'svg');
       this.editor = new OCL.StructureEditor(this.dom.get(0), useSVG, 1);
@@ -122,13 +122,13 @@ define([
       this.resolveReady();
     },
 
-    clearEditor: function () {
+    clearEditor() {
       this._currentValue = null;
       this._currentType = null;
       this.editor.setIDCode('');
     },
 
-    setFragment: function () {
+    setFragment() {
       if (this.module.getConfigurationCheckbox('prefs', 'queryFeatures')) {
         this.editor.setFragment(true);
       } else {

@@ -9,7 +9,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var html = [];
       html.push('<div class="ci-displaylist-list-2d"></div>');
       this.dom = $(html.join(''));
@@ -20,12 +20,12 @@ define([
       if (forceType) this.rendererOptions.forceType = forceType;
     },
     blank: {
-      list: function () {
+      list() {
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
     },
-    inDom: function () {
+    inDom() {
       var that = this;
       this.dom.on('mouseenter mouseleave click', 'td', function (e) {
         var tdIndex = $(this).index();
@@ -51,7 +51,7 @@ define([
     },
 
     update: {
-      list: function (moduleValue) {
+      list(moduleValue) {
         var cfg = this.module.getConfiguration,
           cols = cfg('colnumber', 4) || 4,
           val = moduleValue.get(),
@@ -91,7 +91,7 @@ define([
       },
     },
 
-    renderElement: function (dom, index, css, colorJpath, valJpath) {
+    renderElement(dom, index, css, colorJpath, valJpath) {
       var that = this;
       var td = $('<td>').css(css).appendTo(dom);
 

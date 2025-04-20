@@ -44,7 +44,7 @@ define(['src/util/ui'], function (ui) {
   document.addEventListener('MSFullscreenChange', fullScreenChange);
 
   return {
-    requestFullscreen: function (module) {
+    requestFullscreen(module) {
       if (
         document.fullscreenEnabled ||
         document.webkitFullscreenEnabled ||

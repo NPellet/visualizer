@@ -9,7 +9,7 @@ define([
   function View() {}
 
   View.prototype = $.extend(true, {}, Default, {
-    init: function () {
+    init() {
       this._id = Util.getNextUniqueId();
       this.dom = ui
         .getSafeElement('div')
@@ -18,15 +18,15 @@ define([
       this.module.getDomContent().html(this.dom);
     },
     blank: {
-      arrayvalue: function () {
+      arrayvalue() {
         this.dom.empty();
       },
-      textvalue: function () {
+      textvalue() {
         this.dom.empty();
       },
     },
     update: {
-      arrayvalue: function (value) {
+      arrayvalue(value) {
         if (!value.get()) {
           return;
         }
@@ -36,7 +36,7 @@ define([
         }
         this.processChart(value);
       },
-      textvalue: function (value) {
+      textvalue(value) {
         if (!value.get()) {
           return;
         }
@@ -45,17 +45,17 @@ define([
       },
     },
     onActionReceive: {},
-    inDom: function () {
+    inDom() {
       this.resolveReady();
     },
-    onResize: function () {
+    onResize() {
       if (this.layout) {
         this.dom.empty();
         this.drawChart();
         this.refresh();
       }
     },
-    processChart: function (myvalues) {
+    processChart(myvalues) {
       // ####### BEGIN VARS ########
       var that = this;
       var tags, fetcher;
@@ -152,7 +152,7 @@ define([
         parseText(myvalues);
       }
     },
-    drawChart: function () {
+    drawChart() {
       var that = this;
       var fill = d3.scale.category20b();
       var w = this.width,

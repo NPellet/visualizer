@@ -10,7 +10,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(` <div id="${this._id}"></div>`)
@@ -21,21 +21,21 @@ define([
     },
 
     blank: {
-      feature: function () {
+      feature() {
         this.dom.empty();
       },
     },
 
-    inDom: function () {
+    inDom() {
       this.resolveReady();
     },
 
-    onResize: function () {
+    onResize() {
       this.dom.find('table').attr('width', this.dom.width());
     },
 
     update: {
-      feature: function (data) {
+      feature(data) {
         var that = this;
         var myPainter = new Biojs.MyFeatureViewer({
           target: this._id,
@@ -63,7 +63,7 @@ define([
       },
     },
 
-    getDom: function () {
+    getDom() {
       return this.dom;
     },
   });

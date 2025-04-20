@@ -11,9 +11,9 @@ define([
   var currentMenu;
 
   Util.inherits(Element, Default, {
-    initImpl: function () {},
+    initImpl() {},
 
-    _onClick: function () {
+    _onClick() {
       var that = this;
 
       this.setStyleOpen(this._open);
@@ -34,12 +34,12 @@ define([
       }
     },
 
-    doElements: function () {
+    doElements() {
       this.$_elToOpen = this._doElements(this.options.layers);
       this.open();
     },
 
-    _doElements: function (layers) {
+    _doElements(layers) {
       if (!layers) {
         layers = Grid.getLayerNames();
       }
@@ -55,7 +55,7 @@ define([
       return ul;
     },
 
-    _buildSubElement: function (el) {
+    _buildSubElement(el) {
       var that = this,
         dom = $('<li />').text(el);
       dom.addClass('hasEvent').bind('click', function () {

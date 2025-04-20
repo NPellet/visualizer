@@ -635,7 +635,7 @@ define([
       }
     },
 
-    _activateHighlights: function () {
+    _activateHighlights() {
       var that = this;
       var hl = _(that.elements)
         .map('_highlight')

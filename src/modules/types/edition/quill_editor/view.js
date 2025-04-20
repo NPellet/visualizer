@@ -20,7 +20,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       this.debounce = this.module.getConfiguration('debouncing');
       this.storeInView = this.module.getConfigurationCheckbox(
@@ -36,10 +36,10 @@ define([
         );
       }, this.debounce);
     },
-    inDom: function () {
+    inDom() {
       this.initEditor();
     },
-    initEditor: function () {
+    initEditor() {
       Util.loadCss('./components/quill/quill.core.css')
         .then(() => {
           return Util.loadCss('./components/quill/quill.snow.css');
@@ -109,14 +109,14 @@ define([
           this.resolveReady();
         });
     },
-    exportToHTML: function () {
+    exportToHTML() {
       const dom = this.dom[0].querySelector('.ql-editor');
       API.domToHTML(dom).then((html) => {
         API.copyHTMLToClipboard(html);
       });
     },
     update: {
-      html: function (moduleValue) {
+      html(moduleValue) {
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'html';
@@ -124,13 +124,13 @@ define([
           this.instance.clipboard.convert(moduleValue.get()),
         );
       },
-      quill: function (moduleValue) {
+      quill(moduleValue) {
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'quill';
         this.instance.setContents(moduleValue.get());
       },
-      shortcuts: function (value) {
+      shortcuts(value) {
         if (!value || value.length < 1) {
           this.module.shortcuts = [];
         }
@@ -142,13 +142,13 @@ define([
       },
     },
     blank: {
-      html: function () {
+      html() {
         this.clear();
       },
-      quill: function () {
+      quill() {
         this.clear();
       },
-      shortcuts: function () {
+      shortcuts() {
         this.module.shortcuts = [];
       },
     },
@@ -157,14 +157,14 @@ define([
       this.instance.deleteText(0, len);
     },
     onActionReceive: {
-      insertHtml: function (html) {
+      insertHtml(html) {
         this.instance.focus();
         html = String(html);
         const range = this.instance.getSelection();
         this.instance.deleteText(range.index, range.length);
         this.instance.clipboard.dangerouslyPasteHTML(range.index, html);
       },
-      insertText: function (text) {
+      insertText(text) {
         this.instance.focus();
         text = String(text);
         const range = this.instance.getSelection();
@@ -178,7 +178,7 @@ define([
         );
       },
     },
-    _listenForShortcuts: function (event) {
+    _listenForShortcuts(event) {
       if (!this.module.shortcuts || this.module.shortcuts.length < 1) return;
       if (
         event.key !== '_' &&

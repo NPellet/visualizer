@@ -1154,7 +1154,7 @@ define([
           title: name,
           folder: true,
           children: [],
-          path: path,
+          path,
         };
         if (firstLevel && name === this.flavor) {
           element.expanded = true;
@@ -1166,7 +1166,7 @@ define([
           title: name,
           folder: false,
           view: value,
-          flavor: flavor,
+          flavor,
         });
       }
     }

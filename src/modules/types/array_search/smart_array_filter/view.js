@@ -12,7 +12,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
   }
 
   $.extend(true, View.prototype, Default, {
-    inDom: function () {
+    inDom() {
       this.module.getDomContent().empty();
       this._fontSize = this.module.getConfiguration('fontSize');
 
@@ -54,7 +54,7 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
 
       this.resolveReady();
     },
-    onQuery: function (query) {
+    onQuery(query) {
       if (query === this._query) return;
       this._query = query;
 
@@ -68,29 +68,29 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
       this.module.controller.onQuery(query);
     },
     blank: {
-      input: function () {
+      input() {
         this._data = null;
         this._originalData = null;
       },
     },
     update: {
-      input: function (value) {
+      input(value) {
         this._data = value;
         this._originalData = value.slice();
         this.module.controller.onQuery(this._query || '');
       },
     },
     onActionReceive: {
-      clearQuery: function () {
+      clearQuery() {
         this._input.val('');
         this.onQuery('');
       },
-      setQuery: function (value) {
+      setQuery(value) {
         value = String(value);
         this._input.val(value);
         this.onQuery(value);
       },
-      appendQuery: function (value) {
+      appendQuery(value) {
         value = String(value);
         if (this._query && value) {
           value = `${this._query} ${value}`;
@@ -99,11 +99,11 @@ define(['jquery', 'modules/default/defaultview', 'lodash'], function (
         this.onQuery(value);
       },
     },
-    resizeInput: function () {
+    resizeInput() {
       var width = this._div.width();
       this._input.css('width', width - this._fontSize * 2);
     },
-    onResize: function () {
+    onResize() {
       this.resizeInput();
     },
   });

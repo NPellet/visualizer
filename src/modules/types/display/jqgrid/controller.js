@@ -185,7 +185,7 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    colsjPaths: function (cfg) {
+    colsjPaths(cfg) {
       return cfg || [];
     },
   };

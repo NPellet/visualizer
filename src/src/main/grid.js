@@ -389,7 +389,7 @@ define([
       var module = ModuleFactory.newModule(
         new DataObject({
           // type: type,
-          url: url,
+          url,
         }),
       );
 
@@ -527,7 +527,7 @@ define([
   }
 
   function moveModule(module, shiftX, shiftY) {
-    moduleMove = { module: module, div: module.getDomWrapper() };
+    moduleMove = { module, div: module.getDomWrapper() };
     Util.maskIframes();
 
     var mouseMoveHandler = function (e) {
@@ -581,7 +581,7 @@ define([
     var def = $.Deferred();
 
     if (name) {
-      return (definition.layers[name] = { name: name });
+      return (definition.layers[name] = { name });
     }
 
     var div = ui.dialog({
@@ -936,7 +936,7 @@ define([
   }
 
   return {
-    init: function (def, dom) {
+    init(def, dom) {
       if (isInit) {
         return;
       }
@@ -1208,7 +1208,7 @@ define([
 
       this.reset(def);
     },
-    reset: function (def) {
+    reset(def) {
       definition = def;
       definition.layers = definition.layers || {};
 
@@ -1229,7 +1229,7 @@ define([
       checkDimensions();
       switchToLayer(activeLayer, { autoSize: true });
     },
-    switchToLayer: function (name, options) {
+    switchToLayer(name, options) {
       if (definition.layers[name] || options.autoSize) {
         switchToLayer(name, options);
       } else {
@@ -1239,12 +1239,12 @@ define([
     getLayerNames,
     setInitialLayerName,
     getActiveLayerName: getActiveLayer,
-    addModule: addModule,
-    newModule: newModule,
-    removeModule: removeModule,
-    addModuleFromJSON: addModuleFromJSON,
-    checkDimensions: checkDimensions,
-    moduleResize: moduleResize,
-    setModuleSize: setModuleSize,
+    addModule,
+    newModule,
+    removeModule,
+    addModuleFromJSON,
+    checkDimensions,
+    moduleResize,
+    setModuleSize,
   };
 });

@@ -43,7 +43,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
   }
 
   GCMS.prototype = {
-    init: function () {
+    init() {
       var that = this;
       var optionsGc = {
         paddingTop: 25,
@@ -89,7 +89,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
           },
         ],
 
-        onAnnotationRemove: function (annot) {
+        onAnnotationRemove(annot) {
           switch (annot.type) {
             case 'surfaceUnderCurve':
               that.trigger('AUCRemoved', [this]);
@@ -97,10 +97,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
           }
         },
 
-        onAnnotationUnselect: function (annot) {
+        onAnnotationUnselect(annot) {
           that.killMsFromAUC();
         },
-        onMouseMoveData: function (event, val) {
+        onMouseMoveData(event, val) {
           if (that.lockTrackingLine) {
             return;
           }
@@ -129,7 +129,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             secondaryGrid: false,
             axisDataSpacing: { min: 0, max: 0.1 },
 
-            onZoom: function (from, to) {
+            onZoom(from, to) {
               // Zoom on GC has changed
               that.trigger('onZoomGC', [from, to]);
             },
@@ -251,7 +251,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             secondaryGrid: false,
             axisDataSpacing: { min: 0, max: 0.1 },
 
-            onZoom: function (from, to) {
+            onZoom(from, to) {
               if (that.onZoomMS) {
                 that.onZoomMS(from, to);
               }
@@ -420,7 +420,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
              });*/
     },
 
-    msShapesSelectChange: function () {
+    msShapesSelectChange() {
       var shapes = this.msGraph.selectedShapes;
 
       this.trigger('MZChange', [
@@ -430,7 +430,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       ]);
     },
 
-    resize: function (w, h) {
+    resize(w, h) {
       var h1 = h * this.sizeFactor;
       var h2 = h * (1 - this.sizeFactor);
 
@@ -444,7 +444,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.msGraph._dom.style.height = `${h2}px`;
     },
 
-    doMsFromAUC: function (annot, shape) {
+    doMsFromAUC(annot, shape) {
       // Creating an averaged MS on the fly
       if (!this.gcSerie) return;
 
@@ -546,7 +546,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
     },
 
-    addAUC: function (from, to, options) {
+    addAUC(from, to, options) {
       var that = this,
         obj = {
           position: [{ x: from }, { x: to }],
@@ -578,7 +578,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       return obj;
     },
 
-    killAllAUC: function () {
+    killAllAUC() {
       var that = this;
       this.aucs.map(function (auc) {
         auc.kill();
@@ -595,7 +595,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.aucs = [];
     },
 
-    killMsFromAUC: function () {
+    killMsFromAUC() {
       /* return;
             if (!this.msFromAucSerie) {
                 return;
@@ -605,12 +605,12 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
             this.msFromAucSerie = false;*/
     },
 
-    kill: function () {
+    kill() {
       this.gcGraph.kill();
       this.msGraph.kill();
     },
 
-    zoomOnGC: function (start, end, y) {
+    zoomOnGC(start, end, y) {
       this.gcGraph
         .getBottomAxis()
         .zoom(start - (end - start) * 0.4, end + (end - start) * 0.4);
@@ -622,19 +622,19 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.gcGraph.drawSeries();
     },
 
-    setMSContinuous: function (cont) {
+    setMSContinuous(cont) {
       this.options.msIsContinuous = cont;
     },
 
-    getGC: function () {
+    getGC() {
       return this.gcGraph;
     },
 
-    getMS: function () {
+    getMS() {
       return this.msGraph;
     },
 
-    blank: function () {
+    blank() {
       if (!this.gcSerie) return;
 
       this.gcGraph.removeShapes();
@@ -663,7 +663,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
     },
 
-    setGC: function (chromatogram) {
+    setGC(chromatogram) {
       var that = this;
 
       if (!this.gcGraph) {
@@ -751,7 +751,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.gcGraph.drawSeries();
     },
 
-    setMS: function (ms) {
+    setMS(ms) {
       var minX = Infinity;
       var maxX = -Infinity;
       for (var t = 0; t < ms.length; t++) {
@@ -772,7 +772,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       this.msDataRO = ms;
     },
 
-    trigger: function (func, params) {
+    trigger(func, params) {
       if (!Array.isArray(params)) {
         params = [params];
       }
@@ -782,11 +782,11 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       }
     },
 
-    setMSIndexData: function (x) {
+    setMSIndexData(x) {
       this.recalculateMSMove(x);
     },
 
-    recalculateMSMove: function (x) {
+    recalculateMSMove(x) {
       var ms = this.msData ? this.msData[x] : null;
       var msro = this.msDataRO ? this.msDataRO[x] : null;
 

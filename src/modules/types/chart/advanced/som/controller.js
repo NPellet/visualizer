@@ -76,8 +76,8 @@ define([
     this.createDataFromEvent('onCellHover', 'elementList', result);
 
     this.createDataFromEvent('onCellHover', 'cellInfo', {
-      x: x,
-      y: y,
+      x,
+      y,
       info: cell.info,
     });
   };

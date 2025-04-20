@@ -4,7 +4,7 @@ define(['modules/default/defaultview'], function (Default) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<iframe>');
 
       var that = this;
@@ -20,12 +20,12 @@ define(['modules/default/defaultview'], function (Default) {
       this.resolveReady();
     },
     blank: {
-      url: function () {
+      url() {
         this.dom.attr('src', 'about:blank');
       },
     },
     update: {
-      url: function (moduleValue) {
+      url(moduleValue) {
         var that = this;
         if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
         this._loadingTimeout = setTimeout(function () {

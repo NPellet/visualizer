@@ -57,7 +57,7 @@ define([
   });
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
 
       var id = this.module.getId();
@@ -78,12 +78,12 @@ define([
           bondwidth: that.module.getConfiguration('bondwidth'),
           labelsize: that.module.getConfiguration('labelsize'),
           defaultaction: that.module.getConfiguration('defaultaction'),
-          id: id,
+          id,
         });
       });
     },
 
-    setJSMEOptions: function (options) {
+    setJSMEOptions(options) {
       options = {
         ...options,
         prefs: options.prefs
@@ -93,15 +93,15 @@ define([
       this.postMessage('setOptions', options);
     },
 
-    getPrefs: function () {
+    getPrefs() {
       return this.module.getConfiguration('prefs').join();
     },
 
-    getHighlightColor: function () {
+    getHighlightColor() {
       return this.module.getConfiguration('highlightColor', '3');
     },
 
-    onResize: function () {
+    onResize() {
       this.dom.attr('width', this.width);
       this.dom.attr('height', this.height);
 
@@ -113,22 +113,22 @@ define([
       this.refresh();
     },
 
-    onProgress: function () {
+    onProgress() {
       this.dom.html('Progress. Please wait...');
     },
 
     blank: {
-      mol: function () {
+      mol() {
         this._currentValue = null;
         this._currentType = null;
         this.postMessage('clear', '*');
       },
-      jme: function () {
+      jme() {
         this._currentValue = null;
         this._currentType = null;
         this.postMessage('clear', '*');
       },
-      smiles: function () {
+      smiles() {
         this._currentValue = null;
         this._currentType = null;
         this.postMessage('clear', '*');
@@ -136,7 +136,7 @@ define([
     },
 
     update: {
-      mol: function (moduleValue) {
+      mol(moduleValue) {
         this._currentValue = moduleValue;
         this._currentType = 'mol';
         if (!moduleValue.get()) return;
@@ -152,7 +152,7 @@ define([
           this._initHighlight(moduleValue);
         }
       },
-      jme: function (moduleValue) {
+      jme(moduleValue) {
         this._currentValue = moduleValue;
         this._currentType = 'jme';
         if (!moduleValue.get()) return;
@@ -160,7 +160,7 @@ define([
         this.postMessage('setJmeFile', String(moduleValue.get()));
         this._initHighlight(moduleValue);
       },
-      smiles: function (moduleValue) {
+      smiles(moduleValue) {
         var that = this;
         this._currentValue = moduleValue;
         this._currentType = 'smiles';
@@ -175,12 +175,12 @@ define([
     },
 
     onActionReceive: {
-      setOptions: function (val) {
+      setOptions(val) {
         this.setJSMEOptions(val);
       },
     },
 
-    _initHighlight: function (moduleValue) {
+    _initHighlight(moduleValue) {
       var that = this;
       API.killHighlight(this.module.getId());
       API.listenHighlight(
@@ -196,8 +196,8 @@ define([
             atoms = atoms.concat(moduleValue._atoms[highlightId[i]]);
           }
           that.postMessage('setHighlight', {
-            atoms: atoms,
-            onOff: onOff,
+            atoms,
+            onOff,
           });
         },
         false,
@@ -205,7 +205,7 @@ define([
       );
     },
 
-    _doHighlight: function (mol, id) {
+    _doHighlight(mol, id) {
       if (!this._currentValue) return;
 
       // there is a problem with overlapping atoms, there is no event out
@@ -227,20 +227,20 @@ define([
       this.highlightedAtom = id - 1;
     },
 
-    postMessage: function (type, message) {
+    postMessage(type, message) {
       var cw = this.dom.get(0).contentWindow;
       if (cw) {
         cw.postMessage(
           JSON.stringify({
-            type: type,
-            message: message,
+            type,
+            message,
           }),
           '*',
         );
       }
     },
 
-    remove: function (id) {
+    remove(id) {
       delete views[id];
     },
   });

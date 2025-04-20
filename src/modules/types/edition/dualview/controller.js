@@ -76,13 +76,13 @@ define([
   };
 
   Controller.prototype.configFunctions = {
-    mode: function () {
+    mode() {
       return 'schema';
     },
-    schemaSource: function () {
+    schemaSource() {
       return 'config';
     },
-    output: function () {
+    output() {
       return 'modified';
     },
   };

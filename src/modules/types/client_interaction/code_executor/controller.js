@@ -378,7 +378,7 @@ define([
       action: null,
       defined: 0,
       set: setter,
-      get: function (name) {
+      get(name) {
         var variable = this.variables[name];
         if (variable) {
           return variable.get();
@@ -420,7 +420,7 @@ define([
         return context.defined;
       },
       set: setter,
-      get: function (name) {
+      get(name) {
         return context.get(name);
       },
       sendAction,
@@ -461,8 +461,8 @@ define([
   ScriptExecutor.prototype.setAction = function (name, value) {
     this.context.event = 'action';
     this.context.action = {
-      name: name,
-      value: value,
+      name,
+      value,
     };
   };
 

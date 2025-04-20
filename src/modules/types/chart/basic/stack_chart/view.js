@@ -10,7 +10,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       if (this.dom) {
         // in the dom exists and the preferences has been changed we need to clean the canvas
         this.dom.empty();
@@ -45,7 +45,7 @@ define([
       this.resolveReady();
     },
 
-    onResize: function () {
+    onResize() {
       var that = this;
 
       this.loadedData.done(function () {
@@ -73,7 +73,7 @@ define([
          It will also be called at the beginning and in this case the value is null !
          */
     update: {
-      chart: function (moduleValue) {
+      chart(moduleValue) {
         var cfg = this.module.getConfiguration;
 
         this._convertChartToData(moduleValue.get().data);
@@ -86,7 +86,7 @@ define([
       },
     },
 
-    _convertChartToData: function (value) {
+    _convertChartToData(value) {
       this._data = [];
       if (!Array.isArray(value) || !value || !Array.isArray(value.x)) return;
 
@@ -112,8 +112,8 @@ define([
 
         this._data[j] = {
           data: s,
-          info: info,
-          label: label,
+          info,
+          label,
         };
         /* Traversing.getValueFromJPath(info[0],'element.name').done(function(elVal) {
                  self._data[j].label=elVal;
@@ -122,7 +122,7 @@ define([
       }
     },
 
-    updateOptions: function (cfg, axis, x) {
+    updateOptions(cfg, axis, x) {
       var posx = null;
       var posy = null;
       var xmin = null;
@@ -185,7 +185,7 @@ define([
           position: posx,
           min: xmin,
           max: xmax,
-          tickFormatter: function (val, axis) {
+          tickFormatter(val, axis) {
             return val < axis.max ? val.toFixed(2) : xlab;
           },
           ticks: xunit,
@@ -197,7 +197,7 @@ define([
           min: ymin,
           max: ymax,
           ticks: yunit,
-          tickFormatter: function (val, axis) {
+          tickFormatter(val, axis) {
             return val < axis.max ? val.toFixed(2) : ylab;
           },
           labelWidth: ylabw,
@@ -208,15 +208,15 @@ define([
           hoverable: true,
         },
         series: {
-          stack: stack,
+          stack,
 
-          lines: { show: lines, fill: cfg('fill'), steps: steps },
-          bars: { show: bars, barWidth: barWidth },
+          lines: { show: lines, fill: cfg('fill'), steps },
+          bars: { show: bars, barWidth },
         },
       };
     },
 
-    plot: function (id, data, options) {
+    plot(id, data, options) {
       var that = this;
       this._plot = $.plot(`#${id}`, data, options);
       $(`#${id}`).bind('plotclick', function (event, pos, item) {
@@ -232,7 +232,7 @@ define([
         }
       });
     },
-    plotAccordingToChoices: function (choiceContainer, id) {
+    plotAccordingToChoices(choiceContainer, id) {
       var that = this;
       var data = [];
       choiceContainer.find('input:checked').each(function () {

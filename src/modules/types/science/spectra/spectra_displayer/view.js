@@ -311,7 +311,7 @@ define([
                 'dataAndEvent',
                 {
                   data: result,
-                  event: event,
+                  event,
                 },
               );
               this.module.controller.createDataFromEvent(
@@ -421,7 +421,7 @@ define([
               'dataAndEvent',
               {
                 data: shape.getData(),
-                event: event,
+                event,
               },
             );
           });
@@ -610,7 +610,7 @@ define([
         'overflowX',
       );
 
-      return { options: options, others: others };
+      return { options, others };
     },
 
     setSerieParameters(serie, varname, options = {}) {
@@ -1308,7 +1308,7 @@ define([
         this.onchanges[varname].obj.unbindChange(this.onchanges[varname].id);
       }
 
-      this.onchanges[varname] = { obj: obj, id: id };
+      this.onchanges[varname] = { obj, id };
     },
 
     removeAnnotations(varName) {

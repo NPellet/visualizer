@@ -74,7 +74,7 @@ define([
       }
     },
 
-    updateOpacity: function ($div) {
+    updateOpacity($div) {
       if (this.isToggle) {
         if (this.currentState) {
           $div.css({
@@ -99,7 +99,7 @@ define([
       }
     },
 
-    onResize: function () {
+    onResize() {
       let that = this;
       this.maskOpacity = this.module.getConfiguration('maskOpacity');
       this.isToggle = this.module.getConfiguration('toggle') === 'toggle';
@@ -148,15 +148,15 @@ define([
       this.resolveReady();
     },
 
-    activate: function () {
+    activate() {
       this.currentState = true;
     },
 
-    deactivate: function () {
+    deactivate() {
       this.currentState = false;
     },
 
-    toggle: function () {
+    toggle() {
       this.currentState = !this.currentState;
     },
 
@@ -177,7 +177,7 @@ define([
       }
     },
 
-    getContentType: function () {
+    getContentType() {
       var contentType = this.module.getConfiguration('contentType');
       if (contentType === 'content') {
         var content = this.module.getConfiguration('content');
@@ -187,15 +187,15 @@ define([
     },
 
     onActionReceive: {
-      activate: function () {
+      activate() {
         this.activate();
         this.redrawButton();
       },
-      deactivate: function () {
+      deactivate() {
         this.deactivate();
         this.redrawButton();
       },
-      toggle: function () {
+      toggle() {
         this.toggle();
         this.redrawButton();
       },

@@ -8,7 +8,7 @@ define([
   function Model() {}
 
   $.extend(true, Model.prototype, Default, {
-    getjPath: function (rel) {
+    getjPath(rel) {
       var data = [];
       var view = this.module.view;
       switch (rel) {

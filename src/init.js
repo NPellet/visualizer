@@ -102,7 +102,7 @@ require.config({
     // },
     threejs: {
       exports: 'THREE',
-      init: function () {
+      init() {
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
       },
@@ -195,7 +195,7 @@ require.config({
 });
 
 define('esm', {
-  load: function (url, req, onload) {
+  load(url, req, onload) {
     const urlString = JSON.stringify(url);
     const importPromise = eval(`import(${urlString})`);
     importPromise.then(

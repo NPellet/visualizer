@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(`<div id="${this._id}"></div>`)
@@ -20,19 +20,19 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
     },
 
     update: {
-      sequences: function (value) {
+      sequences(value) {
         this.sequences = value;
         this.render();
       },
     },
 
     blank: {
-      sequences: function () {
+      sequences() {
         this.clear();
       },
     },
 
-    render: function () {
+    render() {
       if (!this.sequences) return;
       this.clear();
       var opts = {};
@@ -64,22 +64,22 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
       }
     },
 
-    onResize: function () {
+    onResize() {
       this.render();
     },
 
-    clear: function () {
+    clear() {
       this.dom.html('');
     },
 
-    inDom: function () {
+    inDom() {
       this.render();
     },
   });
 
   const colorSchemas = {
     match: {
-      init: function () {
+      init() {
         const seqs = this.opt.seqs;
         // you have here access to the conservation or the sequence object
         const max = seqs.reduce(
@@ -105,7 +105,7 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
         // this.cons = this.opt.conservation();
       },
 
-      run: function (letter, opts) {
+      run(letter, opts) {
         switch (this.cons[opts.pos]) {
           case 'match':
             return 'green';

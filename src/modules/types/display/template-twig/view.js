@@ -79,7 +79,7 @@ define([
       this.form.clear();
     },
 
-    exportToHTML: function () {
+    exportToHTML() {
       API.domToHTML(this.dom[0]).then((html) => {
         API.copyHTMLToClipboard(html);
       });
@@ -240,13 +240,13 @@ define([
     },
 
     onActionReceive: {
-      clearForm: function (submitChange) {
+      clearForm(submitChange) {
         this.clearForm();
         if (submitChange) {
           this.submitChange();
         }
       },
-      setForm: function (options) {
+      setForm(options) {
         if (!options.data) {
           throw new Error(
             'setForm invalid arguments. Must be object with data property.',

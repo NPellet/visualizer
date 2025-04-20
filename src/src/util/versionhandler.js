@@ -33,7 +33,7 @@ define([
   };
 
   DataViewHandler.prototype = {
-    setType: function (type) {
+    setType(type) {
       this.type = type;
     },
 
@@ -45,7 +45,7 @@ define([
       this._reviver = rev;
     },
 
-    getData: function () {
+    getData() {
       var that = this;
 
       if (this.currentPath[1] === 'server') {
@@ -83,7 +83,7 @@ define([
       }
     },
 
-    getBranches: function () {
+    getBranches() {
       var that = this;
       return $.when(this.getData()).pipe(function (data) {
         var branches = {};
@@ -99,7 +99,7 @@ define([
       });
     },
 
-    getElements: function (level) {
+    getElements(level) {
       var that = this;
       var branch = this.currentPath[2];
       return $.when(this.getData()).pipe(function (alldata) {
@@ -118,7 +118,7 @@ define([
       });
     },
 
-    makeFilename: function (el, head) {
+    makeFilename(el, head) {
       if (!el._time) return 'Head';
 
       var time = new Date(el._time);
@@ -127,7 +127,7 @@ define([
       return str;
     },
 
-    _getLocal: function () {
+    _getLocal() {
       var that = this;
       return db.open().pipe(function () {
         return db.getAll(that.type, that._dirUrl).pipe(function (all) {
@@ -136,7 +136,7 @@ define([
       });
     },
 
-    _getServer: function () {
+    _getServer() {
       var def = $.Deferred();
       $.ajax({
         url: this.getUrl(),
@@ -145,7 +145,7 @@ define([
         data: {
           action: 'Dir',
         },
-        success: function (data) {
+        success(data) {
           for (var i in data) {
             data[i].list = [];
             for (var j in data[i].revisions) {
@@ -156,7 +156,7 @@ define([
           def.resolve(data);
         },
 
-        error: function () {
+        error() {
           def.reject();
         },
       });
@@ -164,7 +164,7 @@ define([
       return def;
     },
 
-    makeMenu: function (level) {
+    makeMenu(level) {
       var toOpen = this.structure,
         that = this;
       var i = 0;
@@ -200,7 +200,7 @@ define([
       });
     },
 
-    arrayToMenu: function (array, level, parent, parentParent) {
+    arrayToMenu(array, level, parent, parentParent) {
       var html = '';
       for (var i = 0, l = array.length; i < l; i++) {
         html += `<li draggable="false" data-parent-parent="${parentParent}" data-parent="${parent}" data-el="${
@@ -216,7 +216,7 @@ define([
       return html;
     },
 
-    objectToMenu: function (object, level, parent, parentParent) {
+    objectToMenu(object, level, parent, parentParent) {
       var html = '';
       for (var i in object) {
         html += `<li draggable="false" data-parent-parent="${parentParent}" data-el="${i}" data-parent="${parent}"><a>${
@@ -232,7 +232,7 @@ define([
       return html;
     },
 
-    bindEventsMenu: function (dom) {
+    bindEventsMenu(dom) {
       var that = this;
 
       dom.on('mouseenter', 'li', function () {
@@ -278,7 +278,7 @@ define([
       });
     },
 
-    buildDom: function (el) {
+    buildDom(el) {
       var html = '<ul draggable="false" class="ci-dataview">';
 
       html += this._buildDomEl(1, this.currentPath[1]); // Local / Server
@@ -289,7 +289,7 @@ define([
       return `${html}<li class="ci-spacer"></li></ul>`;
     },
 
-    _buildDomEl: function (level, val) {
+    _buildDomEl(level, val) {
       var htmlvalue;
       var value;
 
@@ -316,7 +316,7 @@ define([
       )}">${htmlvalue}</li>${level < 3 ? '<li class="inter">></li>' : ''}`;
     },
 
-    bindEventsDom: function (dom) {
+    bindEventsDom(dom) {
       var that = this;
 
       dom.on('mousedown', 'li', function () {
@@ -346,17 +346,17 @@ define([
       });
     },
 
-    getDom: function () {
+    getDom() {
       return this.dom;
     },
 
-    doUpdateButtons: function () {
+    doUpdateButtons() {
       if (this.updateButtons) {
         this.updateButtons(this.type, this.currentPath[3], this.currentPath[1]);
       }
     },
 
-    make: function (el, branch, head) {
+    make(el, branch, head) {
       this.currentElement = el;
       this.doUpdateButtons();
       var html = $(this.buildDom(el));
@@ -367,11 +367,11 @@ define([
       this._html = html;
     },
 
-    versionChange: function () {
+    versionChange() {
       return this.versionChangeDeferred;
     },
 
-    clickLeaf: function (li) {
+    clickLeaf(li) {
       var that = this;
       var i = li.data('el');
       var branch = li.data('parent');
@@ -379,7 +379,7 @@ define([
 
       if (mode === 'server') {
         // fetch head from server
-        var data = { branch: branch };
+        var data = { branch };
         if (i !== 'head') data.revision = i;
 
         this.getFromServer(data).done(function (el) {
@@ -415,7 +415,7 @@ define([
       }
     },
 
-    loadReadonly: function (def, options) {
+    loadReadonly(def, options) {
       var that = this,
         url = this._defaultUrl;
 
@@ -425,18 +425,18 @@ define([
       }
 
       $.ajax({
-        url: url,
+        url,
         timeout: 200000,
         dataType: 'text',
         success: onSuccess,
-        error: function (e) {
+        error(e) {
           if (retry) {
             $.ajax({
               url,
               timeout: 200000,
               dataType: 'text',
               success: onSuccess,
-              error: function (e) {
+              error(e) {
                 UI.showNotification(
                   `Loading ${that.type} failed: ${e.statusText}`,
                 );
@@ -459,7 +459,7 @@ define([
       }
     },
 
-    load: function (dirUrl, defaultBranch, defaultUrl, options) {
+    load(dirUrl, defaultBranch, defaultUrl, options) {
       this._dirUrl = dirUrl;
       this._defaultUrl = defaultUrl;
       this.defaultBranch = defaultBranch;
@@ -474,7 +474,7 @@ define([
 
       var branch = this.defaultBranch || 'Master';
       var defServer = this.getFromServer({
-        branch: branch,
+        branch,
         action: 'Load',
       });
       var defLocal = that._getLocalHead(branch);
@@ -552,15 +552,15 @@ define([
       return def;
     },
 
-    getUrl: function () {
+    getUrl() {
       return this._dirUrl;
     },
 
-    getMonth: function (i) {
+    getMonth(i) {
       return Util.getMonth(i);
     },
 
-    getDay: function (i) {
+    getDay(i) {
       return Util.getDay(i);
     },
 
@@ -568,7 +568,7 @@ define([
     /** LOCAL SIDE **********/
     /** **********************/
 
-    _getLocalHead: function (branch) {
+    _getLocalHead(branch) {
       branch = branch || 'Master';
 
       return db.getHead(this.type, this._dirUrl, branch).pipe(function (el) {
@@ -580,7 +580,7 @@ define([
       });
     },
 
-    _localSave: function (obj, mode, name) {
+    _localSave(obj, mode, name) {
       var that = this;
       obj._local = true;
       // IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
@@ -604,11 +604,11 @@ define([
       });
     },
 
-    localSave: function (obj) {
+    localSave(obj) {
       this._localSave(obj, obj._time, obj._name);
     },
 
-    localSnapshot: function (data) {
+    localSnapshot(data) {
       if (!data) return;
 
       this._localSave(data, 'stored', data._name || 'Master').pipe(
@@ -619,7 +619,7 @@ define([
       );
     },
 
-    localAutosave: function (val, callback, done) {
+    localAutosave(val, callback, done) {
       var that = this;
       if (this._autosaveLocal) window.clearInterval(this._autosaveLocal);
 
@@ -634,7 +634,7 @@ define([
     },
 
     // When we create a branch, we switch to the branch
-    localBranch: function (data, name) {
+    localBranch(data, name) {
       data._name = name;
       data._time = false;
       var that = this;
@@ -644,7 +644,7 @@ define([
     },
 
     // Do not change branch, just change the head
-    localRevert: function (data) {
+    localRevert(data) {
       var that = this;
       data._time = false;
       this._localSave(data, 'head', data._name || 'Master').done(
@@ -658,7 +658,7 @@ define([
     /** SERVER SIDE *********/
     /** **********************/
 
-    autosaveServer: function (val, callback, done) {
+    autosaveServer(val, callback, done) {
       var that = this;
       if (this._autosaveServer) window.clearInterval(this._autosaveServer);
 
@@ -671,7 +671,7 @@ define([
       }
     },
 
-    _saveToServer: function (obj) {
+    _saveToServer(obj) {
       // obj._name = mode || 'Master';
       obj._local = false;
       obj._saved = Date.now();
@@ -691,7 +691,7 @@ define([
       });
     },
 
-    getFromServer: function (data) {
+    getFromServer(data) {
       var that = this,
         def = $.Deferred(),
         url = this.getUrl() || this._defaultUrl;
@@ -704,17 +704,17 @@ define([
       $.ajax({
         dataType: 'text',
         type: 'get',
-        url: url,
+        url,
         cache: false,
         data: data || {},
-        success: function (data) {
+        success(data) {
           // data is now a text
           that._savedServer = data;
           data = that._reviver(JSON.parse(data));
           def.resolve(data);
         },
 
-        error: function () {
+        error() {
           def.reject();
         },
       });
@@ -722,7 +722,7 @@ define([
       return def;
     },
 
-    serverCopy: function (data, branch, rev) {
+    serverCopy(data, branch, rev) {
       var that = this;
 
       data._name = data._name || branch || 'Master';
@@ -734,11 +734,11 @@ define([
       });
     },
 
-    serverPush: function (obj) {
+    serverPush(obj) {
       return this._saveToServer(obj);
     },
 
-    _onLoaded: function (el) {
+    _onLoaded(el) {
       var elTyped;
       elTyped = DataObject.check(el, 1);
       this.onLoaded(elTyped);

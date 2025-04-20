@@ -69,7 +69,7 @@ define([
         }
       }
     },
-    setModules: function (list) {
+    setModules(list) {
       const prom = [];
       if (Array.isArray(list)) {
         throw new Error(

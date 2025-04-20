@@ -11,7 +11,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this,
         currentColSort;
 
@@ -151,18 +151,18 @@ define([
       this.resolveReady();
     },
 
-    unload: function () {
+    unload() {
       this.module.getDomContent().empty();
     },
 
-    applyFilterToRow: function (elId, rowId) {
+    applyFilterToRow(elId, rowId) {
       if (this.filter) {
         this.filter(this.jqGrid, this.elements[elId], rowId);
       }
     },
 
     blank: {
-      list: function () {
+      list() {
         if (this.domBody) {
           this.domBody.empty();
         }
@@ -183,7 +183,7 @@ define([
     },
 
     update: {
-      list: function (moduleValue) {
+      list(moduleValue) {
         if (moduleValue.type === 'string') {
           return;
         }
@@ -257,7 +257,7 @@ define([
         this.showList = false; // Input data has changed,  showList must be reset.
         this.updateVisibility();
       },
-      showList: function (value) {
+      showList(value) {
         if (!Array.isArray(value)) {
           return;
         }
@@ -267,7 +267,7 @@ define([
       },
     },
 
-    updateVisibility: function () {
+    updateVisibility() {
       if (!this.showList || !this.list) return;
 
       var s = this.showList,
@@ -284,7 +284,7 @@ define([
       }
     },
 
-    buildElement: function (source, i) {
+    buildElement(source, i) {
       var jpaths = this.colsjPaths,
         html = '',
         j,
@@ -330,12 +330,12 @@ define([
       return html;
     },
 
-    doHighlight: function (i, val) {
+    doHighlight(i, val) {
       let elements = this.domBody.find('tr').eq(i);
       elements[val ? 'addClass' : 'removeClass']('ci-highlight');
     },
 
-    getValue: function (trVal, jpath) {
+    getValue(trVal, jpath) {
       if (!this.jpaths[jpath]) {
         return '';
       }
@@ -343,12 +343,12 @@ define([
       return this.jpaths[jpath](trVal);
     },
 
-    getDom: function () {
+    getDom() {
       return this.dom;
     },
 
     onActionReceive: {
-      addRow: function (source) {
+      addRow(source) {
         this.elements = this.elements || [];
 
         if (this.module.getDataFromRel('list').indexOf(source) > -1) {
@@ -362,14 +362,14 @@ define([
         this.domBody.append(el);
       },
 
-      removeRow: function (source) {
+      removeRow(source) {
         this.onActionReceive.removeRowById.call(
           this,
           this.module.getDataFromRel('list').indexOf(source),
         );
       },
 
-      removeRowById: function (rowId) {
+      removeRowById(rowId) {
         if (rowId < 0) {
           return;
         }
@@ -386,7 +386,7 @@ define([
         this.domBody.children().eq(rowId).remove();
       },
 
-      toggleOff: function (source) {
+      toggleOff(source) {
         var index = this.module.getDataFromRel('list').indexOf(source);
         if (index === -1) {
           return;
@@ -396,7 +396,7 @@ define([
         this.domBody.children().eq(index).removeClass('toggled');
       },
 
-      toggleOn: function (source) {
+      toggleOn(source) {
         var index = this.module.getDataFromRel('list').indexOf(source);
 
         if (index === -1) {
@@ -421,7 +421,7 @@ define([
         this.domBody.children().eq(index).addClass('toggled');
       },
 
-      scrollTo: function (source) {
+      scrollTo(source) {
         var index = this.module.getDataFromRel('list').indexOf(source);
         if (index === -1) {
           return;
@@ -432,7 +432,7 @@ define([
       },
     },
 
-    exportToTabDelimited: function () {
+    exportToTabDelimited() {
       if (!this.colsjPaths) {
         return;
       }

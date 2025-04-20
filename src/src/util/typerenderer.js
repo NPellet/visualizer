@@ -178,7 +178,7 @@ define([
           src: ghs[ghsValue],
         });
         $img.css({
-          height: height,
+          height,
         });
         $element.append($img);
       }
@@ -672,7 +672,7 @@ define([
       const id = Util.getNextUniqueId();
       let h = Math.max(100, $element.height());
       let w = $element.width() > 50 ? $element.width() : 200;
-      let can = $('<canvas>', { id: id });
+      let can = $('<canvas>', { id });
       let canEl = can.get(0);
       canEl.height = h - 5;
       canEl.width = w;

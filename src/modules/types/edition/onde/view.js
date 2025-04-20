@@ -155,12 +155,12 @@ define([
     },
 
     update: {
-      inputValue: function (value) {
+      inputValue(value) {
         this.inputObj = value;
         this.inputVal = value.get().resurrect();
         this.renderForm();
       },
-      schema: function (value) {
+      schema(value) {
         this.module.controller.inputSchema = value.resurrect();
         this.renderForm();
       },

@@ -73,10 +73,10 @@ define([
           buttonImage: require.toUrl(
             'components/slickgrid/images/calendar.gif',
           ),
-          beforeShow: function () {
+          beforeShow() {
             calendarOpen = true;
           },
-          onClose: function () {
+          onClose() {
             calendarOpen = false;
           },
         });
@@ -279,14 +279,14 @@ define([
             ],
           ],
           preferredFormat: 'rgba',
-          change: function (color) {
+          change(color) {
             that.color = color;
             that.changed = true;
             args.commitChanges('next');
           },
-          move: function (color) {},
-          show: function () {},
-          hide: function () {
+          move(color) {},
+          show() {},
+          hide() {
             if (!that.changed) {
               args.cancelChanges();
             }
@@ -673,7 +673,7 @@ define([
     DataObject.check(item, true);
     if (type) {
       newState = {
-        type: type,
+        type,
         value: state,
       };
     } else {

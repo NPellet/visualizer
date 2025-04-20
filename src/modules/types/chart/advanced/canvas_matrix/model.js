@@ -18,11 +18,11 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   }
 
   $.extend(true, Model.prototype, Default, {
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
 
-    getjPath: function (rel, accepts) {
+    getjPath(rel, accepts) {
       var data = this.module.getDataFromRel('matrix');
 
       if (!data) {

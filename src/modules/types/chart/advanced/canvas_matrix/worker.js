@@ -125,7 +125,7 @@ self.onmessage = function (event) {
   } else if (d.title === 'doPx') {
     pxPerCell = d.message.pxPerCell;
     postMessage({
-      pxPerCell: pxPerCell,
+      pxPerCell,
       indexX: d.message.indexX,
       indexY: d.message.indexY,
       data: generate(

@@ -18,16 +18,16 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
   var standardArray = new DataArray([standardFile]);
 
   $.extend(true, Model.prototype, Default, {
-    init: function () {
+    init() {
       this.tmpVars = new DataObject();
       this.tmpVarsArray = new DataObject();
     },
 
-    getValue: function () {
+    getValue() {
       return this.dataValue;
     },
 
-    getjPath: function (rel, accepts) {
+    getjPath(rel, accepts) {
       var jpaths = [];
       var i;
 

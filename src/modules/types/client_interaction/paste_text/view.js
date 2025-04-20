@@ -6,7 +6,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, ui) {
   }
 
   $.extend(true, View.prototype, Default, {
-    inDom: function () {
+    inDom() {
       var that = this;
       var defaultValue = this.module.getConfiguration('thevalue');
       var textarea = ui

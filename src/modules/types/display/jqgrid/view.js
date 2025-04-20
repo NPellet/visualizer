@@ -24,7 +24,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var that = this;
       var lastTr;
 
@@ -83,7 +83,7 @@ define([
       this.module.getDomContent().html(this.dom);
     },
 
-    exportToTabDelimited: function () {
+    exportToTabDelimited() {
       if (!this.jpaths) {
         return;
       }
@@ -112,13 +112,13 @@ define([
       return result.join('\r\n');
     },
 
-    unload: function () {
+    unload() {
       this.jqGrid('GridDestroy');
       this.jqGrid = false;
       this.module.getDomContent().empty();
     },
 
-    inDom: function () {
+    inDom() {
       var that = this,
         colNames = [],
         colModel = [],
@@ -141,7 +141,7 @@ define([
             index: jpaths[j].name,
             title: false,
             width: jpaths[j].width || 150,
-            editable: editable,
+            editable,
             editoptions:
               jpaths[j].editable === 'select'
                 ? { value: jpaths[j].options }
@@ -162,8 +162,8 @@ define([
       );
 
       $(this.domTable).jqGrid({
-        colNames: colNames,
-        colModel: colModel,
+        colNames,
+        colModel,
         editable: true,
         sortable: true,
         loadonce: false,
@@ -179,11 +179,11 @@ define([
         rowList: [2, 10, 20, 30, 100],
         pager: `#pager${this.uniqId}`,
 
-        formatCell: function (rowid, cellname, value) {
+        formatCell(rowid, cellname, value) {
           return $(value).text();
         },
 
-        resizeStop: function (width, index) {
+        resizeStop(width, index) {
           that.domTable
             .children()
             .children()
@@ -194,7 +194,7 @@ define([
             });
         },
 
-        rowattr: function () {
+        rowattr() {
           if (arguments[1]._backgroundColor) {
             return {
               style: `background-color: ${arguments[1]._backgroundColor}`,
@@ -202,7 +202,7 @@ define([
           }
         },
 
-        beforeSaveCell: function (rowId, colName, value, rowNum, colNum) {
+        beforeSaveCell(rowId, colName, value, rowNum, colNum) {
           if (that.jpaths[colNum].number.indexOf('number') > -1) {
             value = parseFloat(value);
           }
@@ -218,7 +218,7 @@ define([
           return `<div id="${getIDForCell(rowId, colName)}">${value}</div>`;
         },
 
-        loadComplete: function () {
+        loadComplete() {
           if (!that.jqGrid) {
             return;
           }
@@ -236,7 +236,7 @@ define([
         },
 
         viewrecords: true,
-        onSelectRow: function (rowid, status) {
+        onSelectRow(rowid, status) {
           // rowid--; // ?? Plugin mistake ?
           if (that.hasToggleAction) {
             if (status) {
@@ -262,7 +262,7 @@ define([
           );
         },
 
-        onSortCol: function () {
+        onSortCol() {
           var ids = that.jqGrid('getDataIDs'),
             i = 0,
             l = ids.length;
@@ -277,13 +277,13 @@ define([
       this.resolveReady();
     },
 
-    applyFilterToRow: function (elId, rowId) {
+    applyFilterToRow(elId, rowId) {
       if (this.filter) {
         this.filter(this.jqGrid, this.elements[elId], rowId);
       }
     },
 
-    onResize: function () {
+    onResize() {
       if (!this.jqGrid) {
         return;
       }
@@ -293,7 +293,7 @@ define([
     },
 
     blank: {
-      list: function () {
+      list() {
         this.currentPage = this.jqGrid('getGridParam', 'page');
         API.killHighlight(this.module.getId());
         this.jqGrid('clearGridData');
@@ -302,7 +302,7 @@ define([
     },
 
     update: {
-      list: function (moduleValue) {
+      list(moduleValue) {
         var list = moduleValue.get(),
           jpaths = this.module.getConfiguration('colsjPaths'),
           elements = [];
@@ -345,7 +345,7 @@ define([
       },
     },
 
-    buildElements: function (source, arrayToPush, jpaths) {
+    buildElements(source, arrayToPush, jpaths) {
       var that = this,
         i = 0,
         l = source.length;
@@ -357,7 +357,7 @@ define([
       }
     },
 
-    buildElement: function (s, i, jp, m) {
+    buildElement(s, i, jp, m) {
       var element = {},
         j = 0,
         l = jp.length;
@@ -401,7 +401,7 @@ define([
       return element;
     },
 
-    listenFor: function (source, jpaths, id) {
+    listenFor(source, jpaths, id) {
       var that = this,
         body = $('body');
 
@@ -425,7 +425,7 @@ define([
     },
 
     onActionReceive: {
-      addRow: function (source) {
+      addRow(source) {
         this.elements = this.elements || [];
         this.elements.push(source);
         this.module.data = this.elements;
@@ -437,7 +437,7 @@ define([
         this.jqGrid('addRowData', el.id, el);
       },
 
-      removeRow: function (el) {
+      removeRow(el) {
         this.elements = this.elements || [];
         var id, index;
 
@@ -455,7 +455,7 @@ define([
         this.gridElements.splice(index, 0, 1);
       },
 
-      addColumn: function (jpath) {
+      addColumn(jpath) {
         var module = this.module;
         var jpath2 = jpath.split('.');
         jpath2 = jpath2.pop();
@@ -468,13 +468,13 @@ define([
         cols.push({
           name: jpath2,
           editable: false,
-          jpath: jpath,
+          jpath,
           number: false,
         });
         this.module.reload();
       },
 
-      removeColumn: function (jpath) {
+      removeColumn(jpath) {
         var module = this.module,
           jpaths = module.getConfiguration('colsjPaths'),
           i = 0,

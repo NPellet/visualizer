@@ -42,6 +42,6 @@ define(['src/main/datas'], function (Data) {
   }
 
   return {
-    annotateTree: annotateTree,
+    annotateTree,
   };
 });

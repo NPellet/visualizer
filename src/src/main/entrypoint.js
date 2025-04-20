@@ -354,7 +354,7 @@ define([
       var form = new Form();
 
       form.init({
-        onValueChanged: function (value) {},
+        onValueChanged(value) {},
       });
 
       form.setStructure({
@@ -380,8 +380,8 @@ define([
                   jpath: {
                     type: 'combo',
                     title: 'J-Path',
-                    options: options,
-                    extractValue: function (val) {
+                    options,
+                    extractValue(val) {
                       if (val) {
                         var val2 = val.split('.');
                         val2.shift();
@@ -389,7 +389,7 @@ define([
                       }
                     },
 
-                    insertValue: function (val) {
+                    insertValue(val) {
                       return `element.${(val || []).join('.')}`;
                     },
                   },
@@ -671,7 +671,7 @@ define([
   }
 
   return {
-    init: function (urls, type) {
+    init(urls, type) {
       // Check that browser is compatible
       // if(!browser.checkBrowser()) {
       //      $('#ci-visualizer').append('<div id="browser-compatibility">' + browser.errorMessage() + '</div>');

@@ -12,7 +12,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.colors = null;
 
       this.canvas = document.createElement('canvas');
@@ -82,13 +82,13 @@ define([
       });
     },
 
-    inDom: function () {
+    inDom() {
       this.onResize(true);
       this.initWorkers().then(this.resolveReady.bind(this));
       this.module.controller.initEvents();
     },
 
-    onResize: function (doNotRedraw) {
+    onResize(doNotRedraw) {
       this.canvasContainer.width(this.width - 55);
       // We only care about resizing
       this.canvas.width = this.canvasContainer.width();
@@ -100,12 +100,12 @@ define([
       }
     },
 
-    doCanvasErase: function () {
+    doCanvasErase() {
       this.redrawStarted = false;
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
 
-    doCanvasRedraw: function () {
+    doCanvasRedraw() {
       var bufferIndices = this.getBufferIndices(this.getPxPerCell());
 
       for (
@@ -123,7 +123,7 @@ define([
       }
     },
 
-    getBufferIndices: function (pxPerCell) {
+    getBufferIndices(pxPerCell) {
       var currentPxPerCell = this.getPxPerCell();
       var ratioIndex = currentPxPerCell / pxPerCell;
       var shift = this.getXYShift();
@@ -194,11 +194,11 @@ define([
       return currentIndices;
     },
 
-    getBufferKey: function (pxPerCell, x, y) {
+    getBufferKey(pxPerCell, x, y) {
       return `${pxPerCell}-${x}-${y}`;
     },
 
-    doCanvasDrawBuffer: function (bufferX, bufferY) {
+    doCanvasDrawBuffer(bufferX, bufferY) {
       var shift = this.getXYShift();
       var pxPerCell = this.getPxPerCell();
       var bufferKey = this.getBufferKey(pxPerCell, bufferX, bufferY);
@@ -214,7 +214,7 @@ define([
       );
     },
 
-    getPxPerCell: function (force) {
+    getPxPerCell(force) {
       if (this.pxPerCell && !force) {
         return this.pxPerCell;
       }
@@ -223,7 +223,7 @@ define([
       return this.pxPerCell;
     },
 
-    resetZoomPrefetch: function () {
+    resetZoomPrefetch() {
       var currentIndex, i, len;
       for (i = 0; i < this.availableZooms.length; i++) {
         if (this.availableZooms[i] == this.pxPerCell) {
@@ -250,7 +250,7 @@ define([
       }
     },
 
-    getOriginalPxPerCell: function () {
+    getOriginalPxPerCell() {
       return this.getClosest(
         this.availableZooms,
         Math.max(
@@ -263,7 +263,7 @@ define([
       );
     },
 
-    getClosest: function (haystack, needle) {
+    getClosest(haystack, needle) {
       var closest = false,
         newClosest;
       for (var i = 0; i < haystack.length; i++) {
@@ -277,7 +277,7 @@ define([
       return closest;
     },
 
-    changeZoom: function (diff, mouseX, mouseY) {
+    changeZoom(diff, mouseX, mouseY) {
       var newPxPerCell = Math.max(
         1,
         this.getClosest(
@@ -315,7 +315,7 @@ define([
       }
     },
 
-    tanh: function (arg) {
+    tanh(arg) {
       arg /= 15;
       return this.availableZooms[this.availableZooms.length - 1] * 2.5 * arg;
     },
@@ -323,7 +323,7 @@ define([
     // Get the XY shift (in case you have zoomed on the canvas)
     // Used to center the canvas on the loading
 
-    getXYShift: function () {
+    getXYShift() {
       if (this.xyShift && !isNaN(this.xyShift.x) && !isNaN(this.xyShift.y)) {
         return this.xyShift;
       }
@@ -339,7 +339,7 @@ define([
     },
 
     blank: {
-      matrix: function () {
+      matrix() {
         this.doCanvasErase();
         this.gridData = [];
         this.canvasNbX = 0;
@@ -349,7 +349,7 @@ define([
 
     // Here we receive new data, we need to relaunch the workers
     update: {
-      matrix: function (moduleValue) {
+      matrix(moduleValue) {
         if (!this.canvas) {
           return;
         }
@@ -364,7 +364,7 @@ define([
       },
     },
 
-    initWorkers: function () {
+    initWorkers() {
       var minMaxWorker = Worker(
         require.toUrl('src/util/workers/getminmaxmatrix.js'),
       );
@@ -415,18 +415,18 @@ define([
       });
     },
 
-    getCurrentPxPerCellFetch: function () {
+    getCurrentPxPerCellFetch() {
       return this.currentPxFetch
         ? this.currentPxFetch
         : (this.currentPxFetch = this.getPxPerCell());
     },
 
-    incrementPxPerCellFetch: function () {
+    incrementPxPerCellFetch() {
       this.currentPxFetch = this.availableZoomsForFetch.shift();
       return this.currentPxFetch;
     },
 
-    launchWorkers: function (restartAtNormal) {
+    launchWorkers(restartAtNormal) {
       var pxPerCell;
       this.cachedPxPerCell = this.pxPerCell;
       if (restartAtNormal) {
@@ -445,7 +445,7 @@ define([
     },
 
     // http://localhost:8888/git/visualizer/?viewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3DZv1Ib2VDf6&dataURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/result/2012-07-06/2012-07-06_09-11-38oE4j5XDDPd%26key%3DieGxx34DhR&saveViewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DSaveFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3Dh5fKTxoIWD
-    postNextMessageToWorker: function (pxPerCell) {
+    postNextMessageToWorker(pxPerCell) {
       var bufferIndices = this.getBufferIndices(pxPerCell);
       for (
         var i = bufferIndices.minXIndexBuffer;
@@ -472,7 +472,7 @@ define([
       return false;
     },
 
-    doPostNextMessageToWorker: function (pxPerCell, indexX, indexY) {
+    doPostNextMessageToWorker(pxPerCell, indexX, indexY) {
       let w;
       if (!this.buffers[this.getBufferKey(pxPerCell, indexX, indexY)]) {
         w = this.squareLoading;
@@ -493,16 +493,16 @@ define([
       this.workers.postMessage({
         title: 'doPx',
         message: {
-          pxPerCell: pxPerCell,
-          indexX: indexX,
-          indexY: indexY,
+          pxPerCell,
+          indexX,
+          indexY,
           buffer: this.buffers[this.getBufferKey(pxPerCell, indexX, indexY)],
           nbValX: w,
         },
       });
     },
 
-    doChangeWorkersData: function () {
+    doChangeWorkersData() {
       this.workers.postMessage({
         title: 'changeData',
         message: {
@@ -513,7 +513,7 @@ define([
       });
     },
 
-    getColors: function () {
+    getColors() {
       if (!this.colors) {
         var colors = this.module.getConfiguration('colors');
         if (colors) {
@@ -531,7 +531,7 @@ define([
       return this.colors;
     },
 
-    getHighContrast: function () {
+    getHighContrast() {
       return (
         this.highContrast ||
         (this.highContrast = this.module.getConfiguration(
@@ -541,7 +541,7 @@ define([
       );
     },
 
-    redoScale: function (min, max) {
+    redoScale(min, max) {
       var colors = this.getColors();
       this.scaleCanvas.height = this.scaleContainer.height() - 20;
       this.scaleCanvas.width = 40;
@@ -573,7 +573,7 @@ define([
       this.scaleCanvasContext.fillRect(28, 5, 10, gradHeight);
     },
 
-    erase: function () {
+    erase() {
       this.dom.remove();
       this.highContrast = false;
       this.colors = false;

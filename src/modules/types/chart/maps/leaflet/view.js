@@ -4,7 +4,7 @@ require.config({
   shim: {
     'components/leaflet/dist/leaflet': {
       exports: 'L',
-      init: function () {
+      init() {
         return this.L.noConflict();
       },
     },
@@ -28,19 +28,19 @@ define([
 
   // Custom icon that accepts Marker objects
   var CustomIcon = L.Icon.extend({
-    createIcon: function (oldIcon) {
+    createIcon(oldIcon) {
       this._marker = this.options.marker;
       var div = this._marker.div[0];
       this._setIconStyles(div, 'icon');
       return div;
     },
-    createShadow: function () {
+    createShadow() {
       return null;
     },
   });
 
   function customIcon(marker) {
-    return new CustomIcon({ marker: marker, iconAnchor: marker.center });
+    return new CustomIcon({ marker, iconAnchor: marker.center });
   }
 
   function Marker(options) {
@@ -75,7 +75,7 @@ define([
     $.extend(Marker.defaultOptions, options);
   };
   Marker.prototype = {
-    highlight: function (onOff) {
+    highlight(onOff) {
       if (onOff) {
         if (this.kind === 'image' && this.options.imgHighlight) {
           this.div.attr('src', this.options.imgHighlight);
@@ -101,7 +101,7 @@ define([
   };
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.mapLayers = {};
       this.mapLayer = {};
       this.mapBounds = {};
@@ -121,7 +121,7 @@ define([
       });
       this.markerjpath = this.module.getConfiguration('markerjpath');
     },
-    inDom: function () {
+    inDom() {
       this.dom.empty();
       var that = this;
 
@@ -187,11 +187,11 @@ define([
       point: clearLayer,
     },
     update: {
-      position: function (value) {
+      position(value) {
         if (value.length < 2) return;
         this.map.setView(L.latLng(value[0], value[1]));
       },
-      geojson: function (geo, varname) {
+      geojson(geo, varname) {
         try {
           var geoJson = geo.get();
           var converted = L.geoJson(geoJson, {
@@ -215,7 +215,7 @@ define([
         }
         this.updateFit(varname);
       },
-      csv: function (csv, varname) {
+      csv(csv, varname) {
         try {
           this.addGeoJSON(omnivore.csv.parse(String(csv.get())), varname);
         } catch (e) {
@@ -223,7 +223,7 @@ define([
         }
         this.updateFit(varname);
       },
-      kml: function (kml, varname) {
+      kml(kml, varname) {
         try {
           this.addGeoJSON(omnivore.kml.parse(String(kml.get())), varname);
         } catch (e) {
@@ -231,7 +231,7 @@ define([
         }
         this.updateFit(varname);
       },
-      gpx: function (gpx, varname) {
+      gpx(gpx, varname) {
         try {
           this.addGeoJSON(omnivore.gpx.parse(String(gpx.get())), varname);
         } catch (e) {
@@ -239,7 +239,7 @@ define([
         }
         this.updateFit(varname);
       },
-      wkt: function (wkt, varname) {
+      wkt(wkt, varname) {
         try {
           this.addGeoJSON(omnivore.wkt.parse(String(wkt.get())), varname);
         } catch (e) {
@@ -247,7 +247,7 @@ define([
         }
         this.updateFit(varname);
       },
-      topojson: function (topojson, varname) {
+      topojson(topojson, varname) {
         try {
           this.addGeoJSON(omnivore.topojson.parse(topojson.get()), varname);
         } catch (e) {
@@ -256,7 +256,7 @@ define([
         this.updateFit(varname);
       },
 
-      point: function (point, varname) {
+      point(point, varname) {
         var latlng = L.latLng(point[0], point[1]);
         var circle = L.circle(latlng, 20, {
           color: '#f00',
@@ -268,7 +268,7 @@ define([
       },
     },
 
-    addLayer: function (layer, varname) {
+    addLayer(layer, varname) {
       layer.addTo(this.map);
       this.mapLayer[varname] = layer;
       this.mapBounds[varname] = new L.LatLngBounds();
@@ -277,7 +277,7 @@ define([
       );
     },
 
-    addGeoJSON: function (geojson, varname) {
+    addGeoJSON(geojson, varname) {
       this.map.addLayer(geojson);
       this.mapLayers[varname] = geojson;
       this.mapBounds[varname] = new L.LatLngBounds();
@@ -288,7 +288,7 @@ define([
         );
       });
     },
-    updateFit: function (varname) {
+    updateFit(varname) {
       var fit = this.module.getConfiguration('autofit');
       var bounds;
       if (fit === 'var') {
@@ -303,11 +303,11 @@ define([
         this.map.fitBounds(bounds);
       }
     },
-    onResize: function () {
+    onResize() {
       this.map.invalidateSize();
     },
     onActionReceive: {
-      position: function (val) {
+      position(val) {
         var currentCenter = this.map.getCenter();
         if (
           round(val[0]) !== round(currentCenter.lat) ||
@@ -316,7 +316,7 @@ define([
           this.map.setView(L.latLng(val[0], val[1]));
         }
       },
-      zoom: function (val) {
+      zoom(val) {
         var min = this.map.getMinZoom();
         var max = this.map.getMaxZoom();
         if (val < min) val = min;
@@ -326,7 +326,7 @@ define([
         }
       },
     },
-    getTileLayer: function () {
+    getTileLayer() {
       var baselayer = this.module.getConfiguration('maptiles') || 'osm';
       var tileLayer = { parameters: {} };
       switch (baselayer) {
@@ -390,13 +390,13 @@ define([
 
     layer.addEventListener(
       {
-        mouseover: function () {
+        mouseover() {
           that.module.controller.hoverElement(data);
         },
-        click: function () {
+        click() {
           that.module.controller.clickElement(data);
         },
-        mouseout: function () {
+        mouseout() {
           API.highlight(data, 0);
         },
       },

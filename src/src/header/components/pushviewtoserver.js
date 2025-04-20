@@ -9,11 +9,11 @@ define([
   function Element() {}
 
   Util.inherits(Element, Default, {
-    initImpl: function () {
+    initImpl() {
       this.viewHandler = Versioning.getViewHandler();
     },
 
-    _onClick: function () {
+    _onClick() {
       // Overwrite usual onclick which loads a list / loads views/datas
       var that = this;
       clearTimeout(this.timeout);
@@ -30,7 +30,7 @@ define([
       );
     },
 
-    returnToBlack: function () {
+    returnToBlack() {
       var that = this;
       this.timeout = setTimeout(function () {
         that.$_dom.animate(

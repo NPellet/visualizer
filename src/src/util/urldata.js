@@ -158,7 +158,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
         });
     },
 
-    empty: function (options) {
+    empty(options) {
       options = options || {};
       LRU.empty(options.storeName || DEFAULT_STORE_NAME);
     },

@@ -21,7 +21,7 @@ define([
   var currentMenu;
 
   Util.inherits(Element, Default, {
-    _onClick: function () {
+    _onClick() {
       var that = this;
 
       this.setStyleOpen(this._open);
@@ -42,7 +42,7 @@ define([
       }
     },
 
-    load: function (el) {
+    load(el) {
       var result = {};
       if (el.views || el.viewURL) {
         result.view = {
@@ -61,12 +61,12 @@ define([
       Versioning.switchView(result, true);
     },
 
-    doElements: function () {
+    doElements() {
       this.$_elToOpen = this._doElements(this.options.elements);
       this.open();
     },
 
-    _doElements: function (elements) {
+    _doElements(elements) {
       if (!elements) {
         return;
       }
@@ -85,7 +85,7 @@ define([
       return ul;
     },
 
-    _buildSubElement: function (el) {
+    _buildSubElement(el) {
       var that = this,
         dom = $('<li />').text(el.label || '');
       if (el.viewURL || el.dataURL) {

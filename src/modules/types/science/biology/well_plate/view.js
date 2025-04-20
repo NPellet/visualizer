@@ -8,7 +8,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       let html = [];
       html.push('<div></div>');
       this.dom = $(html.join(''));
@@ -16,20 +16,20 @@ define([
     },
 
     blank: {
-      wellsList: function () {
+      wellsList() {
         this.plate = null;
         this.wellsList = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
-      plateSetup: function () {
+      plateSetup() {
         this.plateSetup = null;
         API.killHighlight(this.module.getId());
         this.dom.empty();
       },
     },
 
-    inDom: function () {
+    inDom() {
       const that = this;
       this.dom.on('mouseenter mouseleave click', 'td', function (event) {
         const wellsList = that.wellsList;
@@ -67,7 +67,7 @@ define([
             'dataAndEvent',
             {
               data: wellsList[elementId],
-              event: event,
+              event,
             },
           );
           API.highlight([highlight], 1);
@@ -94,7 +94,7 @@ define([
             'dataAndEvent',
             {
               data: wellsList[elementId],
-              event: event,
+              event,
             },
           );
         }
@@ -103,7 +103,7 @@ define([
     },
 
     update: {
-      wellsList: function (moduleValue) {
+      wellsList(moduleValue) {
         const cfg = this.module.getConfiguration;
         let colNumber = cfg('colnumber') || 10;
         let rowNumber = cfg('rownumber') || 10;
@@ -143,7 +143,7 @@ define([
             rows: rowNumber,
           },
           10,
-          { direction: direction },
+          { direction },
         );
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
@@ -224,7 +224,7 @@ define([
         }
       },
 
-      plateSetup: function (moduleValue) {
+      plateSetup(moduleValue) {
         var list = moduleValue.get();
         checkJpath(list);
         let path = list.color ? 'color' : 'group';
@@ -279,7 +279,7 @@ define([
             rows: rowNumber,
           },
           10,
-          { direction: direction },
+          { direction },
         );
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
@@ -361,7 +361,7 @@ define([
       },
     },
 
-    addConfigurations: function (grid, currentItem, colorJpath, jpathItems) {
+    addConfigurations(grid, currentItem, colorJpath, jpathItems) {
       let color;
       if (jpathItems) {
         color = Color.getDistinctColorsAsString(jpathItems.length);
@@ -407,7 +407,7 @@ define([
       }
     },
 
-    listenHighlight: function (grid, highlight, i) {
+    listenHighlight(grid, highlight, i) {
       const that = this;
       API.listenHighlight(
         { _highlight: highlight },
@@ -429,7 +429,7 @@ define([
       );
     },
 
-    buildGrid: function (
+    buildGrid(
       wellsList,
       labelsList,
       nbPlates,
@@ -547,7 +547,7 @@ define([
       }
     }
     return {
-      wellLabels: wellLabels,
+      wellLabels,
       axis: entries,
     };
   }

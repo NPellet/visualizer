@@ -11,7 +11,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       var div1 = document.createElement('div');
       var div2 = document.createElement('div');
 
@@ -34,7 +34,7 @@ define([
       this.resolveReady();
     },
 
-    inDom: function () {
+    inDom() {
       var that = this;
       var getConfig = (name) => {
         var value = this.module.getConfiguration(name);
@@ -47,14 +47,14 @@ define([
         gcSize: this.module.getConfiguration('gcsize'),
         mainColor: getConfig('maincolor'),
         roColor: getConfig('rocolor'),
-        aucColor: aucColor,
+        aucColor,
         aucColorT: autColorT,
 
-        onMsFromAUCChange: function (ms) {
+        onMsFromAUCChange(ms) {
           that.module.controller.createDataFromEvent('onMSChange', 'ms', ms);
         },
 
-        MZChange: function (ms) {
+        MZChange(ms) {
           that.module.controller.sendActionFromEvent(
             'onMZSelectionChange',
             'mzList',
@@ -62,7 +62,7 @@ define([
           );
         },
 
-        MSChangeIndex: function (msIndex, ms) {
+        MSChangeIndex(msIndex, ms) {
           that.module.controller.sendActionFromEvent(
             'onMSIndexChanged',
             'msIndex',
@@ -75,7 +75,7 @@ define([
           );
         },
 
-        onZoomGC: function (from, to) {
+        onZoomGC(from, to) {
           that.module.controller.sendActionFromEvent(
             'onZoomGCChange',
             'fromtoGC',
@@ -92,11 +92,11 @@ define([
       });
     },
 
-    unload: function () {
+    unload() {
       this.dom.remove();
     },
 
-    onResize: function () {
+    onResize() {
       this.gcmsInstance.resize(this.width, this.height);
     },
 
@@ -110,7 +110,7 @@ define([
     },
 
     update: {
-      jcamp: function (moduleValue) {
+      jcamp(moduleValue) {
         moduleValue = String(moduleValue.get());
         Converter.convert(moduleValue, { chromatogram: true }, true).then(
           (jcamp) => {
@@ -135,7 +135,7 @@ define([
         );
       },
 
-      jcampRO: function (moduleValue) {
+      jcampRO(moduleValue) {
         moduleValue = String(moduleValue.get());
         Converter.convert(moduleValue, { chromatogram: true }, true).then(
           (jcamp) => {
@@ -147,7 +147,7 @@ define([
         );
       },
 
-      annotationgc: function (value) {
+      annotationgc(value) {
         if (!value) {
           return;
         }
@@ -157,11 +157,11 @@ define([
       },
     },
 
-    getDom: function () {
+    getDom() {
       return this.dom;
     },
 
-    resetAnnotationsGC: function () {
+    resetAnnotationsGC() {
       if (!this.gcmsInstance) {
         return;
       }
@@ -169,7 +169,7 @@ define([
       this.gcmsInstance.killAllAUC();
     },
 
-    addAnnotations: function (a) {
+    addAnnotations(a) {
       var that = this;
       a.forEach(function (source) {
         var shapeData = that.gcmsInstance.addAUC(
@@ -184,7 +184,7 @@ define([
     },
 
     onActionReceive: {
-      fromtoGC: function (value) {
+      fromtoGC(value) {
         var from = value.from - Math.abs(value.to - value.from) * 0.1;
         var to = value.to + Math.abs(value.to - value.from) * 0.1;
 
@@ -201,14 +201,14 @@ define([
         this.gcmsInstance.updateIngredientPeaks();
       },
 
-      fromtoMS: function (value) {
+      fromtoMS(value) {
         this.gcmsInstance
           .getMS()
           .getBottomAxis()
           ._doZoomVal(value.from, value.to, true);
       },
 
-      zoomOnAnnotation: function (value) {
+      zoomOnAnnotation(value) {
         if (!value.pos && !value.pos2) {
           return;
         }
@@ -225,7 +225,7 @@ define([
         this.gcmsInstance.updateIngredientPeaks();
       },
 
-      centerGC: function (value) {
+      centerGC(value) {
         var a = this.gcmsInstance.getGC().getBottomAxis();
 
         var mi = a.getCurrentMin();
@@ -238,7 +238,7 @@ define([
         this.gcmsInstance.getGC().drawSeries();
       },
 
-      setMSIndexData: function (x) {
+      setMSIndexData(x) {
         this.gcmsInstance.setMSIndexData(x);
       },
     },

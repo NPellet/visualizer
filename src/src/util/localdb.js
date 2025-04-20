@@ -4,7 +4,7 @@ define(['jquery'], function ($) {
   var db, process;
 
   return {
-    open: function () {
+    open() {
       // In the following line, you should include the prefixes of implementations you want to test.
       // This condition should not be removed. Prevents error in firefox
       if (!('indexedDB' in window)) {
@@ -75,7 +75,7 @@ define(['jquery'], function ($) {
       return def;
     },
 
-    getAll: function (type, key, branch) {
+    getAll(type, key, branch) {
       var def = $.Deferred(),
         that = this;
       type =
@@ -123,13 +123,13 @@ define(['jquery'], function ($) {
       return def;
     },
 
-    create: function (type, key, branch) {
+    create(type, key, branch) {
       // Create empty head, empty list
 
       var obj = {
         readURL: `${key};${branch}`,
         url: key,
-        branch: branch,
+        branch,
         list: [],
         head: '{}',
       };
@@ -149,7 +149,7 @@ define(['jquery'], function ($) {
       return def;
     },
 
-    storeToHead: function (type, key, branch, obj) {
+    storeToHead(type, key, branch, obj) {
       var def = $.Deferred(),
         that = this;
       type =
@@ -177,7 +177,7 @@ define(['jquery'], function ($) {
       return def;
     },
 
-    store: function (type, key, branch, obj) {
+    store(type, key, branch, obj) {
       var def = $.Deferred();
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
@@ -212,7 +212,7 @@ define(['jquery'], function ($) {
       return def;
     },
 
-    getHead: function (type, key, branch) {
+    getHead(type, key, branch) {
       var that = this;
       return this.open().pipe(function () {
         return that.getAll(type, key, branch).pipe(function (obj) {
@@ -221,7 +221,7 @@ define(['jquery'], function ($) {
       });
     },
 
-    getList: function (type, key, branch) {
+    getList(type, key, branch) {
       return db.getAll(type, key, branch).pipe(function (obj) {
         return obj.list;
       });

@@ -9,7 +9,7 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       if (!this.dom) {
         this._id = Util.getNextUniqueId();
         this.dom = $(` <div id="${this._id}"></div>`)
@@ -21,23 +21,23 @@ define([
     },
 
     update: {
-      sequence: function (value) {
+      sequence(value) {
         this.sequence = value;
         this.render();
       },
 
-      annotations: function (value) {
+      annotations(value) {
         this.annotations = value;
         this.render();
       },
     },
 
     blank: {
-      sequence: function () {},
-      annotations: function () {},
+      sequence() {},
+      annotations() {},
     },
 
-    render: function () {
+    render() {
       var that = this;
       this.clear();
       if (!this.sequence) return;
@@ -57,15 +57,15 @@ define([
       });
     },
 
-    resize: function () {
+    resize() {
       this.render();
     },
 
-    clear: function () {
+    clear() {
       this.dom.html('');
     },
 
-    inDom: function () {
+    inDom() {
       this.render();
       // var mySeq = new Biojs.Sequence({
       //   sequenceUrl: 'http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=xml&compression=NO&structureId=100D',

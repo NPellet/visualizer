@@ -5,7 +5,7 @@ define(['jquery'], function ($) {
   const _callbacks = {};
 
   return {
-    create: function (name, scriptUrl) {
+    create(name, scriptUrl) {
       if (_workers[name] !== undefined) {
         return;
       }
@@ -25,17 +25,17 @@ define(['jquery'], function ($) {
       };
     },
 
-    send: function (name, message, callback) {
+    send(name, message, callback) {
       if (_workers[name] == undefined) {
         this.create(name, name);
       }
 
       var date = Date.now();
-      _workers[name].postMessage({ time: date, message: message });
-      _callbacks[name].push({ time: date, callback: callback });
+      _workers[name].postMessage({ time: date, message });
+      _callbacks[name].push({ time: date, callback });
     },
 
-    terminate: function (name) {
+    terminate(name) {
       if (_workers[name] == undefined) {
         return;
       }
@@ -43,7 +43,7 @@ define(['jquery'], function ($) {
       _workers[name].terminate();
     },
 
-    hasWorkerInit: function (workerName) {
+    hasWorkerInit(workerName) {
       return !!_workers[workerName];
     },
   };

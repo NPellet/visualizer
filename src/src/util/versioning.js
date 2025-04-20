@@ -104,11 +104,7 @@ define([
             uri[`add${urlType}`]('viewURL', value.view.url);
           }
         }
-        window.history.pushState(
-          { type: 'viewchange', value: value },
-          '',
-          uri.href(),
-        );
+        window.history.pushState({ type: 'viewchange', value }, '', uri.href());
       });
     }
     return def;
@@ -224,36 +220,36 @@ define([
       };
     },
 
-    setViewJSON: function (json) {
+    setViewJSON(json) {
       updateView(json);
       this.viewCallback(view, true);
       viewHandler.versionChange().notify(view);
     },
 
-    setDataJSON: function (json) {
+    setDataJSON(json) {
       updateData(json);
       this.dataCallback(data, true);
     },
 
-    blankView: function () {
+    blankView() {
       this.setViewJSON({});
     },
 
-    switchView: switchView,
+    switchView,
 
-    setURLType: function (type) {
+    setURLType(type) {
       urlType = type;
     },
 
-    viewLock: function () {
+    viewLock() {
       viewLocked = true;
     },
 
-    isViewLocked: function () {
+    isViewLocked() {
       return viewLocked;
     },
 
-    lastLoaded: lastLoaded,
+    lastLoaded,
   };
 
   function copyView() {

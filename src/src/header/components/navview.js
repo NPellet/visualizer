@@ -13,7 +13,7 @@ define([
   function Element() {}
 
   Util.inherits(Element, Default, {
-    initImpl: function () {
+    initImpl() {
       var that = this;
       this.id = Util.getNextUniqueId();
       $.ui.fancytree.debugLevel = 0;
@@ -31,11 +31,11 @@ define([
       });
     },
 
-    _onClick: function () {
+    _onClick() {
       this.createMenu();
     },
 
-    createMenu: function () {
+    createMenu() {
       var that = this;
       if (!this.$_elToOpen) {
         this.$_elToOpen = $('<div/>').css('width', 550);
@@ -64,20 +64,20 @@ define([
       }
     },
 
-    cssId: function (name) {
+    cssId(name) {
       return `ci-navview-header-${this.id}-${name}`;
     },
 
-    reloadTree: function () {
+    reloadTree() {
       this.$tree.fancytree('destroy');
       this.initTree(true);
     },
 
-    reloadActiveNode: function () {
+    reloadActiveNode() {
       this.reloadNode(this.$tree.fancytree('getActiveNode'));
     },
 
-    reloadNode: function (node) {
+    reloadNode(node) {
       if (!node.isFolder()) {
         node = node.getParent();
       }
@@ -95,13 +95,13 @@ define([
       });
     },
 
-    getDir: function (path) {
+    getDir(path) {
       return path.replace(new RegExp(/\/[^/]+$/), '/');
     },
 
-    load: function (name) {},
+    load(name) {},
 
-    save: function () {
+    save() {
       var that = this;
       var dir, name;
       if (this.activeNode) {
@@ -127,8 +127,8 @@ define([
         var req = $.ajax({
           url: '/navview/save',
           data: {
-            dir: dir,
-            name: name,
+            dir,
+            name,
             content: Versioning.getViewJSON('\t'),
           },
           type: 'POST',
@@ -145,7 +145,7 @@ define([
       });
     },
 
-    mkdir: function () {
+    mkdir() {
       var that = this;
       var dir = this.activeNode.data.path;
       if (!this.activeNode.isFolder()) {
@@ -157,8 +157,8 @@ define([
           url: '/navview/mkdir',
           type: 'POST',
           data: {
-            dir: dir,
-            name: name,
+            dir,
+            name,
           },
           dataType: 'json',
         });
@@ -172,7 +172,7 @@ define([
       }
     },
 
-    remove: function (node) {
+    remove(node) {
       var that = this;
       if (node.isFolder()) {
         return this.log('error-log', 'Failed remove file');
@@ -189,8 +189,8 @@ define([
           url: '/navview/file',
           type: 'DELETE',
           data: {
-            dir: dir,
-            name: name,
+            dir,
+            name,
           },
           dataType: 'json',
         });
@@ -206,7 +206,7 @@ define([
       });
     },
 
-    removeDir: function (node) {
+    removeDir(node) {
       var that = this;
       if (!node.isFolder()) {
         return this.log('error-log', 'Failed remove directory');
@@ -236,7 +236,7 @@ define([
       });
     },
 
-    rename: function () {
+    rename() {
       var that = this;
       var reg = new RegExp(/(^.*)\/([^/]+$)/);
 
@@ -252,10 +252,10 @@ define([
       var name = m[2];
 
       var req = this.ajaxRename({
-        dir: dir,
-        newDir: newDir,
-        name: name,
-        newName: newName,
+        dir,
+        newDir,
+        name,
+        newName,
       });
 
       req.done(function () {
@@ -267,16 +267,16 @@ define([
       });
     },
 
-    ajaxRename: function (data) {
+    ajaxRename(data) {
       return $.ajax({
         url: '/navview/rename',
         type: 'PUT',
-        data: data,
+        data,
         dataType: 'json',
       });
     },
 
-    inlineRename: function (node) {
+    inlineRename(node) {
       var that = this;
       var data = {
         dir: node.data.dir,
@@ -297,7 +297,7 @@ define([
       });
     },
 
-    newFile: function () {
+    newFile() {
       var that = this;
       var dir = that.activeNode.data.path;
       if (!that.activeNode.isFolder()) {
@@ -307,7 +307,7 @@ define([
         url: '/navview/touch',
         type: 'POST',
         data: {
-          dir: dir,
+          dir,
           name: that.getFormContent(this.$filenameInput),
         },
         dataType: 'json',
@@ -323,9 +323,9 @@ define([
       });
     },
 
-    duplicate: function () {},
+    duplicate() {},
 
-    checkNode: function () {
+    checkNode() {
       if (!this.activeNode) {
         this.log('error-log', 'Error: you must select a node');
       }
@@ -334,7 +334,7 @@ define([
       this.viewURL = viewURL;
     },
 
-    log: function (name, text) {
+    log(name, text) {
       if (!this.$log) return;
       var $slog = this.$log.find(`#${this.cssId(name)}`);
 
@@ -351,7 +351,7 @@ define([
       }, 5000);
     },
 
-    loadRootTree: function () {
+    loadRootTree() {
       if (this.treeSchema) {
         return this.treeSchema;
       }
@@ -361,7 +361,7 @@ define([
       });
     },
 
-    initTree: function (force) {
+    initTree(force) {
       var that = this;
       if (!force && that.fancytreeOk) {
         return Promise.resolve();
@@ -374,18 +374,18 @@ define([
           filter: {
             mode: 'dimm',
           },
-          source: source,
-          lazyLoad: function (event, data) {
+          source,
+          lazyLoad(event, data) {
             data.result = $.ajax({
               url: `/navview/list?dir=${data.node.data.path}`,
               dataType: 'json',
             }).then(fancyTreeDirStructure);
           },
-          activate: function (event, data) {
+          activate(event, data) {
             that.activeNode = data.node;
             that.updateSaveViewText();
           },
-          dblclick: function (event, data) {
+          dblclick(event, data) {
             Versioning.switchView(
               {
                 view: {
@@ -396,7 +396,7 @@ define([
             );
           },
 
-          keydown: function (event, data) {
+          keydown(event, data) {
             event.preventDefault();
             switch (event.which) {
               case 8:
@@ -410,20 +410,20 @@ define([
           },
           edit: {
             triggerStart: ['f2', 'shift+click', 'mac+enter'],
-            beforeEdit: function (event, data) {
+            beforeEdit(event, data) {
               if (data.node.isFolder()) {
                 return false;
               }
               that.inlineOldTitle = data.node.title;
               // Return false to prevent edit mode
             },
-            edit: function (event, data) {
+            edit(event, data) {
               // Editor was opened (available as data.input)
             },
-            beforeClose: function (event, data) {
+            beforeClose(event, data) {
               // Return false to prevent cancel/save (data.input is available)
             },
-            save: function (event, data) {
+            save(event, data) {
               // Save data.input.val() or return false to keep editor open
               // Simulate to start a slow ajax request...
               data.node.setTitle(data.input.val());
@@ -433,7 +433,7 @@ define([
               // as title
               return true;
             },
-            close: function (event, data) {
+            close(event, data) {
               // Editor was removed
               if (data.save) {
                 // Since we started an async request, mark the node as preliminary
@@ -475,7 +475,7 @@ define([
       });
     },
 
-    createButtons: function () {
+    createButtons() {
       var that = this;
       if (this._buttons) return;
 
@@ -559,11 +559,11 @@ define([
       this._buttons = true;
     },
 
-    updateSaveViewText: function () {
+    updateSaveViewText() {
       this.$saveViewText.html(this.activeNode.data.path);
     },
 
-    getFormContent: function (type) {
+    getFormContent(type) {
       if (typeof type === 'string') {
         return $(`#${this.cssId(type)}`)
           .val()
@@ -572,7 +572,7 @@ define([
         return type.val().trim();
       }
     },
-    setFormContent: function (type, value) {
+    setFormContent(type, value) {
       $(`#${this.cssId(type)}`).val(value);
     },
   });
@@ -604,15 +604,15 @@ define([
       $dialog.dialog({
         modal: true,
         buttons: {
-          Cancel: function () {
+          Cancel() {
             $(this).dialog('close');
           },
-          Ok: function () {
+          Ok() {
             resolve(true);
             $(this).dialog('close');
           },
         },
-        close: function () {
+        close() {
           return resolve(false);
         },
         width: 400,

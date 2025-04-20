@@ -251,7 +251,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
   };
 
   Controller.prototype.configFunctions = {
-    continuous: function (cfg) {
+    continuous(cfg) {
       return cfg[0] === 'continuous';
     },
   };

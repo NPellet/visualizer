@@ -27,9 +27,9 @@ define(['loglevel'], function (log) {
   var debugLevel = Levels.TRACE;
 
   var Debug = {
-    Levels: Levels,
+    Levels,
 
-    setDebugLevel: function (level) {
+    setDebugLevel(level) {
       level = parseInt(level, 10);
       if (isNaN(level) || level < -1) {
         return;
@@ -46,7 +46,7 @@ define(['loglevel'], function (log) {
       debugLevel = level;
     },
 
-    getDebugLevel: function () {
+    getDebugLevel() {
       return debugLevel;
     },
 
@@ -56,13 +56,13 @@ define(['loglevel'], function (log) {
     debug: log.debug,
     trace: log.trace,
 
-    timer: function () {
+    timer() {
       var t = new Timer();
       t.start();
       return t;
     },
 
-    Timer: Timer,
+    Timer,
   };
 
   function formatTime(time, format) {
@@ -88,7 +88,7 @@ define(['loglevel'], function (log) {
   }
 
   Timer.prototype = {
-    start: function () {
+    start() {
       if (this._paused) {
         this._start = perfObj.now() - this._elapsed;
         this._paused = false;
@@ -97,18 +97,18 @@ define(['loglevel'], function (log) {
         this._started = true;
       }
     },
-    pause: function () {
+    pause() {
       if (this._started && !this._paused) {
         this._paused = true;
         this._elapsed = perfObj.now() - this._start;
       }
     },
-    time: function (format) {
+    time(format) {
       if (this._started && !this._paused) {
         return formatTime(perfObj.now() - this._start, format);
       }
     },
-    step: function (format) {
+    step(format) {
       if (this._started && !this._paused) {
         var now = perfObj.now();
         var time = now - this._start;
@@ -118,17 +118,17 @@ define(['loglevel'], function (log) {
         return formatTime(time, format);
       }
     },
-    lap: function (format) {
+    lap(format) {
       if (this._started && !this._paused) {
         var time = perfObj.now() - this._start;
         this._laps.push(time);
         return formatTime(this._total, format);
       }
     },
-    log: function () {
+    log() {
       Debug.info(this.time());
     },
-    sum: function (name) {
+    sum(name) {
       var elapsed = perfObj.now() - this._start;
       if (name) {
         if (!this._sums[name]) {
@@ -138,17 +138,17 @@ define(['loglevel'], function (log) {
       }
       this._sumElapsed = elapsed;
     },
-    getSteps: function (format) {
+    getSteps(format) {
       return this._steps.map(function (time) {
         return formatTime(time, format);
       });
     },
-    getLaps: function (format) {
+    getLaps(format) {
       return this._laps.map(function (time) {
         return formatTime(time, format);
       });
     },
-    getSums: function (format) {
+    getSums(format) {
       var result = {};
       for (var i in this._sums) {
         result[i] = formatTime(this._sums[i], format);

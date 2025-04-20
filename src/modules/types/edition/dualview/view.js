@@ -11,7 +11,7 @@ define([
   }
 
   $.extend(true, View.prototype, Default, {
-    setModule: function (module) {
+    setModule(module) {
       this.module = module;
 
       this.twigV.module = $.extend({}, module);
@@ -29,7 +29,7 @@ define([
       this.twigV.module.getConfiguration = configCustom;
       this.ondeV.module.getConfiguration = configCustom;
     },
-    init: function () {
+    init() {
       var html = '<div></div>';
 
       this.dom = $(html).css({
@@ -50,22 +50,22 @@ define([
       this.ondeV.initForm();
     },
     blank: {},
-    inDom: function () {
+    inDom() {
       this.module.getDomContent().html(this.dom);
       this.loadTwig();
       this.resolveready();
     },
     update: {
-      value: function (val, name) {
+      value(val, name) {
         this._value = [val, name];
         this.twigV.update.value.apply(this.twigV, arguments);
         this.ondeV.update.inputValue.apply(this.ondeV, arguments);
       },
     },
-    loadOnde: function () {
+    loadOnde() {
       this.dom.html(this.ondeV.dom);
     },
-    loadTwig: function () {
+    loadTwig() {
       var that = this;
       this.dom.html(this.twigV.dom);
       this.twigV.dom.dblclick(function () {

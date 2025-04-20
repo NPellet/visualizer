@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = $('<div />');
       var that = this;
       var img = $('<div class="ci-navigation-navigarrow"></div>');
@@ -28,7 +28,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
     },
 
     update: {
-      xcoords: function (value) {
+      xcoords(value) {
         if (!value) {
           return;
         }
@@ -37,7 +37,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
       },
     },
 
-    moveStart: function (e) {
+    moveStart(e) {
       var started = Date.now();
       // self.moveStart(event);
 
@@ -81,7 +81,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
     },
 
     onActionReceive: {
-      changeX: function (value) {
+      changeX(value) {
         this.cx = parseFloat(value.valueOf());
       },
     },

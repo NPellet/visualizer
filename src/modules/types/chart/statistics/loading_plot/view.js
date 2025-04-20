@@ -13,13 +13,13 @@ define([
   function View() {}
 
   $.extend(true, View.prototype, Default, {
-    init: function () {
+    init() {
       this.dom = ui.getSafeElement('div');
       this.module.getDomContent().html(this.dom);
       this.resolveReady();
     },
 
-    onResize: function (w, h) {
+    onResize(w, h) {
       this._w = w;
       this._h = h;
       if (this._w && this._h && this._svg) {
@@ -29,7 +29,7 @@ define([
     },
 
     blank: {
-      loading: function () {
+      loading() {
         if (this.dom) {
           this.dom.empty();
         }
@@ -38,7 +38,7 @@ define([
     },
 
     update: {
-      preferences: function (moduleValue) {
+      preferences(moduleValue) {
         this._lastConf = moduleValue;
         if (!this._lastValue) {
           return;
@@ -54,28 +54,28 @@ define([
         }
       },
 
-      center: function (val) {
+      center(val) {
         if (!val) {
           return;
         }
         this._svg.setCenter.apply(this._svg, val);
       },
 
-      zoom: function (val) {
+      zoom(val) {
         if (!val) {
           return;
         }
         this._svg.setZoom(val);
       },
 
-      viewport: function (viewport) {
+      viewport(viewport) {
         if (!viewport) {
           return;
         }
         this._svg.setViewBox.apply(this._svg, [false].concat(viewport));
       },
 
-      loading: function (moduleValue) {
+      loading(moduleValue) {
         var that = this;
         if (!moduleValue || !moduleValue.value) {
           return;

@@ -2,10 +2,10 @@
 
 const dataTransform = {
   exponential10: {
-    forward: function (input) {
+    forward(input) {
       return 10 ** input;
     },
-    backward: function (input) {
+    backward(input) {
       return Math.log10(input);
     },
   },
