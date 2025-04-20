@@ -297,7 +297,7 @@
           "libs": [
             [
               {
-                "lib": "openchemlib/openchemlib-full",
+                "lib": "openchemlib",
                 "alias": "OCL"
               }
             ]

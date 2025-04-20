@@ -1,5 +1,5 @@
 {
-  "version": "2.82.3",
+  "version": "2.161.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -125,7 +125,7 @@
                 []
               ],
               "script": [
-                "var molfile=get('molfile');\n\nvar molecule=OCLE.Molecule.fromMolfile(molfile+\"\");\n\nconsole.time(\"Add Hydrogens\");\nmolecule.addImplicitHydrogens();\nconsole.timeEnd(\"Add Hydrogens\");\n\nconsole.time(\"OCL Code\");\nmolecule.getIDCode();\nconsole.timeEnd(\"OCL Code\");\n\nconsole.time(\"Get dia IDs\");\nvar diaIDs=molecule.getDiastereotopicAtomIDs();\nconsole.timeEnd(\"Get dia IDs\");\n\nAPI.createData('idcode', molecule.getIDCode());\n\n"
+                "var molfile=get('molfile');\n\nvar molecule=OCL.Molecule.fromMolfile(molfile+\"\");\n\nconsole.time(\"Add Hydrogens\");\nmolecule.addImplicitHydrogens();\nconsole.timeEnd(\"Add Hydrogens\");\n\nconsole.time(\"OCL Code\");\nmolecule.getIDCode();\nconsole.timeEnd(\"OCL Code\");\n\nconsole.time(\"Get dia IDs\");\nvar diaIDs=molecule.getDiastereotopicAtomIDs();\nconsole.timeEnd(\"Get dia IDs\");\n\nAPI.createData('idcode', molecule.getIDCode());\n\n"
               ],
               "asyncAwait": [
                 []
@@ -133,12 +133,7 @@
             }
           ],
           "libs": [
-            [
-              {
-                "lib": "OCLE",
-                "alias": "OCLE"
-              }
-            ]
+            []
           ],
           "buttons": [
             [
@@ -374,8 +369,8 @@
   ],
   "aliases": [
     {
-      "path": "../testcase/data/openchemlibDiaID/openchemlib-full.pretty",
-      "alias": "OCLE"
+      "path": "openchemlib",
+      "alias": "OCL"
     }
   ],
   "configuration": {

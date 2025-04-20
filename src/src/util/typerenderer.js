@@ -645,7 +645,7 @@ define([
     $element.html(displayValue);
   };
 
-  const oclUrl = 'openchemlib/openchemlib-full';
+  const oclUrl = 'openchemlib';
   const defaultOpenChemLibStructureOptions = {
     suppressChiralText: true,
     suppressESR: true,
