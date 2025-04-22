@@ -1,3 +1,20 @@
+# [2.162.0](https://github.com/NPellet/visualizer/compare/v2.161.0...v2.162.0) (2025-04-22)
+
+
+### Bug Fixes
+
+* avoid babel transpilation of dynamic import ([e35f4a0](https://github.com/NPellet/visualizer/commit/e35f4a0d7c8da42a997cd8e6cab2258a4e5b6259))
+* build with new file ([bfb4a56](https://github.com/NPellet/visualizer/commit/bfb4a56b81bd56a43370613224e37c328f7d0b60))
+* define esm plugin in init file ([2ab7b1d](https://github.com/NPellet/visualizer/commit/2ab7b1d366a2da02ed3f14381e247a371ae5c6b4))
+
+
+### Features
+
+* add ESM loader plugin ([3ae6e7d](https://github.com/NPellet/visualizer/commit/3ae6e7d9b977df03e0ce289110de77fdf8d8bc46))
+* update OCL and use new structure editor ([#1160](https://github.com/NPellet/visualizer/issues/1160)) ([8b938c1](https://github.com/NPellet/visualizer/commit/8b938c1b333266d8defb47b048c29803948ae193))
+
+
+
 # [2.161.0](https://github.com/NPellet/visualizer/compare/v2.160.3...v2.161.0) (2025-04-10)
 
 
