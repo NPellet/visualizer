@@ -51,7 +51,7 @@ require.config({
     msa: 'lib/msa/msa.min',
     'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
     numeral: 'components/numeral/numeral',
-    openchemlib: 'browserified/openchemlib',
+    openchemlib: 'browserified/openchemlib/openchemlib',
     papaparse: 'components/papa-parse/papaparse.min',
     plot: 'lib/plot/plot',
     pouchdb: 'components/pouchdb/dist/pouchdb.min',

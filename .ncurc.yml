@@ -1,5 +1,5 @@
 reject:
-  # Now ESM, which is not supported by browserify.
+  # Now ESM with multiple exports, but we rely on the default export.
   - delay
   # Now ESM and depends on top-level await.
   - tempfile

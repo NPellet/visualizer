@@ -106,28 +106,6 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     browserify: {
-      countries: {
-        files: {
-          'src/browserified/country-data/index.js': [
-            './node_modules/country-data/index.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'CountryData',
-          },
-        },
-      },
-      delay: {
-        files: {
-          'src/browserified/delay/index.js': ['./node_modules/delay/index.js'],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'Delay',
-          },
-        },
-      },
       mimeTypes: {
         files: {
           'src/browserified/mime-types/index.js': [
@@ -195,18 +173,6 @@ module.exports = function (grunt) {
         options: {
           browserifyOptions: {
             standalone: 'MFParser',
-          },
-        },
-      },
-      SmartArrayFilter: {
-        files: {
-          'src/browserified/SmartArrayFilter/index.js': [
-            './node_modules/smart-array-filter/lib/index.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'SAF',
           },
         },
       },
