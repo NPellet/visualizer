@@ -78,7 +78,7 @@
     "delay": "^4.4.1",
     "eslint-plugin-import": "^2.31.0",
     "katex": "^0.10.0",
-    "mathjs": "^5.10.3",
+    "mathjs": "^7.5.1",
     "mf-parser": "^1.5.0",
     "mime-types": "^2.1.35",
     "node-jsgraph": "2.4.15",
