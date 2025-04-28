@@ -74,7 +74,7 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "angularplasmid": "^1.0.5",
     "babel-preset-minify": "^0.5.2",
-    "bio-parsers": "4.2.4",
+    "bio-parsers": "4.5.8",
     "country-data": "0.0.31",
     "d3-hierarchy": "^1.1.9",
     "delay": "^5.0.0",
