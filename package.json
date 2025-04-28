@@ -82,7 +82,7 @@
     "mf-parser": "^1.5.0",
     "mime-types": "^2.1.35",
     "node-jsgraph": "2.4.15",
-    "openchemlib": "^9.0.0",
+    "openchemlib": "^9.0.1",
     "quill-image-drop-module": "github:cheminfo/quill-image-drop-module#4cdc591cfddec42a22ab25b635f34de9e973c86d",
     "quill-image-resize-module": "^3.0.0",
     "rxn-renderer": "^1.0.2",
