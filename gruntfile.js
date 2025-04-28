@@ -105,78 +105,6 @@ module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    browserify: {
-      mimeTypes: {
-        files: {
-          'src/browserified/mime-types/index.js': [
-            './node_modules/mime-types/index.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'mimeTypes',
-          },
-        },
-      },
-      superagent: {
-        files: {
-          'src/browserified/superagent/index.js': [
-            './node_modules/superagent/lib/client.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'superagent',
-          },
-        },
-      },
-      twig: {
-        files: {
-          'src/browserified/twig/twig.js': ['./node_modules/twig/twig.min.js'],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'Twig',
-          },
-        },
-      },
-      bioParsers: {
-        files: {
-          'src/browserified/bioParsers/index.js': [
-            './node_modules/bio-parsers/parsers/index.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'bioParsers',
-          },
-        },
-      },
-      RxnRenderer: {
-        files: {
-          'src/browserified/RxnRenderer/index.js': [
-            './node_modules/rxn-renderer/lib/index.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'RxnRenderer',
-          },
-        },
-      },
-      MFParser: {
-        files: {
-          'src/browserified/MFParser/index.js': [
-            './node_modules/mf-parser/src/index.js',
-          ],
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'MFParser',
-          },
-        },
-      },
-    },
     babel: {
       transpile: {
         options: {
@@ -538,7 +466,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-browserify');
 
   grunt.registerTask('manifest:generate', function () {
     var files = recursivelyLookupDirectory('build', true);

@@ -1,5 +1,6 @@
 reject:
   # Now ESM with multiple exports, but we rely on the default export.
+  # Also, delay@5 cannot be parsed by the esprima version used by requirejs
   - delay
   # Now ESM and depends on top-level await.
   - tempfile

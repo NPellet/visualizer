@@ -8,7 +8,6 @@ require.config({
       'node_modules/angularplasmid/dist/angularplasmid.complete.min',
     async: 'components/async/dist/async',
     babel: 'components/babel-standalone/babel.min',
-    bioParsers: 'browserified/bioParsers/index',
     bowser: 'components/bowser/bowser',
     canvg: 'components/canvg/dist/canvg.bundle',
     chroma: 'components/chroma-js/chroma.min',
