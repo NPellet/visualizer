@@ -1,0 +1,3129 @@
+{
+  "version": "2.162.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      },
+      "Admin": {
+        "name": "Admin"
+      },
+      "List": {
+        "name": "List"
+      },
+      "Twig template": {
+        "name": "Twig template"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/display/template-twig/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "selectable": [
+                []
+              ],
+              "template": [
+                "<style>\n    #propertyExplorer {\n        padding: 5px;\n        position: relative;\n    }\n    .pastille {\n        width: 10px;\n        height: 10px;\n        display: inline-block;\n        margin-right: 5px;\n        margin-top: 3px;\n    }\n    .indicator {\n        height: 10px;\n        width: 100px;\n        display: inline-block;\n        /*border: solid black 1px;*/\n        \n    }\n    .mol {\n        position: absolute;\n        left: 200px;\n        top: 150px;\n        height: 200px;\n        width: 300px;\n    }\n    #propertyExplorer h2 {\n        margin-top: 10px;\n        margin-bottom: 5px;\n    }\n</style>\n<div id=\"propertyExplorer\">\n<div class=\"mol\">{{ rendertype(data.structure) }}</div>\n<h1>\n    Toxicity Risks\n</h1>\n<br>\n<div>\n    <div class=\"pastille {{ data.mutagenic }}\"></div><span>mutagenic</span>\n</div>\n<div>\n    <div class=\"pastille {{ data.tumorigenic }}\"></div><span>tumorigenic</span>\n</div>\n<div>\n    <div class=\"pastille {{ data.irritant }}\"></div><span>irritant</span>\n</div>\n<div>\n    <div class=\"pastille {{ data.reproductive }}\"></div><span>reproductive effective</span>\n</div>\n<br>\n<h2>cLogP</h2>\n<div>\n    <div class=\"indicator\">{{ rendertype(data.logPI) }}</div><span> {{ data.logP|number_format(2) }}</span>\n</div>\n<h2>Solubility</h2>\n<div>\n    <div class=\"indicator\">{{ rendertype(data.logSI) }}</div><span> {{ data.logS|number_format(2) }}</span>\n</div>\n<h2>Molweight</h2>\n<div>\n    <div class=\"indicator\">{{ rendertype(data.mwI) }}</div><span> {{ data.mw|number_format(2) }}</span>\n</div>\n<h2>TPSA</h2>\n<div>\n    <div class=\"indicator\">{{ rendertype(data.psaI) }}</div><span> {{ data.psa|number_format(2) }}</span>\n</div>\n<h2>Druglikeness</h2>\n<div>\n    <div class=\"indicator\">{{ rendertype(data.likenessI) }}</div><span> {{ data.likeness|number_format(2) }}</span>\n</div>\n<h2>Drug-Score</h2>\n<div>\n    <div class=\"indicator\">{{ rendertype(data.drugScoreI) }}</div><span> {{ data.drugScore }}</span>\n</div>\n</div>"
+              ],
+              "modifyInForm": [
+                []
+              ],
+              "debouncing": [
+                0
+              ],
+              "formOptions": [
+                [
+                  "keepFormValueIfDataUndefined"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 51,
+            "top": 0
+          },
+          "size": {
+            "width": 51,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 130,
+            "top": 0
+          },
+          "size": {
+            "width": 43,
+            "height": 77
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "List": {
+          "position": {
+            "left": 47,
+            "top": 0
+          },
+          "size": {
+            "width": 52,
+            "height": 85
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 54,
+            "height": 74
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "data"
+        },
+        {
+          "rel": "tpl",
+          "name": "tpl"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              []
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": [
+                "html"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                []
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                [
+                  "store"
+                ]
+              ],
+              "debouncing": [
+                0
+              ],
+              "script": [
+                "<style>\n    #propertyExplorer {\n        padding: 5px;\n        position: relative;\n        font-size: 150%;\n    }\n    #propertyExplorer .pastille {\n        width: 10px;\n        height: 10px;\n        display: inline-block;\n        margin-right: 5px;\n        margin-top: 3px;\n    }\n    #propertyExplorer .indicator {\n        height: 10px;\n        width: 100px;\n        display: inline-block;\n        /*border: solid black 1px;*/\n        \n    }\n    #propertyExplorer .mol {\n        position: absolute;\n        left: 200px;\n        top: 100px;\n        height: 200px;\n        width: 300px;\n    }\n    #propertyExplorer th {\n        text-align: left;\n    }\n    #propertyExplorer th, #propertyExplorer td {\n        font-size: large;\n    }\n    #propertyExplorer h1, #propertyExplorer h2 {\n        padding-bottom: 10px;\n        padding-top: 10px;\n    }\n</style>\n<div id=\"propertyExplorer\">\n    <h1>OSIRIS Property Explorer</h1>\n<div class=\"mol\">{{ rendertype(data.structure, {width: 300, height: 200}, 'mol2d') }}</div>\n<h2>\n    Predicted toxicity risks\n</h2>\n<br>\n<div>\n    <div class=\"pastille bg-{{ data.mutagenic }}\"></div><span>mutagenic</span>\n</div>\n<div>\n    <div class=\"pastille bg-{{ data.tumorigenic }}\"></div><span>tumorigenic</span>\n</div>\n<div>\n    <div class=\"pastille bg-{{ data.irritant }}\"></div><span>irritant</span>\n</div>\n<div>\n    <div class=\"pastille bg-{{ data.reproductive }}\"></div><span>reproductive effective</span>\n</div>\n<br>\n<h2>\n    Predicted properties\n</h2>\n\n<table>\n    <tr>\n        <th>cLogP</th>\n        <td><div class=\"indicator\">{{ rendertype(data.logPI,'indicator') }}</div></td>\n        <td>{{ data.logP|number_format(2) }}</td>\n    </tr>\n    <tr>\n        <th>Solubility</th>\n        <td><div class=\"indicator\">{{ rendertype(data.logSI,'indicator') }}</div></td>\n        <td>{{ data.logS|number_format(2) }}</td>\n    </tr>\n    <tr>\n        <th>Molweight</th>\n        <td><div class=\"indicator\">{{ rendertype(data.mwI,'indicator') }}</div></td>\n        <td>{{ data.mw|number_format(2) }}</td>\n    </tr>\n    <tr>\n        <th>TPSA</th>\n        <td><div class=\"indicator\">{{ rendertype(data.psaI,'indicator') }}</div></td>\n        <td>{{ data.psa|number_format(2) }}</td>\n    </tr>\n    <tr>\n        <th>Druglikeness</th>\n        <td><div class=\"indicator\">{{ rendertype(data.likenessI,'indicator') }}</div></td>\n        <td>{{ data.likeness|number_format(2) }}</td>\n    </tr>\n        <tr>\n        <th>H bond acceptor</th>\n        <td><div class=\"indicator\">{{ rendertype(data.hAcceptorI,'indicator') }}</div></td>\n        <td>{{ data.hAcceptor }}</td>\n    </tr>\n    <tr>\n        <th>H bond donor</th>\n        <td><div class=\"indicator\">{{ rendertype(data.hDonorI,'indicator') }}</div></td>\n        <td>{{ data.hDonor }}</td>\n    </tr>\n    <tr>\n        <th>Nb stereocenters</th>\n        <td><div class=\"indicator\">{{ rendertype(data.stereoCenterI,'indicator') }}</div></td>\n        <td>{{ data.stereoCenter }}</td>\n    </tr>\n    <tr>\n        <th>Nb rotatable bonds</th>\n        <td><div class=\"indicator\">{{ rendertype(data.rotatableBondI,'indicator') }}</div></td>\n        <td>{{ data.rotatableBond }}</td>\n    </tr>\n    <tr>\n        <th>Drug-Score</th>\n        <td><div class=\"indicator\">{{ rendertype(data.drugScoreI,'indicator') }}</div></td>\n        <td>{{ data.drugScore|number_format(2) }}</td>\n    </tr>\n</table>\n\n"
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 124,
+            "top": 53
+          },
+          "size": {
+            "width": 73,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 106,
+            "top": 0
+          },
+          "size": {
+            "width": 73,
+            "height": 74
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "List": {
+          "position": {
+            "left": 124,
+            "top": 53
+          },
+          "size": {
+            "width": 73,
+            "height": 46
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Twig template": {
+          "position": {
+            "left": 55,
+            "top": 0
+          },
+          "size": {
+            "width": 73,
+            "height": 74
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onEditorChange",
+          "rel": "data",
+          "jpath": [],
+          "name": "tpl"
+        }
+      ],
+      "title": "",
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "buttons",
+                  "editor"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                []
+              ],
+              "script": [
+                "const OCL = window.OCL;\n\nif (this.event !== 'button') return;\n\nvar data = get('data');\nvar tPredictor = API.cache('tPredictor');\n\nvar mol = OCL.Molecule.fromIDCode(data.structure.value);\nvar details = getDetail(mol, parseInt(this.button));\n\nset('details', details);\n\nfunction getDetail(mol, type) {\n    var details = tPredictor.getDetail(mol, type);\n    var result = [];\n    for (var i = 0; i < details.length; i++) {\n        if (details[i].type === 2) {\n            if (details[i+1] && details[i+1].type === 1) {\n                result.push(\n                    {\n                        desc: details[i].value,\n                        mol: {type: 'oclid', value: details[i+1].value}\n                    }\n                );\n            }\n            i++;\n        } else {\n            result.push(\n                {desc: details[i].value}\n            );\n        }\n    }\n    return result;\n}\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "0",
+                "label": "Mutagenic",
+                "hide": [],
+                "disable": []
+              },
+              {
+                "name": "1",
+                "label": "Tumorigenic",
+                "hide": [],
+                "disable": []
+              },
+              {
+                "name": "2",
+                "label": "Irritant",
+                "hide": [],
+                "disable": []
+              },
+              {
+                "name": "3",
+                "label": "Reproductive effective",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 198,
+            "top": 0
+          },
+          "size": {
+            "width": 48,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 176,
+            "top": 0
+          },
+          "size": {
+            "width": 48,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "List": {
+          "position": {
+            "left": 178,
+            "top": 0
+          },
+          "size": {
+            "width": 48,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Twig template": {
+          "position": {
+            "left": 130,
+            "top": 0
+          },
+          "size": {
+            "width": 48,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "event": "onScriptEnded",
+          "rel": "outputValue",
+          "jpath": [
+            "details"
+          ],
+          "name": "details"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/display/iframe/",
+      "configuration": {},
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 103,
+            "top": 0
+          },
+          "size": {
+            "width": 52,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 103,
+            "top": 0
+          },
+          "size": {
+            "width": 71,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "url",
+          "name": "help"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              []
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/edition/rich_text/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                [
+                  "isEditable"
+                ]
+              ],
+              "debouncing": [
+                0
+              ],
+              "modifyInVariable": [
+                []
+              ],
+              "storeInView": [
+                [
+                  "yes"
+                ]
+              ],
+              "autoHeight": [
+                []
+              ],
+              "bgColor": [
+                [
+                  255,
+                  242,
+                  204,
+                  1
+                ]
+              ],
+              "postit": [
+                [
+                  "yes"
+                ]
+              ],
+              "html": [
+                [
+                  "yes"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 6
+          },
+          "size": {
+            "width": 50,
+            "height": 15
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 50,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "richtext": "<p><span style=\"font-size:16px\">Predict properties that to Osiris&nbsp;Property Explorer provided by Thomas Sander.</span></p>\n\n<p>&nbsp;</p>\n\n<p><span style=\"font-size:16px\">Just draw the molecule and check the corresponding properties.</span></p>\n\n<p>&nbsp;</p>\n",
+      "title": "",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                "120"
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/9220df906db163190d73bd0852d1ae63221ddbfc/src/modules/types/edition/slick_grid/view.js#L1264-L1300"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Structure",
+                "jpath": [
+                  "structure"
+                ],
+                "editor": "none",
+                "forceType": "mol2d",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 183,
+                "hideColumn": []
+              },
+              {
+                "name": "MW",
+                "jpath": [
+                  "mw"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "numeral:\"0.00\"",
+                "editorOptions": "",
+                "width": 48,
+                "hideColumn": []
+              },
+              {
+                "name": "logP",
+                "jpath": [
+                  "logP"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "numeral:\"0.00\"",
+                "editorOptions": "",
+                "width": 45,
+                "hideColumn": []
+              },
+              {
+                "name": "logS",
+                "jpath": [
+                  "logS"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "numeral:\"0.00\"",
+                "editorOptions": "",
+                "width": 56,
+                "hideColumn": []
+              },
+              {
+                "name": "H donor",
+                "jpath": [
+                  "hDonor"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 47,
+                "hideColumn": []
+              },
+              {
+                "name": "H acceptor",
+                "jpath": [
+                  "hAcceptor"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 47,
+                "hideColumn": []
+              },
+              {
+                "name": "Nb stereo",
+                "jpath": [
+                  "stereoCenter"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 47,
+                "hideColumn": []
+              },
+              {
+                "name": "Nb rotatable",
+                "jpath": [
+                  "rotatableBond"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 47,
+                "hideColumn": []
+              },
+              {
+                "name": "Mutag.",
+                "jpath": [
+                  "mutagenic"
+                ],
+                "editor": "none",
+                "forceType": "color",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 47,
+                "hideColumn": []
+              },
+              {
+                "name": "Tumor.",
+                "jpath": [
+                  "tumorigenic"
+                ],
+                "editor": "none",
+                "forceType": "color",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 47,
+                "hideColumn": []
+              },
+              {
+                "name": "Irr.",
+                "jpath": [
+                  "irritant"
+                ],
+                "editor": "none",
+                "forceType": "color",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 48,
+                "hideColumn": []
+              },
+              {
+                "name": "Reprod.",
+                "jpath": [
+                  "reproductive"
+                ],
+                "editor": "none",
+                "forceType": "color",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "width": 48,
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "name": "removeStructure",
+                "tooltip": "Remove structure",
+                "icon": "fa-trash",
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "action": "removeStructure",
+                "position": "end",
+                "clickMode": "text",
+                "isAction": true
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 100,
+            "top": 21
+          },
+          "size": {
+            "width": 75,
+            "height": 64
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "filteredArray"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onRowActive",
+          "rel": "row",
+          "jpath": [],
+          "name": "data"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              []
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "\nswitch (this.variable) {\n    case 'molfile':\n        this.action = {\n            name: 'updateMolfile',\n            value: API.getData('molfile').resurrect(),\n        }\n        break;\n}\n\n\n\nconst actionValue=this.action.value;\nconsole.log(actionValue);\nconst dataArray = API.getData('dataArray');\n\n\nswitch (this.action.name) {\n    case 'switchToLayer':\n        API.switchToLayer(actionValue);\n        break;\n    case 'removeStructure':\n        var id=-1;\n        dataArray.forEach( (item, i) => {\n            if (Number(item._highlight)===Number(actionValue._highlight)) {\n                id=i;\n            }\n        });\n        if (id>=0) {\n            dataArray.splice(id, 1);\n            dataArray.triggerChange();\n        }\n        break;\n    case 'appendStructure':\n        let data=API.getData('data');\n        console.log(data)\n        appendStructure(data);\n        dataArray.triggerChange();\n        break;\n    case 'updateMolfile': \n        let molecule=OCL.Molecule.fromMolfile(actionValue);\n        let prediction = getPrediction(molecule);\n        API.createData('data', prediction);\n        break;\n    case 'appendSmiles': \n        let smiles=actionValue.split(/[\\r\\n;, ]+/).filter( smile => smile );\n        for (let smile of smiles) {\n            let molecule=OCL.Molecule.fromSmiles(smile);\n            let prediction = getPrediction(molecule);\n            appendStructure(prediction);\n        }\n        dataArray.triggerChange();\n        break;\n}\n\nfunction appendStructure(data) {\n    if (dataArray.filter( item => item.id==data.id ).length>0) return;\n    console.log('xx');\n    let logP=data.logP;\n    var min=0;\n    var max=5;\n    if (logP<min) logP=min;\n    if (logP>max) logP=max;\n    data.color='hsl(' + Math.floor(360-((logP-min)/(max-min)*120)) +',65%,65%)';\n    data._highlight=Math.random();\n    dataArray.push(JSON.parse(JSON.stringify(data)));\n}\n\n\nfunction getPrediction(mol) {\n    \n    var TP = OCL.ToxicityPredictor;\n    var DP = OCL.DruglikenessPredictor;\n    \n    var tPredictor = API.cache('tPredictor');\n    var dPredictor = API.cache('dPredictor');\n    if (!tPredictor) {\n        tPredictor = new TP();\n        dPredictor = new DP();\n        API.cache('tPredictor', tPredictor);\n        API.cache('dPredictor', dPredictor);\n    }\n\n    var mRisk = tPredictor.assessRisk(mol, TP.TYPE_MUTAGENIC);\n    var tRisk = tPredictor.assessRisk(mol, TP.TYPE_TUMORIGENIC);\n    var iRisk = tPredictor.assessRisk(mol, TP.TYPE_IRRITANT);\n    var rRisk = tPredictor.assessRisk(mol, TP.TYPE_REPRODUCTIVE_EFFECTIVE);\n    \n    console.log({mRisk, tRisk, iRisk, rRisk})\n    \n    var props=new OCL.MoleculeProperties(mol);\n    \n    var logP = props.logP;\n    var logS = props.logS;\n    var hDonor = props.donorCount;\n    var hAcceptor = props.acceptorCount;\n    var rotatableBond = props.rotatableBondCount;\n    var stereoCenter = props.stereoCenterCount;\n    \n    \n    var mw = mol.getMolecularFormula().relativeWeight;\n    var psa = props.polarSurfaceArea;\n    \n    var likeness = dPredictor.assessDruglikeness(mol);\n    \n    var drugScore = OCL.DrugScoreCalculator.calculate(logP, psa, mw, likeness, [mRisk, tRisk, iRisk, rRisk]);\n    \n    var data = {\n        id: mol.getIDCode(),\n        structure: mol.toMolfile(),\n        mutagenic: getColor(mRisk),\n        tumorigenic: getColor(tRisk),\n        irritant: getColor(iRisk),\n        reproductive: getColor(rRisk),\n        logP,\n        logPI: getIndicator(logP, -5, 5),\n        logS,\n        logSI: getIndicator(logS, -5, 5),\n        mw,\n        mwI: getIndicator(mw, 100, 500),\n        psa,\n        psaI: getIndicator(psa, 0, 40),\n        likeness,\n        likenessI: getIndicator(likeness, -10, 10, {color: {under:'red', over:'green'}}),\n        drugScore,\n        drugScoreI: getIndicator(drugScore, -1, 1, {color: {under:'red', over:'green'}}),\n        hDonor,\n        hDonorI: getIndicator(hDonor, 0, 10),\n        hAcceptor,\n        hAcceptorI: getIndicator(hAcceptor, 0, 20),\n        stereoCenter,\n        stereoCenterI: getIndicator(stereoCenter, 0, 10),\n        rotatableBond,\n        rotatableBondI: getIndicator(rotatableBond, 0, 10),\n    };\n    \n    return data;\n    \n    function getColor(risk) {\n        if (risk === 1) return 'lime';\n        if (risk === 2) return 'orange';\n        if (risk === 3) return 'red';\n    }\n    \n    function getIndicator(value, min=0, max=100, options={}) {\n        const {\n            color=false\n        } = options;\n        if (value<min) value=min;\n        if (value>max) value=max;\n        let middle=(min+max)/2;\n        let length=(value-min)/(max-min)*100;\n        if (color) {\n            length/=2;\n            // need to know if it is color1 or color2 compare to the middle\n            if (value<middle) {\n                return [\n                    {size: 50-length, bgcolor: 'white'},\n                    {size: length, bgcolor: color.under},\n                    {size: 50+30, bgcolor: 'white'}\n                ];\n            } else {\n                return [\n                    {size: 50, bgcolor: 'white'},\n                    {size: length, bgcolor: color.hover},\n                    {size: 50-length+30, bgcolor: 'white'}\n                ];\n            }\n            \n        } else {\n            return [\n                {size: length, bgcolor: 'grey'},\n                {size: 100-length+30, bgcolor: 'white'}\n            ];\n        }\n    }\n}\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "openchemlib",
+                "alias": "OCL"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "Manage all the actions",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 51,
+            "top": 0
+          },
+          "size": {
+            "width": 78,
+            "height": 63
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Manage all the actions",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 0,
+            "top": 55
+          },
+          "size": {
+            "width": 70,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "Manage all the actions",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 51,
+            "top": 75
+          },
+          "size": {
+            "width": 61,
+            "height": 26
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "Manage all the actions",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "appendStructure"
+        },
+        {
+          "rel": "execute",
+          "name": "removeStructure"
+        },
+        {
+          "rel": "execute",
+          "name": "updateMolfile"
+        },
+        {
+          "rel": "execute",
+          "name": "appendSmiles"
+        },
+        {
+          "rel": "execute",
+          "name": "switchToLayer"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Manage all the actions",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/chart/statistics/parallel_coordinates/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colJPath": [
+                "element.color"
+              ],
+              "options": [
+                [
+                  "reorder"
+                ]
+              ],
+              "brushMode": [
+                "1D-axes-multi"
+              ],
+              "predicate": [
+                "and"
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "mw",
+                "jpath": "element.mw"
+              },
+              {
+                "name": "logP",
+                "jpath": "element.logP"
+              },
+              {
+                "name": "logS",
+                "jpath": "element.logS"
+              },
+              {
+                "name": "Nb H donor",
+                "jpath": "element.hDonor"
+              },
+              {
+                "name": "Nb H acceptor",
+                "jpath": "element.hAcceptor"
+              },
+              {
+                "name": "Drug likeness",
+                "jpath": "element.likeness"
+              },
+              {
+                "name": "Drug score",
+                "jpath": "element.drugScore"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 100,
+            "top": 0
+          },
+          "size": {
+            "width": 75,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "dataArray"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "vars_out": [
+        {
+          "event": "onBrushSelection",
+          "rel": "value",
+          "jpath": [],
+          "name": "filteredArray"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              []
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Append structure"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "title": [
+                ""
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "append"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ],
+              "maskOpacity": [
+                0.6
+              ],
+              "css": [
+                null
+              ],
+              "cssOn": [
+                null
+              ],
+              "cssOff": [
+                null
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 32,
+            "top": 44
+          },
+          "size": {
+            "width": 18,
+            "height": 6
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Admin"
+        }
+      },
+      "id": 9,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "appendStructure"
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 1
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": [
+                "text"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Append structures"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                []
+              ],
+              "debouncing": [
+                0
+              ],
+              "script": [
+                null
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "List of SMILES code",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 51,
+            "top": 64
+          },
+          "size": {
+            "width": 40,
+            "height": 19
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "List of SMILES code",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 0,
+            "top": 49
+          },
+          "size": {
+            "width": 46,
+            "height": 36
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "List of SMILES code",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "List of SMILES code",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Twig template"
+        }
+      },
+      "id": 10,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "event": "onButtonClick",
+          "rel": "data",
+          "jpath": [],
+          "name": "appendSmiles"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              []
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "List of SMILES code",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Compare molecules"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "title": [
+                ""
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "List"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ],
+              "maskOpacity": [
+                0.6
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 27,
+            "top": 2
+          },
+          "size": {
+            "width": 18,
+            "height": 5
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Twig template"
+        }
+      },
+      "id": 11,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "switchToLayer"
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Home page"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "title": [
+                ""
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "Default layer"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ],
+              "maskOpacity": [
+                0.6
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 41,
+            "top": 69
+          },
+          "size": {
+            "width": 18,
+            "height": 5
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 28,
+            "top": 2
+          },
+          "size": {
+            "width": 14,
+            "height": 5
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": false,
+          "created": true,
+          "name": "Twig template"
+        }
+      },
+      "id": 12,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "switchToLayer"
+        }
+      ],
+      "vars_out": [],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 3
+    },
+    {
+      "url": "modules/types/science/chemistry/ocl_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [
+                [
+                  "svg",
+                  "inPlace"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 23
+          },
+          "size": {
+            "width": 50,
+            "height": 42
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 36
+          },
+          "size": {
+            "width": 50,
+            "height": 48
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 0,
+            "top": 7
+          },
+          "size": {
+            "width": 46,
+            "height": 41
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Twig template"
+        }
+      },
+      "id": 13,
+      "vars_in": [
+        {
+          "rel": "mol",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              []
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "zindex": 2
+    },
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "mode": [
+                "text"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                []
+              ],
+              "debouncing": [
+                0
+              ],
+              "script": [
+                null
+              ]
+            }
+          ],
+          "ace": [
+            {
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 0,
+            "top": 5
+          },
+          "size": {
+            "width": 48,
+            "height": 30
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "List": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "List"
+        },
+        "Twig template": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Twig template"
+        }
+      },
+      "id": 14,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "molfile"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "words",
+      "jpath": [
+        "words"
+      ]
+    }
+  ],
+  "aliases": [
+    {
+      "path": "https://www.lactame.com/github/cheminfo-js/visualizer-helper/3762ef8898127015dd98f1738deac76e0010afbb/",
+      "alias": "vh"
+    }
+  ],
+  "configuration": {
+    "title": "Property explorer"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              "const [\n    OCL\n] = await API.require([\n    'openchemlib',\n]);\n\n// need to register helper for safety prediction\nawait OCL.Resources.registerFromUrl()\n\nAPI.createData('molfile', '')\n\nif (typeof IframeBridge !== 'undefined') {\n    IframeBridge.onMessage(onMessage);\n    IframeBridge.ready();\n    function onMessage(data) {\n        if (data.type === 'tab.data') {\n            if (data.message && data.message.uuid) {\n                require(['vh/eln/Sample'], function(Sample) {\n                    var sample = new Sample(data.message.couchDB, data.message.uuid, {\n                        track:false\n                    });\n                    doPrediction();\n                });\n            } else {\n               API.require('vh/eln/SetAndTrack').then( () => doPrediction() );\n            }\n        }\n        if (data.type === 'tab.focus') {};\n    }\n} else {\n    API.require('vh/eln/SetAndTrack').then( () => doPrediction() );\n}\n\nAPI.createData('help','https://cheminfo.github.io/www.c6h6.org/molecules/propertyExplorer/');\n\nAPI.createData('dataArray', []);\n\nAPI.require('vh/util/docs').then( Docs => {\n    Docs.addPageHelp({iconSize:'fa-4x'});\n});\n\n"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}
