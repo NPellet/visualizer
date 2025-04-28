@@ -1,3 +1,12 @@
+# [2.163.0](https://github.com/NPellet/visualizer/compare/v2.162.0...v2.163.0) (2025-04-28)
+
+
+### Bug Fixes
+
+* update openchemlib ([8cbcfd2](https://github.com/NPellet/visualizer/commit/8cbcfd2a41837eccdece35ec56b6dc1533001f40))
+
+
+
 # [2.162.0](https://github.com/NPellet/visualizer/compare/v2.161.0...v2.162.0) (2025-04-22)
 
 
