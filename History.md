@@ -1,3 +1,12 @@
+# [2.164.0](https://github.com/NPellet/visualizer/compare/v2.163.1...v2.164.0) (2025-05-22)
+
+
+### Features
+
+* add contextual menu to copy module all layers ([7cf6f25](https://github.com/NPellet/visualizer/commit/7cf6f25ee501ae451c861782bff4f98080803439))
+
+
+
 ## [2.163.1](https://github.com/NPellet/visualizer/compare/v2.163.0...v2.163.1) (2025-05-22)
 
 
