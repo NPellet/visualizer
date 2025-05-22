@@ -31,7 +31,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         try {
           if (/M {2}END/.test(pastedData)) {
             molecule = OCL.Molecule.fromMolfile(pastedData);
-          } else if (/^[A-Za-z0-9@+\-[\]()\\/%=#$]+$/.test(pastedData.trim())) {
+          } else {
             try {
               molecule = OCL.Molecule.fromSmiles(pastedData.trim());
             } catch {
