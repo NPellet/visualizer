@@ -18,6 +18,34 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         width: '100%',
       });
       this.module.getDomContent().html(this.dom);
+
+      // Capture paste events (CTRL+V or CMD+V)
+      // will be removed with https://github.com/cheminfo/openchemlib-js/issues/293
+      this.dom.on('paste', (event) => {
+        let clipboardData = event.originalEvent.clipboardData;
+        if (!clipboardData) return;
+        let pastedData = clipboardData.getData('text');
+        if (!pastedData) return;
+
+        let molecule;
+        try {
+          if (/M {2}END/.test(pastedData)) {
+            molecule = OCL.Molecule.fromMolfile(pastedData);
+          } else if (/^[A-Za-z0-9@+\-[\]()\\/%=#$]+$/.test(pastedData.trim())) {
+            try {
+              molecule = OCL.Molecule.fromSmiles(pastedData.trim());
+            } catch {
+              molecule = OCL.Molecule.fromIDCode(pastedData.trim());
+            }
+          }
+          if (molecule) {
+            setCurrentValue(this, molecule);
+            event.preventDefault();
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      });
     },
 
     onResize() {
