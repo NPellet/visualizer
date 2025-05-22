@@ -1,3 +1,12 @@
+## [2.163.1](https://github.com/NPellet/visualizer/compare/v2.163.0...v2.163.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* paste structure with CTRL+V ([35e0ebb](https://github.com/NPellet/visualizer/commit/35e0ebbf79740c39157bf6b35f3ad94f31fcc22f))
+
+
+
 # [2.163.0](https://github.com/NPellet/visualizer/compare/v2.162.0...v2.163.0) (2025-04-28)
 
 
