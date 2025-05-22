@@ -198,6 +198,19 @@ define([
                 );
               },
             ],
+
+            [
+              '<li name="copy"><a><span class="ui-icon ui-icon-copy"></span> Copy module all layers</a></li>',
+              function () {
+                let currentDefinition = JSON.parse(
+                  JSON.stringify(module.definition),
+                );
+                window.localStorage.setItem(
+                  'ci-copy-module',
+                  JSON.stringify(currentDefinition),
+                );
+              },
+            ],
           ]);
         }
 
