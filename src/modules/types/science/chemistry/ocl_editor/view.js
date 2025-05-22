@@ -43,7 +43,8 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
             event.preventDefault();
           }
         } catch (e) {
-          console.log(e);
+          // eslint-disable-next-line no-console
+          console.error(e);
         }
       });
     },
