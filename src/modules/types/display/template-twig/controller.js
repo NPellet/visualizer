@@ -106,6 +106,14 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
               },
               default: ['keepFormValueIfDataUndefined'],
             },
+            templateOptions: {
+              type: 'checkbox',
+              title: 'Template options',
+              options: {
+                removeTemplateLeadingSpaces: 'Remove template leading spaces',
+              },
+              default: ['removeTemplateLeadingSpaces'],
+            },
           },
         },
       },
@@ -118,6 +126,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
     modifyInForm: ['groups', 'group', 0, 'modifyInForm', 0],
     debouncing: ['groups', 'group', 0, 'debouncing', 0],
     formOptions: ['groups', 'group', 0, 'formOptions', 0],
+    templateOptions: ['groups', 'group', 0, 'templateOptions', 0],
   };
 
   Controller.prototype.actionsIn = $.extend({}, Default.actionsIn, {

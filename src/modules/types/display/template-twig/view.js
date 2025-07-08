@@ -12,6 +12,23 @@ define([
 ], function ($, Default, Twig, Debug, API, _, Form, Util) {
   function View() {}
 
+  function cleanTemplate(templateText, module) {
+    const shouldRemoveLeadingSpaces = module.getConfigurationCheckbox(
+      'templateOptions',
+      'removeTemplateLeadingSpaces',
+    );
+    if (!shouldRemoveLeadingSpaces) {
+      return templateText;
+    }
+    return templateText
+      .split('\n')
+      .map((line) => {
+        // trim everything separator based on regex
+        return line.replace(/^\s+/, '');
+      })
+      .join('\n');
+  }
+
   $.extend(true, View.prototype, Default, {
     init() {
       this._changedJpaths = new Set();
@@ -58,8 +75,10 @@ define([
       }
 
       this.renderPromise.then(() => {
+        const templateText = this.module.getConfiguration('template');
+
         this.template = Twig.twig({
-          data: this.module.getConfiguration('template'),
+          data: cleanTemplate(templateText, this.module),
         });
       });
     },
@@ -203,7 +222,7 @@ define([
         return this.renderPromise
           .then(() => {
             this.template = Twig.twig({
-              data: tpl,
+              data: cleanTemplate(tpl, this.module),
             });
             this.rerender();
             return null;
