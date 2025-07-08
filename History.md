@@ -1,3 +1,12 @@
+# [2.165.0](https://github.com/NPellet/visualizer/compare/v2.164.0...v2.165.0) (2025-07-08)
+
+
+### Features
+
+* possibility to remove leading spaces in twig  templates ([3adeca7](https://github.com/NPellet/visualizer/commit/3adeca73eaa691649e293a65c655a9e35e8a5dcb))
+
+
+
 # [2.164.0](https://github.com/NPellet/visualizer/compare/v2.163.1...v2.164.0) (2025-05-22)
 
 
