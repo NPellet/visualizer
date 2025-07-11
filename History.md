@@ -1,3 +1,12 @@
+## [2.165.1](https://github.com/NPellet/visualizer/compare/v2.165.0...v2.165.1) (2025-07-11)
+
+
+### Bug Fixes
+
+* disappearing molecule when loosing focus ([ab8693f](https://github.com/NPellet/visualizer/commit/ab8693f79d7d581b5a686791765554bf4d1bb12f))
+
+
+
 # [2.165.0](https://github.com/NPellet/visualizer/compare/v2.164.0...v2.165.0) (2025-07-08)
 
 
