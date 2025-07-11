@@ -1,3 +1,12 @@
+# [2.166.0](https://github.com/NPellet/visualizer/compare/v2.165.1...v2.166.0) (2025-07-11)
+
+
+### Features
+
+* allow to paste in OCL ([ba67c4b](https://github.com/NPellet/visualizer/commit/ba67c4b432635fe60d4ba82c2f6bb12a784ecd03))
+
+
+
 ## [2.165.1](https://github.com/NPellet/visualizer/compare/v2.165.0...v2.165.1) (2025-07-11)
 
 
