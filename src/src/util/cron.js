@@ -6,11 +6,9 @@ define(function () {
   var create = function (url, interval, callback, overwrite, cancelStart) {
     var name = url;
 
-    if (crons[name]) {
-      if (overwrite) {
+    if (crons[name] && overwrite) {
         remove(name);
       }
-    }
 
     crons[name] = [url, interval, false, false, callback];
 

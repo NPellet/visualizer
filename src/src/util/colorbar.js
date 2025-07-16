@@ -39,7 +39,7 @@ define(['lodash', 'd3', 'src/util/util', 'chroma'], function (
     // the same color as the min/max of the domain
     domain.unshift(Number.MIN_VALUE);
     domain.push(Number.MAX_VALUE);
-    stops.push(stops[stops.length - 1]);
+    stops.push(stops.at(-1));
     stops.unshift(stops[0]);
 
     return d3.scale.linear().domain(domain).range(stops);

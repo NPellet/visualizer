@@ -261,7 +261,7 @@ define([
 
   Controller.prototype.configFunctions = {
     button(cfg) {
-      return cfg.indexOf('button') > -1;
+      return cfg.includes('button');
     },
   };
 
@@ -432,8 +432,8 @@ define([
             this.onSearchDone(data);
             this.module.view.unlock();
           })
-          .catch((e) => {
-            Debug.error(e, e.stack);
+          .catch((error) => {
+            Debug.error(error, error.stack);
             this.module.view.unlock();
           });
       }

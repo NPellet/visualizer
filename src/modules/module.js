@@ -34,7 +34,7 @@ define([
       module.definition.getChildSync(['url'], true).get(),
     );
     var moduleURL = Util.rewriteRequirePath(originalURL);
-    if (moduleURL[moduleURL.length - 1] !== '/') {
+    if (moduleURL.at(-1) !== '/') {
       moduleURL = `${moduleURL}/`;
     }
 
@@ -81,12 +81,12 @@ define([
           );
           return module.updateAllView();
         },
-        function (err) {
-          Debug.error('Caught error in module ready state', err);
+        function (error) {
+          Debug.error('Caught error in module ready state', error);
         },
       )
-      .catch(function (err) {
-        Debug.error('Caught error while updating module', err);
+      .catch(function (error) {
+        Debug.error('Caught error while updating module', error);
       });
 
     return new Promise(function (resolve, reject) {
@@ -96,8 +96,7 @@ define([
       }
 
       if (
-        Version.includedModuleCss.indexOf(Util.moduleIdFromUrl(originalURL)) >
-        -1
+        Version.includedModuleCss.includes(Util.moduleIdFromUrl(originalURL))
       ) {
         module._cssLoaded = Promise.resolve();
       } else {
@@ -156,15 +155,13 @@ define([
     this.ready = init(this).then(() => {
       if (Object.keys(this.definition.configuration).length === 0) {
         const form = this.getConfigForm();
-        return Promise.resolve(
-          form.onLoaded().then(() => {
+        return form.onLoaded().then(() => {
             savePreferences(this, form, true);
-          }),
-        );
+          });
       }
     });
-    this.ready.catch(function (err) {
-      Debug.error('Caught error in module initialization.', err);
+    this.ready.catch(function (error) {
+      Debug.error('Caught error in module initialization.', error);
     });
   }
   Module.prototype = {
@@ -279,7 +276,7 @@ define([
      * Returns the DOM object which corresponds to the module's content
      */
     getDomContent() {
-      if (typeof this.domContent !== 'undefined') return this.domContent;
+      if (this.domContent !== undefined) return this.domContent;
       throw new Error('The module has not been loaded yet');
     },
 
@@ -287,7 +284,7 @@ define([
      * Returns the DOM object which corresponds to the module's wrapper
      */
     getDomWrapper() {
-      if (typeof this.domWrapper !== 'undefined') {
+      if (this.domWrapper !== undefined) {
         return this.domWrapper;
       }
       throw new Error('The module has not been loaded yet');
@@ -309,7 +306,7 @@ define([
      * Returns the DOM object which corresponds to the module's header
      */
     getDomHeader() {
-      if (typeof this.domHeader !== 'undefined') {
+      if (this.domHeader !== undefined) {
         return this.domHeader;
       }
       throw new Error('The module has not been loaded yet');
@@ -556,9 +553,9 @@ define([
         }));
 
       const alljpaths = {};
-      Object.keys(references).forEach((ref) => {
+      for (const ref of Object.keys(references)) {
         alljpaths[ref] = this.model.getjPath(ref);
-      });
+      }
 
       const eventsVariables = [];
       const eventsActions = [];
@@ -1113,7 +1110,7 @@ define([
       if (alias) {
         for (var i = 0; i < alias.length; i++) {
           cfgEl = cfgEl[alias[i]];
-          if (typeof cfgEl === 'undefined') {
+          if (cfgEl === undefined) {
             toReturn = this._getConfigurationDefault(alias, aliasName);
             break;
           }
@@ -1138,7 +1135,7 @@ define([
         return false;
       }
 
-      return conf.indexOf(optionName) > -1;
+      return conf.includes(optionName);
     },
 
     _getConfigurationDefault(alias, aliasName) {
@@ -1319,7 +1316,7 @@ define([
       } else {
         openWindow = window.open('', '', '');
       }
-      openWindow.document.body.appendChild(domContent);
+      openWindow.document.body.append(domContent);
       openWindow.document.close();
       openWindow.focus();
       // need async to be able to render some twig rendertype
@@ -1443,11 +1440,11 @@ define([
       value.module_config[0].groups.layerDisplay[0].displayOn[0];
     for (var i = 0; i < l.length; i++) {
       self.definition.layers[l[i].layerName[0]].display =
-        allDisplay.indexOf(l[i].layerName[0]) > -1;
+        allDisplay.includes(l[i].layerName[0]);
       self.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
       self.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
       self.definition.layers[l[i].layerName[0]].wrapper =
-        l[i].modulewrapper[0].indexOf('display') > -1;
+        l[i].modulewrapper[0].includes('display');
     }
 
     self.definition.toolbar = {};

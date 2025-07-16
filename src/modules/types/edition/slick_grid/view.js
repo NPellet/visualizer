@@ -60,9 +60,9 @@ define([
 
     let columns = ctx.getAllSlickColumns().filter(filterSpecialColumns);
 
-    let cids = _.map(columns, 'id');
+    let cids = new Set(_.map(columns, 'id'));
     for (let key in ctx.columnFilters) {
-      if (cids.indexOf(key) === -1) {
+      if (!cids.has(key)) {
         delete ctx.columnFilters[key];
       }
     }
@@ -78,9 +78,7 @@ define([
             return col.name;
           }
         })
-        .filter(function (v) {
-          return v;
-        });
+        .filter(Boolean);
     }
 
     ctx.slick.columns = ctx.getInMainColumns();
@@ -292,7 +290,7 @@ define([
         let items = ctx.slick.data.getItems();
         // Add a position indicatior ==> for stable sort
         for (let i = 0; i < items.length; i++) {
-          if (rows.indexOf(i) !== -1) {
+          if (rows.includes(i)) {
             items[i].__pos = 2;
           } else if (i < insertBefore || insertBefore === null) {
             items[i].__pos = 1;
@@ -332,7 +330,10 @@ define([
         e.stopImmediatePropagation();
         dd.mode = 'recycle';
         let selectedRows = ctx.grid.getSelectedRows();
-        if (!selectedRows.length || $.inArray(dd.row, selectedRows) === -1) {
+        if (
+          selectedRows.length === 0 ||
+          $.inArray(dd.row, selectedRows) === -1
+        ) {
           selectedRows = [dd.row];
           ctx.grid.setSelectedRows(selectedRows);
         }
@@ -582,15 +583,13 @@ define([
     ctx.grid.onClick.subscribe(function (event, args) {
       let columns = ctx.grid.getColumns();
       let itemInfo = ctx._getItemInfoFromRow(args.row);
-      if (itemInfo) {
-        if (columns[args.cell] && columns[args.cell].id !== 'rowDeletion') {
-          if (
-            !columns[args.cell].colDef ||
-            !columns[args.cell].colDef.isAction
-          ) {
-            ctx.module.controller.onClick(itemInfo.idx, itemInfo.item);
-          }
-        }
+      if (
+        itemInfo &&
+        columns[args.cell] &&
+        columns[args.cell].id !== 'rowDeletion' &&
+        (!columns[args.cell].colDef || !columns[args.cell].colDef.isAction)
+      ) {
+        ctx.module.controller.onClick(itemInfo.idx, itemInfo.item);
       }
     });
 
@@ -618,7 +617,7 @@ define([
       let names = _.map(conf, 'name');
       let ids = _.map(cols, 'id');
 
-      if (names.concat().sort().join() !== ids.concat().sort().join()) {
+      if (names.concat().sort().join(',') !== ids.concat().sort().join(',')) {
         Debug.warn(
           'Something might be wrong, number of columns in grid and in configuration do not match',
         );
@@ -644,7 +643,7 @@ define([
           rows: selectedItems,
         });
       }
-      if (selectedItems.length) {
+      if (selectedItems.length > 0) {
         const last = selectedItems[ctx.lastSelectedRows.length - 1];
         ctx.module.controller.onLastSelectedRow(last.idx, last.item);
       } else {
@@ -728,7 +727,7 @@ define([
       })
       .value();
 
-    if (groupings.length) {
+    if (groupings.length > 0) {
       ctx.slick.data.setGrouping(groupings);
       if (ctx.module.getConfigurationCheckbox('slickCheck', 'collapseGroup')) {
         ctx.slick.data.collapseAllGroups(0);
@@ -900,8 +899,8 @@ define([
           if (context.renderOptions.action) {
             if (context.renderOptions.clickMode === 'text') {
               $a.addClass('icon-clickable');
-              if ($a.length) {
-                $a[0].onclick = sendAction;
+              if ($a.length > 0) {
+                $a[0].addEventListener('click', sendAction);
               }
             } else if (context.renderOptions.clickMode === 'background') {
               $cellNode.css('cursor', 'pointer');
@@ -958,10 +957,10 @@ define([
       let removedRows = [];
       for (let i = 0; i < rows.length; i++) {
         let removed = data.splice(idx[i] - j++, 1);
-        if (removed.length) removedRows.push(removed[0]);
+        if (removed.length > 0) removedRows.push(removed[0]);
       }
       this.lastSelectedRows = [];
-      if (removedRows.length) {
+      if (removedRows.length > 0) {
         this._deleteFilter(removedRows);
         this.module.controller.onRowsDelete(removedRows);
         this.module.data.triggerChange();
@@ -974,7 +973,7 @@ define([
 
       function getEditor(jpath) {
         let editor;
-        if (!that.module.data || !that.module.data.length) {
+        if (!that.module.data || that.module.data.length === 0) {
           return undefined;
         }
         let obj = that.module.data.get(0).getChildSync(jpath);
@@ -1008,7 +1007,7 @@ define([
         .map(function (row) {
           let editor, CpEditor, type;
           if (row.editor === 'auto' && that.module.data) {
-            if (!that.module.data.get().length) {
+            if (that.module.data.get().length === 0) {
               editor = Slick.CustomEditors.DataString;
               Debug.warn(
                 'Slick grid: using editor based on type when the input variable is empty. Cannot determine type',
@@ -1068,7 +1067,11 @@ define([
         let colNames = [];
         let data = that.module.data.get();
         for (let i = 0; i < data.length; i++) {
-          colNames = _(colNames).push(_.keys(data[i])).flatten().uniq().value();
+          colNames = _(colNames)
+            .push(Object.keys(data[i]))
+            .flatten()
+            .uniq()
+            .value();
         }
 
         slickCols = _(colNames)
@@ -1152,7 +1155,7 @@ define([
       let slickCols = this.getAllSlickColumns();
 
       return slickCols.filter(function (v) {
-        return that.hiddenColumns.indexOf(v.name) === -1;
+        return !that.hiddenColumns.includes(v.name);
       });
     },
 
@@ -1314,7 +1317,7 @@ define([
       });
       let containers = $.map(editableColumns, function (c) {
         return $modal.find(
-          `[data-editorid=${c.id.replace(/[^a-zA-Z0-9_-]/g, '_')}]`,
+          `[data-editorid=${c.id.replaceAll(/[^a-zA-Z0-9_-]/g, '_')}]`,
         );
       });
       let compositeEditor = new Slick.CompositeEditor(
@@ -1456,7 +1459,7 @@ define([
               if (!response) return;
               let itemInfo = that._getItemInfoFromRow(args.row);
               let removed = that.module.data.get().splice(itemInfo.idx, 1);
-              if (removed.length) {
+              if (removed.length > 0) {
                 that._deleteFilter(removed);
                 that.module.controller.onRowsDelete(removed);
                 that.module.data.triggerChange();
@@ -1579,8 +1582,8 @@ define([
           `(function() {${this.filterScript}\n})`,
           `Slickgrid${this.module.getId()}`,
         );
-      } catch (e) {
-        this._reportError(e);
+      } catch (error) {
+        this._reportError(error);
       }
     },
 
@@ -1588,8 +1591,8 @@ define([
       if (this.hasFilter) {
         try {
           this.filter.call(context);
-        } catch (e) {
-          this._reportError(e);
+        } catch (error) {
+          this._reportError(error);
         }
       }
     },
@@ -1669,7 +1672,7 @@ define([
           return (
             val !== undefined &&
             (val === that._highlighted[0] ||
-              (val.indexOf && val.indexOf(that._highlighted[0]) > -1))
+              (val.indexOf && val.includes(that._highlighted[0])))
           );
         });
         if (idx > -1) {
@@ -1710,7 +1713,7 @@ define([
             if (!Array.isArray(hl)) {
               hl = [hl];
             }
-            return hl.indexOf(k) > -1;
+            return hl.includes(k);
           })
         ) {
           tmp[i] = that.baseCellCssStyle;
@@ -1749,7 +1752,7 @@ define([
                 .value();
             } else {
               that._highlighted = _.filter(that._highlighted, function (val) {
-                return key.indexOf(val) === -1;
+                return !key.includes(val);
               });
             }
             that._drawHighlight();
@@ -1899,16 +1902,15 @@ define([
           description: 'Export entire list',
         },
       ];
-      if (this.module.getConfigurationCheckbox('slickCheck', 'filterColumns')) {
-        if (
-          this.slick.data.getItems(true).length !==
+      if (
+        this.module.getConfigurationCheckbox('slickCheck', 'filterColumns') &&
+        this.slick.data.getItems(true).length !==
           this.slick.data.getItems().length
-        ) {
-          choices.push({
-            key: 'filtered',
-            description: 'Export filtered list',
-          });
-        }
+      ) {
+        choices.push({
+          key: 'filtered',
+          description: 'Export filtered list',
+        });
       }
 
       const filtered = _.map(
@@ -1960,9 +1962,9 @@ define([
 
             if (typeof el === 'string') {
               el = el
-                .replace(/\r/g, '\\r')
-                .replace(/\n/g, '\\n')
-                .replace(/\t/g, '\\t');
+                .replaceAll('\r', String.raw`\r`)
+                .replaceAll('\n', String.raw`\n`)
+                .replaceAll('\t', String.raw`\t`);
             }
 
             const renderedValue = await Renderer.renderAsString(el, {
@@ -1979,7 +1981,7 @@ define([
 
     hideColumn(column) {
       if (!this.hiddenColumns) return;
-      if (this.hiddenColumns.indexOf(column) === -1) {
+      if (!this.hiddenColumns.includes(column)) {
         this.hiddenColumns.push(column);
         doGrid(this);
       }
@@ -2015,8 +2017,8 @@ define([
         }
       } else if (
         Array.isArray(rows) &&
-        (!rows.length ||
-          (rows.length &&
+        (rows.length === 0 ||
+          (rows.length > 0 &&
             (typeof rows[0] === 'number' || rows[0] instanceof DataNumber)))
       ) {
         srows = rows;
@@ -2030,11 +2032,9 @@ define([
         srows = [];
       }
       if (items) {
-        srows = items
-          .filter((item) => item)
-          .map((i) => {
-            return this.slick.data.getRowById(i[this.idPropertyName]);
-          });
+        srows = items.filter(Boolean).map((i) => {
+          return this.slick.data.getRowById(i[this.idPropertyName]);
+        });
       }
       return srows;
     },
@@ -2072,15 +2072,13 @@ define([
         }
       },
       insertRow(items) {
-        if (this.slick.data) {
-          if (!Array.isArray(items)) {
-            items = [items];
-            for (let i = 0; i < items.length; i++) {
-              let { row, item } = items[i];
-              this.setNextUniqId(item, true);
-              this.slick.data.insertItem(row, item);
-              this._newRow(item);
-            }
+        if (this.slick.data && !Array.isArray(items)) {
+          items = [items];
+          for (let i = 0; i < items.length; i++) {
+            let { row, item } = items[i];
+            this.setNextUniqId(item, true);
+            this.slick.data.insertItem(row, item);
+            this._newRow(item);
           }
         }
       },
@@ -2225,9 +2223,9 @@ define([
     match = query.match(/^([<>=]{1,2})([0-9]+)-([0-9\-:]*)$/);
     if (match) {
       match = query.match(/^([<>=]{0,2})([0-9]+)-([0-9]*)-?([0-9]*)/);
-      let year = parseInt(match[2], 10);
-      let month = parseInt(match[3], 10);
-      let day = parseInt(match[4], 10);
+      let year = Number.parseInt(match[2], 10);
+      let month = Number.parseInt(match[3], 10);
+      let day = Number.parseInt(match[4], 10);
       if (Number.isNaN(month)) month = 1;
       if (Number.isNaN(day)) day = 1;
       const date = new Date();

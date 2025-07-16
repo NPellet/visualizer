@@ -10,10 +10,10 @@ define(function () {
   Sandbox.prototype.setContext = function (context) {
     let ctxString = '';
     let ctxData = [];
-    Object.keys(context).forEach(function (key, i) {
+    for (const [i, key] of Object.keys(context).entries()) {
       ctxString += `var ${key} = __ctx__[${i}]; `;
       ctxData.push(context[key]);
-    });
+    }
     this.contextString = ctxString;
     this.contextData = ctxData;
   };

@@ -46,17 +46,15 @@ define([
     },
 
     getData() {
-      var that = this;
-
       if (this.currentPath[1] === 'server') {
         return this._getServer().pipe(
-          function (data) {
-            if (that.type === 'view') {
-              that._data.server = new DataObject(data, true);
-            } else if (that.type === 'data') {
-              that._data.server = new DataObject(data, true);
+          (data) => {
+            if (this.type === 'view') {
+              this._data.server = new DataObject(data, true);
+            } else if (this.type === 'data') {
+              this._data.server = new DataObject(data, true);
             }
-            return that._data.server;
+            return this._data.server;
           },
           function () {
             return false;
@@ -64,17 +62,17 @@ define([
         );
       } else {
         return this._getLocal().pipe(
-          function (data) {
+          (data) => {
             if (typeof data !== 'object') {
               data = JSON.parse(data);
             }
 
-            if (that.type === 'view') {
-              that._data.local = new DataObject(data, true);
-            } else if (that.type === 'data') {
-              that._data.local = new DataObject(data, true);
+            if (this.type === 'view') {
+              this._data.local = new DataObject(data, true);
+            } else if (this.type === 'data') {
+              this._data.local = new DataObject(data, true);
             }
-            return that._data.local;
+            return this._data.local;
           },
           function () {
             return false;

@@ -560,7 +560,7 @@ define(function () {
           val = value;
           break;
         case 'number':
-          val = parseFloat(value);
+          val = Number.parseFloat(value);
           break;
         case 'boolean':
           val = !!value;

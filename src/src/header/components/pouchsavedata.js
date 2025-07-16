@@ -23,7 +23,7 @@ define([
         buttons: {
           Save() {
             var text = $(`#${id}`).val();
-            text = text.replace(/[^a-zA-Z0-9-_]*/g, '');
+            text = text.replaceAll(/[^a-zA-Z0-9-_]*/g, '');
             var data = JSON.parse(Versioning.getDataJSON());
             db.get(text, function (event, otherDoc) {
               db.put({ data }, text, otherDoc ? otherDoc._rev : undefined);

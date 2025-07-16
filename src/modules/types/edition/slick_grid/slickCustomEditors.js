@@ -561,8 +561,8 @@ define([
             unit: unit.formatUnits(),
             SI: unit.value,
           };
-        } catch (e) {
-          UI.showNotification(e.message, 'warning');
+        } catch (error) {
+          UI.showNotification(error.message, 'warning');
           return null;
         }
       };
@@ -625,8 +625,8 @@ define([
             value: Number(stringValue),
             units: units.trim(),
           };
-        } catch (e) {
-          UI.showNotification(e.message, 'warning');
+        } catch (error) {
+          UI.showNotification(error.message, 'warning');
           return null;
         }
       };
@@ -1023,10 +1023,10 @@ define([
     } else if (typeof choices !== 'string') {
       obj = choices;
     } else {
-      choices.split(';').forEach((o) => {
+      for (const o of choices.split(';')) {
         const [key, value] = o.split(':');
         obj[key] = value || key;
-      });
+      }
     }
     return [...Object.entries(obj)]
       .map(([key, value]) => `<option value="${key}">${value}</option>`)

@@ -58,7 +58,7 @@ define([
     if (this.module.getConfigurationCheckbox('display', 'buttons')) {
       var buttons = this.module.getConfiguration('buttons');
       if (buttons) {
-        buttons.forEach(function (button, idx) {
+        for (const [idx, button] of buttons.entries()) {
           var onclick = that.module.controller.onButtonClick.bind(
             that.module.controller,
             button.name,
@@ -68,10 +68,10 @@ define([
             disabled: false,
           });
           b.name = button.name;
-          if (button.hide && button.hide.indexOf('hide') > -1) {
+          if (button.hide && button.hide.includes('hide')) {
             b.hide();
           }
-          if (button.disable && button.disable.indexOf('disable') > -1) {
+          if (button.disable && button.disable.includes('disable')) {
             b.disable();
           }
           that.buttonCell.append(b.render());
@@ -83,7 +83,7 @@ define([
               exec: onclick,
             });
           }
-        });
+        }
       } else {
         this.buttonRow.css('height', 0);
       }
@@ -95,13 +95,13 @@ define([
   };
 
   View.prototype.disableButtons = function () {
-    this.buttons.forEach((b) => b.disable());
+    for (const b of this.buttons) b.disable();
   };
 
   View.prototype.enableButtons = function () {
-    this.buttons.forEach((b) => {
+    for (const b of this.buttons) {
       if (!b.disabledFromScript) b.enable();
-    });
+    }
   };
 
   View.prototype.onResize = function () {

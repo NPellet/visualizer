@@ -36,8 +36,8 @@ define([
                 }
                 resolve(result);
               },
-              function (err) {
-                Debug.error('Caught error in ModuleFactory', err);
+              function (error) {
+                Debug.error('Caught error in ModuleFactory', error);
               },
             );
           } else {
@@ -98,8 +98,8 @@ define([
                   $.extend(true, finalList, folder);
                   // $.extend(true, allModules, finalList);
                 },
-                function (err) {
-                  Debug.error('Caught error in ModuleFactory', err);
+                function (error) {
+                  Debug.error('Caught error in ModuleFactory', error);
                 },
               ),
             );
@@ -126,8 +126,8 @@ define([
       module.setId(++incrementalId);
       modules.push(module);
       definitions.push(definition);
-      module.ready.catch(function (e) {
-        Debug.error('Initialization of module failed', e);
+      module.ready.catch(function (error) {
+        Debug.error('Initialization of module failed', error);
       });
       return module;
     },

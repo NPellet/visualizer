@@ -55,8 +55,8 @@ define([
           var result;
           try {
             result = this.editor.get();
-          } catch (e) {
-            result = `Invalid JSON: ${e.message}`;
+          } catch (error) {
+            result = `Invalid JSON: ${error.message}`;
           }
           this.module.controller.sendValue(result, 'onObjectChange');
         },

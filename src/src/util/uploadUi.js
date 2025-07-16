@@ -118,7 +118,7 @@ define([
 
         $deleteAll.on('change', function () {
           var toSet = !!this.checked;
-          data.forEach(function (d) {
+          for (const d of data) {
             if (
               d.name !== 'view.json' ||
               d.name === 'data.json' ||
@@ -126,7 +126,7 @@ define([
             ) {
               d.toDelete = toSet;
             }
-          });
+          }
           grid.invalidateAllRows();
           grid.render();
         });

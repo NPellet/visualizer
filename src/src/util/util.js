@@ -57,7 +57,7 @@ define([
       ifElement = 'el';
 
     for (var i = 0; i < l; i++) {
-      ifElement += `["${splitted[i].replace(regQuote, '\\"')}"]`;
+      ifElement += `["${splitted[i].replaceAll(regQuote, String.raw`\"`)}"]`;
       ifArray.push(`${ifElement} != undefined`);
     }
 
@@ -70,7 +70,7 @@ define([
     eval(
       `functionEvaled = function( el ) { if (el && ${ifString}) return ${ifElement}['${splitted[
         l
-      ].replace(regQuote, '\\"')}']; };`,
+      ].replaceAll(regQuote, String.raw`\"`)}']; };`,
     );
     return functionEvaled;
   }
@@ -181,15 +181,15 @@ define([
         link.type = 'text/css';
         link.rel = 'stylesheet';
         link.href = url;
-        link.onload = function () {
+        link.addEventListener('load', function () {
           that.loadedCss[url] = link;
           resolve(link);
-        };
+        });
 
         try {
-          document.getElementsByTagName('head')[0].appendChild(link);
-        } catch (e) {
-          reject(e);
+          document.querySelectorAll('head')[0].append(link);
+        } catch (error) {
+          reject(error);
         }
       });
     },
@@ -286,13 +286,13 @@ define([
       decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces;
 
       var sign = n < 0 ? '-' : '',
-        i = `${parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`,
+        i = `${Number.parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`,
         j = i.length;
       j = j > 3 ? j % 3 : 0;
       return (
         sign +
-        (j ? i.substr(0, j) + thouSeparator : '') +
-        i.substr(j).replace(/(\d{3})(?=\d)/g, `$1${thouSeparator}`) +
+        (j ? i.slice(0, j) + thouSeparator : '') +
+        i.slice(j).replaceAll(/(\d{3})(?=\d)/g, `$1${thouSeparator}`) +
         (decPlaces
           ? decSeparator +
             Math.abs(n - i)
@@ -346,7 +346,7 @@ define([
         Debug.warn(`Method ${method.name} is deprecated. ${message || ''}`);
         warned = true;
       }
-      return method.apply(this, arguments);
+      return Reflect.apply(method, this, arguments);
     };
   };
 
@@ -557,8 +557,8 @@ define([
       String.fromCharCode.apply(
         null,
         str
-          .replace(/\r|\n/g, '')
-          .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
+          .replaceAll(/\r|\n/g, '')
+          .replaceAll(/([\da-fA-F]{2}) ?/g, '0x$1 ')
           .replace(/ +$/, '')
           .split(' '),
       ),

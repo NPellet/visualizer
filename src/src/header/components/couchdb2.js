@@ -69,7 +69,7 @@ define([
           nodes = nodes.filter(function (n) {
             return !n.folder && n.data.doc && n.data.doc._id === loadedDocId;
           });
-          if (!nodes.length) return;
+          if (nodes.length === 0) return;
           var compiled = _.template(
             '<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= doc._id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>',
           );
@@ -88,9 +88,9 @@ define([
                     function () {
                       ui.showNotification('View saved', 'success');
                     },
-                    function (e) {
+                    function (error) {
                       ui.showNotification(
-                        that.getErrorContent(e.status),
+                        that.getErrorContent(error.status),
                         'error',
                       );
                     },
@@ -102,9 +102,9 @@ define([
                     function () {
                       ui.showNotification('Data saved', 'success');
                     },
-                    function (e) {
+                    function (error) {
                       ui.showNotification(
-                        that.getErrorContent(e.status),
+                        that.getErrorContent(error.status),
                         'error',
                       );
                     },
@@ -119,17 +119,17 @@ define([
                         function () {
                           ui.showNotification('Data saved', 'success');
                         },
-                        function (e) {
+                        function (error) {
                           ui.showNotification(
-                            that.getErrorContent(e.status),
+                            that.getErrorContent(error.status),
                             'error',
                           );
                         },
                       );
                     },
-                    function (e) {
+                    function (error) {
                       ui.showNotification(
-                        that.getErrorContent(e.status),
+                        that.getErrorContent(error.status),
                         'error',
                       );
                     },
@@ -398,17 +398,17 @@ define([
     },
 
     save(type, name) {
-      if (name.length < 1) {
+      if (name.length === 0) {
         return;
       }
-      if (name.indexOf(':') !== -1) {
+      if (name.includes(':')) {
         return this.showError(10);
       }
 
       var content = Versioning[`get${type}JSON`]();
 
       var last = this.lastNode;
-      if (typeof last === 'undefined') {
+      if (last === undefined) {
         return this.showError(11);
       }
 
@@ -491,15 +491,15 @@ define([
       }
     },
     mkdir(name) {
-      if (name.length < 1) {
+      if (name.length === 0) {
         return;
       }
-      if (name.indexOf(':') !== -1) {
+      if (name.includes(':')) {
         return this.showError(10);
       }
 
       var last = this.lastNode;
-      if (typeof last === 'undefined') {
+      if (last === undefined) {
         return this.showError(11);
       }
 
@@ -556,8 +556,8 @@ define([
           },
         }),
       );
-      prom.catch(function (e) {
-        if (e.status === 401) window.location = window.location.href;
+      prom.catch(function (error) {
+        if (error.status === 401) window.location = window.location.href;
       });
     },
     renderLoginMethods() {
@@ -677,7 +677,7 @@ define([
 
       this.database.view('flavor/list', {
         success(data) {
-          if (!data.rows.length) {
+          if (data.rows.length === 0) {
             that.flavorList = ['default'];
           } else {
             that.flavorList = data.rows[0].value;
@@ -846,7 +846,7 @@ define([
                 }
               }
 
-              if (current.length) {
+              if (current.length > 0) {
                 inlineUploads.push(current);
               }
 
@@ -872,10 +872,10 @@ define([
                   API.stopLoading(loadingId);
                   that.showError('Files uploaded successfully', 2);
                 },
-                function (err) {
+                function (error) {
                   API.stopLoading(loadingId);
                   that.showError('Files upload failed (at least partially)');
-                  Debug.error(err.message, err.stack);
+                  Debug.error(error.message, error.stack);
                 },
               );
 
@@ -1170,7 +1170,7 @@ define([
       var index = node.key.indexOf(':'),
         keyWithoutFlavor;
       if (index >= 0) {
-        keyWithoutFlavor = node.key.substring(index + 1);
+        keyWithoutFlavor = node.key.slice(index + 1);
       } else {
         keyWithoutFlavor = '';
       }
@@ -1275,8 +1275,8 @@ define([
             // Same folder, nothing to do
             return false;
           }
-          var newKey = target.key.substring(that.flavor.length + 1);
-          newKey += newKey.length ? `:${theNode.title}` : theNode.title;
+          var newKey = target.key.slice(that.flavor.length + 1);
+          newKey += newKey.length > 0 ? `:${theNode.title}` : theNode.title;
           var newFlavor = newKey.split(':');
           that.database.view('flavor/docs', {
             success(data) {
@@ -1342,7 +1342,7 @@ define([
                 return d.id === id;
               });
               if (d) {
-                var key = _.flatten([that.flavor, d.value.flavors]).join(':');
+                var key = [that.flavor, d.value.flavors].flat().join(':');
                 thefTree.activateKey(key);
               }
             }
@@ -1397,7 +1397,7 @@ define([
                   var doc = node.data.doc;
                   var name = that.getFormContent('newname');
                   var path = doc.flavors[that.flavor];
-                  var oldName = path[path.length - 1];
+                  var oldName = path.at(-1);
                   path[path.length - 1] = name;
                   that.database.view('flavor/docs', {
                     success(data) {
@@ -1529,7 +1529,7 @@ define([
       current = { __folder: true };
       current[flavors[i]] = current;
     }
-    current[flavors[flavors.length - 1]] = {
+    current[flavors.at(-1)] = {
       __name: flavors.join(':'),
       __doc: data.doc,
       __data: data.value.data,
@@ -1542,7 +1542,7 @@ define([
 
   function createFancyTree(object, currentPath, flavor) {
     var tree, root;
-    if (currentPath.length) {
+    if (currentPath.length > 0) {
       tree = [];
       root = [];
     } else {

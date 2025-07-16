@@ -147,8 +147,8 @@ define([
         );
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
-        const nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length;
-        const nbColumns = axis.filter((x) => x[0] === 'cols')[0][1].length;
+        const nbRows = axis.find((x) => x[0] === 'rows')[1].length;
+        const nbColumns = axis.find((x) => x[0] === 'cols')[1].length;
         this.rows = nbRows;
         this.cols = nbColumns;
         const nbPlate = Math.ceil(wellsList.length / (nbRows * nbColumns));
@@ -284,8 +284,8 @@ define([
         );
         const labelsList = wellLabels.wellLabels;
         const axis = wellLabels.axis;
-        const nbRows = axis.filter((x) => x[0] === 'rows')[0][1].length;
-        const nbColumns = axis.filter((x) => x[0] === 'cols')[0][1].length;
+        const nbRows = axis.find((x) => x[0] === 'rows')[1].length;
+        const nbColumns = axis.find((x) => x[0] === 'cols')[1].length;
         this.rows = nbRows;
         this.cols = nbColumns;
         const nbPlate = Math.ceil(wellsList.length / (nbRows * nbColumns));
@@ -384,13 +384,13 @@ define([
             .find(':eq(1)')
             .css({ 'background-color': color[index] });
         } else {
-          if (Number.isNaN(parseInt(val, 10))) return;
+          if (Number.isNaN(Number.parseInt(val, 10))) return;
           let cfg = this.module.getConfiguration;
           let min = cfg('min');
           let max = cfg('max');
           let spectrumColors = cfg('spectrumColors');
-          max = parseFloat(max);
-          min = parseFloat(min);
+          max = Number.parseFloat(max);
+          min = Number.parseFloat(min);
           if (val < min || val > max) return;
           let arrayColor = new Array(10)
             .fill(min)
@@ -399,7 +399,7 @@ define([
             typeof val === 'object'
               ? arrayColor.findIndex((x) => x > val)
               : val;
-          spectrumColors[3] = parseFloat(index) / max;
+          spectrumColors[3] = Number.parseFloat(index) / max;
           if (index) {
             $(grid[currentItem].value)
               .find(':eq(1)')
@@ -469,7 +469,7 @@ define([
                 width: `${wellSize}px`,
               });
             let wellTop = $('<div>').addClass('well-plate-well-top');
-            let label = Number.isNaN(parseInt(labelsList[index][0], 10))
+            let label = Number.isNaN(Number.parseInt(labelsList[index][0], 10))
               ? labelsList[index]
               : plateIndex * nbColumns * nbRows + index + 1;
             wellTop.text('<div>').text(label);
@@ -503,14 +503,14 @@ define([
     let { direction = 'vertical' } = options;
     let entries = Object.entries(config);
     for (let i = 0; i < entries.length; i++) {
-      if (Number.isNaN(parseInt(entries[i][1], 10))) {
+      if (Number.isNaN(Number.parseInt(entries[i][1], 10))) {
         let label = entries[i][1].toUpperCase().charCodeAt(0);
         let axis = new Array(label - 64)
           .fill()
           .map((item, index) => String.fromCharCode(index + 65));
         entries[i][1] = axis;
       } else {
-        let axis = new Array(parseInt(entries[i][1], 10))
+        let axis = new Array(Number.parseInt(entries[i][1], 10))
           .fill()
           .map((item, index) => index + 1);
         entries[i][1] = axis;

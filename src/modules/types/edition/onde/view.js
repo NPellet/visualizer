@@ -90,9 +90,9 @@ define([
         jpathSuccess = false;
       }
       var jpath = fieldInfo.jpath.slice().reverse();
-      while (jpath.indexOf('$array$') > -1) {
+      while (jpath.includes('$array$')) {
         var $firstOl = $target.parents('ol').first();
-        if (!$firstOl.length) break;
+        if ($firstOl.length === 0) break;
         if (!$.contains(this.dom[0], $firstOl[0])) break;
         var idx = $firstOl
           .children('li')
@@ -101,7 +101,7 @@ define([
         jpath[jpath.indexOf('$array$')] = idx;
       }
       jpath = jpath.reverse();
-      if (jpath.indexOf('$array$') > -1 || jpath.indexOf(-1) > -1) {
+      if (jpath.includes('$array$') || jpath.includes(-1)) {
         jpathSuccess = false;
       }
 

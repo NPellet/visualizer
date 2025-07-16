@@ -18,7 +18,7 @@ define(['jquery', 'lodash'], function ($, _) {
       var $target = $(e.target);
       if (
         $target.hasClass('ci-module-header') ||
-        $target.parents('.ci-module-header').length
+        $target.parents('.ci-module-header').length > 0
       ) {
         var moduleId = $target
           .parents('.ci-module-wrapper')

@@ -115,7 +115,7 @@ define([
     setStyle() {
       var style = this.styleObject;
       if (!style) return;
-      if (!(style instanceof Array)) {
+      if (!(Array.isArray(style))) {
         style = [style];
       }
 
@@ -228,8 +228,8 @@ define([
             return null;
           })
           .then(() => this._resolveTemplate())
-          .catch((e) => {
-            Debug.info(`Problem with template: ${e}`);
+          .catch((error) => {
+            Debug.info(`Problem with template: ${error}`);
           })
           .then(() => this.submitChange());
       },
@@ -280,7 +280,7 @@ define([
 
     fillForm(noChange) {
       const changed = this.form.setData(this.formObject);
-      changed.forEach((c) => this._changedJpaths.add(c));
+      for (const c of changed) this._changedJpaths.add(c);
       this.submitChange(null, noChange);
     },
 
@@ -303,8 +303,8 @@ define([
           this.dom.show();
           return renderProm;
         })
-        .catch((e) => {
-          Debug.warn('Error rendering twig template', e);
+        .catch((error) => {
+          Debug.warn('Error rendering twig template', error);
         });
       return this.renderPromise;
     },

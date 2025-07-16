@@ -146,10 +146,10 @@ define([
 
   Controller.prototype.configFunctions = {
     stack(cfg) {
-      return cfg.indexOf('stack') !== -1;
+      return cfg.includes('stack');
     },
     fill(cfg) {
-      return cfg.indexOf('fill') !== -1;
+      return cfg.includes('fill');
     },
   };
 

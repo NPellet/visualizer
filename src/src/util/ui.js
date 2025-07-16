@@ -123,12 +123,12 @@ define([
     var renderer = await template.renderAsync(DataObject.resurrect(data));
     const div = document.createElement('div');
     div.style = 'position: absolute; width: 1; height: 1; visibility: none';
-    const body = document.getElementsByTagName('body')[0];
+    const body = document.querySelectorAll('body')[0];
     div.innerHTML = renderer.html;
     body.append(div);
     await renderer.render(); // we render the async typerenderer
     const html = div.innerHTML;
-    body.removeChild(div);
+    div.remove();
     return html;
   };
 
@@ -473,7 +473,7 @@ define([
                 var items = data.getItems();
                 // Add a position indicatior ==> for stable sort
                 for (var i = 0; i < items.length; i++) {
-                  if (rows.indexOf(i) !== -1) {
+                  if (rows.includes(i)) {
                     items[i].__pos = 2;
                   } else if (i < insertBefore || insertBefore === null) {
                     items[i].__pos = 1;
@@ -630,8 +630,8 @@ define([
       allProm = new Array(list.length);
       for (let i = 0; i < list.length; i++) {
         // eslint-disable-next-line no-loop-func
-        allProm[i] = list[i].promise.then(addItems).catch(function (e) {
-          Debug.error('failed', e);
+        allProm[i] = list[i].promise.then(addItems).catch(function (error) {
+          Debug.error('failed', error);
           sources--;
           failedSources++;
           updateHeader();

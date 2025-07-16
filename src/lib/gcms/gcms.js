@@ -15,7 +15,7 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
   function GCMS(domGC, domMS, options) {
     this.options = $.extend(true, {}, defaults, options);
 
-    this.sizeFactor = parseFloat(this.options.gcSize) / 100;
+    this.sizeFactor = Number.parseFloat(this.options.gcSize) / 100;
 
     // A GC can have more than 1 serie
     this.gcData = null;

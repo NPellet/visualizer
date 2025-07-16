@@ -22,15 +22,15 @@ define([
       modules = modules.filter(function (m) {
         return Number(m.getId()) === state.moduleId;
       });
-      if (modules.length) {
+      if (modules.length > 0) {
         let currentDefinition = JSON.parse(
           JSON.stringify(modules[0].definition),
         );
-        Object.keys(currentDefinition.layers).forEach((layer) => {
+        for (const layer of Object.keys(currentDefinition.layers)) {
           if (layer !== 'Default layer') {
             delete currentDefinition.layers[layer];
           }
-        });
+        }
 
         event.clipboardData.setData(
           'text/plain',

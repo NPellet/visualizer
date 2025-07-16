@@ -194,8 +194,8 @@ define([
         },
 
         beforeSaveCell(rowId, colName, value, rowNum, colNum) {
-          if (that.jpaths[colNum].number.indexOf('number') > -1) {
-            value = parseFloat(value);
+          if (that.jpaths[colNum].number.includes('number')) {
+            value = Number.parseFloat(value);
           }
 
           that.module.model.dataSetChild(
@@ -483,7 +483,7 @@ define([
   });
 
   function getIDForCell(rowid, column) {
-    return `${rowid}_${column}`.replace(/[^\w\d_]/g, '_');
+    return `${rowid}_${column}`.replaceAll(/[^\w\d_]/g, '_');
   }
 
   return View;

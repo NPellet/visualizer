@@ -63,7 +63,7 @@ define([
       this.variables = {};
       this.cfgValue = {};
       this.maxhits =
-        parseInt(this.module.getConfiguration('maxhits'), 10) ||
+        Number.parseInt(this.module.getConfiguration('maxhits'), 10) ||
         Number.POSITIVE_INFINITY;
 
       this._jpathsFcts = {};
@@ -278,7 +278,7 @@ define([
               searchfields[i].groups.general[0].allow_undefined[0]
             ) {
               allow_undefined =
-                !!searchfields[i].groups.general[0].allow_undefined[0].length;
+                searchfields[i].groups.general[0].allow_undefined[0].length > 0;
             }
             toEval += ` ( ( el = this.getJpath( "${searchOn[j]}", row ) ) ? ( `;
             toEval += this._makeOp(

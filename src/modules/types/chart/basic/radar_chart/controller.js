@@ -154,10 +154,10 @@ define([
 
   Controller.prototype.configFunctions = {
     point(cfg) {
-      return cfg.indexOf('point') === -1;
+      return !cfg.includes('point');
     },
     line(cfg) {
-      return cfg.indexOf('line') !== -1;
+      return cfg.includes('line');
     },
   };
 

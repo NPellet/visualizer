@@ -112,8 +112,8 @@ define([
         try {
           this.createTemplateFromVar('', tpl);
           this.render();
-        } catch (e) {
-          Debug.info(`Problem with template: ${e}`);
+        } catch (error) {
+          Debug.info(`Problem with template: ${error}`);
         }
       },
       hltemplate(value) {
@@ -121,8 +121,8 @@ define([
         try {
           this.createTemplateFromVar('hl', tpl);
           this.render();
-        } catch (e) {
-          Debug.info(`Problem with highlight template: ${e}`);
+        } catch (error) {
+          Debug.info(`Problem with highlight template: ${error}`);
         }
       },
     },
@@ -301,7 +301,7 @@ define([
         that.unselectElements(event, that.$elements);
         var classes = $(event.target).attr('class').split(' ');
         var found = series.find((s) => {
-          return classes.some((c) => c === s);
+          return classes.includes(s);
         });
 
         if (!found) return;
@@ -383,7 +383,7 @@ define([
         var p = $(this)
           .attr('class')
           .replace(/^.*(period\d+).*$/, '$1');
-        var pN = p.substr(6);
+        var pN = p.slice(6);
         that.unselectElements(event, that.$elements);
         var $selected = that.$elements.filter(`.${p}`);
         $selected.toggleClass('el-selected');
@@ -406,7 +406,7 @@ define([
         var g = $(this)
           .attr('class')
           .replace(/^.*(group\d+).*$/, '$1');
-        var gN = g.substr(5);
+        var gN = g.slice(5);
         that.unselectElements(event, that.$elements);
         var $selected = that.$elements.filter(`.${g}`);
         $selected.toggleClass('el-selected');
@@ -442,7 +442,7 @@ define([
     _getOptions(type) {
       var cfg = this.module.getConfiguration;
       var r = {};
-      [
+      for (const val of [
         'Min',
         'Max',
         'Val',
@@ -456,19 +456,19 @@ define([
         'Unit',
         'Mode',
         'Jpath',
-      ].forEach((val) => {
+      ]) {
         var prop = val.toLowerCase();
         r[prop] = cfg(`${type}${val}`);
         if (val.match(/color/i)) {
           r[prop] = Color.array2rgba(r[prop]);
         }
-      });
-      [['ShowSlider', 'yes']].forEach((val) => {
+      }
+      for (const val of [['ShowSlider', 'yes']]) {
         r[val[0].toLowerCase()] = this.module.getConfigurationCheckbox(
           `${type}${val[0]}`,
           val[1],
         );
-      });
+      }
       return r;
     },
 
@@ -559,7 +559,7 @@ define([
           const z = this.elements.findIndex(
             (element) => element.Z === val[num],
           );
-          if (z >= 0) {
+          if (z !== -1) {
             $(elements[z]).addClass('el-selected');
           }
         }
@@ -664,7 +664,7 @@ define([
                 .value();
             } else {
               that._highlighted = _.filter(that._highlighted, function (val) {
-                return key.indexOf(val) === -1;
+                return !key.includes(val);
               });
             }
             that._drawHighlight();
@@ -687,7 +687,7 @@ define([
       // find first
       if (!this.elements || !this.$elements) return;
       var el = this.elements.filter((el) => {
-        return this._highlighted.indexOf(el._highlight) > -1;
+        return this._highlighted.includes(el._highlight);
       });
 
       // Clear previous highlights

@@ -327,8 +327,8 @@ define([
         }) {${theCode}\n})`,
         `CodeExecutor${this.controller.module.getId()}`,
       );
-    } catch (e) {
-      reportError(this.title, e);
+    } catch (error) {
+      reportError(this.title, error);
     }
     this.wasSet = false;
   }
@@ -496,8 +496,8 @@ define([
       if (!this._async) {
         this._done = result;
       }
-    } catch (e) {
-      reportError(this.title, e);
+    } catch (error) {
+      reportError(this.title, error);
     }
 
     this.setOutput();
@@ -517,8 +517,8 @@ define([
           }
           return null;
         },
-        function (e) {
-          reportError(that.title, e);
+        function (error) {
+          reportError(that.title, error);
         },
       )
       .then(function () {

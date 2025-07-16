@@ -66,7 +66,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
   };
 
   function boolCheckbox(cfg) {
-    return cfg.length !== 0;
+    return cfg.length > 0;
   }
 
   return Controller;

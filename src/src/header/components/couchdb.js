@@ -91,13 +91,13 @@ define([
       Versioning.switchView(result, true);
     },
     save(type, name) {
-      if (name.length < 1) return;
-      if (name.indexOf(':') !== -1) return this.showError(10);
+      if (name.length === 0) return;
+      if (name.includes(':')) return this.showError(10);
 
       var content = JSON.parse(Versioning[`get${type}JSON`]());
 
       var last = this[`last${type}Node`];
-      if (typeof last === 'undefined') return this.showError(11);
+      if (last === undefined) return this.showError(11);
 
       var id, folderNode;
       if (last.node.folder) {
@@ -141,11 +141,11 @@ define([
       });
     },
     mkdir(type, name) {
-      if (name.length < 1) return;
-      if (name.indexOf(':') !== -1) return this.showError(10);
+      if (name.length === 0) return;
+      if (name.includes(':')) return this.showError(10);
 
       var last = this[`last${type}Node`];
-      if (typeof last === 'undefined') return this.showError(11);
+      if (last === undefined) return this.showError(11);
 
       var folderNode;
       if (last.node.folder) folderNode = last.node;
@@ -373,7 +373,7 @@ define([
 
       if (node.folder) {
         divContent += node.key;
-        var folderName = divContent.substring(5);
+        var folderName = divContent.slice(5);
         last = {
           name: `${this.username}:${typeL}${
             folderName.length > 0 ? `:${folderName}` : ''
@@ -540,7 +540,7 @@ define([
 
   function createFancyTree(object, currentPath) {
     var tree, root;
-    if (currentPath.length) {
+    if (currentPath.length > 0) {
       tree = [];
       root = true;
     } else {

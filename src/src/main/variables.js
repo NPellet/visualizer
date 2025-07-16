@@ -188,24 +188,24 @@ define([
             }
             return null;
           },
-          (err) => {
-            _reject(err);
+          (error) => {
+            _reject(error);
           },
         );
       }).then((value) => {
         this._setValue(value);
         return value;
       });
-      var prom = this.currentPromise.catch((err) => {
+      var prom = this.currentPromise.catch((error) => {
         if (
-          err.message === 'filter' || // Already caught
-          err.message === 'latency' // Expected
+          error.message === 'filter' || // Already caught
+          error.message === 'latency' // Expected
         ) {
           return;
         }
         Debug.error(
           'Error in getting the variable through variable.js',
-          err.stack || err,
+          error.stack || error,
         );
       });
 

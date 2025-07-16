@@ -175,7 +175,7 @@ define([
     const ignorePaths = this.module
       .getConfiguration('ignorePaths', [])
       .map((el) => el.path)
-      .filter((el) => el)
+      .filter(Boolean)
       .map(convertStrToRegexp);
     const options = {
       pathAlias,

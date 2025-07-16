@@ -82,7 +82,7 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
 
     onActionReceive: {
       changeX(value) {
-        this.cx = parseFloat(value.valueOf());
+        this.cx = Number.parseFloat(value.valueOf());
       },
     },
   });

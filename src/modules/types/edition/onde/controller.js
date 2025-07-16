@@ -187,9 +187,9 @@ define([
         'onde: if save in view is activated you probably want to modify var in',
       );
     }
-    var varin = vars_in.filter(function (v) {
+    var varin = vars_in.find(function (v) {
       return v.rel === 'inputValue';
-    })[0];
+    });
     if (varname && saveInView) {
       if (varin && varin.name) {
         varin.name = varname;

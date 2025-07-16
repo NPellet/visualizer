@@ -70,7 +70,7 @@ define([
     },
 
     listenHighlight() {
-      if (!arguments[0] || typeof arguments[0]._highlight === 'undefined') {
+      if (!arguments[0] || arguments[0]._highlight === undefined) {
         return;
       }
 
@@ -222,7 +222,7 @@ define([
       element = { _highlight: element };
     }
 
-    if (typeof element._highlight === 'undefined') {
+    if (element._highlight === undefined) {
       return;
     }
 
@@ -317,7 +317,7 @@ define([
       const url = URL.createObjectURL(svg);
 
       const promise = new Promise((resolve) => {
-        image.onload = () => {
+        image.addEventListener('load', () => {
           ctx.drawImage(image, 0, 0);
           const png = canvas.toDataURL('image/png');
           const img = document.createElement('img');
@@ -325,7 +325,7 @@ define([
           svgDOMCopy.replaceWith(img);
           URL.revokeObjectURL(url);
           resolve();
-        };
+        });
       });
       promises.push(promise);
       image.src = url;
@@ -373,7 +373,7 @@ define([
       var currentElement = currentPreferences;
       for (let i = 0; i < path.length; i++) {
         currentElement = currentElement[path[i]];
-        if (typeof currentElement === 'undefined') {
+        if (currentElement === undefined) {
           break;
         }
       }
@@ -403,7 +403,7 @@ define([
       var cfgEl = currentPreferences;
       for (var i = 0, l = alias.length - 1; i < l; i++) {
         cfgEl = cfgEl[alias[i]];
-        if (typeof cfgEl === 'undefined') {
+        if (cfgEl === undefined) {
           break;
         }
       }

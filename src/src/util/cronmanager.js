@@ -97,7 +97,7 @@ define(['require'], function (require) {
 
           switch (event.data.method) {
             case 'getVar':
-              if (!Array.isArray(event.data.variables instanceof Array)) {
+              if (!Array.isArray(event.data.variables)) {
                 return;
               }
 

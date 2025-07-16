@@ -42,9 +42,9 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
             setCurrentValue(this, molecule);
             event.preventDefault();
           }
-        } catch (e) {
+        } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(e);
+          console.error(error);
         }
       });
     },

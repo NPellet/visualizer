@@ -95,8 +95,8 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
         var oldH = $svg.attr('height');
         $svg.attr('width', `${$svg.width()}px`);
         $svg.attr('height', `${$svg.height()}px`);
-        var svg = document.getElementById(
-          'uniprotFeaturePainter-holder',
+        var svg = document.querySelector(
+          '#uniprotFeaturePainter-holder',
         ).innerHTML;
         var canvas = document.createElement('canvas');
         canvg(canvas, svg);

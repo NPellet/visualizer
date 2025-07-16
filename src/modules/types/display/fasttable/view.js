@@ -318,7 +318,7 @@ define([
         currentVar = Traversing.get(
           this.getValue(Traversing.get(source), jpaths[j].jpath),
         );
-        if (typeof currentVar === 'undefined') {
+        if (currentVar === undefined) {
           currentVar = '';
         }
         html += currentVar;
@@ -350,7 +350,7 @@ define([
       addRow(source) {
         this.elements = this.elements || [];
 
-        if (this.module.getDataFromRel('list').indexOf(source) > -1) {
+        if (this.module.getDataFromRel('list').includes(source)) {
           return;
         }
 

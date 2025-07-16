@@ -69,22 +69,22 @@ define([
 
       var that = this;
       this._radar.attachEvent('onMouseMove', function (id, ev) {
-        data.forEach(function (entry) {
+        for (const entry of data) {
           if (entry.id == id) {
             var obj = entry;
             if (
-              ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3] === 'd'
+              ev.toElement.outerHTML.at(-3) === 'd'
             ) {
               that.module.controller.elementHover(obj._highlight[0]);
             } else {
               that.module.controller.elementHover(
                 obj._highlight[
-                  ev.toElement.outerHTML[ev.toElement.outerHTML.length - 3]
+                  ev.toElement.outerHTML.at(-3)
                 ],
               );
             }
           }
-        });
+        }
         return true;
       });
       this._radar.attachEvent('onMouseOut', function () {

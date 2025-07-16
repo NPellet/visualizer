@@ -20,10 +20,8 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
           for (let i = 0; i < elements.length; i++) {
             (function (element, callbackClick, callbackOpen) {
               if (
-                Config.contextMenu().indexOf('all') === -1 &&
-                Config.contextMenu().indexOf(
-                  element.attr('name') || 'undefined',
-                ) === -1
+                !Config.contextMenu().includes('all') &&
+                !Config.contextMenu().includes(element.attr('name') || 'undefined')
               ) {
                 return;
               }

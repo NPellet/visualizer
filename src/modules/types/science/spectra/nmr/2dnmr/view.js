@@ -90,7 +90,7 @@ define([
         }
 
         var opts = {
-          lineColor: `rgb(${hslToRgb(100 / 360, 0.8, 0.4).join()})`,
+          lineColor: `rgb(${hslToRgb(100 / 360, 0.8, 0.4).join(',')})`,
           twoDColor: {
             fromPositive: { h: 100, s: 0.3, l: 0.7 },
             toPositive: { h: 100, s: 1, l: 0.5 },

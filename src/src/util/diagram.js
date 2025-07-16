@@ -11,10 +11,10 @@ define([
   function Rectangle(arg1) {
     var fail;
     if (arguments.length === 3) {
-      this.init1.apply(this, arguments);
+      Reflect.apply(this.init1, this, arguments);
     } else if (arguments.length === 4) {
-      this.init2.apply(this, arguments);
-    } else if (arguments.length === 1 && arg1 instanceof Array) {
+      Reflect.apply(this.init2, this, arguments);
+    } else if (arguments.length === 1 && Array.isArray(arg1)) {
       if (arguments[0].length === 3) {
         this.init1.apply(this, arguments[0]);
       } else if (arguments.length === 4) {
@@ -127,7 +127,7 @@ define([
   function distance(a, b) {
     var dx = a.x - b.x;
     var dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    return Math.hypot(dx, dy);
   }
 
   const exports = {};
@@ -209,7 +209,7 @@ define([
         return t.name === sources[i].name;
       });
 
-      if (!target.length) {
+      if (target.length === 0) {
         Debug.warn(
           `The module ${sources[i].id} has a var_out ${sources[i].name} not used as an input of any other module`,
         );
@@ -222,14 +222,14 @@ define([
     var width = 1400,
       height = 900;
     var nodes = {};
-    links.forEach(function (link) {
+    for (const link of links) {
       link.source =
         nodes[link.source.id] ||
         (nodes[link.source.id] = { info: link.source });
       link.target =
         nodes[link.target.id] ||
         (nodes[link.target.id] = { info: link.target });
-    });
+    }
     for (const key in nodes) {
       // nodes[key].x = i*width/n + (Math.random()-0.5) * i/n/10 * width;
       // nodes[key].y = i*height/n + (Math.random()-0.5) *i/n/10 * height;
@@ -424,8 +424,8 @@ define([
         var res = [];
         res.push(
           `${d.info.module.controller ? d.info.module.controller.moduleInformation.name : 'unknown'}<br/>`,
+          d.info.module.definition.title,
         );
-        res.push(d.info.module.definition.title);
 
         return res.join('<br/>');
       }
@@ -471,7 +471,7 @@ define([
           case 'circ':
             var dx = d.target.x - d.source.x,
               dy = d.target.y - d.source.y,
-              dr = Math.sqrt(dx * dx + dy * dy);
+              dr = Math.hypot(dx, dy);
             var factor = 1 - nodeRadius / dr;
             return {
               from: {

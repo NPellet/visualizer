@@ -148,19 +148,19 @@ define([
                           varName,
                         );
                       },
-                      (err) => {
+                      (error) => {
                         Debug.error(
                           'Error while filtering the data : ',
-                          err.message,
-                          err.stack,
+                          error.message,
+                          error.stack,
                         );
                       },
                     )
-                    .catch((err) => {
+                    .catch((error) => {
                       Debug.error(
                         'Error while updating module : ',
-                        err.message,
-                        err.stack,
+                        error.message,
+                        error.stack,
                       );
                     }),
                 );
@@ -172,11 +172,11 @@ define([
             // ignore
           },
         )
-        .catch(function (err) {
+        .catch(function (error) {
           Debug.error(
             'Error while updating variable : ',
-            err.message,
-            err.stack,
+            error.message,
+            error.stack,
           );
         });
     },
@@ -316,7 +316,7 @@ define([
         return false;
       }
 
-      if (this.listRels.indexOf(rel) === -1) {
+      if (!this.listRels.includes(rel)) {
         return false;
       }
 
