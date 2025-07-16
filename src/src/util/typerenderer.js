@@ -111,7 +111,7 @@ define([
       val = val.toUpperCase();
       country = countryData.lookup.countries({ alpha3: val })[0];
     } else {
-      val = val.slice(0, 1).toUpperCase() + val.slice(1, val.length);
+      val = val.slice(0, 1).toUpperCase() + val.slice(1);
       country = countryData.lookup.countries({ name: val })[0];
     }
     if (country) {
@@ -150,7 +150,7 @@ define([
   functions.elecconfig = {};
   functions.elecconfig.toscreen = function ($element, value) {
     if (value) {
-      $element.html(value.replace(/([a-z])([0-9]+)/g, '$1<sup>$2</sup>'));
+      $element.html(value.replaceAll(/([a-z])([0-9]+)/g, '$1<sup>$2</sup>'));
     } else {
       $element.html('');
     }
@@ -167,12 +167,12 @@ define([
     $element.html('');
 
     if (val) {
-      val = val.replace(/^\s+|\s+$/g, '');
+      val = val.replaceAll(/^\s+|\s+$/g, '');
       if (!Array.isArray(val)) {
         val = val.split(/[\r\n\t,; ]+/);
       }
       for (let ghsValue of val) {
-        ghsValue = String(ghsValue).replace(/[^1-9]/g, '');
+        ghsValue = String(ghsValue).replaceAll(/[^1-9]/g, '');
         var $img = $('<img>');
         $img.attr({
           src: ghs[ghsValue],
@@ -254,7 +254,7 @@ define([
       if (!value[i].bgcolor) {
         value[i].bgcolor = functions.indicator.Color.getColor(colors[i]);
       }
-      if (!value[i].size && value[i].size !== 0) value[i].size = 10;
+      if (value[i].size === 0 && value[i].size > 0) value[i].size = 10;
       totalSize += value[i].size;
     }
 
@@ -318,7 +318,7 @@ define([
 
         $element.html(functions.mf.parseToHtml(String(value)));
       } catch {
-        $element.html(value.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+        $element.html(value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'));
       }
     } else {
       $element.html('');
@@ -553,7 +553,7 @@ define([
   functions.string = {};
   functions.string.toscreen = function ($element, val, rootVal, options) {
     val = String(val);
-    val = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    val = val.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 
     if (options.search) {
       var search;
@@ -577,7 +577,7 @@ define([
     let width = dom.attr('width');
     let height = dom.attr('height');
     if (width && height) {
-      let viewbox = [0, 0, parseInt(width, 10), parseInt(height, 10)];
+      let viewbox = [0, 0, Number.parseInt(width, 10), Number.parseInt(height, 10)];
       dom[0].setAttribute('viewBox', viewbox.join(' '));
     }
     dom.removeAttr('id');
@@ -720,7 +720,7 @@ define([
       var id = Util.getNextUniqueId();
       if (type === 'pdb') {
         viewer.clear();
-        mol.forEach(function (structure) {
+        for (const structure of mol) {
           if (options.mode === 'cartoon') {
             var ligand = structure.select({
               rnames: ['RVP', 'SAH'],
@@ -729,7 +729,7 @@ define([
           }
           viewer[options.mode](id, structure);
           viewer.autoZoom();
-        });
+        }
       } else if (type === 'mol3d') {
         viewer.ballsAndSticks(id, mol);
       }

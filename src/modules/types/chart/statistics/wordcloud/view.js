@@ -62,13 +62,13 @@ define([
       that.words = [];
 
       var unicodePunctuationRe =
-        '!-#%-*,-/:;?@\\[-\\]_{}¡§«¶·»¿;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･';
+        String.raw`!-#%-*,-/:;?@\[-\]_{}¡§«¶·»¿;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･`;
 
       var stopWords =
         /^(i|me|my|myself|we|us|our|ours|ourselves|you|your|yours|yourself|yourselves|he|him|his|himself|she|her|hers|herself|it|its|itself|they|them|their|theirs|themselves|what|which|who|whom|whose|this|that|these|those|am|is|are|was|were|be|been|being|have|has|had|having|do|does|did|doing|will|would|should|can|could|ought|i'm|you're|he's|she's|it's|we're|they're|i've|you've|we've|they've|i'd|you'd|he'd|she'd|we'd|they'd|i'll|you'll|he'll|she'll|we'll|they'll|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't|doesn't|don't|didn't|won't|wouldn't|shan't|shouldn't|can't|cannot|couldn't|mustn't|let's|that's|who's|what's|here's|there's|when's|where's|why's|how's|a|an|the|and|but|if|or|because|as|until|while|of|at|by|for|with|about|against|between|into|through|during|before|after|above|below|to|from|up|upon|down|in|out|on|off|over|under|again|further|then|once|here|there|when|where|why|how|all|any|both|each|few|more|most|other|some|such|no|nor|not|only|own|same|so|than|too|very|say|says|said|shall)$/;
       var punctuation = new RegExp(`[${unicodePunctuationRe}]`, 'g');
       var wordSeparators =
-        /[ \f\n\r\t\v\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\u3031-\u3035\u309b\u309c\u30a0\u30fc\uff70]+/g;
+        /[ \f\n\r\t\v\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000\u3031-\u3035\u309B\u309C\u30A0\u30FC\uFF70]+/g;
       var discard = /^(@|https?:|\/\/)/;
 
       that.drawChart();
@@ -80,13 +80,13 @@ define([
         for (var i = myarray.length - 1; i >= 0; i--) {
           var key = myarray[i][0];
           var word = myarray[i][1];
-          if (key !== parseInt(key, 10) && word === parseInt(word, 10)) {
+          if (key !== Number.parseInt(key, 10) && word === Number.parseInt(word, 10)) {
             var tmp = key;
             key = word;
             word = tmp;
           }
           if (discard.test(word)) return;
-          word = word.replace(punctuation, '');
+          word = word.replaceAll(punctuation, '');
           if (stopWords.test(word.toLowerCase())) return;
           cases[word.toLowerCase()] = word;
           tags[(word = word.toLowerCase())] = (tags[word] || 0) + key;
@@ -95,9 +95,9 @@ define([
         tags = d3.entries(tags).sort(function (a, b) {
           return b.value - a.value;
         });
-        tags.forEach(function (d) {
+        for (const d of tags) {
           d.key = cases[d.key];
-        });
+        }
         generate();
       }
 
@@ -105,7 +105,7 @@ define([
         tags = {};
         var cases = {};
 
-        text
+        for (let word of text
           .split(
             that.module.getConfigurationCheckbox(
               'oneWordPerLine',
@@ -113,20 +113,19 @@ define([
             )
               ? /\n/g
               : wordSeparators,
-          )
-          .forEach(function (word) {
-            if (discard.test(word)) return;
-            word = word.replace(punctuation, '');
-            if (stopWords.test(word.toLowerCase())) return;
+          )) {
+            if (discard.test(word)) continue;
+            word = word.replaceAll(punctuation, '');
+            if (stopWords.test(word.toLowerCase())) continue;
             cases[word.toLowerCase()] = word;
             tags[(word = word.toLowerCase())] = (tags[word] || 0) + 1;
-          });
+          }
         tags = d3.entries(tags).sort(function (a, b) {
           return b.value - a.value;
         });
-        tags.forEach(function (d) {
+        for (const d of tags) {
           d.key = cases[d.key];
-        });
+        }
         generate();
       }
 
@@ -135,9 +134,9 @@ define([
         that.fontSize = d3.scale[that.module.getConfiguration('scale')]().range(
           [10, 100],
         );
-        if (tags.length) {
+        if (tags.length > 0) {
           that.fontSize.domain([
-            +tags[tags.length - 1].value || 1,
+            +tags.at(-1).value || 1,
             +tags[0].value,
           ]);
         }
@@ -266,7 +265,7 @@ define([
           .attr('transform', vis.attr('transform'));
         var exitGroupNode = exitGroup.node();
         text.exit().each(function () {
-          exitGroupNode.appendChild(this);
+          exitGroupNode.append(this);
         });
         exitGroup.transition().duration(1000).style('opacity', 1e-6).remove();
 

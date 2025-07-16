@@ -30,7 +30,7 @@ define(['loglevel'], function (log) {
     Levels,
 
     setDebugLevel(level) {
-      level = parseInt(level, 10);
+      level = Number.parseInt(level, 10);
       if (isNaN(level) || level < -1) {
         return;
       }

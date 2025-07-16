@@ -21,7 +21,7 @@ define(['modules/default/defaultview'], function (Default) {
       this.dom.find(':first-child').css('background-color', color);
 
       if (this.logList.length > this.maxLogs) {
-        this.logList[this.logList.length - 1].remove();
+        this.logList.at(-1).remove();
       }
     },
   });

@@ -100,7 +100,7 @@ define(['jquery'], function ($) {
             def.resolve(e.target.result);
           }
         } else {
-          if (e.target.result && e.target.result.key.indexOf(key) > -1) {
+          if (e.target.result && e.target.result.key.includes(key)) {
             stack[e.target.result.value.branch] = e.target.result.value;
           }
 

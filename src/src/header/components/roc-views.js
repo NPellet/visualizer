@@ -515,12 +515,14 @@ define([
             ];
             if (path.length === 1) {
               // root of flavor
-              menu.push({
-                title: 'New flavor...',
-                cmd: 'newFlavor',
-                uiIcon: 'ui-icon-document-b',
-              });
-              menu.push({ title: '----' });
+              menu.push(
+                {
+                  title: 'New flavor...',
+                  cmd: 'newFlavor',
+                  uiIcon: 'ui-icon-document-b',
+                },
+                { title: '----' },
+              );
               const flavors = this.flavors;
               for (let i = 0; i < flavors.length; i++) {
                 menu.push({
@@ -636,7 +638,7 @@ define([
         if (!name) {
           return UI.showNotification('Invalid name', 'error');
         }
-        if (this.flavors.indexOf(name) === -1) {
+        if (!this.flavors.includes(name)) {
           this.tree.rootNode.addNode({
             folder: true,
             title: name,
@@ -931,7 +933,7 @@ define([
         ),
       );
       this.$revBox.append('<br>');
-      revs.forEach((rev) => {
+      for (const rev of revs) {
         const revLink = $('<a>', {
           click: this.loadRevision.bind(this, node, rev),
           css: fakeLink,
@@ -946,7 +948,7 @@ define([
 
         const openRevLink = $('<p>').html(revLink);
         this.$revBox.append(openRevLink);
-      });
+      }
     }
 
     loadRevision(node, rev) {
@@ -1000,7 +1002,7 @@ define([
         folder = newFolder;
       }
 
-      const name = value[value.length - 1];
+      const name = value.at(-1);
 
       const view = this.getCurrentView();
       const flavor = this.flavor;
@@ -1267,7 +1269,7 @@ define([
         }
       }
 
-      if (current.length) {
+      if (current.length > 0) {
         inlineUploads.push(current);
       }
 
@@ -1284,13 +1286,13 @@ define([
 
         this.showHide(false);
         UI.showNotification('Files uploaded successfully', 'success');
-      } catch (err) {
+      } catch (error) {
         this.showHide(false);
         UI.showNotification(
           'Files upload failed (at least partially)',
           'error',
         );
-        Debug.error(err.message, err.stack);
+        Debug.error(error.message, error.stack);
         return;
       }
 
@@ -1347,7 +1349,7 @@ define([
         meta.keywords = $input[0].value
           .split(',')
           .map((val) => val.trim())
-          .filter((val) => val);
+          .filter(Boolean);
       }
       if ($input[1]) {
         meta.icon = $input[1].value || undefined;

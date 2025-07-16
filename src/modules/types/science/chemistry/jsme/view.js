@@ -87,14 +87,14 @@ define([
       options = {
         ...options,
         prefs: options.prefs
-          ? options.prefs.map((d) => String(d)).join()
+          ? options.prefs.map(String).join(',')
           : undefined,
       };
       this.postMessage('setOptions', options);
     },
 
     getPrefs() {
-      return this.module.getConfiguration('prefs').join();
+      return this.module.getConfiguration('prefs').join(',');
     },
 
     getHighlightColor() {
@@ -188,7 +188,7 @@ define([
         function (onOff, highlightId) {
           var atoms = [];
           for (var i = 0, l = highlightId.length; i < l; i++) {
-            if (!(moduleValue._atoms[highlightId[i]] instanceof Array)) {
+            if (!(Array.isArray(moduleValue._atoms[highlightId[i]]))) {
               moduleValue._atoms[highlightId[i]] = [
                 moduleValue._atoms[highlightId[i]],
               ];
@@ -211,17 +211,15 @@ define([
       // there is a problem with overlapping atoms, there is no event out
       // we therefore systematically unhighlight
       for (const i in this._currentValue._atoms) {
-        if (this._currentValue._atoms[i].indexOf(this.highlightedAtom) > -1) {
+        if (this._currentValue._atoms[i].includes(this.highlightedAtom)) {
           API.highlightId(i, false);
         }
       }
 
       for (const i in this._currentValue._atoms) {
-        if (id != 0) {
-          if (this._currentValue._atoms[i].indexOf(id - 1) > -1) {
+        if (id != 0 && this._currentValue._atoms[i].includes(id - 1)) {
             API.highlightId(i, 1);
           }
-        }
       }
 
       this.highlightedAtom = id - 1;

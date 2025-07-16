@@ -81,7 +81,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
           ((!commonKeys || commonKeys.length === 0) && currentCallback[2])
         ) {
           for (var killerID in this._killers) {
-            if (this._killers[killerID].indexOf(+i) > -1) {
+            if (this._killers[killerID].includes(+i)) {
               currentCallback[1](value, commonKeys, killerID, senderId);
               continue loop1;
             }
@@ -104,7 +104,7 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   Repository.prototype.set = function (keys, value, noTrigger, senderId) {
     if (!Array.isArray(keys)) {
       keys = [keys];
-    } else if (!keys.length) {
+    } else if (keys.length === 0) {
       keys = [];
     }
 

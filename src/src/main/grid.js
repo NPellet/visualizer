@@ -187,11 +187,11 @@ define([
                 let currentDefinition = JSON.parse(
                   JSON.stringify(module.definition),
                 );
-                Object.keys(currentDefinition.layers).forEach((layer) => {
+                for (const layer of Object.keys(currentDefinition.layers)) {
                   if (layer !== 'Default layer') {
                     delete currentDefinition.layers[layer];
                   }
-                });
+                }
                 window.localStorage.setItem(
                   'ci-copy-module',
                   JSON.stringify(currentDefinition),
@@ -316,8 +316,8 @@ define([
 
         module.toggleLayer(getActiveLayer());
       },
-      function (err) {
-        Debug.error('Error during module dom initialization', err);
+      function (error) {
+        Debug.error('Error during module dom initialization', error);
       },
     );
   }
@@ -508,11 +508,9 @@ define([
   }
 
   function removeModule(module) {
-    if (module.controller && module.controller.onBeforeRemove) {
-      if (module.controller.onBeforeRemove() === false) {
+    if (module.controller && module.controller.onBeforeRemove && module.controller.onBeforeRemove() === false) {
         return;
       }
-    }
 
     try {
       module.getDomWrapper().remove().unbind();
@@ -522,8 +520,8 @@ define([
         .then(function () {
           module.getDomWrapper().remove().unbind();
         })
-        .catch(function (e) {
-          Debug.warn('Could not remove module from dom.', e);
+        .catch(function (error) {
+          Debug.warn('Could not remove module from dom.', error);
         });
     }
 
@@ -989,8 +987,8 @@ define([
         ]);
 
         if (
-          Config.contextMenu().indexOf('all') > -1 ||
-          Config.contextMenu().indexOf('add') > -1
+          Config.contextMenu().includes('all') ||
+          Config.contextMenu().includes('add')
         ) {
           Context.listen(dom, [], function (contextDom) {
             var $li = $('<li name="add"><a> Add a module</a></li>');
@@ -1027,8 +1025,8 @@ define([
         layersUl = $('<ul />').appendTo(layersLi);
 
         if (
-          Config.contextMenu().indexOf('all') > -1 ||
-          Config.contextMenu().indexOf('layers') > -1
+          Config.contextMenu().includes('all') ||
+          Config.contextMenu().includes('layers')
         ) {
           Context.listen(dom, [], function (contextDom) {
             layersUl.empty();
@@ -1083,8 +1081,8 @@ define([
         utilUl = $('<ul />').appendTo(utilLi);
 
         if (
-          Config.contextMenu().indexOf('all') > -1 ||
-          Config.contextMenu().indexOf('utils') > -1
+          Config.contextMenu().includes('all') ||
+          Config.contextMenu().includes('utils')
         ) {
           Context.listen(dom, [], function (contextDom) {
             utilUl.empty();
@@ -1227,7 +1225,7 @@ define([
       }
 
       var modules = ModuleFactory.getModules();
-      while (modules.length) {
+      while (modules.length > 0) {
         removeModule(modules[0]);
       }
 

@@ -64,7 +64,7 @@ define([
       reloadingView();
       Grid.reset(view.grid);
     } else {
-      Grid.init(view.grid, document.getElementById('modules-grid'));
+      Grid.init(view.grid, document.querySelector('#modules-grid'));
       this.viewLoaded = true;
     }
 
@@ -138,7 +138,7 @@ define([
       .then(
         function () {
           ActionManager.viewHasChanged(view);
-          ModuleFactory.getModules().forEach(function (module) {
+          for (const module of ModuleFactory.getModules()) {
             if (
               module.controller &&
               typeof module.controller.onGlobalPreferenceChange === 'function'
@@ -146,11 +146,11 @@ define([
               module.controller.onGlobalPreferenceChange();
             }
             module.resolveGlobal();
-          });
+          }
           _modulesSet.then(checkCustomModules, checkCustomModules);
         },
-        function (e) {
-          Debug.error('View loading problem', e, e.stack);
+        function (error) {
+          Debug.error('View loading problem', error, error.stack);
         },
       );
 
@@ -261,8 +261,8 @@ define([
                 file: filter.name[0],
                 name: filter.name[0],
               });
-            } catch (e) {
-              Debug.warn('Problem with custom filter definition', e);
+            } catch (error) {
+              Debug.warn('Problem with custom filter definition', error);
             }
           }
         }
@@ -695,7 +695,7 @@ define([
 
       var debugSet;
       if (urls.debug) {
-        Debug.setDebugLevel(parseInt(urls.debug, 10));
+        Debug.setDebugLevel(Number.parseInt(urls.debug, 10));
         debugSet = true;
       }
 
@@ -767,7 +767,7 @@ define([
           })
           .always(function () {
             require(['usr/datastructures/filelist'], function () {
-              Context.init(document.getElementById('modules-grid'));
+              Context.init(document.querySelector('#modules-grid'));
               if (!Versioning.isViewLocked()) {
                 Context.listen(Context.getRootDom(), [
                   [

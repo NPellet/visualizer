@@ -53,7 +53,7 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
         }
       }
       customJpaths = customJpaths || [];
-      customJpaths = customJpaths.filter((jp) => jp);
+      customJpaths = customJpaths.filter(Boolean);
       var jpaths = [];
       Traversing.getJPathsFromElement(data, jpaths);
       for (let i = 0; i < customJpaths.length; i++) {

@@ -76,14 +76,14 @@ define([
       }
 
       const selectData = [];
-      if (layersArr.length) {
+      if (layersArr.length > 0) {
         selectData.push({
           id: 'layer-list',
           text: 'Layers',
           children: layersArr,
         });
       }
-      if (modulesArr.length) {
+      if (modulesArr.length > 0) {
         selectData.push({
           id: 'module-list',
           text: 'Modules',

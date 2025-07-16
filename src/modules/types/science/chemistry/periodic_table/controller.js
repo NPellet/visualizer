@@ -295,7 +295,7 @@ define([
     display: ['groups', 'group', 0, 'display', 0],
   };
 
-  [
+  for (const val of [
     'Min',
     'Max',
     'Val',
@@ -309,7 +309,7 @@ define([
     'Jpath',
     'NoValueColor',
     'ShowSlider',
-  ].forEach((val) => {
+  ]) {
     Controller.prototype.configAliases[`foreground${val}`] = [
       'groups',
       'foreground',
@@ -324,7 +324,7 @@ define([
       val.toLowerCase(),
       0,
     ];
-  });
+  }
 
   Controller.prototype.periodSelected = function (period) {
     var elements = this.module.view.elements;
@@ -366,7 +366,7 @@ define([
     atomicNumbers = atomicNumbers.map((el) => +el);
     var elements = this.module.view.elements;
     elements = elements.filter((el) => {
-      return atomicNumbers.indexOf(+DataObject.resurrect(el.Z)) > -1;
+      return atomicNumbers.includes(+DataObject.resurrect(el.Z));
     });
     this.createDataFromEvent('onElementsSelect', 'elements', elements);
   };

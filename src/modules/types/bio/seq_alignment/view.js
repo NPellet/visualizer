@@ -83,7 +83,7 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
         const seqs = this.opt.seqs;
         // you have here access to the conservation or the sequence object
         const max = seqs.reduce(
-          (prev, current) => (current.length > prev ? current.length : prev),
+          (prev, current) => (Math.max(current.length, prev)),
           0,
         );
         this.cons = new Array(max);

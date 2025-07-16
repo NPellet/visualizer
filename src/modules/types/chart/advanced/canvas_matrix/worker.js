@@ -28,10 +28,10 @@ function getColorBetween(value, color1, color2, color1Val, color2Val) {
   var ratio = (value - color1Val) / (color2Val - color1Val);
 
   return [
-    parseInt(ratio * (color2[0] - color1[0]) + color1[0], 10),
-    parseInt(ratio * (color2[1] - color1[1]) + color1[1], 10),
-    parseInt(ratio * (color2[2] - color1[2]) + color1[2], 10),
-    parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10),
+    Number.parseInt(ratio * (color2[0] - color1[0]) + color1[0], 10),
+    Number.parseInt(ratio * (color2[1] - color1[1]) + color1[1], 10),
+    Number.parseInt(ratio * (color2[2] - color1[2]) + color1[2], 10),
+    Number.parseInt(ratio * (color2[3] - color1[3]) + color1[3], 10),
   ];
 }
 
@@ -50,7 +50,7 @@ function generate(indexX, indexY, buffer, nbValX) {
     y = startY;
     for (; y < endY; y++) {
       let val;
-      if (typeof data[y] === 'undefined' || typeof data[y][x] === 'undefined') {
+      if (data[y] === undefined || data[y][x] === undefined) {
         // throw "Errrrror !!!";
         continue;
       } else {

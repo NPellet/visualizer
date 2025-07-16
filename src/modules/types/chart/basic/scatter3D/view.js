@@ -208,13 +208,13 @@ define([
         if (that._configCheckBox('displayPointCoordinates', 'onhover')) {
           var arr = [];
           arr.push(
-            `X: ${parseFloat(that._data.x[index].toPrecision(3)).toExponential()}`,
+            `X: ${Number.parseFloat(that._data.x[index].toPrecision(3)).toExponential()}`,
           );
           arr.push(
-            `Y: ${parseFloat(that._data.y[index].toPrecision(3)).toExponential()}`,
+            `Y: ${Number.parseFloat(that._data.y[index].toPrecision(3)).toExponential()}`,
           );
           arr.push(
-            `Z: ${parseFloat(that._data.z[index].toPrecision(3)).toExponential()}`,
+            `Z: ${Number.parseFloat(that._data.z[index].toPrecision(3)).toExponential()}`,
           );
           var $legend = $('#legend_point_coordinates');
           $legend.html(arr.join('<br/>'));
@@ -402,7 +402,7 @@ define([
             that.dom.get(0),
           );
 
-          that.controls.rotateSpeed = 1.0;
+          that.controls.rotateSpeed = 1;
           that.controls.zoomSpeed = 1.2;
           that.controls.panSpeed = 0.8;
           that.controls.noZoom = false;
@@ -425,7 +425,7 @@ define([
 
         container = document.getElementById(that.dom.attr('id'));
         container.innerHTML = '';
-        container.appendChild(that.renderer.domElement);
+        container.append(that.renderer.domElement);
 
         that.$tooltip = $(
           `<div style="z-index: 10000; position:absolute; top: 20px; width:${TOOLTIP_WIDTH + 100}px; height: auto; background-color: #f9edbe;"> </div>`,
@@ -548,9 +548,9 @@ define([
     _drawGraph() {
       var that = this;
       // Remove all objects
-      _.keys(that.scene.children).forEach(function (key) {
+      for (const key of Object.keys(that.scene.children)) {
         that.scene.remove(that.scene.children[key]);
-      });
+      }
 
       var light;
       // HEADLIGHT ============
@@ -617,7 +617,7 @@ define([
       if (!this._data) {
         return [];
       }
-      return _.flatten(_.map(this._data.data, field));
+      return _.flatMap(this._data.data, field);
     },
 
     _normalizeData() {
@@ -717,27 +717,27 @@ define([
       var zM = that._meta.getChildSync(['axis', 2, 'max']);
 
       that._data.min.x =
-        parseFloat(that.module.getConfiguration('minX')) ||
+        Number.parseFloat(that.module.getConfiguration('minX')) ||
         (xm && xm.get()) ||
         Stat.array.min(x);
       that._data.min.y =
-        parseFloat(that.module.getConfiguration('minY')) ||
+        Number.parseFloat(that.module.getConfiguration('minY')) ||
         (ym && ym.get()) ||
         Stat.array.min(y);
       that._data.min.z =
-        parseFloat(that.module.getConfiguration('minZ')) ||
+        Number.parseFloat(that.module.getConfiguration('minZ')) ||
         (zm && zm.get()) ||
         Stat.array.min(z);
       that._data.max.x =
-        parseFloat(that.module.getConfiguration('maxX')) ||
+        Number.parseFloat(that.module.getConfiguration('maxX')) ||
         (xM && xM.get()) ||
         Stat.array.max(x);
       that._data.max.y =
-        parseFloat(that.module.getConfiguration('maxY')) ||
+        Number.parseFloat(that.module.getConfiguration('maxY')) ||
         (yM && yM.get()) ||
         Stat.array.max(y);
       that._data.max.z =
-        parseFloat(that.module.getConfiguration('maxZ')) ||
+        Number.parseFloat(that.module.getConfiguration('maxZ')) ||
         (zM && zM.get()) ||
         Stat.array.max(z);
       that._data.len.x = that._data.max.x - that._data.min.x;
@@ -926,7 +926,7 @@ define([
 
       for (let i = 0; i < 16; i++) {
         var pct = (i + 1) / 16;
-        var theta = pct * Math.PI * 2.0;
+        var theta = pct * Math.PI * 2;
         var x = radius * Math.cos(theta);
         var y = radius * Math.sin(theta);
         if (i === 0) {
@@ -994,8 +994,7 @@ define([
         color: options.color || 0x000000,
       });
       var geometry = new THREE.Geometry();
-      geometry.vertices.push(p1);
-      geometry.vertices.push(p2);
+      geometry.vertices.push(p1, p2);
       var line = new THREE.Line(geometry, material);
       this.scene.add(line);
       return line;
@@ -1011,13 +1010,13 @@ define([
 
     _setGridOrigin() {
       this.gorigin = {};
-      this.gorigin.x = parseFloat(
+      this.gorigin.x = Number.parseFloat(
         this.module.getConfiguration('gridOriginX') || this._data.realMin.x,
       );
-      this.gorigin.y = parseFloat(
+      this.gorigin.y = Number.parseFloat(
         this.module.getConfiguration('gridOriginY') || this._data.realMin.y,
       );
-      this.gorigin.z = parseFloat(
+      this.gorigin.z = Number.parseFloat(
         this.module.getConfiguration('gridOriginZ') || this._data.realMin.z,
       );
       this.gorigin.x =
@@ -1541,9 +1540,7 @@ define([
 
       function drawLegend(tx, ty, tz) {
         var arr = [];
-        arr.push(`X: ${tx}`);
-        arr.push(`Y: ${ty}`);
-        arr.push(`Z: ${tz}`);
+        arr.push(`X: ${tx}`, `Y: ${ty}`, `Z: ${tz}`);
         $('#legend_titles').html(arr.join('<br/>'));
       }
 
@@ -1592,9 +1589,9 @@ define([
         if (that._data.intervalFactor[axis] === 1) {
           return text;
         } else if (that._data.intervalFactor[axis] > 1) {
-          return `${text} (\u00D7 10${unicodeSuperscript(Math.round(Math.log(that._data.intervalFactor[axis]) / Math.LN10))})`;
+          return `${text} (\u00D7 10${unicodeSuperscript(Math.round(Math.log10(that._data.intervalFactor[axis])))})`;
         } else {
-          return `${text} (\u00D7 10${unicodeSuperscript(`-${-Math.round(Math.log(that._data.intervalFactor[axis]) / Math.LN10)}`)})`;
+          return `${text} (\u00D7 10${unicodeSuperscript(`-${-Math.round(Math.log10(that._data.intervalFactor[axis]))}`)})`;
         }
       }
 
@@ -1603,9 +1600,9 @@ define([
         let result = '';
         for (let i = 0; i < num.length; i++) {
           if (num[i] === '2' || num[i] === '3') {
-            result += String.fromCharCode(176 + parseInt(num[i], 10));
+            result += String.fromCharCode(176 + Number.parseInt(num[i], 10));
           } else if (num[i] >= '0' && num[i] < '9') {
-            result += String.fromCharCode(8304 + parseInt(num[i], 10));
+            result += String.fromCharCode(8304 + Number.parseInt(num[i], 10));
           } else if (num[i] === '-') {
             result += String.fromCharCode(8315);
           }
@@ -1711,9 +1708,7 @@ define([
       mesh5.visible = false;
       mesh6.visible = false;
 
-      that.faces.push(mesh1);
-      that.faces.push(mesh2);
-      that.faces.push(mesh3);
+      that.faces.push(mesh1, mesh2, mesh3);
 
       for (let i = 0; i < that.faces.length; i++) {
         that.scene.add(that.faces[i]);
@@ -1774,7 +1769,7 @@ define([
         if (!that._data.inBoundary[i]) continue;
 
         var radius = DEFAULT_POINT_RADIUS;
-        if (that._data.size && that._data.size[i]) {
+        if (that._data.size > 0 && that._data.size[i]) {
           radius = that._data.size[i];
         }
 
@@ -1977,7 +1972,7 @@ define([
       var color = that._data.color;
       var size = that._data.size;
       var factor =
-        2.2388 * (options.sizeFactor || 1.0) * NORM_CONSTANT * that.height;
+        2.2388 * (options.sizeFactor || 1) * NORM_CONSTANT * that.height;
       var forcedColor = options.forcedColor
         ? new THREE.Color(options.forcedColor)
         : null;
@@ -2253,7 +2248,7 @@ define([
 
       // Get data
       for (let j = 0; j < value.data.length; j++) {
-        _.keys(value.data[j]).forEach(function (key) {
+        for (const key of Object.keys(value.data[j])) {
           if (Array.isArray(value.data[j][key])) {
             that._data[key] = that._data[key] || [];
             that._data[key].push(value.data[j][key]);
@@ -2264,7 +2259,7 @@ define([
           _.filter(that._data[key], function (val) {
             return val !== undefined;
           });
-        });
+        }
       }
 
       // Get axis data
@@ -2273,9 +2268,9 @@ define([
       // Highlight
       this._data._highlight = this._data._highlight || [];
 
-      _.keys(value).forEach(function (key) {
+      for (const key of Object.keys(value)) {
         if (key !== 'data') that._meta[key] = value[key];
-      });
+      }
 
       that._dispFilter = that._dispFilter || [];
     },
@@ -2309,8 +2304,8 @@ define([
         that._prepareHighlights(hl);
         var hlset = _.uniq(hl);
 
-        _.keys(hlset).forEach(function (k) {
-          if (!hlset[k]) return;
+        for (const k of Object.keys(hlset)) {
+          if (!hlset[k]) continue;
           API.listenHighlight({ _highlight: hlset[k] }, function (onOff, key) {
             if (onOff) {
               drawHighlightBis(key);
@@ -2318,7 +2313,7 @@ define([
               undrawHighlightBis(key);
             }
           });
-        });
+        }
       }
 
       function undrawHighlightBis(hl) {
@@ -2377,9 +2372,9 @@ define([
   function blank() {
     var that = this;
     if (!this.scene || !this.scene.children) return;
-    _.keys(this.scene.children).forEach(function (key) {
+    for (const key of Object.keys(this.scene.children)) {
       that.scene.remove(that.scene.children[key]);
-    });
+    }
     this._render();
   }
 

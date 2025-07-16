@@ -153,12 +153,12 @@ define([
             }
             let p = new Promise((resolve, reject) => {
               let reader = new FileReader();
-              reader.onload = function (e) {
+              reader.addEventListener('load', function (e) {
                 return resolve({
                   item,
                   base64data: dataURLtoBase64(e.target.result),
                 });
-              };
+              });
               reader.onerror = function () {
                 return reject(new Error('Error while reading file'));
               };

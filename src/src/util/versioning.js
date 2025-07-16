@@ -36,11 +36,11 @@ define([
     return DataObject.check(l, 1, false);
   };
 
-  window.onpopstate = function (event) {
+  window.addEventListener('popstate', function (event) {
     if (event.state && event.state.type === 'viewchange') {
       switchView(event.state.value, false);
     }
-  };
+  });
 
   function switchView(value, pushstate, options) {
     options = options || {};

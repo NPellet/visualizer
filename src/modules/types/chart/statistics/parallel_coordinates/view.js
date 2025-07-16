@@ -67,7 +67,7 @@ define([
           this._value = [];
         } else {
           value = value.get();
-          if (!value.length) {
+          if (value.length === 0) {
             this._value = [];
           } else {
             this._value = value.resurrect();
@@ -268,12 +268,12 @@ define([
         toHighlight = [];
         const brushed = this.parcoords.brushed();
         for (let i = 0; i < this._highlighted.length; i++) {
-          if (brushed.indexOf(this._highlighted[i]) > -1) {
+          if (brushed.includes(this._highlighted[i])) {
             toHighlight.push(this._highlighted[i]);
           }
         }
       }
-      if (toHighlight.length) {
+      if (toHighlight.length > 0) {
         this.parcoords.highlight(toHighlight);
       } else {
         this.parcoords.unhighlight();

@@ -89,7 +89,7 @@ define([
     var result = this.executeFilter(value, object);
     result.then(
       function (data) {
-        if (typeof data !== 'undefined') {
+        if (data !== undefined) {
           that.createDataFromEvent('onButtonClick', 'filteredObject', data);
         }
       },
@@ -120,7 +120,7 @@ define([
   Controller.prototype.export = function () {
     var neededLibs = this.module.getConfiguration('libs');
     var requireStart = `define${getRequireStart(neededLibs)}\n    return {\n    filter: `;
-    var requireBody = `function( value, resolve, reject ) {\n            ${this.module.getConfiguration('script').replace(/(\r\n|\r|\n)/g, '\n            ')}\n        }\n    };`;
+    var requireBody = `function( value, resolve, reject ) {\n            ${this.module.getConfiguration('script').replaceAll(/(\r\n|\r|\n)/g, '\n            ')}\n        }\n    };`;
     var requireEnd = '\n});';
 
     return requireStart + requireBody + requireEnd;

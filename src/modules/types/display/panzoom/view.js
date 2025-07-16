@@ -111,8 +111,8 @@ define([
               that.listenHighlights();
             }
           },
-          function (e) {
-            Debug.warn('panzoom: image failed to load', e);
+          function (error) {
+            Debug.warn('panzoom: image failed to load', error);
           },
         );
 
@@ -129,7 +129,7 @@ define([
       for (let i = 0; i < this.images.length; i++) {
         this.images[i].$panzoomEl.css(
           'z-index',
-          parseInt(this.images[i].conf.order, 10) || i,
+          Number.parseInt(this.images[i].conf.order, 10) || i,
         );
       }
     },
@@ -274,8 +274,7 @@ define([
             image.f = 1;
             image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
           }
-          if (scaling === 'asHighlight') {
-            if (that.himg.f) {
+          if (scaling === 'asHighlight' && that.himg.f) {
               var transform = [
                 that.himg.f,
                 0,
@@ -286,7 +285,6 @@ define([
               ];
               image.transform = getCssTransform(transform);
             }
-          }
 
           if (!foundImg) {
             that.images.push(image);
@@ -406,7 +404,7 @@ define([
                 .value();
             } else {
               that._highlighted = _.filter(that._highlighted, function (val) {
-                return key.indexOf(val) === -1;
+                return !key.includes(val);
               });
             }
             that._drawHighlight(senderId);
@@ -419,7 +417,7 @@ define([
 
     _drawHighlight(senderId) {
       var that = this;
-      if (!this._highlighted || !this._highlighted.length) {
+      if (!this._highlighted || this._highlighted.length === 0) {
         this.toHide.__highlight__ = true;
         this.highlightImage = this.highlightImage || {};
         this.highlightImage.dataUrl =
@@ -506,7 +504,7 @@ define([
         that.images[i].$panzoomEl
           .panzoom({
             increment: 0.1,
-            maxScale: 100.0,
+            maxScale: 100,
             minScale: 0.000001,
             duration: 0,
             startTransform: 'none',
@@ -626,7 +624,7 @@ define([
         if (Object.keys(clickedPixel).length !== 3) {
           that.module.controller.clickedPixel(clickedPixel);
         }
-        if (Object.keys(allClickedPixels).length !== 0) {
+        if (Object.keys(allClickedPixels).length > 0) {
           var keys = Object.keys(allClickedPixels);
           for (let i = 0; i < keys.length; i++) {
             Object.assign(allClickedPixels[keys[i]], base);
@@ -800,7 +798,7 @@ define([
         // But pixelated rendering instead
         if (
           (this.images[j].conf.rerender &&
-            this.images[j].conf.rerender.indexOf('yes') > -1) ||
+            this.images[j].conf.rerender.includes('yes')) ||
           (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome)
         ) {
           this.doImage(this.images[j].name);

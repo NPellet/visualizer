@@ -10,7 +10,7 @@ define(function () {
       Canvas.width = 640;
       Canvas.height = 480;
       var resultArray = [];
-      image.onload = doDecode;
+      image.addEventListener('load', doDecode);
 
       image.src = dataObject.get();
 
@@ -39,7 +39,7 @@ define(function () {
           if (e.data.success) {
             var tempArray = e.data.result;
             for (let i = 0; i < tempArray.length; i++) {
-              if (resultArray.indexOf(tempArray[i]) === -1) {
+              if (!resultArray.includes(tempArray[i])) {
                 resultArray.push(tempArray[i]);
               }
             }

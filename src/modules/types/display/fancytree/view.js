@@ -24,7 +24,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         jpaths = [];
       this.jpathsF = {};
 
-      if (columns.length) {
+      if (columns.length > 0) {
         var col;
         for (var i = 0; i < columns.length; i++) {
           col = columns[i];
@@ -104,7 +104,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
   function treeToFancy(tree) {
     var fancyTree = [];
     let objectModel;
-    if (tree.children && tree.children.length) {
+    if (tree.children && tree.children.length > 0) {
       objectModel = new DataObject();
       addFancyChildren(fancyTree, tree.children, objectModel);
     }
@@ -122,16 +122,17 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
     for (; i < l; i++) {
       child = children[i];
 
-      if (i === 0) {
+      if (
+        i === 0 &&
         // add current object's properties to the model
-        if (typeof child.info === 'object') {
-          var keys = Object.keys(child.info),
-            key;
-          for (var j = 0; j < keys.length; j++) {
-            key = keys[j];
-            if (!Object.hasOwn(objectModel, key)) {
-              objectModel[key] = child.info[key];
-            }
+        typeof child.info === 'object'
+      ) {
+        var keys = Object.keys(child.info),
+          key;
+        for (var j = 0; j < keys.length; j++) {
+          key = keys[j];
+          if (!Object.hasOwn(objectModel, key)) {
+            objectModel[key] = child.info[key];
           }
         }
       }
@@ -141,7 +142,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         dataObj: DataObject.check(child),
       };
       fancyTree.push(fancyChild);
-      if (child.children && child.children.length) {
+      if (child.children && child.children.length > 0) {
         fancyChild.children = [];
         addFancyChildren(fancyChild.children, child.children, objectModel);
       }

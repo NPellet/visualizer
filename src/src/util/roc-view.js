@@ -83,7 +83,7 @@ define(['./util'], function (Util) {
     }
 
     get public() {
-      return this.view.$owners.indexOf(ANON_READ) !== -1;
+      return this.view.$owners.includes(ANON_READ);
     }
 
     getPath(flavor) {
@@ -129,7 +129,7 @@ define(['./util'], function (Util) {
       var flavor = newPath[0];
 
       var currentPath = this.flavors[flavor];
-      var name = currentPath[currentPath.length - 1];
+      var name = currentPath.at(-1);
       this.flavors[flavor] = newPath.slice(1).concat(name);
       return this.save().then(retTrue, retFalse);
     }
@@ -195,12 +195,12 @@ define(['./util'], function (Util) {
 
     getName(flavor) {
       var path = this.flavors[flavor];
-      return path[path.length - 1];
+      return path.at(-1);
     }
 
     rename(flavor, newName) {
       var path = this.flavors[flavor];
-      var currentName = path[path.length - 1];
+      var currentName = path.at(-1);
       path[path.length - 1] = newName;
       return this.save().then(retTrue, function () {
         path[path.length - 1] = currentName;
@@ -224,7 +224,7 @@ define(['./util'], function (Util) {
         );
       } else {
         const name =
-          this.flavors[currentFlavor][this.flavors[currentFlavor].length - 1];
+          this.flavors[currentFlavor].at(-1);
         this.flavors[flavor] = [name];
         return this.save().then(
           () => ({ state: 'added', name }),
@@ -257,7 +257,7 @@ define(['./util'], function (Util) {
     }
 
     togglePublic() {
-      if (this.view.$owners.indexOf(ANON_READ) === -1) {
+      if (!this.view.$owners.includes(ANON_READ)) {
         return this.addGroup(ANON_READ);
       } else {
         return this.removeGroup(ANON_READ);

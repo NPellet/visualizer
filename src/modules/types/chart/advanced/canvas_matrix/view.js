@@ -296,7 +296,7 @@ define([
         this.pxPerCell = newPxPerCell;
 
         if (
-          this.pxPerCell == this.availableZooms[this.availableZooms.length - 1]
+          this.pxPerCell == this.availableZooms.at(-1)
         ) {
           this.max = true;
           this.min = false;
@@ -316,7 +316,7 @@ define([
 
     tanh(arg) {
       arg /= 15;
-      return this.availableZooms[this.availableZooms.length - 1] * 2.5 * arg;
+      return this.availableZooms.at(-1) * 2.5 * arg;
     },
 
     // Get the XY shift (in case you have zoomed on the canvas)
@@ -436,11 +436,9 @@ define([
         pxPerCell = this.getCurrentPxPerCellFetch();
       }
 
-      if (!this.postNextMessageToWorker(pxPerCell)) {
-        if (this.incrementPxPerCellFetch()) {
+      if (!this.postNextMessageToWorker(pxPerCell) && this.incrementPxPerCellFetch()) {
           this.launchWorkers();
         }
-      }
     },
 
     // http://localhost:8888/git/visualizer/?viewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3DZv1Ib2VDf6&dataURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/result/2012-07-06/2012-07-06_09-11-38oE4j5XDDPd%26key%3DieGxx34DhR&saveViewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DSaveFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3Dh5fKTxoIWD
@@ -458,7 +456,7 @@ define([
         ) {
           var key = this.getBufferKey(pxPerCell, i, j);
 
-          if (typeof this.buffers[key] === 'undefined') {
+          if (this.buffers[key] === undefined) {
             this.doPostNextMessageToWorker(pxPerCell, i, j);
             return true;
           }

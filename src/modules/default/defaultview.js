@@ -38,8 +38,8 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
     startLoading(rel) {
       this.loadingElements = this.loadingElements || [];
       if (
-        this.relsForLoading().indexOf(rel) > -1 &&
-        this.loadingElements.indexOf(rel) === -1
+        this.relsForLoading().includes(rel) &&
+        !this.loadingElements.includes(rel)
       ) {
         this.loadingElements.push(rel);
         this.showLoading();
@@ -49,8 +49,8 @@ define(['src/util/util', 'src/util/api'], function (Util, API) {
     endLoading(rel) {
       this.loadingElements = this.loadingElements || [];
       if (
-        this.relsForLoading().indexOf(rel) > -1 &&
-        this.loadingElements.indexOf(rel) > -1
+        this.relsForLoading().includes(rel) &&
+        this.loadingElements.includes(rel)
       ) {
         this.loadingElements.splice(this.loadingElements.indexOf(rel), 1);
         if (this.loadingElements.length === 0) {

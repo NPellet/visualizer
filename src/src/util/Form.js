@@ -67,7 +67,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
         const radio = radios.find((radio) => radio.dom.checked);
         if (radio) {
           out.push(radio);
-        } else if (radios.length) {
+        } else if (radios.length > 0) {
           out.push(radios[0]);
         }
       }
@@ -80,7 +80,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
         }
       }
 
-      out.forEach((o) => {
+      for (const o of out) {
         switch (o.type) {
           case 'number':
           case 'range':
@@ -98,7 +98,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
             o.value = o.transform(o.value);
             break;
         }
-      });
+      }
 
       return out;
     }
@@ -230,7 +230,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
     if (type !== 'forward' && type !== 'backward') {
       throw new TypeError('Type should be "forward" or "backward"');
     }
-    const transform = dom.getAttribute('data-transform');
+    const transform = dom.dataset.transform;
     let transformFn;
     if (transform) {
       if (!dataTransform[transform]) {

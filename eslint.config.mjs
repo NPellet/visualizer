@@ -1,5 +1,6 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
 import cheminfo from 'eslint-config-cheminfo/base';
+import unicorn from 'eslint-config-cheminfo/unicorn';
 import globals from 'globals';
 
 export default defineConfig(
@@ -17,6 +18,12 @@ export default defineConfig(
     'src/src/util/workers',
   ]),
   cheminfo,
+  unicorn,
+  {
+    rules: {
+      'unicorn/prefer-structured-clone': 'off',
+    },
+  },
   {
     files: ['src/**/*.js'],
     languageOptions: {

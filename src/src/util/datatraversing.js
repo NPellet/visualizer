@@ -64,7 +64,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   }
 
   function getValueIfNeeded(element) {
-    if (typeof element === 'undefined') {
+    if (element === undefined) {
       return;
     }
 
@@ -82,7 +82,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   function fetchElementIfNeeded(element) {
     var deferred = $.Deferred();
 
-    if (typeof element === 'undefined' || element == null) {
+    if (element === undefined || element == null) {
       return deferred.reject();
     }
     var type = getType(element);
@@ -94,8 +94,8 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
             data = { type, value: data };
             deferred.resolve(data);
           },
-          function (err) {
-            Debug.error('Fetching error', err);
+          function (error) {
+            Debug.error('Fetching error', error);
           },
         );
       });
@@ -123,7 +123,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
         return element.type;
       }
 
-      if (typeof element.type === 'undefined' || !element.value) {
+      if (element.type === undefined || !element.value) {
         return 'object';
       } else {
         Debug.error(`Type ${element.type} could not be found`);
@@ -167,7 +167,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       });
       if (customJpaths.length > 1) {
         customJpaths = customJpaths.splice(1, customJpaths.length - 1);
-        addToTree(tree.children[tree.children.length - 1], customJpaths);
+        addToTree(tree.children.at(-1), customJpaths);
       }
     } else if (customJpaths.length > 1) {
       customJpaths = customJpaths.splice(1, customJpaths.length - 1);

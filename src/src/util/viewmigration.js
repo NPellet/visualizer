@@ -107,7 +107,7 @@ define([
         function (module) {
           var url = module.configuration.groups.group[0].url;
           if (url[0]) {
-            url[0] = url[0].replace(/<([a-zA-Z0-9]+)>/g, '{$1}');
+            url[0] = url[0].replaceAll(/<([a-zA-Z0-9]+)>/g, '{$1}');
           }
         },
         'types/server_interaction/webservice_search',
@@ -306,18 +306,18 @@ define([
         view,
         function (module) {
           if (Array.isArray(module.actions_in)) {
-            module.actions_in.forEach(function (action) {
+            for (const action of module.actions_in) {
               if (action.rel === 'fromTo') {
                 action.rel = 'fromToX';
               }
-            });
+            }
           }
           if (Array.isArray(module.actions_out)) {
-            module.actions_out.forEach(function (action) {
+            for (const action of module.actions_out) {
               if (action.rel === 'fromTo') {
                 action.rel = 'fromToX';
               }
-            });
+            }
           }
         },
         'spectra_displayer',
@@ -336,7 +336,7 @@ define([
             0,
           ]);
           if (plotinfos) {
-            plotinfos.forEach(function (infos) {
+            for (const infos of plotinfos) {
               if (infos.plotcontinuous) {
                 infos.plotcontinuous =
                   infos.plotcontinuous[0] === 'continuous'
@@ -345,7 +345,7 @@ define([
               } else {
                 infos.plotcontinuous = 'continuous';
               }
-            });
+            }
           }
         },
         'spectra_displayer',
@@ -400,7 +400,7 @@ define([
           delete group.toggle;
 
           var slickCheck = group.slickCheck[0];
-          if (slickCheck instanceof Array) {
+          if (Array.isArray(slickCheck)) {
             checkboxRemove(slickCheck, 'multiColumnSort');
             checkboxRemove(slickCheck, 'enableColumnReorder');
             checkboxRemove(slickCheck, 'enableTextSelectionOnCells');
@@ -417,12 +417,12 @@ define([
         view,
         function (module) {
           var actions_in = module.actions_in;
-          if (actions_in && actions_in.length) {
-            actions_in.forEach(function (action) {
+          if (actions_in && actions_in.length > 0) {
+            for (const action of actions_in) {
               if (action && action.rel === 'fromTo') {
                 action.rel = 'fromToX';
               }
-            });
+            }
           }
         },
         'spectra_displayer',
@@ -441,7 +441,7 @@ define([
             'slickCheck',
             0,
           ]);
-          if (slickCheck instanceof Array) {
+          if (Array.isArray(slickCheck)) {
             checkboxAdd(slickCheck, 'highlightScroll');
           }
         },
@@ -470,10 +470,10 @@ define([
             0,
           ]);
           if (plotinfos) {
-            plotinfos.forEach(function (plotinfo) {
+            for (const plotinfo of plotinfos) {
               plotinfo.markerShape = '1';
               plotinfo.markerSize = 2;
-            });
+            }
           }
         },
         'spectra_displayer',
@@ -520,22 +520,22 @@ define([
 
           var display = getChild('displayAxis');
           if (Array.isArray(display) && Array.isArray(display[0])) {
-            if (display[0].indexOf('x') > -1) xCheckBoxes.push('display');
-            if (display[0].indexOf('y') > -1) yCheckBoxes.push('display');
+            if (display[0].includes('x')) xCheckBoxes.push('display');
+            if (display[0].includes('y')) yCheckBoxes.push('display');
           }
 
           var flip = getChild('flip');
           if (Array.isArray(flip) && Array.isArray(flip[0])) {
-            if (flip[0].indexOf('flipX') > -1) xCheckBoxes.push('flip');
-            if (flip[0].indexOf('flipY') > -1) yCheckBoxes.push('flip');
+            if (flip[0].includes('flipX')) xCheckBoxes.push('flip');
+            if (flip[0].includes('flipY')) yCheckBoxes.push('flip');
           }
 
           var grid = getChild('grids');
           if (Array.isArray(grid) && Array.isArray(grid[0])) {
-            if (grid[0].indexOf('vmain') > -1) xCheckBoxes.push('main');
-            if (grid[0].indexOf('vsec') > -1) xCheckBoxes.push('sec');
-            if (grid[0].indexOf('hmain') > -1) yCheckBoxes.push('main');
-            if (grid[0].indexOf('hsec') > -1) yCheckBoxes.push('sec');
+            if (grid[0].includes('vmain')) xCheckBoxes.push('main');
+            if (grid[0].includes('vsec')) xCheckBoxes.push('sec');
+            if (grid[0].includes('hmain')) yCheckBoxes.push('main');
+            if (grid[0].includes('hsec')) yCheckBoxes.push('sec');
           }
 
           module.configuration = {
@@ -610,7 +610,7 @@ define([
             'string',
             0,
           ]);
-          if (str && str.length) {
+          if (str && str.length > 0) {
             for (var i = 0; i < str.length; i++) {
               var extension = str.getChildSync([i, 'filter']);
               module.setChildSync(
@@ -792,7 +792,7 @@ define([
         url = module.getChildSync(['url']);
         if (url) {
           for (let j = 0; j < moduleNames.length; j++) {
-            if (String(url).indexOf(moduleNames[j]) >= 0) {
+            if (String(url).includes(moduleNames[j])) {
               callback(module);
               break;
             }
@@ -932,11 +932,11 @@ define([
       `Migrating view from version ${view.version} to ${Versioning.version}`,
     );
 
-    if (viewVersion.prerelease.length) {
+    if (viewVersion.prerelease.length > 0) {
       Debug.warn('Migrating a prerelease view, anything can happen !');
     }
 
-    if (visualizerVersion.prerelease.length) {
+    if (visualizerVersion.prerelease.length > 0) {
       Debug.warn(
         'Migrating to a prerelease version of the visualizer, anything can happen !',
       );

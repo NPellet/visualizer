@@ -236,9 +236,9 @@ define([
         this.label.push(_.map(d.info, 'label'));
         this.opacity.push(_.map(d.info, 'opacity'));
       }
-      this.color = _.flatten(this.color);
-      this.label = _.flatten(this.label);
-      this.opacity = _.flatten(this.opacity);
+      this.color = this.color.flat();
+      this.label = this.label.flat();
+      this.opacity = this.opacity.flat();
       if (this.chart.axis) {
         this.axes = this.chart.axis;
       }
@@ -346,10 +346,10 @@ define([
         points.push(toPixel(this.data[i]));
       }
 
-      var boundingBox = _.flatten([
+      var boundingBox = [
         toPixel([this.minX - 0.3, this.minY - 0.8]),
         toPixel([this.lenX + 1.5, this.lenY + 1.5]),
-      ]);
+      ].flat();
       if (this.module.getConfigurationCheckbox('showColorBar', 'show')) {
         boundingBox[0] -= 100; // Keep some room for color bar
         boundingBox[2] += 100;

@@ -271,12 +271,11 @@ define([
   });
 
   function _drawHighlight(target) {
-    if (target._highlighted && target._highlighted.length) {
+    if (target._highlighted && target._highlighted.length > 0) {
       let script = 'selectionHalos on;';
       const toHighlight = target._highlighted.flat();
       const atoms = toHighlight
-        .map((id) => target.module.data._atoms[id])
-        .flat()
+        .flatMap((id) => target.module.data._atoms[id])
         .map((id) => id + 1);
 
       script += `select atomno=[${atoms.join(',')}];`;

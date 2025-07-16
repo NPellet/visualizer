@@ -103,8 +103,7 @@ define([
             options: {
               mode: 'total',
             },
-          });
-          options.mouseActions.push({
+          }, {
             plugin: 'zoom',
             type: 'dblclick',
             shift: true,
@@ -170,9 +169,7 @@ define([
               );
             },
             type: 'mousewheel',
-          });
-
-          options.mouseActions.push({
+          }, {
             callback: (wheelDelta, event) => {
               this.module.controller.sendActionFromEvent(
                 'onMouseWheelShift',
@@ -444,8 +441,8 @@ define([
           this.onResize();
           this.resolveReady();
         })
-        .catch((err) => {
-          Debug.error('Error loading the graph', err);
+        .catch((error) => {
+          Debug.error('Error loading the graph', error);
         });
     },
 
@@ -579,7 +576,7 @@ define([
             }
 
             options.lineToZero = continuous === 'discrete';
-            options.strokeWidth = parseInt(plotinfos[i].strokewidth, 10);
+            options.strokeWidth = Number.parseInt(plotinfos[i].strokewidth, 10);
 
             var pp = plotinfos[i].peakpicking[0];
             if (pp) {
@@ -660,19 +657,19 @@ define([
 
             plotinfosStyle.lineColor = Color.getColor(plotinfos[i].plotcolor);
 
-            var lineWidth = parseFloat(plotinfos[i].strokewidth);
+            var lineWidth = Number.parseFloat(plotinfos[i].strokewidth);
             if (isNaN(lineWidth)) lineWidth = 1;
             serie.setLineWidth(lineWidth);
 
             plotinfosStyle.lineStyle =
-              parseInt(plotinfos[i].strokestyle, 10) || 1;
+              Number.parseInt(plotinfos[i].strokestyle, 10) || 1;
 
             if (plotinfos[i].markers[0] && serie.showMarkers) {
               var color = style.lineColor || plotinfos[i].plotcolor;
               serie.showMarkers();
               serie.setMarkers([
                 {
-                  type: parseInt(plotinfos[i].markerShape, 10),
+                  type: Number.parseInt(plotinfos[i].markerShape, 10),
                   zoom: plotinfos[i].markerSize,
                   strokeColor: Color.getColor(color),
                   fillColor: Color.getColor(color),
@@ -866,8 +863,7 @@ define([
             case 'zone':
               if (aData.yMin && aData.yMax) {
                 for (let j = 0, l = aData.yMax.length; j < l; j++) {
-                  valFinal.push(aData.x ? aData.x[j] : j);
-                  valFinal.push(aData.yMin[j], aData.yMax[j]);
+                  valFinal.push(aData.x ? aData.x[j] : j, aData.yMin[j], aData.yMax[j]);
                 }
               }
               break;
@@ -1000,7 +996,7 @@ define([
                 {
                   ...defaultScatterStyle,
                   ...defaultStyle,
-                  ...(defaultStyles[styleName] || {}),
+                  ...defaultStyles[styleName],
                 },
                 modifiers[styleName] || [],
                 styleName,
@@ -1199,11 +1195,11 @@ define([
             let parsed = JcampConverter.convert(
               String(value),
               options,
-            ).flatten.filter(
+            ).flatten.find(
               (entry) =>
                 (entry.spectra && entry.spectra.length > 0) ||
                 entry.contourLines,
-            )[0];
+            );
             displaySpectra(parsed);
           });
         } else {
@@ -1289,7 +1285,7 @@ define([
             serie.setLineWidth(data[i].lineWidth || opts.strokeWidth || 1);
 
             serie.setLineColor(
-              data[i].lineColor || `rgb(${colors[i].join()})`,
+              data[i].lineColor || `rgb(${colors[i].join(',')})`,
               false,
               true,
             );

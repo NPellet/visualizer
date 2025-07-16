@@ -34,7 +34,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (
             'title',
             $(this)
               .text()
-              .replace(/[\r\n]/g, ''),
+              .replaceAll(/[\r\n]/g, ''),
           );
         });
 
@@ -75,7 +75,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (
     createElement(source) {
       return new Promise(function (resolve, reject) {
         let url;
-        if (source.type.indexOf('/') > -1) {
+        if (source.type.includes('/')) {
           url = source.type;
         } else {
           url = `./components/${source.type}`;

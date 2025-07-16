@@ -111,7 +111,7 @@ define([
       Marker.setDefaultOptions({
         kind: this.module.getConfiguration('markerkind'),
         color: Color.getColor(this.module.getConfiguration('markercolor')),
-        size: parseInt(this.module.getConfiguration('markersize'), 10),
+        size: Number.parseInt(this.module.getConfiguration('markersize'), 10),
         img: 'components/leaflet/dist/images/marker-icon.png',
         imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png',
       });

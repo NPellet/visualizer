@@ -129,7 +129,7 @@ define([
         this.instance.setContents(moduleValue.get());
       },
       shortcuts(value) {
-        if (!value || value.length < 1) {
+        if (!value || value.length === 0) {
           this.module.shortcuts = [];
         }
         value = JSON.parse(JSON.stringify(value));
@@ -169,7 +169,7 @@ define([
         this.instance.deleteText(range.index, range.length);
 
         let div = document.createElement('div');
-        div.appendChild(document.createTextNode(text));
+        div.append(document.createTextNode(text));
         this.instance.clipboard.dangerouslyPasteHTML(
           range.index,
           div.innerHTML,
@@ -177,16 +177,16 @@ define([
       },
     },
     _listenForShortcuts(event) {
-      if (!this.module.shortcuts || this.module.shortcuts.length < 1) return;
+      if (!this.module.shortcuts || this.module.shortcuts.length === 0) return;
       if (
         event.key !== '_' &&
         (event.key < 'A' || event.key > 'Z') &&
         (event.key < 'a' || event.key > 'z') &&
         (event.key < '0' || event.key > '9')
       ) {
-        let matching = this.module.shortcuts.filter(
+        let matching = this.module.shortcuts.find(
           (entry) => entry.key === this.module.currentWord,
-        )[0];
+        );
         this.module.currentWord = '';
         if (!matching) return;
         let selection = this.instance.getSelection();

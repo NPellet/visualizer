@@ -258,7 +258,7 @@ define([
         enhancedFileCfg.push(eCfgEl);
         if (cfgEl.extension) {
           eCfgEl.match = new RegExp(
-            `^${cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.')}$`,
+            `^${cfgEl.extension.replaceAll('*', '.*').replaceAll('?', '.')}$`,
             'i',
           );
         } else {
@@ -280,7 +280,7 @@ define([
         enhancedStringCfg.push(eCfgEl);
         if (cfgEl.filter) {
           eCfgEl.match = new RegExp(
-            `^${cfgEl.extension.replace(/\*/g, '.*').replace(/\?/g, '.')}$`,
+            `^${cfgEl.extension.replaceAll('*', '.*').replaceAll('?', '.')}$`,
             'i',
           );
         } else {
@@ -305,8 +305,8 @@ define([
         result = value;
       }
       this.tmpVar(result, meta);
-    } catch (e) {
-      Debug.info('Value could not be parsed: ', value, e);
+    } catch (error) {
+      Debug.info('Value could not be parsed: ', value, error);
     }
   };
 
@@ -328,7 +328,7 @@ define([
   }
 
   Controller.prototype.open = function (data) {
-    if (!(data.items && data.items.length) && !data.files.length) return;
+    if (!(data.items && data.items.length > 0) && data.files.length === 0) return;
 
     var items;
 
@@ -524,7 +524,7 @@ define([
       var filter = cfg[i].filter;
       if (filter === 'ext') {
         var extensions = cfg[i].extension;
-        if (extensions === '*' || extensions.split(',').indexOf(ext) !== -1) {
+        if (extensions === '*' || extensions.split(',').includes(ext)) {
           lineCfg = cfg[i];
           break;
         }
@@ -568,7 +568,7 @@ define([
       }
       case 'base64': {
         const b64idx = result.indexOf(';base64,');
-        this.tmpVar(result.substr(b64idx + 8), meta);
+        this.tmpVar(result.slice(b64idx + 8), meta);
         break;
       }
       case 'url':
@@ -604,9 +604,9 @@ define([
       meta.filename = `${value}.png`;
     }
     var reader = new FileReader();
-    reader.onload = (e) => {
+    reader.addEventListener('load', (e) => {
       this.fileRead(e.target.result, meta);
-    };
+    });
     reader.onerror = (e) => {
       Debug.error(e);
     };

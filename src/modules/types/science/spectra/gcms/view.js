@@ -17,8 +17,8 @@ define([
 
       var domGraph = document.createElement('div');
 
-      domGraph.appendChild(div1);
-      domGraph.appendChild(div2);
+      domGraph.append(div1);
+      domGraph.append(div2);
 
       div2.style.width = '100%';
       div2.style.height = '100px';
@@ -171,14 +171,14 @@ define([
 
     addAnnotations(a) {
       var that = this;
-      a.forEach(function (source) {
+      for (const source of a) {
         var shapeData = that.gcmsInstance.addAUC(
           source.from,
           source.to,
           source,
         );
         shapeData._originalSource = source;
-      });
+      }
 
       this.annotations = a;
     },

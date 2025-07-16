@@ -154,9 +154,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     });
   }
 
-  DataString.cast = function (value) {
-    return String(value);
-  };
+  DataString.cast = String;
 
   var StringProperties = [
     'charAt',
@@ -204,9 +202,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     });
   }
 
-  DataNumber.cast = function (value) {
-    return Number(value);
-  };
+  DataNumber.cast = Number;
 
   DataNumber.prototype.getType = function () {
     return 'number';
@@ -303,7 +299,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     value(prop, returnPromise, constructor) {
       function processVal(val) {
         if (typeof val !== 'object' || val === null) return val;
-        if (typeof val[prop] !== 'undefined') {
+        if (val[prop] !== undefined) {
           dataObjectify(val, prop);
           if (isDataObject(val[prop])) {
             return val[prop].fetch(true);
@@ -325,7 +321,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
           var val = this.get(); // Current value
 
           if (typeof val !== 'object' || val === null) return val;
-          if (typeof val[prop] !== 'undefined') {
+          if (val[prop] !== undefined) {
             return dataObjectify(val, prop);
           } else if (constructor) {
             val[prop] = new constructor();
@@ -453,7 +449,7 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
       const el = jpath.shift();
       var subEl = await this.get(el, true);
-      if (typeof subEl !== 'undefined') {
+      if (subEl !== undefined) {
         if (subEl && subEl.linkToParent) {
           subEl.linkToParent(this, el);
         }
@@ -796,10 +792,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
 
             return this;
           },
-          (err) => {
+          (error) => {
             delete this._fetching;
-            Debug.debug(`Could not fetch ${this.url} (${err})`);
-            throw err;
+            Debug.debug(`Could not fetch ${this.url} (${error})`);
+            throw error;
           },
         );
 

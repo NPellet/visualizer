@@ -844,12 +844,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
 
   function indexOf(name) {
     return function (value) {
-      return value.indexOf(name) > -1;
+      return value.includes(name);
     };
   }
 
   function getFloat(value) {
-    value = parseFloat(value);
+    value = Number.parseFloat(value);
     return isNaN(value) ? null : value;
   }
 
@@ -1156,12 +1156,12 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
      - fill="rgba(0,0,71,1)"
     */
     string = string
-      .replace(/fill="transparent"/g, 'fill-opacity="0"')
-      .replace(
+      .replaceAll('fill="transparent"', 'fill-opacity="0"')
+      .replaceAll(
         /stroke="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g,
         'stroke="rgb($1,$2,$3)" stroke-opacity="$4"',
       )
-      .replace(
+      .replaceAll(
         /fill="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g,
         'fill="rgb($1,$2,$3) fill-opacity="$4"',
       );

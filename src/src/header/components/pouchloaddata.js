@@ -23,7 +23,7 @@ define([
         buttons: {
           Load() {
             var text = $(`#${id}`).val();
-            text = text.replace(/[^a-zA-Z0-9-_]*/g, '');
+            text = text.replaceAll(/[^a-zA-Z0-9-_]*/g, '');
             db.get(text, function (err, data) {
               var datas;
               if (err) {

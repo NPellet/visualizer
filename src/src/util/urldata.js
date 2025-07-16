@@ -46,16 +46,16 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
           return data;
         }
       },
-      function (err) {
+      function (error) {
         if (
-          err.status === 401 &&
+          error.status === 401 &&
           !withCredentials &&
           credentials[host] === undefined
         ) {
           credentials[host] = true;
           return doByUrl(url, headers, options);
         }
-        throw err;
+        throw error;
       },
     );
   }
@@ -130,7 +130,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
         `DataURL: getting ${url} with force set to ${force} and timeout to ${timeout}`,
       );
 
-      if (force || timeout < 0 || typeof timeout === 'undefined') {
+      if (force || timeout < 0 || timeout === undefined) {
         return doByUrl(url, headers, options).catch(
           function notFoundForceAjax() {
             // If ajax fails (no internet), go for LRU
@@ -152,7 +152,7 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
         .send(data)
         .then((res) => {
           if (res.status !== 200) {
-            return Promise.reject(res.status);
+            throw res.status;
           }
           return res.body == null ? res.text : res.body;
         });

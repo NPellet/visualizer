@@ -66,7 +66,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
           var $this = $(this);
           var searchTerm = $this.val();
           if ($this.attr('data-type') === 'float') {
-            searchTerm = parseFloat(searchTerm);
+            searchTerm = Number.parseFloat(searchTerm);
           }
           var searchName = $this.attr('name');
 
@@ -102,7 +102,7 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
 
           var searchTerm = $this.val();
           if ($this.attr('data-type') === 'float') {
-            searchTerm = parseFloat(searchTerm);
+            searchTerm = Number.parseFloat(searchTerm);
           }
           var searchName = $this.attr('name');
           if (searchName !== undefined) {

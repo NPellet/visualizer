@@ -23,7 +23,7 @@ define([
     },
   };
 
-  _.keys(features).forEach(function (f) {
+  for (const f of Object.keys(features)) {
     if (modernizr[f]) {
       features[f].has = true;
       features[f].color = 'green';
@@ -31,7 +31,7 @@ define([
       features[f].has = false;
       features[f].color = 'red';
     }
-  });
+  }
 
   var browserHasAllFeatures = _.every(
     _.map(features, function (val) {
@@ -40,9 +40,9 @@ define([
   );
 
   var browsers = {
-    chrome: 5.0,
-    msie: 11.0,
-    firefox: 5.0,
+    chrome: 5,
+    msie: 11,
+    firefox: 5,
     msedge: 0,
   };
 
@@ -68,7 +68,7 @@ define([
     if (navigator.userAgent.match(reg)) {
       return 'bot';
     }
-    var browserKeys = _.keys(browsers);
+    var browserKeys = Object.keys(browsers);
     var bmap = _.map(browserKeys, function (val) {
       return bowser[val];
     });

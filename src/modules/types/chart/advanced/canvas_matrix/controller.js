@@ -73,7 +73,7 @@ define(['jquery', 'modules/default/defaultcontroller', 'lodash'], function (
 
       controller.setVarFromEvent(name, 'intersect', 'matrix', intersect);
 
-      if (typeof data[row] === 'undefined') {
+      if (data[row] === undefined) {
         return;
       }
 

@@ -67,9 +67,7 @@ define(['jquery', 'src/util/api', 'src/util/util', 'src/util/color'], function (
 
       if (common) {
         toolbar = toolbar.filter((t) => {
-          return common.some((c) => {
-            return c === t.title;
-          });
+          return common.includes(t.title);
         });
       }
 

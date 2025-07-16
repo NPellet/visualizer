@@ -11,8 +11,8 @@ define(['components/jsbarcode/jsBarcode.min'], function () {
           type: 'png',
           value: $img[0].src,
         });
-      } catch (e) {
-        reject(e);
+      } catch (error) {
+        reject(error);
       }
     },
   };

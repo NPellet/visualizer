@@ -241,7 +241,7 @@ define([
       var reg = new RegExp(/(^.*)\/([^/]+$)/);
 
       var m = reg.exec(this.activeNode.data.path);
-      if (!m.length === 3) {
+      if (m.length !== 3) {
         this.log('error-log', 'Invalid path...');
         return;
       }

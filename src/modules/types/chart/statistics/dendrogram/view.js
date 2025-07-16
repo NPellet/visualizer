@@ -307,7 +307,7 @@ define([
       if (!this._highlighted[id] && !val) return;
       this._highlighted[id] = val;
       for (var i in this._currentValue._atoms) {
-        if (this._currentValue._atoms[i].indexOf(id) > -1) {
+        if (this._currentValue._atoms[i].includes(id)) {
           API.highlight(i, val);
         }
       }

@@ -85,7 +85,7 @@ define([
     },
   };
 
-  var animationReserved = ['options', 'tag', 'attributes'];
+  var animationReserved = new Set(['options', 'tag', 'attributes']);
   var mouseEventNames = ['click', 'dblclick', 'mouseenter', 'mouseleave'];
   var animMemory = {};
   var highlightCount = {};
@@ -192,7 +192,7 @@ define([
       if (!anim.attributes) return;
       $svgEl.attr('id');
       anim.tag = anim.tag || 'animate';
-      if (animationTags.indexOf(anim.tag) === -1) return;
+      if (!animationTags.includes(anim.tag)) return;
       if (!Array.isArray(anim.attributes)) {
         anim.attributes = [anim.attributes];
       }
@@ -201,7 +201,7 @@ define([
 
       var thisDefault = {};
       for (var k in anim) {
-        if (animationReserved.indexOf(k) === -1) {
+        if (!animationReserved.has(k)) {
           thisDefault[k] = _.cloneDeep(anim[k]);
         }
       }
