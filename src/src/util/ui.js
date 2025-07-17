@@ -728,7 +728,6 @@ define([
               grid.resizeCanvas();
             },
             open() {
-              var that = this;
               $container.addClass('flex-main-container');
               $slick.addClass('flex-1');
               $header = $('<div>');
@@ -739,13 +738,13 @@ define([
               data.setItems([], options.idField || 'key');
               grid = new Slick.Grid($slick, data, columns, slickOptions);
               grid.setSelectionModel(new Slick.RowSelectionModel());
-              grid.onClick.subscribe(function (event, args) {
+              grid.onClick.subscribe((event, args) => {
                 // Get id
                 if (options.noSelect) return;
                 lastClickedId = data.mapRowsToIds([args.row])[0];
                 if (options.noConfirmation) {
                   resolve(lastClickedId);
-                  $(that).dialog('close');
+                  $(this).dialog('close');
                 }
               });
               grid.init();

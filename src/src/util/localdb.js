@@ -32,12 +32,12 @@ define(['jquery'], function ($) {
 
       var req = indexedDB.open('ci', 26);
 
-      req.onsuccess = function (e) {
+      req.addEventListener('success', (e) => {
         db = e.target.result;
         def.resolve();
-      };
+      });
 
-      req.onupgradeneeded = function (e) {
+      req.addEventListener('upgradeneeded', (e) => {
         db = e.target.result;
         if (db.objectStoreNames.contains('localview')) {
           db.deleteObjectStore('localview');
@@ -47,33 +47,22 @@ define(['jquery'], function ($) {
           db.deleteObjectStore('localdata');
         }
 
-        var def3 = $.Deferred(),
-          def4 = $.Deferred();
-        var req1 = db.createObjectStore('localdata', { keyPath: 'readURL' });
-        var req2 = db.createObjectStore('localview', { keyPath: 'readURL' });
+        db.createObjectStore('localdata', { keyPath: 'readURL' });
+        db.createObjectStore('localview', { keyPath: 'readURL' });
 
-        req1.onsuccess = function () {
-          def3.resolve();
-        };
-        req2.onsuccess = function () {
-          def4.resolve();
-        };
+        def.resolve();
+      });
 
-        $.when(def3, def4).then(function () {
-          def.resolve();
-        });
-      };
-
-      req.onerror = function (e) {
+      req.addEventListener('error', (e) => {
         def.reject(e);
-      };
+      });
 
       return def;
     },
 
     getAll(type, key, branch) {
-      var def = $.Deferred(),
-        that = this;
+      var def = $.Deferred();
+
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
 
@@ -88,12 +77,12 @@ define(['jquery'], function ($) {
         req = store.openCursor();
       }
 
-      req.onsuccess = function (e) {
+      req.addEventListener('success', (e) => {
         // If there is none, let's create it
 
         if (branch) {
           if (e.target.result == undefined) {
-            that.create(type, key, branch).pipe(function (obj) {
+            this.create(type, key, branch).pipe((obj) => {
               def.resolve(obj);
             });
           } else {
@@ -110,11 +99,11 @@ define(['jquery'], function ($) {
             def.resolve(stack);
           }
         }
-      };
+      });
 
-      req.onerror = function (e) {
+      req.addEventListener('error', (e) => {
         def.reject(e);
-      };
+      });
 
       return def;
     },
@@ -146,30 +135,30 @@ define(['jquery'], function ($) {
     },
 
     storeToHead(type, key, branch, obj) {
-      var def = $.Deferred(),
-        that = this;
+      var def = $.Deferred();
+
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
       var store = trans.objectStore(type);
 
       var req = store.get(`${key};${branch}`);
-      req.onsuccess = function (e) {
+      req.addEventListener('success', (e) => {
         if (e.target.result) {
           var obj2 = e.target.result;
           obj2.head = JSON.stringify(obj);
           var req2 = store.put(obj2);
-          req2.onsuccess = function () {
+          req2.addEventListener('success', () => {
             def.resolve(obj);
-          };
+          });
         } else {
-          that.create(type, key, branch).done(function () {
-            that.storeToHead(type, key, branch, obj).done(function () {
+          this.create(type, key, branch).done(() => {
+            this.storeToHead(type, key, branch, obj).done(() => {
               def.resolve(obj);
             });
           });
         }
-      };
+      });
       return def;
     },
 
@@ -209,16 +198,15 @@ define(['jquery'], function ($) {
     },
 
     getHead(type, key, branch) {
-      var that = this;
-      return this.open().pipe(function () {
-        return that.getAll(type, key, branch).pipe(function (obj) {
+      return this.open().pipe(() => {
+        return this.getAll(type, key, branch).pipe((obj) => {
           return obj.head;
         });
       });
     },
 
     getList(type, key, branch) {
-      return db.getAll(type, key, branch).pipe(function (obj) {
+      return db.getAll(type, key, branch).pipe((obj) => {
         return obj.list;
       });
     },

@@ -109,7 +109,7 @@ define([
       this._idHash = {};
       this.getIdHash(this._value);
       if (!this._rgraph) {
-        if (!document.getElementById(this._id)) return; // this is the case when we change of view
+        if (!document.querySelector(`#${this._id}`)) return; // this is the case when we change of view
         this.createDendrogram();
       }
       this.updateDendrogram();

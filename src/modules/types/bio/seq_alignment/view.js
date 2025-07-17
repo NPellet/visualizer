@@ -82,10 +82,10 @@ define(['modules/default/defaultview', 'src/util/util', 'msa'], function (
       init() {
         const seqs = this.opt.seqs;
         // you have here access to the conservation or the sequence object
-        const max = seqs.reduce(
-          (prev, current) => (Math.max(current.length, prev)),
-          0,
-        );
+        let max = 0;
+        for (const seq of seqs) {
+          max = Math.max(max, seq.length);
+        }
         this.cons = new Array(max);
         for (let i = 0; i < max; i++) {
           let matchType = 'match';

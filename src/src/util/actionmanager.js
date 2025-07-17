@@ -74,7 +74,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
 
         worker.postMessage({ method: 'actionValue', value });
 
-        worker.onmessage = function (event) {
+        worker.addEventListener('message', (event) => {
           if (!event.data.method) {
             return;
           }
@@ -131,7 +131,7 @@ define(['./versioning', './sandbox'], function (Versioning, Sandbox) {
               break;
             }
           }
-        };
+        });
 
         break;
       }

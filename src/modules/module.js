@@ -156,8 +156,8 @@ define([
       if (Object.keys(this.definition.configuration).length === 0) {
         const form = this.getConfigForm();
         return form.onLoaded().then(() => {
-            savePreferences(this, form, true);
-          });
+          savePreferences(this, form, true);
+        });
       }
     });
     this.ready.catch(function (error) {
@@ -1439,8 +1439,9 @@ define([
     const allDisplay =
       value.module_config[0].groups.layerDisplay[0].displayOn[0];
     for (var i = 0; i < l.length; i++) {
-      self.definition.layers[l[i].layerName[0]].display =
-        allDisplay.includes(l[i].layerName[0]);
+      self.definition.layers[l[i].layerName[0]].display = allDisplay.includes(
+        l[i].layerName[0],
+      );
       self.definition.layers[l[i].layerName[0]].title = l[i].moduletitle[0];
       self.definition.layers[l[i].layerName[0]].bgColor = l[i].bgcolor[0];
       self.definition.layers[l[i].layerName[0]].wrapper =
@@ -1547,8 +1548,8 @@ define([
       case 'textarea':
       case 'wysiwyg':
         return field.default || '';
-      case 'slider':
-      case 'textstyle':
+      // case 'slider':
+      // case 'textstyle':
       default:
         Debug.error(`Unknow field type: ${field.type}`);
         return field.default || '';

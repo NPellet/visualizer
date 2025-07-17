@@ -86,9 +86,7 @@ define([
     setJSMEOptions(options) {
       options = {
         ...options,
-        prefs: options.prefs
-          ? options.prefs.map(String).join(',')
-          : undefined,
+        prefs: options.prefs ? options.prefs.map(String).join(',') : undefined,
       };
       this.postMessage('setOptions', options);
     },
@@ -188,7 +186,7 @@ define([
         function (onOff, highlightId) {
           var atoms = [];
           for (var i = 0, l = highlightId.length; i < l; i++) {
-            if (!(Array.isArray(moduleValue._atoms[highlightId[i]]))) {
+            if (!Array.isArray(moduleValue._atoms[highlightId[i]])) {
               moduleValue._atoms[highlightId[i]] = [
                 moduleValue._atoms[highlightId[i]],
               ];
@@ -218,8 +216,8 @@ define([
 
       for (const i in this._currentValue._atoms) {
         if (id != 0 && this._currentValue._atoms[i].includes(id - 1)) {
-            API.highlightId(i, 1);
-          }
+          API.highlightId(i, 1);
+        }
       }
 
       this.highlightedAtom = id - 1;

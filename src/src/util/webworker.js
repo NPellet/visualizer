@@ -12,7 +12,7 @@ define([], function () {
 
       _workers[name] = new Worker(scriptUrl);
       _callbacks[name] = [];
-      _workers[name].onmessage = function (event) {
+      _workers[name].addEventListener('message', function (event) {
         var cbks = _callbacks[name];
         var response = event.data;
         for (var i = 0; i < cbks.length; i++) {
@@ -22,7 +22,7 @@ define([], function () {
             return;
           }
         }
-      };
+      });
     },
 
     send(name, message, callback) {

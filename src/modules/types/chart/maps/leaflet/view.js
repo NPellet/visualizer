@@ -89,9 +89,11 @@ define([
       else return [this.width / 2, this.height / 2];
     },
     get width() {
+      // eslint-disable-next-line unicorn/explicit-length-check
       return this.options.width || this.options.height || this.options.size;
     },
     get height() {
+      // eslint-disable-next-line unicorn/explicit-length-check
       return this.options.height || this.options.width || this.options.size;
     },
   };
@@ -330,7 +332,7 @@ define([
           tileLayer.template =
             'http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png';
           break;
-        case 'osm':
+        // case 'osm':
         default:
           tileLayer.template =
             'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';

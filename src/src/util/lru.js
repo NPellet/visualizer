@@ -30,14 +30,14 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
             if (!limit) toStore._limit = lru._limit;
           }
           var req = store.put(toStore);
-          req.onsuccess = function (e) {
+          req.addEventListener('success', (e) => {
             Debug.info('success storing store', e);
             deferred.resolve();
-          };
-          req.onerror = function (e) {
+          });
+          req.addEventListener('error', (e) => {
             Debug.error(`error storing store ${storeName}`, e);
             deferred.reject();
-          };
+          });
         };
       },
       function () {
@@ -71,15 +71,15 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
     var openrequest = indexedDB.open(dbname, 2);
 
     // Database is open
-    openrequest.onsuccess = function (e) {
+    openrequest.addEventListener('success', (e) => {
       db = e.target.result;
       ready.resolve();
-    };
+    });
 
-    openrequest.onerror = function (e) {
+    openrequest.addEventListener('error', (e) => {
       Debug.info(e);
       ready.reject();
-    };
+    });
 
     openrequest.onupgradeneeded = function (e) {
       db = e.target.result;
@@ -165,12 +165,12 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           store: storeName,
         });
 
-        storingRequest.onsuccess = function (e) {
+        storingRequest.addEventListener('success', (e) => {
           Debug.info('success storing data', e);
-        };
-        storingRequest.onerror = function (e) {
+        });
+        storingRequest.addEventListener('error', (e) => {
           Debug.error('error storing data', e);
-        };
+        });
         var lruGet = store.get(`__lrudata${storeName}`);
         lruGet.onsuccess = function (e) {
           var lru = e.target.result;

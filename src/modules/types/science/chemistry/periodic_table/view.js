@@ -180,7 +180,7 @@ define([
         try {
           obj = JSON.parse(toParse);
           if (!Array.isArray(obj)) {
-            throw new Error();
+            throw new Error('elements must be an array');
           }
         } catch {
           try {
@@ -692,9 +692,9 @@ define([
 
       // Clear previous highlights
       this._unhighlightElements();
-      el.forEach((el) => {
-        this._highlightElement(el.Z);
-      });
+      for (const el1 of el) {
+        this._highlightElement(el1.Z);
+      }
     },
 
     _unhighlightElements() {

@@ -59,8 +59,11 @@ define(function () {
             return reject('Docuding failed');
           }
         }
-        var DecodeWorker = new Worker('lib/BarcodeReader/src/DecoderWorker.js');
-        DecodeWorker.onmessage = receiveMessage;
+
+        const DecodeWorker = new Worker(
+          'lib/BarcodeReader/src/DecoderWorker.js',
+        );
+        DecodeWorker.addEventListener('message', receiveMessage);
 
         ctx.drawImage(image, 0, 0, Canvas.width, Canvas.height);
         resultArray = [];

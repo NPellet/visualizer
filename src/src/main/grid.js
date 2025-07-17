@@ -508,9 +508,9 @@ define([
   }
 
   function removeModule(module) {
-    if (module.controller && module.controller.onBeforeRemove && module.controller.onBeforeRemove() === false) {
-        return;
-      }
+    if (module.controller?.onBeforeRemove?.() === false) {
+      return;
+    }
 
     try {
       module.getDomWrapper().remove().unbind();
@@ -905,9 +905,7 @@ define([
   function switchToLayer(layerId, options = {}) {
     if (options.autoSize) layerId = getBestLayerName(layerId, options);
 
-    var layer = !definition.layers[layerId]
-      ? newLayer(false, layerId)
-      : definition.layers[layerId];
+    let layer = definition.layers[layerId] || newLayer(false, layerId);
 
     $.when(layer).then(function (layer2) {
       if (layer2) {

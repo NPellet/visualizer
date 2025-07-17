@@ -72,15 +72,11 @@ define([
         for (const entry of data) {
           if (entry.id == id) {
             var obj = entry;
-            if (
-              ev.toElement.outerHTML.at(-3) === 'd'
-            ) {
+            if (ev.toElement.outerHTML.at(-3) === 'd') {
               that.module.controller.elementHover(obj._highlight[0]);
             } else {
               that.module.controller.elementHover(
-                obj._highlight[
-                  ev.toElement.outerHTML.at(-3)
-                ],
+                obj._highlight[ev.toElement.outerHTML.at(-3)],
               );
             }
           }

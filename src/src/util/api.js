@@ -467,6 +467,8 @@ define([
   };
 
   exports.preventUnload = function (message) {
+    // Needs to be global for clear.
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     window.onbeforeunload = function (e) {
       e.returnValue = message;
       return message;
@@ -474,6 +476,7 @@ define([
   };
 
   exports.clearPreventUnload = function () {
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     window.onbeforeunload = null;
   };
 

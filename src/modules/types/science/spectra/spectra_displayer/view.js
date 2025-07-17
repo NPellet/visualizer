@@ -97,20 +97,23 @@ define([
           }
 
           options.plugins.zoom = {};
-          options.mouseActions.push({
-            plugin: 'zoom',
-            type: 'dblclick',
-            options: {
-              mode: 'total',
+          options.mouseActions.push(
+            {
+              plugin: 'zoom',
+              type: 'dblclick',
+              options: {
+                mode: 'total',
+              },
             },
-          }, {
-            plugin: 'zoom',
-            type: 'dblclick',
-            shift: true,
-            options: {
-              mode: dezoomMode,
+            {
+              plugin: 'zoom',
+              type: 'dblclick',
+              shift: true,
+              options: {
+                mode: dezoomMode,
+              },
             },
-          });
+          );
 
           options.plugins.peakPicking = {};
 
@@ -155,36 +158,39 @@ define([
             });
           }
 
-          options.mouseActions.push({
-            callback: (wheelDelta, event) => {
-              this.module.controller.sendActionFromEvent(
-                'onMouseWheel',
-                'mouseEvent',
-                event,
-              );
-              this.module.controller.sendActionFromEvent(
-                'onMouseWheel',
-                'wheelDelta',
-                wheelDelta,
-              );
+          options.mouseActions.push(
+            {
+              callback: (wheelDelta, event) => {
+                this.module.controller.sendActionFromEvent(
+                  'onMouseWheel',
+                  'mouseEvent',
+                  event,
+                );
+                this.module.controller.sendActionFromEvent(
+                  'onMouseWheel',
+                  'wheelDelta',
+                  wheelDelta,
+                );
+              },
+              type: 'mousewheel',
             },
-            type: 'mousewheel',
-          }, {
-            callback: (wheelDelta, event) => {
-              this.module.controller.sendActionFromEvent(
-                'onMouseWheelShift',
-                'mouseEvent',
-                event,
-              );
-              this.module.controller.sendActionFromEvent(
-                'onMouseWheelShift',
-                'wheelDelta',
-                wheelDelta,
-              );
+            {
+              callback: (wheelDelta, event) => {
+                this.module.controller.sendActionFromEvent(
+                  'onMouseWheelShift',
+                  'mouseEvent',
+                  event,
+                );
+                this.module.controller.sendActionFromEvent(
+                  'onMouseWheelShift',
+                  'wheelDelta',
+                  wheelDelta,
+                );
+              },
+              shift: true,
+              type: 'mousewheel',
             },
-            shift: true,
-            type: 'mousewheel',
-          });
+          );
 
           const useMouseTracking = cfgCheckbox('mouseTracking', 'track');
           if (useMouseTracking) {
@@ -863,7 +869,11 @@ define([
             case 'zone':
               if (aData.yMin && aData.yMax) {
                 for (let j = 0, l = aData.yMax.length; j < l; j++) {
-                  valFinal.push(aData.x ? aData.x[j] : j, aData.yMin[j], aData.yMax[j]);
+                  valFinal.push(
+                    aData.x ? aData.x[j] : j,
+                    aData.yMin[j],
+                    aData.yMax[j],
+                  );
                 }
               }
               break;

@@ -6,31 +6,31 @@ define(function () {
   function Storage(dbName) {
     this.dbName = `kv-${dbName}`;
     this.ready = new Promise((resolve, reject) => {
-      var request = window.indexedDB.open(this.dbName);
+      const request = window.indexedDB.open(this.dbName);
 
-      request.onupgradeneeded = (e) => {
+      request.addEventListener('upgradeneeded', (e) => {
         this.db = e.target.result;
         this.db.createObjectStore('store');
-      };
+      });
 
-      request.onsuccess = (e) => {
+      request.addEventListener('success', (e) => {
         this.db = e.target.result;
         resolve();
-      };
+      });
 
-      request.onerror = (e) => {
+      request.addEventListener('error', (e) => {
         this.db = e.target.result;
         reject(e);
-      };
+      });
     });
   }
 
   Storage.prototype.get = function (key) {
     return this.ready.then(() => {
       return new Promise((resolve, reject) => {
-        var request = this.getStore().get(key);
-        request.onsuccess = (e) => resolve(e.target.result);
-        request.onerror = reject;
+        const request = this.getStore().get(key);
+        request.addEventListener('success', (e) => resolve(e.target.result));
+        request.addEventListener('error', reject);
       });
     });
   };
@@ -42,9 +42,9 @@ define(function () {
   Storage.prototype.set = function (key, value) {
     return this.ready.then(() => {
       return new Promise((resolve, reject) => {
-        var request = this.getStore().put(value, key);
-        request.onsuccess = resolve;
-        request.onerror = reject;
+        const request = this.getStore().put(value, key);
+        request.addEventListener('success', resolve);
+        request.addEventListener('error', reject);
       });
     });
   };
@@ -52,9 +52,9 @@ define(function () {
   Storage.prototype.delete = function (key) {
     return this.ready.then(() => {
       return new Promise((resolve, reject) => {
-        var request = this.getStore().delete(key);
-        request.onsuccess = resolve;
-        request.onerror = reject;
+        const request = this.getStore().delete(key);
+        request.addEventListener('success', resolve);
+        request.addEventListener('error', reject);
       });
     });
   };

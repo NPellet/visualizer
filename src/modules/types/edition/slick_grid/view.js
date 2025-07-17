@@ -118,7 +118,7 @@ define([
 
     if (ctx.module.getConfigurationCheckbox('toolbar', 'showHide')) {
       ctx.$showHideSelection = $.tmpl(
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-template-curly-in-string
         '<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>',
         {
           columns,
@@ -1374,7 +1374,7 @@ define([
           if (keepSelected) {
             let selected = that._getSelectedItems();
             if (
-              selected.find(
+              selected.some(
                 (s) => item[that.idPropertyName] === s[that.idPropertyName],
               )
             ) {

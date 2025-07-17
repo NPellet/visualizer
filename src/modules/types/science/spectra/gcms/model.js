@@ -16,10 +16,9 @@ define([
           if (view.annotations) data = view.annotations[0];
           break;
 
-        case 'gcdata':
+        // case 'gcdata':
         default:
           if (view.jcamp) data = view.jcamp.gcms.gc;
-
           break;
       }
 

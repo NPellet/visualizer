@@ -40,29 +40,27 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   // obs2.set('varName', 'varVal'); // ==> obs1.set('varName', 'varVal')
   Observable.prototype.pull = function () {
     var mySet = this._proxiedSet();
-    $.each(arguments, function (i, trgt) {
+    $.each(arguments, (i, trgt) => {
       trgt.on('change', mySet);
     });
   };
 
   Observable.prototype.unpull = function () {
     var mySet = this._proxiedSet();
-    $.each(arguments, function (i, trgt) {
+    $.each(arguments, (i, trgt) => {
       trgt.off('change', mySet);
     });
   };
 
   Observable.prototype.push = function () {
-    var that = this;
-    $.each(arguments, function (i, trgt) {
-      that.on('change', trgt._proxiedSet);
+    $.each(arguments, (i, trgt) => {
+      this.on('change', trgt._proxiedSet);
     });
   };
 
   Observable.prototype.unpush = function () {
-    var that = this;
-    $.each(arguments, function (i, trgt) {
-      that.off('change', trgt._proxiedSet);
+    $.each(arguments, (i, trgt) => {
+      this.off('change', trgt._proxiedSet);
     });
   };
 

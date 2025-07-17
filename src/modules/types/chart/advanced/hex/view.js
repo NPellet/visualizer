@@ -205,23 +205,26 @@ define([
     },
 
     _fontSize(px) {
-      var maxFontSize = 50;
+      const maxFontSize = 50;
 
       function findFontSize(text) {
-        var arr = text.split('\n');
-        var n = arr.reduce(function (p, c) {
-          return Math.max(p, c.length);
-        }, 0);
+        const arr = text.split('\n');
+        let n = 0;
+        for (const c of arr) {
+          n = Math.max(n, c.length);
+        }
         n = Math.max(n, arr.length);
         return n ? (px / n) * 2 : maxFontSize;
       }
 
-      var fontSize;
+      let fontSize;
       if (!(fontSize = this.module.getConfiguration('fontSize'))) {
-        fontSize = this.label.reduce(function (prev, current) {
-          if (!current) return prev;
-          return Math.min(prev, findFontSize(current));
-        }, maxFontSize);
+        fontSize = maxFontSize;
+        for (const c of this.label) {
+          if (c) {
+            fontSize = Math.min(fontSize, findFontSize(c));
+          }
+        }
       }
       return `${fontSize | 0}px`;
     },

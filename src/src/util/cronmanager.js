@@ -88,7 +88,7 @@ define(['require'], function (require) {
 
         worker.postMessage({ method: 'actionValue', value });
 
-        worker.onmessage = function (event) {
+        worker.addEventListener('message', (event) => {
           // Do something. We need to invent an API here.
 
           if (!event.data.method) {
@@ -153,7 +153,7 @@ define(['require'], function (require) {
 
               break;
           }
-        };
+        });
 
         break;
     }

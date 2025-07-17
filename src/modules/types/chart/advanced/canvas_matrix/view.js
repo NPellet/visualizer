@@ -295,9 +295,7 @@ define([
 
         this.pxPerCell = newPxPerCell;
 
-        if (
-          this.pxPerCell == this.availableZooms.at(-1)
-        ) {
+        if (this.pxPerCell == this.availableZooms.at(-1)) {
           this.max = true;
           this.min = false;
         } else if (this.pxPerCell == this.availableZooms[0]) {
@@ -355,7 +353,7 @@ define([
 
         moduleValue = moduleValue.get();
 
-        this.gridData = moduleValue.data ? moduleValue.data : moduleValue;
+        this.gridData = moduleValue.data || moduleValue;
         this.canvasNbX = this.gridData[0].length;
         this.canvasNbY = this.gridData.length;
 
@@ -415,9 +413,10 @@ define([
     },
 
     getCurrentPxPerCellFetch() {
-      return this.currentPxFetch
-        ? this.currentPxFetch
-        : (this.currentPxFetch = this.getPxPerCell());
+      if (!this.currentPxFetch) {
+        this.currentPxFetch = this.getPxPerCell();
+      }
+      return this.currentPxFetch;
     },
 
     incrementPxPerCellFetch() {
@@ -436,9 +435,12 @@ define([
         pxPerCell = this.getCurrentPxPerCellFetch();
       }
 
-      if (!this.postNextMessageToWorker(pxPerCell) && this.incrementPxPerCellFetch()) {
-          this.launchWorkers();
-        }
+      if (
+        !this.postNextMessageToWorker(pxPerCell) &&
+        this.incrementPxPerCellFetch()
+      ) {
+        this.launchWorkers();
+      }
     },
 
     // http://localhost:8888/git/visualizer/?viewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3DZv1Ib2VDf6&dataURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DLoadFile%26filename%3Dlpatiny/result/2012-07-06/2012-07-06_09-11-38oE4j5XDDPd%26key%3DieGxx34DhR&saveViewURL=http%3A//script.epfl.ch/servletScript/JavaScriptServlet%3Faction%3DSaveFile%26filename%3Dlpatiny/data//Demo/Basic/LargeMatrix.view%26key%3Dh5fKTxoIWD

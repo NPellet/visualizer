@@ -162,16 +162,15 @@ define([
 
   Controller.prototype.onQuery = function (query) {
     if (!this.module.view._data) return;
-    const pathAlias = this.module
-      .getConfiguration('aliases', [])
-      .reduce((prev, current) => {
-        if (!current.alias || !current.pattern) {
-          return prev;
-        }
-        const pattern = convertStrToRegexp(current.pattern);
-        prev[current.alias] = pattern;
-        return prev;
-      }, {});
+    const aliases = this.module.getConfiguration('aliases', []);
+    const pathAlias = Object.fromEntries(
+      aliases
+        .filter((alias) => alias.alias && alias.pattern)
+        .map((alias) => {
+          const pattern = convertStrToRegexp(alias.pattern);
+          return [alias.alias, pattern];
+        }),
+    );
     const ignorePaths = this.module
       .getConfiguration('ignorePaths', [])
       .map((el) => el.path)

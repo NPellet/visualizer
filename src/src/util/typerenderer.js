@@ -309,7 +309,8 @@ define([
 
   functions.mf = {};
   functions.mf.init = async () => {
-    functions.mf.parseToHtml = (await asyncRequire('MFParser')).parseToHtml;
+    const { parseToHtml } = await asyncRequire('MFParser');
+    functions.mf.parseToHtml = parseToHtml;
   };
   functions.mf.toscreen = async function ($element, value) {
     if (value) {
@@ -377,7 +378,7 @@ define([
   functions.oclid.toscreen = async ($element, val, root, options) => {
     // not a good idea to check for root.coordinates, it becomes messy with in-place modification
     let coordinates = val.coordinates;
-    let oclid = val.value ? val.value : val.idCode ? val.idCode : val;
+    let oclid = val.value || val.idCode || val;
     if (oclid) oclid = String(oclid);
     if (coordinates) coordinates = String(coordinates);
 
@@ -457,9 +458,8 @@ define([
   functions.rxncode = {};
   functions.rxncode.init = async () => {
     functions.rxncode.OCL = await asyncRequire(oclUrl);
-    functions.rxncode.RxnRenderer = (
-      await asyncRequire('RxnRenderer')
-    ).RxnRenderer;
+    const { RxnRenderer } = await asyncRequire('RxnRenderer');
+    functions.rxncode.RxnRenderer = RxnRenderer;
   };
   functions.rxncode.toscreen = async function (
     $element,
@@ -480,9 +480,8 @@ define([
   functions.reaction = {};
   functions.reaction.init = async () => {
     functions.reaction.OCL = await asyncRequire(oclUrl);
-    functions.reaction.RxnRenderer = (
-      await asyncRequire('RxnRenderer')
-    ).RxnRenderer;
+    const { RxnRenderer } = await asyncRequire('RxnRenderer');
+    functions.reaction.RxnRenderer = RxnRenderer;
   };
   functions.reaction.toscreen = async function (
     $element,
@@ -516,7 +515,8 @@ define([
   functions.rxn = {};
   functions.rxn.init = async () => {
     functions.rxn.OCL = await asyncRequire(oclUrl);
-    functions.rxn.RxnRenderer = (await asyncRequire('RxnRenderer')).RxnRenderer;
+    const { RxnRenderer } = await asyncRequire('RxnRenderer');
+    functions.rxn.RxnRenderer = RxnRenderer;
   };
   functions.rxn.toscreen = async function ($element, val, root, options = {}) {
     const { maxWidth = 300, maxHeight = 300 } = options;
@@ -577,7 +577,12 @@ define([
     let width = dom.attr('width');
     let height = dom.attr('height');
     if (width && height) {
-      let viewbox = [0, 0, Number.parseInt(width, 10), Number.parseInt(height, 10)];
+      let viewbox = [
+        0,
+        0,
+        Number.parseInt(width, 10),
+        Number.parseInt(height, 10),
+      ];
       dom[0].setAttribute('viewBox', viewbox.join(' '));
     }
     dom.removeAttr('id');

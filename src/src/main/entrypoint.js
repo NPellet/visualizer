@@ -679,7 +679,7 @@ define([
       //      return;
       //  }
 
-      var css = [
+      const cssToLoad = [
         'css/main.css',
         'components/colors/css/colors.min.css',
         'components/jquery-ui/themes/base/jquery-ui.min.css',
@@ -689,11 +689,11 @@ define([
         'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
       ];
 
-      css.forEach(function (css) {
+      for (const css of cssToLoad) {
         Util.loadCss(css);
-      });
+      }
 
-      var debugSet;
+      let debugSet;
       if (urls.debug) {
         Debug.setDebugLevel(Number.parseInt(urls.debug, 10));
         debugSet = true;

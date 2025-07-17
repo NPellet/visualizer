@@ -193,6 +193,7 @@ define([
           if (exists) {
             exists.file = file;
             exists.color = 'orange';
+            // eslint-disable-next-line unicorn/explicit-length-check
             exists.size = file.size || exists.size;
           } else {
             slickData.addItem({

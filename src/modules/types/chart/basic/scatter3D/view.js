@@ -206,17 +206,12 @@ define([
 
       function showPointCoordinates(index) {
         if (that._configCheckBox('displayPointCoordinates', 'onhover')) {
-          var arr = [];
-          arr.push(
+          const arr = [
             `X: ${Number.parseFloat(that._data.x[index].toPrecision(3)).toExponential()}`,
-          );
-          arr.push(
             `Y: ${Number.parseFloat(that._data.y[index].toPrecision(3)).toExponential()}`,
-          );
-          arr.push(
             `Z: ${Number.parseFloat(that._data.z[index].toPrecision(3)).toExponential()}`,
-          );
-          var $legend = $('#legend_point_coordinates');
+          ];
+          const $legend = $('#legend_point_coordinates');
           $legend.html(arr.join('<br/>'));
           $legend.show();
         }
@@ -310,8 +305,8 @@ define([
           that._data.normalizedData.y[index],
           0,
         );
-        projections.push(that._drawLine(p1, p2, options));
         projections.push(
+          that._drawLine(p1, p2, options),
           that._drawCircle({
             color: '#000000',
             radius: that._data.size[index],
@@ -327,8 +322,8 @@ define([
           0,
           that._data.normalizedData.z[index],
         );
-        projections.push(that._drawLine(p1, p2, options));
         projections.push(
+          that._drawLine(p1, p2, options),
           that._drawCircle({
             rotationAngle: Math.PI / 2,
             rotationAxis: { x: 1 },
@@ -346,8 +341,8 @@ define([
           that._data.normalizedData.y[index],
           that._data.normalizedData.z[index],
         );
-        projections.push(that._drawLine(p1, p2, options));
         projections.push(
+          that._drawLine(p1, p2, options),
           that._drawCircle({
             rotationAngle: Math.PI / 2,
             rotationAxis: { y: 1 },
@@ -423,7 +418,7 @@ define([
         that._setBackgroundColor();
         that.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        container = document.getElementById(that.dom.attr('id'));
+        container = document.querySelector(`#${that.dom.attr('id')}`);
         container.innerHTML = '';
         container.append(that.renderer.domElement);
 
@@ -1545,8 +1540,8 @@ define([
       }
 
       function drawOnAxis(tx, ty, tz) {
-        // x label
         that.tickLabels.push(
+          // x label
           that._addText(
             addFactor(tx, 'x'),
             NORM_CONSTANT / 2,
@@ -1556,10 +1551,7 @@ define([
               textAlign: 'right',
             },
           ),
-        );
-
-        // y label
-        that.tickLabels.push(
+          // y label
           that._addText(
             addFactor(ty, 'y'),
             -0.4 * NORM_CONSTANT,
@@ -1569,10 +1561,7 @@ define([
               textAlign: 'right',
             },
           ),
-        );
-
-        // z label
-        that.tickLabels.push(
+          // z label
           that._addText(
             addFactor(tz, 'z'),
             NORM_CONSTANT * 1.4,

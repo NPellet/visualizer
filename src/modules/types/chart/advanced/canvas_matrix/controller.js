@@ -34,7 +34,7 @@ define(['jquery', 'modules/default/defaultcontroller', 'lodash'], function (
     var y = Math.floor((e.offsetY - shift.y) / pxPerCell);
 
     var gridData = moduleValue.get();
-    gridData = gridData.data ? gridData.data : gridData;
+    gridData = gridData.data || gridData;
 
     if (
       !gridData ||

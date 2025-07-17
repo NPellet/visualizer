@@ -180,9 +180,7 @@ define([
                   el.setLabelDisplayThreshold(layer.labelzoomthreshold[0]);
                 }
 
-                var highlightMag = layer.highlightmag[0]
-                  ? layer.highlightmag[0]
-                  : 1;
+                var highlightMag = layer.highlightmag[0] || 1;
                 var highlightStroke = !!layer.highlighteffect[0][0];
 
                 el.setHighlightMag(highlightMag);
