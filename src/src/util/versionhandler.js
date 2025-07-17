@@ -82,15 +82,14 @@ define([
     },
 
     getBranches() {
-      var that = this;
-      return $.when(this.getData()).pipe(function (data) {
+      return $.when(this.getData()).pipe((data) => {
         var branches = {};
 
         for (var i in data) {
           // i is branch name
           // data.revisions is all revs || data[i].list
           branches[i] = `${i} (${
-            data[i].list.length + (that.currentPath[1] === 'local' ? 1 : 0)
+            data[i].list.length + (this.currentPath[1] === 'local' ? 1 : 0)
           })`;
         }
         return branches;
@@ -98,18 +97,17 @@ define([
     },
 
     getElements() {
-      var that = this;
       var branch = this.currentPath[2];
-      return $.when(this.getData()).pipe(function (alldata) {
+      return $.when(this.getData()).pipe((alldata) => {
         var data = alldata[branch].list;
         var all = {};
 
-        if (that.currentPath[1] === 'local' && alldata[branch].head) {
-          all.head = that.makeFilename(alldata[branch].head);
+        if (this.currentPath[1] === 'local' && alldata[branch].head) {
+          all.head = this.makeFilename(alldata[branch].head);
         }
 
         for (var i = data.length - 1; i >= 0; i--) {
-          all[data[i]._time] = that.makeFilename(data[i]);
+          all[data[i]._time] = this.makeFilename(data[i]);
         }
 
         return all;
@@ -126,9 +124,8 @@ define([
     },
 
     _getLocal() {
-      var that = this;
-      return db.open().pipe(function () {
-        return db.getAll(that.type, that._dirUrl).pipe(function (all) {
+      return db.open().pipe(() => {
+        return db.getAll(this.type, this._dirUrl).pipe((all) => {
           return all;
         });
       });
@@ -163,8 +160,7 @@ define([
     },
 
     makeMenu(level) {
-      var toOpen = this.structure,
-        that = this;
+      var toOpen = this.structure;
       // Want to display the top level (server/local)
       if (level === 1) {
         toOpen = { server: 'Server', local: 'Local Database' };
@@ -177,21 +173,21 @@ define([
       }
 
       // When we got it !
-      return $.when(toOpen).pipe(function (toOpen) {
+      return $.when(toOpen).pipe((toOpen) => {
         // It's still an object
         if (!Array.isArray(toOpen)) {
-          return that.objectToMenu(
+          return this.objectToMenu(
             toOpen,
             level,
-            that.currentPath[level - 1] || null,
-            that.currentPath[level - 2] || null,
+            this.currentPath[level - 1] || null,
+            this.currentPath[level - 2] || null,
           );
         } else {
-          return that.arrayToMenu(
+          return this.arrayToMenu(
             toOpen,
             level,
-            that.currentPath[level - 1] || null,
-            that.currentPath[level - 2] || null,
+            this.currentPath[level - 1] || null,
+            this.currentPath[level - 2] || null,
           );
         }
       });
@@ -369,7 +365,6 @@ define([
     },
 
     clickLeaf(li) {
-      var that = this;
       var i = li.data('el');
       var branch = li.data('parent');
       var mode = li.data('parent-parent');
@@ -379,16 +374,16 @@ define([
         var data = { branch };
         if (i !== 'head') data.revision = i;
 
-        this.getFromServer(data).done(function (el) {
-          that.currentPath[1] = 'server';
-          that.currentPath[2] = branch;
-          that.currentPath[3] = i;
-          that.make(el, branch, i);
-          that._savedServer = JSON.stringify(el);
-          that.onReload(el);
+        this.getFromServer(data).done((el) => {
+          this.currentPath[1] = 'server';
+          this.currentPath[2] = branch;
+          this.currentPath[3] = i;
+          this.make(el, branch, i);
+          this._savedServer = JSON.stringify(el);
+          this.onReload(el);
         });
       } else {
-        $.when(this.getData()).done(function (el) {
+        $.when(this.getData()).done((el) => {
           el = el[branch];
 
           if (i === 'head') {
@@ -402,58 +397,57 @@ define([
             }
           }
 
-          that.currentPath[1] = 'local';
-          that.currentPath[2] = branch;
-          that.currentPath[3] = i;
-          that.make(el, branch, i);
-          that._savedLocal = JSON.stringify(el);
-          that.onReload(el);
+          this.currentPath[1] = 'local';
+          this.currentPath[2] = branch;
+          this.currentPath[3] = i;
+          this.make(el, branch, i);
+          this._savedLocal = JSON.stringify(el);
+          this.onReload(el);
         });
       }
     },
 
     loadReadonly(def, options) {
-      var that = this,
-        url = this._defaultUrl;
+      var url = this._defaultUrl;
 
       var retry = true;
       if (options && options.withCredentials) {
         retry = false;
       }
 
+      const onSuccess = (data) => {
+        data = this._reviver(JSON.parse(data));
+        this.make(data);
+        this._onLoaded(data);
+        def.resolve();
+      };
+
       $.ajax({
         url,
         timeout: 200000,
         dataType: 'text',
         success: onSuccess,
-        error(e) {
+        error: (e) => {
           if (retry) {
             $.ajax({
               url,
               timeout: 200000,
               dataType: 'text',
               success: onSuccess,
-              error(e) {
+              error: (e) => {
                 UI.showNotification(
-                  `Loading ${that.type} failed: ${e.statusText}`,
+                  `Loading ${this.type} failed: ${e.statusText}`,
                 );
                 def.reject(e);
               },
             });
           } else {
-            UI.showNotification(`Loading ${that.type} failed: ${e.statusText}`);
+            UI.showNotification(`Loading ${this.type} failed: ${e.statusText}`);
             def.reject(e);
           }
         },
         xhrFields: { withCredentials: true },
       });
-
-      function onSuccess(data) {
-        data = that._reviver(JSON.parse(data));
-        that.make(data);
-        that._onLoaded(data);
-        def.resolve();
-      }
     },
 
     load(dirUrl, defaultBranch, defaultUrl, options) {
@@ -461,7 +455,6 @@ define([
       this._defaultUrl = defaultUrl;
       this.defaultBranch = defaultBranch;
 
-      var that = this;
       var def = $.Deferred();
 
       if (!this._dirUrl && this._defaultUrl) {
@@ -475,26 +468,47 @@ define([
         action: 'Load',
       });
 
+      const doLocal = (el, branch, rev) => {
+        this.currentPath[1] = 'local';
+        this.currentPath[2] = branch;
+        this.currentPath[3] = rev;
+
+        this._savedLocal = JSON.stringify(el);
+        this.make(el, this.currentPath[2], this.currentPath[3]);
+        def.resolve(el);
+
+        this._onLoaded(el);
+      };
+
+      const doServer = (el, branch, rev) => {
+        this.currentPath[1] = 'server';
+        this.currentPath[2] = branch;
+        this.currentPath[3] = rev;
+        this.make(el, this.currentPath[2], this.currentPath[3]);
+        this._savedServer = JSON.stringify(el);
+        def.resolve(el);
+        this._onLoaded(el);
+      };
+
       // First load the server
       // Needed to identify branch and revision of the file
-
       $.when(defServer).then(
-        function (server) {
+        (server) => {
           // Success
-          var branch = server._name || that.defaultBranch;
+          var branch = server._name || this.defaultBranch;
           var rev = server._time || 'head';
           var saved = server._saved || 0;
 
           // Always compare to the head of the local branch
-          var defLocal = that._getLocalHead(branch);
+          var defLocal = this._getLocalHead(branch);
 
           $.when(defLocal).then(
-            function (el) {
+            (el) => {
               // If the corresponding head does not exist, we copy the server data
               // to the head of the corresponding local branch
               if (!el._saved) {
                 // doServer(server, branch, rev);
-                that.serverCopy(server, branch, 'head').done(function () {
+                this.serverCopy(server, branch, 'head').done(() => {
                   doLocal(server, server._name, 'head');
                 });
               } else {
@@ -511,39 +525,17 @@ define([
                 }
               }
             },
-            function () {
+            () => {
               doServer(server, branch, rev);
             },
           );
         },
-        function () {
-          $.when(that._getLocalHead(branch)).then(function (el) {
+        () => {
+          $.when(this._getLocalHead(branch)).then((el) => {
             doLocal(el, branch, el._time || 'head');
           });
         },
       );
-
-      function doLocal(el, branch, rev) {
-        that.currentPath[1] = 'local';
-        that.currentPath[2] = branch;
-        that.currentPath[3] = rev;
-
-        that._savedLocal = JSON.stringify(el);
-        that.make(el, that.currentPath[2], that.currentPath[3]);
-        def.resolve(el);
-
-        that._onLoaded(el);
-      }
-
-      function doServer(el, branch, rev) {
-        that.currentPath[1] = 'server';
-        that.currentPath[2] = branch;
-        that.currentPath[3] = rev;
-        that.make(el, that.currentPath[2], that.currentPath[3]);
-        that._savedServer = JSON.stringify(el);
-        def.resolve(el);
-        that._onLoaded(el);
-      }
 
       return def;
     },
@@ -577,7 +569,6 @@ define([
     },
 
     _localSave(obj, mode, name) {
-      var that = this;
       obj._local = true;
       // IF: Already Head => Erase current head, IF: New head: Overwrite head (keep current)
       obj._time = mode === 'head' ? false : Date.now();
@@ -585,16 +576,16 @@ define([
 
       // this._savedLocal = JSON.stringify(obj);
 
-      return db.open().pipe(function () {
+      return db.open().pipe(() => {
         return db[mode === 'head' ? 'storeToHead' : 'store'](
-          that.type,
-          that._dirUrl,
+          this.type,
+          this._dirUrl,
           name,
           obj,
-        ).pipe(function (element) {
-          that.currentPath[1] = 'local';
-          that.currentPath[2] = name;
-          that.currentPath[3] = obj._time || 'head';
+        ).pipe((element) => {
+          this.currentPath[1] = 'local';
+          this.currentPath[2] = name;
+          this.currentPath[3] = obj._time || 'head';
           return element;
         });
       });
@@ -616,13 +607,12 @@ define([
     },
 
     localAutosave(val, callback, done) {
-      var that = this;
       if (this._autosaveLocal) window.clearInterval(this._autosaveLocal);
 
       if (val) {
-        this._autosaveLocal = window.setInterval(function () {
+        this._autosaveLocal = window.setInterval(() => {
           var el = callback();
-          that._localSave(el, 'head', el._name || 'Master').done(function () {
+          this._localSave(el, 'head', el._name || 'Master').done(() => {
             if (done) done();
           });
         }, 10000);
@@ -633,21 +623,17 @@ define([
     localBranch(data, name) {
       data._name = name;
       data._time = false;
-      var that = this;
-      return this._localSave(data, 'head', name).pipe(function (obj) {
-        that.make(obj, that.currentPath[2], that.currentPath[3]);
+      return this._localSave(data, 'head', name).pipe((obj) => {
+        this.make(obj, this.currentPath[2], this.currentPath[3]);
       });
     },
 
     // Do not change branch, just change the head
     localRevert(data) {
-      var that = this;
       data._time = false;
-      this._localSave(data, 'head', data._name || 'Master').done(
-        function (obj) {
-          that.make(obj, that.currentPath[2], that.currentPath[3]);
-        },
-      );
+      this._localSave(data, 'head', data._name || 'Master').done((obj) => {
+        this.make(obj, this.currentPath[2], this.currentPath[3]);
+      });
     },
 
     /** **********************/
@@ -655,12 +641,11 @@ define([
     /** **********************/
 
     autosaveServer(val, callback, done) {
-      var that = this;
       if (this._autosaveServer) window.clearInterval(this._autosaveServer);
 
       if (val) {
-        this._autosaveServer = window.setInterval(function () {
-          that._saveToServer(callback()).done(function () {
+        this._autosaveServer = window.setInterval(() => {
+          this._saveToServer(callback()).done(() => {
             if (done) done();
           });
         }, 10000);
@@ -688,8 +673,7 @@ define([
     },
 
     getFromServer(data) {
-      var that = this,
-        def = $.Deferred(),
+      var def = $.Deferred(),
         url = this.getUrl() || this._defaultUrl;
 
       if (!url) {
@@ -703,10 +687,10 @@ define([
         url,
         cache: false,
         data: data || {},
-        success(data) {
+        success: (data) => {
           // data is now a text
-          that._savedServer = data;
-          data = that._reviver(JSON.parse(data));
+          this._savedServer = data;
+          data = this._reviver(JSON.parse(data));
           def.resolve(data);
         },
 
@@ -719,14 +703,12 @@ define([
     },
 
     serverCopy(data, branch) {
-      var that = this;
-
       data._name = data._name || branch || 'Master';
       data._time = false;
       data._saved = Date.now();
 
-      return this._localSave(data, 'head', data._name).pipe(function (el) {
-        return that.make(el, data._name, 'head');
+      return this._localSave(data, 'head', data._name).pipe((el) => {
+        return this.make(el, data._name, 'head');
       });
     },
 

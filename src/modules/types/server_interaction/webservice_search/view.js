@@ -169,8 +169,8 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
             spec.defaultvalue || ''
           }</textarea>`;
 
-        case 'float':
-        case 'text':
+        // case 'float':
+        // case 'text':
         default:
           return `<input type="text" value="${spec.defaultvalue || ''}" ${elemAttribute} style="width: 100%" />`;
       }

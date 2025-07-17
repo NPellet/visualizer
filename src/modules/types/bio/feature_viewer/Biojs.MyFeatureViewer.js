@@ -20,8 +20,8 @@ Biojs.MyFeatureViewer = Biojs.FeatureViewer.extend(
           this.paintFeatures(this.opt.json);
         }
       } catch {
-        document.getElementById(this.opt.target).innerHTML = '';
-        document.getElementById(this.opt.target).innerHTML =
+        document.querySelector(`#${this.opt.target}`).innerHTML = '';
+        document.querySelector(`#${this.opt.target}`).innerHTML =
           'No image available. Did you provide a valid UniProt accession or identifier, and valid limits?';
       }
     },

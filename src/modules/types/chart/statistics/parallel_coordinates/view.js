@@ -171,7 +171,7 @@ define([
       if (colorJpath) {
         colorJpath = Util.makejPathFunction(colorJpath);
         this._color = function getItemColor(item) {
-          return item.__color ? item.__color : '#000';
+          return item.__color || '#000';
         };
       }
 

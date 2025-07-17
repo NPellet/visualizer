@@ -114,14 +114,13 @@ define([
         new Button(
           'Share',
           function () {
-            var that = this;
             if (!options.disabled) {
               share(options).then(
-                function (tinyUrl) {
+                (tinyUrl) => {
                   $(`#${uniqid}`).val(tinyUrl).focus().select();
-                  that.disable();
+                  this.disable();
                 },
-                function () {
+                () => {
                   $(`#${uniqid}`).val('error');
                 },
               );

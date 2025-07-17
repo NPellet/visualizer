@@ -89,7 +89,7 @@ function drawCell(value, startX, startY, color, bufferData, nbValX) {
 }
 
 var data, min, max, colors, pxPerCell, squareLoading, highContrast;
-self.onmessage = function (event) {
+self.addEventListener('message', (event) => {
   var d = event.data;
 
   if (d.title === 'init') {
@@ -115,4 +115,4 @@ self.onmessage = function (event) {
       ),
     });
   }
-};
+});

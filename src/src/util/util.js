@@ -164,16 +164,15 @@ define([
       return days[day];
     },
     loadCss(url) {
-      var that = this;
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         url = require.toUrl(url);
 
-        that.loadedCss = that.loadedCss || {};
+        this.loadedCss = this.loadedCss || {};
 
-        if (that.loadedCss[url]) {
+        if (this.loadedCss[url]) {
           // element is already loaded
-          that.loadedCss[url].disabled = false;
-          resolve(that.loadedCss[url]);
+          this.loadedCss[url].disabled = false;
+          resolve(this.loadedCss[url]);
           return;
         }
 
@@ -181,8 +180,8 @@ define([
         link.type = 'text/css';
         link.rel = 'stylesheet';
         link.href = url;
-        link.addEventListener('load', function () {
-          that.loadedCss[url] = link;
+        link.addEventListener('load', () => {
+          this.loadedCss[url] = link;
           resolve(link);
         });
 
@@ -194,10 +193,9 @@ define([
       });
     },
     unloadCss(url) {
-      var that = this;
       url = require.toUrl(url);
-      if (that.loadedCss[url]) {
-        that.loadedCss[url].disabled = true;
+      if (this.loadedCss[url]) {
+        this.loadedCss[url].disabled = true;
       }
     },
 

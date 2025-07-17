@@ -7,8 +7,8 @@ define(function () {
     var name = url;
 
     if (crons[name] && overwrite) {
-        remove(name);
-      }
+      remove(name);
+    }
 
     crons[name] = [url, interval, false, false, callback];
 

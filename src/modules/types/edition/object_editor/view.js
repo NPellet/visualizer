@@ -46,7 +46,7 @@ define([
         ),
       );
 
-      this.editor = new jsoneditor(document.getElementById(this._id), {
+      this.editor = new jsoneditor(document.querySelector(`#${this._id}`), {
         mode,
         modes: ['view', 'tree', 'code'],
         ace,

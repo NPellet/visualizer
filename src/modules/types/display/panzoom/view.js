@@ -275,16 +275,16 @@ define([
             image.transform = getCssTransform([image.f, 0, 0, image.f, 0, 0]);
           }
           if (scaling === 'asHighlight' && that.himg.f) {
-              var transform = [
-                that.himg.f,
-                0,
-                0,
-                that.himg.f,
-                that.highlightImage.shiftx * that.himg.f,
-                that.highlightImage.shifty * that.himg.f,
-              ];
-              image.transform = getCssTransform(transform);
-            }
+            var transform = [
+              that.himg.f,
+              0,
+              0,
+              that.himg.f,
+              that.highlightImage.shiftx * that.himg.f,
+              that.highlightImage.shifty * that.himg.f,
+            ];
+            image.transform = getCssTransform(transform);
+          }
 
           if (!foundImg) {
             that.images.push(image);

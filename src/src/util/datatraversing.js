@@ -56,11 +56,11 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   }
 
   function getOptions(value) {
-    return value ? (value._options ? value._options : {}) : {};
+    return value?._options || {};
   }
 
   function getHighlights(value) {
-    return value ? (value._highlight ? value._highlight : []) : [];
+    return value?._highlight || [];
   }
 
   function getValueIfNeeded(element) {

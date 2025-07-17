@@ -38,10 +38,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
     this.createDataFromEvent(
       'onSequenceSelectionChanged',
       'sequence',
-      String(this.module.view.sequence).substr(
-        val.start - 1,
-        val.end - val.start + 1,
-      ),
+      String(this.module.view.sequence).slice(val.start - 1, val.end),
     );
   };
 

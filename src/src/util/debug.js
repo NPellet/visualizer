@@ -2,7 +2,7 @@
 
 define(['loglevel'], function (log) {
   // Fallback to Date for incompatible navigators (Safari)
-  var perfObj = window.performance ? window.performance : Date;
+  var perfObj = window.performance || Date;
 
   log.setLevel('trace');
 

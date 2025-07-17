@@ -138,9 +138,6 @@ define([
             left: [{ labelValue: 'Jsc (mA/cm2)' }],
           }),
         ),
-      );
-
-      this.graphs.push(
         new Graph(
           this.dom.find('.ivstability-voc').get(0),
           options,
@@ -148,9 +145,6 @@ define([
             left: [{ labelValue: 'Voc (mV)' }],
           }),
         ),
-      );
-
-      this.graphs.push(
         new Graph(
           this.dom.find('.ivstability-ff').get(0),
           options,
@@ -158,9 +152,6 @@ define([
             left: [{ labelValue: 'FF (-)' }],
           }),
         ),
-      );
-
-      this.graphs.push(
         new Graph(
           this.dom.find('.ivstability-efficiency').get(0),
           options,

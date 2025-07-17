@@ -115,7 +115,7 @@ define([
     setStyle() {
       var style = this.styleObject;
       if (!style) return;
-      if (!(Array.isArray(style))) {
+      if (!Array.isArray(style)) {
         style = [style];
       }
 

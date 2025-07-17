@@ -21,7 +21,9 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
             (function (element, callbackClick, callbackOpen) {
               if (
                 !Config.contextMenu().includes('all') &&
-                !Config.contextMenu().includes(element.attr('name') || 'undefined')
+                !Config.contextMenu().includes(
+                  element.attr('name') || 'undefined',
+                )
               ) {
                 return;
               }

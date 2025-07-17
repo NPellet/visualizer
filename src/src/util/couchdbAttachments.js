@@ -159,9 +159,9 @@ define([
                   base64data: dataURLtoBase64(e.target.result),
                 });
               });
-              reader.onerror = function () {
+              reader.addEventListener('error', () => {
                 return reject(new Error('Error while reading file'));
-              };
+              });
               reader.readAsDataURL(data);
             });
             prom.push(p);
@@ -338,14 +338,13 @@ define([
      */
     // Get documents with latest attachements' rev ids
     async refresh() {
-      let json = await (
-        await fetch(this.docUrl, {
-          credentials: 'include',
-          headers: {
-            Accept: 'application/json',
-          },
-        })
-      ).json();
+      const res = await fetch(this.docUrl, {
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      const json = await res.json();
       this.lastDoc = json;
       return attachmentsAsArray(this, json._attachments);
     }

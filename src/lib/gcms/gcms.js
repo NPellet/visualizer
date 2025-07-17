@@ -483,8 +483,10 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
       allMs.sort((a, b) => a - b);
 
       for (i = 0; i < allMs.length; i++) {
-        finalMs.push(allMs[i]);
-        finalMs.push(Math.round(obj[allMs[i]] / Math.abs(indexMax - indexMin)));
+        finalMs.push(
+          allMs[i],
+          Math.round(obj[allMs[i]] / Math.abs(indexMax - indexMin)),
+        );
       }
 
       var buffer;

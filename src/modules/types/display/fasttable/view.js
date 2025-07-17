@@ -269,12 +269,12 @@ define([
     updateVisibility() {
       if (!this.showList || !this.list) return;
 
-      var s = this.showList,
-        l = s.length,
-        el,
-        id = `${this.module.getId()}_`;
-      for (var i = 0; i < l; i++) {
-        el = document.getElementById(id + i);
+      var s = this.showList;
+      var l = s.length;
+      var el;
+      var id = `${this.module.getId()}_`;
+      for (let i = 0; i < l; i++) {
+        el = document.querySelector(`#${id + i}`);
         if (s[i]) {
           el.removeAttribute('style');
         } else {

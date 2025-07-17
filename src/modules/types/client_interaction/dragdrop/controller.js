@@ -328,11 +328,13 @@ define([
   }
 
   Controller.prototype.open = function (data) {
-    if (!(data.items && data.items.length > 0) && data.files.length === 0) return;
+    if (!(data.items && data.items.length > 0) && data.files.length === 0) {
+      return;
+    }
 
-    var items;
+    let items;
 
-    var multiplePaste = true;
+    let multiplePaste = true;
     for (let i = 0; i < data.items.length; i++) {
       if (data.items[i].kind !== 'string') multiplePaste = false;
     }
@@ -347,7 +349,7 @@ define([
     this.module.model.tmpVars = new DataObject();
     this.module.model.tmpVarsArray = new DataObject();
 
-    var defs = [];
+    const defs = [];
 
     var cfg = this.fileCfg;
     var cfgString = this.stringCfg;
@@ -550,7 +552,7 @@ define([
   };
 
   Controller.prototype.checkPhotoMetadata = function (cfg) {
-    var lineCfg = cfg[0];
+    const lineCfg = cfg[0];
 
     lineCfg.filetype = 'url';
     lineCfg.type = 'png';
@@ -607,11 +609,12 @@ define([
     reader.addEventListener('load', (e) => {
       this.fileRead(e.target.result, meta);
     });
-    reader.onerror = (e) => {
+    reader.addEventListener('error', (e) => {
       Debug.error(e);
-    };
+    });
     switch (meta.cfg.filetype) {
       case 'text': {
+        // eslint-disable-next-line unicorn/prefer-blob-reading-methods
         reader.readAsText(item);
         break;
       }
@@ -621,6 +624,7 @@ define([
         break;
       }
       case 'buffer': {
+        // eslint-disable-next-line unicorn/prefer-blob-reading-methods
         reader.readAsArrayBuffer(item);
         break;
       }

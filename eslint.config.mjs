@@ -21,6 +21,12 @@ export default defineConfig(
   unicorn,
   {
     rules: {
+      'unicorn/consistent-function-scoping': 'off',
+      'unicorn/no-this-assignment': 'off',
+      'unicorn/prefer-code-point': 'off',
+      'unicorn/prefer-default-parameters': 'off',
+      'unicorn/prefer-dom-node-text-content': 'off',
+      'unicorn/prefer-number-properties': 'off',
       'unicorn/prefer-structured-clone': 'off',
     },
   },

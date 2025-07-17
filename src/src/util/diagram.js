@@ -82,8 +82,7 @@ define([
   };
 
   Rectangle.prototype.intersection = function (point) {
-    var that = this,
-      points;
+    var points;
 
     if (point.x !== this.centerx) {
       var a = (point.y - this.centery) / (point.x - this.centerx);
@@ -96,8 +95,8 @@ define([
         { x: this.maxx, y: a * this.maxx + b },
       ];
 
-      points = _.filter(points, function (p) {
-        return that.isInside(p);
+      points = _.filter(points, (p) => {
+        return this.isInside(p);
       });
     } else {
       points = [

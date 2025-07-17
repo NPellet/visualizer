@@ -52,6 +52,7 @@ define(['./util'], function (Util) {
       if (attachments) {
         for (const att in attachments) {
           size +=
+            // eslint-disable-next-line unicorn/explicit-length-check
             attachments[att].length || attachments[att].data.length * 0.75;
         }
       }
@@ -223,8 +224,7 @@ define(['./util'], function (Util) {
           },
         );
       } else {
-        const name =
-          this.flavors[currentFlavor].at(-1);
+        const name = this.flavors[currentFlavor].at(-1);
         this.flavors[flavor] = [name];
         return this.save().then(
           () => ({ state: 'added', name }),
