@@ -445,13 +445,19 @@ define([
   functions.object.init = async function () {
     functions.object.twig = await asyncRequire('lib/twigjs/twig');
   };
-  functions.object.toscreen = function ($element, value, root, options) {
-    if (options.twig) {
-      const template = functions.object.twig.twig({ data: options.twig });
-      const render = template.renderAsync(JSON.parse(JSON.stringify(value)));
+  functions.object.toscreen = function ($element, value, root, options = {}) {
+    const { twig, twigVariableName, toJSON } = options;
+
+    if (twig) {
+      const template = functions.object.twig.twig({ data: twig });
+      value = JSON.parse(JSON.stringify(value));
+      if (twigVariableName) {
+        value[twigVariableName] = value;
+      }
+      const render = template.renderAsync(value);
       $element.html(render.html);
       render.render();
-    } else if (options.toJSON) {
+    } else if (toJSON) {
       $element.html(JSON.stringify(value));
     } else {
       $element.html(Object.prototype.toString.call(value));

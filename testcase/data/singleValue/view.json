@@ -488,7 +488,7 @@
                 "new"
               ],
               "storedObject": [
-                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"},\"doi\":\"doi.org/10.5281/zenodo.5126483\",\"dois\":[{\"value\":\"10.5281/zenodo.5126483\"},{\"value\":\"doi.org/10.5281/zenodo.5126483\"}],\"orcid\":\"https://orcid.org/0000-0002-4943-2643\",\"zenodo\":\"https://zenodo.org/records/13306900\"}"
+                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"},\"doi\":\"doi.org/10.5281/zenodo.5126483\",\"dois\":[{\"value\":\"10.5281/zenodo.5126483\"},{\"value\":\"doi.org/10.5281/zenodo.5126483\"}],\"orcid\":\"https://orcid.org/0000-0002-4943-2643\",\"zenodo\":\"https://zenodo.org/records/13306900\",\"data\":{\"$id\":123,\"abc\":456}}"
               ]
             }
           ]
@@ -581,6 +581,14 @@
             "zenodo"
           ],
           "name": "zenodo"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "data"
+          ],
+          "name": "data"
         }
       ],
       "actions_out": [
@@ -1735,6 +1743,298 @@
           ]
         }
       ]
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                "twig: `{{ entry[\"$id\"]}} - {{ entry.abc }}`, twigVariableName: 'entry'"
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 92,
+            "top": 31
+          },
+          "size": {
+            "width": 29,
+            "height": 15
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Twig renderer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 12,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Twig renderer"
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                null
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                "twig: `{{ abc }}`"
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 92,
+            "top": 48
+          },
+          "size": {
+            "width": 29,
+            "height": 15
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Twig renderer",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 13,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "data"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Twig renderer"
     }
   ],
   "variables": [
@@ -1747,7 +2047,7 @@
   "configuration": {
     "title": "No title"
   },
-  "version": "2.168.1-0",
+  "version": "2.169.1-0",
   "grid": {
     "layers": {
       "Default layer": {
