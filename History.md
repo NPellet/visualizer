@@ -1,3 +1,12 @@
+# [2.170.0](https://github.com/NPellet/visualizer/compare/v2.169.0...v2.170.0) (2025-07-18)
+
+
+### Features
+
+* object renderer using twig allow to wrap into a variable to be able to display $id ([5932726](https://github.com/NPellet/visualizer/commit/5932726bd2e9e82a8cc122f439e2c81aa74bf84d))
+
+
+
 # [2.169.0](https://github.com/NPellet/visualizer/compare/v2.168.0...v2.169.0) (2025-07-18)
 
 
