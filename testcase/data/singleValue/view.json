@@ -488,7 +488,7 @@
                 "new"
               ],
               "storedObject": [
-                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"}}"
+                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"},\"doi\":\"doi.org/10.5281/zenodo.5126483\",\"dois\":[{\"value\":\"10.5281/zenodo.5126483\"},{\"value\":\"doi.org/10.5281/zenodo.5126483\"}],\"orcid\":\"https://orcid.org/0000-0002-4943-2643\"}"
               ]
             }
           ]
@@ -549,6 +549,30 @@
             "hyperlink"
           ],
           "name": "hyperlink"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "doi"
+          ],
+          "name": "doi"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "dois"
+          ],
+          "name": "dois"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "orcid"
+          ],
+          "name": "orcid"
         }
       ],
       "actions_out": [
@@ -1038,6 +1062,523 @@
           ]
         }
       ]
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                "size:40"
+              ],
+              "forceType": [
+                "doi"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "doi"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/display/single_value/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 24,
+            "top": 67,
+            "right": 0
+          },
+          "size": {
+            "width": 13,
+            "height": 10
+          },
+          "display": true,
+          "title": "DOI",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "title": "DOI",
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                "30"
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "DOI",
+                "jpath": [
+                  "value"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Link icon",
+                "jpath": [
+                  "value"
+                ],
+                "editor": "none",
+                "forceType": "doi",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 21,
+            "top": 44
+          },
+          "size": {
+            "width": 22,
+            "height": 16
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "DOIs",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 9,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "dois"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "DOIs"
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                "size:40"
+              ],
+              "forceType": [
+                "orcid"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "id": 10,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "orcid"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/display/single_value/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 70,
+            "top": 66,
+            "right": 0
+          },
+          "size": {
+            "width": 13,
+            "height": 10
+          },
+          "display": true,
+          "title": "ORCID",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "title": "ORCID",
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     }
   ],
   "variables": [
@@ -1050,7 +1591,7 @@
   "configuration": {
     "title": "No title"
   },
-  "version": "2.166.1-0",
+  "version": "2.167.1-0",
   "grid": {
     "layers": {
       "Default layer": {
