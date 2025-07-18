@@ -1,3 +1,12 @@
+# [2.169.0](https://github.com/NPellet/visualizer/compare/v2.168.0...v2.169.0) (2025-07-18)
+
+
+### Features
+
+* add Zenodo type renderer ([17437a4](https://github.com/NPellet/visualizer/commit/17437a46a5b9fd8868939c0d4ab5d32fbc5f2558))
+
+
+
 # [2.168.0](https://github.com/NPellet/visualizer/compare/v2.167.0...v2.168.0) (2025-07-18)
 
 
