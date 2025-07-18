@@ -1,3 +1,12 @@
+# [2.167.0](https://github.com/NPellet/visualizer/compare/v2.166.0...v2.167.0) (2025-07-18)
+
+
+### Features
+
+* allow customization of className for links in typerenderer ([7d29e4f](https://github.com/NPellet/visualizer/commit/7d29e4f1ed11b8c037d24fe5570de0edfc57fdc9))
+
+
+
 # [2.166.0](https://github.com/NPellet/visualizer/compare/v2.165.1...v2.166.0) (2025-07-11)
 
 
