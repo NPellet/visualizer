@@ -137,13 +137,16 @@ define([
 
   functions.downloadlink = {};
   functions.downloadlink.toscreen = function ($element, value, root, options) {
-    var title = options && options.title;
-    title = title || 'Download resource';
+    const {
+      title = 'Download resource',
+      className = 'fa fa-download',
+      filename = '',
+    } = options;
 
     $element.html(
-      `<a download${
-        options.filename ? `=${options.filename}` : ''
-      } title="${title}" href="${value}">⤵</a>`,
+      `<a class="${className}"${
+        filename ? ` download="${filename}"` : ''
+      } title="${title}" target="_blank" href="${value}"></a>`,
     );
   };
 
@@ -404,12 +407,13 @@ define([
   functions.actelionid = functions.oclid;
 
   functions.openlink = {};
-  functions.openlink.toscreen = function ($element, value) {
+  functions.openlink.toscreen = function ($element, value, rootVal, options) {
+    const { title = 'Open link', className = 'fa fa-external-link-alt' } =
+      options;
+
     $element.html(
-      value.replace(
-        /^(.*)$/,
-        '<a href="$1" target="_blank"><i class="fa fa-external-link-alt"></i></a>',
-      ),
+      `<a class="${className}"
+               title="${title}" target="_blank" href="${value}"></a>`,
     );
   };
 

@@ -2,51 +2,98 @@
   "modules": [
     {
       "configuration": {
-        "frontcolor": "",
-        "font": "arial",
-        "fontsize": "",
-        "align": "left",
-        "valign": "top",
-        "defaultvalue": "<strong>Post It</strong><br />\n<br />\nThis is the default value that is based on a text editor",
-        "sprintf": ""
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                "<h1>A post-it</h1>\n\n<p>This is the default value</p>\n\n<p>&nbsp;</p>\n"
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "left"
+              ],
+              "valign": [
+                null
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
       },
       "id": 1,
-      "dataSend": [
-        {
-          "event": "",
-          "rel": "",
-          "jpath": "",
-          "name": ""
-        }
-      ],
       "zindex": 1,
       "vars_in": [
-        {
-          "rel": "",
-          "name": ""
-        }
+        {}
       ],
       "actions_in": [
-        {
-          "rel": "",
-          "name": ""
-        }
+        {}
       ],
       "url": "modules/types/display/single_value/",
       "layers": {
         "Default layer": {
           "position": {
-            "left": 2,
-            "top": 0,
+            "left": 51,
+            "top": 8,
             "right": 0
           },
           "size": {
-            "width": 26,
-            "height": 27
+            "width": 36,
+            "height": 36
           },
           "display": true,
-          "title": "A kind of post-it",
-          "bgColor": "",
+          "title": "A kind of post-it using default value",
+          "bgColor": [
+            255,
+            242,
+            204,
+            1
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -59,17 +106,33 @@
               "title": "",
               "icon": "",
               "action": "",
-              "position": "begin"
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "A kind of post-it using default value",
+      "vars_out": [
         {
           "event": "",
           "rel": "",
@@ -77,7 +140,16 @@
           "name": ""
         }
       ],
-      "title": "A kind of post-it"
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "configuration": {
@@ -85,23 +157,64 @@
         "groups": {
           "group": [
             {
-              "append": [[]],
-              "maxEntries": [1],
-              "editable": [["yes"]],
-              "editSearchRegexp": ["/[0-9]/g"],
-              "editReplace": ["."],
-              "debounce": [0],
-              "defaultvalue": [null],
-              "font": ["Arial"],
-              "fontcolor": [[0, 0, 0, 1]],
-              "fontsize": ["18pt"],
-              "align": ["center"],
-              "valign": ["middle"],
-              "rendererOptions": [""],
-              "forceType": [""],
-              "sprintf": [null],
-              "sprintfOrder": [null],
-              "preformatted": [[]]
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                [
+                  "yes"
+                ]
+              ],
+              "editSearchRegexp": [
+                "/[0-9]/g"
+              ],
+              "editReplace": [
+                "."
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                "Arial"
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                "18pt"
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
             }
           ]
         }
@@ -114,13 +227,15 @@
           "name": "myValue"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "url": "modules/types/display/single_value/",
       "layers": {
         "Default layer": {
           "position": {
-            "left": 31,
-            "top": 1,
+            "left": 51,
+            "top": 0,
             "right": 0
           },
           "size": {
@@ -128,8 +243,13 @@
             "height": 6
           },
           "display": true,
-          "title": "Untitled module",
-          "bgColor": [255, 255, 255, 0],
+          "title": "A simple value",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -143,13 +263,22 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
@@ -158,7 +287,7 @@
           "jpath": []
         }
       ],
-      "title": "Untitled module",
+      "title": "A simple value",
       "vars_out": [
         {
           "event": "",
@@ -169,8 +298,12 @@
       ],
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -180,19 +313,62 @@
         "groups": {
           "group": [
             {
-              "defaultvalue1": [0.4],
-              "defaultvalue": [null],
-              "fontcolor": [[0, 0, 0, 1]],
-              "font": [null],
-              "fontsize": [null],
-              "align": [null],
-              "valign": [null],
-              "sprintf": [null]
-            }
-          ],
-          "group2": [
-            {
-              "defaultvalue1": [0.4]
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
             }
           ]
         }
@@ -201,18 +377,26 @@
       "vars_in": [
         {
           "rel": "value",
-          "name": "mylink"
+          "name": "myLink"
         }
       ],
-      "actions_in": [{}],
-      "vars_out": [{}],
-      "actions_out": [{}],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "url": "modules/types/display/single_value/",
       "layers": {
         "Default layer": {
           "position": {
-            "left": 80,
-            "top": 7,
+            "left": 91,
+            "top": 9,
             "right": 0
           },
           "size": {
@@ -220,8 +404,13 @@
             "height": 10
           },
           "display": true,
-          "title": "Untitled module",
-          "bgColor": [255, 255, 255, 0],
+          "title": "Download link",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -234,17 +423,37 @@
               "title": "",
               "icon": "",
               "action": "",
-              "position": "begin"
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
-      "title": "Untitled module"
+      "title": "Download link",
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/edition/object_editor/",
@@ -253,14 +462,34 @@
         "groups": {
           "group": [
             {
-              "editable": ["view"],
-              "expanded": [[]],
-              "storeObject": [[]],
-              "displayValue": [[]],
-              "searchBox": [["search"]],
-              "sendButton": [[]],
-              "output": ["new"],
-              "storedObject": ["{}"]
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"}}"
+              ]
             }
           ]
         }
@@ -268,8 +497,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 37,
-            "top": 22
+            "left": 0,
+            "top": 0
           },
           "size": {
             "width": 48,
@@ -278,7 +507,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -286,15 +520,35 @@
       },
       "id": 4,
       "vars_in": [
-        {
-          "rel": "value",
-          "name": "myValue"
-        }
+        {}
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
-          "jpath": []
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "myValue"
+          ],
+          "name": "myValue"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "myLink"
+          ],
+          "name": "myLink"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "hyperlink"
+          ],
+          "name": "hyperlink"
         }
       ],
       "actions_out": [
@@ -310,43 +564,197 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "hyperlink"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/display/single_value/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 91,
+            "top": 24,
+            "right": 0
+          },
+          "size": {
+            "width": 18,
+            "height": 10
+          },
+          "display": true,
+          "title": "Hyperlink",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "title": "Hyperlink",
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     }
   ],
   "variables": [
     {
-      "varname": "myValue",
-      "jpath": ["myValue"]
-    },
-    {
-      "varname": "mylink",
-      "jpath": ["myLink"]
-    },
-    {
-      "varname": "visualizerLayoutWriteURL",
-      "jpath": []
+      "jpath": [
+        ""
+      ]
     }
   ],
   "configuration": {
     "title": "No title"
   },
-  "version": "2.97.1-0",
+  "version": "2.166.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -356,5 +764,103 @@
     "xWidth": 10,
     "yHeight": 10
   },
-  "aliases": []
+  "aliases": [
+    {}
+  ],
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
 }
