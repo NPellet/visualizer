@@ -488,7 +488,7 @@
                 "new"
               ],
               "storedObject": [
-                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"},\"doi\":\"doi.org/10.5281/zenodo.5126483\",\"dois\":[{\"value\":\"10.5281/zenodo.5126483\"},{\"value\":\"doi.org/10.5281/zenodo.5126483\"}],\"orcid\":\"https://orcid.org/0000-0002-4943-2643\"}"
+                "{\"myValue\":\"My first value\",\"myLink\":{\"type\":\"downloadLink\",\"value\":\"https://file-examples.com/storage/fe99c434516877eeba0dbef/2017/10/file-sample_150kB.pdf\"},\"hyperlink\":{\"type\":\"openlink\",\"value\":\"https://www.epfl.ch\"},\"doi\":\"doi.org/10.5281/zenodo.5126483\",\"dois\":[{\"value\":\"10.5281/zenodo.5126483\"},{\"value\":\"doi.org/10.5281/zenodo.5126483\"}],\"orcid\":\"https://orcid.org/0000-0002-4943-2643\",\"zenodo\":\"https://zenodo.org/records/13306900\"}"
               ]
             }
           ]
@@ -573,6 +573,14 @@
             "orcid"
           ],
           "name": "orcid"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "zenodo"
+          ],
+          "name": "zenodo"
         }
       ],
       "actions_out": [
@@ -1579,6 +1587,154 @@
           ]
         }
       ]
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                null
+              ],
+              "font": [
+                null
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "center"
+              ],
+              "valign": [
+                "middle"
+              ],
+              "rendererOptions": [
+                "size:40"
+              ],
+              "forceType": [
+                "zenodo"
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "id": 11,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "zenodo"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/display/single_value/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 70,
+            "top": 51,
+            "right": 0
+          },
+          "size": {
+            "width": 13,
+            "height": 10
+          },
+          "display": true,
+          "title": "Zenodo",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "title": "Zenodo",
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     }
   ],
   "variables": [
@@ -1591,7 +1747,7 @@
   "configuration": {
     "title": "No title"
   },
-  "version": "2.167.1-0",
+  "version": "2.168.1-0",
   "grid": {
     "layers": {
       "Default layer": {
