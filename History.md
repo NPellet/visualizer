@@ -1,3 +1,12 @@
+# [2.168.0](https://github.com/NPellet/visualizer/compare/v2.167.0...v2.168.0) (2025-07-18)
+
+
+### Features
+
+* add DOI and ORCID renderer ([16b0cc5](https://github.com/NPellet/visualizer/commit/16b0cc55fedf98f9ee10691a38e626c55c0d0296))
+
+
+
 # [2.167.0](https://github.com/NPellet/visualizer/compare/v2.166.0...v2.167.0) (2025-07-18)
 
 
