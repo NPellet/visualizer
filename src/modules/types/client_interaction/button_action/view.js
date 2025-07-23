@@ -134,7 +134,7 @@ define([
       };
 
       if (this.isButton) {
-        this.button = $('<button />');
+        this.button = $('<button class="form-button" />');
         this.button.click(onClick);
         this.dom.html(this.button);
       } else {

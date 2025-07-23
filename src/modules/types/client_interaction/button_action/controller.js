@@ -114,7 +114,8 @@ background-color: #E6E6E6;
 border: 1px solid rgba(0, 0, 0, 0.2);
 height: 30px;
 padding: .5em 1em;
-font-weight: bold;`,
+font-weight: bold;
+cursor: pointer;`,
               displayTarget: ['c'],
             },
             cssOn: {
@@ -126,7 +127,8 @@ background-color: #E6E6E6;
 border: 1px solid rgba(0, 0, 0, 0.2);
 height: 30px;
 padding: .5em 1em;
-font-weight: bold;`,
+font-weight: bold;
+cursor: pointer;`,
               displayTarget: ['t'],
             },
             cssOff: {
@@ -138,7 +140,8 @@ background-color: #E6E6E6;
 border: 1px solid rgba(0, 0, 0, 0.2);
 height: 30px;
 padding: .5em 1em;
-font-weight: bold;`,
+font-weight: bold;
+cursor: pointer;`,
               displayTarget: ['t'],
             },
             startState: {
