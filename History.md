@@ -1,3 +1,12 @@
+# [2.171.0](https://github.com/NPellet/visualizer/compare/v2.170.0...v2.171.0) (2025-07-23)
+
+
+### Features
+
+* add an hover effect and style action button by default ([38a642e](https://github.com/NPellet/visualizer/commit/38a642e1dc3836792fa713f714814816f6e0d280))
+
+
+
 # [2.170.0](https://github.com/NPellet/visualizer/compare/v2.169.0...v2.170.0) (2025-07-18)
 
 
