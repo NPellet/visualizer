@@ -1,3 +1,12 @@
+## [2.171.1](https://github.com/NPellet/visualizer/compare/v2.171.0...v2.171.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* typerenderer of GHS and force string ([ff5ec23](https://github.com/NPellet/visualizer/commit/ff5ec232f97e952dd5fd3fb2d2096c7e62110ce2))
+
+
+
 # [2.171.0](https://github.com/NPellet/visualizer/compare/v2.170.0...v2.171.0) (2025-07-23)
 
 
