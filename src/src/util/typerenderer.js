@@ -237,6 +237,7 @@ define([
   functions.elecconfig = {};
   functions.elecconfig.toscreen = function ($element, value) {
     if (value) {
+      value = String(value);
       $element.html(value.replaceAll(/([a-z])([0-9]+)/g, '$1<sup>$2</sup>'));
     } else {
       $element.html('');
@@ -250,12 +251,12 @@ define([
     for (var i = 1; i <= 9; i++) {
       ghs[i] = require.toUrl(`./typerenderer/svg/${i}.svg`);
     }
-
     $element.html('');
 
     if (val) {
-      val = val.replaceAll(/^\s+|\s+$/g, '');
       if (!Array.isArray(val)) {
+        val = String(val);
+        val = val.replaceAll(/^\s+|\s+$/g, '');
         val = val.split(/[\r\n\t,; ]+/);
       }
       for (let ghsValue of val) {
