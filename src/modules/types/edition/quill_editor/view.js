@@ -8,9 +8,8 @@ define([
   'quill',
   'quillImageResizeModule',
   'lodash',
-  'quillImageDropModule',
 ], function ($, Default, Util, API, Quill, ImageResize, _) {
-  Quill.register('modules/ImageResize', ImageResize.default);
+  Quill.register('modules/imageResize', ImageResize);
   function View() {
     this._id = Util.getNextUniqueId();
   }
@@ -38,9 +37,9 @@ define([
       this.initEditor();
     },
     initEditor() {
-      Util.loadCss('./components/quill/quill.core.css')
+      Util.loadCss('./node_modules/quill/dist/quill.core.css')
         .then(() => {
-          return Util.loadCss('./components/quill/quill.snow.css');
+          return Util.loadCss('./node_modules/quill/dist/quill.snow.css');
         })
         .then(() => {
           return Util.loadCss('node_modules/katex/dist/katex.min.css');
@@ -80,12 +79,8 @@ define([
           );
           this.instance = new Quill(`#${this._id}`, {
             modules: {
-              clipboard: {
-                matchVisual: false,
-              },
-              imageDrop: true,
-              ImageResize: {},
-              formula: true,
+              clipboard: {},
+              imageResize: {},
               toolbar: readOnly
                 ? false
                 : getToolbar(this.module.getConfiguration('toolbarMode')),
@@ -119,7 +114,7 @@ define([
         this.clear();
         this.mode = 'html';
         this.instance.setContents(
-          this.instance.clipboard.convert(moduleValue.get()),
+          this.instance.clipboard.convert({ html: moduleValue.get() }),
         );
       },
       quill(moduleValue) {

@@ -7,6 +7,16 @@ const plugins = [commonjs({}), json(), nodeResolve({ browser: true })];
 
 export default [
   {
+    input:
+      'node_modules/@mgreminger/quill-image-resize-module/dist/index.es.js',
+    output: {
+      file: 'src/browserified/quill/image-resize-module.js',
+      format: 'umd',
+      name: 'QuillImageResizeModule',
+    },
+    plugins,
+  },
+  {
     input: 'node_modules/country-data/index.js',
     output: {
       file: 'src/browserified/country-data/index.js',
