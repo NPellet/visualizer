@@ -157,19 +157,25 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
   DataString.cast = String;
 
   var StringProperties = [
+    'at',
     'charAt',
     'charCodeAt',
     'codePointAt',
     'concat',
-    'includes',
     'endsWith',
+    'includes',
     'indexOf',
+    'isWellFormed',
     'lastIndexOf',
     'localeCompare',
     'match',
+    'matchAll',
     'normalize',
+    'padEnd',
+    'padStart',
     'repeat',
     'replace',
+    'replaceAll',
     'search',
     'slice',
     'split',
@@ -180,7 +186,10 @@ define(['src/util/util', 'src/util/debug', 'src/util/urldata'], function (
     'toLocaleUpperCase',
     'toLowerCase',
     'toUpperCase',
+    'toWellFormed',
     'trim',
+    'trimEnd',
+    'trimStart',
   ];
 
   for (let i = 0, l = StringProperties.length; i < l; i++) {
