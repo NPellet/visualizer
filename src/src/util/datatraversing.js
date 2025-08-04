@@ -13,7 +13,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
       if (el && (el = el[jpathElement]) !== false) {
         // Fetch the element and return the deferred.
         // However, we pipe the deferred with the recursive function
-        return fetchElementIfNeeded(el).pipe(function (elChildren) {
+        return fetchElementIfNeeded(el).then(function (elChildren) {
           return _getValueFromJPath(elChildren, jpath);
         });
       } else {
@@ -44,7 +44,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
 
       // Perhaps the subelement is set only by URL, in which case we have to set it.
       return fetchElementIfNeeded(subelement)
-        .pipe(function (elChildren) {
+        .then(function (elChildren) {
           return _setValueFromJPath(elChildren, jpath, newValue);
         })
         .done(function () {
@@ -69,7 +69,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
     }
 
     if (typeof element === 'object' && element.url) {
-      return fetchElementIfNeeded(element).pipe(function (data) {
+      return fetchElementIfNeeded(element).then(function (data) {
         return data.value;
       });
     }
@@ -80,7 +80,7 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   }
 
   function fetchElementIfNeeded(element) {
-    var deferred = $.Deferred();
+    const deferred = $.Deferred();
 
     if (element === undefined || element == null) {
       return deferred.reject();

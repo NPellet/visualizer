@@ -2,7 +2,6 @@
 
 // LRU
 define(['jquery', 'src/util/debug'], function ($, Debug) {
-  var indexedDB;
   var db,
     dbname = 'cilru';
 
@@ -10,7 +9,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
     var storeName = store;
     var deferred = $.Deferred();
 
-    $.when(openDb()).then(
+    openDb().then(
       function () {
         var store = db.transaction(['lru'], 'readwrite').objectStore('lru');
         var lruGet = store.get(`__lrudata${storeName}`);
@@ -50,39 +49,16 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
   }
 
   function openDb() {
-    var ready = $.Deferred();
+    const ready = $.Deferred();
 
     if (!dbname) return ready.reject('No database to use');
 
     if (db) return ready.resolve(db);
 
-    // Store references from cross compatibility
-    indexedDB =
-      window.indexedDB ||
-      window.mozIndexedDB ||
-      window.webkitIndexedDB ||
-      window.msIndexedDB;
+    const openrequest = indexedDB.open(dbname, 2);
 
-    if (!indexedDB) {
-      ready.reject();
-      return ready;
-    }
-
-    var openrequest = indexedDB.open(dbname, 2);
-
-    // Database is open
-    openrequest.addEventListener('success', (e) => {
-      db = e.target.result;
-      ready.resolve();
-    });
-
-    openrequest.addEventListener('error', (e) => {
-      Debug.info(e);
-      ready.reject();
-    });
-
-    openrequest.onupgradeneeded = function (e) {
-      db = e.target.result;
+    openrequest.addEventListener('upgradeneeded', (e) => {
+      const db = e.target.result;
       switch (e.oldVersion) {
         case 0:
           if (db.objectStoreNames.contains('lru')) return;
@@ -95,7 +71,17 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           }
           objectStore.deleteIndex('key');
       }
-    };
+    });
+
+    openrequest.addEventListener('success', (e) => {
+      db = e.target.result;
+      ready.resolve();
+    });
+
+    openrequest.addEventListener('error', (e) => {
+      Debug.info(e);
+      ready.reject();
+    });
 
     return ready;
   }
@@ -103,7 +89,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
   function getFromDB(storeName, index) {
     var deferred = $.Deferred();
 
-    $.when(openDb()).then(
+    openDb().then(
       function () {
         var store = db.transaction('lru', 'readwrite').objectStore('lru'),
           getter = store.get(storeName + index),
@@ -129,7 +115,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
           }
         };
 
-        $.when(defGet).then(
+        defGet.then(
           function (data) {
             // A getter from the db must trigger a setter in the memory
             deferred.resolve(data);
@@ -152,7 +138,7 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
     var storeName = store;
     var deferred = $.Deferred();
 
-    $.when(openDb()).then(
+    openDb().then(
       function () {
         var store = db.transaction(['lru'], 'readwrite').objectStore('lru');
 

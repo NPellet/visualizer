@@ -47,7 +47,7 @@ define([
 
     getData() {
       if (this.currentPath[1] === 'server') {
-        return this._getServer().pipe(
+        return this._getServer().then(
           (data) => {
             if (this.type === 'view') {
               this._data.server = new DataObject(data, true);
@@ -61,7 +61,7 @@ define([
           },
         );
       } else {
-        return this._getLocal().pipe(
+        return this._getLocal().then(
           (data) => {
             if (typeof data !== 'object') {
               data = JSON.parse(data);
@@ -82,7 +82,7 @@ define([
     },
 
     getBranches() {
-      return $.when(this.getData()).pipe((data) => {
+      return this.getData().then((data) => {
         var branches = {};
 
         for (var i in data) {
@@ -98,7 +98,7 @@ define([
 
     getElements() {
       var branch = this.currentPath[2];
-      return $.when(this.getData()).pipe((alldata) => {
+      return this.getData().then((alldata) => {
         var data = alldata[branch].list;
         var all = {};
 
@@ -124,10 +124,8 @@ define([
     },
 
     _getLocal() {
-      return db.open().pipe(() => {
-        return db.getAll(this.type, this._dirUrl).pipe((all) => {
-          return all;
-        });
+      return db.open().then(() => {
+        return db.getAll(this.type, this._dirUrl);
       });
     },
 
@@ -173,7 +171,7 @@ define([
       }
 
       // When we got it !
-      return $.when(toOpen).pipe((toOpen) => {
+      return $.when(toOpen).then((toOpen) => {
         // It's still an object
         if (!Array.isArray(toOpen)) {
           return this.objectToMenu(
@@ -559,7 +557,7 @@ define([
     _getLocalHead(branch) {
       branch = branch || 'Master';
 
-      return db.getHead(this.type, this._dirUrl, branch).pipe(function (el) {
+      return db.getHead(this.type, this._dirUrl, branch).then(function (el) {
         if (typeof el !== 'object') {
           el = JSON.parse(el);
         }
@@ -576,13 +574,13 @@ define([
 
       // this._savedLocal = JSON.stringify(obj);
 
-      return db.open().pipe(() => {
+      return db.open().then(() => {
         return db[mode === 'head' ? 'storeToHead' : 'store'](
           this.type,
           this._dirUrl,
           name,
           obj,
-        ).pipe((element) => {
+        ).then((element) => {
           this.currentPath[1] = 'local';
           this.currentPath[2] = name;
           this.currentPath[3] = obj._time || 'head';
@@ -598,7 +596,7 @@ define([
     localSnapshot(data) {
       if (!data) return;
 
-      this._localSave(data, 'stored', data._name || 'Master').pipe(
+      this._localSave(data, 'stored', data._name || 'Master').then(
         function (element) {
           element._time = false; // We saved a snapshot, but have to reload the head (we continue working on the head)
           return element;
@@ -623,7 +621,7 @@ define([
     localBranch(data, name) {
       data._name = name;
       data._time = false;
-      return this._localSave(data, 'head', name).pipe((obj) => {
+      return this._localSave(data, 'head', name).then((obj) => {
         this.make(obj, this.currentPath[2], this.currentPath[3]);
       });
     },
@@ -707,7 +705,7 @@ define([
       data._time = false;
       data._saved = Date.now();
 
-      return this._localSave(data, 'head', data._name).pipe((el) => {
+      return this._localSave(data, 'head', data._name).then((el) => {
         return this.make(el, data._name, 'head');
       });
     },

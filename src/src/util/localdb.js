@@ -1,44 +1,18 @@
 'use strict';
 
 define(['jquery'], function ($) {
-  var db;
+  let db;
 
   return {
     open() {
-      // In the following line, you should include the prefixes of implementations you want to test.
-      // This condition should not be removed. Prevents error in firefox
-      if (!('indexedDB' in window)) {
-        window.indexedDB =
-          window.indexedDB ||
-          window.webkitIndexedDB ||
-          window.mozIndexedDB ||
-          window.oIndexedDB ||
-          window.msIndexedDB;
-      }
-      // DON'T use 'var indexedDB = ...' if you're not in a function.
-      // Moreover, you may need references to some window.IDB* objects:
-      window.IDBTransaction =
-        window.IDBTransaction ||
-        window.webkitIDBTransaction ||
-        window.msIDBTransaction;
-      window.IDBKeyRange =
-        window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-      // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
-
-      var def = $.Deferred();
-      if (!indexedDB) return def.reject();
+      const def = $.Deferred();
 
       if (db) return def.resolve();
 
-      var req = indexedDB.open('ci', 26);
-
-      req.addEventListener('success', (e) => {
-        db = e.target.result;
-        def.resolve();
-      });
+      const req = indexedDB.open('ci', 26);
 
       req.addEventListener('upgradeneeded', (e) => {
-        db = e.target.result;
+        const db = e.target.result;
         if (db.objectStoreNames.contains('localview')) {
           db.deleteObjectStore('localview');
         }
@@ -49,7 +23,10 @@ define(['jquery'], function ($) {
 
         db.createObjectStore('localdata', { keyPath: 'readURL' });
         db.createObjectStore('localview', { keyPath: 'readURL' });
+      });
 
+      req.addEventListener('success', (e) => {
+        db = e.target.result;
         def.resolve();
       });
 
@@ -61,7 +38,7 @@ define(['jquery'], function ($) {
     },
 
     getAll(type, key, branch) {
-      var def = $.Deferred();
+      const def = $.Deferred();
 
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
@@ -82,7 +59,7 @@ define(['jquery'], function ($) {
 
         if (branch) {
           if (e.target.result == undefined) {
-            this.create(type, key, branch).pipe((obj) => {
+            this.create(type, key, branch).then((obj) => {
               def.resolve(obj);
             });
           } else {
@@ -119,7 +96,7 @@ define(['jquery'], function ($) {
         head: '{}',
       };
 
-      var def = $.Deferred();
+      const def = $.Deferred();
 
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
@@ -135,7 +112,7 @@ define(['jquery'], function ($) {
     },
 
     storeToHead(type, key, branch, obj) {
-      var def = $.Deferred();
+      const def = $.Deferred();
 
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
@@ -163,7 +140,7 @@ define(['jquery'], function ($) {
     },
 
     store(type, key, branch, obj) {
-      var def = $.Deferred();
+      const def = $.Deferred();
       type =
         type === 'data' || type === 'localdata' ? 'localdata' : 'localview';
       var trans = db.transaction(type, 'readwrite');
@@ -198,15 +175,15 @@ define(['jquery'], function ($) {
     },
 
     getHead(type, key, branch) {
-      return this.open().pipe(() => {
-        return this.getAll(type, key, branch).pipe((obj) => {
+      return this.open().then(() => {
+        return this.getAll(type, key, branch).then((obj) => {
           return obj.head;
         });
       });
     },
 
     getList(type, key, branch) {
-      return db.getAll(type, key, branch).pipe((obj) => {
+      return db.getAll(type, key, branch).then((obj) => {
         return obj.list;
       });
     },

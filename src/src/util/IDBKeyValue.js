@@ -9,8 +9,8 @@ define(function () {
       const request = window.indexedDB.open(this.dbName);
 
       request.addEventListener('upgradeneeded', (e) => {
-        this.db = e.target.result;
-        this.db.createObjectStore('store');
+        const db = e.target.result;
+        db.createObjectStore('store');
       });
 
       request.addEventListener('success', (e) => {
