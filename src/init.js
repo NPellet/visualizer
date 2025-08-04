@@ -27,6 +27,7 @@ require.config({
     jsbarcode: 'components/jsbarcode/dist/JsBarcode.all.min',
     jquery: 'components/jquery/dist/jquery',
     'jquery-cookie': 'components/jquery-cookie/jquery.cookie',
+    'jquery-migrate': 'node_modules/jquery-migrate/dist/jquery-migrate',
     'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
     'jquery-ui': 'components/jquery-ui',
     jsgraph: 'components/jsgraph/dist/jsgraph-es6',
@@ -130,6 +131,7 @@ require.config({
     select2: ['jquery'],
     jsbarcode: ['jquery'],
     'lib/threejs/TrackballControls': ['threejs'],
+    'jquery-migrate': ['jquery'],
     jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
     'lib/couchdb/jquery.couch': ['jquery'],
     slickgrid_core: ['jquery', 'jquery-ui/ui/widgets/sortable', 'jquery-tmpl'],
@@ -219,8 +221,9 @@ require([
   'uri/URI.fragmentQuery',
   'components/setImmediate/setImmediate',
   'lib/regenerator/regenerator-runtime',
+  // Uncomment to enable jquery-migrate deprecations warnings.
+  // 'jquery-migrate',
 ], function (Version, $, Datas, EntryPoint, URI) {
-  $.browser = { msie: false }; // Property used by old libraries and not present in jQuery anymore
   $(document).ready(() => {
     const url = new URI(window.location.href);
     const type =

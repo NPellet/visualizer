@@ -291,6 +291,7 @@ module.exports = function (grunt) {
             src: [
               './katex/dist/**',
               './angularplasmid/dist/**',
+              './jquery-migrate/dist/*',
               './mathjs/dist/math.min.js',
               './mathjs/dist/math.min.map',
               './openchemlib/dist/**',

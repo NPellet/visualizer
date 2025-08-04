@@ -113,26 +113,6 @@ define([
 
   preloadImages(shapeImages);
 
-  $.fn.listHandlers = function (events, outputFunction) {
-    return this.each(function () {
-      var that = this,
-        dEvents = $(this).data('events');
-      if (!dEvents) return;
-      $.each(dEvents, function (name, handler) {
-        if (
-          new RegExp(
-            `^(${events === '*' ? '.+' : events.replace(',', '|').replace(/^on/i, '')})$`,
-            'i',
-          ).test(name)
-        ) {
-          $.each(handler, function (i, handler) {
-            outputFunction(that, `\n${i}: [${name}] : ${handler}`);
-          });
-        }
-      });
-    });
-  };
-
   function View() {
     this._firstLoad = true;
   }
@@ -482,10 +462,6 @@ define([
             _.throttle(hideProjection, 500),
           );
         }
-
-        $(that.renderer.domElement).listHandlers('mousemove', function () {
-          // List jquery handlers (to debug...)
-        });
       }
 
       function onWindowResize() {
