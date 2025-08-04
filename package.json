@@ -71,7 +71,6 @@
   "dependencies": {
     "@babel/preset-env": "^7.28.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
-    "@mgreminger/quill-image-resize-module": "^1.0.5",
     "angularplasmid": "^1.0.5",
     "babel-preset-minify": "^0.5.2",
     "country-data": "0.0.31",
@@ -85,6 +84,8 @@
     "node-jsgraph": "2.4.15",
     "openchemlib": "^9.6.0",
     "quill": "^2.0.3",
+    "quill-resize-module": "^2.0.4",
+    "quill-table-better": "^1.2.1",
     "rxn-renderer": "^1.0.2",
     "smart-array-filter": "^4.1.1",
     "superagent": "^3.8.3",

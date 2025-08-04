@@ -294,7 +294,12 @@ module.exports = function (grunt) {
               './mathjs/dist/math.min.js',
               './mathjs/dist/math.min.map',
               './openchemlib/dist/**',
-              ['./quill/dist/*.js*', './quill/dist/*.css'],
+              [
+                './quill/dist/*.js*',
+                './quill/dist/*.css',
+                './quill-resize-module/dist/resize.*',
+                './quill-table-better/dist/quill-table-better.*',
+              ],
               './d3-hierarchy/dist/d3-hierarchy.min.js',
               './@fortawesome/fontawesome-free/css/all.min.css',
               './@fortawesome/fontawesome-free/webfonts/*',

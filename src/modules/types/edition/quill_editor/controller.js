@@ -41,8 +41,7 @@ define(['jquery', 'modules/default/defaultcontroller'], function ($, Default) {
 
   Controller.prototype.onRemove = function () {};
 
-  Controller.prototype.valueChanged = function (value) {
-    const html = this.module.view.instance.root.innerHTML;
+  Controller.prototype.valueChanged = function (value, html) {
     if (this.module.getConfigurationCheckbox('storeInView', 'yes')) {
       this.module.definition.richtext = value;
     }

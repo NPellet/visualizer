@@ -56,7 +56,9 @@ require.config({
     pouchdb: 'components/pouchdb/dist/pouchdb.min',
     quillPrivate: 'src/quillPrivate',
     quill: 'node_modules/quill/dist/quill',
-    quillImageResizeModule: 'browserified/quill/image-resize-module',
+    quillResizeModule: 'node_modules/quill-resize-module/dist/resize',
+    quillTableBetterModule:
+      'node_modules/quill-table-better/dist/quill-table-better',
     RxnRenderer: 'browserified/RxnRenderer/index',
     MFParser: 'browserified/MFParser/index',
     select2: 'components/select2/dist/js/select2.full',
@@ -122,7 +124,8 @@ require.config({
     'lib/parser/Parser': {
       exports: 'Parser',
     },
-    quillImageResizeModule: ['quillPrivate', 'quill'],
+    quillResizeModule: ['quillPrivate', 'quill'],
+    quillTableBetterModule: ['quillPrivate', 'quill'],
     'jquery-cookie': 'jquery',
     select2: ['jquery'],
     jsbarcode: ['jquery'],
@@ -183,6 +186,7 @@ require.config({
   map: {
     '*': {
       quill: 'quillPrivate',
+      Quill: 'quillPrivate',
     },
     quillPrivate: {
       quill: 'quill',
