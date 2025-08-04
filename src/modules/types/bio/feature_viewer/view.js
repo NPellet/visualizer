@@ -4,7 +4,6 @@ define([
   'modules/default/defaultview',
   'src/util/util',
   'BiojsCore',
-  'jquery-ui/ui/widgets/slider',
   'BiojsDasProteinFeatureViewer',
 ], function (Default, Util, Biojs) {
   function View() {}

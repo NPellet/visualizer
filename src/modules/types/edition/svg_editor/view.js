@@ -122,7 +122,7 @@ define([
 
           this.module.getDomContent().html(this.dom);
 
-          this.dom.bind('load', function () {
+          this.dom.on('load', function () {
             var frame = that.dom[0];
             that.svgCanvas = new EmbeddedSVGEdit(frame);
             // Hide main button, as we will be controlling new, load, save, etc. from the host document
@@ -132,7 +132,7 @@ define([
             frame.contentWindow.svgedit.options = {};
 
             // What to do when the canvas changes
-            that.svgCanvas.bind('changed', function () {
+            that.svgCanvas.on('changed', function () {
               that.svgEditor.showSaveWarning = false;
               that._saveSvg();
             });

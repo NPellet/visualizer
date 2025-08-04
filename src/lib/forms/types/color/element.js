@@ -12,14 +12,10 @@ define([], function () {
             div = $('<div></div>')
                 .addClass('form-field')
                 .appendTo(dom)
-                .bind('click', function (event) {
-
+                .on('click', function (event) {
                     self.toggleSelect(event);
-
-                }).bind('click', function (event) {
-
+                }).on('click', function (event) {
                     event.stopPropagation();
-
                 });
 
         this.div = div;

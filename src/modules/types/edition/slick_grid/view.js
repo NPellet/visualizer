@@ -370,13 +370,13 @@ define([
       });
     }
 
-    $(ctx.grid.getHeaderRow()).delegate(
+    $(ctx.grid.getHeaderRow()).on(
       ':input',
       'change keyup',
       _.debounce(function () {
         let columnId = $(this).data('columnId');
         if (columnId != null) {
-          ctx.columnFilters[columnId] = $.trim($(this).val());
+          ctx.columnFilters[columnId] = $(this).val().trim();
           ctx.columnFilterFunctions[columnId] = getColumnFilterFunction(
             ctx.columnFilters[columnId],
           );
@@ -1290,7 +1290,7 @@ define([
           columns: editableColumns,
         },
       ).appendTo('body');
-      $modal.keydown(function (e) {
+      $modal.on('keydown', function (e) {
         if (e.which === $.ui.keyCode.ENTER) {
           that.fromPopup = true;
           that.grid.getEditController().commitCurrentEdit();
@@ -1305,12 +1305,12 @@ define([
           e.preventDefault();
         }
       });
-      $modal.find('[data-action=save]').click(function () {
+      $modal.find('[data-action=save]').on('click', function () {
         that.fromPopup = true;
         that.grid.getEditController().commitCurrentEdit();
         that.fromPopup = false;
       });
-      $modal.find('[data-action=cancel]').click(function () {
+      $modal.find('[data-action=cancel]').on('click', function () {
         that.fromPopup = true;
         that.grid.getEditController().cancelCurrentEdit();
         that.fromPopup = false;

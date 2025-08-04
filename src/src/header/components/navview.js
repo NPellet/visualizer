@@ -6,9 +6,9 @@ define([
   'src/util/versioning',
   'forms/button',
   'src/util/util',
-  'fancytree',
+  'components/fancytree/dist/modules/jquery.fancytree.edit',
+  'components/fancytree/dist/modules/jquery.fancytree.filter',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
-  'jquery-ui/ui/widgets/dialog',
 ], function ($, Default, Versioning, Button, Util) {
   function Element() {}
 
@@ -16,9 +16,8 @@ define([
     initImpl() {
       var that = this;
       this.id = Util.getNextUniqueId();
-      $.ui.fancytree.debugLevel = 0;
 
-      $(document).keydown(function (event) {
+      $(document).on('keydown', function (event) {
         // If Control or Command key is pressed and the S key is pressed
         // run save function. 83 is the key code for S.
         if ((event.ctrlKey || event.metaKey) && event.which === 83) {
@@ -74,7 +73,8 @@ define([
     },
 
     reloadActiveNode() {
-      this.reloadNode(this.$tree.fancytree('getActiveNode'));
+      const tree = $.ui.fancytree.getTree(this.$tree);
+      this.reloadNode(tree.getActiveNode());
     },
 
     reloadNode(node) {
@@ -443,18 +443,15 @@ define([
           },
         });
         that.fancytreeOk = true;
-        var tree = that.$tree.fancytree('getTree');
+        const tree = $.ui.fancytree.getTree(that.$tree);
         that.$_elToOpen
           .find('input[name=search]')
-          .keyup(function (e) {
-            var n,
-              match = $(this).val();
+          .on('keyup', function (e) {
+            var n;
+            var match = $(this).val();
 
-            if (
-              (e && e.which === $.ui.keyCode.ESCAPE) ||
-              $.trim(match) === ''
-            ) {
-              $('button#btnResetSearch').click();
+            if ((e && e.which === $.ui.keyCode.ESCAPE) || match.trim() === '') {
+              $('button#btnResetSearch').trigger('click');
               return;
             }
 
@@ -463,10 +460,10 @@ define([
             $('button#btnResetSearch').attr('disabled', false);
             $('span#matches').text(`(${n} matches)`);
           })
-          .focus();
+          .trigger('focus');
 
         $('button#btnResetSearch')
-          .click(function () {
+          .on('click', function () {
             $('input[name=search]').val('');
             $('span#matches').text('');
             tree.clearFilter();

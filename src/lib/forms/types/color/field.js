@@ -1,6 +1,6 @@
 'use strict';
 
-define([require, '../../field', 'src/util/color', 'jquery-ui/ui/widgets/slider', 'components/farbtastic/src/farbtastic'], function (require, FieldDefaultConstructor, Color) {
+define([require, '../../field', 'src/util/color', 'jquery-ui', 'components/farbtastic/src/farbtastic'], function (require, FieldDefaultConstructor, Color) {
 
     var FieldConstructor = function (name) {
 

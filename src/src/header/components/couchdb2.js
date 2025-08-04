@@ -15,9 +15,8 @@ define([
   'src/util/debug',
   'file-saver',
   'lib/couchdb/jquery.couch',
-  'fancytree',
+  'components/fancytree/dist/modules/jquery.fancytree',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
-  'jquery-ui/ui/widgets/autocomplete',
 ], function (
   $,
   _,
@@ -42,7 +41,7 @@ define([
     initImpl() {
       var that = this;
 
-      $(document).keydown(function (event) {
+      $(document).on('keydown', function (event) {
         // If Control or Command key is pressed and the S key is pressed
         // run save function. 83 is the key code for S.
         if (
@@ -158,7 +157,6 @@ define([
       this.db = this.options.database || 'visualizer';
       this.dbUrl = `${this.url}/${this.db}`;
       this.database = $.couch.db(this.db);
-      $.ui.fancytree.debugLevel = 0;
       this.checkDatabase();
     },
 
@@ -600,7 +598,7 @@ define([
             this.loginForm.append(
               new Button('Login', doLogin, { color: 'green' }).render(),
             );
-            this.loginForm.bind('keypress', function (e) {
+            this.loginForm.on('keypress', function (e) {
               if (e.charCode === 13) {
                 return doLogin();
               }
@@ -691,12 +689,12 @@ define([
             .on('autocompleteselect', function (event, d) {
               var flavor = d.item.value;
               if (that.flavor !== flavor) that.changeFlavor(flavor);
-              flavorField.blur();
+              flavorField.trigger('blur');
             })
             .on('keypress', function (e) {
               if (e.keyCode === 13) {
                 changeFlavor();
-                flavorField.blur();
+                flavorField.trigger('blur');
               }
             });
         },

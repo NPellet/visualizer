@@ -60,7 +60,7 @@ define([
           );
         });
 
-        choiceContainer.find('input').bind('click', () => {
+        choiceContainer.find('input').on('click', () => {
           that.plotAccordingToChoices(choiceContainer, that._id);
         });
       });
@@ -217,10 +217,10 @@ define([
     plot(id, data, options) {
       var that = this;
       this._plot = $.plot(`#${id}`, data, options);
-      $(`#${id}`).bind('plotclick', function (event) {
+      $(`#${id}`).on('plotclick', function (event) {
         event.preventDefault();
       });
-      $(`#${id}`).bind('plothover', function (event, pos, item) {
+      $(`#${id}`).on('plothover', function (event, pos, item) {
         if (item) {
           that.module.controller.elementHover(
             that._data[item.seriesIndex].data[item.dataIndex],

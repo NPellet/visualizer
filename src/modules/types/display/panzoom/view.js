@@ -7,10 +7,9 @@ define([
   'src/util/util',
   'src/util/ui',
   'lodash',
-  'bowser',
   'components/jquery.panzoom/dist/jquery.panzoom',
-  'components/jquery-mousewheel/jquery.mousewheel',
-], function (API, Debug, Default, Util, UI, _, bowser) {
+  'components/jquery-mousewheel/jquery.mousewheel.min',
+], function (API, Debug, Default, Util, UI, _) {
   var focusR = 0.5;
 
   function View() {
@@ -681,7 +680,7 @@ define([
 
       // Double click event
       this.dom.off('dblclick');
-      this.dom.dblclick(function () {
+      this.dom.on('dblclick', () => {
         for (let i = 0; i < that.images.length; i++) {
           that.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {

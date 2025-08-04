@@ -33,14 +33,14 @@ define(['src/util/util', 'components/farbtastic/src/farbtastic'], function (Util
                 return opts;
             }),
 
-            fontcolorBtn = $('<li><span>A</span></li>').addClass('form-textstyle-colorli').bind('click', function () {
+            fontcolorBtn = $('<li><span>A</span></li>').addClass('form-textstyle-colorli').on('click', function () {
 
                 fontcolorDiv.toggle();
                 $(this).toggleClass('selected');
             }),
 
 
-            backgroundcolorBtn = $('<li><span></span></li>').addClass('form-textstyle-bgcolorli').bind('click', function () {
+            backgroundcolorBtn = $('<li><span></span></li>').addClass('form-textstyle-bgcolorli').on('click', function () {
 
                 fontcolorDiv2.toggle();
                 $(this).toggleClass('selected');

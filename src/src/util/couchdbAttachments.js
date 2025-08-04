@@ -7,8 +7,7 @@ define([
   'src/util/versioning',
   'superagent',
   'src/util/util',
-  'fetch',
-], function (Versioning, superagent, util, fetch) {
+], function (Versioning, superagent, util) {
   const base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
   function dataURLtoBase64(data) {
