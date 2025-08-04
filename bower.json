@@ -71,8 +71,7 @@
     "web-animations-js": "2.2.2",
     "x2js": "1.2.0",
     "js-yaml": "^3.7.0",
-    "canvg": "^1.3.0",
-    "quill": "https://github.com/quilljs/quill/releases/download/v1.3.7/quill.tar.gz"
+    "canvg": "^1.3.0"
   },
   "resolutions": {
     "jsgraph": "2.2.36",

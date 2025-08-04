@@ -6,11 +6,13 @@ define([
   'src/util/util',
   'src/util/api',
   'quill',
-  'quillImageResizeModule',
+  'quillResizeModule',
+  'quillTableBetterModule',
   'lodash',
-  'quillImageDropModule',
-], function ($, Default, Util, API, Quill, ImageResize, _) {
-  Quill.register('modules/ImageResize', ImageResize.default);
+], function ($, Default, Util, API, Quill, QuillResize, QuillTableBetter, _) {
+  Quill.register('modules/resize', QuillResize.default);
+  Quill.register('modules/table-better', QuillTableBetter);
+
   function View() {
     this._id = Util.getNextUniqueId();
   }
@@ -28,9 +30,9 @@ define([
       this.module.currentWord = ''; // used for shortcut expansion
       this.module.shortcuts = [];
       this.valueChanged = _.debounce(() => {
-        this.module.controller.valueChanged.apply(
-          this.module.controller,
-          arguments,
+        this.module.controller.valueChanged(
+          this.instance.getContents(),
+          this.instance.getSemanticHTML(),
         );
       }, this.debounce);
     },
@@ -38,12 +40,22 @@ define([
       this.initEditor();
     },
     initEditor() {
-      Util.loadCss('./components/quill/quill.core.css')
+      Util.loadCss('./node_modules/quill/dist/quill.core.css')
         .then(() => {
-          return Util.loadCss('./components/quill/quill.snow.css');
+          return Util.loadCss('./node_modules/quill/dist/quill.snow.css');
         })
         .then(() => {
           return Util.loadCss('node_modules/katex/dist/katex.min.css');
+        })
+        .then(() => {
+          return Util.loadCss(
+            'node_modules/quill-resize-module/dist/resize.css',
+          );
+        })
+        .then(() => {
+          return Util.loadCss(
+            'node_modules/quill-table-better/dist/quill-table-better.css',
+          );
         })
         .then(() => {
           var contents = this.module.definition.richtext || '';
@@ -80,29 +92,41 @@ define([
           );
           this.instance = new Quill(`#${this._id}`, {
             modules: {
-              clipboard: {
-                matchVisual: false,
+              clipboard: {},
+              resize: {},
+              table: false,
+              'table-better': {
+                language: 'en_US',
+                menus: [
+                  'column',
+                  'row',
+                  'merge',
+                  'table',
+                  'cell',
+                  'wrap',
+                  'copy',
+                  'delete',
+                ],
+                toolbarTable: true,
               },
-              imageDrop: true,
-              ImageResize: {},
-              formula: true,
               toolbar: readOnly
                 ? false
                 : getToolbar(this.module.getConfiguration('toolbarMode')),
+            },
+            keyboard: {
+              bindings: QuillTableBetter.keyboardBindings,
             },
             placeholder: 'Start composing here...',
             readOnly,
             theme: 'snow', // or 'bubble'
           });
 
-          //      this.$content.find('[data-toggle="tooltip"]').tooltip();
-
           if (this.storeInView) {
             this.instance.setContents(contents);
-            this.module.controller.valueChanged(contents);
+            this.module.controller.valueChanged(contents, '');
           }
           this.instance.on('text-change', () => {
-            this.valueChanged(this.instance.getContents());
+            this.valueChanged();
           });
           this.resolveReady();
         });
@@ -118,8 +142,8 @@ define([
         this.module.data = moduleValue;
         this.clear();
         this.mode = 'html';
-        this.instance.setContents(
-          this.instance.clipboard.convert(moduleValue.get()),
+        this.instance.updateContents(
+          this.instance.clipboard.convert({ html: moduleValue.get() }),
         );
       },
       quill(moduleValue) {
@@ -217,7 +241,15 @@ define([
           [{ size: ['small', false, 'large', 'huge'] }],
           [{ color: [] }, { background: [] }],
           ['bold', 'italic', 'underline', 'strike'],
-          ['link', 'image', 'video', 'code-block', 'blockquote', 'code'],
+          [
+            'link',
+            'image',
+            'video',
+            'code-block',
+            'blockquote',
+            'code',
+            'table-better',
+          ],
           [{ align: [] }],
           [{ list: 'ordered' }, { list: 'bullet' }],
           [{ script: 'sub' }, { script: 'super' }],
@@ -232,7 +264,7 @@ define([
           [{ header: [1, 2, 3, 4, false] }],
           [{ color: [] }],
           ['bold', 'italic'],
-          ['link', 'image', 'blockquote'],
+          ['link', 'image', 'blockquote', 'table-better'],
           [{ align: [] }],
           [{ list: 'bullet' }],
           [{ script: 'sub' }, { script: 'super' }],

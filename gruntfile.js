@@ -2,11 +2,11 @@
 
 module.exports = function (grunt) {
   const walk = require('walk');
-  const fs = require('fs');
+  const fs = require('node:fs');
   const mkpath = require('mkpath');
-  const path = require('path');
+  const path = require('node:path');
   const extend = require('extend');
-  const child_process = require('child_process');
+  const child_process = require('node:child_process');
   const semver = require('semver');
   const changelog = require('conventional-changelog').default;
   const tempfile = require('tempfile');
@@ -27,12 +27,12 @@ module.exports = function (grunt) {
       ignore: false,
     });
 
-    if (!this.files.length) {
+    if (this.files.length === 0) {
       grunt.log.writeln(`Moved ${'0'.cyan} files.`);
       return done();
     }
 
-    this.files.forEach(function (f) {
+    for (const f of this.files) {
       let dest = f.dest;
       let dir = path.dirname(dest);
 
@@ -40,10 +40,12 @@ module.exports = function (grunt) {
       if (f.src.length === 0) {
         // Continue if ignore is set
         if (options.ignore) {
-          return done();
+          done();
+          continue;
         } else {
           grunt.fail.warn(`Could not move file to ${f.dest} it did not exist.`);
-          return done();
+          done();
+          continue;
         }
       }
 
@@ -90,15 +92,15 @@ module.exports = function (grunt) {
           read.pipe(write);
         });
       });
-    });
+    }
   });
 
   function mapPath(path) {
     // Map a relative application path to a relative build path
     var mapped;
-    if (path.indexOf('usr/') === 0) mapped = usrPath + path.substr(3);
+    if (path.indexOf('usr/') === 0) mapped = usrPath + path.slice(3);
     else mapped = `./src/${path}`;
-    if (mapped.indexOf('.js') === -1) mapped += '.js';
+    if (!mapped.includes('.js')) mapped += '.js';
     return mapped;
   }
 
@@ -280,7 +282,6 @@ module.exports = function (grunt) {
               './js-yaml/dist/**',
               './canvg/dist/**',
               './eventEmitter/*.js',
-              ['./quill/*.min.js*', './quill/*.css'],
             ],
             dest: './build/components/',
           },
@@ -290,11 +291,15 @@ module.exports = function (grunt) {
             src: [
               './katex/dist/**',
               './angularplasmid/dist/**',
-              './quill-image-drop-module/image-drop.min.js',
-              './quill-image-resize-module/image-resize.min.js',
               './mathjs/dist/math.min.js',
               './mathjs/dist/math.min.map',
               './openchemlib/dist/**',
+              [
+                './quill/dist/*.js*',
+                './quill/dist/*.css',
+                './quill-resize-module/dist/resize.*',
+                './quill-table-better/dist/quill-table-better.*',
+              ],
               './d3-hierarchy/dist/d3-hierarchy.min.js',
               './@fortawesome/fontawesome-free/css/all.min.css',
               './@fortawesome/fontawesome-free/webfonts/*',
@@ -368,9 +373,9 @@ module.exports = function (grunt) {
             dest: './build/usr/',
             filter(filepath) {
               var modulesStack = grunt.option('modulesStack');
-              filepath = filepath.replace(/\\/g, '/');
+              filepath = filepath.replaceAll('\\', '/');
               for (const i in modulesStack) {
-                if (filepath.indexOf(i.substr(4)) > -1) {
+                if (filepath.includes(i.slice(4))) {
                   return true;
                 }
               }
@@ -384,9 +389,9 @@ module.exports = function (grunt) {
             dest: './build/',
             filter(filepath) {
               var modulesStack = grunt.option('modulesStack');
-              filepath = filepath.replace(/\\/g, '/');
+              filepath = filepath.replaceAll('\\', '/');
               for (const i in modulesStack) {
-                if (filepath.indexOf(i) > -1) {
+                if (filepath.includes(i)) {
                   return true;
                 }
               }
@@ -503,8 +508,8 @@ module.exports = function (grunt) {
           let p;
           if (root === '.') {
             p = fileStats.name;
-          } else if (root.substr(0, 2) === './') {
-            p = `${root.substr(2)}/${fileStats.name}`;
+          } else if (root.slice(0, 2) === './') {
+            p = `${root.slice(2)}/${fileStats.name}`;
           } else {
             p = `${root}/${fileStats.name}`;
           }
@@ -585,8 +590,8 @@ module.exports = function (grunt) {
             // Not a very neat fix but whatever
             const pos = arguments[0].search('usr');
             if (pos > -1) {
-              console.log('new : ', arguments[0].substring(pos + 1));
-              arguments[0] = arguments[0].substring(pos + 1);
+              console.log('new :', arguments[0].slice(pos + 1));
+              arguments[0] = arguments[0].slice(pos + 1);
             }
             return oldLoadFile(arguments[0], `${usrPath}/`);
           }
@@ -632,7 +637,7 @@ module.exports = function (grunt) {
 
     function getRealPath(path) {
       if (path.indexOf('usr') === 0) {
-        path = usrDir + path.substr(3);
+        path = usrDir + path.slice(3);
       }
       return `./src/${path}`;
     }
@@ -650,7 +655,7 @@ module.exports = function (grunt) {
       }
 
       jsonStructure.name = file.name;
-      if (file.folders && file.folders instanceof Array) {
+      if (file.folders && Array.isArray(file.folders)) {
         for (let i = 0; i < file.folders.length; i++) {
           const res = loadFile(`${fileName}/${file.folders[i]}`);
           jsonStructure.folders[res.name] = res;
@@ -668,7 +673,7 @@ module.exports = function (grunt) {
     }
 
     if (cfg.modules) {
-      if (cfg.modules instanceof Array) {
+      if (Array.isArray(cfg.modules)) {
         // Backwards compatibility
         for (let i = 0; i < cfg.modules.length; i++) {
           if (typeof cfg.modules[i] == 'object') {
@@ -677,7 +682,7 @@ module.exports = function (grunt) {
             extend(true, modulesFinal, oldLoadFile(cfg.modules[i]));
           }
         }
-      } else if (cfg.modules.folders instanceof Array) {
+      } else if (Array.isArray(cfg.modules.folders)) {
         const list = cfg.modules;
         if (list.modules) {
           modulesFinal.modules = [];
@@ -856,7 +861,7 @@ module.exports = function (grunt) {
     versionJS = setVersionValue(
       versionJS,
       'PRERELEASE',
-      semVersion.prerelease.length ? semVersion.prerelease[0] : 'false',
+      semVersion.prerelease.length > 0 ? semVersion.prerelease[0] : 'false',
     );
 
     if (grunt.option('release')) {
@@ -924,7 +929,7 @@ module.exports = function (grunt) {
       versionJS = setVersionValue(
         versionJS,
         'PRERELEASE',
-        semVersion.prerelease.length ? semVersion.prerelease[0] : 'false',
+        semVersion.prerelease.length > 0 ? semVersion.prerelease[0] : 'false',
       );
 
       fs.writeFileSync('./src/version.js', versionJS);
