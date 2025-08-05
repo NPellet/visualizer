@@ -976,10 +976,12 @@ define([
           [
             '<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
             function () {
-              var module = DataObject.recursiveTransform(
+              const module = DataObject.recursiveTransform(
                 JSON.parse(window.localStorage.getItem('ci-copy-module')),
               );
-              addModuleFromJSON(module);
+              if (module !== null) {
+                addModuleFromJSON(module);
+              }
             },
           ],
         ]);
@@ -992,18 +994,16 @@ define([
             var $li = $('<li name="add"><a> Add a module</a></li>');
 
             var $ulModules = $('<ul />').appendTo($li);
-            var allTypes = ModuleFactory.getTypes();
-            $.when(allTypes).then(function (json) {
-              if (typeof json === 'object' && !Array.isArray(json)) {
-                json = [json];
-              }
+            let allTypes = ModuleFactory.getTypes();
+            if (typeof allTypes === 'object' && !Array.isArray(allTypes)) {
+              allTypes = [allTypes];
+            }
 
-              if (Array.isArray(json)) {
-                for (let i = 0, l = json.length; i < l; i++) {
-                  makeRecursiveMenu(json[i], $ulModules);
-                }
+            if (Array.isArray(allTypes)) {
+              for (let i = 0, l = allTypes.length; i < l; i++) {
+                makeRecursiveMenu(allTypes[i], $ulModules);
               }
-            });
+            }
 
             $(contextDom).append($li);
 
