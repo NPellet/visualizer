@@ -90,36 +90,40 @@ define([
             'editable',
             'isEditable',
           );
-          this.instance = new Quill(`#${this._id}`, {
-            modules: {
-              clipboard: {},
-              resize: {},
-              table: false,
-              'table-better': {
-                language: 'en_US',
-                menus: [
-                  'column',
-                  'row',
-                  'merge',
-                  'table',
-                  'cell',
-                  'wrap',
-                  'copy',
-                  'delete',
-                ],
-                toolbarTable: true,
+          if (readOnly) {
+            this.instance = new Quill(`#${this._id}`, { readOnly });
+          } else {
+            this.instance = new Quill(`#${this._id}`, {
+              modules: {
+                clipboard: {},
+                resize: {},
+                table: false,
+                'table-better': {
+                  language: 'en_US',
+                  menus: [
+                    'column',
+                    'row',
+                    'merge',
+                    'table',
+                    'cell',
+                    'wrap',
+                    'copy',
+                    'delete',
+                  ],
+                  toolbarTable: true,
+                },
+                toolbar: readOnly
+                  ? false
+                  : getToolbar(this.module.getConfiguration('toolbarMode')),
               },
-              toolbar: readOnly
-                ? false
-                : getToolbar(this.module.getConfiguration('toolbarMode')),
-            },
-            keyboard: {
-              bindings: QuillTableBetter.keyboardBindings,
-            },
-            placeholder: 'Start composing here...',
-            readOnly,
-            theme: 'snow', // or 'bubble'
-          });
+              keyboard: {
+                bindings: QuillTableBetter.keyboardBindings,
+              },
+              placeholder: 'Start composing here...',
+              readOnly,
+              theme: 'snow', // or 'bubble'
+            });
+          }
 
           if (this.storeInView) {
             this.instance.setContents(contents);

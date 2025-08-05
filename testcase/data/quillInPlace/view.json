@@ -1,0 +1,159 @@
+{
+  "version": "2.171.2-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/edition/quill_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                []
+              ],
+              "toolbarMode": [
+                "light"
+              ],
+              "debouncing": [
+                0
+              ],
+              "storeInView": [
+                [
+                  "yes"
+                ]
+              ],
+              "modifyVarIn": [
+                []
+              ],
+              "className": [
+                "quill"
+              ],
+              "css": [
+                ".quill {}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 10,
+            "top": 9
+          },
+          "size": {
+            "width": 77,
+            "height": 55
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            242,
+            204,
+            1
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "",
+      "richtext": {
+        "ops": [
+          {
+            "insert": "This is a demo of quill in module content saving\n Need to check that even if the display mode (no edition toolbar) the content is still displayed."
+          }
+        ]
+      }
+    }
+  ],
+  "variables": [
+    {
+      "varname": "results",
+      "jpath": [
+        "results"
+      ]
+    },
+    {
+      "varname": "test",
+      "jpath": [
+        "test"
+      ]
+    },
+    {
+      "varname": "shortcuts",
+      "jpath": [
+        "shortcuts"
+      ]
+    }
+  ],
+  "aliases": [],
+  "configuration": {
+    "title": "No title"
+  }
+}
