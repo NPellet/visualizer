@@ -65,14 +65,6 @@ require.config({
     uri: 'components/uri.js/src',
     'web-animations': 'components/web-animations-js/web-animations.min',
     x2js: 'components/x2js/xml2json.min',
-    BiojsSequence: 'lib/biojs-1.0/src/main/javascript/Biojs.Sequence',
-    BiojsTooltip: 'lib/biojs-1.0/src/main/javascript/Biojs.Tooltip',
-    BiojsFeatureViewer: 'lib/biojs-1.0/src/main/javascript/Biojs.FeatureViewer',
-    BiojsCore: 'lib/biojs-1.0/src/main/javascript/Biojs',
-    BiojsMyFeatureViewer:
-      'modules/types/bio/feature_viewer/Biojs.MyFeatureViewer',
-    BiojsDasProteinFeatureViewer:
-      'lib/biojs-1.0/src/main/javascript/Biojs.DasProteinFeatureViewer',
   },
   shim: {
     canvg: {
@@ -151,20 +143,6 @@ require.config({
       exports: 'Pixastic',
     },
     'moment-duration-format': ['moment'],
-    BiojsCore: {
-      exports: 'Biojs',
-    },
-    BiojsSequence: ['BiojsCore'],
-    BiojsTooltip: ['BiojsCore'],
-    BiojsMyFeatureViewer: ['BiojsFeatureViewer'],
-    BiojsFeatureViewer: [
-      'BiojsCore',
-      'lib/biojs-1.0/src/main/resources/dependencies/jquery/jquery.tooltip',
-      'lib/biojs-1.0/src/main/resources/dependencies/graphics/raphael-2.1.2',
-      'lib/biojs-1.0/src/main/resources/dependencies/graphics/canvg',
-      'lib/biojs-1.0/src/main/resources/dependencies/graphics/rgbcolor',
-    ],
-    BiojsDasProteinFeatureViewer: ['BiojsMyFeatureViewer'],
   },
   map: {
     '*': {
