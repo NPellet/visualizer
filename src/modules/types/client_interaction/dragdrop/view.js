@@ -44,11 +44,11 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
           : 'content-zone',
       })
         .html(this.$messages)
-        .on('click mousemove', function () {
-          textarea.focus();
+        .on('click mousemove', () => {
+          textarea.trigger('focus');
         })
-        .mouseout(function () {
-          textarea.blur();
+        .on('mouseout', () => {
+          textarea.trigger('blur');
         })
         .append(textarea);
 
@@ -81,7 +81,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
         this.$messages.append($fileDialogButton);
         $fileDialogButton.on('click', function (event) {
           event.stopPropagation();
-          $fileInput.click();
+          $fileInput.trigger('click');
         });
       }
 
@@ -90,7 +90,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       ) {
         this.dom.on('click', function (event) {
           event.stopPropagation();
-          $fileInput.click();
+          $fileInput.trigger('click');
         });
       }
 

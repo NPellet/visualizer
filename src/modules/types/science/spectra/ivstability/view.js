@@ -242,7 +242,7 @@ define([
         .attr('contentEditable', 'true')
         .text(description || defaultText)
 
-        .bind('mousedown', function () {
+        .on('mousedown', function () {
           if ($(this).text() == defaultText) {
             $(this)
               .text('')
@@ -250,17 +250,17 @@ define([
                 color: 'black',
                 fontStyle: 'normal',
               })
-              .focus();
+              .trigger('focus');
           }
         })
-        .bind('keypress', function (e) {
+        .on('keypress', function (e) {
           if (e.keyCode === 13) {
             e.preventDefault();
             $(this).trigger('blur');
             return false;
           }
         })
-        .bind('blur', function () {
+        .on('blur', function () {
           var text = $(this).text();
           if (text === '' || text == null || text == defaultText) {
             $(this).text(defaultText).css({

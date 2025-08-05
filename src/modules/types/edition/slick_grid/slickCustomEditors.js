@@ -12,8 +12,6 @@ define([
   'src/util/ui',
   'src/data/structures',
   'components/spectrum/spectrum',
-  'jquery',
-  'jquery-ui/ui/widgets/datepicker',
 ], function (_, Util, UI, structures) {
   Util.loadCss('./components/spectrum/spectrum.css');
   (function ($) {
@@ -66,7 +64,7 @@ define([
       this.init = function () {
         $input = $('<INPUT type="text" class="editor-text" />');
         $input.appendTo(args.container);
-        $input.focus().select();
+        $input.trigger('focus').trigger('select');
         $input.datepicker({
           showOn: 'button',
           buttonImageOnly: true,
@@ -112,7 +110,7 @@ define([
       };
 
       this.focus = function () {
-        $input.focus();
+        $input.trigger('focus');
       };
 
       this.loadValue = function (item) {
@@ -125,7 +123,7 @@ define([
         }
         $input.val(defaultValue);
         $input[0].defaultValue = defaultValue;
-        $input.select();
+        $input.trigger('select');
       };
 
       this.serializeValue = function () {
@@ -168,7 +166,7 @@ define([
         $('body').append(this.$div);
         this.$input
           .appendTo(this.$div)
-          .bind('keydown.nav', function (e) {
+          .on('keydown.nav', function (e) {
             if (
               e.keyCode === $.ui.keyCode.LEFT ||
               e.keyCode === $.ui.keyCode.RIGHT
@@ -176,8 +174,8 @@ define([
               e.stopImmediatePropagation();
             }
           })
-          .focus()
-          .select();
+          .trigger('focus')
+          .trigger('select');
         this.$input.spectrum({
           color:
             args.item &&
@@ -294,7 +292,7 @@ define([
           localStorageKey: 'visualizer-spectrum',
         });
 
-        this.$input.next().first().click();
+        this.$input.next().first().trigger('click');
       };
 
       this.destroy = function () {
@@ -305,7 +303,7 @@ define([
       };
 
       this.focus = function () {
-        this.$input.focus();
+        this.$input.trigger('focus');
       };
 
       this.getValue = function () {
@@ -327,7 +325,7 @@ define([
         this.$input.val(defaultValue);
         this.$input.spectrum('set', defaultValue);
         this.$input[0].defaultValue = defaultValue;
-        this.$input.select();
+        this.$input.trigger('select');
       };
 
       this.serializeValue = function () {
@@ -432,7 +430,7 @@ define([
 
         $wrapper
           .appendTo(this.args.container)
-          .bind('keydown.nav', function (e) {
+          .on('keydown.nav', function (e) {
             if (
               e.keyCode === $.ui.keyCode.LEFT ||
               e.keyCode === $.ui.keyCode.RIGHT
@@ -440,10 +438,10 @@ define([
               e.stopImmediatePropagation();
             }
           })
-          .focus()
-          .select();
+          .trigger('focus')
+          .trigger('select');
 
-        this.$input.focusout(function () {
+        this.$input.on('focusout', () => {
           if (!editing) {
             commitChanges(
               that.args.grid.module &&
@@ -529,7 +527,7 @@ define([
         }
         this.$input.val(this.defaultValue);
         this.$input[0].defaultValue = this.defaultValue;
-        this.$input.select();
+        this.$input.trigger('select');
       };
       this.serializeValue = function () {
         let val = this.$input.val();
@@ -600,7 +598,7 @@ define([
         }
         this.$input.val(this.defaultValue);
         this.$input[0].defaultValue = this.defaultValue;
-        this.$input.select();
+        this.$input.trigger('select');
       };
       this.serializeValue = () => {
         let val = this.$input.val();
@@ -709,7 +707,7 @@ define([
     this.defaultValue = this.defaultValue ? this.defaultValue.get() || '' : '';
     this.$input.val(this.defaultValue);
     this.$input[0].defaultValue = this.defaultValue;
-    this.$input.select();
+    this.$input.trigger('select');
   }
 
   function jPathLoadValue(item) {
@@ -720,7 +718,7 @@ define([
     const str = val.join('.');
     this.$input.val(str);
     this.$input[0].defaultValue = this.defaultValue;
-    this.$input.select();
+    this.$input.trigger('select');
   }
 
   function defaultSetValue(val) {
@@ -753,7 +751,7 @@ define([
           editorOptions.choices,
         )}</datalist>`,
       )
-      .bind('keydown.nav', function (e) {
+      .on('keydown.nav', function (e) {
         if (
           e.keyCode === $.ui.keyCode.LEFT ||
           e.keyCode === $.ui.keyCode.RIGHT
@@ -761,9 +759,9 @@ define([
           e.stopImmediatePropagation();
         }
       })
-      .focus()
-      .select()
-      .focusout(function () {
+      .trigger('focus')
+      .trigger('select')
+      .on('focusout', function () {
         if (
           that.args.grid.module &&
           !that.args.grid.module.view.slick.options.autoEdit
@@ -782,7 +780,7 @@ define([
   }
 
   function defaultFocus() {
-    this.$input.focus().select();
+    this.$input.trigger('focus').trigger('select');
   }
 
   // =========== DATA NUMBER ===============
@@ -807,8 +805,8 @@ define([
       '<input type="checkbox" value="true" class="editor-checkbox" hideFocus>',
     );
     this.$input.appendTo(this.args.container);
-    this.$input.focus();
-    this.$input.change(function () {
+    this.$input.trigger('focus');
+    this.$input.on('change', function () {
       that.args.commitChanges('next');
     });
   }
@@ -862,9 +860,9 @@ define([
       '<div style="text-align:right"><button>Save</button><button>Cancel</button></div>',
     ).appendTo(this.$wrapper);
 
-    this.$wrapper.find('button:first').bind('click', this.save);
-    this.$wrapper.find('button:last').bind('click', this.cancel);
-    this.$input.bind('keydown', function (e) {
+    this.$wrapper.find('button:first').on('click', this.save);
+    this.$wrapper.find('button:last').on('click', this.cancel);
+    this.$input.on('keydown', function (e) {
       if (e.which === $.ui.keyCode.ENTER && e.ctrlKey) {
         that.save();
       } else if (e.which === $.ui.keyCode.ESCAPE) {
@@ -880,11 +878,10 @@ define([
     });
 
     this.position(this.args.position);
-    // this.$input.hide();
     this.$input
-      .focus()
-      .select()
-      .focusout(function () {
+      .trigger('focus')
+      .trigger('select')
+      .on('focusout', function () {
         // Shouldn't do this if auto-edit
         if (!that.args.grid.module.view.slick.options.autoEdit) {
           that.args.commitChanges('next');
@@ -920,7 +917,7 @@ define([
   function longTextFocus() {
     this.$wrapper.show();
     this.position(this.args.position);
-    this.$input.focus();
+    this.$input.trigger('focus');
   }
 
   function LongTextEditor(args) {
@@ -980,14 +977,14 @@ define([
 
     this.$input
       .appendTo($wrapper)
-      .focus()
+      .trigger('focus')
       .on('change', () => {
         this.args.commitChanges('next');
       })
       .on('blur', () => {
         this.args.cancelChanges();
       })
-      .focusout(() => {
+      .on('focusout', () => {
         // Shouldn't do this if auto-edit
         if (!this.args.grid.module.view.slick.options.autoEdit) {
           this.args.commitChanges('next');

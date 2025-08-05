@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery-ui/ui/widgets/autocomplete'], function () {
+define(['jquery-ui'], function () {
 
     var FieldConstructor = function () {
     };
@@ -12,19 +12,19 @@ define(['jquery-ui/ui/widgets/autocomplete'], function () {
             input = $('<input />', {type: 'text'})
                 .addClass('field-list')
                 .appendTo(dom)
-                .bind('click', function (event) {
+                .on('click', function (event) {
 
                     self.toggleSelect(event);
 
                 })
-                .bind('keyup blur', function () {
+                .on('keyup blur', function () {
                     var val;
                     if (self.value !== ( val = $(this).val() )) {
                         self.setValueSilent($(this).val());
                     }
 
 
-                }).bind('keydown', function (e) {
+                }).on('keydown', function (e) {
 
                     if (self.field.form.tabPressed(e, self)) {
                         this.blur();
@@ -48,7 +48,7 @@ define(['jquery-ui/ui/widgets/autocomplete'], function () {
                 source: this.field.getOptions(this)
             });
 
-            this.input.bind('click', () => this.input.autocomplete('search', this.value));
+            this.input.on('click', () => this.input.autocomplete('search', this.value));
 
             this.input.autocomplete('widget').addClass('form-autocomplete');
         }
