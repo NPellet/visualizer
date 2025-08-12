@@ -137,10 +137,19 @@ define([
     },
 
     getForm() {
-      return (this.currentForm = this.form.getData(false));
+      this.currentForm = this.form.getData(false);
+      // print the stack trace for debugging purposes
+      try {
+        throw new Error('Stack trace for debugging');
+      } catch (error) {
+        console.error(error.stack);
+      }
+      console.table(this.currentForm);
+      return this.currentForm;
     },
 
     submitChange(event, noChange) {
+      console.log('submitChange', event, noChange);
       event = event || { target: {} };
       const toSend = {
         data: this.getForm(),
@@ -199,6 +208,7 @@ define([
     },
     update: {
       value(value, name) {
+        console.log('Updating value', name, value);
         /*
                  Convert special DataObjects
                  (twig does some check depending on the filter used
@@ -218,6 +228,7 @@ define([
         }
       },
       tpl(value) {
+        console.log('Updating template', value);
         var tpl = value.get().toString();
         return this.renderPromise
           .then(() => {
@@ -235,21 +246,22 @@ define([
       },
 
       async form(value, name) {
+        console.log('Updating form', name, value);
         this.formName = name;
         this.formObject = value;
         // fill form should execute when the template exists
         // It doesn't make sense otherwise
-        this.hasTemplate.then(() => {
-          this.fillForm(true);
-          if (
-            this.module.getConfigurationCheckbox(
-              'formOptions',
-              'rerenderIfFormValueChanges',
-            )
-          ) {
-            this.rerender();
-          }
-        });
+        await this.hasTemplate;
+
+        this.fillForm(true);
+        if (
+          this.module.getConfigurationCheckbox(
+            'formOptions',
+            'rerenderIfFormValueChanges',
+          )
+        ) {
+          this.rerender();
+        }
       },
 
       style(value) {
