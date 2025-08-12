@@ -1,3 +1,12 @@
+## [2.172.1](https://github.com/NPellet/visualizer/compare/v2.172.0...v2.172.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* remove  shadow when printing to allow nice looking copy / paste in publications ([aa4de08](https://github.com/NPellet/visualizer/commit/aa4de08869b16e88dfcc9318df7a84cd191627a2))
+
+
+
 # [2.172.0](https://github.com/NPellet/visualizer/compare/v2.171.1...v2.172.0) (2025-08-05)
 
 
