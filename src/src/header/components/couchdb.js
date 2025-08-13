@@ -8,7 +8,7 @@ define([
   'src/util/util',
   'src/util/debug',
   'lib/couchdb/jquery.couch',
-  'fancytree',
+  'components/fancytree/dist/modules/jquery.fancytree',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
 ], function ($, Default, Versioning, Button, Util, Debug) {
   function CouchDBManager() {}
@@ -222,7 +222,7 @@ define([
       this.loginForm.append(
         new Button('Login', doLogin, { color: 'green' }).render(),
       );
-      this.loginForm.bind('keypress', function (e) {
+      this.loginForm.on('keypress', function (e) {
         if (e.charCode === 13) return doLogin();
       });
 

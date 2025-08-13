@@ -3,7 +3,7 @@
 define([
   'modules/default/defaultview',
   'src/util/util',
-  'jsoneditor',
+  'node_modules/jsoneditor/dist/jsoneditor-minimalist.min',
   'src/util/context',
   'jquery',
   'ace/ace',
@@ -12,7 +12,7 @@ define([
     this._id = Util.getNextUniqueId();
   }
 
-  Util.loadCss('components/jsoneditor/dist/jsoneditor.min.css');
+  Util.loadCss('node_modules/jsoneditor/dist/jsoneditor.min.css');
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -49,6 +49,8 @@ define([
       this.editor = new jsoneditor(document.querySelector(`#${this._id}`), {
         mode,
         modes: ['view', 'tree', 'code'],
+        navigationBar: false,
+        statusBar: false,
         ace,
         theme: 'ace/theme/textmate',
         onChange: () => {

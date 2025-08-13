@@ -1,9 +1,6 @@
 'use strict';
 
-define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
-  $,
-  Config,
-) {
+define(['jquery', 'src/util/config'], function ($, Config) {
   var contextMenu;
 
   return {
@@ -93,10 +90,10 @@ define(['jquery', 'src/util/config', 'jquery-ui/ui/widgets/menu'], function (
             }
 
             contextMenu = null;
-            $(document).unbind('click', clickHandler);
+            $(document).off('click', clickHandler);
           }
 
-          $(document).bind('click', clickHandler);
+          $(document).on('click', clickHandler);
         },
         true,
       );

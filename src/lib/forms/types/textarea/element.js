@@ -13,7 +13,7 @@ define([], function () {
             input = $('<textarea />')
                 .addClass('field-list')
                 .appendTo(dom)
-                .bind('keyup blur', function () {
+                .on('keyup blur', function () {
                     var val;
                     if (self.value !== ( val = $(this).val() )) {
                         self.value = $(this).val();

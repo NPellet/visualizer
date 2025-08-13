@@ -48,12 +48,12 @@ define([
       this.loadedData.done(function () {
         that._plot = $.plot(`#${that._id}`, that._data, that._options);
 
-        $(`#${that._id}`).bind('plotclick', function (event, pos, item) {
+        $(`#${that._id}`).on('plotclick', function (event, pos, item) {
           if (item) {
             // TODO handle click?
           }
         });
-        $(`#${that._id}`).bind('plothover', function (event, pos, item) {
+        $(`#${that._id}`).on('plothover', function (event, pos, item) {
           if (item) {
             that.module.controller.elementHover(that._data[item.seriesIndex]);
           } else {

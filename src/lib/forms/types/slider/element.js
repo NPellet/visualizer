@@ -1,6 +1,6 @@
 'use strict';
 
-define(['jquery', 'jquery-ui/ui/widgets/slider'], function ($) {
+define(['jquery', 'jquery-ui'], function ($) {
 
     var FieldConstructor = function () {
     };
@@ -67,7 +67,7 @@ define(['jquery', 'jquery-ui/ui/widgets/slider'], function ($) {
                 .appendTo(div),
             valueInput = [];
 
-        valueInput[0] = $('<input />').bind('keyup', function () {
+        valueInput[0] = $('<input />').on('keyup', function () {
 
             var val = $(this).val(),
                 floatVal = parseFloat(val);
@@ -88,7 +88,7 @@ define(['jquery', 'jquery-ui/ui/widgets/slider'], function ($) {
 
         if (this.field.options.range) {
 
-            valueInput[1] = $('<input />').bind('keyup', function () {
+            valueInput[1] = $('<input />').on('keyup', function () {
 
                 var val = $(this).val(),
                     floatVal = parseFloat(val);

@@ -1,9 +1,11 @@
 'use strict';
 
-define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
-  Default,
-  Util,
-) {
+define([
+  'jquery',
+  'modules/default/defaultview',
+  'src/util/util',
+  'components/fancytree/dist/modules/jquery.fancytree.table',
+], function ($, Default, Util) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
@@ -50,6 +52,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
       var that = this;
 
       this.dom.fancytree({
+        source: [],
         extensions: ['table'],
         table: {
           indentation: 20,
@@ -72,7 +75,7 @@ define(['modules/default/defaultview', 'src/util/util', 'fancytree'], function (
         },
       });
 
-      this.tree = this.dom.fancytree('getTree');
+      this.tree = $.ui.fancytree.getTree(this.dom);
 
       this.resolveReady();
     },
