@@ -4,3 +4,5 @@ reject:
   - delay
   # Now ESM and depends on top-level await.
   - tempfile
+  # Version 7 had breaking changes not worth the effort.
+  - conventional-changelog
