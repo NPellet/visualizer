@@ -12,7 +12,6 @@ require.config({
     countryData: 'browserified/country-data/index',
     delay: 'browserified/delay/index',
     d3: 'components/d3/d3.min',
-    'd3-hierarchy': 'node_modules/d3-hierarchy/dist/d3-hierarchy.min',
     eventEmitter: 'components/eventEmitter/EventEmitter.min',
     'file-saver': 'components/file-saver.js/FileSaver',
     forms: 'lib/forms',

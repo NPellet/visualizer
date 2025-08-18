@@ -287,7 +287,6 @@ module.exports = function (grunt) {
                 './quill-resize-module/dist/resize.*',
                 './quill-table-better/dist/quill-table-better.*',
               ],
-              './d3-hierarchy/dist/d3-hierarchy.min.js',
               './@fortawesome/fontawesome-free/css/all.min.css',
               './@fortawesome/fontawesome-free/webfonts/*',
             ],
