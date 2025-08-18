@@ -232,10 +232,13 @@ define([
         }
       }
 
-      var arrBefore = this.availableZooms
-        .slice(currentIndex - 2, currentIndex)
-        .reverse();
-      var arrAfter = this.availableZooms.slice(
+      const arrBefore = this.availableZooms.slice(
+        currentIndex - 2,
+        currentIndex,
+      );
+      arrBefore.reverse();
+
+      const arrAfter = this.availableZooms.slice(
         currentIndex + 1,
         currentIndex + 3,
       );

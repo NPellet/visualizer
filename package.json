@@ -48,7 +48,7 @@
     "bower": "^1.8.14",
     "conventional-changelog": "^6.0.0",
     "eslint": "^9.33.0",
-    "eslint-config-cheminfo": "^14.1.1",
+    "eslint-config-cheminfo": "^15.0.1",
     "extend": "^3.0.2",
     "globals": "^16.3.0",
     "grunt": "^1.6.1",

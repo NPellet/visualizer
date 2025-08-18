@@ -89,7 +89,7 @@ define([
       if (!fieldInfo) {
         jpathSuccess = false;
       }
-      var jpath = fieldInfo.jpath.slice().reverse();
+      var jpath = fieldInfo.jpath.toReversed();
       while (jpath.includes('$array$')) {
         var $firstOl = $target.parents('ol').first();
         if ($firstOl.length === 0) break;
@@ -100,7 +100,7 @@ define([
         $target = $firstOl;
         jpath[jpath.indexOf('$array$')] = idx;
       }
-      jpath = jpath.reverse();
+      jpath.reverse();
       if (jpath.includes('$array$') || jpath.includes(-1)) {
         jpathSuccess = false;
       }
