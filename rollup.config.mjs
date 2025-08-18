@@ -25,7 +25,7 @@ export default [
     plugins,
   },
   {
-    input: 'node_modules/mf-parser/src/index.js',
+    input: 'node_modules/mf-parser/lib/src/index.js',
     output: {
       file: 'src/browserified/MFParser/index.js',
       format: 'umd',
