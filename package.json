@@ -81,7 +81,7 @@
     "jquery-migrate": "^3.5.2",
     "jquery-ui": "^1.14.1",
     "jsoneditor": "^10.3.0",
-    "katex": "^0.10.0",
+    "katex": "^0.16.22",
     "mathjs": "^5.10.3",
     "mf-parser": "^1.5.0",
     "mime-types": "^2.1.35",

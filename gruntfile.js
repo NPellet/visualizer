@@ -264,7 +264,6 @@ module.exports = function (grunt) {
               './jquery-qrcode/jquery.qrcode.min.js',
               './mathjs/dist/**',
               './nmr-simulation/**',
-              './katex/dist/**',
               './js-yaml/dist/**',
               './canvg/dist/**',
               './eventEmitter/*.js',
