@@ -252,7 +252,6 @@ module.exports = function (grunt) {
               './file-saver.js/*.js',
               './json-chart/dist/*',
               './d3-plugins/**',
-              './mime-types/**',
               './notifyjs/dist/**',
               './web-animations-js/*.js',
               './web-animations-js/*.js.map',
