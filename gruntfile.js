@@ -262,7 +262,6 @@ module.exports = function (grunt) {
               './flag-icon-css/css/flag-icon.min.css',
               './flag-icon-css/flags/**',
               './jquery-qrcode/jquery.qrcode.min.js',
-              './mathjs/dist/**',
               './nmr-simulation/**',
               './js-yaml/dist/**',
               './canvg/dist/**',
@@ -280,8 +279,7 @@ module.exports = function (grunt) {
               './jsoneditor/dist/**',
               './katex/dist/**',
               './jquery-migrate/dist/*',
-              './mathjs/dist/math.min.js',
-              './mathjs/dist/math.min.map',
+              './mathjs/lib/browser/**',
               './openchemlib/dist/**',
               [
                 './quill/dist/*.js*',

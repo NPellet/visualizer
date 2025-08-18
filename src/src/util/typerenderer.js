@@ -696,9 +696,10 @@ define([
     if (typeof val === 'number') {
       displayValue = formatNumber(val, options);
     } else {
+      const mathjs = functions.unit.mathjs;
       const stringUnit = val.unit ? String(val.unit) : '';
-      let unit = functions.unit.mathjs.unit(stringUnit);
-      unit.value = Number(val.SI);
+      const siUnit = mathjs.unit(stringUnit).toSI();
+      let unit = mathjs.unit(val.SI, siUnit).to(stringUnit);
 
       if (options.format) {
         const str = unit.toString();

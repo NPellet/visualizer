@@ -521,8 +521,8 @@ define([
         this.defaultValue = '';
         if (value) {
           const unitStr = String(value.unit);
-          let unit = UnitEditor.mathjs.unit(unitStr);
-          unit.value = Number(value.SI);
+          const siUnit = UnitEditor.unit(unitStr).toSI();
+          const unit = UnitEditor.unit(Number(value.SI), siUnit).to(unitStr);
           this.defaultValue = unitStr ? `${unit.toNumber(unitStr)}` : value.SI;
         }
         this.$input.val(this.defaultValue);
