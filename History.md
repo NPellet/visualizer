@@ -1,3 +1,33 @@
+## [2.172.1](https://github.com/NPellet/visualizer/compare/v2.172.0...v2.172.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* remove  shadow when printing to allow nice looking copy / paste in publications ([aa4de08](https://github.com/NPellet/visualizer/commit/aa4de08869b16e88dfcc9318df7a84cd191627a2))
+
+
+
+# [2.172.0](https://github.com/NPellet/visualizer/compare/v2.171.1...v2.172.0) (2025-08-05)
+
+
+### Bug Fixes
+
+* **datas:** add missing methods to DataString ([eb85ee2](https://github.com/NPellet/visualizer/commit/eb85ee27c400312af4b26bb112419b30d354d2fa))
+* quill readonly mode was throwing an error because QuillTableBetter could not find a toolbar ([032b507](https://github.com/NPellet/visualizer/commit/032b5074018559bda30ae9ce0f503531fae882df))
+* usage of indexedDB and replace deprecated Deferred.pipe ([96a453a](https://github.com/NPellet/visualizer/commit/96a453a83ccfdd9f7dc0ced6ff5ad45087d7f99e))
+
+
+### Features
+
+* update Quill to v2.0 ([#1168](https://github.com/NPellet/visualizer/issues/1168)) ([c0596c4](https://github.com/NPellet/visualizer/commit/c0596c4089aecc450f1a9774b622771ba182159c))
+
+
+### Reverts
+
+* Revert "fix: typerenderer of GHS and force string" ([dbd486b](https://github.com/NPellet/visualizer/commit/dbd486ba446ca0d5e602897b8444bfa27342f6b3))
+
+
+
 ## [2.171.1](https://github.com/NPellet/visualizer/compare/v2.171.0...v2.171.1) (2025-07-31)
 
 

@@ -3,7 +3,7 @@
 define(['lib/semver/semver'], (semver) => {
   /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
   const MAJOR = 2;
-  const MINOR = 171;
+  const MINOR = 172;
   const PATCH = 2;
   const PRERELEASE = 0;
   const IS_RELEASE = false;

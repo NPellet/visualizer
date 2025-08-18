@@ -1249,3 +1249,10 @@ span.superimpose sub {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
+/* Print styles - suppress box-shadows for printing */
+@media print {
+  * {
+    box-shadow: none !important;
+  }
+}
