@@ -25,7 +25,7 @@ define([
 
   // Add typerenderer support
   function rendertype(type, value, options, forceType) {
-    if (value === undefined) return;
+    if (value === undefined || value === null) return;
 
     if (typeof options === 'string') {
       forceType = options;
