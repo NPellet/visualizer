@@ -256,134 +256,6 @@
       }
     },
     {
-      "url": "modules/types/client_interaction/code_executor/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "display": [
-                [
-                  "editor",
-                  "buttons"
-                ]
-              ],
-              "execOnLoad": [
-                [
-                  "yes"
-                ]
-              ],
-              "asyncAwait": [
-                [
-                  "top"
-                ]
-              ],
-              "script": [
-                "const template = `\nTitle: <input name=\"title\"><br> \n\n<select name=\"kind\">\n    <option value=\"\"> -- select an option -- </option>\n    <option value=\"A\">A</option>\n    <option value=\"B\">B</option>\n</select><br>\n\nSubvalue: <input name=\"ab.0.cd.0.e\"><br> \nOther subvalue: <input name=\"cd.ef.g\"><br> \n`;\n\nconst data = {\n  title: 'abfddc',\n  kind: 'A',\n  ab: [{ cd: [{ e: 'subfield' }] }],\n  cd: { ef: { g: 'subfield' } },\n};\n\nawait delay(1000);\nAPI.createData('template', template);\nAPI.createData('data', data);\n\n\n"
-              ]
-            }
-          ],
-          "libs": [
-            [
-              {
-                "lib": "delay",
-                "alias": "delay"
-              }
-            ]
-          ],
-          "buttons": [
-            [
-              {
-                "name": "button1",
-                "label": "Execute",
-                "hide": [],
-                "disable": []
-              }
-            ]
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 0,
-            "top": 24
-          },
-          "size": {
-            "width": 53,
-            "height": 54
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 3,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin",
-              "color": [
-                100,
-                100,
-                100,
-                1
-              ]
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [
-            ""
-          ],
-          "fontFamily": [
-            ""
-          ]
-        }
-      ],
-      "title": ""
-    },
-    {
       "url": "modules/types/edition/object_editor/",
       "configuration": {
         "sections": {},
@@ -504,6 +376,149 @@
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/display/single_value/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "append": [
+                []
+              ],
+              "maxEntries": [
+                1
+              ],
+              "editable": [
+                []
+              ],
+              "editSearchRegexp": [
+                null
+              ],
+              "editReplace": [
+                null
+              ],
+              "debounce": [
+                0
+              ],
+              "defaultvalue": [
+                "<p>The data are created in the general preferences before the module is loaded to trigger possible problems</p>\n"
+              ],
+              "font": [
+                "Arial"
+              ],
+              "fontcolor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "fontsize": [
+                null
+              ],
+              "align": [
+                "left"
+              ],
+              "valign": [
+                "top"
+              ],
+              "rendererOptions": [
+                ""
+              ],
+              "forceType": [
+                ""
+              ],
+              "sprintf": [
+                null
+              ],
+              "sprintfOrder": [
+                null
+              ],
+              "preformatted": [
+                []
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 24
+          },
+          "size": {
+            "width": 53,
+            "height": 54
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
@@ -543,7 +558,7 @@
         "general": [
           {
             "script": [
-              ""
+              "//const delay = await API.require('delay');\n\nconst template = `\nTitle: <input name=\"title\"><br> \n\n<select name=\"kind\">\n    <option value=\"\"> -- select an option -- </option>\n    <option value=\"A\">A</option>\n    <option value=\"B\">B</option>\n</select><br>\n\nSubvalue: <input name=\"ab.0.cd.0.e\"><br> \nOther subvalue: <input name=\"cd.ef.g\"><br> \n`;\n\nconst data = {\n  title: 'abfddc',\n  kind: 'A',\n  ab: [{ cd: [{ e: 'subfield' }] }],\n  cd: { ef: { g: 'subfield' } },\n};\n\n//await delay(1000);\n\nAPI.createData('template', template);\nAPI.createData('data', data);\n\n\n"
             ]
           }
         ]
