@@ -137,10 +137,12 @@ define([
     },
 
     getForm() {
-      return (this.currentForm = this.form.getData(false));
+      this.currentForm = this.form.getData(false);
+      return this.currentForm;
     },
 
     submitChange(event, noChange) {
+      if (!event) return;
       event = event || { target: {} };
       const toSend = {
         data: this.getForm(),
@@ -200,10 +202,10 @@ define([
     update: {
       value(value, name) {
         /*
-                 Convert special DataObjects
-                 (twig does some check depending on the filter used
-                 and the values need to be native)
-                 */
+         Convert special DataObjects
+         (twig does some check depending on the filter used
+         and the values need to be native)
+        */
         this._values[name] = DataObject.resurrect(value.get());
 
         this.rerender();
@@ -234,22 +236,24 @@ define([
           .then(() => this.submitChange());
       },
 
+      // we want to set the values based on an object
+      // we should take care that the template is maybe not yet there
       async form(value, name) {
         this.formName = name;
         this.formObject = value;
         // fill form should execute when the template exists
         // It doesn't make sense otherwise
-        this.hasTemplate.then(() => {
-          this.fillForm(true);
-          if (
-            this.module.getConfigurationCheckbox(
-              'formOptions',
-              'rerenderIfFormValueChanges',
-            )
-          ) {
-            this.rerender();
-          }
-        });
+        await this.hasTemplate;
+
+        this.fillForm(true);
+        if (
+          this.module.getConfigurationCheckbox(
+            'formOptions',
+            'rerenderIfFormValueChanges',
+          )
+        ) {
+          this.rerender();
+        }
       },
 
       style(value) {

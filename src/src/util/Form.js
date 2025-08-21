@@ -24,6 +24,7 @@ define(['jquery', 'lodash', 'src/util/debug'], function ($, _, Debug) {
       this.bind();
       this.changeCb = null;
       this.submitCb = null;
+      this.data = null;
     }
 
     // maps each dom input elements to a plain object
