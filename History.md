@@ -1,3 +1,12 @@
+## [2.172.2](https://github.com/NPellet/visualizer/compare/v2.172.1...v2.172.2) (2025-08-21)
+
+
+### Bug Fixes
+
+* do not try to rendertype if value is null ([3a20eff](https://github.com/NPellet/visualizer/commit/3a20effb235bf6dcc73107a61ac7dc4b7fb00686))
+
+
+
 ## [2.172.1](https://github.com/NPellet/visualizer/compare/v2.172.0...v2.172.1) (2025-08-12)
 
 
