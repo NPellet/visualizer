@@ -60,6 +60,15 @@ export default [
     plugins,
   },
   {
+    input: 'node_modules/semver/index.js',
+    output: {
+      file: 'src/browserified/semver/semver.js',
+      format: 'umd',
+      name: 'semver',
+    },
+    plugins,
+  },
+  {
     input: 'node_modules/smart-array-filter/lib/index.js',
     output: {
       file: 'src/browserified/SmartArrayFilter/index.js',

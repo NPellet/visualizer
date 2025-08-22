@@ -1,6 +1,6 @@
 'use strict';
 
-define(['lib/semver/semver'], (semver) => {
+define(['browserified/semver/semver'], (semver) => {
   /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
   const MAJOR = 2;
   const MINOR = 172;

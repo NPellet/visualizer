@@ -3,7 +3,7 @@
 define([
   'src/util/versioning',
   'src/util/debug',
-  'lib/semver/semver',
+  'browserified/semver/semver',
 ], function (Versioning, Debug, semver) {
   var migrators = [
     '2.1.0',

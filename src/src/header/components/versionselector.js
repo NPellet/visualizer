@@ -6,7 +6,7 @@ define([
   'src/util/versioning',
   'src/util/util',
   'uri/URI',
-  'lib/semver/semver',
+  'browserified/semver/semver',
 ], function ($, Default, Versioning, Util, URI, semver) {
   function VersionSelector() {}
 
