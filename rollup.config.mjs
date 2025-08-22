@@ -25,7 +25,7 @@ export default [
     plugins,
   },
   {
-    input: 'node_modules/mf-parser/src/index.js',
+    input: 'node_modules/mf-parser/lib/src/index.js',
     output: {
       file: 'src/browserified/MFParser/index.js',
       format: 'umd',
@@ -56,6 +56,15 @@ export default [
       file: 'src/browserified/RxnRenderer/index.js',
       format: 'umd',
       name: 'RxnRenderer',
+    },
+    plugins,
+  },
+  {
+    input: 'node_modules/semver/index.js',
+    output: {
+      file: 'src/browserified/semver/semver.js',
+      format: 'umd',
+      name: 'semver',
     },
     plugins,
   },

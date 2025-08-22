@@ -288,7 +288,7 @@ div.ci-module-header-toolbar ul {
 }
 
 div.ci-module-header-toolbar ul li {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 5px;
   list-style-type: none;
   cursor: pointer;
   color: #666666;

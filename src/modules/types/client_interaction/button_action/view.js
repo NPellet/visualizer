@@ -86,12 +86,12 @@ define([
           });
         }
       } else {
-        $div.mousedown(() => {
+        $div.on('mousedown', () => {
           $div.css({
             opacity: this.maskOpacity,
           });
         });
-        $div.mouseup(() => {
+        $div.on('mouseup', () => {
           $div.css({
             opacity: 1,
           });
@@ -135,7 +135,7 @@ define([
 
       if (this.isButton) {
         this.button = $('<button class="form-button" />');
-        this.button.click(onClick);
+        this.button.on('click', onClick);
         this.dom.html(this.button);
       } else {
         this.dom.on('click', onClick);

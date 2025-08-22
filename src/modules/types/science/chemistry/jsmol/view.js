@@ -82,7 +82,7 @@ define([
 
       this._highlights = this._highlights || [];
 
-      this.dom.bind('load', function () {
+      this.dom.on('load', function () {
         that.postMessage('init', {
           id,
         });
