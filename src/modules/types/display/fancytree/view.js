@@ -4,7 +4,7 @@ define([
   'jquery',
   'modules/default/defaultview',
   'src/util/util',
-  'components/fancytree/dist/modules/jquery.fancytree.table',
+  'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.table',
 ], function ($, Default, Util) {
   function View() {}
 

@@ -147,7 +147,8 @@ require.config({
     '*': {
       quill: 'quillPrivate',
       Quill: 'quillPrivate',
-      'components/fancytree/dist/modules/jquery.fancytree.ui-deps': 'jquery-ui',
+      'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.ui-deps':
+        'jquery-ui',
     },
     quillPrivate: {
       quill: 'quill',

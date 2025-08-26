@@ -8,7 +8,7 @@ define([
   'src/util/util',
   'src/util/debug',
   'lib/couchdb/jquery.couch',
-  'components/fancytree/dist/modules/jquery.fancytree',
+  'node_modules/jquery.fancytree/dist/modules/jquery.fancytree',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
 ], function ($, Default, Versioning, Button, Util, Debug) {
   function CouchDBManager() {}

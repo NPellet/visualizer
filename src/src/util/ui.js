@@ -862,7 +862,9 @@ define([
     fancytreeOptions,
     dialogOptions,
   ) {
-    await Util.require('components/fancytree/dist/modules/jquery.fancytree');
+    await Util.require(
+      'node_modules/jquery.fancytree/dist/modules/jquery.fancytree',
+    );
     let selected = null;
     const jpaths = Traversing.getJPathsFromElement(data);
 

@@ -12,8 +12,8 @@ define([
   'src/util/versioning',
   'src/util/couchdbAttachments',
   'src/util/uploadUi',
-  'components/fancytree/dist/modules/jquery.fancytree.dnd',
-  'components/fancytree/dist/modules/jquery.fancytree.filter',
+  'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.dnd',
+  'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.filter',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
 ], function (
   $,

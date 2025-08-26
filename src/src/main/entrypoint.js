@@ -682,7 +682,7 @@ define([
         'components/colors/css/colors.min.css',
         'node_modules/jquery-ui/dist/themes/base/jquery-ui.min.css',
         'lib/forms/style.css',
-        'components/fancytree/dist/skin-lion/ui.fancytree.css',
+        'node_modules/jquery.fancytree/dist/skin-lion/ui.fancytree.css',
         'css/overwrite_styles.css',
         'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
       ];

@@ -192,10 +192,6 @@ module.exports = function (grunt) {
             src: [
               './d3/d3*',
               [
-                './fancytree/dist/modules/jquery.fancytree*.js',
-                './fancytree/dist/skin-lion/*',
-              ],
-              [
                 './jqgrid_edit/js/*.js',
                 './jqgrid_edit/js/i18n/grid.locale-en.js',
                 './jqgrid_edit/css/*.css',
@@ -272,6 +268,10 @@ module.exports = function (grunt) {
             src: [
               './angularplasmid/dist/**',
               './jquery/dist/*',
+              [
+                './jquery.fancytree/dist/modules/jquery.fancytree*.js',
+                './jquery.fancytree/dist/skin-lion/*',
+              ],
               ['./jquery-ui/dist/*.js', './jquery-ui/themes/base/**'],
               './jsbarcode/dist/*.js',
               './jsoneditor/dist/**',
