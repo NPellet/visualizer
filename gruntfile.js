@@ -229,7 +229,6 @@ module.exports = function (grunt) {
               './uri.js/src/*.js',
               './onde/src/*',
               ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
-              './superagent/superagent.js',
               './lodash/dist/**',
               './chemcalc/lib.js',
               './jsgraph/dist/**',
