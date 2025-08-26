@@ -78,6 +78,7 @@
     "jquery": "^3.7.1",
     "jquery-migrate": "^3.5.2",
     "jquery-ui": "^1.14.1",
+    "jsbarcode": "^3.12.1",
     "jsoneditor": "^10.4.0",
     "katex": "^0.16.22",
     "mathjs": "^14.6.0",

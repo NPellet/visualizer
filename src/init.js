@@ -18,7 +18,7 @@ require.config({
     highlightjs: 'lib/highlight.js/highlight.pack',
     jcampconverter: 'lib/jcampconverter/jcampconverter.7.3.1.min',
     jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
-    jsbarcode: 'components/jsbarcode/dist/JsBarcode.all.min',
+    jsbarcode: 'node_modules/jsbarcode/dist/JsBarcode.all.min',
     jquery: 'node_modules/jquery/dist/jquery',
     'jquery-migrate': 'node_modules/jquery-migrate/dist/jquery-migrate',
     'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
