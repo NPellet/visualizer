@@ -86,6 +86,7 @@
     "mf-parser": "^3.6.0",
     "mime-types": "^3.0.1",
     "node-jsgraph": "2.4.15",
+    "numeral": "^2.0.6",
     "openchemlib": "^9.7.0",
     "quill": "^2.0.3",
     "quill-resize-module": "^2.0.6",

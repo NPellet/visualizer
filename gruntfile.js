@@ -251,7 +251,6 @@ module.exports = function (grunt) {
               './web-animations-js/*.js.map',
               './moment/moment*',
               './moment-duration-format/lib/moment-duration-format.js',
-              './numeral/numeral*',
               './flag-icon-css/css/flag-icon.min.css',
               './flag-icon-css/flags/**',
               './jquery-qrcode/jquery.qrcode.min.js',
@@ -278,6 +277,7 @@ module.exports = function (grunt) {
               './katex/dist/**',
               './jquery-migrate/dist/*',
               './mathjs/lib/browser/**',
+              './numeral/min/numeral.min.js',
               './openchemlib/dist/**',
               [
                 './quill/dist/*.js*',

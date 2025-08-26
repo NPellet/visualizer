@@ -41,7 +41,7 @@ require.config({
     notifyjs: 'components/notifyjs/dist/notify',
     msa: 'lib/msa/msa.min',
     'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
-    numeral: 'components/numeral/numeral',
+    numeral: 'node_modules/numeral/min/numeral.min',
     openchemlib: 'browserified/openchemlib/openchemlib',
     papaparse: 'components/papa-parse/papaparse.min',
     plot: 'lib/plot/plot',
