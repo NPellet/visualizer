@@ -70,6 +70,7 @@
   "dependencies": {
     "@babel/preset-env": "^7.28.3",
     "@fortawesome/fontawesome-free": "^7.0.0",
+    "@mapbox/leaflet-omnivore": "^0.3.4",
     "angularplasmid": "^1.0.5",
     "babel-preset-minify": "^0.5.2",
     "country-data": "0.0.31",
@@ -82,6 +83,7 @@
     "jsbarcode": "^3.12.1",
     "jsoneditor": "^10.4.0",
     "katex": "^0.16.22",
+    "leaflet": "^1.9.4",
     "mathjs": "^14.6.0",
     "mf-parser": "^3.6.0",
     "mime-types": "^3.0.1",
