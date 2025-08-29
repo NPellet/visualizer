@@ -45,7 +45,7 @@ require.config({
     openchemlib: 'browserified/openchemlib/openchemlib',
     papaparse: 'components/papa-parse/papaparse.min',
     plot: 'lib/plot/plot',
-    pouchdb: 'components/pouchdb/dist/pouchdb.min',
+    pouchdb: 'node_modules/pouchdb/dist/pouchdb.min',
     quillPrivate: 'src/quillPrivate',
     quill: 'node_modules/quill/dist/quill',
     quillResizeModule: 'node_modules/quill-resize-module/dist/resize',
