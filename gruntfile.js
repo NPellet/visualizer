@@ -245,8 +245,6 @@ module.exports = function (grunt) {
               './notifyjs/dist/**',
               './web-animations-js/*.js',
               './web-animations-js/*.js.map',
-              './moment/moment*',
-              './moment-duration-format/lib/moment-duration-format.js',
               './flag-icon-css/css/flag-icon.min.css',
               './flag-icon-css/flags/**',
               './jquery-qrcode/jquery.qrcode.min.js',
@@ -277,6 +275,8 @@ module.exports = function (grunt) {
                 './@mapbox/leaflet-omnivore/leaflet-omnivore.min.js',
               ],
               './mathjs/lib/browser/**',
+              './moment/moment.js',
+              './moment-duration-format/lib/moment-duration-format.js',
               './numeral/min/numeral.min.js',
               './openchemlib/dist/**',
               [

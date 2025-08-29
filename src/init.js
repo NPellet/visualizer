@@ -35,9 +35,9 @@ require.config({
     // mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
     mathjs: 'node_modules/mathjs/lib/browser/math',
     'mime-types': 'browserified/mime-types/index',
-    moment: 'components/moment/moment',
+    moment: 'node_modules/moment/moment',
     'moment-duration-format':
-      'components/moment-duration-format/lib/moment-duration-format',
+      'node_modules/moment-duration-format/lib/moment-duration-format',
     notifyjs: 'components/notifyjs/dist/notify',
     msa: 'lib/msa/msa.min',
     'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
@@ -141,7 +141,6 @@ require.config({
       deps: ['lib/pixastic/pixastic/pixastic.core'],
       exports: 'Pixastic',
     },
-    'moment-duration-format': ['moment'],
   },
   map: {
     '*': {
