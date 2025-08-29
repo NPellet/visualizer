@@ -25,6 +25,15 @@ export default [
     plugins,
   },
   {
+    input: 'node_modules/json-chart/src/index.js',
+    output: {
+      file: 'src/browserified/json-chart/json-chart.js',
+      format: 'umd',
+      name: 'JSONChart',
+    },
+    plugins,
+  },
+  {
     input: 'node_modules/mf-parser/lib/src/index.js',
     output: {
       file: 'src/browserified/MFParser/index.js',

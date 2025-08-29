@@ -81,6 +81,7 @@
     "jquery-ui": "^1.14.1",
     "jquery.fancytree": "^2.38.5",
     "jsbarcode": "^3.12.1",
+    "json-chart": "^1.1.0",
     "jsoneditor": "^10.4.0",
     "katex": "^0.16.22",
     "leaflet": "^1.9.4",

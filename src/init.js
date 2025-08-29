@@ -24,7 +24,7 @@ require.config({
     'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
     'jquery-ui': 'node_modules/jquery-ui/dist/jquery-ui',
     jsgraph: 'components/jsgraph/dist/jsgraph-es6',
-    'json-chart': 'components/json-chart/dist/json-chart.min',
+    'json-chart': 'browserified/json-chart/json-chart',
     jszip: 'components/jszip/dist/jszip.min',
     'js-yaml': 'components/js-yaml/dist/js-yaml.min',
     katex: 'node_modules/katex/dist/katex.min',
