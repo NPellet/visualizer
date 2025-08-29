@@ -31,7 +31,7 @@ require.config({
     lodash: 'components/lodash/dist/lodash.min',
     loglevel: 'components/loglevel/dist/loglevel',
     'markdown-js': 'components/markdown-js/lib/markdown',
-    marked: 'components/marked/lib/marked',
+    marked: 'node_modules/marked/lib/marked',
     // mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
     mathjs: 'node_modules/mathjs/lib/browser/math',
     'mime-types': 'browserified/mime-types/index',

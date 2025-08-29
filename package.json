@@ -84,6 +84,7 @@
     "jsoneditor": "^10.4.0",
     "katex": "^0.16.22",
     "leaflet": "^1.9.4",
+    "marked": "^0.3.19",
     "mathjs": "^14.6.0",
     "mf-parser": "^3.6.0",
     "mime-types": "^3.0.1",
