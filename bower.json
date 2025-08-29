@@ -40,7 +40,6 @@
     "nmr-simulation": "0.2.1",
     "notifyjs": "0.4.2",
     "onde": "cheminfo/onde#9ed3407d02ca323b8dce8d2456eb54b49a804344",
-    "papa-parse": "4.1.2",
     "requirejs": "2.3.6",
     "select2": "4.0.3",
     "setImmediate": "YuzuJS/setImmediate#1.0.5",

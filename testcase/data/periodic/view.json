@@ -385,7 +385,7 @@
                 0
               ],
               "resultfilter": [
-                "require([\"components/papa-parse/papaparse.min\"],function(Papa) {\n    var wikipedia=Papa.parse(data,\n        {\n            delimiter:\"\\t\",\n            header: true\n        }\n    );\n    \n    API.createData(\"header\", wikipedia.data[0]);\n    API.createData(\"elementsOri\", wikipedia.data.slice(1));\n})\n\n"
+                "require([\"papaparse/papaparse.min\"],function(Papa) {\n    var wikipedia=Papa.parse(data,\n        {\n            delimiter:\"\\t\",\n            header: true\n        }\n    );\n    \n    API.createData(\"header\", wikipedia.data[0]);\n    API.createData(\"elementsOri\", wikipedia.data.slice(1));\n})\n\n"
               ],
               "askConfirm": [
                 []

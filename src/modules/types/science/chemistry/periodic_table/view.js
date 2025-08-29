@@ -6,7 +6,7 @@ define([
   'src/util/debug',
   'src/util/colorbar',
   'src/util/color',
-  'components/papa-parse/papaparse.min',
+  'papaparse',
   'src/util/api',
   'lodash',
   'src/util/urldata',

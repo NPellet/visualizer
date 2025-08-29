@@ -215,7 +215,6 @@ module.exports = function (grunt) {
               './x2js/xml2json*',
               './jit/Jit/**/*',
               './ui-contextmenu/jquery.ui-contextmenu*',
-              './papa-parse/papaparse*',
               './colors/css/colors.min.css',
               './uri.js/src/*.js',
               './onde/src/*',
@@ -278,6 +277,7 @@ module.exports = function (grunt) {
               './moment-duration-format/lib/moment-duration-format.js',
               './numeral/min/numeral.min.js',
               './openchemlib/dist/**',
+              './papaparse/papaparse*',
               './pouchdb/dist/**',
               [
                 './quill/dist/*.js*',
