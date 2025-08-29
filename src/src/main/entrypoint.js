@@ -14,7 +14,6 @@ define([
   'src/util/viewmigration',
   'src/util/actionmanager',
   'src/util/debug',
-  'src/util/browser',
   'src/util/util',
   'src/util/urldata',
   'src/util/ui',
@@ -37,7 +36,6 @@ define([
   Migration,
   ActionManager,
   Debug,
-  browser,
   Util,
   UrlData,
   ui,
@@ -682,9 +680,9 @@ define([
       const cssToLoad = [
         'css/main.css',
         'components/colors/css/colors.min.css',
-        'components/jquery-ui/themes/base/jquery-ui.min.css',
+        'node_modules/jquery-ui/dist/themes/base/jquery-ui.min.css',
         'lib/forms/style.css',
-        'components/fancytree/dist/skin-lion/ui.fancytree.css',
+        'node_modules/jquery.fancytree/dist/skin-lion/ui.fancytree.css',
         'css/overwrite_styles.css',
         'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
       ];
@@ -703,135 +701,123 @@ define([
         API.viewLock();
       }
 
-      browser.checkCompatibility().then(doInit);
+      const visualizerDiv = $('#ci-visualizer');
 
-      // Sets the header
-      function doInit(errorMessage) {
-        var visualizerDiv = $('#ci-visualizer');
+      visualizerDiv.html(
+        '<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>',
+      );
 
-        if (errorMessage) {
-          visualizerDiv.append(
-            `<div id="browser-compatibility">${errorMessage}</div>`,
+      var configJson = urls.config || visualizerDiv.attr('data-ci-config');
+      if (!configJson) {
+        if (visualizerDiv.attr('config')) {
+          Debug.warn(
+            'config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.',
           );
-          return;
+          configJson = visualizerDiv.attr('config');
+        } else {
+          configJson = require.toUrl('usr/config/default.json');
         }
-
-        visualizerDiv.html(
-          '<table id="viewport" cellpadding="0" cellspacing="0">\n    <tr>\n        <td id="ci-center">\n            <div id="modules-grid">\n                <div id="ci-dialog"></div>\n            </div>\n        </td>\n    </tr>\n</table>',
-        );
-
-        var configJson = urls.config || visualizerDiv.attr('data-ci-config');
-        if (!configJson) {
-          if (visualizerDiv.attr('config')) {
-            Debug.warn(
-              'config as attribute of ci-visualizer is deprecated. Use data-ci-config instead.',
-            );
-            configJson = visualizerDiv.attr('config');
-          } else {
-            configJson = require.toUrl('usr/config/default.json');
-          }
-        }
-
-        $.getJSON(configJson, {}, function (cfgJson) {
-          if (cfgJson.usrDir) {
-            require.config({
-              paths: {
-                usr: cfgJson.usrDir,
-              },
-            });
-          }
-
-          if (!debugSet) {
-            Debug.setDebugLevel(cfgJson.debugLevel || Debug.Levels.ERROR);
-          }
-
-          Config.setConfig(cfgJson);
-
-          if (cfgJson.lockView || cfgJson.viewLock) {
-            Versioning.viewLock();
-          }
-
-          if (cfgJson.header) {
-            Header.init(cfgJson.header);
-          }
-
-          if (cfgJson.modules) {
-            _modulesSet = ModuleFactory.setModules(cfgJson.modules);
-          }
-
-          // Set the filters
-          API.setAllFilters(cfgJson.filters || []);
-        })
-          .fail(function (a, b) {
-            Debug.error(`Error loading the config : ${b}`);
-          })
-          .always(function () {
-            require(['usr/datastructures/filelist'], function () {
-              Context.init(document.querySelector('#modules-grid'));
-              if (!Versioning.isViewLocked()) {
-                Context.listen(Context.getRootDom(), [
-                  [
-                    '<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
-                    function () {
-                      configureEntryPoint();
-                    },
-                  ],
-                ]);
-                Context.listen(Context.getRootDom(), [
-                  [
-                    '<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
-                    function () {
-                      document.location.reload();
-                    },
-                  ],
-                ]);
-              }
-
-              Versioning.setViewLoadCallback(doView);
-              Versioning.setDataLoadCallback(doData);
-
-              Versioning.setViewJSON({});
-              Versioning.setDataJSON({});
-
-              Versioning.setURLType(type);
-              var $visualizer = $('#ci-visualizer');
-
-              var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
-              if (!viewURL && $visualizer.attr('viewURL')) {
-                Debug.warn(
-                  'viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.',
-                );
-                viewURL = $visualizer.attr('viewURL');
-              }
-
-              var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
-              if (!dataURL && $visualizer.attr('dataURL')) {
-                Debug.warn(
-                  'dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.',
-                );
-                dataURL = $visualizer.attr('dataURL');
-              }
-
-              var viewInfo = {
-                view: {
-                  urls: urls.views,
-                  branch: urls.viewBranch,
-                  url: viewURL,
-                },
-                data: {
-                  urls: urls.results,
-                  branch: urls.resultBranch,
-                  url: dataURL,
-                },
-              };
-              window.history.replaceState(
-                { type: 'viewchange', value: viewInfo },
-                '',
-              );
-              Versioning.switchView(viewInfo, false);
-            });
-          });
       }
+
+      $.getJSON(configJson, {}, function (cfgJson) {
+        if (cfgJson.usrDir) {
+          require.config({
+            paths: {
+              usr: cfgJson.usrDir,
+            },
+          });
+        }
+
+        if (!debugSet) {
+          Debug.setDebugLevel(cfgJson.debugLevel || Debug.Levels.ERROR);
+        }
+
+        Config.setConfig(cfgJson);
+
+        if (cfgJson.lockView || cfgJson.viewLock) {
+          Versioning.viewLock();
+        }
+
+        if (cfgJson.header) {
+          Header.init(cfgJson.header);
+        }
+
+        if (cfgJson.modules) {
+          _modulesSet = ModuleFactory.setModules(cfgJson.modules);
+        }
+
+        // Set the filters
+        API.setAllFilters(cfgJson.filters || []);
+      })
+        .fail(function (a, b) {
+          Debug.error(`Error loading the config : ${b}`);
+        })
+        .always(function () {
+          require(['usr/datastructures/filelist'], function () {
+            Context.init(document.querySelector('#modules-grid'));
+            if (!Versioning.isViewLocked()) {
+              Context.listen(Context.getRootDom(), [
+                [
+                  '<li class="ci-item-configureentrypoint"><a><span class="ui-icon ui-icon-key"></span>Global preferences</a></li>',
+                  function () {
+                    configureEntryPoint();
+                  },
+                ],
+              ]);
+              Context.listen(Context.getRootDom(), [
+                [
+                  '<li class="ci-item-refresh" name="refresh"><a><span class="ui-icon ui-icon-arrowrefresh-1-s"></span>Refresh page</a></li>',
+                  function () {
+                    document.location.reload();
+                  },
+                ],
+              ]);
+            }
+
+            Versioning.setViewLoadCallback(doView);
+            Versioning.setDataLoadCallback(doData);
+
+            Versioning.setViewJSON({});
+            Versioning.setDataJSON({});
+
+            Versioning.setURLType(type);
+            var $visualizer = $('#ci-visualizer');
+
+            var viewURL = urls.viewURL || $visualizer.attr('data-ci-view');
+            if (!viewURL && $visualizer.attr('viewURL')) {
+              Debug.warn(
+                'viewURL as attribute of ci-visualizer is deprecated. Use data-ci-view instead.',
+              );
+              viewURL = $visualizer.attr('viewURL');
+            }
+
+            var dataURL = urls.dataURL || $visualizer.attr('data-ci-data');
+            if (!dataURL && $visualizer.attr('dataURL')) {
+              Debug.warn(
+                'dataURL as attribute of ci-visualizer is deprecated. Use data-ci-data instead.',
+              );
+              dataURL = $visualizer.attr('dataURL');
+            }
+
+            var viewInfo = {
+              view: {
+                urls: urls.views,
+                branch: urls.viewBranch,
+                url: viewURL,
+              },
+              data: {
+                urls: urls.results,
+                branch: urls.resultBranch,
+                url: dataURL,
+              },
+            };
+            window.history.replaceState(
+              { type: 'viewchange', value: viewInfo },
+              '',
+            );
+            Versioning.switchView(viewInfo, false);
+          });
+        });
     },
   };
 });

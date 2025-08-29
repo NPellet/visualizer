@@ -6,7 +6,7 @@ define([
   'src/util/versioning',
   'src/util/util',
   'uri/URI',
-  'lib/semver/semver',
+  'browserified/semver/semver',
 ], function ($, Default, Versioning, Util, URI, semver) {
   function VersionSelector() {}
 
@@ -80,7 +80,7 @@ define([
       var text = (isSame ? '• ' : '') + version;
       var that = this,
         dom = $('<li />').text(text);
-      dom.addClass('hasEvent').bind('click', function () {
+      dom.addClass('hasEvent').on('click', function () {
         that.load(version);
         that.onClick();
       });

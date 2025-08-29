@@ -232,14 +232,14 @@ define([
           div.on('keyup', function (e) {
             if (e.keyCode === 27) {
               // Esc character
-              div.blur();
+              div.trigger('blur');
             }
           });
           div.on('click', function () {
             if (isEditing) return;
             isEditing = true;
             div.html(String(val));
-            div.focus();
+            div.trigger('focus');
           });
 
           div.on('blur', function () {

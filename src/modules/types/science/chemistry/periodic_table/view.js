@@ -6,7 +6,7 @@ define([
   'src/util/debug',
   'src/util/colorbar',
   'src/util/color',
-  'components/papa-parse/papaparse.min',
+  'papaparse',
   'src/util/api',
   'lodash',
   'src/util/urldata',
@@ -49,16 +49,16 @@ define([
         this.template = Twig.twig({
           data: '',
         });
-        this.dom.empty().unbind();
+        this.dom.off().empty();
       },
       hltemplate() {
         this.hltemplate = Twig.twig({
           data: '',
         });
-        this.dom.empty().unbind();
+        this.dom.off().empty();
       },
       value() {
-        this.dom.empty().unbind();
+        this.dom.off().empty();
       },
     },
     inDom() {
@@ -204,7 +204,7 @@ define([
 
     render() {
       var that = this;
-      that.dom.empty().unbind();
+      that.dom.off().empty();
       that.dom.append('<div class="indic-p indic-g"></div>');
       for (let i = 1; i < 19; i++) {
         that.dom.append(`<div class="indic-g group${i}"><p>${i}</p></div>`);
@@ -332,7 +332,7 @@ define([
       });
 
       var showDefaultLegend = _.debounce(() => {
-        $('.element-zoom').delay(50000).empty().unbind();
+        $('.element-zoom').delay(50000).off().empty();
         that.defaultLegend.removeClass('hidden');
         if (this.module.getConfigurationCheckbox('display', 'families')) {
           that.colorSerie.removeClass('hidden');
@@ -343,7 +343,7 @@ define([
 
       showDefaultLegend();
 
-      that.$elements.mouseenter(function () {
+      that.$elements.on('mouseenter', function () {
         var $el = $(this);
         var Z = that.getZ($el);
         that._doHighlight(Z, true);
@@ -353,7 +353,7 @@ define([
         renderElement($el);
       });
 
-      that.$elements.mouseleave(function () {
+      that.$elements.on('mouseleave', function () {
         var $el = $(this);
         var Z = that.getZ($el);
         that._doHighlight(Z, false);
@@ -361,7 +361,7 @@ define([
         showDefaultLegend();
       });
 
-      that.$elements.click(function (event) {
+      that.$elements.on('click', function (event) {
         that.unselectElements(event, that.$elements);
         var $el = $(this);
         $el.toggleClass('el-selected');
@@ -372,7 +372,7 @@ define([
         event.stopPropagation();
       });
 
-      that.$elements.dblclick(function () {
+      that.$elements.on('dblclick', function () {
         var $el = $(this);
         $el.removeClass('el-selected');
         isFixed = false;
@@ -422,7 +422,7 @@ define([
         that.defaultLegend.addClass('hidden');
         elementZoom.removeClass('hidden');
         elementDatas.removeClass('hidden');
-        elementZoom.empty().unbind();
+        elementZoom.off().empty();
         elementZoom.append(that.hltemplate.render({ element: el }));
       }
 

@@ -17,7 +17,7 @@ define(['jquery', 'src/util/util'], function ($, Util) {
     this._dom = document.createElement('li');
     this.$_dom = $(this._dom);
     this.$_dom.text(this.options.label || this.options.title || '');
-    this.$_dom.bind('click', function () {
+    this.$_dom.on('click', function () {
       that.onClick();
     });
   };
