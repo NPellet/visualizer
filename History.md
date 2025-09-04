@@ -1,3 +1,17 @@
+## [2.173.1](https://github.com/NPellet/visualizer/compare/v2.173.0...v2.173.1) (2025-09-04)
+
+
+### Bug Fixes
+
+* force quill to 2.0.2 because 2.0.3 replace spaces with &nbsp; ([6f4cb8b](https://github.com/NPellet/visualizer/commit/6f4cb8b470137f1045eef93f6af0064e0dd7727b))
+
+
+### Features
+
+* style jquery tooltips ([2a364c0](https://github.com/NPellet/visualizer/commit/2a364c0c716a50e90294ac35d7bf08f1bab921d4))
+
+
+
 # [2.173.0](https://github.com/NPellet/visualizer/compare/v2.172.2...v2.173.0) (2025-08-21)
 
 
