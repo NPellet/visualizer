@@ -6,3 +6,5 @@ reject:
   - tempfile
   # Version 7 had breaking changes not worth the effort.
   - conventional-changelog
+  # Version 2.0.3 made a breaking change with whitespaces: https://github.com/slab/quill/issues/4509
+  - quill
