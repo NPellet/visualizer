@@ -240,7 +240,7 @@ define([
         ) {
           await this.rerender();
         } else {
-          await this.rerender();
+          await this.renderPromise;
         }
         this.fillForm();
       },
