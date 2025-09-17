@@ -242,7 +242,7 @@ define([
         } else {
           await this.renderPromise;
         }
-        this.setDataAndTrackChanges();
+        this.fillForm();
       },
 
       style(value) {
@@ -271,7 +271,7 @@ define([
       },
     },
 
-    setDataAndTrackChanges() {
+    fillForm() {
       const changed = this.form.setData(this.formObject);
       for (const c of changed) this._changedJpaths.add(c);
     },
