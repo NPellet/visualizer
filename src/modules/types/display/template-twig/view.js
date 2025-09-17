@@ -231,7 +231,8 @@ define([
         // fill form should execute when the template exists
         // It doesn't make sense otherwise
         await this.hasTemplate;
-
+        await this.renderPromise;
+        this.fillForm();
         if (
           this.module.getConfigurationCheckbox(
             'formOptions',
@@ -239,10 +240,7 @@ define([
           )
         ) {
           await this.rerender();
-        } else {
-          await this.renderPromise;
         }
-        this.fillForm();
       },
 
       style(value) {
