@@ -1,3 +1,12 @@
+## [2.173.2](https://github.com/NPellet/visualizer/compare/v2.173.1...v2.173.2) (2025-09-17)
+
+
+### Bug Fixes
+
+* **twig:** make sure twig has finished rendering before setting the form data ([#1172](https://github.com/NPellet/visualizer/issues/1172)) ([0be612b](https://github.com/NPellet/visualizer/commit/0be612b0aff822b8dbfb7116aa2e9a265268268e))
+
+
+
 ## [2.173.1](https://github.com/NPellet/visualizer/compare/v2.173.0...v2.173.1) (2025-09-04)
 
 
