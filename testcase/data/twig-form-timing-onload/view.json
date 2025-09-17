@@ -286,7 +286,7 @@
                 0
               ],
               "script": [
-                "\nMolecular formula: <input type=\"text\" name=\"mf\" style=\"width: 200px\">        \n\n"
+                "<form>\nMolecular formula: <input type=\"text\" name=\"mf\" style=\"width: 200px\"></input>  \n<input type=\"submit\" value=\"Submit\" />\n<br/>\nSome text insert here: {{ textData }}\n</form>\n\n"
               ]
             }
           ],
@@ -307,12 +307,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 0,
-            "top": 0
+            "left": 50,
+            "top": 28
           },
           "size": {
-            "width": 63,
-            "height": 12
+            "width": 75,
+            "height": 39
           },
           "zIndex": 0,
           "display": true,
@@ -425,7 +425,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 14
+            "top": 0
           },
           "size": {
             "width": 49,
@@ -454,6 +454,14 @@
         {
           "rel": "tpl",
           "name": "template"
+        },
+        {
+          "rel": "style",
+          "name": "styleObject"
+        },
+        {
+          "rel": "value",
+          "name": "textData"
         }
       ],
       "actions_in": [
@@ -461,7 +469,16 @@
       ],
       "vars_out": [
         {
-          "jpath": []
+          "event": "onFormChanged",
+          "rel": "form",
+          "jpath": [],
+          "name": "formChanged"
+        },
+        {
+          "event": "onFormSubmitted",
+          "rel": "form",
+          "jpath": [],
+          "name": "formSubmitted"
         }
       ],
       "actions_out": [
@@ -667,12 +684,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 0,
-            "top": 27
+            "left": 1,
+            "top": 11
           },
           "size": {
             "width": 48,
-            "height": 14
+            "height": 16
           },
           "zIndex": 0,
           "display": true,
@@ -793,12 +810,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 0,
-            "top": 43
+            "left": 1,
+            "top": 28
           },
           "size": {
             "width": 48,
-            "height": 17
+            "height": 9
           },
           "zIndex": 0,
           "display": true,
@@ -815,6 +832,615 @@
         }
       },
       "id": 7,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "API.createData('styleObject', {})"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 38
+          },
+          "size": {
+            "width": 48,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 50,
+            "top": 0
+          },
+          "size": {
+            "width": 37,
+            "height": 27
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "On form value changed",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 9,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "formChanged"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "On form value changed"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 88,
+            "top": 0
+          },
+          "size": {
+            "width": 37,
+            "height": 27
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Submitted form value",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "formSubmitted"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Submitted form value"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "API.createData('preferences', {mf: 'C6H6'});"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 48
+          },
+          "size": {
+            "width": 48,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 11,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "API.createData('textData', 'Hello world');"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 1,
+            "top": 58
+          },
+          "size": {
+            "width": 48,
+            "height": 9
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 12,
       "vars_in": [
         {}
       ],
