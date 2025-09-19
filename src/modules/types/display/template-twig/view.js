@@ -89,8 +89,9 @@ define([
     },
 
     rerender() {
+      const data = this.getForm();
       this.render(() => {
-        this.resetForm();
+        this.form.setData(data);
       });
     },
 
@@ -102,10 +103,6 @@ define([
       API.domToHTML(this.dom[0]).then((html) => {
         API.copyHTMLToClipboard(html);
       });
-    },
-
-    setForm(data) {
-      this.form.setData(data);
     },
 
     resetForm() {
@@ -141,9 +138,8 @@ define([
       return this.currentForm;
     },
 
-    submitChange(event, noChange) {
+    submitChange(event) {
       if (!event) return;
-      event = event || { target: {} };
       const toSend = {
         data: this.getForm(),
       };
@@ -157,7 +153,7 @@ define([
         this._changedJpaths.add(event.target.name);
       }
 
-      this.module.controller.onFormChanged(toSend, noChange);
+      this.module.controller.onFormChanged(toSend);
       return null;
     },
 
@@ -209,15 +205,6 @@ define([
         this._values[name] = DataObject.resurrect(value.get());
 
         this.rerender();
-
-        if (
-          this.module.getConfigurationCheckbox(
-            'formOptions',
-            'rerenderIfValueChanges',
-          )
-        ) {
-          this.render(() => this.fillForm(true));
-        }
       },
       tpl(value) {
         var tpl = value.get().toString();
@@ -244,15 +231,15 @@ define([
         // fill form should execute when the template exists
         // It doesn't make sense otherwise
         await this.hasTemplate;
-
-        this.fillForm(true);
+        await this.renderPromise;
+        this.fillForm();
         if (
           this.module.getConfigurationCheckbox(
             'formOptions',
             'rerenderIfFormValueChanges',
           )
         ) {
-          this.rerender();
+          await this.rerender();
         }
       },
 
@@ -275,17 +262,16 @@ define([
             'setForm invalid arguments. Must be object with data property.',
           );
         }
-        this.setForm(options.data);
+        this.form.setData(options.data);
         if (options.submitChange) {
           this.submitChange();
         }
       },
     },
 
-    fillForm(noChange) {
+    fillForm() {
       const changed = this.form.setData(this.formObject);
       for (const c of changed) this._changedJpaths.add(c);
-      this.submitChange(null, noChange);
     },
 
     render(cb) {
