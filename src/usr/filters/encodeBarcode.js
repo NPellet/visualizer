@@ -1,6 +1,6 @@
 'use strict';
 
-define(['components/jsbarcode/jsBarcode.min'], function () {
+define(['jsbarcode'], function () {
   return {
     filter(dataObject, resolve, reject) {
       var $img = $('<img/>');

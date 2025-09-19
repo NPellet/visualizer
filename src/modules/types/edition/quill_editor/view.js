@@ -71,8 +71,8 @@ define([
           `);
 
           this.dom = $('<div class="quill_wrapper" />');
-          this.dom.bind('keypress', (event) => this._listenForShortcuts(event));
-          this.dom.bind('keydown', (event) => {
+          this.dom.on('keypress', (event) => this._listenForShortcuts(event));
+          this.dom.on('keydown', (event) => {
             if (event.key === 'Shift') return;
             if (event.key === 'Tab') {
               this._listenForShortcuts({ key: '', isTab: true });

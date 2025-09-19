@@ -21,7 +21,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (
       this._titleDiv = $('#title').children('div');
       this._titleDiv
         .attr('contenteditable', 'true')
-        .bind('keypress', function (e) {
+        .on('keypress', function (e) {
           e.stopPropagation();
           if (e.keyCode !== 13) {
             return;
@@ -29,7 +29,7 @@ define(['require', 'jquery', 'src/util/versioning'], function (
           e.preventDefault();
           $(this).trigger('blur');
         })
-        .bind('blur', function () {
+        .on('blur', function () {
           Versioning.getView().configuration.set(
             'title',
             $(this)

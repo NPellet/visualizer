@@ -7,12 +7,11 @@ define(['modules/default/defaultview'], function (Default) {
     init() {
       this.dom = $('<iframe>');
 
-      var that = this;
-      this.dom.load(function () {
+      this.dom.on('load', () => {
         // we remove the loading message
-        if (that.dom.attr('src') !== 'about:blank') {
-          if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
-          else that.hideLoading();
+        if (this.dom.attr('src') !== 'about:blank') {
+          if (this._loadingTimeout) clearTimeout(this._loadingTimeout);
+          else this.hideLoading();
         }
       });
 
@@ -26,11 +25,10 @@ define(['modules/default/defaultview'], function (Default) {
     },
     update: {
       url(moduleValue) {
-        var that = this;
-        if (that._loadingTimeout) clearTimeout(that._loadingTimeout);
-        this._loadingTimeout = setTimeout(function () {
-          that._loadingTimeout = null;
-          that.showLoading();
+        if (this._loadingTimeout) clearTimeout(this._loadingTimeout);
+        this._loadingTimeout = setTimeout(() => {
+          this._loadingTimeout = null;
+          this.showLoading();
         }, 500);
         this.dom.attr('src', String(moduleValue.get()));
       },

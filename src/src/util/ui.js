@@ -16,7 +16,6 @@ define([
   'src/util/Form',
   'lib/twigjs/twig',
   'notifyjs',
-  'jquery-ui/ui/widgets/dialog',
 ], function (Util, Debug, Traversing, _, $, Renderer, Button, Form, Twig) {
   // On load add the style for the progress notification
   $.notify.addStyle('inprogress', {
@@ -863,7 +862,9 @@ define([
     fancytreeOptions,
     dialogOptions,
   ) {
-    await Util.require('fancytree');
+    await Util.require(
+      'node_modules/jquery.fancytree/dist/modules/jquery.fancytree',
+    );
     let selected = null;
     const jpaths = Traversing.getJPathsFromElement(data);
 

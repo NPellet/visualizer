@@ -58,7 +58,7 @@ define([
     _buildSubElement(el) {
       var that = this,
         dom = $('<li />').text(el);
-      dom.addClass('hasEvent').bind('click', function () {
+      dom.addClass('hasEvent').on('click', function () {
         Grid.switchToLayer(el);
         that.onClick();
       });

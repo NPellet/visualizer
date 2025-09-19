@@ -13,7 +13,7 @@ define([], function () {
                 .addClass('form-field')
                 .attr('tabIndex', '1')
                 .appendTo(dom)
-                .bind('click', function (event) {
+                .on('click', function (event) {
 
                     self.select(event);
                     event.stopPropagation();

@@ -100,7 +100,7 @@ define([
         $target = $firstOl;
         jpath[jpath.indexOf('$array$')] = idx;
       }
-      jpath = jpath.reverse();
+      jpath.reverse();
       if (jpath.includes('$array$') || jpath.includes(-1)) {
         jpathSuccess = false;
       }
