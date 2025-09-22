@@ -46,7 +46,7 @@
     "@rollup/plugin-node-resolve": "^16.0.1",
     "add-stream": "^1.0.0",
     "bower": "^1.8.14",
-    "conventional-changelog": "^6.0.0",
+    "conventional-changelog": "^7.1.1",
     "eslint": "^9.31.0",
     "eslint-config-cheminfo": "^14.1.1",
     "extend": "^3.0.2",
