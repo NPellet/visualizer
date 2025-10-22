@@ -5,9 +5,7 @@ define([
   'src/header/components/blankview',
   'src/header/components/copydata',
   'src/header/components/copyview',
-  'src/header/components/couchshare',
   'src/header/components/default',
-  'src/header/components/feedback',
   'src/header/components/pastedata',
   'src/header/components/pasteview',
 

@@ -71,7 +71,7 @@ define([
       this.module.getDomContent().html(this.dom);
       this.module.getDomContent().css('overflow', 'hidden');
 
-      this.dom.bind('load', function () {
+      this.dom.on('load', function () {
         that.postMessage('init', {
           prefs: that.getPrefs(),
           highlightColor: that.getHighlightColor(),

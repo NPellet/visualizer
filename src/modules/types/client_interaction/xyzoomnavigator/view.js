@@ -111,10 +111,10 @@ define(['modules/default/defaultview', 'src/util/util', 'jquery'], function (
 
       var upHandler = function () {
         window.clearTimeout(timeout);
-        $(document).unbind('mouseup', upHandler);
+        $(document).off('mouseup', upHandler);
       };
 
-      $(document).bind('mouseup', upHandler);
+      $(document).on('mouseup', upHandler);
 
       execute();
     },

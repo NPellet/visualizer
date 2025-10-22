@@ -90,7 +90,7 @@ define(['require', 'jquery', 'forms/title'], function (require, $, Title) {
             html += '<button type="button" class="form-button';
             html += '" data-id="';
             html += this.id;
-            html += '" id="button-' + this.id + '"><span /><span />';
+            html += '" id="button-' + this.id + '"><span></span><span></span>';
             html += '</button>';
 
             this.dom = $(html);
