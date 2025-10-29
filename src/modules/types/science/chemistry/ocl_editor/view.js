@@ -27,24 +27,10 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         let pastedData = clipboardData.getData('text');
         if (!pastedData) return;
 
-        let molecule;
-        try {
-          if (/M {2}END/.test(pastedData)) {
-            molecule = OCL.Molecule.fromMolfile(pastedData);
-          } else {
-            try {
-              molecule = OCL.Molecule.fromSmiles(pastedData.trim());
-            } catch {
-              molecule = OCL.Molecule.fromIDCode(pastedData.trim());
-            }
-          }
-          if (molecule) {
-            setCurrentValue(this, molecule);
-            event.preventDefault();
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(error);
+        const molecule = OCL.Molecule.fromText(pastedData);
+        if (molecule) {
+          setCurrentValue(this, molecule);
+          event.preventDefault();
         }
       });
     },
