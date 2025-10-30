@@ -21,7 +21,7 @@ define([
           'modules/types/science/chemistry/ocl_editor/help.html',
         );
         ui.dialog(
-          `<iframe src=${url} width="100%", height="100%" frameBorder="0"></iframe>`,
+          `<iframe src=${url} width="100%" height="100%" frameBorder="0"></iframe>`,
           {
             width: Math.min(w - 40, 800),
             height: h - 70,
@@ -103,7 +103,7 @@ define([
 
   Controller.prototype.moduleInformation = {
     name: 'OCL Molecule editor',
-    description: 'Molecule editor using the openchemlib javascript library',
+    description: 'Molecule editor using the OpenChemLib JavaScript library',
     author: 'Michael Zasso',
     date: '11.05.2015',
     license: 'BSD',

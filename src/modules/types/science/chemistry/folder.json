@@ -13,6 +13,10 @@
       "url": "modules/types/science/chemistry/ocl_editor/"
     },
     {
+      "moduleName": "OCL Reaction editor",
+      "url": "modules/types/science/chemistry/ocl_reaction_editor/"
+    },
+    {
       "moduleName": "Periodic table",
       "url": "modules/types/science/chemistry/periodic_table/"
     }

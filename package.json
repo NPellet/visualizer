@@ -82,7 +82,7 @@
     "mf-parser": "^1.5.0",
     "mime-types": "^2.1.35",
     "node-jsgraph": "2.4.15",
-    "openchemlib": "^9.6.0",
+    "openchemlib": "^9.14.0",
     "quill": "2.0.2",
     "quill-resize-module": "^2.0.4",
     "quill-table-better": "^1.2.1",
@@ -92,6 +92,6 @@
     "twig": "^1.17.1"
   },
   "volta": {
-    "node": "20.19.1"
+    "node": "20.19.5"
   }
 }
