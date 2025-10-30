@@ -10,6 +10,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
   $.extend(true, View.prototype, Default, {
     init() {
       this.editor = null;
+      this._currentReaction = OCL.Reaction.create();
       this._currentValue = null;
       this._currentType = null;
     },
@@ -20,11 +21,12 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         width: '100%',
       });
       this.module.getDomContent().html(this.dom);
+      this.resetEditor();
+      this.resolveReady();
     },
 
     onResize() {
-      this.dom.empty();
-      this.initEditor();
+      this.resetEditor();
     },
 
     blank: {
@@ -48,7 +50,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         if (molecule) {
           const reaction = this.editor.getReaction();
           reaction.addReactant(molecule);
-          setCurrentValue(this, reaction);
+          this.setReaction(reaction, true);
         }
       },
       addProduct(value) {
@@ -56,7 +58,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         if (molecule) {
           const reaction = this.editor.getReaction();
           reaction.addProduct(molecule);
-          setCurrentValue(this, reaction);
+          this.setReaction(reaction, true);
         }
       },
     },
@@ -87,19 +89,20 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
       },
     },
 
-    initEditor() {
-      const controller = this.module.controller;
+    resetEditor() {
+      if (this.editor) {
+        this.editor.destroy();
+        this.dom.empty();
+      }
       this.editor = new OCL.CanvasEditor(this.dom.get(0), {
         initialMode: 'reaction',
       });
-      this.editor.setOnChangeListener((event) =>
-        controller.onChange(event, this.editor.getReaction()),
-      );
-      const reaction =
-        OCL.ReactionEncoder.decode(controller.currentReactionId) ||
-        OCL.Reaction.create();
-      this.setReaction(reaction);
-      this.resolveReady();
+      this.editor.setOnChangeListener((event) => {
+        const reaction = this.editor.getReaction();
+        this._currentReaction = reaction;
+        this.module.controller.onChange(event, reaction);
+      });
+      this.setReaction(this._currentReaction);
     },
 
     clearEditor() {
@@ -108,11 +111,15 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
       this.setReaction(OCL.Reaction.create());
     },
 
-    setReaction(reaction) {
+    setReaction(reaction, updateValue = false) {
       reaction.setFragment(
         this.module.getConfigurationCheckbox('prefs', 'queryFeatures'),
       );
+      this._currentReaction = reaction;
       this.editor.setReaction(reaction);
+      if (updateValue) {
+        setCurrentValue(this, reaction);
+      }
     },
   });
 
@@ -139,8 +146,6 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         break;
       }
     }
-
-    self.setReaction(reaction);
   }
 
   return View;

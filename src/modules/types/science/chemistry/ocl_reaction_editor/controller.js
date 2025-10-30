@@ -5,9 +5,7 @@ define([
   'openchemlib',
   'src/util/ui',
 ], function (Default, OCL, ui) {
-  function Controller() {
-    this.currentReactionId = '';
-  }
+  function Controller() {}
 
   $.extend(true, Controller.prototype, Default);
 
@@ -138,39 +136,34 @@ define([
 
   Controller.prototype.onChange = function (event, reaction) {
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
+    const idCode = OCL.ReactionEncoder.encode(reaction) || '';
+    const rxn = reaction.toRxn();
+    const rxnV3 = reaction.toRxnV3();
+    const smiles = reaction.toSmiles();
+    this.createDataFromEvent('onReactionChange', 'rxn', rxn);
+    this.createDataFromEvent('onReactionChange', 'rxnV3', rxnV3);
+    this.createDataFromEvent('onReactionChange', 'smiles', smiles);
+    this.createDataFromEvent('onReactionChange', 'reactionIdCode', idCode);
 
-    const idCode = OCL.ReactionEncoder.encode(reaction, {}) || '';
-
-    if (this.currentReactionId !== idCode) {
-      this.currentReactionId = idCode;
-      const rxn = reaction.toRxn();
-      const rxnV3 = reaction.toRxnV3();
-      const smiles = reaction.toSmiles();
-      this.createDataFromEvent('onReactionChange', 'rxn', rxn);
-      this.createDataFromEvent('onReactionChange', 'rxnV3', rxnV3);
-      this.createDataFromEvent('onReactionChange', 'smiles', smiles);
-      this.createDataFromEvent('onReactionChange', 'reactionIdCode', idCode);
-
-      if (inPlace && this.module.view._currentType) {
-        const currentValue = this.module.view._currentValue;
-        switch (this.module.view._currentType) {
-          case 'rxn':
-            currentValue.setValue(rxn);
-            break;
-          case 'rxnV3':
-            currentValue.setValue(rxnV3);
-            break;
-          case 'smiles':
-            currentValue.setValue(smiles);
-            break;
-          case 'reactionIdCode':
-            currentValue.setValue(idCode);
-            break;
-          default:
-            throw new Error('invalid reaction value type');
-        }
-        this.module.model.dataTriggerChange(currentValue);
+    if (inPlace && this.module.view._currentType) {
+      const currentValue = this.module.view._currentValue;
+      switch (this.module.view._currentType) {
+        case 'rxn':
+          currentValue.setValue(rxn);
+          break;
+        case 'rxnV3':
+          currentValue.setValue(rxnV3);
+          break;
+        case 'smiles':
+          currentValue.setValue(smiles);
+          break;
+        case 'reactionIdCode':
+          currentValue.setValue(idCode);
+          break;
+        default:
+          throw new Error('invalid reaction value type');
       }
+      this.module.model.dataTriggerChange(currentValue);
     }
   };
 
