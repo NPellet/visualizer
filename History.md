@@ -1,3 +1,17 @@
+# [2.174.0](https://github.com/NPellet/visualizer/compare/v2.173.3...v2.174.0) (2025-10-30)
+
+
+### Bug Fixes
+
+* correct form value update with rerendering option on ([#1174](https://github.com/NPellet/visualizer/issues/1174)) ([514f1d5](https://github.com/NPellet/visualizer/commit/514f1d534bd7058ab84a9347f7d0c71ba87c0f25))
+
+
+### Features
+
+* add OCL Reaction editor module ([#1177](https://github.com/NPellet/visualizer/issues/1177)) ([6ae6abd](https://github.com/NPellet/visualizer/commit/6ae6abd43bb6c299995470e1ec7e0cfb68e08e34))
+
+
+
 ## [2.173.3](https://github.com/NPellet/visualizer/compare/v2.173.2...v2.173.3) (2025-09-17)
 
 
