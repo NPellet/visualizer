@@ -1,3 +1,12 @@
+# [2.175.0](https://github.com/NPellet/visualizer/compare/v2.174.0...v2.175.0) (2025-11-03)
+
+
+### Features
+
+* add shortcuts to ocl menu ([d4ad1ba](https://github.com/NPellet/visualizer/commit/d4ad1ba0be19679067d04180c80dc2506bf6afce))
+
+
+
 # [2.174.0](https://github.com/NPellet/visualizer/compare/v2.173.3...v2.174.0) (2025-10-30)
 
 
