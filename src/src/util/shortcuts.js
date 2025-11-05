@@ -11,7 +11,7 @@ define(['jquery'], function ($) {
       require(['src/util/searchBox'], function (searchModule) {
         searchModule();
       });
-    } else if (event.key === ' ') {
+    } else if (event.key === ' ' && event.target === document.body) {
       // Avoid scrolling the page. The space key can be used by modules.
       event.preventDefault();
     }
