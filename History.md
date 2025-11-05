@@ -1,3 +1,12 @@
+## [2.175.2](https://github.com/NPellet/visualizer/compare/v2.175.1...v2.175.2) (2025-11-05)
+
+
+### Reverts
+
+* Revert "fix: do not scroll the page when space key is pressed" ([3abc254](https://github.com/NPellet/visualizer/commit/3abc254991d2c4edc59f2d82798d180389dbcb07))
+
+
+
 ## [2.175.1](https://github.com/NPellet/visualizer/compare/v2.175.0...v2.175.1) (2025-11-05)
 
 
