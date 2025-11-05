@@ -1,3 +1,12 @@
+## [2.175.3](https://github.com/NPellet/visualizer/compare/v2.175.2...v2.175.3) (2025-11-05)
+
+
+### Bug Fixes
+
+* only prevent space key on the document body ([b774b9e](https://github.com/NPellet/visualizer/commit/b774b9e6242ad963315872748fe886ac4114ba67))
+
+
+
 ## [2.175.2](https://github.com/NPellet/visualizer/compare/v2.175.1...v2.175.2) (2025-11-05)
 
 
