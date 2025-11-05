@@ -1,3 +1,13 @@
+## [2.175.1](https://github.com/NPellet/visualizer/compare/v2.175.0...v2.175.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* do not scroll the page when space key is pressed ([2df5178](https://github.com/NPellet/visualizer/commit/2df517853ba0c6c49e395bdcf3aabac71e093bb8))
+* update OCL for reaction editor ([5f381de](https://github.com/NPellet/visualizer/commit/5f381deb528c010a9caeff80c074a2912651168f))
+
+
+
 # [2.175.0](https://github.com/NPellet/visualizer/compare/v2.174.0...v2.175.0) (2025-11-03)
 
 
