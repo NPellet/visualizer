@@ -1,3 +1,12 @@
+## [2.175.4](https://github.com/NPellet/visualizer/compare/v2.175.3...v2.175.4) (2025-11-12)
+
+
+### Bug Fixes
+
+* reaction editor does not add oclID in rxn file ([aa22c67](https://github.com/NPellet/visualizer/commit/aa22c672e44373785c0a96fecfed912665629106))
+
+
+
 ## [2.175.3](https://github.com/NPellet/visualizer/compare/v2.175.2...v2.175.3) (2025-11-05)
 
 
