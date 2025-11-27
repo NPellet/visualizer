@@ -135,6 +135,7 @@ define([
   };
 
   Controller.prototype.onChange = function (event, reaction) {
+    if (!event.isUserEvent) return;
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
     const idCode = OCL.ReactionEncoder.encode(reaction) || '';
     const rxn = reaction.toRxn();

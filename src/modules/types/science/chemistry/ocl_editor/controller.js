@@ -160,6 +160,7 @@ define([
   };
 
   Controller.prototype.onChange = function (event, molecule) {
+    if (!event.isUserEvent) return;
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
 
     // In modify variable in mode
