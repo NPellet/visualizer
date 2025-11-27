@@ -147,7 +147,7 @@ define([
             }
             module.resolveGlobal();
           }
-          _modulesSet.then(checkCustomModules, checkCustomModules);
+          _modulesSet?.then(checkCustomModules, checkCustomModules);
         },
         function (error) {
           Debug.error('View loading problem', error, error.stack);
