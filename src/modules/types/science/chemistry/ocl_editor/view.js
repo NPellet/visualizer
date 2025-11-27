@@ -130,9 +130,10 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
     initEditor() {
       const controller = this.module.controller;
       this.editor = new OCL.CanvasEditor(this.dom.get(0));
-      this.editor.setOnChangeListener((event) =>
-        controller.onChange(event, this.editor.getMolecule()),
-      );
+      this.editor.setOnChangeListener((event) => {
+        if (event.type !== 'molecule') return;
+        controller.onChange(event, this.editor.getMolecule());
+      });
       this.editor.setMolecule(
         OCL.Molecule.fromIDCode(
           controller.currentMol.idCode,

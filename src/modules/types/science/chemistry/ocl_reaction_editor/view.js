@@ -98,6 +98,7 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         initialMode: 'reaction',
       });
       this.editor.setOnChangeListener((event) => {
+        if (event.type !== 'molecule') return;
         const reaction = this.editor.getReaction();
         this._currentReaction = reaction;
         this.module.controller.onChange(event, reaction);
