@@ -1,5 +1,5 @@
 {
-  "version": "2.173.4-0",
+  "version": "2.175.5-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -943,6 +943,140 @@
         }
       ],
       "title": "We pretend it is a V3000 but in fact we check in place modification"
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "console.log('Variable changed: '+this.variable)"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 42,
+            "top": 42
+          },
+          "size": {
+            "width": 46,
+            "height": 35
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 8,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "rxnV2000"
+        },
+        {
+          "rel": "inputValue",
+          "name": "rxnV3000"
+        },
+        {
+          "rel": "inputValue",
+          "name": "smiles"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [],
