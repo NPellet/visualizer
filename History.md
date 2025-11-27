@@ -1,3 +1,12 @@
+## [2.175.5](https://github.com/NPellet/visualizer/compare/v2.175.4...v2.175.5) (2025-11-27)
+
+
+### Bug Fixes
+
+* only emit OCL editor changes when event is from user and updates the molecule/reaction ([c4d4543](https://github.com/NPellet/visualizer/commit/c4d454399d150e2293022fc9d237d813799322ee))
+
+
+
 ## [2.175.4](https://github.com/NPellet/visualizer/compare/v2.175.3...v2.175.4) (2025-11-12)
 
 
