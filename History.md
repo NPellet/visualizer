@@ -1,3 +1,72 @@
+## [2.175.5](https://github.com/NPellet/visualizer/compare/v2.175.4...v2.175.5) (2025-11-27)
+
+
+### Bug Fixes
+
+* only emit OCL editor changes when event is from user and updates the molecule/reaction ([c4d4543](https://github.com/NPellet/visualizer/commit/c4d454399d150e2293022fc9d237d813799322ee))
+
+
+
+## [2.175.4](https://github.com/NPellet/visualizer/compare/v2.175.3...v2.175.4) (2025-11-12)
+
+
+### Bug Fixes
+
+* reaction editor does not add oclID in rxn file ([aa22c67](https://github.com/NPellet/visualizer/commit/aa22c672e44373785c0a96fecfed912665629106))
+
+
+
+## [2.175.3](https://github.com/NPellet/visualizer/compare/v2.175.2...v2.175.3) (2025-11-05)
+
+
+### Bug Fixes
+
+* only prevent space key on the document body ([b774b9e](https://github.com/NPellet/visualizer/commit/b774b9e6242ad963315872748fe886ac4114ba67))
+
+
+
+## [2.175.2](https://github.com/NPellet/visualizer/compare/v2.175.1...v2.175.2) (2025-11-05)
+
+
+### Reverts
+
+* Revert "fix: do not scroll the page when space key is pressed" ([3abc254](https://github.com/NPellet/visualizer/commit/3abc254991d2c4edc59f2d82798d180389dbcb07))
+
+
+
+## [2.175.1](https://github.com/NPellet/visualizer/compare/v2.175.0...v2.175.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* do not scroll the page when space key is pressed ([2df5178](https://github.com/NPellet/visualizer/commit/2df517853ba0c6c49e395bdcf3aabac71e093bb8))
+* update OCL for reaction editor ([5f381de](https://github.com/NPellet/visualizer/commit/5f381deb528c010a9caeff80c074a2912651168f))
+
+
+
+# [2.175.0](https://github.com/NPellet/visualizer/compare/v2.174.0...v2.175.0) (2025-11-03)
+
+
+### Features
+
+* add shortcuts to ocl menu ([d4ad1ba](https://github.com/NPellet/visualizer/commit/d4ad1ba0be19679067d04180c80dc2506bf6afce))
+
+
+
+# [2.174.0](https://github.com/NPellet/visualizer/compare/v2.173.3...v2.174.0) (2025-10-30)
+
+
+### Bug Fixes
+
+* correct form value update with rerendering option on ([#1174](https://github.com/NPellet/visualizer/issues/1174)) ([514f1d5](https://github.com/NPellet/visualizer/commit/514f1d534bd7058ab84a9347f7d0c71ba87c0f25))
+
+
+### Features
+
+* add OCL Reaction editor module ([#1177](https://github.com/NPellet/visualizer/issues/1177)) ([6ae6abd](https://github.com/NPellet/visualizer/commit/6ae6abd43bb6c299995470e1ec7e0cfb68e08e34))
+
+
+
 ## [2.173.3](https://github.com/NPellet/visualizer/compare/v2.173.2...v2.173.3) (2025-09-17)
 
 

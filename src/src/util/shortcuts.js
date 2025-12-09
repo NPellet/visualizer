@@ -2,8 +2,6 @@
 
 define(['jquery'], ($) => {
   $(document).on('keydown', (event) => {
-    // If Control or Command key is pressed and the S key is pressed
-    // run save function. 83 is the key code for S.
     if (
       (event.ctrlKey || event.metaKey) &&
       !event.altKey &&
@@ -13,6 +11,9 @@ define(['jquery'], ($) => {
       require(['src/util/searchBox'], (searchModule) => {
         searchModule();
       });
+    } else if (event.key === ' ' && event.target === document.body) {
+      // Avoid scrolling the page. The space key can be used by modules.
+      event.preventDefault();
     }
   });
 });

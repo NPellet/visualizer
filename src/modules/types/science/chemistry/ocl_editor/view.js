@@ -27,24 +27,10 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
         let pastedData = clipboardData.getData('text');
         if (!pastedData) return;
 
-        let molecule;
-        try {
-          if (/M {2}END/.test(pastedData)) {
-            molecule = OCL.Molecule.fromMolfile(pastedData);
-          } else {
-            try {
-              molecule = OCL.Molecule.fromSmiles(pastedData.trim());
-            } catch {
-              molecule = OCL.Molecule.fromIDCode(pastedData.trim());
-            }
-          }
-          if (molecule) {
-            setCurrentValue(this, molecule);
-            event.preventDefault();
-          }
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(error);
+        const molecule = OCL.Molecule.fromText(pastedData);
+        if (molecule) {
+          setCurrentValue(this, molecule);
+          event.preventDefault();
         }
       });
     },
@@ -144,9 +130,10 @@ define(['modules/default/defaultview', 'src/util/ui', 'openchemlib'], function (
     initEditor() {
       const controller = this.module.controller;
       this.editor = new OCL.CanvasEditor(this.dom.get(0));
-      this.editor.setOnChangeListener((event) =>
-        controller.onChange(event, this.editor.getMolecule()),
-      );
+      this.editor.setOnChangeListener((event) => {
+        if (event.type !== 'molecule') return;
+        controller.onChange(event, this.editor.getMolecule());
+      });
       this.editor.setMolecule(
         OCL.Molecule.fromIDCode(
           controller.currentMol.idCode,

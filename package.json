@@ -1,6 +1,6 @@
 {
   "name": "visualizer",
-  "version": "2.173.3",
+  "version": "2.175.5",
   "description": "Data visualization framework",
   "keywords": [
     "data",
@@ -93,7 +93,7 @@
     "moment-duration-format": "^2.3.2",
     "node-jsgraph": "2.4.15",
     "numeral": "^2.0.6",
-    "openchemlib": "^9.12.1",
+    "openchemlib": "^9.18.2",
     "papaparse": "^5.5.3",
     "pouchdb": "^3.6.0",
     "quill": "2.0.2",

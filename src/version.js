@@ -3,8 +3,8 @@
 define(['browserified/semver/semver'], (semver) => {
   /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
   const MAJOR = 2;
-  const MINOR = 173;
-  const PATCH = 4;
+  const MINOR = 175;
+  const PATCH = 6;
   const PRERELEASE = 0;
   const IS_RELEASE = false;
   const BUILD_TIME = null;
