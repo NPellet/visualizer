@@ -24,6 +24,7 @@ export default defineConfig(
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-array-reverse': 'off',
       'unicorn/no-array-sort': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       'unicorn/no-this-assignment': 'off',
       'unicorn/prefer-code-point': 'off',
       'unicorn/prefer-default-parameters': 'off',
