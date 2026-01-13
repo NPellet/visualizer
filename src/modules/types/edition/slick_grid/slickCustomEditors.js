@@ -187,6 +187,7 @@ define([
           showInitial: true,
           showInput: true,
           clickoutFiresChange: false,
+          hideAfterPaletteSelect: true,
           showAlpha: true,
           showPalette: true,
           showSelectionPalette: true,

@@ -22,6 +22,7 @@ define([require, '../../field', 'src/util/util', 'components/farbtastic/src/farb
             showAlpha: true,
             showPalette: true,
             showSelectionPalette: true,
+            hideAfterPaletteSelect: true,
             palette: [[
                 'rgba(152,  0,  0, 1)',
                 'rgba(255,  0,  0, 1)',
