@@ -1,1 +1,1220 @@
-{"version":"2.175.5","grid":{"layers":{"Default layer":{"name":"Default layer"}},"xWidth":10,"yHeight":10},"modules":[{"url":"modules/types/client_interaction/code_executor/","configuration":{"sections":{},"groups":{"group":[{"display":[["editor","buttons"]],"execOnLoad":[["yes"]],"asyncAwait":[["top"]],"script":["// help: https://image-js.github.io/image-js/\n\nvar points=[12345,42112,32111,43212,4321,60000];\n\n\nvar image=new IJS.Image(3, 2, points, {\n    bitDepth: 16,\n    kind: 'GREY'\n});\n\nAPI.createData('image', image.toDataURL());\n\n\nvar size=500;\n\nvar random=new Array(size*size*3).fill(0);;\n\nvar randomImage=new IJS.Image(size, size, random, {\n    bitDepth: 8,\n    kind: 'RGB'\n});\n\n\nvar polylines=[];\nfor (var i=0; i<100; i++) {\n    polylines.push(\n        [ [(Math.random()*size)<<0,(Math.random()*size)<<0],[(Math.random()*500)<<0,(Math.random()*500)<<0] ]\n    );\n}\n\nrandomImage.paintPolylines( polylines )\n\n\nAPI.cache('randomImage', randomImage);\nAPI.createData('randomImage', randomImage.toDataURL());\n"]}],"libs":[[{"lib":"IJS","alias":"IJS"}]],"buttons":[[{"name":"button1","label":"Execute","hide":[]}]]}},"layers":{"Default layer":{"position":{"left":0,"top":0},"size":{"width":57,"height":64},"zIndex":0,"display":true,"title":"Code to create images using IJS","bgColor":[255,255,255,0],"wrapper":true,"created":true,"name":"Default layer"}},"id":1,"vars_in":[{}],"actions_in":[{}],"vars_out":[{"jpath":[]}],"actions_out":[{"jpath":[]}],"toolbar":{"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]},"css":[{"fontSize":[""],"fontFamily":[""]}],"title":"Code to create images using IJS"},{"url":"modules/types/display/panzoom/","configuration":{"sections":{},"groups":{"group":[{"transformThrottling":[0],"highlightStrategy":[null]}],"img":[[{"variable":"image","opacity":"1","order":"","rendering":"crisp-edges","scaling":"max","rerender":[]}]]}},"layers":{"Default layer":{"position":{"left":58,"top":0},"size":{"width":50,"height":39},"zIndex":0,"display":true,"title":"","bgColor":[255,255,255,0],"wrapper":true,"created":true,"name":"Default layer"}},"id":2,"vars_in":[{"rel":"image","name":"image"}],"actions_in":[{}],"vars_out":[{"jpath":[]}],"actions_out":[{"jpath":[]}],"toolbar":{"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]},"css":[{"fontSize":[""],"fontFamily":[""]}],"title":""},{"url":"modules/types/display/panzoom/","configuration":{"sections":{},"groups":{"group":[{"transformThrottling":[0]}],"img":[[{"variable":"randomImage","opacity":"1","order":"","rendering":"crisp-edges","scaling":"max","rerender":[]}]]}},"layers":{"Default layer":{"position":{"left":58,"top":40},"size":{"width":50,"height":45},"zIndex":0,"display":true,"title":"","bgColor":[255,255,255,0],"wrapper":true,"created":true,"name":"Default layer"}},"id":3,"vars_in":[{"rel":"image","name":"randomImage"}],"actions_in":[{}],"vars_out":[{"event":"hover","rel":"pixel","jpath":[],"name":"hoverPixel"}],"actions_out":[{"jpath":[]}],"toolbar":{"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]},"css":[{"fontSize":[""],"fontFamily":[""]}],"title":""},{"url":"modules/types/client_interaction/code_executor/","configuration":{"sections":{},"groups":{"group":[{"display":[["editor"]],"execOnLoad":[[]],"asyncAwait":[["top"]],"script":["var hover = get('hoverPixel');\nvar randomImage=API.cache('randomImage');\n\nvar column=randomImage.getColumn(hover.y);\nvar rowRed=randomImage.getRow(hover.y,0);\nvar rowGreen=randomImage.getRow(hover.y,1);\nvar rowBlue=randomImage.getRow(hover.y,2);\n\nAPI.createData('column', column);\nAPI.createData('rowRed', rowRed);\nAPI.createData('rowGreen', rowGreen);\nAPI.createData('rowBlue', rowBlue);"]}],"libs":[[{}]],"buttons":[[{"name":"button1","label":"Execute","hide":[]}]]}},"layers":{"Default layer":{"position":{"left":109,"top":0},"size":{"width":39,"height":25},"zIndex":0,"display":true,"title":"Deal with the 'hover' pixel","bgColor":[255,255,255,0],"wrapper":true,"created":true,"name":"Default layer"}},"id":4,"vars_in":[{"rel":"inputValue","name":"hoverPixel"}],"actions_in":[{}],"vars_out":[{"jpath":[]}],"actions_out":[{"jpath":[]}],"toolbar":{"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]},"css":[{"fontSize":[""],"fontFamily":[""]}],"title":"Deal with the 'hover' pixel"},{"url":"modules/types/science/spectra/spectra_displayer/","configuration":{"sections":{"graph":[{"sections":{},"groups":{"graph":[{"url":[""],"zoom":["none"],"wheelAction":["none"],"wheelbaseline":[0],"fullOut":["both"],"legend":[null],"legendOptions":[["isSerieHideable","isSerieSelectable"]],"mouseTracking":[[]],"selectScatter":[[]],"independantYZoom":[[]]}]}}],"axis":[{"sections":{},"groups":{"xAxis":[{"checkboxes":[["display"]],"label":[""],"beforeSpacing":["0"],"afterSpacing":[0],"min":[""],"max":[""],"nbTicksPrimary":[5],"axismodification":["none"]}],"yAxis":[{"checkboxes":[["display"]],"label":[""],"beforeSpacing":["0"],"afterSpacing":[0],"min":[""],"max":[""],"nbTicksPrimary":[5],"fitToAxisOnFromTo":[[]]}]}}],"variables":[{"sections":{},"groups":{"variables":[[{"variable":"","axis":"0","adaptTo":"none","plotcolor":[1,1,255,1],"strokewidth":"1","strokestyle":"1","plotcontinuous":"continuous","peakpicking":[],"markers":[],"markerShape":"1","markerSize":2,"normalize":"none","optimizeSlots":[],"degrade":0,"monotoneous":[],"tracking":[]}]]}}]},"groups":{}},"layers":{"Default layer":{"position":{"left":109,"top":26},"size":{"width":47,"height":22},"zIndex":0,"display":true,"title":"Hover column","bgColor":[255,255,255,0],"wrapper":true,"created":true,"name":"Default layer"}},"id":5,"vars_in":[{"rel":"xArray","name":"column"}],"actions_in":[{}],"vars_out":[{"jpath":[]}],"actions_out":[{"jpath":[]}],"toolbar":{"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]},"css":[{"fontSize":[""],"fontFamily":[""]}],"title":"Hover column"},{"url":"modules/types/science/spectra/spectra_displayer/","configuration":{"sections":{"graph":[{"sections":{},"groups":{"graph":[{"url":[""],"zoom":["none"],"wheelAction":["none"],"wheelbaseline":[0],"fullOut":["both"],"legend":[null],"legendOptions":[["isSerieHideable","isSerieSelectable"]],"mouseTracking":[[]],"selectScatter":[[]],"independantYZoom":[[]]}]}}],"axis":[{"sections":{},"groups":{"xAxis":[{"checkboxes":[["display"]],"label":[""],"beforeSpacing":["0"],"afterSpacing":[0],"min":[""],"max":[""],"nbTicksPrimary":[5],"axismodification":["none"]}],"yAxis":[{"checkboxes":[["display"]],"label":[""],"beforeSpacing":["0"],"afterSpacing":[0],"min":[""],"max":[""],"nbTicksPrimary":[5],"fitToAxisOnFromTo":[[]]}]}}],"variables":[{"sections":{},"groups":{"variables":[[{"variable":"rowRed","axis":"0","adaptTo":"none","plotcolor":[255,1,20,1],"strokewidth":"1","strokestyle":"1","plotcontinuous":"continuous","peakpicking":[],"markers":[],"markerShape":"1","markerSize":2,"normalize":"none","optimizeSlots":[],"degrade":0,"monotoneous":[],"tracking":[]},{"variable":"rowGreen","axis":"0","adaptTo":"none","plotcolor":[1,255,24,1],"strokewidth":"1","strokestyle":"1","plotcontinuous":"continuous","peakpicking":[],"markers":[],"markerShape":"1","markerSize":2,"normalize":"none","optimizeSlots":[],"degrade":0,"monotoneous":[],"tracking":[]},{"variable":"rowBlue","axis":"0","adaptTo":"none","plotcolor":[1,1,255,1],"strokewidth":"1","strokestyle":"1","plotcontinuous":"continuous","peakpicking":[],"markers":[],"markerShape":"1","markerSize":2,"normalize":"none","optimizeSlots":[],"degrade":0,"monotoneous":[],"tracking":[]}]]}}]},"groups":{}},"layers":{"Default layer":{"position":{"left":109,"top":49},"size":{"width":47,"height":22},"zIndex":0,"display":true,"title":"Hover row","bgColor":[255,255,255,0],"wrapper":true,"created":true,"name":"Default layer"}},"id":6,"vars_in":[{"rel":"xArray","name":"rowRed"},{"rel":"xArray","name":"rowBlue"},{"rel":"xArray","name":"rowGreen"}],"actions_in":[{}],"vars_out":[{"jpath":[]}],"actions_out":[{"jpath":[]}],"toolbar":{"custom":[[{"title":"","icon":"","action":"","position":"begin"}]],"common":[{"toolbar":[["Open Preferences"]]}]},"css":[{"fontSize":[""],"fontFamily":[""]}],"title":"Hover row"}],"variables":[{"jpath":[""]}],"aliases":[{"path":"https://www.lactame.com/lib/image-js/0.12.0/image","alias":"IJS"}],"configuration":{"title":"No title"},"actionscripts":[{"sections":{},"groups":{"action":[{"name":[null],"script":[null]}]}}],"init_script":[{"sections":{},"groups":{"general":[{"script":[null]}]}}],"custom_filters":[{"sections":{"modules":[{"sections":{},"groups":{"modules":[[{}]]}}],"filtersLib":[{"sections":{},"groups":{"filters":[[{}]]}}],"filters":[{"sections":{},"groups":{"filter":[{"name":[null],"script":[null]}],"libs":[[{}]]}}]},"groups":{}}],"actionfiles":[{"sections":{},"groups":{"action":[[{}]]}}]}
+{
+  "version": "2.175.6-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "// help: https://image-js.github.io/image-js/\n\nvar points=[12345,42112,32111,43212,4321,60000];\n\n\nvar image=new IJS.Image(3, 2, points, {\n    bitDepth: 16,\n    kind: 'GREY'\n});\n\nAPI.createData('image', image.toDataURL());\n\n\nvar size=500;\n\nvar random=new Array(size*size*3).fill(0);;\n\nvar randomImage=new IJS.Image(size, size, random, {\n    bitDepth: 8,\n    kind: 'RGB'\n});\n\n\nvar polylines=[];\nfor (var i=0; i<20; i++) {\n    polylines.push(\n        [ [(Math.random()*size)<<0,(Math.random()*size)<<0],[(Math.random()*500)<<0,(Math.random()*500)<<0] ]\n    );\n}\n\nrandomImage.paintPolylines( polylines )\n\n\nAPI.cache('randomImage', randomImage);\nAPI.createData('randomImage', randomImage.toDataURL());\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "IJS",
+                "alias": "IJS"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 57,
+            "height": 55
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Code to create images using IJS",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Code to create images using IJS"
+    },
+    {
+      "url": "modules/types/display/panzoom/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "highlightStrategy": [
+                "none"
+              ],
+              "transformThrottling": [
+                0
+              ]
+            }
+          ],
+          "img": [
+            [
+              {
+                "variable": "image",
+                "opacity": "1",
+                "order": "",
+                "rendering": "crisp-edges",
+                "scaling": "max",
+                "rerender": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 58,
+            "top": 0
+          },
+          "size": {
+            "width": 50,
+            "height": 39
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "image",
+          "name": "image"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "click",
+          "rel": "allpixel",
+          "jpath": [],
+          "name": "clickedPixelsHashmap"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/display/panzoom/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "transformThrottling": [
+                0
+              ]
+            }
+          ],
+          "img": [
+            [
+              {
+                "variable": "randomImage",
+                "opacity": "1",
+                "order": "",
+                "rendering": "crisp-edges",
+                "scaling": "max",
+                "rerender": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 58,
+            "top": 40
+          },
+          "size": {
+            "width": 50,
+            "height": 45
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "image",
+          "name": "randomImage"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "hover",
+          "rel": "pixel",
+          "jpath": [],
+          "name": "hoverPixel"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "var hover = get('hoverPixel');\nvar randomImage=API.cache('randomImage');\n\nvar column=randomImage.getColumn(hover.y);\nvar rowRed=randomImage.getRow(hover.y,0);\nvar rowGreen=randomImage.getRow(hover.y,1);\nvar rowBlue=randomImage.getRow(hover.y,2);\n\nAPI.createData('column', column);\nAPI.createData('rowRed', rowRed);\nAPI.createData('rowGreen', rowGreen);\nAPI.createData('rowBlue', rowBlue);"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 56
+          },
+          "size": {
+            "width": 57,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Deal with the 'hover' pixel",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "hoverPixel"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Deal with the 'hover' pixel"
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "degrade": 0,
+                      "monotoneous": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 109,
+            "top": 26
+          },
+          "size": {
+            "width": 47,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Hover column",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "xArray",
+          "name": "column"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Hover column"
+    },
+    {
+      "url": "modules/types/science/spectra/spectra_displayer/",
+      "configuration": {
+        "sections": {
+          "graph": [
+            {
+              "sections": {},
+              "groups": {
+                "graph": [
+                  {
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "axis": [
+            {
+              "sections": {},
+              "groups": {
+                "xAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
+                  }
+                ],
+                "yAxis": [
+                  {
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "variables": [
+            {
+              "sections": {},
+              "groups": {
+                "variables": [
+                  [
+                    {
+                      "variable": "rowRed",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        255,
+                        1,
+                        20,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "degrade": 0,
+                      "monotoneous": [],
+                      "tracking": []
+                    },
+                    {
+                      "variable": "rowGreen",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        255,
+                        24,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "degrade": 0,
+                      "monotoneous": [],
+                      "tracking": []
+                    },
+                    {
+                      "variable": "rowBlue",
+                      "axis": "0",
+                      "adaptTo": "none",
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
+                      "strokewidth": "1",
+                      "strokestyle": "1",
+                      "plotcontinuous": "continuous",
+                      "peakpicking": [],
+                      "markers": [],
+                      "markerShape": "1",
+                      "markerSize": 2,
+                      "normalize": "none",
+                      "optimizeSlots": [],
+                      "degrade": 0,
+                      "monotoneous": [],
+                      "tracking": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "groups": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 109,
+            "top": 49
+          },
+          "size": {
+            "width": 47,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Hover row",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "xArray",
+          "name": "rowRed"
+        },
+        {
+          "rel": "xArray",
+          "name": "rowBlue"
+        },
+        {
+          "rel": "xArray",
+          "name": "rowGreen"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Hover row"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                [
+                  "expand"
+                ]
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 109,
+            "top": 0
+          },
+          "size": {
+            "width": 47,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "clickedPixelsHashmap"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "jpath": [
+        ""
+      ]
+    }
+  ],
+  "aliases": [
+    {
+      "path": "https://www.lactame.com/lib/image-js/0.12.0/image",
+      "alias": "IJS"
+    }
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}
