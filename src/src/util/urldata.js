@@ -36,9 +36,9 @@ define(['src/util/lru', 'src/util/debug'], function (LRU, Debug) {
       throw new Error(`Expected status === 200, got ${res.status}`);
     }
     let data;
-    if (res.headers.get('Content-Type') === 'application/json')
+    if (res.headers.get('Content-Type') === 'application/json') {
       data = await res.json();
-    else {
+    } else {
       data = await res.text();
     }
     Debug.info(`DataURL: Found ${url} by AJAX`);
