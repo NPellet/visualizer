@@ -8,7 +8,6 @@ define([
   'src/util/ui',
   'lodash',
   'components/jquery.panzoom/dist/jquery.panzoom',
-  'components/jquery-mousewheel/jquery.mousewheel.min',
 ], function (API, Debug, Default, Util, UI, _) {
   const supportsCrispEdges = CSS.supports('image-rendering', 'crisp-edges');
   const focusR = 0.5;

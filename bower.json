@@ -24,7 +24,6 @@
     "flag-icon-css": "2.8.0",
     "jit": "2.0.2",
     "jqgrid_edit": "git://github.com/NPellet/jqGrid#4.5.6",
-    "jquery-mousewheel": "3.2.2",
     "jquery-qrcode": "cheminfo/jquery-qrcode#efece6cf4e32d1151436a146a2ac0e2197e0837b",
     "jquery-tmpl": "BorisMoore/jquery-tmpl#vBeta1.0.0",
     "jquery.panzoom": "cheminfo/jquery.panzoom#8fea7dc6539cc414419818956d8102ed47dea94b",
