@@ -621,7 +621,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                   default: 'none',
                 },
                 plotcolor: {
-                  type: 'color',
+                  type: 'spectrum',
                   title: 'Color',
                   default: [1, 1, 255, 1],
                 },

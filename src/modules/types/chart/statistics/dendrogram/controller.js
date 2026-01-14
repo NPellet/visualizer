@@ -119,7 +119,7 @@ define([
               insertValue: Util.jpathToString,
             },
             nodeColor: {
-              type: 'color',
+              type: 'spectrum',
               title: 'Default node color',
             },
             jpathLabel: {
@@ -134,7 +134,7 @@ define([
               title: 'Default label size',
             },
             labelColor: {
-              type: 'color',
+              type: 'spectrum',
               title: 'Default label color',
             },
             edgeWidth: {
@@ -142,7 +142,7 @@ define([
               title: 'Default edge width',
             },
             edgeColor: {
-              type: 'color',
+              type: 'spectrum',
               title: 'Default edge color',
             },
             strokeWidth: {
@@ -150,7 +150,7 @@ define([
               title: 'Background line width',
             },
             strokeColor: {
-              type: 'color',
+              type: 'spectrum',
               title: 'Background line color',
             },
           },

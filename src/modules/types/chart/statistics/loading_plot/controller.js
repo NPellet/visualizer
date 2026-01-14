@@ -126,7 +126,7 @@ define(['modules/default/defaultcontroller'], function (Default) {
                   ],
                 },
                 color: {
-                  type: 'color',
+                  type: 'spectrum',
                   title: 'Color (default)',
                 },
                 labels: {

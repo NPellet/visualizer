@@ -1549,7 +1549,6 @@ define([
       case 'wysiwyg':
         return field.default || '';
       // case 'slider':
-      // case 'textstyle':
       default:
         Debug.error(`Unknow field type: ${field.type}`);
         return field.default || '';

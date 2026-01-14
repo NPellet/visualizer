@@ -166,7 +166,7 @@ define(['jquery', 'modules/default/defaultcontroller', 'lodash'], function (
               options: { true: 'Take data min/max as boundaries' },
             },
             color: {
-              type: 'color',
+              type: 'spectrum',
               title: 'Color',
               multiple: true,
             },
