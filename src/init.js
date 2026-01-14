@@ -12,6 +12,7 @@ require.config({
     countryData: 'browserified/country-data/index',
     delay: 'browserified/delay/index',
     d3: 'components/d3/d3.min',
+    'd3-hexbin': 'node_modules/d3-hexbin/build/d3-hexbin',
     eventEmitter: 'components/eventEmitter/EventEmitter.min',
     'file-saver': 'components/file-saver.js/FileSaver',
     forms: 'lib/forms',

@@ -234,7 +234,6 @@ module.exports = function (grunt) {
               './select2/dist/**',
               './jszip/dist/**',
               './file-saver.js/*.js',
-              './d3-plugins/**',
               './notifyjs/dist/**',
               './web-animations-js/*.js',
               './web-animations-js/*.js.map',

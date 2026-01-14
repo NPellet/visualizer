@@ -18,8 +18,8 @@ define([
   'src/util/color',
   'src/util/colorbar',
   'src/util/ui',
-  'd3-plugins/hexbin/hexbin',
-], function (Default, _, Debug, Util, d3, colorUtil, colorbar, ui) {
+  'd3-hexbin',
+], function (Default, _, Debug, Util, d3, colorUtil, colorbar, ui, hexbinLib) {
   var DEFAULT_COLOR = 'lightblue';
 
   function View() {}
@@ -405,7 +405,7 @@ define([
         svg.html(svgMarkup);
       }
 
-      var hexbin = d3.hexbin().radius(hexRadius);
+      var hexbin = hexbinLib.hexbin().radius(hexRadius);
 
       var fontSize = that._fontSize(hexRadius);
 

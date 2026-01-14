@@ -17,7 +17,6 @@
     "ckeditor": "4.7.3",
     "colors": "3.0.0",
     "d3": "3.5.17",
-    "d3-plugins": "cheminfo/d3-plugins#ea652308c616f3accde0a418f7ccc6254a932985",
     "eventEmitter": "^5.2.3",
     "file-saver.js": "cheminfo-js/file-saver.js#6a90cb37e56fbb110f03c70c90ebceb9312650db",
     "flag-icon-css": "2.8.0",
