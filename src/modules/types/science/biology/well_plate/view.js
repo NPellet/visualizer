@@ -162,11 +162,11 @@ define([
           shape,
         );
         this.dom.html(tables);
-        const tableNodes = this.dom.find(':eq(0)').children();
+        const tableNodes = this.dom.find('table');
         let grid = [];
         for (let u = 0; u < tableNodes.length; u++) {
-          let tr = $(tableNodes[u]).find(':eq(1)').children();
-          let td = $(tr[0]).children();
+          let tr = $(tableNodes[u]).find('tr');
+          let td = tr.first().children();
           let [rows, columns] =
             direction === 'vertical'
               ? [td.length, tr.length]
@@ -299,11 +299,11 @@ define([
           shape,
         );
         this.dom.html(tables);
-        const tableNodes = this.dom.find(':eq(0)').children();
+        const tableNodes = this.dom.find('table');
         let grid = [];
         for (let u = 0; u < tableNodes.length; u++) {
-          let tr = $(tableNodes[u]).find(':eq(1)').children();
-          let td = $(tr[0]).children();
+          let tr = $(tableNodes[u]).find('tr');
+          let td = tr.first().children();
           let [rows, columns] =
             direction === 'vertical'
               ? [td.length, tr.length]
@@ -416,12 +416,12 @@ define([
         function (onOff) {
           if (onOff === 1) {
             if (!grid[i]) return;
-            $(grid[i].value).find(':eq(0)').css({
+            $(grid[i].value).find(':first-child').css({
               'border-color': '#F74949',
             });
           } else if (onOff === 0) {
             if (!grid[i]) return;
-            $(grid[i].value).find(':eq(0)').css({
+            $(grid[i].value).find(':first-child').css({
               'border-color': '#ddd',
             });
           }
