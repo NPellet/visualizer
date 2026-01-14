@@ -59,7 +59,7 @@ define([
         });
 
         choiceContainer.find('input').on('click', () => {
-          this.plotAccordingToChoices(choiceContainer, that._id);
+          this.plotAccordingToChoices(choiceContainer, this._id);
         });
       });
     },
