@@ -7,14 +7,13 @@ define([
   'src/util/util',
   'src/util/color',
   'src/util/worker',
-  'components/jquery.threedubmedia/event.drag/jquery.event.drag',
 ], function ($, require, Default, Util, Color, Worker) {
   function View() {}
 
   $.extend(true, View.prototype, Default, {
     init() {
       this.colors = null;
-
+      this.isDragging = false;
       this.canvas = document.createElement('canvas');
       this.canvasContext = this.canvas.getContext('2d');
 
@@ -22,7 +21,7 @@ define([
       this.scaleCanvasContext = this.scaleCanvas.getContext('2d');
       this.scaleCanvas.width = 40;
 
-      this.canvasContainer = $('<div />').addClass('matrix-container');
+      this.canvasContainer = $('<div/>').addClass('matrix-container');
       this.scaleContainer = $('<div />').addClass('scale-container');
 
       this.dom = $('<div />')
@@ -65,20 +64,23 @@ define([
           );
         });
 
-      $(this.canvasContainer).drag(function (e1, e2) {
-        e1.preventDefault();
-        var baseShift = that.baseShift;
-        var shift = that.getXYShift();
-        shift.x = baseShift.x + e2.deltaX;
-        shift.y = baseShift.y + e2.deltaY;
-        that.doCanvasErase();
-        that.doCanvasRedraw();
-        that.launchWorkers(true);
+      this.canvasContainer.on('mousedown', () => {
+        that.isDragging = true;
       });
 
-      $(this.canvasContainer).drag('start', function (e1) {
-        e1.preventDefault();
-        that.baseShift = $.extend({}, that.getXYShift());
+      window.document.addEventListener('mouseup', () => {
+        that.isDragging = false;
+      });
+
+      window.document.addEventListener('mousemove', (event) => {
+        if (that.isDragging) {
+          const shift = that.getXYShift();
+          shift.x += event.movementX;
+          shift.y += event.movementY;
+          that.doCanvasErase();
+          that.doCanvasRedraw();
+          that.launchWorkers(true);
+        }
       });
     },
 

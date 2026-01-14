@@ -208,7 +208,6 @@ module.exports = function (grunt) {
                 './ckeditor/plugins/**',
                 './ckeditor/config.js',
               ],
-              './jquery.threedubmedia/event.drag/jquery.event.drag.js',
               './sprintf/dist/**',
               './x2js/xml2json*',
               './jit/Jit/**/*',
