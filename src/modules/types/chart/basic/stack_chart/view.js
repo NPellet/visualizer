@@ -46,14 +46,12 @@ define([
     },
 
     onResize() {
-      var that = this;
-
-      this.loadedData.done(function () {
-        this._plot = that.plot(that._id, that._data, that._options);
-        var choiceContainer = $(`#choices${that._id}`);
+      this.loadedData.done(() => {
+        this._plot = this.plot(this._id, this._data, this._options);
+        var choiceContainer = $(`#choices${this._id}`);
         choiceContainer.empty();
 
-        $.each(that._data, function (key, val) {
+        $.each(this._data, function (key, val) {
           choiceContainer.append(
             `<br/><input type='checkbox' name='${key}' checked='checked' id='id${key}'></input>` +
               `<label for='id${key}'>${val.label}</label>`,
@@ -61,7 +59,7 @@ define([
         });
 
         choiceContainer.find('input').on('click', () => {
-          that.plotAccordingToChoices(choiceContainer, that._id);
+          this.plotAccordingToChoices(choiceContainer, that._id);
         });
       });
     },

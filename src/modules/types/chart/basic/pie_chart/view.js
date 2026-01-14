@@ -45,7 +45,7 @@ define([
       var that = this;
       // the size is now really defined (we are after inDom)
       // and we received the data ...
-      this.loadedData.done(function () {
+      this.loadedData.done(() => {
         that._plot = $.plot(`#${that._id}`, that._data, that._options);
 
         $(`#${that._id}`).on('plotclick', function (event, pos, item) {
