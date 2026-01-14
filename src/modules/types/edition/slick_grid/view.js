@@ -119,7 +119,7 @@ define([
     if (ctx.module.getConfigurationCheckbox('toolbar', 'showHide')) {
       ctx.$showHideSelection = $.tmpl(
         // eslint-disable-next-line no-template-curly-in-string
-        '<input type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>',
+        '<input class="show-hide-button" type="button" value="Show/Hide Column"/>\n    <div class="mutliSelect" style="display:none">\n        <ul>\n            {{each columns}}\n            \n            <li><input type="checkbox" value="${name}" checked/>${name}</li>\n            {{/each}}\n        </ul>\n    </div>',
         {
           columns,
         },
@@ -127,7 +127,7 @@ define([
       if (ctx.columnSelectionShown) {
         ctx.$showHideSelection.filter('div').show();
       }
-      ctx.$showHideSelection.on('click', function () {
+      ctx.$showHideSelection.filter('input').on('click', function () {
         ctx.$showHideSelection.filter('div').toggle();
         ctx.columnSelectionShown = ctx.$showHideSelection
           .filter('div')
@@ -144,7 +144,7 @@ define([
       ctx.$showHideSelection
         .find('input[type="checkbox"]')
         .on('change', function () {
-          if (this.checked) {
+          if (!this.checked) {
             ctx.hideColumn(this.value);
           } else {
             ctx.showColumn(this.value);
