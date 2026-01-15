@@ -330,10 +330,7 @@ define(['jquery', './groupelement'], function ($, GroupElement) {
         var fieldPosition = fieldElement.dom.position();
         var tdPosition = fieldElement.dom.parent().position();
         var row = this.domBody.children('tr:eq(' + j + ')');
-        var tableBodyPos = this.domBody.position();
         const tablePos = this.domBody.parent().position();
-
-        console.log({fieldPosition, tdPosition, tableBodyPos, tablePos, formPosition});
 
         return {
             width: row.outerWidth() - fieldPosition.left - tdPosition.left + tablePos.left - 10,
