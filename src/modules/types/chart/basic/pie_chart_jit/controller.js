@@ -55,14 +55,11 @@ define(['modules/default/defaultcontroller'], function (Default) {
 
   Controller.prototype.configFunctions = {
     updateHeights: boolCheckbox,
-    showLabels: boolCheckbox,
   };
 
   Controller.prototype.configAliases = {
     sliceOffset: ['groups', 'group', 0, 'sliceOffset', 0],
     updateHeights: ['groups', 'group', 0, 'updateHeights', 0],
-    showLabels: ['groups', 'group', 0, 'showLabels', 0],
-    labelColor: ['groups', 'group', 0, 'labelColor', 0],
   };
 
   function boolCheckbox(cfg) {

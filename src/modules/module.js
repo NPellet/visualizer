@@ -1158,7 +1158,7 @@ define([
         cfgEl = cfgEl[alias[i]];
         if (!cfgEl) {
           Debug.warn(
-            'Error in configuration file - Alias is not a correct jPath',
+            `Error in configuration file - Alias ${alias[i]} is not a correct jPath`,
           );
           return false;
         }
