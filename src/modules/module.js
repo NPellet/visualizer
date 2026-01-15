@@ -904,6 +904,10 @@ define([
       form.setStructure(structure);
 
       form.onStructureLoaded().then(function () {
+        // It is important the form created by the module is marked as
+        // loaded only after the `onChange` callbacks setup here have been called.
+        // Otherwise, module instantiation might fail because of an invalid
+        // configuration object.
         if (form.getSection('vars_out')) {
           form
             .getSection('vars_out')

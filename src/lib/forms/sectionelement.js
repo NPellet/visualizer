@@ -57,12 +57,13 @@ define(['require', 'jquery'], function (require, $) {
              this.getSectionElement( sections[ i ].getName( ), 0 );
              }
              */
-            this._fill(sections, this.getSectionElement, sectionsObj, clearFirst);
+            return this._fill(sections, this.getSectionElement, sectionsObj, clearFirst);
         },
 
         _fill: function (stackStructure, getter, stack, clearFirst) {
 
             var self = this;
+            const filledSectionsPromises = [];
 
             if (!stack) {
                 stack = {};
@@ -90,7 +91,9 @@ define(['require', 'jquery'], function (require, $) {
                 for (; j < l; j++) {
 
                     self.done++;
-                    getter.call(this, i, j).fill(stack[i][j], clearFirst).done(function () { // Returns a deferred
+                    const sectionPromise = getter.call(this, i, j).fill(stack[i][j], clearFirst);
+                    filledSectionsPromises.push(sectionPromise);
+                    sectionPromise.done(function () { // Returns a deferred
                         self.done--;
                         if (self.done == 0) { // All subgroups and subsections are loaded. Let's move to the parent !
                             self.readyDef.resolve();
@@ -99,7 +102,7 @@ define(['require', 'jquery'], function (require, $) {
 
                 }
             }
-
+            return Promise.all(filledSectionsPromises);
         },
 
         visible: function () {

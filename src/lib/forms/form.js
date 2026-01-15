@@ -247,17 +247,17 @@ define(['jquery', './section', './sectionelement', './conditionalelementdisplaye
 
         // Setting the value
         fill: function (json, clearFirst) {
-
             var self = this;
             json = json || {};
 
-            this._fillSections(json.sections, clearFirst);
+            // We need to wait for this promise before marking the form as ready
+            // Otherwise the form object is not properly filled yet.
+            // See calls to `getFieldElementCorrespondingTo` in src/modules/module.js
+            const prom = this._fillSections(json.sections, clearFirst);
 
-            $.when.apply($.when, this.allFieldElements).then(function () {
-
+            return Promise.all([prom, ...this.allFieldElements]).then(function () {
                 self._onValueLoaded.resolve();
-            })
-
+            });
         },
         _fillSections: SectionElement.prototype._fillSections,
         _fill: SectionElement.prototype._fill,
