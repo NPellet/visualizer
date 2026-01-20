@@ -160,7 +160,6 @@ define([
   };
 
   Controller.prototype.onChange = function (event, molecule) {
-    if (!event.isUserEvent) return;
     const inPlace = this.module.getConfigurationCheckbox('prefs', 'inPlace');
 
     // In modify variable in mode
@@ -187,6 +186,7 @@ define([
       // coordinates !== this.currentMol.coordinates
     ) {
       this.currentMol = { coordinates, idCode, idCodeOr };
+      if (!event.isUserEvent) return;
       var molfile = molecule.toMolfile();
       var molfileV3 = molecule.toMolfileV3();
       var smiles = molecule.toSmiles();
