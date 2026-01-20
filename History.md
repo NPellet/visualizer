@@ -1,3 +1,12 @@
+## [2.175.6](https://github.com/NPellet/visualizer/compare/v2.175.5...v2.175.6) (2026-01-20)
+
+
+### Bug Fixes
+
+* prevent molecule from being reset on resize ([#1184](https://github.com/NPellet/visualizer/issues/1184)) ([c15f41d](https://github.com/NPellet/visualizer/commit/c15f41d190e6eb3295e84540f6483083b88a045c))
+
+
+
 ## [2.175.5](https://github.com/NPellet/visualizer/compare/v2.175.4...v2.175.5) (2025-11-27)
 
 
