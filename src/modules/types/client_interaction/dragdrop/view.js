@@ -8,7 +8,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       var that = this;
       var $fileInput = $('<input/>').css('display', 'none').attr({
         type: 'file',
-        multiple: true,
+        multiple: 'multiple',
       });
 
       this.canDropOrPaste =
@@ -35,7 +35,7 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       this.$messages = $('<div class="flex-container">');
       this.messageP = $('<div>')
         .css('display', 'inline-block')
-        .css('font-size', this.module.getConfiguration('labelFontSize'))
+        .css('font-size', `${this.module.getConfiguration('labelFontSize')}px`)
         .html(this.messages.default);
 
       this.dom = $('<div />', {
