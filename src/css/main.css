@@ -145,7 +145,7 @@ td.ci-expand {
 	margin-top: 50%;
 	text-align: center;
 	font-size: 2em;
-	
+
 }*/
 
 #ci-left .ConfMenuElement {
@@ -1139,12 +1139,6 @@ span.superimpose sub {
   background: transparent;
   outline: 0;
   padding: 0;
-}
-
-.visualizer-slickgrid .ui-datepicker-trigger {
-  margin-top: 2px;
-  padding: 0;
-  vertical-align: top;
 }
 
 /* Slick.Editors.PercentComplete */

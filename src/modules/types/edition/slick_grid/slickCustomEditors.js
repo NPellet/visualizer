@@ -59,54 +59,25 @@ define([
       this.args = args;
       var $input;
       var defaultValue;
-      var calendarOpen = false;
 
       this.init = function () {
-        $input = $('<INPUT type="text" class="editor-text" />');
+        $input = $('<INPUT type="date" class="editor-text" />');
         $input.appendTo(args.container);
-        $input.trigger('focus').trigger('select');
-        $input.datepicker({
-          showOn: 'button',
-          buttonImageOnly: true,
-          buttonImage: require.toUrl(
-            'components/slickgrid/images/calendar.gif',
-          ),
-          beforeShow() {
-            calendarOpen = true;
-          },
-          onClose() {
-            calendarOpen = false;
-          },
-        });
+        $input.focus();
         $input.width($input.width() - 18);
+        $input.on('keydown.nav', (event) => {
+          if (
+            event.keyCode === $.ui.keyCode.LEFT ||
+            event.keyCode === $.ui.keyCode.RIGHT ||
+            event.keyCode === $.ui.keyCode.TAB
+          ) {
+            event.stopImmediatePropagation();
+          }
+        });
       };
 
       this.destroy = function () {
-        $.datepicker.dpDiv.stop(true, true);
-        $input.datepicker('hide');
-        $input.datepicker('destroy');
         $input.remove();
-      };
-
-      this.show = function () {
-        if (calendarOpen) {
-          $.datepicker.dpDiv.stop(true, true).show();
-        }
-      };
-
-      this.hide = function () {
-        if (calendarOpen) {
-          $.datepicker.dpDiv.stop(true, true).hide();
-        }
-      };
-
-      this.position = function (position) {
-        if (!calendarOpen) {
-          return;
-        }
-        $.datepicker.dpDiv
-          .css('top', position.top + 30)
-          .css('left', position.left);
       };
 
       this.focus = function () {
@@ -116,17 +87,19 @@ define([
       this.loadValue = function (item) {
         DataObject.check(item, true);
         defaultValue = item.getChildSync(args.column.jpath);
-        if (defaultValue) {
-          defaultValue = defaultValue.value || '01/01/2000';
-        } else {
-          defaultValue = '01/01/2000';
+
+        let date = new Date(defaultValue);
+        if (Number.isNaN(date.getDate())) {
+          date = new Date();
         }
-        $input.val(defaultValue);
-        $input[0].defaultValue = defaultValue;
+        const value = date.toISOString().split('T')[0];
+        $input.val(value);
+        $input[0].defaultValue = value;
         $input.trigger('select');
       };
 
       this.serializeValue = function () {
+        console.log({ value: $input.val() });
         return $input.val();
       };
 

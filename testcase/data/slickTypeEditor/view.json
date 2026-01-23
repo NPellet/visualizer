@@ -1,5 +1,5 @@
 {
-  "version": "2.175.5",
+  "version": "2.175.7-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -34,7 +34,7 @@
                 ]
               ],
               "script": [
-                "API.createData('table', [\n    {\n        ghs: '1,2,3',\n        color: 'rgb(255,0,0)',\n    },\n    {\n        ghs: '',\n        color: ''\n    }\n])"
+                "API.createData('table', [\n    {\n        ghs: '1,2,3',\n        color: 'rgb(255,0,0)',\n        date: '2022-06-22',\n    },\n    {\n        ghs: '',\n        color: ''\n    }\n])"
               ]
             }
           ],
@@ -58,8 +58,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 1,
-            "top": 1
+            "left": 0,
+            "top": 0
           },
           "size": {
             "width": 36,
@@ -179,7 +179,7 @@
                 30
               ],
               "slick.selectionModel": [
-                "row"
+                "cell"
               ],
               "idProperty": [
                 ""
@@ -218,6 +218,20 @@
                 ],
                 "editor": "color",
                 "forceType": "color",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Date",
+                "jpath": [
+                  "date"
+                ],
+                "editor": "date",
+                "forceType": "",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
                 "visibility": "both",
@@ -277,12 +291,12 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 39,
-            "top": 1
+            "left": 37,
+            "top": 0
           },
           "size": {
             "width": 51,
-            "height": 32
+            "height": 31
           },
           "zIndex": 0,
           "display": true,
@@ -302,6 +316,126 @@
       "vars_in": [
         {
           "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 32
+          },
+          "size": {
+            "width": 65,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
           "name": "table"
         }
       ],
