@@ -99,7 +99,6 @@ define([
       };
 
       this.serializeValue = function () {
-        console.log({ value: $input.val() });
         return $input.val();
       };
 
