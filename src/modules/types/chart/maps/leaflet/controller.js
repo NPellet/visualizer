@@ -163,7 +163,7 @@ define(['modules/default/defaultcontroller', 'src/util/api'], function (
               default: 'image',
             },
             markercolor: {
-              type: 'color',
+              type: 'spectrum',
               title: 'Default marker color',
               default: 'rgba(0,51,255,0.5)',
             },

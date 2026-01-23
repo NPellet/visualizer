@@ -3,12 +3,11 @@
 // Mini-library to manage couchdb attachments
 // - Get and upload attachments just by their name
 // - Cache already downloaded attachments
-define([
-  'src/util/versioning',
-  'superagent',
-  'src/util/util',
-  'fetch',
-], function (Versioning, superagent, util, fetch) {
+define(['src/util/versioning', 'superagent', 'src/util/util'], function (
+  Versioning,
+  superagent,
+  util,
+) {
   const base64DataUrlReg = /^data:([a-z]+\/[a-z]+)?;base64,/;
 
   function dataURLtoBase64(data) {

@@ -29,7 +29,7 @@ define([
           display: 'none',
         })
         .appendTo(parentDom)
-        .click(function (e) {
+        .on('click', function (e) {
           e.stopPropagation();
           that.searchEnabled = true;
           that.overlay.animate(

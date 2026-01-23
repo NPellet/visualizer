@@ -7,11 +7,10 @@ define([
   'src/util/util',
   'src/util/ui',
   'lodash',
-  'bowser',
   'components/jquery.panzoom/dist/jquery.panzoom',
-  'components/jquery-mousewheel/jquery.mousewheel',
-], function (API, Debug, Default, Util, UI, _, bowser) {
-  var focusR = 0.5;
+], function (API, Debug, Default, Util, UI, _) {
+  const supportsCrispEdges = CSS.supports('image-rendering', 'crisp-edges');
+  const focusR = 0.5;
 
   function View() {
     this.lastTransform = [1, 0, 0, 1, 0, 0];
@@ -681,7 +680,7 @@ define([
 
       // Double click event
       this.dom.off('dblclick');
-      this.dom.dblclick(function () {
+      this.dom.on('dblclick', () => {
         for (let i = 0; i < that.images.length; i++) {
           that.images[i].$panzoomEl.panzoom('reset');
           if (i === 0) {
@@ -792,14 +791,15 @@ define([
     },
 
     rerender: _.debounce(function () {
-      for (var j = 0; j < this.images.length; j++) {
-        // Trick to get crisp images with chrome
-        // Since it does'n implement crisp-edges image rendering
-        // But pixelated rendering instead
+      for (let j = 0; j < this.images.length; j++) {
+        // Trick to get crisp images with Chrome
+        // since it doesn't implement crisp-edges image rendering
+        // but pixelated rendering instead.
         if (
           (this.images[j].conf.rerender &&
             this.images[j].conf.rerender.includes('yes')) ||
-          (this.images[j].conf.rendering === 'crisp-edges' && bowser.chrome)
+          (this.images[j].conf.rendering === 'crisp-edges' &&
+            !supportsCrispEdges)
         ) {
           this.doImage(this.images[j].name);
         }

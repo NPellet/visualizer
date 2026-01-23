@@ -66,10 +66,9 @@ define([
       this.dom.html(this.ondeV.dom);
     },
     loadTwig() {
-      var that = this;
       this.dom.html(this.twigV.dom);
-      this.twigV.dom.dblclick(function () {
-        that.loadOnde();
+      this.twigV.dom.on('dblclick', () => {
+        this.loadOnde();
       });
       if (this._value) this.twigV.update.value.apply(this.twigV, this._value);
       this.twigV.render();

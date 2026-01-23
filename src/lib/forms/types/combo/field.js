@@ -1,6 +1,6 @@
 'use strict';
 
-define([require, '../../field', 'fancytree'], function (require, FieldDefaultConstructor) {
+define([require, '../../field', 'node_modules/jquery.fancytree/dist/modules/jquery.fancytree'], function (require, FieldDefaultConstructor) {
 
     var FieldConstructor = function (name) {
 

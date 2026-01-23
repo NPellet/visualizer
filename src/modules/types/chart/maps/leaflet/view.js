@@ -2,7 +2,7 @@
 
 require.config({
   shim: {
-    'components/leaflet/dist/leaflet': {
+    'node_modules/leaflet/dist/leaflet': {
       exports: 'L',
       init() {
         return this.L.noConflict();
@@ -17,14 +17,14 @@ define([
   'src/util/util',
   'src/util/api',
   'src/util/color',
-  'components/leaflet/dist/leaflet',
-  'components/leaflet-omnivore/leaflet-omnivore.min',
+  'node_modules/leaflet/dist/leaflet',
+  'node_modules/@mapbox/leaflet-omnivore/leaflet-omnivore.min',
 ], function ($, Default, Util, API, Color, L, omnivore) {
   function View() {
     this.mapID = Util.getNextUniqueId();
   }
 
-  Util.loadCss('components/leaflet/dist/leaflet.css');
+  Util.loadCss('node_modules/leaflet/dist/leaflet.css');
 
   // Custom icon that accepts Marker objects
   L.Icon.extend({
@@ -114,7 +114,7 @@ define([
         kind: this.module.getConfiguration('markerkind'),
         color: Color.getColor(this.module.getConfiguration('markercolor')),
         size: Number.parseInt(this.module.getConfiguration('markersize'), 10),
-        img: 'components/leaflet/dist/images/marker-icon.png',
+        img: 'node_modules/leaflet/dist/images/marker-icon.png',
         imgHighlight: 'modules/types/chart/maps/leaflet/marker-icon-red.png',
       });
       this.markerjpath = this.module.getConfiguration('markerjpath');

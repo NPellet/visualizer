@@ -138,7 +138,7 @@ define([
 
           that.dom.html(form.makeDomTpl());
           form.inDom();
-          form.dom.submit(function (event) {
+          form.dom.on('submit', (event) => {
             event.preventDefault();
           });
           triggerFunction.call(form);

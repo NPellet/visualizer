@@ -326,15 +326,16 @@ define(['jquery', './groupelement'], function ($, GroupElement) {
             i++;
         });
 
-        var posWrap = this.group.form.dom.find('.form-sections-wrapper').position();
-        var posDom = fieldElement.dom.position();
+        var formPosition = this.group.form.dom.find('.form-sections-wrapper').position();
+        var fieldPosition = fieldElement.dom.position();
+        var tdPosition = fieldElement.dom.parent().position();
         var row = this.domBody.children('tr:eq(' + j + ')');
-        var tablePos = this.domBody.position();
+        const tablePos = this.domBody.parent().position();
 
         return {
-            width: row.outerWidth() - posDom.left + tablePos.left + 2,
-            left: posDom.left + posWrap.left - 1,
-            top: posDom.top + posWrap.top + this.domBody.children('tr:eq(' + j + ')').innerHeight() - 1
+            width: row.outerWidth() - fieldPosition.left - tdPosition.left + tablePos.left - 10,
+            left: fieldPosition.left + tdPosition.left + tablePos.left + formPosition.left,
+            top:  tdPosition.top + tablePos.top + formPosition.top + this.domBody.children('tr:eq(' + j + ')').innerHeight(),
         };
     };
 

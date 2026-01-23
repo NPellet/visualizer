@@ -6,7 +6,6 @@ define([
   'src/util/api',
   'src/util/ui',
   'lib/loadingplot/loadingplot',
-  'components/jquery-mousewheel/jquery.mousewheel.min',
 ], function (Default, Util, API, ui, LoadingPlot) {
   Util.loadCss('lib/loadingplot/svg.css');
 

@@ -1,10 +1,10 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Visualizer Demo</title>
     <link rel="stylesheet" href="../src/css/main.css" media="screen, print" />
-    <script src="../src/components/jquery/dist/jquery.min.js"></script>
+    <script src="../src/node_modules/jquery/dist/jquery.min.js"></script>
     <script>
       var configs = [
         { description: 'Empty', name: '' },
@@ -23,10 +23,20 @@
           { description: 'Action columns', folder: 'slickActionColumn' },
           { description: 'Hierarchy', folder: 'slickHierarchy' },
           { description: 'Type renderer / editor', folder: 'slickTypeEditor' },
+          {
+            description: 'Slick grid preferences',
+            folder: 'slickGridPrefs',
+          },
+          {
+            description: 'Slick grid export',
+            folder: 'slickExport',
+          },
+          {
+            description: 'Reorder rows',
+            folder: 'slickReorderRows',
+          }
         ],
         Bio: [
-          { description: 'Protein Feature Viewer', folder: 'bioFeatureViewer' },
-          { description: 'AA sequence displayer', folder: 'bioSequence' },
           { description: 'Bio-synthesis tutorial', folder: 'bioSynthesis' },
           { description: 'Expérience de Griffith', folder: 'Griffith' },
           { description: 'Well plate', folder: 'well-plate' },
@@ -69,7 +79,6 @@
             folder: 'linkedAtomMolecule',
           },
           { description: 'jsNMR 2D', folder: 'jsnmr2d' },
-          { description: 'Wikipedia', folder: 'wikipedia' },
           { description: 'JSMol', folder: 'jsmol' },
           { description: 'JSMol highlight', folder: 'jsmolHighlight' },
           { description: 'JSMol - JSME', folder: 'jsmol-jsme' },
@@ -244,23 +253,7 @@
           {
             description: 'Edit an array',
             folder: 'editTable',
-          },
-          {
-            description: 'Slick grid preferences',
-            folder: 'slickGridPrefs',
-          },
-          {
-            description: 'Slick grid action',
-            folder: 'slickGridAction',
-          },
-          {
-            description: 'Slick grid prefs localStorage',
-            folder: 'slickGridPrefsLocalStorage',
-          },
-          {
-            description: 'Slick grid export',
-            folder: 'slickExport',
-          },
+          }
         ],
         Misc: [
           {
@@ -289,7 +282,6 @@
           },
           { description: 'Variable modification', folder: 'varedit' },
           { description: 'Highlight', folder: 'highlight' },
-          { description: 'Dummy', folder: 'dummy' },
           { description: 'Multiview', folder: 'multiview' },
           { description: 'Filter - DOI', folder: 'filter-doi' },
           { description: 'Twig template', folder: 'twig' },
@@ -308,6 +300,7 @@
             folder: 'fancytree',
           },
           { description: 'Panzoom', folder: 'panzoom' },
+          { description: 'Panzoom SVG', folder: 'panzoom_svg'},
           { description: 'Loading screen API', folder: 'loading' },
           { description: 'Progress bar', folder: 'progress' },
           {

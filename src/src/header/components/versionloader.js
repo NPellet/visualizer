@@ -79,7 +79,7 @@ define([
       var that = this,
         dom = $('<li />').text(el.label || '');
       if (el.viewURL || el.dataURL) {
-        dom.addClass('hasEvent').bind('click', function () {
+        dom.addClass('hasEvent').on('click', function () {
           that.load(el);
           that.onClick();
         });

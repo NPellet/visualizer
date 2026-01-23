@@ -904,6 +904,10 @@ define([
       form.setStructure(structure);
 
       form.onStructureLoaded().then(function () {
+        // It is important the form created by the module is marked as
+        // loaded only after the `onChange` callbacks setup here have been called.
+        // Otherwise, module instantiation might fail because of an invalid
+        // configuration object.
         if (form.getSection('vars_out')) {
           form
             .getSection('vars_out')
@@ -1158,7 +1162,7 @@ define([
         cfgEl = cfgEl[alias[i]];
         if (!cfgEl) {
           Debug.warn(
-            'Error in configuration file - Alias is not a correct jPath',
+            `Error in configuration file - Alias ${alias[i]} is not a correct jPath`,
           );
           return false;
         }
@@ -1549,7 +1553,6 @@ define([
       case 'wysiwyg':
         return field.default || '';
       // case 'slider':
-      // case 'textstyle':
       default:
         Debug.error(`Unknow field type: ${field.type}`);
         return field.default || '';

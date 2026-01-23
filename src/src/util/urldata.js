@@ -1,16 +1,11 @@
 'use strict';
 
-define(['superagent', 'src/util/lru', 'src/util/debug'], function (
-  superagent,
-  LRU,
-  Debug,
-) {
-  const pendings = {};
+define(['src/util/lru', 'src/util/debug'], function (LRU, Debug) {
   const credentials = {};
   const DEFAULT_STORE_NAME = 'urlData';
   const DEFAULT_STORE_DB_LIMIT = 500;
 
-  function doByUrl(url, headers, options) {
+  async function doByUrl(url, headers, options) {
     let host;
     var storeName = options.storeName || DEFAULT_STORE_NAME;
     try {
@@ -22,42 +17,34 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
     const withCredentials = options.withCredentials || credentials[host];
 
     Debug.debug(`DataURL: Looking for ${url} by AJAX`);
-    var req = superagent
-      .get(url)
-      .timeout(120000) // 2 minutes timeout
-      .set(headers || {});
-    if (withCredentials) {
-      req.withCredentials();
+    const res = await fetch(url, {
+      headers: headers || {},
+      signal: AbortSignal.timeout(120000),
+      credentials: withCredentials ? 'include' : 'same-origin',
+    });
+    if (
+      res.status === 401 &&
+      !withCredentials &&
+      credentials[host] === undefined
+    ) {
+      credentials[host] = true;
+      return doByUrl(url, headers, options);
     }
-    return req.then(
-      function (res) {
-        delete pendings[url];
-        if (res.status !== 200) {
-          Debug.info(`DataURL: Failing in retrieving ${url} by AJAX.`);
-          throw new Error(`Expected status !== 200, got ${res.status}`);
-        } else {
-          var data = res.body == null ? res.text : res.body;
-          Debug.info(`DataURL: Found ${url} by AJAX`);
-          LRU.create(
-            storeName,
-            options.databaseLimit || DEFAULT_STORE_DB_LIMIT,
-          );
-          LRU.store(storeName, url, data);
-          return data;
-        }
-      },
-      function (error) {
-        if (
-          error.status === 401 &&
-          !withCredentials &&
-          credentials[host] === undefined
-        ) {
-          credentials[host] = true;
-          return doByUrl(url, headers, options);
-        }
-        throw error;
-      },
-    );
+
+    if (res.status !== 200) {
+      Debug.info(`DataURL: Failing in retrieving ${url} by AJAX.`);
+      throw new Error(`Expected status === 200, got ${res.status}`);
+    }
+    let data;
+    if (res.headers.get('Content-Type') === 'application/json') {
+      data = await res.json();
+    } else {
+      data = await res.text();
+    }
+    Debug.info(`DataURL: Found ${url} by AJAX`);
+    LRU.create(storeName, options.databaseLimit || DEFAULT_STORE_DB_LIMIT);
+    LRU.store(storeName, url, data);
+    return data;
   }
 
   function doLRUOrAjax(url, force, timeout, headers, options) {
@@ -109,9 +96,6 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
   return {
     get: function urldataGet(url, force, timeout, headers, options) {
       options = options || {};
-      if (pendings[url]) {
-        return pendings[url];
-      }
 
       if (typeof force === 'number') {
         headers = timeout;
@@ -142,20 +126,6 @@ define(['superagent', 'src/util/lru', 'src/util/debug'], function (
       } else {
         return doLRUOrAjax(url, force, timeout, headers, options);
       }
-    },
-
-    post: function urldataPost(url, data, type) {
-      type = type || 'form';
-      return superagent
-        .post(url)
-        .type(type)
-        .send(data)
-        .then((res) => {
-          if (res.status !== 200) {
-            throw res.status;
-          }
-          return res.body == null ? res.text : res.body;
-        });
     },
 
     empty(options) {

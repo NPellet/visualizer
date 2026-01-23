@@ -12,10 +12,9 @@ define([
   'src/util/versioning',
   'src/util/couchdbAttachments',
   'src/util/uploadUi',
-  'fancytree',
+  'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.dnd',
+  'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.filter',
   'components/ui-contextmenu/jquery.ui-contextmenu.min',
-  'jquery-ui/ui/widgets/accordion',
-  'jquery-ui/ui/widgets/tooltip',
 ], function (
   $,
   _,
@@ -77,7 +76,7 @@ define([
       this.verifyRoc();
 
       // setup CTRL + S for view saving
-      $(document).keydown((event) => {
+      $(document).on('keydown', (event) => {
         if (
           (event.ctrlKey || event.metaKey) &&
           !event.altKey &&
@@ -278,7 +277,7 @@ define([
       });
 
       var lastSearchValue = '';
-      var searchField = $('<input type="text" size="20">').keyup(() => {
+      var searchField = $('<input type="text" size="20">').on('keyup', () => {
         var value = searchField.val();
         if (value !== lastSearchValue) {
           this.doSearch(value);
@@ -339,7 +338,7 @@ define([
 
       var uploadButton = $('<button>Upload attachments</button>')
         .button()
-        .click(() => this.uploadFiles());
+        .on('click', () => this.uploadFiles());
       this.$attachmentsBox.html(uploadButton);
 
       rightAccordion.append('<h3>Permissions</h3>');
@@ -348,7 +347,7 @@ define([
       rightAccordion.append('<h3>Metadata</h3>');
       this.$metaBox = $('<div>').appendTo(rightAccordion);
 
-      this.$publicCheckbox = $('<input type="checkbox" />').click((e) => {
+      this.$publicCheckbox = $('<input type="checkbox" />').on('click', (e) => {
         e.preventDefault();
         this.togglePublic();
       });
@@ -361,7 +360,7 @@ define([
         marginBottom: '5px',
       });
       this.$ownersList = ownersList;
-      var addOwnerButton = $('<button>Add owner</button>').click(() =>
+      var addOwnerButton = $('<button>Add owner</button>').on('click', () =>
         this.addOwner(),
       );
       var ownersContainer = $('<div>')
@@ -387,13 +386,13 @@ define([
 
       this.$closeButton = $('<button>Close view</button>')
         .button({ disabled: true })
-        .click(() => this.closeLoadedView());
+        .on('click', () => this.closeLoadedView());
       this.$saveButton = $('<button>Save</button>')
         .button({ disabled: true })
-        .click(() => this.saveCurrentView('active'));
+        .on('click', () => this.saveCurrentView('active'));
       this.$saveAsButton = $('<button>Save as</button>')
         .button({ disabled: true })
-        .click(() => this.saveAs());
+        .on('click', () => this.saveAs());
       this.$saveAsText = $('<input type="text" size="15" />').css(
         'display',
         'none',
@@ -491,7 +490,7 @@ define([
         },
       );
 
-      this.tree = this.$tree.fancytree('getTree');
+      this.tree = $.ui.fancytree.getTree(this.$tree);
 
       this.renderFlavor();
 
@@ -729,7 +728,7 @@ define([
         .on('keypress', (evt) => {
           if (evt.keyCode === 13) Rename();
         })
-        .select();
+        .trigger('select');
       const Rename = () => {
         var name = input.val().trim();
         if (name.length === 0) {

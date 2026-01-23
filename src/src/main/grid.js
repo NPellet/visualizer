@@ -513,12 +513,12 @@ define([
     }
 
     try {
-      module.getDomWrapper().remove().unbind();
+      module.getDomWrapper().off().remove();
     } catch {
       module
         .onReady()
         .then(function () {
-          module.getDomWrapper().remove().unbind();
+          module.getDomWrapper().off().remove();
         })
         .catch(function (error) {
           Debug.warn('Could not remove module from dom.', error);
@@ -976,10 +976,12 @@ define([
           [
             '<li name="paste"><a><span class="ui-icon ui-icon-clipboard"></span>Paste module</a></li>',
             function () {
-              var module = DataObject.recursiveTransform(
+              const module = DataObject.recursiveTransform(
                 JSON.parse(window.localStorage.getItem('ci-copy-module')),
               );
-              addModuleFromJSON(module);
+              if (module !== null) {
+                addModuleFromJSON(module);
+              }
             },
           ],
         ]);
@@ -992,18 +994,16 @@ define([
             var $li = $('<li name="add"><a> Add a module</a></li>');
 
             var $ulModules = $('<ul />').appendTo($li);
-            var allTypes = ModuleFactory.getTypes();
-            $.when(allTypes).then(function (json) {
-              if (typeof json === 'object' && !Array.isArray(json)) {
-                json = [json];
-              }
+            let allTypes = ModuleFactory.getTypes();
+            if (typeof allTypes === 'object' && !Array.isArray(allTypes)) {
+              allTypes = [allTypes];
+            }
 
-              if (Array.isArray(json)) {
-                for (let i = 0, l = json.length; i < l; i++) {
-                  makeRecursiveMenu(json[i], $ulModules);
-                }
+            if (Array.isArray(allTypes)) {
+              for (let i = 0, l = allTypes.length; i < l; i++) {
+                makeRecursiveMenu(allTypes[i], $ulModules);
               }
-            });
+            }
 
             $(contextDom).append($li);
 
@@ -1033,7 +1033,7 @@ define([
               var li = $(
                 `<li data-layer="${encodeURIComponent(
                   key,
-                )}"><a><span />${key}</a></li>`,
+                )}"><a><span></span>${key}</a></li>`,
               )
                 .data('layerkey', key)
                 .appendTo(layersUl);
@@ -1085,39 +1085,34 @@ define([
           Context.listen(dom, [], function (contextDom) {
             utilUl.empty();
             utilUl.append(
-              $('<li data-util="copyview"><a><span/>Copy view</a></li>').data(
+              $('<li data-util="copyview"><a>Copy view</a></li>').data(
                 'utilkey',
                 'copyview',
               ),
             );
             utilUl.append(
-              $('<li data-util="copydata"><a><span/>Copy data</a></li>').data(
+              $('<li data-util="copydata"><a>Copy data</a></li>').data(
                 'utilkey',
                 'copydata',
               ),
             );
             utilUl.append(
-              $('<li data-util="pasteview"><a><span/>Paste view</a></li>').data(
+              $('<li data-util="pasteview"><a>Paste view</a></li>').data(
                 'utilkey',
                 'pasteview',
               ),
             );
             utilUl.append(
-              $('<li data-util="pastedata"><a><span/>Paste data</a></li>').data(
+              $('<li data-util="pastedata"><a>Paste data</a></li>').data(
                 'utilkey',
                 'pastedata',
               ),
             );
             utilUl.append(
-              $('<li data-util="blankview"><a><span/>Blank view</a></li>').data(
+              $('<li data-util="blankview"><a>Blank view</a></li>').data(
                 'utilkey',
                 'blankview',
               ),
-            );
-            utilUl.append(
-              $(
-                '<li data-util="feedback"><a><span/>Send Feedback</a></li>',
-              ).data('utilkey', 'feedback'),
             );
             $(contextDom).append(utilLi);
 
@@ -1138,9 +1133,6 @@ define([
                   break;
                 case 'pastedata':
                   Versioning.pasteData();
-                  break;
-                case 'feedback':
-                  ui.feedback();
                   break;
                 default:
                   Debug.warn('Unknow util key');

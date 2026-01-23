@@ -25,27 +25,14 @@ define([
         this.module.getDomContent().html(this.dom);
       }
 
-      var labelColorRGB = this.module.getConfiguration('labelColor');
-      var labelColor;
-      if (labelColorRGB && labelColorRGB[3] !== 0) {
-        labelColor = Util.rgbToHex(
-          labelColorRGB[0],
-          labelColorRGB[1],
-          labelColorRGB[2],
-        );
-      }
       this.chartOptions = {
         injectInto: this._id,
         animate: false,
-        showLabels: this.module.getConfiguration('showLabels'),
         labelOffset: 20,
         offset: 30,
         hoveredColor: false,
         updateHeights: this.module.getConfiguration('updateHeights'),
         sliceOffset: this.module.getConfiguration('sliceOffset'),
-        Label: {
-          color: labelColor,
-        },
       };
     },
     onResize() {

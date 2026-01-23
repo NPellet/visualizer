@@ -7,14 +7,28 @@ define([
   'src/util/util',
   'src/util/color',
   'src/util/worker',
-  'components/jquery.threedubmedia/event.drag/jquery.event.drag',
 ], function ($, require, Default, Util, Color, Worker) {
-  function View() {}
+  function View() {
+    this._onCanvasMouseUp = () => {
+      this.isDragging = false;
+    };
+
+    this._onCanvasMouseMove = () => {
+      if (this.isDragging) {
+        const shift = this.getXYShift();
+        shift.x += event.movementX;
+        shift.y += event.movementY;
+        this.doCanvasErase();
+        this.doCanvasRedraw();
+        this.launchWorkers(true);
+      }
+    };
+  }
 
   $.extend(true, View.prototype, Default, {
     init() {
       this.colors = null;
-
+      this.isDragging = false;
       this.canvas = document.createElement('canvas');
       this.canvasContext = this.canvas.getContext('2d');
 
@@ -22,7 +36,7 @@ define([
       this.scaleCanvasContext = this.scaleCanvas.getContext('2d');
       this.scaleCanvas.width = 40;
 
-      this.canvasContainer = $('<div />').addClass('matrix-container');
+      this.canvasContainer = $('<div/>').addClass('matrix-container');
       this.scaleContainer = $('<div />').addClass('scale-container');
 
       this.dom = $('<div />')
@@ -65,21 +79,24 @@ define([
           );
         });
 
-      $(this.canvasContainer).drag(function (e1, e2) {
-        e1.preventDefault();
-        var baseShift = that.baseShift;
-        var shift = that.getXYShift();
-        shift.x = baseShift.x + e2.deltaX;
-        shift.y = baseShift.y + e2.deltaY;
-        that.doCanvasErase();
-        that.doCanvasRedraw();
-        that.launchWorkers(true);
+      this.canvasContainer.on('mousedown', (event) => {
+        if (event.button === 0) {
+          that.isDragging = true;
+        }
       });
 
-      $(this.canvasContainer).drag('start', function (e1) {
-        e1.preventDefault();
-        that.baseShift = $.extend({}, that.getXYShift());
-      });
+      this.cleanupEventListeners();
+      this.setupEventListeners();
+    },
+
+    setupEventListeners() {
+      window.document.addEventListener('mouseup', this._onCanvasMouseUp);
+      window.document.addEventListener('mousemove', this._onCanvasMouseMove);
+    },
+
+    cleanupEventListeners() {
+      window.document.removeEventListener('mouseup', this._onCanvasMouseUp);
+      window.document.removeEventListener('mousemove', this._onCanvasMouseMove);
     },
 
     inDom() {
@@ -232,10 +249,13 @@ define([
         }
       }
 
-      var arrBefore = this.availableZooms
-        .slice(currentIndex - 2, currentIndex)
-        .reverse();
-      var arrAfter = this.availableZooms.slice(
+      const arrBefore = this.availableZooms.slice(
+        currentIndex - 2,
+        currentIndex,
+      );
+      arrBefore.reverse();
+
+      const arrAfter = this.availableZooms.slice(
         currentIndex + 1,
         currentIndex + 3,
       );

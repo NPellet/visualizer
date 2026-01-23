@@ -1,5 +1,5 @@
 {
-  "version": "2.126.5-0",
+  "version": "2.175.7-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,15 +17,32 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
-                "API.createData('table', [\n    {\n        ghs: '1,2,3'\n    }    \n])"
+                "API.createData('table', [\n    {\n        ghs: '1,2,3',\n        color: 'rgb(255,0,0)',\n        date: '2022-06-22',\n    },\n    {\n        ghs: '',\n        color: ''\n    }\n])"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -41,8 +58,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 1,
-            "top": 1
+            "left": 0,
+            "top": 0
           },
           "size": {
             "width": 36,
@@ -51,15 +68,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 4,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "id": 1,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -78,20 +104,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -113,30 +152,86 @@
                   "editable"
                 ]
               ],
-              "copyPaste": [[]],
-              "copyPasteOptions": [["newRows"]],
-              "autoColumns": [[]],
-              "toolbar": [[]],
-              "colorjpath": [[]],
-              "slick.defaultColumnWidth": [null],
-              "slick.rowHeight": [null],
-              "slick.headerRowHeight": [30],
-              "slick.selectionModel": ["row"],
-              "idProperty": [""],
-              "filterType": ["pref"],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "cell"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
               "filterRow": [
                 "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
               ],
-              "customJpaths": [""]
+              "customJpaths": [
+                ""
+              ]
             }
           ],
           "cols": [
             [
               {
                 "name": "GHS",
-                "jpath": ["ghs"],
+                "jpath": [
+                  "ghs"
+                ],
                 "editor": "longtext",
                 "forceType": "ghs",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Color",
+                "jpath": [
+                  "color"
+                ],
+                "editor": "color",
+                "forceType": "color",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Date",
+                "jpath": [
+                  "date"
+                ],
+                "editor": "date",
+                "forceType": "",
                 "formatter": "typerenderer",
                 "copyFormatter": "default",
                 "visibility": "both",
@@ -149,8 +244,18 @@
           "actionCols": [
             [
               {
-                "backgroundColor": [255, 255, 255, 0],
-                "color": [0, 0, 0, 1],
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
                 "position": "end",
                 "clickMode": "text"
               }
@@ -163,12 +268,22 @@
               }
             ]
           ],
-          "actionOutButtons": [[{}]],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
           "data": [
             {
-              "saveInView": [[]],
-              "varname": [""],
-              "data": ["[]"]
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
             }
           ]
         }
@@ -176,30 +291,37 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 39,
-            "top": 1
+            "left": 37,
+            "top": 0
           },
           "size": {
             "width": 51,
-            "height": 32
+            "height": 31
           },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
-      "id": 5,
+      "id": 2,
       "vars_in": [
         {
           "rel": "list",
           "name": "table"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -218,20 +340,153 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "view"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 32
+          },
+          "size": {
+            "width": 65,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "table"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -240,11 +495,15 @@
   "variables": [
     {
       "varname": "table",
-      "jpath": ["table"]
+      "jpath": [
+        "table"
+      ]
     },
     {
       "varname": "filterScript",
-      "jpath": ["filterScript"]
+      "jpath": [
+        "filterScript"
+      ]
     }
   ],
   "aliases": [],
