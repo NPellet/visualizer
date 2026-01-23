@@ -9,6 +9,11 @@ define(['jquery', 'modules/default/defaultcontroller', 'lodash'], function (
 
   $.extend(true, Controller.prototype, Default);
 
+  Controller.prototype.onBeforeRemove = function () {
+    this.module.view.cleanupEventListeners();
+    return true;
+  };
+
   Controller.prototype.moduleInformation = {
     name: 'Matrix display',
     description: 'Display an array of array as a colored matrix',

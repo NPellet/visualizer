@@ -8,7 +8,22 @@ define([
   'src/util/color',
   'src/util/worker',
 ], function ($, require, Default, Util, Color, Worker) {
-  function View() {}
+  function View() {
+    this._onCanvasMouseUp = () => {
+      this.isDragging = false;
+    };
+
+    this._onCanvasMouseMove = () => {
+      if (this.isDragging) {
+        const shift = this.getXYShift();
+        shift.x += event.movementX;
+        shift.y += event.movementY;
+        this.doCanvasErase();
+        this.doCanvasRedraw();
+        this.launchWorkers(true);
+      }
+    };
+  }
 
   $.extend(true, View.prototype, Default, {
     init() {
@@ -64,24 +79,24 @@ define([
           );
         });
 
-      this.canvasContainer.on('mousedown', () => {
-        that.isDragging = true;
-      });
-
-      window.document.addEventListener('mouseup', () => {
-        that.isDragging = false;
-      });
-
-      window.document.addEventListener('mousemove', (event) => {
-        if (that.isDragging) {
-          const shift = that.getXYShift();
-          shift.x += event.movementX;
-          shift.y += event.movementY;
-          that.doCanvasErase();
-          that.doCanvasRedraw();
-          that.launchWorkers(true);
+      this.canvasContainer.on('mousedown', (event) => {
+        if (event.button === 0) {
+          that.isDragging = true;
         }
       });
+
+      this.cleanupEventListeners();
+      this.setupEventListeners();
+    },
+
+    setupEventListeners() {
+      window.document.addEventListener('mouseup', this._onCanvasMouseUp);
+      window.document.addEventListener('mousemove', this._onCanvasMouseMove);
+    },
+
+    cleanupEventListeners() {
+      window.document.removeEventListener('mouseup', this._onCanvasMouseUp);
+      window.document.removeEventListener('mousemove', this._onCanvasMouseMove);
     },
 
     inDom() {
