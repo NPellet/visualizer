@@ -1,3 +1,12 @@
+## [3.0.2](https://github.com/NPellet/visualizer/compare/v3.0.1...v3.0.2) (2026-01-26)
+
+
+### Bug Fixes
+
+* put back requirejs in bower ([23591a4](https://github.com/NPellet/visualizer/commit/23591a4c941906a179cf73fabf6abfe6d7162cff))
+
+
+
 ## [3.0.1](https://github.com/NPellet/visualizer/compare/v3.0.0...v3.0.1) (2026-01-26)
 
 
