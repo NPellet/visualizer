@@ -1,0 +1,3 @@
+[submodule "rest-on-couch/home/visualizer"]
+	path = rest-on-couch/home/visualizer
+	url = https://github.com/cheminfo/roc-visualizer-config.git
