@@ -100,7 +100,6 @@
     "quill": "2.0.2",
     "quill-resize-module": "^2.0.8",
     "quill-table-better": "^1.2.3",
-    "requirejs": "^2.3.8",
     "rxn-renderer": "^1.0.2",
     "semver": "^7.7.3",
     "smart-array-filter": "^5.0.0",
