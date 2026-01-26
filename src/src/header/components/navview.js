@@ -8,7 +8,6 @@ define([
   'src/util/util',
   'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.edit',
   'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.filter',
-  'components/ui-contextmenu/jquery.ui-contextmenu.min',
 ], function ($, Default, Versioning, Button, Util) {
   function Element() {}
 

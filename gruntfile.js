@@ -212,7 +212,6 @@ module.exports = function (grunt) {
               './sprintf/dist/**',
               './x2js/xml2json*',
               './jit/Jit/**/*',
-              './ui-contextmenu/jquery.ui-contextmenu*',
               './colors/css/colors.min.css',
               './uri.js/src/*.js',
               './onde/src/*',
