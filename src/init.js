@@ -149,6 +149,10 @@ require.config({
       Quill: 'quillPrivate',
       'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.ui-deps':
         'jquery-ui',
+      // Widgets are already shipped with jquery-ui
+      'jquery-ui/ui/widgets/draggable': 'jquery-ui',
+      'jquery-ui/ui/widgets/droppable': 'jquery-ui',
+      'jquery-ui/ui/widgets/menu': 'jquery-ui',
     },
     quillPrivate: {
       quill: 'quill',

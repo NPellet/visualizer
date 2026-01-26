@@ -15,6 +15,7 @@ define([
   'src/util/debug',
   'file-saver',
   'lib/couchdb/jquery.couch',
+  'components/ui-contextmenu/jquery.ui-contextmenu.min',
   'node_modules/jquery.fancytree/dist/modules/jquery.fancytree',
 ], function (
   $,
@@ -1327,6 +1328,7 @@ define([
             that.ftree = thefTree;
             thefTree.reload(tree);
             thefTree.getNodeByKey(that.flavor).toggleExpanded();
+            console.log(theTree.contextmenu);
             theTree.contextmenu(menuOptions);
             if (that.lastKeyLoaded) {
               thefTree.activateKey(that.lastKeyLoaded);
