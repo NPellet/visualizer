@@ -190,6 +190,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: './src/components/',
             src: [
+              './requirejs/require.js',
               './d3/d3*',
               [
                 './jqgrid_edit/js/*.js',
