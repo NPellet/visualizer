@@ -149,7 +149,7 @@ require.config({
       Quill: 'quillPrivate',
       'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.ui-deps':
         'jquery-ui',
-      // Widgets are already shipped with jquery-ui
+      // Dependency of jquery.fancytree, but widgets are already shipped with jquery-ui and not available at this location
       'jquery-ui/ui/widgets/draggable': 'jquery-ui',
       'jquery-ui/ui/widgets/droppable': 'jquery-ui',
       'jquery-ui/ui/widgets/menu': 'jquery-ui',
