@@ -28,3 +28,12 @@ The visualizer allows the modules to comminucate via a central repository of var
 
 To install the development version of the visualizer, you need Node.js.  
 Run `npm install` and all the dependencies will be downloaded.
+
+## View manager
+
+To test the view manager, run a local instance of couchdb with rest-on-couch:
+
+```bash
+git submodule init
+docker compose up -d --build
+```
