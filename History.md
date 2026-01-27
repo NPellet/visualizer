@@ -1,3 +1,12 @@
+## [3.0.4](https://github.com/NPellet/visualizer/compare/v3.0.3...v3.0.4) (2026-01-27)
+
+
+### Bug Fixes
+
+* fix jquery-ui dep in build ([5de1a9e](https://github.com/NPellet/visualizer/commit/5de1a9e51d003bf815c616f23380149aafdcac34))
+
+
+
 ## [3.0.3](https://github.com/NPellet/visualizer/compare/v3.0.2...v3.0.3) (2026-01-27)
 
 
