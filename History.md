@@ -1,3 +1,14 @@
+## [3.0.3](https://github.com/NPellet/visualizer/compare/v3.0.2...v3.0.3) (2026-01-27)
+
+
+### Bug Fixes
+
+* attempt to fix view manager header ([c0380f7](https://github.com/NPellet/visualizer/commit/c0380f70c7bb89a05a0a96f73f4b3b6b0a742d0e))
+* copy requirejs during build ([68f1906](https://github.com/NPellet/visualizer/commit/68f19069719671324be88894f0768a6c304a7122))
+* testable and functional view manager ([#1192](https://github.com/NPellet/visualizer/issues/1192)) ([3b436dc](https://github.com/NPellet/visualizer/commit/3b436dce7e847d588f3a399aecdec63a3abb34d8))
+
+
+
 ## [3.0.2](https://github.com/NPellet/visualizer/compare/v3.0.1...v3.0.2) (2026-01-26)
 
 
