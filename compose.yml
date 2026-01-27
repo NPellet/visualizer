@@ -5,7 +5,7 @@ services:
       COUCHDB_USER: admin
       COUCHDB_PASSWORD: 1234
       DEBUG: couch:*
-      ALLOWED_ORIGINS: http://localhost:63342
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Provide the origins in your .env file}
     depends_on:
       - couchdb
     restart: unless-stopped

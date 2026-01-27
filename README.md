@@ -34,6 +34,10 @@ Run `npm install` and all the dependencies will be downloaded.
 To test the view manager, run a local instance of couchdb with rest-on-couch:
 
 ```bash
+# Edit the .env file if needed, making sure the allowed origin is the dev URL serving the visualizer
+cp .env.example .env
 git submodule init
 docker compose up -d --build
 ```
+
+Open

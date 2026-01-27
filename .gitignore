@@ -17,5 +17,6 @@ src/usr/config/default.json
 
 .eslintcache
 .sass-cache
+.env
 
 couchdb-data

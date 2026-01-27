@@ -21,7 +21,7 @@ module.exports = {
   adminPassword: process.env.COUCHDB_PASSWORD,
   auth: {
     couchdb: {
-      showLogin: false,
+      showLogin: true,
     },
   },
 
