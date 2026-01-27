@@ -257,7 +257,7 @@ module.exports = function (grunt) {
                 './jquery.fancytree/dist/modules/jquery.fancytree*.js',
                 './jquery.fancytree/dist/skin-lion/*',
               ],
-              ['./jquery-ui/dist/*.js', './jquery-ui/themes/base/**'],
+              ['./jquery-ui/dist/*.js', './jquery-ui/dist/themes/base/**'],
               './jsbarcode/dist/*.js',
               './jsoneditor/dist/**',
               './jquery-migrate/dist/*',

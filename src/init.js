@@ -23,7 +23,7 @@ require.config({
     jquery: 'node_modules/jquery/dist/jquery',
     'jquery-migrate': 'node_modules/jquery-migrate/dist/jquery-migrate',
     'jquery-tmpl': 'components/jquery-tmpl/jquery.tmpl.min',
-    'jquery-ui': 'node_modules/jquery-ui/dist/jquery-ui',
+    'jquery-ui': 'node_modules/jquery-ui/dist/jquery-ui.min',
     jsgraph: 'components/jsgraph/dist/jsgraph-es6',
     'json-chart': 'browserified/json-chart/json-chart',
     jszip: 'components/jszip/dist/jszip.min',
