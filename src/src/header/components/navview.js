@@ -6,6 +6,7 @@ define([
   'src/util/versioning',
   'forms/button',
   'src/util/util',
+  'components/ui-contextmenu/jquery.ui-contextmenu.min',
   'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.edit',
   'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.filter',
 ], function ($, Default, Versioning, Button, Util) {

@@ -15,6 +15,7 @@ define([
   'src/util/debug',
   'file-saver',
   'lib/couchdb/jquery.couch',
+  'components/ui-contextmenu/jquery.ui-contextmenu.min',
   'node_modules/jquery.fancytree/dist/modules/jquery.fancytree',
 ], function (
   $,

@@ -97,6 +97,12 @@
       {
         "type": "pouchsavedata",
         "label": "Save local data"
+      },
+      {
+        "type": "roc-views",
+        "label": "View manager",
+        "database": "visualizer",
+        "url": "http://localhost:3000"
       }
     ]
   }
