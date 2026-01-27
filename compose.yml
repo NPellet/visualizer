@@ -10,14 +10,12 @@ services:
       - couchdb
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 127.0.0.1:3000:3000
   couchdb:
     image: docker.io/couchdb:3.4
     environment:
       COUCHDB_USER: admin
       COUCHDB_PASSWORD: 1234
-    ports:
-      - 5984:5984
     volumes:
       - ./couchdb-data:/opt/couchdb/data
       - ./config/couch.ini:/opt/couchdb/etc/local.d/couch.ini
