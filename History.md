@@ -1,3 +1,12 @@
+## [3.0.5](https://github.com/NPellet/visualizer/compare/v3.0.4...v3.0.5) (2026-01-30)
+
+
+### Bug Fixes
+
+* correct race condition in twig module ([#1193](https://github.com/NPellet/visualizer/issues/1193)) ([6a09be4](https://github.com/NPellet/visualizer/commit/6a09be45c9dfc6015adb25c614f41af7a8039103))
+
+
+
 ## [3.0.4](https://github.com/NPellet/visualizer/compare/v3.0.3...v3.0.4) (2026-01-27)
 
 
