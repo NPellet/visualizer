@@ -88,8 +88,9 @@ define([
       this.rerender();
     },
 
-    rerender() {
-      const data = this.getForm();
+    async rerender() {
+      await this.renderPromise;
+      const data = this.form.getData();
       this.render(() => {
         this.form.setData(data);
       });
@@ -103,10 +104,6 @@ define([
       API.domToHTML(this.dom[0]).then((html) => {
         API.copyHTMLToClipboard(html);
       });
-    },
-
-    resetForm() {
-      this.form.setData(this.currentForm);
     },
 
     setStyle() {
@@ -133,15 +130,10 @@ define([
       }
     },
 
-    getForm() {
-      this.currentForm = this.form.getData(false);
-      return this.currentForm;
-    },
-
     submitChange(event) {
       if (!event) return;
       const toSend = {
-        data: this.getForm(),
+        data: this.form.getData(),
       };
 
       if (this._lastChanged) {
@@ -159,7 +151,7 @@ define([
 
     submit() {
       const toSend = {
-        data: this.getForm(),
+        data: this.form.getData(),
         jpaths: Array.from(this._changedJpaths).map((j) => j.split('.')),
       };
 
@@ -175,7 +167,6 @@ define([
         this.renderPromise = this.renderPromise
           .then(() => {
             this.dom.hide();
-            this.getForm();
           })
           .catch(() => {
             Debug.warn('Error');
@@ -185,7 +176,6 @@ define([
       tpl() {
         this.renderPromise = this.renderPromise.then(() => {
           this.dom.hide();
-          this.getForm();
           this.template = Twig.twig({
             data: '',
           });
@@ -207,7 +197,7 @@ define([
         this.rerender();
       },
       tpl(value) {
-        var tpl = value.get().toString();
+        const tpl = value.get().toString();
         return this.renderPromise
           .then(() => {
             this.template = Twig.twig({
