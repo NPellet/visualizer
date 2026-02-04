@@ -347,25 +347,40 @@ define([
       rightAccordion.append('<h3>Metadata</h3>');
       this.$metaBox = $('<div>').appendTo(rightAccordion);
 
-      this.$publicCheckbox = $('<input type="checkbox" />').on('click', (e) => {
+      this.$publicCheckbox = $(
+        '<input id="viewManager_publicCheckbox" type="checkbox" />',
+      ).on('click', (e) => {
         e.preventDefault();
         this.togglePublic();
       });
-      var checkboxContainer = $('<div>')
-        .append(this.$publicCheckbox)
-        .append('Public');
 
-      var ownersList = $('<div>').css({
-        marginTop: '5px',
-        marginBottom: '5px',
-      });
-      this.$ownersList = ownersList;
-      var addOwnerButton = $('<button>Add owner</button>').on('click', () =>
-        this.addOwner(),
-      );
+      var checkboxContainer = $('<div>')
+        .css({
+          display: this.options.hidePublicToggle ? 'none' : 'flex',
+          alignItems: 'center',
+          gap: '2px',
+        })
+        .append(this.$publicCheckbox)
+        .append('<label for="viewManager_publicCheckbox">Public</label>');
+
+      this.$ownersList = $('<div>');
+      this.$groupList = $('<div>');
+
       var ownersContainer = $('<div>')
-        .append(ownersList)
-        .append(addOwnerButton);
+        .css({
+          display: 'flex',
+          alignItems: 'start',
+          flexDirection: 'column',
+          gap: '5px',
+          marginTop: '5px',
+        })
+        .append(this.$ownersList)
+        .append(this.$groupList)
+        .append(
+          $('<button>Add owner / group</button>').on('click', () =>
+            this.addOwner(),
+          ),
+        );
 
       this.$permissionsContainer = $('<div>');
       this.$permissionsBox.html(this.$permissionsContainer);
@@ -914,7 +929,12 @@ define([
       this.reloadRevisions(node);
       this.$permissionsContainer.show();
       this.$publicCheckbox.prop('checked', view.public);
-      this.$ownersList.html(`Owners: ${view.owners.join(', ')}`);
+      this.$ownersList.html(
+        `<strong>Owners</strong>: ${view.owners.join(', ')}`,
+      );
+      this.$groupList.html(
+        `<strong>Groups</strong>: ${view.groups.join(', ')}`,
+      );
     }
 
     async reloadRevisions(node, force) {
@@ -1317,7 +1337,7 @@ define([
 
     addOwner() {
       if (!this.activeView) return;
-      var div = $('<div>User email address: </div>');
+      var div = $('<div>User email address or group name: </div>');
       var input = $('<input type="text" />')
         .appendTo(div)
         .on('keypress', (evt) => {
@@ -1325,9 +1345,6 @@ define([
         });
       const Add = () => {
         var value = input.val();
-        if (!Util.isEmail(value)) {
-          return UI.showNotification('Invalid email', 'error');
-        }
         this.showHide(true);
         this.activeView.data.view.addGroup(value).then((ok) => {
           if (!ok) {

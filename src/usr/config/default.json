@@ -102,7 +102,8 @@
         "type": "roc-views",
         "label": "View manager",
         "database": "visualizer",
-        "url": "http://localhost:3000"
+        "url": "http://localhost:3000",
+        "hidePublicToggle": false
       }
     ]
   }
