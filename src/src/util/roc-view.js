@@ -42,6 +42,10 @@ define(['./util'], function (Util) {
       return this.view.$owners.slice(1).filter(Util.isEmail);
     }
 
+    get groups() {
+      return this.view.$owners.slice(1).filter((owner) => !Util.isEmail(owner));
+    }
+
     get revid() {
       return this.view._rev;
     }
