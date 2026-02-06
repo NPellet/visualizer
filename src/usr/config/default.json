@@ -83,27 +83,18 @@
         "label": "Blank view"
       },
       {
-        "type": "pouchloadview",
-        "label": "Load local view"
-      },
-      {
-        "type": "pouchsaveview",
-        "label": "Save local view"
-      },
-      {
-        "type": "pouchloaddata",
-        "label": "Load local data"
-      },
-      {
-        "type": "pouchsavedata",
-        "label": "Save local data"
+        "type": "versionselector",
+        "label": "Switch version",
+        "url": "https://www.lactame.com/visualizer/versions.json",
+        "minVersion": "2.170.0"
       },
       {
         "type": "roc-views",
         "label": "View manager",
         "database": "visualizer",
         "url": "http://localhost:3000",
-        "hidePublicToggle": false
+        "hidePublicToggle": false,
+        "switchVersion": true
       }
     ]
   }

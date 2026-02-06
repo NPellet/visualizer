@@ -1124,10 +1124,28 @@ define([
 
     loadNode(node) {
       this.setLoadedNode(node);
-      var view = node.data.view;
-      Versioning.switchView(view.getViewSwitcher(), true, {
-        withCredentials: true,
-      });
+      const nodeView = node.data.view;
+
+      if (this.options.switchVersion) {
+        // When `switchVersion` is on, reload the page with the matching version of the visualizer
+        // This option is supported since v3.1.0
+        // It only works if the reloaded page supports the `v` query parameter. See `src/index-lactame.html`.
+        // ⚠️ After the switch of view, you might have loaded a version which does not support this.
+        const { view, data } = nodeView.getViewSwitcher();
+        const url = new URL(window.location.href);
+        url.searchParams.set('viewURL', view.url);
+        if (data.url) {
+          url.searchParams.set('dataURL', data.url);
+        }
+        if (node.data.view.view.$content.version) {
+          url.searchParams.set('v', `v${node.data.view.view.$content.version}`);
+        }
+        window.location.href = url.toString();
+      } else {
+        Versioning.switchView(nodeView.getViewSwitcher(), true, {
+          withCredentials: true,
+        });
+      }
     }
 
     getTree(views) {

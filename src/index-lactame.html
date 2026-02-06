@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Visualizer</title>
+    <script type="module">
+      const visualizer = document.getElementById('ci-visualizer');
+      const { searchParams, origin } = new URL(window.location.href);
+      const viewURL = searchParams.get('viewURL');
+      let version = searchParams.get('v') || 'latest';
+
+      const script = document.createElement('script');
+      script.src = `https://www.lactame.com/visualizer/${version}/components/requirejs/require.js`;
+      script.dataset.main = `https://www.lactame.com/visualizer/${version}/init.js`;
+
+      document.head.appendChild(script);
+    </script>
+
+    <style>
+      #ci-visualizer {
+        min-height: 100vh;
+      }
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ci-visualizer" data-ci-config="./usr/config/default.json"></div>
+  </body>
+</html>
