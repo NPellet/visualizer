@@ -1,3 +1,13 @@
+# [3.1.0](https://github.com/NPellet/visualizer/compare/v3.0.5...v3.1.0) (2026-02-06)
+
+
+### Features
+
+* add option in view manager header to hide public checkbox ([#1197](https://github.com/NPellet/visualizer/issues/1197)) ([6ce4b43](https://github.com/NPellet/visualizer/commit/6ce4b439c2801fae4befc0fd381c73deac849922))
+* introduce switchVersion option in view manager ([#1199](https://github.com/NPellet/visualizer/issues/1199)) ([59ef820](https://github.com/NPellet/visualizer/commit/59ef820b4d827921a63d5dd01adb42190962c802))
+
+
+
 ## [3.0.5](https://github.com/NPellet/visualizer/compare/v3.0.4...v3.0.5) (2026-01-30)
 
 
