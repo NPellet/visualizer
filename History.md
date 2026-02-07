@@ -1,3 +1,12 @@
+## [3.1.2](https://github.com/NPellet/visualizer/compare/v3.1.1...v3.1.2) (2026-02-07)
+
+
+### Bug Fixes
+
+* harmonize options for queryType in roc-views and versionselector headers ([bcda94f](https://github.com/NPellet/visualizer/commit/bcda94f4d3964c0685b0325115594ab9e8d46b15))
+
+
+
 ## [3.1.1](https://github.com/NPellet/visualizer/compare/v3.1.0...v3.1.1) (2026-02-07)
 
 
