@@ -1,3 +1,12 @@
+## [3.1.3](https://github.com/NPellet/visualizer/compare/v3.1.2...v3.1.3) (2026-02-07)
+
+
+### Bug Fixes
+
+* make sure to reload after changing url fragment ([eab35e8](https://github.com/NPellet/visualizer/commit/eab35e8e205da83b3dca204cec2991ba6acdf3ca))
+
+
+
 ## [3.1.2](https://github.com/NPellet/visualizer/compare/v3.1.1...v3.1.2) (2026-02-07)
 
 
