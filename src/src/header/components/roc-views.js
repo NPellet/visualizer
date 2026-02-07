@@ -1155,6 +1155,9 @@ define([
           url.hash = `?${params.toString()}`;
         }
         window.location.href = url.toString();
+        if (this.queryType === 'fragment') {
+          window.location.reload();
+        }
       } else {
         Versioning.switchView(nodeView.getViewSwitcher(), true, {
           withCredentials: true,
