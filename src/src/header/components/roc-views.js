@@ -60,6 +60,12 @@ define([
         throw new Error('roc-views: url and database options are mandatory');
       }
 
+      this.queryType = options.queryType || 'query';
+      if (this.queryType !== 'query' && this.queryType !== 'fragment') {
+        throw new Error(
+          'roc-views: queryType must be either "query" or "fragment"',
+        );
+      }
       this.rocUrl = options.url.replace(/\\$/, '');
       this.rocDatabase = options.database;
       this.rocDbUrl = `${this.rocUrl}/db/${this.rocDatabase}`;
@@ -1132,13 +1138,12 @@ define([
         // It only works if the reloaded page supports the `v` query parameter. See `src/index-lactame.html`.
         // ⚠️ After the switch of view, you might have loaded a version which does not support this.
 
-        const isHash = this.options.queryType === 'hash';
         const { view, data } = nodeView.getViewSwitcher();
         const url = new URL(window.location.href);
-        let params = url.searchParams;
-        if (isHash) {
-          params = new URLSearchParams(url.hash.slice(1));
-        }
+        const params =
+          this.queryType === 'query'
+            ? url.searchParams
+            : new URLSearchParams(url.hash.slice(1));
         params.set('viewURL', view.url);
         if (data.url) {
           params.set('dataURL', data.url);
@@ -1146,7 +1151,7 @@ define([
         if (node.data.view.view.$content.version) {
           params.set('v', `v${node.data.view.view.$content.version}`);
         }
-        if (isHash) {
+        if (this.queryType === 'fragment') {
           url.hash = `?${params.toString()}`;
         }
         window.location.href = url.toString();
