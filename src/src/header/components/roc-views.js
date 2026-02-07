@@ -1131,14 +1131,23 @@ define([
         // This option is supported since v3.1.0
         // It only works if the reloaded page supports the `v` query parameter. See `src/index-lactame.html`.
         // ⚠️ After the switch of view, you might have loaded a version which does not support this.
+
+        const isHash = this.options.queryType === 'hash';
         const { view, data } = nodeView.getViewSwitcher();
         const url = new URL(window.location.href);
-        url.searchParams.set('viewURL', view.url);
+        let params = url.searchParams;
+        if (isHash) {
+          params = new URLSearchParams(url.hash.slice(1));
+        }
+        params.set('viewURL', view.url);
         if (data.url) {
-          url.searchParams.set('dataURL', data.url);
+          params.set('dataURL', data.url);
         }
         if (node.data.view.view.$content.version) {
-          url.searchParams.set('v', `v${node.data.view.view.$content.version}`);
+          params.set('v', `v${node.data.view.view.$content.version}`);
+        }
+        if (isHash) {
+          url.hash = `?${params.toString()}`;
         }
         window.location.href = url.toString();
       } else {
