@@ -1,3 +1,12 @@
+## [3.1.1](https://github.com/NPellet/visualizer/compare/v3.1.0...v3.1.1) (2026-02-07)
+
+
+### Features
+
+* support url hash when switching views and version in view manager ([311e90a](https://github.com/NPellet/visualizer/commit/311e90af8a7d40a65695c98f4b0e77d189aac3b0))
+
+
+
 # [3.1.0](https://github.com/NPellet/visualizer/compare/v3.0.5...v3.1.0) (2026-02-06)
 
 
