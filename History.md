@@ -1,3 +1,12 @@
+## [3.1.4](https://github.com/NPellet/visualizer/compare/v3.1.3...v3.1.4) (2026-02-10)
+
+
+### Bug Fixes
+
+* ensure correct content type resolution when resolving URL data ([#1201](https://github.com/NPellet/visualizer/issues/1201)) ([a663138](https://github.com/NPellet/visualizer/commit/a6631383e38a305abdc708b65a088fcf80edb82f))
+
+
+
 ## [3.1.3](https://github.com/NPellet/visualizer/compare/v3.1.2...v3.1.3) (2026-02-07)
 
 
