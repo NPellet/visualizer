@@ -36,7 +36,9 @@ define(['src/util/lru', 'src/util/debug'], function (LRU, Debug) {
       throw new Error(`Expected status === 200, got ${res.status}`);
     }
     let data;
-    if (res.headers.get('Content-Type') === 'application/json') {
+    // We used to rely on superagent, so this check is copied from the lib to avoid breaking behavior
+    // https://github.com/forwardemail/superagent/blob/3ef367619fbb2a8d07082238892ae12dafe4b0b0/src/client.js#L256-L260
+    if (/[/+]json($|[^-\w])/i.test(res.headers.get('Content-Type'))) {
       data = await res.json();
     } else {
       data = await res.text();
