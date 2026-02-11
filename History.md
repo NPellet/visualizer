@@ -1,3 +1,12 @@
+## [3.1.5](https://github.com/NPellet/visualizer/compare/v3.1.4...v3.1.5) (2026-02-11)
+
+
+### Bug Fixes
+
+* properly setup header input change event listenen ([#1203](https://github.com/NPellet/visualizer/issues/1203)) ([98a2e4b](https://github.com/NPellet/visualizer/commit/98a2e4b3e79e207d4cdb681fcdc2a7d083993555))
+
+
+
 ## [3.1.4](https://github.com/NPellet/visualizer/compare/v3.1.3...v3.1.4) (2026-02-10)
 
 
