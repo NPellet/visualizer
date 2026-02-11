@@ -371,8 +371,8 @@ define([
     }
 
     $(ctx.grid.getHeaderRow()).on(
-      ':input',
       'change keyup',
+      ':input',
       _.debounce(function () {
         let columnId = $(this).data('columnId');
         if (columnId != null) {
@@ -1370,7 +1370,6 @@ define([
           'keepSelected',
         );
         this.searchFilter = function (item) {
-          // keep s
           if (keepSelected) {
             let selected = that._getSelectedItems();
             if (
