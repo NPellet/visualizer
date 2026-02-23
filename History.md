@@ -1,3 +1,12 @@
+## [3.1.6](https://github.com/NPellet/visualizer/compare/v3.1.5...v3.1.6) (2026-02-23)
+
+
+### Bug Fixes
+
+* update slickgrid ([#1209](https://github.com/NPellet/visualizer/issues/1209)) ([37f65f8](https://github.com/NPellet/visualizer/commit/37f65f850b5dd727d70bb9428d639db4dc0886e4))
+
+
+
 ## [3.1.5](https://github.com/NPellet/visualizer/compare/v3.1.4...v3.1.5) (2026-02-11)
 
 
