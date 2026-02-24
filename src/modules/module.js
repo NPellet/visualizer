@@ -221,10 +221,10 @@ define([
           toolbar[i].title || ''
         }">`;
         if (toolbar[i].icon) {
-          html += `<div style="color=${color}"><i src="${toolbar[i].icon}"/></div>`;
+          html += `<div style="color=${color}"><i src="${toolbar[i].icon}"></i></div>`;
         }
         if (toolbar[i].cssClass) {
-          html += `<span style="color: ${color};" class="${toolbar[i].cssClass}"/>`;
+          html += `<span style="color: ${color};" class="${toolbar[i].cssClass}"></span>`;
         }
         html += '</li>';
       }

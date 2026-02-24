@@ -19,7 +19,8 @@
     "prerelease": "grunt bump:prerelease",
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",
-    "test": "npm run eslint && npm run prettier",
+    "test": "npm run eslint && npm run prettier && npm run test-only",
+    "test-only": "node --test tests/**",
     "release:minor": "npm run test && grunt bump:minor --release",
     "release:patch": "npm run test && grunt bump:patch --release"
   },
@@ -61,6 +62,7 @@
     "lodash": "^4.17.23",
     "mkpath": "^1.0.0",
     "prettier": "^3.8.1",
+    "requirejs": "^2.3.8",
     "rollup": "^4.59.0",
     "rollup-plugin-polyfill-node": "^0.13.0",
     "tempfile": "^3.0.0",

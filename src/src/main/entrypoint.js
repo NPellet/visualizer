@@ -3,6 +3,7 @@
 define([
   'jquery',
   'lodash',
+  'src/util/jquery_prefilter',
   'src/header/header',
   'src/util/repository',
   'src/main/grid',
@@ -25,6 +26,7 @@ define([
 ], function (
   $,
   _,
+  jqueryPrefilter,
   Header,
   Repository,
   Grid,
@@ -42,6 +44,19 @@ define([
   Config,
   Sandbox,
 ) {
+  jQuery.htmlPrefilter = (preHtml) => {
+    const { warn, html } = jqueryPrefilter(preHtml);
+    if (warn) {
+      console.warn(
+        'jQuery.htmlPrefilter modified invalid html, make sure to update your html markup',
+        {
+          before: preHtml,
+          after: html,
+        },
+      );
+    }
+    return html;
+  };
   var _viewLoaded, _dataLoaded, _modulesSet;
 
   var RepositoryData = new Repository(),
