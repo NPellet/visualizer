@@ -1,5 +1,5 @@
 {
-  "version": "2.111.2-0",
+  "version": "3.1.6",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,14 +17,36 @@
         "groups": {
           "group": [
             {
-              "mode": ["html"],
-              "outputType": [null],
-              "btnvalue": ["Send script"],
-              "iseditable": [["editable"]],
-              "hasButton": [["button"]],
-              "variable": [[]],
-              "storeOnChange": [["store"]],
-              "debouncing": [250],
+              "mode": [
+                "html"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                [
+                  "store"
+                ]
+              ],
+              "debouncing": [
+                250
+              ],
               "script": [
                 "<style>\n    #extendedForm .addRow {\n        color: green;\n        font-weight: bold;\n        font-size: 12px;\n        padding: .2em .4em;\n    }\n    #extendedForm .removeRow {\n        color: red;\n        font-weight: bold;\n        font-size: 12px;\n        padding: .2em .6em;\n    }\n</style>\n\n<div id='extendedForm'>\n    <h1>My book</h1>\n    \n    Title: <input type='text' name='title'>\n    \n    <table>\n        <tr>\n            <th></th><th></th>\n            <th>Kind</th>\n            <th>Firstname</th>\n            <th>Lastname</th>\n            <th>Nationalities</th>\n        </tr>\n        <tr data-repeat='authors'>\n            <td>\n                <select data-field='kind'>\n                    <option value=''></option>\n                    <option value='author'>Author</option>\n                    <option value='editor'>Editor</option>\n                </select>\n            </td>\n            <td>\n                <input type='text' size=10 data-field='firstname'>\n            </td>\n            <td>\n                <input type='text' size=10 data-field='lastname'>\n            </td>\n            <td>\n                <table>\n                     <tr data-repeat='nationalities'>\n                        <td>\n                            <input placeholder=\"Nationality\" type='text' size=10 data-field=''>\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    </table>\n    \n    <h2>Keywords</h2>\n    <table>\n        <tr data-repeat='info.keywords'>\n            <td>\n                <input type='text' size=10 data-field=''>\n            </td>\n        </tr>\n    </table>\n\n    <h2>Parameters</h2>\n    <table>\n        <tr data-repeat='info.parameters'>\n            <td>\n                <input placeholder=\"Description\" type='text' size=10 data-field='description'>\n            </td>\n            <td>\n                <input placeholder=\"Value\" type='text' size=10 data-field='value'>\n            </td>\n        </tr>\n    </table>\n</div>\n\n<script>\n    require(['vh/util/twigAdvancedForm'], function(AF) {\n        AF('extendedForm', {debug:true});\n    });\n</script>\n\n"
               ]
@@ -32,8 +54,14 @@
           ],
           "ace": [
             {
-              "useSoftTabs": [["yes"]],
-              "tabSize": [4]
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
             }
           ]
         }
@@ -51,15 +79,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onButtonClick",
@@ -81,20 +118,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -106,14 +156,32 @@
         "groups": {
           "group": [
             {
-              "editable": ["text"],
-              "expanded": [[]],
-              "storeObject": [[]],
-              "displayValue": [[]],
-              "searchBox": [["search"]],
-              "sendButton": [[]],
-              "output": ["new"],
-              "storedObject": ["{}"]
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                []
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{}"
+              ]
             }
           ]
         }
@@ -131,7 +199,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -144,7 +217,9 @@
           "name": "data"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -168,14 +243,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -187,11 +270,23 @@
         "groups": {
           "group": [
             {
-              "selectable": [[]],
-              "template": [""],
-              "modifyInForm": [["yes"]],
-              "debouncing": [100],
-              "formOptions": [[]]
+              "selectable": [
+                []
+              ],
+              "template": [
+                ""
+              ],
+              "modifyInForm": [
+                [
+                  "yes"
+                ]
+              ],
+              "debouncing": [
+                100
+              ],
+              "formOptions": [
+                []
+              ]
             }
           ]
         }
@@ -209,7 +304,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -230,7 +330,9 @@
           "name": "kinds"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -249,20 +351,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -274,15 +389,32 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "API.createData('data', {\n    title:'abc',\n    authors:[\n        {firstname:'ab', lastname:'cd', nationalities: ['belgian']},\n        {firstname:'gh', lastname:'ij', nationalities: []},\n        {firstname:'kl', lastname:'mn'},\n        {firstname:'op', lastname:'qr', nationalities: ['belgian','swiss']},\n    ],\n    info: {\n        keywords:['kwd1','kw2'],\n        parameters: [\n            {\n              \"description\": \"asdf\",\n              \"value\": \"asdf\"\n            },\n            {\n              \"description\": \"fds\",\n              \"value\": \"asdff\"\n            }\n        ]\n    }\n});\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -308,15 +440,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 4,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -335,20 +476,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -360,15 +514,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "let data=API.getData('data');\nfor (let key of Object.keys(data)) {\n    data[key]=undefined;\n}\ndata.triggerChange();\nAPI.getData('kinds').triggerChange();\nwindow.setTimeout( () => API.getData('template').triggerChange() );\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -393,15 +562,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 5,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -425,14 +603,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -444,15 +630,32 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [["yes"]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "let kinds=[\"Author\",\"Editor\",\"Test\"];\nAPI.createData('kinds', kinds);\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -478,15 +681,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 6,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -505,20 +717,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -526,12 +751,14 @@
   ],
   "variables": [
     {
-      "jpath": [""]
+      "jpath": [
+        ""
+      ]
     }
   ],
   "aliases": [
     {
-      "path": "https://www.lactame.com/github/cheminfo-js/visualizer-helper/fede69d611616d26d5f70a4fc053eceac6612b68",
+      "path": "https://www.lactame.com/github/cheminfo-js/visualizer-helper/37fdbb1f1de6c5153451f030cf9721e885752ce3",
       "alias": "vh"
     },
     {
@@ -548,8 +775,12 @@
       "groups": {
         "action": [
           {
-            "name": [null],
-            "script": [null]
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -561,7 +792,9 @@
       "groups": {
         "general": [
           {
-            "script": ["API.createData('data', {});\n"]
+            "script": [
+              "API.createData('data', {});\n"
+            ]
           }
         ]
       }
@@ -574,7 +807,11 @@
           {
             "sections": {},
             "groups": {
-              "modules": [[{}]]
+              "modules": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -582,7 +819,11 @@
           {
             "sections": {},
             "groups": {
-              "filters": [[{}]]
+              "filters": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -592,11 +833,19 @@
             "groups": {
               "filter": [
                 {
-                  "name": [null],
-                  "script": [null]
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
                 }
               ],
-              "libs": [[{}]]
+              "libs": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ]
@@ -608,7 +857,11 @@
     {
       "sections": {},
       "groups": {
-        "action": [[{}]]
+        "action": [
+          [
+            {}
+          ]
+        ]
       }
     }
   ]
