@@ -1,3 +1,18 @@
+# [3.2.0](https://github.com/NPellet/visualizer/compare/v3.1.6...v3.2.0) (2026-02-25)
+
+
+### Bug Fixes
+
+* add a scrollbar to version selector ([9c8536f](https://github.com/NPellet/visualizer/commit/9c8536f4f00f5f5dae3d69f647b207e15dbbb8eb))
+* prefilter html but warn about invalid html ([#1211](https://github.com/NPellet/visualizer/issues/1211)) ([24e2831](https://github.com/NPellet/visualizer/commit/24e28316045ffa838ffde30b97142a62df805a22))
+
+
+### Features
+
+* add a reload option to roc-views.js ([52099c0](https://github.com/NPellet/visualizer/commit/52099c07b37481e2af25f45afd37c6ce466d755d))
+
+
+
 ## [3.1.6](https://github.com/NPellet/visualizer/compare/v3.1.5...v3.1.6) (2026-02-23)
 
 
