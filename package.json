@@ -45,6 +45,7 @@
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
+    "@types/node": "^24.10.13",
     "add-stream": "^1.0.0",
     "bower": "^1.8.14",
     "conventional-changelog": "^6.0.0",

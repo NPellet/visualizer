@@ -13,7 +13,7 @@ define(() => {
       const cleanedHtml = html.replaceAll(/<svg[^>]*>(.*?)<\/svg>/g, '').trim();
 
       const result = rxhtmlTag.exec(cleanedHtml);
-      if (cleanedHtml && result?.[0] !== cleanedHtml) {
+      if (cleanedHtml && result && result[0] !== cleanedHtml) {
         return {
           html: filteredHtml,
           warn: true,
