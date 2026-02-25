@@ -1,3 +1,12 @@
+# [2.176.0](https://github.com/NPellet/visualizer/compare/v2.175.6...v2.176.0) (2026-02-25)
+
+
+### Features
+
+* add a reload option to roc-views.js ([3f6680d](https://github.com/NPellet/visualizer/commit/3f6680dfc2f91a9f69aa4d525c458ba64350dc29))
+
+
+
 ## [2.175.6](https://github.com/NPellet/visualizer/compare/v2.175.5...v2.175.6) (2026-01-20)
 
 
