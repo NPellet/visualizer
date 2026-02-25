@@ -13,3 +13,5 @@ jobs:
     with:
       lint-check-types: false
       disable-test-package: true
+      upload-coverage: false
+      node-version-matrix: '[24]'
