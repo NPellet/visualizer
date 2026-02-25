@@ -96,7 +96,7 @@
     "numeral": "^2.0.6",
     "openchemlib": "^9.20.0",
     "papaparse": "^5.5.3",
-    "pouchdb": "^3.6.0",
+    "pouchdb": "^9.0.0",
     "quill": "2.0.2",
     "quill-resize-module": "^2.1.2",
     "quill-table-better": "^1.2.3",
