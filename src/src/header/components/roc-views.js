@@ -61,6 +61,12 @@ define([
         throw new Error('roc-views: url and database options are mandatory');
       }
 
+      this.queryType = options.queryType || 'query';
+      if (this.queryType !== 'query' && this.queryType !== 'fragment') {
+        throw new Error(
+          'roc-views: queryType must be either "query" or "fragment"',
+        );
+      }
       this.rocUrl = options.url.replace(/\\$/, '');
       this.rocDatabase = options.database;
       this.rocDbUrl = `${this.rocUrl}/db/${this.rocDatabase}`;
@@ -1105,10 +1111,32 @@ define([
 
     loadNode(node) {
       this.setLoadedNode(node);
-      var view = node.data.view;
-      Versioning.switchView(view.getViewSwitcher(), true, {
-        withCredentials: true,
-      });
+      const nodeView = node.data.view;
+
+      if (this.options.reload) {
+        const { view, data } = nodeView.getViewSwitcher();
+        const url = new URL(window.location.href);
+        const params =
+          this.queryType === 'query'
+            ? url.searchParams
+            : new URLSearchParams(url.hash.slice(1));
+        params.set('viewURL', view.url);
+        if (data.url) {
+          params.set('dataURL', data.url);
+        }
+
+        if (this.queryType === 'fragment') {
+          url.hash = `?${params.toString()}`;
+        }
+        window.location.href = url.toString();
+        if (this.queryType === 'fragment') {
+          window.location.reload();
+        }
+      } else {
+        Versioning.switchView(nodeView.getViewSwitcher(), true, {
+          withCredentials: true,
+        });
+      }
     }
 
     getTree(views) {
