@@ -948,7 +948,7 @@ module.exports = function (grunt) {
       child_process.execFileSync('git', [
         'push',
         'origin',
-        'master',
+        'v2',
         '--follow-tags',
       ]);
 
