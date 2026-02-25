@@ -62,7 +62,7 @@ define([
         currentVersion = `v${Versioning.version}`;
       }
       getVersions().then((versions) => {
-        var ul = $('<ul />');
+        var ul = $('<ul />').css({ maxHeight: '100%', overflowY: 'auto' });
         that.$_elToOpen = ul;
         for (var i = 0; i < versions.length; i++) {
           var version = versions[i];
