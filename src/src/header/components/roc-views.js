@@ -1132,7 +1132,7 @@ define([
       this.setLoadedNode(node);
       const nodeView = node.data.view;
 
-      if (this.options.switchVersion) {
+      if (this.options.switchVersion || this.options.reload) {
         // When `switchVersion` is on, reload the page with the matching version of the visualizer
         // This option is supported since v3.1.0
         // It only works if the reloaded page supports the `v` query parameter. See `src/index-lactame.html`.
@@ -1148,7 +1148,11 @@ define([
         if (data.url) {
           params.set('dataURL', data.url);
         }
-        if (node.data.view.view.$content.version) {
+
+        if (
+          this.options.switchVersion &&
+          node.data.view.view.$content.version
+        ) {
           params.set('v', `v${node.data.view.view.$content.version}`);
         }
         if (this.queryType === 'fragment') {
