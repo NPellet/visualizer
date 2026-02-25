@@ -47,6 +47,7 @@ define([
   jQuery.htmlPrefilter = (preHtml) => {
     const { warn, html } = jqueryPrefilter(preHtml);
     if (warn) {
+      // eslint-disable-next-line no-console
       console.warn(
         'jQuery.htmlPrefilter modified invalid html, make sure to update your html markup',
         {
