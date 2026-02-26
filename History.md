@@ -1,3 +1,12 @@
+## [3.2.1](https://github.com/NPellet/visualizer/compare/v3.2.0...v3.2.1) (2026-02-26)
+
+
+### Bug Fixes
+
+* handle multi-line svg ([968aefc](https://github.com/NPellet/visualizer/commit/968aefc77778dbf02018a07e8c6718a0559de2fe))
+
+
+
 # [3.2.0](https://github.com/NPellet/visualizer/compare/v3.1.6...v3.2.0) (2026-02-25)
 
 
