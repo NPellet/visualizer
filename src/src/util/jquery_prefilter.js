@@ -10,7 +10,9 @@ define(() => {
     const filteredHtml = html.replaceAll(rxhtmlTag, '<$1></$2>');
     if (filteredHtml !== html) {
       // Ignore svg content because it is actually XML
-      const cleanedHtml = html.replaceAll(/<svg[^>]*>(.*?)<\/svg>/g, '').trim();
+      const cleanedHtml = html
+        .replaceAll(/<svg[^>]*>(.*?)<\/svg>/gs, '')
+        .trim();
 
       const result = rxhtmlTag.exec(cleanedHtml);
       if (cleanedHtml && result && result[0] !== cleanedHtml) {

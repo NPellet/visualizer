@@ -69,15 +69,29 @@ it('handles multi-line html', () => {
 
   assertFilter(
     `
-      <div/>
-      <svg><path/></svg>
+      <div
+        data-label="abc"
+      />
       <span/>
     `,
     `
-      <div></div>
-      <svg><path></path></svg>
+      <div
+        data-label="abc"
+      ></div>
       <span></span>
     `,
     true,
+  );
+});
+
+it('handles multi-line svg', () => {
+  assertFilter(
+    `<svg id="mol1">
+        <line x1="100" y1="51.36"  />
+     </svg>`,
+    `<svg id="mol1">
+        <line x1="100" y1="51.36"  />
+     </svg>`,
+    false,
   );
 });
