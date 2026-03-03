@@ -153,6 +153,9 @@ require.config({
       'jquery-ui/ui/widgets/draggable': 'jquery-ui',
       'jquery-ui/ui/widgets/droppable': 'jquery-ui',
       'jquery-ui/ui/widgets/menu': 'jquery-ui',
+      // v2 compatibility mappings for third-party code using outdated dependencies
+      'jquery-ui/ui/widgets/autocomplete': 'jquery-ui',
+      'components/papa-parse/papaparse.min': 'papaparse',
     },
     quillPrivate: {
       quill: 'quill',
