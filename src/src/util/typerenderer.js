@@ -402,7 +402,7 @@ define([
   functions.mf.toscreen = async function ($element, value) {
     if (value) {
       try {
-        value = String(value).replace(/([0-9])(-+)/, '$1($2)');
+        value = String(value).replace(/([0-9])(-+)$/, '$1($2)');
 
         $element.html(functions.mf.parseToHtml(String(value)));
       } catch {
