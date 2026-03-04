@@ -67,7 +67,7 @@ define([
               this._id
             }" class="quill_editor ${this.module.getConfiguration(
               'className',
-            )}" />
+            )}"></div>
           `);
 
           this.dom = $('<div class="quill_wrapper" />');
