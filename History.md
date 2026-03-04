@@ -1,3 +1,13 @@
+## [3.2.2](https://github.com/NPellet/visualizer/compare/v3.2.1...v3.2.2) (2026-03-04)
+
+
+### Bug Fixes
+
+* add compatibility dependency mapping for third-party code ([1598ede](https://github.com/NPellet/visualizer/commit/1598ede5dba21fc4e29d35d4526ffff902c578ac))
+* allow range in MF ([21ca156](https://github.com/NPellet/visualizer/commit/21ca1560324a96b274949f5d91d41b950dfb350b))
+
+
+
 ## [3.2.1](https://github.com/NPellet/visualizer/compare/v3.2.0...v3.2.1) (2026-02-26)
 
 
