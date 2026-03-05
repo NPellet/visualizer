@@ -85,7 +85,9 @@ define([
     jqdom.css(
       'height',
       Math.max(
-        $('#ci-visualizer').height() - $('#header').outerHeight(true) - 5,
+        $('#ci-visualizer').height() -
+          ($('#header').outerHeight(true) ?? 0) -
+          5,
         defaults.yHeight * bottomMax + (extend ? 400 : 0),
       ),
     );
