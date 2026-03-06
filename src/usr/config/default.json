@@ -63,6 +63,12 @@
     "height": "30px",
     "elements": [
       {
+        "type": "versionselector",
+        "label": "Switch version",
+        "url": "https://www.lactame.com/visualizer/versions.json",
+        "minVersion": "2.170.0"
+      },
+      {
         "type": "copydata",
         "label": "Copy data"
       },
@@ -81,20 +87,6 @@
       {
         "type": "blankview",
         "label": "Blank view"
-      },
-      {
-        "type": "versionselector",
-        "label": "Switch version",
-        "url": "https://www.lactame.com/visualizer/versions.json",
-        "minVersion": "2.170.0"
-      },
-      {
-        "type": "roc-views",
-        "label": "View manager",
-        "database": "visualizer",
-        "url": "http://localhost:3000",
-        "hidePublicToggle": false,
-        "switchVersion": true
       }
     ]
   }

@@ -136,7 +136,7 @@ define(['./util'], function (Util) {
       var currentPath = this.flavors[flavor];
       var name = currentPath.at(-1);
       this.flavors[flavor] = newPath.slice(1).concat(name);
-      return this.save().then(retTrue, retFalse);
+      return this.save().then(returnOk, returnError);
     }
 
     save() {
@@ -160,7 +160,14 @@ define(['./util'], function (Util) {
       }
     }
 
-    saveView(view) {
+    async saveView(view, reload) {
+      if (reload) {
+        try {
+          await this.reload();
+        } catch (error) {
+          return returnError(error);
+        }
+      }
       const oldTitle = this.title;
       const oldVersion = this.version;
       let oldAttachment;
@@ -177,24 +184,27 @@ define(['./util'], function (Util) {
         this.view._attachments = {};
       }
       this.view._attachments['view.json'] = view.attachment;
-      return this.save().then(retTrue, () => {
+      try {
+        await this.save();
+        return { ok: true };
+      } catch (error) {
         this.content.title = oldTitle;
         this.content.version = oldVersion;
         if (oldAttachment) {
           this.view._attachments['view.json'] = oldAttachment;
         }
-        return false;
-      });
+        return returnError(error);
+      }
     }
 
     remove() {
       const del = this.view.$deleted;
       this.view.$deleted = true;
-      return this.save().then(retTrue, () => {
+      return this.save().then(returnOk, (error) => {
         if (typeof del === 'boolean') {
           this.view.$deleted = del;
         }
-        return false;
+        return returnError(error);
       });
     }
 
@@ -207,34 +217,34 @@ define(['./util'], function (Util) {
       var path = this.flavors[flavor];
       var currentName = path.at(-1);
       path[path.length - 1] = newName;
-      return this.save().then(retTrue, function () {
+      return this.save().then(returnOk, function (error) {
         path[path.length - 1] = currentName;
-        return false;
+        return returnError(error);
       });
     }
 
     toggleFlavor(flavor, currentFlavor) {
       if (this.flavors[flavor]) {
         if (this.flavorNumber === 1) {
-          return Promise.resolve({ state: 'err-one' });
+          return Promise.resolve({ ok: true, state: 'err-one' });
         }
         const oldValue = this.flavors[flavor];
         delete this.flavors[flavor];
         return this.save().then(
-          () => ({ state: 'removed' }),
-          () => {
+          () => ({ ok: true, state: 'removed' }),
+          (error) => {
             this.flavors[flavor] = oldValue;
-            return false;
+            return returnError(error);
           },
         );
       } else {
         const name = this.flavors[currentFlavor].at(-1);
         this.flavors[flavor] = [name];
         return this.save().then(
-          () => ({ state: 'added', name }),
-          () => {
+          () => ({ ok: true, state: 'added', name }),
+          (error) => {
             delete this.flavors[flavor];
-            return false;
+            return returnError(error);
           },
         );
       }
@@ -244,14 +254,14 @@ define(['./util'], function (Util) {
       return this.manager
         .putRequestDB(`/entry/${this.id}/_owner/${name}`)
         .then(() => this.reload())
-        .then(retTrue, retFalse);
+        .then(() => ({ ok: true, added: name }), returnError);
     }
 
     removeGroup(name) {
       return this.manager
         .deleteRequestDB(`/entry/${this.id}/_owner/${name}`)
         .then(() => this.reload())
-        .then(retTrue, retFalse);
+        .then(() => ({ ok: true, removed: name }), returnError);
     }
 
     reload() {
@@ -293,11 +303,14 @@ define(['./util'], function (Util) {
 
   return RocView;
 
-  function retTrue() {
-    return true;
+  function returnOk() {
+    return { ok: true };
   }
 
-  function retFalse() {
-    return false;
+  function returnError(error) {
+    return {
+      ok: false,
+      error,
+    };
   }
 });

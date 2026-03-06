@@ -414,10 +414,11 @@ define([
       this.$saveAsButton = $('<button>Save as</button>')
         .button({ disabled: true })
         .on('click', () => this.saveAs());
-      this.$saveAsText = $('<input type="text" size="15" />').css(
-        'display',
-        'none',
-      );
+      this.$saveAsText = $('<input type="text" size="15" />')
+        .on('keydown', (e) => {
+          if (e.keyCode === 13) this.saveAs();
+        })
+        .css('display', 'none');
 
       rightButtons
         .append(this.$closeButton)
@@ -479,14 +480,13 @@ define([
             }
             return !!target.folder; // Can only drop in a folder
           },
-          dragDrop: (target, info) => {
+          dragDrop: async (target, info) => {
             var theNode = info.otherNode;
             this.showHide(true);
-            theNode.data.view.moveTo(target).then((result) => {
-              this.showHide(false);
-              if (result) theNode.moveTo(target);
-              else UI.showNotification('View could not be moved', 'error');
-            });
+            const { ok } = await theNode.data.view.moveTo(target);
+            this.showHide(false);
+            if (ok) theNode.moveTo(target);
+            else UI.showNotification('View could not be moved', 'error');
           },
         },
         filter: {
@@ -722,7 +722,7 @@ define([
         )
       ) {
         this.showHide(true);
-        const ok = await node.data.view.remove();
+        const { ok } = await node.data.view.remove();
         this.showHide(false);
         if (ok) {
           UI.showNotification('View deleted', 'success');
@@ -750,24 +750,23 @@ define([
           if (evt.keyCode === 13) Rename();
         })
         .trigger('select');
-      const Rename = () => {
+      const Rename = async () => {
         var name = input.val().trim();
         if (name.length === 0) {
           return UI.showNotification('Name cannot be empty', 'error');
         }
 
         this.showHide(true);
-        return node.data.view.rename(node.data.flavor, name).then((ok) => {
-          this.showHide(false);
-          if (ok) {
-            UI.showNotification('View was renamed', 'success');
-            node.setTitle(name);
-            this.renderActiveView();
-          } else {
-            UI.showNotification('Error while renaming view', 'error');
-          }
-          dialog.dialog('destroy');
-        });
+        const { ok } = await node.data.view.rename(node.data.flavor, name);
+        this.showHide(false);
+        if (ok) {
+          UI.showNotification('View was renamed', 'success');
+          node.setTitle(name);
+          this.renderActiveView();
+        } else {
+          UI.showNotification('Error while renaming view', 'error');
+        }
+        dialog.dialog('destroy');
       };
       var dialog = UI.dialog(div, { buttons: { Rename } });
     }
@@ -777,7 +776,7 @@ define([
       this.showHide(true);
       const result = await view.toggleFlavor(flavor, this.flavor);
       this.showHide(false);
-      if (!result) {
+      if (!result.ok) {
         UI.showNotification('Error while toggling flavor', 'error');
       } else if (result.state === 'err-one') {
         UI.showNotification('Cannot remove the last flavor', 'error');
@@ -1075,6 +1074,17 @@ define([
     }
 
     saveCurrentView(activeOrLoaded) {
+      const saveFailed = (error) => {
+        UI.showNotification(
+          `View could not be saved${error?.message ? `: ${error.message}` : ''}`,
+          'error',
+        );
+      };
+
+      const saveSuccess = () => {
+        UI.showNotification('View saved', 'success');
+        this.renderActiveView();
+      };
       var theView;
       if (activeOrLoaded === 'active') {
         theView = this.activeView;
@@ -1091,18 +1101,35 @@ define([
           {
             width: '400px',
             buttons: {
-              Save: () => {
+              Save: async () => {
                 dialog.dialog('close');
                 this.showHide(true);
-                theView.data.view.saveView(this.getCurrentView()).then((ok) => {
-                  this.showHide(false);
-                  if (ok) {
-                    UI.showNotification('View saved', 'success');
-                    this.renderActiveView();
+                const saveResult = await theView.data.view.saveView(
+                  this.getCurrentView(),
+                );
+                this.showHide(false);
+                if (saveResult.ok) {
+                  saveSuccess();
+                } else if (saveResult.error?.message === 'Conflict') {
+                  const override = await UI.confirm(
+                    'Conflict detected. Force save?',
+                  );
+                  if (override) {
+                    const saveResult = await theView.data.view.saveView(
+                      this.getCurrentView(),
+                      true,
+                    );
+                    if (saveResult.ok) {
+                      saveSuccess();
+                    } else {
+                      saveFailed(saveResult.error);
+                    }
                   } else {
-                    UI.showNotification('View could not be saved', 'error');
+                    UI.showNotification('View not saved', 'info');
                   }
-                });
+                } else {
+                  saveFailed(saveResult.error);
+                }
               },
             },
           },
@@ -1284,8 +1311,13 @@ define([
       if (!this.activeView) return;
       const docUrl = `${this.rocDbUrl}/entry/${this.activeView.data.view.id}`;
       const couchA = new CouchdbAttachments(docUrl);
-
-      const attachments = await couchA.fetchList();
+      let attachments;
+      try {
+        attachments = await couchA.fetchList();
+      } catch {
+        UI.showNotification('Could not fetch attachments', 'error');
+        return;
+      }
       const toUpload = await uploadUi.uploadDialog(attachments, {
         mode: 'couch',
         docUrl,
@@ -1366,9 +1398,15 @@ define([
     async togglePublic() {
       if (!this.activeView) return;
       this.showHide(true);
-      const ok = await this.activeView.data.view.togglePublic();
+      const { ok, added } = await this.activeView.data.view.togglePublic();
       this.showHide(false);
       this.renderActiveView();
+      if (ok) {
+        UI.showNotification(
+          `View made ${added ? 'public' : 'private'}`,
+          'success',
+        );
+      }
       if (!ok) {
         UI.showNotification('Could not change permissions', 'error');
       }
@@ -1382,16 +1420,17 @@ define([
         .on('keypress', (evt) => {
           if (evt.keyCode === 13) Add();
         });
-      const Add = () => {
+      const Add = async () => {
         var value = input.val();
         this.showHide(true);
-        this.activeView.data.view.addGroup(value).then((ok) => {
-          if (!ok) {
-            UI.showNotification('Could not add owner', 'error');
-          }
-          this.renderActiveView();
-          this.showHide(false);
-        });
+        const { ok } = await this.activeView.data.view.addGroup(value);
+        if (ok) {
+          UI.showNotification('Owner added', 'success');
+        } else {
+          UI.showNotification('Could not add owner', 'error');
+        }
+        this.renderActiveView();
+        this.showHide(false);
         dialog.dialog('destroy');
       };
       var dialog = UI.dialog(div, { buttons: { Add } });
