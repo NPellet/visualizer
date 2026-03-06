@@ -1,3 +1,12 @@
+# [3.3.0](https://github.com/NPellet/visualizer/compare/v3.2.3...v3.3.0) (2026-03-06)
+
+
+### Features
+
+* allow to force save view when there is a conflict ([c120aeb](https://github.com/NPellet/visualizer/commit/c120aebb08ba0829ab59f67b8951c6bd8b0c1b05))
+
+
+
 ## [3.2.3](https://github.com/NPellet/visualizer/compare/v3.2.2...v3.2.3) (2026-03-05)
 
 
