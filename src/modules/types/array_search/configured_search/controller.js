@@ -54,8 +54,8 @@ define([
   };
 
   Controller.prototype.configurationStructure = function () {
-    var all_jpaths = [],
-      arr = this.module.getDataFromRel('array');
+    var all_jpaths = [];
+    var arr = this.module.getDataFromRel('array');
 
     if (arr) {
       arr = arr.get();

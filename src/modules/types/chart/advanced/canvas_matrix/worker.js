@@ -36,13 +36,13 @@ function getColorBetween(value, color1, color2, color1Val, color2Val) {
 }
 
 function generate(indexX, indexY, buffer, nbValX) {
-  var startX = indexX * squareLoading,
-    startY = indexY * squareLoading,
-    endX = startX + squareLoading,
-    endY = startY + squareLoading;
+  var startX = indexX * squareLoading;
+  var startY = indexY * squareLoading;
+  var endX = startX + squareLoading;
+  var endY = startY + squareLoading;
 
-  var x = startX,
-    y = startY;
+  var x = startX;
+  var y = startY;
 
   var bufferData = buffer.data;
 
@@ -69,9 +69,9 @@ function generate(indexX, indexY, buffer, nbValX) {
 function drawCell(value, startX, startY, color, bufferData, nbValX) {
   var squareWidth = nbValX * pxPerCell;
 
-  var i = 0,
-    j = 0,
-    pixelNum;
+  var i = 0;
+  var j = 0;
+  var pixelNum;
   while (j < pxPerCell) {
     while (i < pxPerCell) {
       pixelNum =

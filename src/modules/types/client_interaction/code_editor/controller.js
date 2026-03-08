@@ -46,9 +46,9 @@ define([
   Controller.prototype.variablesIn = ['data'];
 
   Controller.prototype.configurationStructure = function () {
-    var types = Structure._getList(),
-      l = types.length,
-      typeList = new Array(l);
+    var types = Structure._getList();
+    var l = types.length;
+    var typeList = new Array(l);
     for (var i = 0; i < l; i++) {
       typeList[i] = { key: types[i], title: types[i] };
     }

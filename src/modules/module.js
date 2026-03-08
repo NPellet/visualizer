@@ -1407,8 +1407,8 @@ define([
     },
 
     getConfigExample() {
-      var aliases = this.controller.configAliases,
-        definition = this.controller.configurationStructure();
+      var aliases = this.controller.configAliases;
+      var definition = this.controller.configurationStructure();
 
       var result = {};
       for (var i in aliases) {
@@ -1486,8 +1486,8 @@ define([
   }
 
   function getExampleFromAlias(element, alias) {
-    var l = alias.length,
-      name;
+    var l = alias.length;
+    var name;
     for (var i = 0; i < l; i++) {
       if (!element) break;
       name = alias[i];

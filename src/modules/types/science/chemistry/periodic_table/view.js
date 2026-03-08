@@ -473,8 +473,8 @@ define([
     },
 
     _getGradientFunction(type, value) {
-      var width = this.defaultLegend.width(),
-        height = 51;
+      var width = this.defaultLegend.width();
+      var height = 51;
       var options = {
         stops: [
           this[type].mincolor,

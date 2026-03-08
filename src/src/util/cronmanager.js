@@ -21,9 +21,9 @@ define(['require'], function (require) {
       return;
     }
 
-    var evaled = {},
-      i = 0,
-      l = data.length;
+    var evaled = {};
+    var i = 0;
+    var l = data.length;
 
     for (; i < l; i++) {
       eval(
@@ -187,8 +187,8 @@ define(['require'], function (require) {
       }
 
       if (actionsFiles[actionName]) {
-        var i = 0,
-          l = actionsFiles[actionName].length;
+        var i = 0;
+        var l = actionsFiles[actionName].length;
 
         for (; i < l; i++) {
           executeActionFile(actionsFiles[actionName][i], actionValue);

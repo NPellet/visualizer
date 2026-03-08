@@ -211,8 +211,8 @@ define([
         sourceTypes = [sourceTypes];
       }
 
-      var dataType = data.getType(),
-        mustRebuild = false;
+      var dataType = data.getType();
+      var mustRebuild = false;
 
       // If no in type is defined, the module accepts anything
       if (sourceTypes.length === 0) {

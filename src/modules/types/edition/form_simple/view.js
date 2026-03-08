@@ -17,29 +17,29 @@ define([
     },
 
     inDom() {
-      var that = this,
-        structure = this.module.getConfiguration('structure') || [],
-        tpl_file = this.module.getConfiguration('tpl_file'),
-        trigger = this.module.getConfiguration('trigger'),
-        tpl_html = this.module.getConfiguration('tpl_html'),
-        def,
-        options = {},
-        formStructure = {
-          sections: {
-            main: {
-              groups: {
-                main: {
-                  options: {
-                    type: 'list',
-                    multiple: false,
-                  },
-
-                  fields: FormCreator.makeStructure(structure),
+      var that = this;
+      var structure = this.module.getConfiguration('structure') || [];
+      var tpl_file = this.module.getConfiguration('tpl_file');
+      var trigger = this.module.getConfiguration('trigger');
+      var tpl_html = this.module.getConfiguration('tpl_html');
+      var def;
+      var options = {};
+      var formStructure = {
+        sections: {
+          main: {
+            groups: {
+              main: {
+                options: {
+                  type: 'list',
+                  multiple: false,
                 },
+
+                fields: FormCreator.makeStructure(structure),
               },
             },
           },
-        };
+        },
+      };
 
       if (tpl_file) {
         def = $.get(tpl_file, {});
@@ -57,9 +57,9 @@ define([
         var val = new DataObject(this.getValue(), true);
         that.formValue = val;
 
-        var input = that.module.getDataFromRel('input_object'),
-          structure = that.module.getConfiguration('structure') || [],
-          jpath;
+        var input = that.module.getDataFromRel('input_object');
+        var structure = that.module.getConfiguration('structure') || [];
+        var jpath;
 
         var el = new DataObject();
 

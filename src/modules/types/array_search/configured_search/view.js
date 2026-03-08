@@ -68,39 +68,39 @@ define([
 
       this._jpathsFcts = {};
 
-      var searchfields = this.module.getConfiguration('searchfields'),
-        varsoutCfg = this.module.definition.vars_out || [],
-        varsout = [],
-        j = 0,
-        k = varsoutCfg.length,
-        cfg = {
-          sections: {
-            cfg: {
-              groups: {
-                cfg: {
-                  options: {
-                    type: 'list',
-                  },
-                  fields: FormCreator.makeStructure(
-                    searchfields,
-                    function (field) {
-                      for (
-                        let k = 0;
-                        field.groups.general[0].searchOnField[k];
-                        k++
-                      ) {
-                        Util.addjPathFunction(
-                          that._jpathsFcts,
-                          field.groups.general[0].searchOnField[k],
-                        );
-                      }
-                    },
-                  ),
+      var searchfields = this.module.getConfiguration('searchfields');
+      var varsoutCfg = this.module.definition.vars_out || [];
+      var varsout = [];
+      var j = 0;
+      var k = varsoutCfg.length;
+      var cfg = {
+        sections: {
+          cfg: {
+            groups: {
+              cfg: {
+                options: {
+                  type: 'list',
                 },
+                fields: FormCreator.makeStructure(
+                  searchfields,
+                  function (field) {
+                    for (
+                      let k = 0;
+                      field.groups.general[0].searchOnField[k];
+                      k++
+                    ) {
+                      Util.addjPathFunction(
+                        that._jpathsFcts,
+                        field.groups.general[0].searchOnField[k],
+                      );
+                    }
+                  },
+                ),
               },
             },
           },
-        };
+        },
+      };
 
       for (; j < k; j++) {
         varsout.push(varsoutCfg[j].name);
@@ -110,8 +110,8 @@ define([
 
       form.init({
         onValueChanged() {
-          var cfg = form.getValue().sections.cfg[0].groups.cfg[0],
-            cfgFinal = {};
+          var cfg = form.getValue().sections.cfg[0].groups.cfg[0];
+          var cfgFinal = {};
 
           for (var i in cfg) {
             cfgFinal[i] = cfg[i][0];
@@ -146,20 +146,20 @@ define([
 
     search() {
       if (this.searchEnabled) {
-        var cfg = this.cfgValue,
-          i,
-          l,
-          target = new DataArray(),
-          flags = new DataArray();
+        var cfg = this.cfgValue;
+        var i;
+        var l;
+        var target = new DataArray();
+        var flags = new DataArray();
 
-        var keys = Object.keys(this.variables),
-          val;
+        var keys = Object.keys(this.variables);
+        var val;
         if (keys.length === 0 || Object.keys(cfg).length === 0) {
           return;
         }
 
-        var max = this.maxhits,
-          count = 0;
+        var max = this.maxhits;
+        var count = 0;
         for (var key in keys) {
           val = this.variables[keys[key]];
           l = val.length;
@@ -179,8 +179,8 @@ define([
 
     _makeOp(op, val, options) {
       val = `cfg[ "${val}" ]`;
-      var numPrefix = '',
-        numSuffix = '';
+      var numPrefix = '';
+      var numSuffix = '';
       if (options.number) {
         numPrefix = 'parseFloat(';
         numSuffix = ')';
@@ -233,10 +233,10 @@ define([
     },
 
     makeSearchFilter() {
-      var searchfields = this.module.getConfiguration('searchfields'),
-        i = 0,
-        l = searchfields.length,
-        searchOn;
+      var searchfields = this.module.getConfiguration('searchfields');
+      var i = 0;
+      var l = searchfields.length;
+      var searchOn;
 
       var toEval = '';
       toEval += ' this._searchFunc = function( cfg, row ) { ';
@@ -251,8 +251,8 @@ define([
           toEval += ' && ';
         }
 
-        var j = 0,
-          k = searchOn.length;
+        var j = 0;
+        var k = searchOn.length;
 
         if (k > 0) {
           toEval += ' ( ';

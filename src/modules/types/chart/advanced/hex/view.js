@@ -362,8 +362,8 @@ define([
         return [point[0] * hexRadius * 1.75, point[1] * hexRadius * 1.5];
       }
 
-      var width = this.width,
-        height = this.height;
+      var width = this.width;
+      var height = this.height;
 
       var motherSvg = d3
         .select(`#${this.id}`)
@@ -676,8 +676,8 @@ define([
     var r = new Array(data.length);
     for (let i = 0; i < data.length; i++) {
       if (!checkCubic(data[i])) continue;
-      var row = data[i][2],
-        x = data[i][0];
+      var row = data[i][2];
+      var x = data[i][0];
       var col = x + (row - (row & 1)) / 2;
       r[i] = [col, row];
     }

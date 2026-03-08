@@ -110,13 +110,13 @@ define([
     },
 
     inDom() {
-      var that = this,
-        colNames = [],
-        colModel = [],
-        j = 0,
-        editable,
-        jpaths = this.module.getConfiguration('colsjPaths'),
-        l;
+      var that = this;
+      var colNames = [];
+      var colModel = [];
+      var j = 0;
+      var editable;
+      var jpaths = this.module.getConfiguration('colsjPaths');
+      var l;
 
       if (typeof jpaths === 'object') {
         l = jpaths.length;
@@ -214,10 +214,10 @@ define([
             return;
           }
 
-          var ids = that.jqGrid('getDataIDs'),
-            i = 0,
-            l = ids.length,
-            id;
+          var ids = that.jqGrid('getDataIDs');
+          var i = 0;
+          var l = ids.length;
+          var id;
 
           for (; i < l; i++) {
             id = ids[i].replace(that.uniqId, '');
@@ -254,9 +254,9 @@ define([
         },
 
         onSortCol() {
-          var ids = that.jqGrid('getDataIDs'),
-            i = 0,
-            l = ids.length;
+          var ids = that.jqGrid('getDataIDs');
+          var i = 0;
+          var l = ids.length;
 
           for (; i < l; i++) {
             that.tableElements[i]._inDom.notify();
@@ -294,9 +294,9 @@ define([
 
     update: {
       list(moduleValue) {
-        var list = moduleValue.get(),
-          jpaths = this.module.getConfiguration('colsjPaths'),
-          elements = [];
+        var list = moduleValue.get();
+        var jpaths = this.module.getConfiguration('colsjPaths');
+        var elements = [];
 
         this.jpaths = jpaths;
         this.elements = list;
@@ -311,9 +311,9 @@ define([
         this.gridElements = elements;
         this.tableElements = elements;
 
-        var allEls = [],
-          i = 0,
-          l = elements.length;
+        var allEls = [];
+        var i = 0;
+        var l = elements.length;
 
         for (; i < l; i++) {
           allEls.push(elements[i]);
@@ -337,9 +337,9 @@ define([
     },
 
     buildElements(source, arrayToPush, jpaths) {
-      var that = this,
-        i = 0,
-        l = source.length;
+      var that = this;
+      var i = 0;
+      var l = source.length;
 
       for (; i < l; i++) {
         arrayToPush.push(
@@ -349,9 +349,9 @@ define([
     },
 
     buildElement(s, i, jp, m) {
-      var element = {},
-        j = 0,
-        l = jp.length;
+      var element = {};
+      var j = 0;
+      var l = jp.length;
 
       if (!m) {
         this.listenFor(s, jp, i);
@@ -393,8 +393,8 @@ define([
     },
 
     listenFor(source, jpaths, id) {
-      var that = this,
-        body = $('body');
+      var that = this;
+      var body = $('body');
 
       this.module.model.dataListenChange(
         source,
@@ -466,10 +466,10 @@ define([
       },
 
       removeColumn(jpath) {
-        var module = this.module,
-          jpaths = module.getConfiguration('colsjPaths'),
-          i = 0,
-          l = jpaths.length;
+        var module = this.module;
+        var jpaths = module.getConfiguration('colsjPaths');
+        var i = 0;
+        var l = jpaths.length;
 
         for (; i < l; i++) {
           if (jpaths[i].jpath == jpath) {

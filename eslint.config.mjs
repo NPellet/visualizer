@@ -78,7 +78,6 @@ export default defineConfig(
       'no-eval': 'off',
       'no-invalid-this': 'off',
       'no-var': 'off',
-      'one-var': 'off',
       'prefer-named-capture-group': 'off',
       'prefer-object-spread': 'off',
       'prefer-rest-params': 'off',

@@ -15,15 +15,15 @@ define([
         width: '100%',
       });
 
-      var columns = this.module.getConfiguration('columns') || [],
-        colgroup = $('<colgroup><col></col></colgroup>').appendTo(this.dom),
-        thead = $('<tr><th></th></tr>').appendTo(
-          $('<thead></thead>').appendTo(this.dom),
-        ),
-        trow = $('<tr><td></td></tr>').appendTo(
-          $('<tbody></tbody>').appendTo(this.dom),
-        ),
-        jpaths = [];
+      var columns = this.module.getConfiguration('columns') || [];
+      var colgroup = $('<colgroup><col></col></colgroup>').appendTo(this.dom);
+      var thead = $('<tr><th></th></tr>').appendTo(
+        $('<thead></thead>').appendTo(this.dom),
+      );
+      var trow = $('<tr><td></td></tr>').appendTo(
+        $('<tbody></tbody>').appendTo(this.dom),
+      );
+      var jpaths = [];
       this.jpathsF = {};
 
       if (columns.length > 0) {
@@ -60,10 +60,10 @@ define([
         },
         icon: false,
         renderColumns(event, data) {
-          var node = data.node,
-            dataObj = node.data.dataObj,
-            $tdList = $(node.tr).find('>td'),
-            jpaths = that.jpaths;
+          var node = data.node;
+          var dataObj = node.data.dataObj;
+          var $tdList = $(node.tr).find('>td');
+          var jpaths = that.jpaths;
           if (dataObj.info) {
             for (var i = 0; i < jpaths.length; i++) {
               $tdList.eq(i + 1).text(that.jpathsF[jpaths[i]](dataObj.info));
@@ -118,10 +118,10 @@ define([
   }
 
   function addFancyChildren(fancyTree, children, objectModel) {
-    var child,
-      fancyChild,
-      i = 0,
-      l = children.length;
+    var child;
+    var fancyChild;
+    var i = 0;
+    var l = children.length;
     for (; i < l; i++) {
       child = children[i];
 
@@ -130,8 +130,8 @@ define([
         // add current object's properties to the model
         typeof child.info === 'object'
       ) {
-        var keys = Object.keys(child.info),
-          key;
+        var keys = Object.keys(child.info);
+        var key;
         for (var j = 0; j < keys.length; j++) {
           key = keys[j];
           if (!Object.hasOwn(objectModel, key)) {

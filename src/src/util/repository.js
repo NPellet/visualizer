@@ -25,8 +25,8 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   };
 
   var getCommonKeys = function (set1, set2) {
-    var set3 = set2.slice(0),
-      set1Rev = {};
+    var set3 = set2.slice(0);
+    var set1Rev = {};
     for (var i = 0, l = set1.length; i < l; i++) {
       set1Rev[set1[i]] = true;
     }
@@ -194,8 +194,8 @@ define(['jquery', 'src/util/event'], function ($, Event) {
   };
 
   Repository.prototype.getKeys = function () {
-    var value = this._value,
-      keys = [];
+    var value = this._value;
+    var keys = [];
     for (var i in value) {
       keys.push(i);
     }

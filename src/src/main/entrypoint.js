@@ -60,9 +60,9 @@ define([
   };
   var _viewLoaded, _dataLoaded, _modulesSet;
 
-  var RepositoryData = new Repository(),
-    RepositoryHighlight = new Repository(),
-    RepositoryActions = new Repository({ doNotSave: true });
+  var RepositoryData = new Repository();
+  var RepositoryHighlight = new Repository();
+  var RepositoryActions = new Repository({ doNotSave: true });
 
   API.setRepositoryData(RepositoryData);
   API.setRepositoryHighlights(RepositoryHighlight);
@@ -248,15 +248,15 @@ define([
     function loadCustomFilters() {
       // Load custom filters
       if (view.custom_filters) {
-        var filters = view.custom_filters[0].sections.filters,
-          allFilters = API.getAllFilters();
+        var filters = view.custom_filters[0].sections.filters;
+        var allFilters = API.getAllFilters();
         for (let i = 0; i < filters.length; i++) {
           var filter = filters[i].groups.filter[0];
           if (filter.name[0]) {
-            var deps = filters[i].groups.libs[0],
-              depsA = ['src/util/api'],
-              defineStr = 'filterDef = function filterDefinition(API',
-              dep;
+            var deps = filters[i].groups.libs[0];
+            var depsA = ['src/util/api'];
+            var defineStr = 'filterDef = function filterDefinition(API';
+            var dep;
             for (var j = 0; j < deps.length; j++) {
               dep = deps[j];
               if (dep.lib) {
@@ -352,8 +352,8 @@ define([
   }
 
   function configureEntryPoint() {
-    var data = Versioning.getData(),
-      view = Versioning.getView();
+    var data = Versioning.getData();
+    var view = Versioning.getView();
 
     var div = ui.dialog({
       autoPosition: true,
@@ -650,8 +650,8 @@ define([
       form.addButton('Save', { color: 'green' }, function () {
         div.dialog('close');
 
-        var data,
-          value = form.getValue();
+        var data;
+        var value = form.getValue();
 
         /* Entry variables */
         data = new DataArray(value.sections.cfg[0].groups.tablevars[0], true);

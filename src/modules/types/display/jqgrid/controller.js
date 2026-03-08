@@ -236,8 +236,8 @@ define([
   };
 
   Controller.prototype.doToggle = function (act) {
-    var that = this,
-      data = this.module.getDataFromRel('list');
+    var that = this;
+    var data = this.module.getDataFromRel('list');
 
     this.allVariablesFor(
       act === 'on' ? 'onToggleOn' : 'onToggleOff',

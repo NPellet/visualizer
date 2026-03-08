@@ -52,13 +52,13 @@ define([
 
     update: {
       list(moduleValue) {
-        var cfg = this.module.getConfiguration,
-          cols = cfg('colnumber', 4) || 4,
-          val = moduleValue.get(),
-          table = $('<table cellpadding="3" cellspacing="0">').css(
-            'text-align',
-            'center',
-          );
+        var cfg = this.module.getConfiguration;
+        var cols = cfg('colnumber', 4) || 4;
+        var val = moduleValue.get();
+        var table = $('<table cellpadding="3" cellspacing="0">').css(
+          'text-align',
+          'center',
+        );
 
         this.dom.html(table);
 

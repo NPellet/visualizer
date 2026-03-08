@@ -2,8 +2,8 @@
 
 // LRU
 define(['jquery', 'src/util/debug'], function ($, Debug) {
-  var db,
-    dbname = 'cilru';
+  var db;
+  var dbname = 'cilru';
 
   function createStoreDB(store, limit) {
     var storeName = store;
@@ -91,9 +91,9 @@ define(['jquery', 'src/util/debug'], function ($, Debug) {
 
     openDb().then(
       function () {
-        var store = db.transaction('lru', 'readwrite').objectStore('lru'),
-          getter = store.get(storeName + index),
-          defGet = $.Deferred();
+        var store = db.transaction('lru', 'readwrite').objectStore('lru');
+        var getter = store.get(storeName + index);
+        var defGet = $.Deferred();
 
         getter.onsuccess = function (e) {
           if (e.target.result) defGet.resolve(e.target.result.data);

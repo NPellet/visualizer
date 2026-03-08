@@ -45,8 +45,8 @@ define(['modules/default/defaultmodel', 'src/util/datatraversing'], function (
     },
 
     getjPath(rel) {
-      var jpaths = [],
-        data;
+      var jpaths = [];
+      var data;
 
       switch (rel) {
         case 'markerXY':

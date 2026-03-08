@@ -218,8 +218,8 @@ define([
   }
 
   function getNodes(links) {
-    var width = 1400,
-      height = 900;
+    var width = 1400;
+    var height = 900;
     var nodes = {};
     for (const link of links) {
       link.source =
@@ -247,10 +247,10 @@ define([
       var links = getLinks();
       var nodes = getNodes(links);
 
-      var width = 1400,
-        height = 900,
-        nodeRadius = 50,
-        nodeBox;
+      var width = 1400;
+      var height = 900;
+      var nodeRadius = 50;
+      var nodeBox;
 
       if (type === 'circ') {
         nodeBox = {
@@ -468,9 +468,9 @@ define([
       function getTargetPosition(d) {
         switch (type) {
           case 'circ':
-            var dx = d.target.x - d.source.x,
-              dy = d.target.y - d.source.y,
-              dr = Math.hypot(dx, dy);
+            var dx = d.target.x - d.source.x;
+            var dy = d.target.y - d.source.y;
+            var dr = Math.hypot(dx, dy);
             var factor = 1 - nodeRadius / dr;
             return {
               from: {

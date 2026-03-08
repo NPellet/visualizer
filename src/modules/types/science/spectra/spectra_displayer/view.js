@@ -561,11 +561,11 @@ define([
     },
 
     getSerieOptions(varname, highlight, data) {
-      let plotinfos = this.module.getConfiguration('plotinfos'),
-        others = {},
-        options = {
-          trackMouse: true,
-        };
+      let plotinfos = this.module.getConfiguration('plotinfos');
+      let others = {};
+      let options = {
+        trackMouse: true,
+      };
 
       highlight = highlight || [];
 
@@ -1069,9 +1069,9 @@ define([
           return;
         }
 
-        let val = moduleValue.get(),
-          serieOptions = this.getSerieOptions(varname, null, val),
-          serie = this.graph.newSerie(varname, serieOptions.options);
+        let val = moduleValue.get();
+        let serieOptions = this.getSerieOptions(varname, null, val);
+        let serie = this.graph.newSerie(varname, serieOptions.options);
 
         this.registerSerieEvents(serie, varname);
 
@@ -1079,9 +1079,9 @@ define([
           this.graph.getPlugin('peakPicking').setSerie(serie);
         }
 
-        let valX = [],
-          valY = [],
-          wave = Graph.newWaveform();
+        let valX = [];
+        let valY = [];
+        let wave = Graph.newWaveform();
 
         for (var i = 0, l = val.length; i < l; i += 2) {
           valX.push(val[i]);

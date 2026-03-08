@@ -72,8 +72,8 @@ define(['modules/default/defaultcontroller', 'lodash'], function (Default, _) {
     var currentCfg = this.module.definition.vars_in;
 
     if (currentCfg) {
-      var i = 0,
-        l = currentCfg.length;
+      var i = 0;
+      var l = currentCfg.length;
 
       for (; i < l; i++) {
         vars.push({

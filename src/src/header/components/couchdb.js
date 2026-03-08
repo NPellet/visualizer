@@ -344,9 +344,9 @@ define([
       this.database.openDoc(id, {
         revs_info: true,
         success(data) {
-          var info = data._revs_info,
-            l = info.length,
-            revs = [];
+          var info = data._revs_info;
+          var l = info.length;
+          var revs = [];
           for (var i = 0; i < l; i++) {
             var rev = info[i];
             if (rev.status === 'available') {
@@ -366,9 +366,9 @@ define([
     clickNode(type, event, data) {
       if (data.targetType !== 'title' && data.targetType !== 'icon') return;
 
-      var node = data.node,
-        divContent = '',
-        last;
+      var node = data.node;
+      var divContent = '';
+      var last;
       var typeL = type.toLowerCase();
 
       if (node.folder) {

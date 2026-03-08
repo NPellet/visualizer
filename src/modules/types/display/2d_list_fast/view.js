@@ -89,11 +89,11 @@ define([
 
         this.list = list;
 
-        var colorJpath = cfg('colorjpath', false),
-          valJpath = cfg('valjpath', ''),
-          dimensions = {
-            width: cols,
-          };
+        var colorJpath = cfg('colorjpath', false);
+        var valJpath = cfg('valjpath', '');
+        var dimensions = {
+          width: cols,
+        };
         var height = cfg('height');
         if (height) {
           dimensions.height = `${height}px`;

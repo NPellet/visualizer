@@ -12,8 +12,8 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init() {
-      var that = this,
-        currentColSort;
+      var that = this;
+      var currentColSort;
 
       var toggle = this.module.getConfiguration('toggle');
 
@@ -80,8 +80,8 @@ define([
         })
         .on('click', 'th', function () {
           // Sorting
-          var jpathId = $(this).attr('data-jpath-number'),
-            data = that.module.getDataFromRel('list');
+          var jpathId = $(this).attr('data-jpath-number');
+          var data = that.module.getDataFromRel('list');
 
           if (!currentColSort || currentColSort.col !== jpathId) {
             if (currentColSort) {
@@ -123,9 +123,9 @@ define([
       this.module.getDomContent().html(this.dom);
       this.onResize();
 
-      var jpaths = this.module.getConfiguration('colsjPaths'),
-        l = jpaths.length,
-        j = 0;
+      var jpaths = this.module.getConfiguration('colsjPaths');
+      var l = jpaths.length;
+      var j = 0;
 
       this.colsjPaths = jpaths;
       this.jpaths = {};
@@ -171,8 +171,8 @@ define([
           return;
         }
 
-        var i,
-          l = this.module.data.length;
+        var i;
+        var l = this.module.data.length;
 
         for (i = 0; i < l; i++) {
           if (this.module.data[i] && this.module.data[i].unbindChange) {
@@ -198,9 +198,9 @@ define([
 
         this.elements = moduleValue;
 
-        var that = this,
-          html = '',
-          l = moduleValue.get().length;
+        var that = this;
+        var html = '';
+        var l = moduleValue.get().length;
 
         this.module.data = moduleValue;
 
@@ -284,12 +284,12 @@ define([
     },
 
     buildElement(source, i) {
-      var jpaths = this.colsjPaths,
-        html = '',
-        j,
-        k = jpaths.length,
-        currentVar,
-        color;
+      var jpaths = this.colsjPaths;
+      var html = '';
+      var j;
+      var k = jpaths.length;
+      var currentVar;
+      var color;
 
       html += '<tr';
 
@@ -402,8 +402,8 @@ define([
           return;
         }
 
-        var toggle = this.module.getConfiguration('toggle'),
-          that = this;
+        var toggle = this.module.getConfiguration('toggle');
+        var that = this;
 
         if (toggle === 'single' && that.selected[0] !== undefined) {
           that.module.controller.onToggleOff(
