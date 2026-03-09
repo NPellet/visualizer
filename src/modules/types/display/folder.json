@@ -45,6 +45,11 @@
       "moduleName": "Two dimensional list (old)",
       "url": "modules/types/display/2d_list/",
       "hidden": true
+    },
+    {
+      "moduleName": "Placeholder",
+      "url": "modules/types/display/placeholder/",
+      "hidden": true
     }
   ],
   "name": "Display",

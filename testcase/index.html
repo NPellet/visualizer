@@ -34,7 +34,7 @@
           {
             description: 'Reorder rows',
             folder: 'slickReorderRows',
-          }
+          },
         ],
         Bio: [
           { description: 'Bio-synthesis tutorial', folder: 'bioSynthesis' },
@@ -253,7 +253,7 @@
           {
             description: 'Edit an array',
             folder: 'editTable',
-          }
+          },
         ],
         Misc: [
           {
@@ -288,7 +288,10 @@
           { description: 'Twig form', folder: 'twig-form' },
           { description: 'Twig form light', folder: 'twig-form-light' },
           { description: 'Twig form timing', folder: 'twig-form-timing' },
-          { description: 'Twig form race condition', folder: 'twig-form-race-condition'},
+          {
+            description: 'Twig form race condition',
+            folder: 'twig-form-race-condition',
+          },
           { description: 'Twig form advanced', folder: 'twig-form-advanced' },
           {
             description: 'Twig form timing onload',
@@ -301,7 +304,7 @@
             folder: 'fancytree',
           },
           { description: 'Panzoom', folder: 'panzoom' },
-          { description: 'Panzoom SVG', folder: 'panzoom_svg'},
+          { description: 'Panzoom SVG', folder: 'panzoom_svg' },
           { description: 'Loading screen API', folder: 'loading' },
           { description: 'Progress bar', folder: 'progress' },
           {
@@ -312,6 +315,14 @@
           {
             description: 'Buttons',
             folder: 'buttons',
+          },
+          {
+            description: 'Placeholder module',
+            folder: 'placeholder',
+          },
+          {
+            description: 'Module not found',
+            folder: 'module_not_found',
           },
         ],
       };
@@ -362,7 +373,7 @@
 
           <div id="version" style="display: inline-block">
             <label for="selectedVersion">Select the version to test: </label>
-            <select id="selectedVersion" onchange="updateExamples();">
+            <select id="selectedVersion" onchange="updateExamples()">
               <option value="src">source</option>
               <option value="build">build</option>
             </select>

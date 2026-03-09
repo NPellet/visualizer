@@ -205,8 +205,8 @@ define([
         var moduleId = Util.moduleIdFromUrl(v.modules[j].url);
         var module = modulesById[moduleId];
         if (!module) {
-          Debug.warn(
-            `Your view contains an url to a module (id: ${moduleId}) that does not correspond to any loaded modules`,
+          ui.showNotification(
+            `Your view contains a URL to a module (id: ${moduleId})\nthat does not correspond to any loaded modules.`,
           );
           continue;
         }
