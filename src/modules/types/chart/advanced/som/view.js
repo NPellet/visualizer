@@ -96,8 +96,8 @@ define([
           return;
         }
         var data = value.get('data');
-        var x = data.length,
-          y = data[0].length;
+        var x = data.length;
+        var y = data[0].length;
         var graph = this.graph;
 
         var i;
@@ -160,8 +160,8 @@ define([
       },
       dataset(value, name) {
         var i, getColor;
-        var config = this.module.getConfiguration('datasets'),
-          theConfig;
+        var config = this.module.getConfiguration('datasets');
+        var theConfig;
         if (config) {
           for (i = 0; i < config.length; i++) {
             if (config[i].groups.group[0].dataset[0] === name) {
@@ -195,8 +195,8 @@ define([
         var data = value.getChildSync(['data', '0']);
         var l = data.x.length;
         var theData = new Array(l * 2);
-        var colors = new Array(l),
-          color;
+        var colors = new Array(l);
+        var color;
         for (i = 0; i < l; i++) {
           theData[i * 2] = data.x[i];
           theData[i * 2 + 1] = data.y[i];
@@ -273,10 +273,10 @@ define([
     field2,
     field3,
   ) {
-    var color1 = chroma(colorA1),
-      color2 = chroma(colorA2),
-      scale,
-      val;
+    var color1 = chroma(colorA1);
+    var color2 = chroma(colorA2);
+    var scale;
+    var val;
     if (type === 'fixed') {
       val = color1.css();
       return function fixedColor() {

@@ -28,8 +28,8 @@ define([
   chroma,
   ml,
 ) {
-  var separation = 0.55,
-    incrementation = 0.001;
+  var separation = 0.55;
+  var incrementation = 0.001;
   var Stat = ml.Stat;
 
   function addKeyHandler() {

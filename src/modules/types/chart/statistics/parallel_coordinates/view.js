@@ -163,10 +163,10 @@ define([
       this.module.controller.onBrushSelection(this._data);
     },
     createIntermediateData() {
-      var columns = this.getColumns(),
-        l = columns.length,
-        colorJpath = this.module.getConfiguration('colorjpath'),
-        that = this;
+      var columns = this.getColumns();
+      var l = columns.length;
+      var colorJpath = this.module.getConfiguration('colorjpath');
+      var that = this;
 
       if (colorJpath) {
         colorJpath = Util.makejPathFunction(colorJpath);
@@ -175,8 +175,8 @@ define([
         };
       }
 
-      var value = this._value,
-        vl = value.length;
+      var value = this._value;
+      var vl = value.length;
 
       API.killHighlight(this.module.getId());
       this._highlighted = [];
@@ -230,8 +230,8 @@ define([
       this._data = newValue;
     },
     getColumns() {
-      var totalConfig = [],
-        i;
+      var totalConfig = [];
+      var i;
       var objConfig = {};
       var config = this.jpathConfig;
       if (config) {

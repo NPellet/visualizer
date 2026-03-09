@@ -10,9 +10,9 @@ define([
 
   $.extend(true, View.prototype, Default, {
     init() {
-      var that = this,
-        id = Util.getNextUniqueId(),
-        done = false;
+      var that = this;
+      var id = Util.getNextUniqueId();
+      var done = false;
 
       this._id = id;
       if (this.module.getConfigurationCheckbox('editable', 'isEditable')) {

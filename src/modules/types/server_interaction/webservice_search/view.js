@@ -149,9 +149,9 @@ define(['jquery', 'modules/default/defaultview', 'src/util/ui'], function (
 
       switch (spec.fieldtype) {
         case 'combo':
-          var opts = (spec.fieldoptions || '').split(';'),
-            opt,
-            html = '';
+          var opts = (spec.fieldoptions || '').split(';');
+          var opt;
+          var html = '';
           html += `<option ${spec.defaultvalue == '' ? 'selected="selected" ' : ''}value=""></option>`;
           for (var i = 0, l = opts.length; i < l; i++) {
             opt = opts[i].split(':');

@@ -44,9 +44,9 @@ define([
         layers = Grid.getLayerNames();
       }
 
-      var ul = $('<ul />') || this.$_elToOpen.empty(),
-        i = 0,
-        l = layers.length;
+      var ul = $('<ul />') || this.$_elToOpen.empty();
+      var i = 0;
+      var l = layers.length;
 
       for (; i < l; i++) {
         ul.append(this._buildSubElement(layers[i]));
@@ -56,8 +56,8 @@ define([
     },
 
     _buildSubElement(el) {
-      var that = this,
-        dom = $('<li />').text(el);
+      var that = this;
+      var dom = $('<li />').text(el);
       dom.addClass('hasEvent').on('click', function () {
         Grid.switchToLayer(el);
         that.onClick();

@@ -777,8 +777,8 @@ define([
 
   $.extend(true, View.prototype, Default, {
     async init() {
-      let that = this,
-        varname;
+      let that = this;
+      let varname;
       this.columnFilters = {};
       this.columnFilterFunctions = {};
       this.searchFilter = undefined;

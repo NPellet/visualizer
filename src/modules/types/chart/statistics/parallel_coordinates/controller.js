@@ -138,8 +138,8 @@ define([
   };
 
   Controller.prototype.onBrushSelection = function (value) {
-    var toSend = value,
-      l = value.length;
+    var toSend = value;
+    var l = value.length;
     var original = this.module.view._value;
     var flags = new Array(original.length);
 

@@ -514,9 +514,9 @@ define([
 
     name = name || item.name || '';
     var mime = item.type || getMime(name);
-    var split = name.split('.'),
-      ext,
-      lineCfg;
+    var split = name.split('.');
+    var ext;
+    var lineCfg;
     if (split.length < 2) {
       ext = '';
     } else {

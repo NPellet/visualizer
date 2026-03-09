@@ -47,12 +47,12 @@ define(['jquery', 'src/util/util'], function ($, Util) {
 
     this.$_elToOpen.show();
 
-    var w = this.$_elToOpen.outerWidth(true),
-      h = this.$_dom.outerHeight(true),
-      pos = this.$_dom.position(),
-      fullW = $('#header').outerWidth(true),
-      newLeft,
-      newTop;
+    var w = this.$_elToOpen.outerWidth(true);
+    var h = this.$_dom.outerHeight(true);
+    var pos = this.$_dom.position();
+    var fullW = $('#header').outerWidth(true);
+    var newLeft;
+    var newTop;
 
     if (pos.left + w >= fullW) {
       newLeft = fullW - w;

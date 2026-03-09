@@ -549,16 +549,16 @@ define(['jquery', 'jsgraph'], function ($, Graph) {
     },
 
     addAUC(from, to, options) {
-      var that = this,
-        obj = {
-          position: [{ x: from }, { x: to }],
+      var that = this;
+      var obj = {
+        position: [{ x: from }, { x: to }],
 
-          type: 'areaundercurve',
-          fillColor: this.options.aucColorT,
-          strokeColor: this.options.aucColor,
-          strokeWidth: 2,
-          selectable: true,
-        };
+        type: 'areaundercurve',
+        fillColor: this.options.aucColorT,
+        strokeColor: this.options.aucColor,
+        strokeWidth: 2,
+        selectable: true,
+      };
 
       if (options.color) {
         obj.fillColor = options.color;

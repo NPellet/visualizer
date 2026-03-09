@@ -671,8 +671,8 @@ define([
     },
 
     getFromServer(data) {
-      var def = $.Deferred(),
-        url = this.getUrl() || this._defaultUrl;
+      var def = $.Deferred();
+      var url = this.getUrl() || this._defaultUrl;
 
       if (!url) {
         return def.resolve({});

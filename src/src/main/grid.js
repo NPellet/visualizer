@@ -70,8 +70,8 @@ define([
     var modules = ModuleFactory.getModules();
     var bottomMax = 0;
     for (let i in modules) {
-      var pos = modules[i].getPosition(getActiveLayer()),
-        size = modules[i].getSize(getActiveLayer());
+      var pos = modules[i].getPosition(getActiveLayer());
+      var size = modules[i].getSize(getActiveLayer());
 
       if (
         pos.top &&
@@ -475,11 +475,11 @@ define([
   }
 
   function moveToFront(module) {
-    var modules = ModuleFactory.getModules(),
-      dom = module.dom,
-      myZIndex = module.definition.zindex || 1,
-      count = 0,
-      i;
+    var modules = ModuleFactory.getModules();
+    var dom = module.dom;
+    var myZIndex = module.definition.zindex || 1;
+    var count = 0;
+    var i;
     for (i in modules) {
       modules[i].definition.zindex = modules[i].definition.zindex || 1;
       if (modules[i].definition.zindex >= myZIndex) {
@@ -493,9 +493,9 @@ define([
   }
 
   function moveToBack(module) {
-    var modules = ModuleFactory.getModules(),
-      dom = module.dom,
-      myZIndex = module.definition.zindex || 1;
+    var modules = ModuleFactory.getModules();
+    var dom = module.dom;
+    var myZIndex = module.definition.zindex || 1;
 
     for (const i in modules) {
       modules[i].definition.zindex = modules[i].definition.zindex || 1;
@@ -591,11 +591,11 @@ define([
     }
 
     var div = ui.dialog({
-        autoPosition: true,
-        title: 'New layer',
-        width: '600px',
-      }),
-      form = new Form({});
+      autoPosition: true,
+      title: 'New layer',
+      width: '600px',
+    });
+    var form = new Form({});
 
     form.init();
     form.setStructure({
@@ -644,8 +644,8 @@ define([
 
     form.addButton('Validate', { color: 'green' }, function () {
       div.dialog('close');
-      var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
-        layer = { name: value.layername[0] };
+      var value = form.getValue().sections.layeropts[0].groups.layeropts[0];
+      var layer = { name: value.layername[0] };
 
       definition.layers[layer.name] = layer;
       def.resolve(layer);
@@ -673,11 +673,11 @@ define([
     var def = $.Deferred();
 
     var div = ui.dialog({
-        autoPosition: true,
-        title: 'Remove layer',
-        width: '600px',
-      }),
-      form = new Form({});
+      autoPosition: true,
+      title: 'Remove layer',
+      width: '600px',
+    });
+    var form = new Form({});
 
     form.init();
     form.setStructure({
@@ -719,8 +719,8 @@ define([
 
     form.addButton('Validate', { color: 'green' }, function () {
       div.dialog('close');
-      var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
-        layer = { name: value.layername[0] };
+      var value = form.getValue().sections.layeropts[0].groups.layeropts[0];
+      var layer = { name: value.layername[0] };
 
       if (
         definition.layers[layer.name] &&
@@ -763,11 +763,11 @@ define([
     var def = $.Deferred();
 
     var div = ui.dialog({
-        autoPosition: true,
-        title: 'Rename layer',
-        width: '600px',
-      }),
-      form = new Form({});
+      autoPosition: true,
+      title: 'Rename layer',
+      width: '600px',
+    });
+    var form = new Form({});
 
     form.init();
     form.setStructure({
@@ -824,8 +824,8 @@ define([
 
     form.addButton('Validate', { color: 'green' }, function () {
       div.dialog('close');
-      var value = form.getValue().sections.layeropts[0].groups.layeropts[0],
-        layer = { old: value.originalname[0], new: value.newname[0] };
+      var value = form.getValue().sections.layeropts[0].groups.layeropts[0];
+      var layer = { old: value.originalname[0], new: value.newname[0] };
 
       if (definition.layers[layer.old]) {
         if (definition.layers[layer.new]) {

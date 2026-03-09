@@ -162,10 +162,10 @@ define([
     },
 
     setCamera() {
-      var VIEW_ANGLE = 45,
-        ASPECT = this.width / this.height,
-        NEAR = 0.1,
-        FAR = 20000;
+      var VIEW_ANGLE = 45;
+      var ASPECT = this.width / this.height;
+      var NEAR = 0.1;
+      var FAR = 20000;
       this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
       this.camera.position.set(2 * this.xMax, 0.5 * this.yMax, 4 * this.zMax);
       this.camera.up = new THREE.Vector3(0, 0, 1);

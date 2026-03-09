@@ -124,8 +124,8 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
     },
 
     inDom() {
-      var that = this,
-        dom = this.dom.get(0);
+      var that = this;
+      var dom = this.dom.get(0);
 
       // We use a drag count to circumvent the fact that
       // The dragleave event is fired when entering a child element
@@ -202,11 +202,11 @@ define(['modules/default/defaultview', 'src/util/ui'], function (Default, UI) {
       var imgData = null;
       $dialog.html(message);
 
-      var streaming = false,
-        video = document.querySelector('#video'),
-        canvas = document.querySelector('#canvas'),
-        width = 320,
-        height = 0;
+      var streaming = false;
+      var video = document.querySelector('#video');
+      var canvas = document.querySelector('#canvas');
+      var width = 320;
+      var height = 0;
 
       navigator.getMedia =
         navigator.getUserMedia ||

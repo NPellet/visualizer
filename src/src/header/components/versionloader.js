@@ -61,9 +61,9 @@ define([
         return;
       }
 
-      var ul = $('<ul />') || this.$_elToOpen.empty(),
-        i = 0,
-        l = elements.length;
+      var ul = $('<ul />') || this.$_elToOpen.empty();
+      var i = 0;
+      var l = elements.length;
 
       for (; i < l; i++) {
         ul.append(this._buildSubElement(elements[i]));
@@ -76,8 +76,8 @@ define([
     },
 
     _buildSubElement(el) {
-      var that = this,
-        dom = $('<li />').text(el.label || '');
+      var that = this;
+      var dom = $('<li />').text(el.label || '');
       if (el.viewURL || el.dataURL) {
         dom.addClass('hasEvent').on('click', function () {
           that.load(el);

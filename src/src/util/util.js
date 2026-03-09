@@ -39,8 +39,8 @@ define([
     // empty
   }
 
-  var regQuote = /"/g,
-    regJpath = /^element\./;
+  var regQuote = /"/g;
+  var regJpath = /^element\./;
 
   const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
 
@@ -49,12 +49,12 @@ define([
       return noop;
     }
 
-    var jpaths2 = jpath.replace(regJpath, ''),
-      splitted = jpaths2.split('.'),
-      l = splitted.length - 1,
-      ifArray = [],
-      ifString,
-      ifElement = 'el';
+    var jpaths2 = jpath.replace(regJpath, '');
+    var splitted = jpaths2.split('.');
+    var l = splitted.length - 1;
+    var ifArray = [];
+    var ifString;
+    var ifElement = 'el';
 
     for (var i = 0; i < l; i++) {
       ifElement += `["${splitted[i].replaceAll(regQuote, String.raw`\"`)}"]`;
@@ -283,9 +283,9 @@ define([
     formatMoney(n, decPlaces, thouSeparator = ',', decSeparator = '.') {
       decPlaces = isNaN((decPlaces = Math.abs(decPlaces))) ? 2 : decPlaces;
 
-      var sign = n < 0 ? '-' : '',
-        i = `${Number.parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`,
-        j = i.length;
+      var sign = n < 0 ? '-' : '';
+      var i = `${Number.parseInt((n = Math.abs(+n || 0).toFixed(decPlaces)), 10)}`;
+      var j = i.length;
       j = j > 3 ? j % 3 : 0;
       return (
         sign +

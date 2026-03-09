@@ -451,8 +451,8 @@ define([
       } else {
         // The doc is new so we need to save the whole document
         // With a new uuid
-        var flavors = {},
-          flav = [];
+        var flavors = {};
+        var flav = [];
         if (last.key) {
           flav = last.node.key.split(':');
           flav.shift();
@@ -1141,9 +1141,9 @@ define([
       this.database.openDoc(id, {
         revs_info: true,
         success(data) {
-          var info = data._revs_info,
-            l = info.length,
-            revs = [];
+          var info = data._revs_info;
+          var l = info.length;
+          var revs = [];
           for (var i = 0; i < l; i++) {
             var rev = info[i];
             if (rev.status === 'available') {
@@ -1165,8 +1165,8 @@ define([
       var folder = node;
       var last;
 
-      var index = node.key.indexOf(':'),
-        keyWithoutFlavor;
+      var index = node.key.indexOf(':');
+      var keyWithoutFlavor;
       if (index >= 0) {
         keyWithoutFlavor = node.key.slice(index + 1);
       } else {
@@ -1521,8 +1521,8 @@ define([
 
   function getStructure(data) {
     var flavors = data.value.flavors;
-    var structure = {},
-      current = structure;
+    var structure = {};
+    var current = structure;
     for (var i = 0; i < flavors.length - 1; i++) {
       current = { __folder: true };
       current[flavors[i]] = current;
@@ -1593,8 +1593,8 @@ define([
 
   function comparePaths(path1, paths) {
     var joinedPath1 = path1.join(':');
-    var i = 0,
-      l = paths.length;
+    var i = 0;
+    var l = paths.length;
     for (; i < l; i++) {
       var path2 = paths[i].value.flavors.join(':');
       if (joinedPath1 === path2) {

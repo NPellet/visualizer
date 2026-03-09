@@ -6,8 +6,8 @@ define(['jquery', 'src/data/structures', 'src/util/debug'], function (
   Debug,
 ) {
   function _getValueFromJPath(element, jpath) {
-    var el = getValueIfNeeded(element),
-      jpathElement = jpath.shift();
+    var el = getValueIfNeeded(element);
+    var jpathElement = jpath.shift();
 
     if (jpathElement) {
       if (el && (el = el[jpathElement]) !== false) {

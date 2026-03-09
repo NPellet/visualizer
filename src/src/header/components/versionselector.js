@@ -78,8 +78,8 @@ define([
 
     _buildSubElement(version, isSame) {
       var text = (isSame ? '• ' : '') + version;
-      var that = this,
-        dom = $('<li />').text(text);
+      var that = this;
+      var dom = $('<li />').text(text);
       dom.addClass('hasEvent').on('click', function () {
         that.load(version);
         that.onClick();

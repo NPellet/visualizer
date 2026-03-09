@@ -102,11 +102,10 @@ define([
       var val = this._lastValue;
       if (!val) return;
 
-      var that = this,
-        sprintfVal = this.module.getConfiguration('sprintf'),
-        rendererOptions =
-          Util.evalOptions(this.module.getConfiguration('rendererOptions')) ||
-          {};
+      var that = this;
+      var sprintfVal = this.module.getConfiguration('sprintf');
+      var rendererOptions =
+        Util.evalOptions(this.module.getConfiguration('rendererOptions')) || {};
       var forceType = this.module.getConfiguration('forceType');
       if (forceType) {
         rendererOptions.forceType = forceType;

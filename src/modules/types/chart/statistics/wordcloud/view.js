@@ -152,8 +152,8 @@ define([
     drawChart() {
       var that = this;
       var fill = d3.scale.category20b();
-      var w = this.width,
-        h = this.height;
+      var w = this.width;
+      var h = this.height;
 
       var svg = d3
         .select(`#${this._id}`)
@@ -162,10 +162,10 @@ define([
         .attr('height', h)
         .style('display', 'block');
 
-      var background = svg.append('g'),
-        vis = svg
-          .append('g')
-          .attr('transform', `translate(${[w >> 1, h >> 1]})`);
+      var background = svg.append('g');
+      var vis = svg
+        .append('g')
+        .attr('transform', `translate(${[w >> 1, h >> 1]})`);
       var from = that.module.getConfiguration('fromTo')
         ? Math.max(
             -90,

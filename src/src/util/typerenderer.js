@@ -73,9 +73,9 @@ define([
     let total = 0;
     for (let i = 0; i < value.length; total += value[i++][0]);
 
-    var start = 0,
-      end,
-      color;
+    var start = 0;
+    var end;
+    var color;
     for (let i = 0; i < value.length; i++) {
       end = start + (value[i][0] / total) * 100;
       color = value[i][1];

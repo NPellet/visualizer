@@ -597,16 +597,16 @@ define([
       asyncPostRender: typeRenderer,
     };
 
-    var grid,
-      data,
-      lastClickedId,
-      buttons,
-      arr,
-      columns,
-      sources,
-      failedSources = 0,
-      $header,
-      allProm;
+    var grid;
+    var data;
+    var lastClickedId;
+    var buttons;
+    var arr;
+    var columns;
+    var sources;
+    var failedSources = 0;
+    var $header;
+    var allProm;
     const fromArray = Array.isArray(list);
 
     if (!options.asynchronous) {

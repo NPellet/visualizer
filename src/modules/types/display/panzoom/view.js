@@ -707,10 +707,10 @@ define([
       if (!Array.isArray(hl)) {
         hl = [hl];
       }
-      var shiftx = this.highlights[hl[0]].shiftx,
-        shifty = this.highlights[hl[0]].shifty;
-      var shiftX = this.highlights[hl[0]].shiftx,
-        shiftY = this.highlights[hl[0]].shiftY;
+      var shiftx = this.highlights[hl[0]].shiftx;
+      var shifty = this.highlights[hl[0]].shifty;
+      var shiftX = this.highlights[hl[0]].shiftx;
+      var shiftY = this.highlights[hl[0]].shiftY;
       for (let i = 0; i < hl.length; i++) {
         var h = hl[i];
         shiftx = Math.min(shiftx, this.highlights[h].shiftx);
