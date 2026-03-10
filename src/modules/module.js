@@ -2,7 +2,6 @@
 
 define([
   'jquery',
-  'lodash',
   'src/util/context',
   'src/util/api',
   'src/util/util',
@@ -16,7 +15,6 @@ define([
   'src/main/grid',
 ], function (
   $,
-  _,
   ContextMenu,
   API,
   Util,
@@ -162,6 +160,16 @@ define([
     });
     this.ready.catch(function (error) {
       Debug.error('Caught error in module initialization.', error);
+
+      // Render the placeholder module to display the error.
+      const Grid = require('src/main/grid');
+      const definitionCopy = JSON.parse(JSON.stringify(definition));
+      definitionCopy.placeholderData = {
+        url: definitionCopy.url,
+        error: String(error),
+      };
+      definitionCopy.url = 'modules/types/display/placeholder/';
+      Grid.addModuleFromJSON(definitionCopy);
     });
   }
   Module.prototype = {
@@ -238,7 +246,7 @@ define([
         .on('click', 'li', (event) => {
           var toolbar = that.controller.getToolbar();
           var title = $(event.target).closest('li').attr('title');
-          var t = _.find(toolbar, (val) => val.title === title);
+          var t = toolbar.find((val) => val.title === title);
           if (t && t.onClick) {
             t.onClick.apply(that);
           }
