@@ -1,7 +1,7 @@
 {
   "modules": [
     {
-      "url": "./modules/types/chart/maps/leaflet/",
+      "url": "modules/types/chart/maps/leaflet/",
       "configuration": {
         "sections": {},
         "groups": {
@@ -41,7 +41,7 @@
           ]
         }
       },
-      "id": 1,
+      "id": 8,
       "vars_in": [
         {
           "rel": "geojson",
@@ -88,8 +88,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 1,
-            "top": 1,
+            "left": 0,
+            "top": 0,
             "right": 0
           },
           "size": {
@@ -109,10 +109,31 @@
           "name": "Default layer"
         }
       },
-      "title": "Default center - OpenStreetMap"
+      "title": "Default center - OpenStreetMap",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
-      "url": "./modules/types/chart/maps/leaflet/",
+      "url": "modules/types/chart/maps/leaflet/",
       "configuration": {
         "sections": {},
         "groups": {
@@ -152,7 +173,7 @@
           ]
         }
       },
-      "id": 2,
+      "id": 9,
       "vars_in": [
         {
           "rel": "geojson",
@@ -197,10 +218,31 @@
           "name": "Default layer"
         }
       },
-      "title": "Custom center"
+      "title": "Custom center",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
-      "url": "./modules/types/chart/maps/leaflet/",
+      "url": "modules/types/chart/maps/leaflet/",
       "configuration": {
         "sections": {},
         "groups": {
@@ -214,6 +256,9 @@
               ],
               "mapzoom": [
                 "12"
+              ],
+              "autofit": [
+                null
               ]
             }
           ],
@@ -240,7 +285,7 @@
           ]
         }
       },
-      "id": 3,
+      "id": 10,
       "vars_in": [
         {
           "rel": "geojson",
@@ -304,167 +349,31 @@
           "name": "Default layer"
         }
       },
-      "title": "Marker from JSON - HikeBike"
-    },
-    {
-      "url": "./modules/types/display/jqgrid/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
+      "title": "Marker from JSON - HikeBike",
+      "toolbar": {
+        "custom": [
+          [
             {
-              "nblines": [
-                20
-              ],
-              "toggle": [
-                null
-              ],
-              "colorjpath": [
-                null
-              ],
-              "filterRow": [
-                null
-              ]
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
             }
-          ],
-          "cols": [
-            [
-              {
-                "name": "Value",
-                "jpath": "element.name",
-                "number": [],
-                "editable": "none"
-              }
-            ]
           ]
-        }
-      },
-      "id": 4,
-      "vars_in": [
-        {
-          "rel": "list",
-          "name": "results"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "event": "onHover",
-          "rel": "row",
-          "jpath": [
-            "value"
-          ],
-          "name": "geoHover"
-        }
-      ],
-      "actions_out": [
-        {}
-      ],
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 121,
-            "top": 43,
-            "right": 0
-          },
-          "size": {
-            "width": 20,
-            "height": 27
-          },
-          "display": true,
-          "title": "Untitled module",
-          "bgColor": [
-            255,
-            255,
-            255,
-            1
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "title": "Untitled module"
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
-      "url": "./modules/types/display/jqgrid/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "nblines": [
-                20
-              ],
-              "toggle": [
-                null
-              ],
-              "colorjpath": [
-                null
-              ],
-              "filterRow": [
-                null
-              ]
-            }
-          ],
-          "cols": [
-            [
-              {
-                "name": "Name",
-                "jpath": "element.value",
-                "number": [],
-                "editable": "none"
-              }
-            ]
-          ]
-        }
-      },
-      "id": 5,
-      "vars_in": [
-        {
-          "rel": "list",
-          "name": "multia"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {}
-      ],
-      "actions_out": [
-        {}
-      ],
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 65,
-            "top": 43,
-            "right": 0
-          },
-          "size": {
-            "width": 18,
-            "height": 20
-          },
-          "display": true,
-          "title": "Untitled module",
-          "bgColor": [
-            255,
-            255,
-            255,
-            1
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "title": "Untitled module"
-    },
-    {
-      "url": "./modules/types/chart/maps/leaflet/",
+      "url": "modules/types/chart/maps/leaflet/",
       "configuration": {
         "sections": {},
         "groups": {
@@ -499,7 +408,7 @@
           ]
         }
       },
-      "id": 6,
+      "id": 13,
       "vars_in": [
         {}
       ],
@@ -519,8 +428,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 16,
-            "top": 45,
+            "left": 0,
+            "top": 43,
             "right": 0
           },
           "size": {
@@ -540,7 +449,28 @@
           "name": "Default layer"
         }
       },
-      "title": "Untitled module"
+      "title": "Untitled module",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
     {
       "url": "modules/types/edition/object_editor/",
@@ -565,7 +495,7 @@
           ]
         }
       },
-      "id": 7,
+      "id": 14,
       "vars_in": [
         {
           "rel": "value",
@@ -582,8 +512,8 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 88,
-            "top": 51,
+            "left": 65,
+            "top": 45,
             "right": 0
           },
           "size": {
@@ -603,7 +533,448 @@
           "name": "Default layer"
         }
       },
-      "title": "Untitled module"
+      "title": "Untitled module",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": [
+                  "value"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 46,
+            "top": 45
+          },
+          "size": {
+            "width": 16,
+            "height": 22
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 15,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "multia"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": [
+                  "name"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 91,
+            "top": 45
+          },
+          "size": {
+            "width": 23,
+            "height": 27
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 16,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "results"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "row",
+          "jpath": [
+            "value"
+          ],
+          "name": "geoHover"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
@@ -670,8 +1041,7 @@
       }
     }
   ],
-  "version": "2.12.1",
-  "pouchvariables": [],
+  "version": "3.3.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -680,5 +1050,6 @@
     },
     "xWidth": 10,
     "yHeight": 10
-  }
+  },
+  "aliases": []
 }
