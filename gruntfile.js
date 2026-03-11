@@ -192,11 +192,6 @@ module.exports = function (grunt) {
             src: [
               './requirejs/require.js',
               './d3/d3*',
-              [
-                './jqgrid_edit/js/*.js',
-                './jqgrid_edit/js/i18n/grid.locale-en.js',
-                './jqgrid_edit/css/*.css',
-              ],
               './threejs/build/three.min.js',
               './ace/src/**',
               [

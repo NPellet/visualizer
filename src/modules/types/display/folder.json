@@ -26,14 +26,6 @@
       "hidden": true
     },
     {
-      "moduleName": "Table",
-      "url": "modules/types/display/jqgrid/"
-    },
-    {
-      "moduleName": "Table (fast)",
-      "url": "modules/types/display/fasttable/"
-    },
-    {
       "moduleName": "Twig template",
       "url": "modules/types/display/template-twig/"
     },
