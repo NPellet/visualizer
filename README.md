@@ -40,4 +40,4 @@ git submodule init
 docker compose up -d --build
 ```
 
-Open
+Then open the visualizer, setup with the view manager header: `src/dev.html`
