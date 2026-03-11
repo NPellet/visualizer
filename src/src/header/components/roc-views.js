@@ -756,8 +756,11 @@ define([
           if (!validateFlavor(newName)) {
             throw new Error('Unreachable');
           }
-          mutableView.$content.flavors[newName] =
-            mutableView.$content.flavors[selectedFlavor];
+          // Do not move view if it already has a path in the destination flavor
+          if (!mutableView.$content.flavors[newName]) {
+            mutableView.$content.flavors[newName] =
+              mutableView.$content.flavors[selectedFlavor];
+          }
           delete mutableView.$content.flavors[selectedFlavor];
         },
         beforeRefresh: ({ failCount, selectedFlavor }) => {
