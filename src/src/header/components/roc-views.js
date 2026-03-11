@@ -545,15 +545,21 @@ define([
                   cmd: 'newFlavor',
                   uiIcon: 'ui-icon-document-b',
                 },
+                { title: '----' },
                 {
-                  title: 'Remove flavor',
-                  uiIcon: 'ui-icon-trash',
-                  cmd: 'deleteFlavor',
+                  title: 'Copy flavor',
+                  uiIcon: 'ui-icon-copy',
+                  cmd: 'copyFlavor',
                 },
                 {
                   title: 'Rename flavor',
                   uiIcon: 'ui-icon-pencil',
                   cmd: 'renameFlavor',
+                },
+                {
+                  title: 'Remove flavor',
+                  uiIcon: 'ui-icon-trash',
+                  cmd: 'deleteFlavor',
                 },
                 { title: '----' },
               );
@@ -612,6 +618,9 @@ define([
               break;
             case 'newFlavor':
               this.newFlavor();
+              break;
+            case 'copyFlavor':
+              this.copyFlavor();
               break;
             case 'deleteFlavor':
               this.deleteFlavor();
@@ -728,6 +737,51 @@ define([
             newFlavors.delete(selectedFlavor);
             this.flavors = [...newFlavors];
             this.flavor = this.flavors[0] || defaultFlavorName;
+          }
+        },
+      });
+    }
+
+    copyFlavor() {
+      const destinationNameInput = $('<input type="text" autofocus>');
+      const overrideDestinationInput = $(
+        '<div><input id="view_manager_copy_to_override_path" type="checkbox"><label for="view_manager_copy_to_override_path">Replace path in destination when the view already has the destination flavor</label></div>',
+      );
+
+      return this.updateFlavorViews({
+        message: 'Copy a view into a new or existing flavor.',
+        buttonLabel: 'Copy flavor',
+        formContent: $('<div></div>')
+          .css('display', 'contents')
+          .append(destinationNameInput)
+          .append(overrideDestinationInput),
+        beforeConfirm: () => {
+          // Validate the form
+          const newName = destinationNameInput.val();
+          if (!validateFlavor(newName)) {
+            UI.showNotification(`Invalid flavor name ${newName}`, 'error');
+            return false;
+          }
+          return true;
+        },
+        beforeRefresh: () => {
+          const newName = destinationNameInput.val();
+          this.flavor = newName;
+        },
+        updateCallback: (mutableView, selectedFlavor) => {
+          const shouldOverride = overrideDestinationInput
+            .find('input')
+            .is(':checked');
+          const destinationName = destinationNameInput.val();
+          if (!validateFlavor(destinationName)) {
+            throw new Error('Unreachable');
+          }
+          if (
+            shouldOverride ||
+            !mutableView.$content.flavors[destinationName]
+          ) {
+            mutableView.$content.flavors[destinationName] =
+              mutableView.$content.flavors[selectedFlavor];
           }
         },
       });
