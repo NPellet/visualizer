@@ -1,812 +1,1021 @@
 {
-    "version": "2.9.3",
-    "modules": [
-        {
-            "url": "modules/types/chart/basic/scatter3D/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "tooltip": [
-                                []
-                            ],
-                            "tooltipJpath": [
-                                null
-                            ],
-                            "displayPointCoordinates": [
-                                [
-                                    "onhover"
-                                ]
-                            ],
-                            "grid": [
-                                [
-                                    "xy",
-                                    "yz",
-                                    "xz",
-                                    "xysec",
-                                    "yzsec",
-                                    "xzsec"
-                                ]
-                            ],
-                            "secondaryGrids": [
-                                2
-                            ],
-                            "gridOriginX": [
-                                ""
-                            ],
-                            "gridOriginY": [
-                                ""
-                            ],
-                            "gridOriginZ": [
-                                ""
-                            ],
-                            "projection": [
-                                [
-                                    "show"
-                                ]
-                            ],
-                            "ticks": [
-                                [
-                                    "x",
-                                    "y",
-                                    "z",
-                                    "xlab",
-                                    "ylab",
-                                    "zlab"
-                                ]
-                            ],
-                            "labels": [
-                                "axis"
-                            ],
-                            "minX": [
-                                ""
-                            ],
-                            "maxX": [
-                                ""
-                            ],
-                            "minY": [
-                                ""
-                            ],
-                            "maxY": [
-                                ""
-                            ],
-                            "minZ": [
-                                ""
-                            ],
-                            "maxZ": [
-                                ""
-                            ],
-                            "backgroundColor": [
-                                [
-                                    230,
-                                    230,
-                                    230,
-                                    1
-                                ]
-                            ],
-                            "annotationColor": [
-                                [
-                                    50,
-                                    50,
-                                    50,
-                                    1
-                                ]
-                            ],
-                            "sizeNormalization": [
-                                0.02
-                            ]
-                        }
-                    ],
-                    "dataJpaths": [
-                        [
-                            {
-                                "x": [
-                                    "x"
-                                ],
-                                "y": [
-                                    "y"
-                                ],
-                                "z": [
-                                    "z"
-                                ],
-                                "color": [
-                                    "color"
-                                ],
-                                "size": [
-                                    "size"
-                                ],
-                                "highlight": [
-                                    "_highlight"
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "id": 1,
-            "vars_in": [
-                {
-                    "rel": "data3D",
-                    "name": "test"
-                },
-                {
-                    "rel": "boolArray",
-                    "name": "pointsToDraw"
-                }
-            ],
-            "actions_in": [
-                {}
-            ],
-            "vars_out": [
-                {
-                    "event": "onHover",
-                    "rel": "point",
-                    "jpath": [],
-                    "name": "clicked"
-                }
-            ],
-            "actions_out": {},
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 0,
-                        "top": 0,
-                        "right": 0
-                    },
-                    "size": {
-                        "width": 77,
-                        "height": 61
-                    },
-                    "display": true,
-                    "title": "3D Scatter plot",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        [
-                            255,
-                            255,
-                            255,
-                            0
-                        ]
-                    ]
-                },
-                "admin": {
-                    "position": {
-                        "left": 0,
-                        "top": 0,
-                        "right": 0
-                    },
-                    "size": {
-                        "width": 66,
-                        "height": 55
-                    },
-                    "display": true,
-                    "title": "3D plot",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        [
-                            255,
-                            255,
-                            255,
-                            0
-                        ]
-                    ]
-                }
-            },
-            "title": "3D Scatter plot",
-            "zindex": 2
-        },
-        {
-            "url": "modules/types/display/fasttable/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "nblines": [
-                                20
-                            ],
-                            "toggle": [
-                                null
-                            ],
-                            "colorjpath": [
-                                null
-                            ],
-                            "filterRow": [
-                                null
-                            ]
-                        }
-                    ],
-                    "cols": [
-                        [
-                            {
-                                "name": "id",
-                                "jpath": "element.label",
-                                "number": [],
-                                "editable": "none"
-                            }
-                        ]
-                    ]
-                }
-            },
-            "id": 2,
-            "vars_in": [
-                {
-                    "rel": "list",
-                    "name": "table"
-                }
-            ],
-            "actions_in": [
-                {}
-            ],
-            "vars_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "actions_out": [
-                {
-                    "jpath": []
-                }
-            ],
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 111,
-                        "top": 0,
-                        "right": 0
-                    },
-                    "size": {
-                        "width": 10,
-                        "height": 61
-                    },
-                    "display": true,
-                    "title": "Highlights",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ]
-                },
-                "admin": {
-                    "position": {
-                        "left": 67,
-                        "top": 0,
-                        "right": 0
-                    },
-                    "size": {
-                        "width": 12,
-                        "height": 25
-                    },
-                    "display": true,
-                    "title": "Highlights",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ]
-                }
-            },
-            "title": "Highlights",
-            "zindex": 2
-        },
-        {
-            "url": "modules/types/chart/statistics/parallel_coordinates/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "colJPath": [
-                                null
-                            ],
-                            "options": [
-                                [
-                                    "reorder"
-                                ]
-                            ],
-                            "brushMode": [
-                                "1D-axes"
-                            ],
-                            "predicate": [
-                                "and"
-                            ]
-                        }
-                    ],
-                    "cols": [
-                        [
-                            {
-                                "name": "x",
-                                "jpath": "element.x"
-                            },
-                            {
-                                "name": "y",
-                                "jpath": "element.y"
-                            },
-                            {
-                                "name": "z",
-                                "jpath": "element.z"
-                            }
-                        ]
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 0,
-                        "right": 0,
-                        "top": 62
-                    },
-                    "size": {
-                        "width": 121,
-                        "height": 24
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "Parallel coordinates",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        [
-                            255,
-                            255,
-                            255,
-                            0
-                        ]
-                    ]
-                },
-                "admin": {
-                    "position": {
-                        "left": 67,
-                        "right": 0,
-                        "top": 26
-                    },
-                    "size": {
-                        "width": 68,
-                        "height": 29
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "Parallel coordinates",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        [
-                            255,
-                            255,
-                            255,
-                            0
-                        ]
-                    ]
-                }
-            },
-            "id": 3,
-            "vars_in": [
-                {
-                    "rel": "value",
-                    "name": "test"
-                }
-            ],
-            "actions_in": [
-                {}
-            ],
-            "title": "Parallel coordinates",
-            "vars_out": [
-                {
-                    "event": "onBrushSelection",
-                    "rel": "flagResult",
-                    "jpath": [],
-                    "name": "pointsToDraw"
-                }
-            ],
-            "actions_out": {},
-            "zindex": 1
-        },
-        {
-            "url": "modules/types/edition/filter_editor/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "script": [
-                                "value = value.resurrect(true);\nfunction generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n}\nfunction generateRandomColors(d, n) {\n    var arr = new Array(d);\n    arr = _(arr).map(function(val, key) {\n        return key/d;\n    }).map(function(val) {\n        return 'hsl(' + val*360 + ',65%,65%)';\n    }).map(function(val) {\n        return chroma(val).hex();    \n    }).value();\n    \n    var result = new Array(n);\n    result = _(result).map(function(val) {\n        return Math.floor(Math.random() * d);\n    }).map(function(val){\n        return arr[val];\n    }).value();\n    return result;\n}\n\nfunction generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n        return arr[Math.floor(a)];\n    }); \n    return x;\n}\n\nvar n = value.points;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(value.colors, n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\n\nvar arr = [];\nfor(var i=0; i<value.highlights; i++) {\n    arr.push(i.toString());\n}\nvar highlight = generateRandomFromArray(arr, n);\nvar size = generateRandomArray(n, value.minSize, value.maxSize);\n\n\nvar result = [];\nfor(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i].size = size[i];\n    if(value.useHighlights) {\n        result[i]._highlight = highlight[i];    \n    }\n    \n}\n\nvar table = _(highlight).uniq().sort().map(function(val) {\n    return {\n        label: val,\n        _highlight: val\n    }\n}).value();\nAPI.createData('table', table);\nresolve(result);"
-                            ]
-                        }
-                    ],
-                    "libs": [
-                        [
-                            {
-                                "lib": "chroma",
-                                "alias": "chroma"
-                            },
-                            {
-                                "lib": "lodash",
-                                "alias": "_"
-                            }
-                        ]
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 115,
-                        "right": 0,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 57,
-                        "height": 73
-                    },
-                    "zIndex": 0,
-                    "display": false,
-                    "title": "Untitled",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        [
-                            255,
-                            255,
-                            255,
-                            0
-                        ]
-                    ]
-                },
-                "admin": {
-                    "position": {
-                        "left": 0,
-                        "right": 0,
-                        "top": 56
-                    },
-                    "size": {
-                        "width": 89,
-                        "height": 65
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "Untitled",
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer",
-                    "bgColor": [
-                        [
-                            255,
-                            255,
-                            255,
-                            0
-                        ]
-                    ]
-                }
-            },
-            "id": 4,
-            "vars_in": [
-                {
-                    "rel": "dataobject",
-                    "name": "defaultParams"
-                }
-            ],
-            "actions_in": [
-                {}
-            ],
-            "title": "Untitled",
-            "vars_out": [
-                {
-                    "event": "onButtonClick",
-                    "rel": "filteredObject",
-                    "jpath": [],
-                    "name": "test"
-                }
-            ],
-            "actions_out": {},
-            "zindex": 2
-        },
-        {
-            "url": "modules/types/edition/onde/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "hasButton": [
-                                [
-                                    "show"
-                                ]
-                            ],
-                            "button_text": [
-                                "Generate Graph"
-                            ],
-                            "debouncing": [
-                                -1
-                            ],
-                            "output": [
-                                "modified"
-                            ],
-                            "mode": [
-                                "schema"
-                            ],
-                            "schemaSource": [
-                                "config"
-                            ],
-                            "schema": [
-                                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"points\": {\n            \"type\": \"number\",\n            \"label\": \"Number of points\",\n            \"default\": 200\n        },\n        \"highlights\": {\n            \"type\": \"number\",\n            \"label\": \"Number of highlights\",\n            \"default\": \"4\"\n        },\n        \"colors\": {\n            \"type\": \"number\",\n            \"label\": \"Number of colors\",\n            \"default\": 5\n        },\n        \"minSize\": {\n            \"type\": \"number\",\n            \"label\": \"Minimum size\",\n            \"default\": 0.05\n        },\n        \"maxSize\": {\n            \"type\": \"number\",\n            \"label\": \"Maximum size\",\n            \"default\": 0.05\n        },\n        \"useHighlights\": {\n            \"type\": \"boolean\",\n            \"label\": \"Use Highlights\",\n            \"default\": false\n        }\n    }\n}"
-                            ]
-                        }
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 78,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 32,
-                        "height": 61
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "Parameters",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                },
-                "admin": {
-                    "position": {
-                        "left": 80,
-                        "top": 0
-                    },
-                    "size": {
-                        "width": 55,
-                        "height": 25
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "Parameters",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "admin"
-                }
-            },
-            "id": 5,
-            "vars_in": [
-                {
-                    "rel": "inputValue",
-                    "name": "defaultParams"
-                }
-            ],
-            "actions_in": [],
-            "title": "Parameters",
-            "vars_out": [
-                {
-                    "event": "onFormSubmit",
-                    "rel": "outputValue",
-                    "jpath": [],
-                    "name": "params"
-                }
-            ],
-            "actions_out": [
-                {
-                    "jpath": []
-                }
+  "version": "3.3.1-0",
+  "modules": [
+    {
+      "url": "modules/types/chart/basic/scatter3D/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "tooltip": [
+                []
+              ],
+              "tooltipJpath": [
+                null
+              ],
+              "displayPointCoordinates": [
+                [
+                  "onhover"
+                ]
+              ],
+              "grid": [
+                [
+                  "xy",
+                  "yz",
+                  "xz",
+                  "xysec",
+                  "yzsec",
+                  "xzsec"
+                ]
+              ],
+              "secondaryGrids": [
+                2
+              ],
+              "gridOriginX": [
+                ""
+              ],
+              "gridOriginY": [
+                ""
+              ],
+              "gridOriginZ": [
+                ""
+              ],
+              "projection": [
+                [
+                  "show"
+                ]
+              ],
+              "ticks": [
+                [
+                  "x",
+                  "y",
+                  "z",
+                  "xlab",
+                  "ylab",
+                  "zlab"
+                ]
+              ],
+              "labels": [
+                "axis"
+              ],
+              "minX": [
+                ""
+              ],
+              "maxX": [
+                ""
+              ],
+              "minY": [
+                ""
+              ],
+              "maxY": [
+                ""
+              ],
+              "minZ": [
+                ""
+              ],
+              "maxZ": [
+                ""
+              ],
+              "backgroundColor": [
+                [
+                  230,
+                  230,
+                  230,
+                  1
+                ]
+              ],
+              "annotationColor": [
+                [
+                  50,
+                  50,
+                  50,
+                  1
+                ]
+              ],
+              "sizeNormalization": [
+                0.02
+              ]
+            }
+          ],
+          "dataJpaths": [
+            [
+              {
+                "x": [
+                  "x"
+                ],
+                "y": [
+                  "y"
+                ],
+                "z": [
+                  "z"
+                ],
+                "color": [
+                  "color"
+                ],
+                "size": [
+                  "size"
+                ],
+                "highlight": [
+                  "_highlight"
+                ]
+              }
             ]
-        },
-        {
-            "url": "modules/types/edition/object_editor/",
-            "configuration": {
-                "sections": {},
-                "groups": {
-                    "group": [
-                        {
-                            "editable": [
-                                "text"
-                            ],
-                            "expanded": [
-                                []
-                            ],
-                            "storeObject": [
-                                [
-                                    "expand"
-                                ]
-                            ],
-                            "displayValue": [
-                                []
-                            ],
-                            "output": [
-                                "new"
-                            ],
-                            "storedObject": [
-                                "{\"minSize\":1,\"maxSize\":1,\"useHighlights\":true,\"colors\":3,\"points\":200,\"highlights\":4}"
-                            ]
-                        }
-                    ]
-                }
-            },
-            "layers": {
-                "Default layer": {
-                    "position": {
-                        "left": 177,
-                        "top": 47
-                    },
-                    "size": {
-                        "width": 45,
-                        "height": 29
-                    },
-                    "zIndex": 0,
-                    "display": false,
-                    "title": "Untitled",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "Default layer"
-                },
-                "admin": {
-                    "position": {
-                        "left": 90,
-                        "top": 56
-                    },
-                    "size": {
-                        "width": 20,
-                        "height": 20
-                    },
-                    "zIndex": 0,
-                    "display": true,
-                    "title": "",
-                    "bgColor": [
-                        255,
-                        255,
-                        255,
-                        0
-                    ],
-                    "wrapper": true,
-                    "created": true,
-                    "name": "admin"
-                }
-            },
-            "id": 6,
-            "vars_in": [
-                {}
-            ],
-            "actions_in": [
-                {}
-            ],
-            "vars_out": [
-                {
-                    "event": "onObjectChange",
-                    "rel": "output",
-                    "jpath": [],
-                    "name": "defaultParams"
-                }
-            ],
-            "title": "",
-            "actions_out": {}
+          ]
         }
-    ],
-    "variables": [
+      },
+      "id": 1,
+      "vars_in": [
         {
-            "varname": "highlight",
-            "jpath": [
-                "highlight"
-            ]
+          "rel": "data3D",
+          "name": "test"
         },
         {
-            "varname": "pieChart",
-            "jpath": [
-                "pieChart"
-            ]
+          "rel": "boolArray",
+          "name": "pointsToDraw"
         }
-    ],
-    "pouchvariables": [
+      ],
+      "actions_in": [
         {}
-    ],
-    "configuration": {
-        "title": "Scatter 3D"
-    },
-    "grid": {
-        "layers": {
-            "Default layer": {
-                "name": "Default layer"
-            },
-            "admin": {
-                "name": "admin"
-            }
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "point",
+          "jpath": [],
+          "name": "clicked"
+        }
+      ],
+      "actions_out": {},
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 77,
+            "height": 61
+          },
+          "display": true,
+          "title": "3D Scatter plot",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
         },
-        "xWidth": 10,
-        "yHeight": 10
+        "admin": {
+          "position": {
+            "left": 0,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 66,
+            "height": 55
+          },
+          "display": true,
+          "title": "3D plot",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        }
+      },
+      "title": "3D Scatter plot",
+      "zindex": 2,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
-    "actionscripts": [
-        {
-            "sections": {},
-            "groups": {
-                "action": [
-                    {
-                        "name": [
-                            null
-                        ],
-                        "script": [
-                            null
-                        ]
-                    }
+    {
+      "url": "modules/types/chart/statistics/parallel_coordinates/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colJPath": [
+                null
+              ],
+              "options": [
+                [
+                  "reorder"
                 ]
+              ],
+              "brushMode": [
+                "1D-axes"
+              ],
+              "predicate": [
+                "and"
+              ]
             }
+          ],
+          "cols": [
+            [
+              {
+                "name": "x",
+                "jpath": "element.x"
+              },
+              {
+                "name": "y",
+                "jpath": "element.y"
+              },
+              {
+                "name": "z",
+                "jpath": "element.z"
+              }
+            ]
+          ]
         }
-    ],
-    "crons": {
-        "0": {}
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "right": 0,
+            "top": 62
+          },
+          "size": {
+            "width": 121,
+            "height": 24
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Parallel coordinates",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        },
+        "admin": {
+          "position": {
+            "left": 67,
+            "right": 0,
+            "top": 26
+          },
+          "size": {
+            "width": 68,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Parallel coordinates",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "test"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Parallel coordinates",
+      "vars_out": [
+        {
+          "event": "onBrushSelection",
+          "rel": "flagResult",
+          "jpath": [],
+          "name": "pointsToDraw"
+        }
+      ],
+      "actions_out": {},
+      "zindex": 1,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
     },
-    "couch_replication": [
-        {
-            "sections": {},
-            "groups": {
-                "couch": [
-                    [
-                        {
-                            "direction": "both",
-                            "continuous": []
-                        }
-                    ]
-                ]
+    {
+      "url": "modules/types/edition/filter_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "script": [
+                "value = value.resurrect(true);\nfunction generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n}\nfunction generateRandomColors(d, n) {\n    var arr = new Array(d);\n    arr = _(arr).map(function(val, key) {\n        return key/d;\n    }).map(function(val) {\n        return 'hsl(' + val*360 + ',65%,65%)';\n    }).map(function(val) {\n        return chroma(val).hex();    \n    }).value();\n    \n    var result = new Array(n);\n    result = _(result).map(function(val) {\n        return Math.floor(Math.random() * d);\n    }).map(function(val){\n        return arr[val];\n    }).value();\n    return result;\n}\n\nfunction generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n        return arr[Math.floor(a)];\n    }); \n    return x;\n}\n\nvar n = value.points;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(value.colors, n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\n\nvar arr = [];\nfor(var i=0; i<value.highlights; i++) {\n    arr.push(i.toString());\n}\nvar highlight = generateRandomFromArray(arr, n);\nvar size = generateRandomArray(n, value.minSize, value.maxSize);\n\n\nvar result = [];\nfor(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i].size = size[i];\n    if(value.useHighlights) {\n        result[i]._highlight = highlight[i];    \n    }\n    \n}\n\nvar table = _(highlight).uniq().sort().map(function(val) {\n    return {\n        label: val,\n        _highlight: val\n    }\n}).value();\nAPI.createData('table', table);\nresolve(result);"
+              ]
             }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "chroma",
+                "alias": "chroma"
+              },
+              {
+                "lib": "lodash",
+                "alias": "_"
+              }
+            ]
+          ]
         }
-    ],
-    "init_script": [
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 115,
+            "right": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 57,
+            "height": 73
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "Untitled",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        },
+        "admin": {
+          "position": {
+            "left": 0,
+            "right": 0,
+            "top": 56
+          },
+          "size": {
+            "width": 89,
+            "height": 65
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Untitled",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        }
+      },
+      "id": 4,
+      "vars_in": [
         {
-            "sections": {},
-            "groups": {
-                "general": [
-                    {
-                        "script": [
-                            ""
-                        ]
-                    }
-                ]
-            }
+          "rel": "dataobject",
+          "name": "defaultParams"
         }
-    ],
-    "actionfiles": [
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Untitled",
+      "vars_out": [
         {
-            "sections": {},
-            "groups": {
-                "action": [
-                    [
-                        {}
-                    ]
-                ]
-            }
+          "event": "onButtonClick",
+          "rel": "filteredObject",
+          "jpath": [],
+          "name": "test"
         }
-    ]
+      ],
+      "actions_out": {},
+      "zindex": 2,
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/onde/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "hasButton": [
+                [
+                  "show"
+                ]
+              ],
+              "button_text": [
+                "Generate Graph"
+              ],
+              "debouncing": [
+                -1
+              ],
+              "output": [
+                "modified"
+              ],
+              "mode": [
+                "schema"
+              ],
+              "schemaSource": [
+                "config"
+              ],
+              "schema": [
+                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"points\": {\n            \"type\": \"number\",\n            \"label\": \"Number of points\",\n            \"default\": 200\n        },\n        \"highlights\": {\n            \"type\": \"number\",\n            \"label\": \"Number of highlights\",\n            \"default\": \"4\"\n        },\n        \"colors\": {\n            \"type\": \"number\",\n            \"label\": \"Number of colors\",\n            \"default\": 5\n        },\n        \"minSize\": {\n            \"type\": \"number\",\n            \"label\": \"Minimum size\",\n            \"default\": 0.05\n        },\n        \"maxSize\": {\n            \"type\": \"number\",\n            \"label\": \"Maximum size\",\n            \"default\": 0.05\n        },\n        \"useHighlights\": {\n            \"type\": \"boolean\",\n            \"label\": \"Use Highlights\",\n            \"default\": false\n        }\n    }\n}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 78,
+            "top": 0
+          },
+          "size": {
+            "width": 32,
+            "height": 61
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Parameters",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "admin": {
+          "position": {
+            "left": 80,
+            "top": 0
+          },
+          "size": {
+            "width": 55,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Parameters",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "admin"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "inputValue",
+          "name": "defaultParams"
+        }
+      ],
+      "actions_in": [],
+      "title": "Parameters",
+      "vars_out": [
+        {
+          "event": "onFormSubmit",
+          "rel": "outputValue",
+          "jpath": [],
+          "name": "params"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"minSize\":1,\"maxSize\":1,\"useHighlights\":true,\"colors\":3,\"points\":200,\"highlights\":4}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 177,
+            "top": 47
+          },
+          "size": {
+            "width": 45,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "Untitled",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "admin": {
+          "position": {
+            "left": 90,
+            "top": 56
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "admin"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [],
+          "name": "defaultParams"
+        }
+      ],
+      "title": "",
+      "actions_out": {},
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 111,
+            "top": 0
+          },
+          "size": {
+            "width": 10,
+            "height": 61
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "admin"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "highlight",
+      "jpath": [
+        "highlight"
+      ]
+    },
+    {
+      "varname": "pieChart",
+      "jpath": [
+        "pieChart"
+      ]
+    }
+  ],
+  "configuration": {
+    "title": "Scatter 3D"
+  },
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      },
+      "admin": {
+        "name": "admin"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              ""
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ],
+  "aliases": []
 }

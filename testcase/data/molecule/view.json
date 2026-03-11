@@ -1,479 +1,622 @@
 {
   "modules": [
-	{
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "colnumber": [
-				"3"
-			  ],
-			  "valjPath": [
-				"element.entry.mol.0.value"
-			  ],
-			  "colorjPath": [
-				"element.color"
-			  ],
-			  "width": [
-				null
-			  ],
-			  "height": [
-				null
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "id": 1,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "result"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "cell",
-		  "jpath": [
-			"entry",
-			"mol",
-			"0",
-			"value"
-		  ],
-		  "name": "OneChemical"
-		}
-	  ],
-	  "actions_out": [
-		{}
-	  ],
-	  "url": "modules/types/display/2d_list/",
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 65,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 82,
-			"height": 34
-		  },
-		  "display": true,
-		  "title": [
-			[
-			  [
-				[
-				  [
-					[
-					  [
-						[
-						  [
-							"2D grid"
-						  ]
-						]
-					  ]
-					]
-				  ]
-				]
-			  ]
-			]
-		  ],
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": [
-		[
-		  [
-			[
-			  [
-				[
-				  [
-					[
-					  [
-						"2D grid"
-					  ]
-					]
-				  ]
-				]
-			  ]
-			]
-		  ]
-		]
-	  ]
-	},
-	{
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "nblines": [
-				5
-			  ],
-			  "toggle": [
-				null
-			  ],
-			  "colorjpath": [
-				"element.color"
-			  ],
-			  "filterRow": [
-				null
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Name",
-				"jpath": "element.entry.iupac.0.value",
-				"number": [],
-				"editable": "none"
-			  },
-			  {
-				"name": "Structure",
-				"jpath": "element.entry.mol.0.value",
-				"number": [],
-				"editable": "none"
-			  },
-			  {
-				"name": "MF",
-				"jpath": "element.entry.mf.0.value",
-				"number": [],
-				"editable": "none"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "id": 2,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "result"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"entry",
-			"mol",
-			"0",
-			"value"
-		  ],
-		  "name": "OneChemical"
-		},
-		{
-		  "event": "onHover",
-		  "rel": "row",
-		  "jpath": [
-			"entry",
-			"mol",
-			"0",
-			"gif"
-		  ],
-		  "name": "TheImage"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "url": "modules/types/display/jqgrid/",
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0,
-			"top": 0,
-			"right": 0
-		  },
-		  "size": {
-			"width": 64,
-			"height": 70
-		  },
-		  "display": true,
-		  "title": [
-			[
-			  [
-				[
-				  [
-					[
-					  [
-						[
-						  [
-							[
-							  [
-								[
-								  [
-									[
-									  [
-										[
-										  [
-											[
-											  [
-												"List of chemicals"
-											  ]
-											]
-										  ]
-										]
-									  ]
-									]
-								  ]
-								]
-							  ]
-							]
-						  ]
-						]
-					  ]
-					]
-				  ]
-				]
-			  ]
-			]
-		  ],
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": [
-		[
-		  [
-			[
-			  [
-				[
-				  [
-					[
-					  [
-						[
-						  [
-							[
-							  [
-								[
-								  [
-									[
-									  [
-										[
-										  [
-											"List of chemicals"
-										  ]
-										]
-									  ]
-									]
-								  ]
-								]
-							  ]
-							]
-						  ]
-						]
-					  ]
-					]
-				  ]
-				]
-			  ]
-			]
-		  ]
-		]
-	  ]
-	},
-	{
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "prefs": [
-				[
-				  "oldlook",
-				  "depict"
-				]
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "id": 3,
-	  "vars_in": [
-		{
-		  "rel": "mol",
-		  "name": "OneChemical"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "vars_out": [
-		{}
-	  ],
-	  "actions_out": [
-		{}
-	  ],
-	  "url": "modules/types/science/chemistry/jsme/",
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 109,
-			"top": 35,
-			"right": 0
-		  },
-		  "size": {
-			"width": 38,
-			"height": 35
-		  },
-		  "display": true,
-		  "title": "JSME to display molfile",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "title": "JSME to display molfile"
-	},
-	{
-	  "url": "modules/types/display/2d_list_fast/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "colnumber": [
-				"5"
-			  ],
-			  "valjPath": [
-				"element.entry.mol.0.value"
-			  ],
-			  "colorjPath": [
-				"element.color"
-			  ],
-			  "height": [
-				""
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 148,
-			"top": 0
-		  },
-		  "size": {
-			"width": 76,
-			"height": 34
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "2D grid (fast)",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 4,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "result"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "2D grid (fast)",
-	  "vars_out": [
-		{
-		  "event": "onHover",
-		  "rel": "cell",
-		  "jpath": [
-			"entry",
-			"mol",
-			"0",
-			"value"
-		  ],
-		  "name": "OneChemical"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
-	}
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colnumber": [
+                "3"
+              ],
+              "valjPath": [
+                "element.entry.mol.0.value"
+              ],
+              "colorjPath": [
+                "element.color"
+              ],
+              "height": [
+                "50"
+              ],
+              "forceType": [
+                ""
+              ],
+              "rendererOptions": [
+                ""
+              ]
+            }
+          ]
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "result"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "cell",
+          "jpath": [
+            "entry",
+            "mol",
+            "0",
+            "value"
+          ],
+          "name": "OneChemical"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "url": "modules/types/display/2d_list/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 65,
+            "top": 0,
+            "right": 0
+          },
+          "size": {
+            "width": 82,
+            "height": 34
+          },
+          "display": true,
+          "title": [
+            [
+              [
+                [
+                  [
+                    [
+                      [
+                        [
+                          [
+                            "2D grid"
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": [
+        [
+          [
+            [
+              [
+                [
+                  [
+                    [
+                      [
+                        "2D grid"
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "prefs": [
+                [
+                  "oldlook",
+                  "depict"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {
+          "rel": "mol",
+          "name": "OneChemical"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {}
+      ],
+      "actions_out": [
+        {}
+      ],
+      "url": "modules/types/science/chemistry/jsme/",
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 109,
+            "top": 35,
+            "right": 0
+          },
+          "size": {
+            "width": 38,
+            "height": 35
+          },
+          "display": true,
+          "title": "JSME to display molfile",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "title": "JSME to display molfile",
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/display/2d_list_fast/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colnumber": [
+                "5"
+              ],
+              "valjPath": [
+                "element.entry.mol.0.value"
+              ],
+              "colorjPath": [
+                "element.color"
+              ],
+              "height": [
+                ""
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 148,
+            "top": 0
+          },
+          "size": {
+            "width": 76,
+            "height": 34
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "2D grid (fast)",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "result"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "2D grid (fast)",
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "cell",
+          "jpath": [
+            "entry",
+            "mol",
+            "0",
+            "value"
+          ],
+          "name": "OneChemical"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                [
+                  "color"
+                ]
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                "100"
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": [
+                  "entry",
+                  "iupac",
+                  "0",
+                  "value"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "Structure",
+                "jpath": [
+                  "entry",
+                  "mol",
+                  "0",
+                  "value"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              },
+              {
+                "name": "MF",
+                "jpath": [
+                  "entry",
+                  "mf",
+                  "0",
+                  "value"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 55,
+            "height": 75
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 5,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "result"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
   ],
   "configuration": {
-	"showMenuBarOnStart": false,
-	"showModuleHeaderOnHover": false,
-	"title": "Example of a ChemExper Chemical Directory result with background color",
-	"moduleBackground": "#ffffff",
-	"variableFilters": {}
+    "showMenuBarOnStart": false,
+    "showModuleHeaderOnHover": false,
+    "title": "Example of a ChemExper Chemical Directory result with background color",
+    "moduleBackground": "#ffffff",
+    "variableFilters": {}
   },
   "variables": [
-	{
-	  "varname": "result",
-	  "jpath": [
-		"result"
-	  ],
-	  "url": ""
-	},
-	{
-	  "varname": "molecule",
-	  "jpath": [
-		"0",
-		"entry",
-		"mol",
-		"0",
-		"gif"
-	  ],
-	  "url": ""
-	}
+    {
+      "varname": "result",
+      "jpath": [
+        "result"
+      ],
+      "url": ""
+    },
+    {
+      "varname": "molecule",
+      "jpath": [
+        "0",
+        "entry",
+        "mol",
+        "0",
+        "gif"
+      ],
+      "url": ""
+    }
   ],
-  "version": "2.16.1-0",
+  "version": "3.3.1-0",
   "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
   },
-  "aliases": [],
-  "pouchvariables": []
+  "aliases": []
 }

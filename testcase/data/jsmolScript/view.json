@@ -6,9 +6,17 @@
         "groups": {
           "group": [
             {
-              "prefs": [["orientation"]],
-              "script": ["wireframe 0;\nribbon on;\n"],
-              "syncScript": [null]
+              "prefs": [
+                [
+                  "orientation"
+                ]
+              ],
+              "script": [
+                "wireframe 0;\nribbon on;\n"
+              ],
+              "syncScript": [
+                null
+              ]
             }
           ]
         }
@@ -54,7 +62,12 @@
           },
           "display": true,
           "title": "Untitled module",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -68,21 +81,34 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "title": "Untitled module",
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -92,89 +118,12 @@
         "groups": {
           "group": [
             {
-              "nblines": [20],
-              "toggle": [null],
-              "colorjpath": [null],
-              "filterRow": [null],
-              "displaySearch": []
-            }
-          ],
-          "cols": [
-            [
-              {
-                "name": "ID",
-                "jpath": "element.id",
-                "number": [],
-                "editable": "none"
-              }
-            ]
-          ]
-        }
-      },
-      "id": 2,
-      "vars_in": [
-        {
-          "rel": "list",
-          "name": "result"
-        }
-      ],
-      "actions_in": [{}],
-      "vars_out": [
-        {
-          "event": "onSelect",
-          "rel": "row",
-          "jpath": ["pdb"],
-          "name": "pdb"
-        }
-      ],
-      "actions_out": [{}],
-      "url": "modules/types/display/fasttable/",
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 97,
-            "top": 0,
-            "right": 0
-          },
-          "size": {
-            "width": 19,
-            "height": 23
-          },
-          "display": true,
-          "title": "Untitled module",
-          "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
-      },
-      "title": "Untitled module"
-    },
-    {
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "label": ["Drop .pdb or .magres file"],
-              "filter": [null]
+              "label": [
+                "Drop .pdb or .magres file"
+              ],
+              "filter": [
+                null
+              ]
             }
           ],
           "vars": [
@@ -196,8 +145,12 @@
         }
       },
       "id": 3,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onRead",
@@ -206,13 +159,15 @@
           "name": "pdb"
         }
       ],
-      "actions_out": [{}],
+      "actions_out": [
+        {}
+      ],
       "url": "modules/types/client_interaction/dragdrop/",
       "layers": {
         "Default layer": {
           "position": {
-            "left": 97,
-            "top": 24,
+            "left": 92,
+            "top": 35,
             "right": 0
           },
           "size": {
@@ -221,7 +176,12 @@
           },
           "display": true,
           "title": "Untitled module",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -240,7 +200,11 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
@@ -253,29 +217,57 @@
         "groups": {
           "group": [
             {
-              "mode": ["text"],
-              "btnvalue": ["Execute script"],
-              "iseditable": [["editable"]],
-              "script": ["cpk 0 ;"],
-              "outputType": [null],
-              "hasButton": [null],
-              "variable": [null],
-              "storeOnChange": [null],
-              "debouncing": [null]
+              "mode": [
+                "text"
+              ],
+              "btnvalue": [
+                "Execute script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "script": [
+                "cpk 0 ;"
+              ],
+              "outputType": [
+                null
+              ],
+              "hasButton": [
+                null
+              ],
+              "variable": [
+                null
+              ],
+              "storeOnChange": [
+                null
+              ],
+              "debouncing": [
+                null
+              ]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [null],
-              "tabSize": [null]
+              "useSoftTabs": [
+                null
+              ],
+              "tabSize": [
+                null
+              ]
             }
           ]
         }
       },
       "id": 4,
-      "vars_in": [{}],
+      "vars_in": [
+        {}
+      ],
       "actions_in": [],
-      "vars_out": [{}],
+      "vars_out": [
+        {}
+      ],
       "actions_out": [
         {
           "event": "onButtonClick",
@@ -286,17 +278,22 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 54,
+            "left": 55,
             "top": 0,
             "right": 0
           },
           "size": {
-            "width": 43,
+            "width": 35,
             "height": 53
           },
           "display": true,
           "title": "JSMol script",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -315,7 +312,11 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
@@ -328,15 +329,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "const commands=\"wireframe 0; select all; color atoms pink\";\n\nAPI.doAction('changeAfterLoadScript', commands);"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -362,15 +378,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 5,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -389,41 +414,274 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "ID",
+                "jpath": [
+                  "id"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 92,
+            "top": 4
+          },
+          "size": {
+            "width": 29,
+            "height": 29
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Load a PDB",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 6,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "result"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "row",
+          "jpath": [
+            "pdb"
+          ],
+          "name": "pdb"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Load a PDB"
     }
   ],
   "variables": [
     {
       "varname": "result",
-      "jpath": ["result", "pdbs"],
+      "jpath": [
+        "result",
+        "pdbs"
+      ],
       "url": ""
     },
     {
       "varname": "pdb",
-      "jpath": ["result", "pdbs", "0", "pdb"],
+      "jpath": [
+        "result",
+        "pdbs",
+        "0",
+        "pdb"
+      ],
       "url": ""
     }
   ],
   "configuration": {
     "title": "Scripting JSMol"
   },
-  "version": "2.137.1-0",
+  "version": "3.3.1-0",
   "grid": {
     "layers": {
       "Default layer": {

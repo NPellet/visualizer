@@ -18,7 +18,6 @@ require.config({
     forms: 'lib/forms',
     highlightjs: 'lib/highlight.js/highlight.pack',
     jcampconverter: 'lib/jcampconverter/jcampconverter.7.3.1.min',
-    jqgrid: 'components/jqgrid_edit/js/jquery.jqGrid',
     jsbarcode: 'node_modules/jsbarcode/dist/JsBarcode.all.min',
     jquery: 'node_modules/jquery/dist/jquery',
     'jquery-migrate': 'node_modules/jquery-migrate/dist/jquery-migrate',
@@ -110,7 +109,6 @@ require.config({
     'lib/threejs/TrackballControls': ['threejs'],
     'jquery-migrate': ['jquery'],
     'jquery-ui': ['jquery'],
-    jqgrid: ['jquery', 'components/jqgrid_edit/js/i18n/grid.locale-en'],
     'lib/couchdb/jquery.couch': ['jquery'],
     slickgrid_core: ['jquery', 'jquery-ui', 'jquery-tmpl'],
     slickgrid: {

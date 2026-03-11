@@ -1,456 +1,559 @@
 {
-    "version": "2.94.4-0",
-    "grid": {
+  "version": "3.3.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "modules": [
+    {
+      "url": "modules/types/science/chemistry/jsmol/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "script": [
+                "wireframe 0;\nribbon on;\n"
+              ],
+              "syncScript": [
+                null
+              ]
+            }
+          ]
+        }
+      },
       "layers": {
         "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 59,
+            "height": 51
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
           "name": "Default layer"
         }
       },
-      "xWidth": 10,
-      "yHeight": 10
-    },
-    "modules": [
-      {
-        "url": "modules/types/science/chemistry/jsmol/",
-        "configuration": {
-          "sections": {},
-          "groups": {
-            "group": [
-              {
-                "script": [
-                  "wireframe 0;\nribbon on;\n"
-                ],
-                "syncScript": [
-                  null
-                ]
-              }
-            ]
-          }
-        },
-        "layers": {
-          "Default layer": {
-            "position": {
-              "left": 0,
-              "top": 0
-            },
-            "size": {
-              "width": 59,
-              "height": 51
-            },
-            "zIndex": 0,
-            "display": true,
-            "title": "",
-            "bgColor": [
-              255,
-              255,
-              255,
-              0
-            ],
-            "wrapper": true,
-            "created": true,
-            "name": "Default layer"
-          }
-        },
-        "id": 1,
-        "vars_in": [
-          {
-            "rel": "data",
-            "name": "pdb"
-          }
-        ],
-        "actions_in": [
-          {
-            "rel": "jsmolscript",
-            "name": "testscript"
-          }
-        ],
-        "title": "",
-        "vars_out": [
-          {
-            "jpath": []
-          }
-        ],
-        "actions_out": [
-          {
-            "jpath": []
-          }
-        ],
-        "toolbar": {
-          "custom": [
-            [
-              {
-                "title": "",
-                "icon": "",
-                "action": "",
-                "position": "begin",
-                "color": [
-                  100,
-                  100,
-                  100,
-                  1
-                ]
-              }
-            ]
-          ],
-          "common": [
-            {
-              "toolbar": [
-                [
-                  "Open Preferences",
-                  "Export Data",
-                  "Show fullscreen",
-                  "Print"
-                ]
-              ]
-            }
-          ]
-        },
-        "css": [
-          {
-            "fontSize": [
-              ""
-            ],
-            "fontFamily": [
-              ""
-            ]
-          }
-        ]
-      },
-      {
-        "url": "modules/types/client_interaction/code_editor/",
-        "configuration": {
-          "sections": {},
-          "groups": {
-            "group": [
-              {
-                "mode": [
-                  "text"
-                ],
-                "outputType": [
-                  null
-                ],
-                "btnvalue": [
-                  "Run script"
-                ],
-                "iseditable": [
-                  [
-                    "editable"
-                  ]
-                ],
-                "hasButton": [
-                  [
-                    "button"
-                  ]
-                ],
-                "variable": [
-                  []
-                ],
-                "debouncing": [
-                  0
-                ],
-                "script": [
-                  "cpk 0 ;"
-                ]
-              }
-            ]
-          }
-        },
-        "layers": {
-          "Default layer": {
-            "position": {
-              "left": 60,
-              "top": 0
-            },
-            "size": {
-              "width": 41,
-              "height": 51
-            },
-            "zIndex": 0,
-            "display": true,
-            "title": "",
-            "bgColor": [
-              255,
-              255,
-              255,
-              0
-            ],
-            "wrapper": true,
-            "created": true,
-            "name": "Default layer"
-          }
-        },
-        "id": 2,
-        "vars_in": [
-          {}
-        ],
-        "actions_in": [
-          {}
-        ],
-        "vars_out": [
-          {
-            "jpath": []
-          }
-        ],
-        "title": "",
-        "actions_out": [
-          {
-            "event": "onButtonClick",
-            "rel": "data",
-            "jpath": [],
-            "name": "testscript"
-          }
-        ],
-        "toolbar": {
-          "custom": [
-            [
-              {
-                "title": "",
-                "icon": "",
-                "action": "",
-                "position": "begin"
-              }
-            ]
-          ],
-          "common": [
-            {
-              "toolbar": [
-                [
-                  "Open Preferences"
-                ]
-              ]
-            }
-          ]
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "data",
+          "name": "pdb"
         }
-      },
-      {
-        "url": "modules/types/display/fasttable/",
-        "configuration": {
-          "sections": {},
-          "groups": {
-            "group": [
-              {
-                "nblines": [
-                  20
-                ],
-                "toggle": [
-                  null
-                ],
-                "colorjpath": [
-                  null
-                ],
-                "filterRow": [
-                  null
-                ],
-                "highlightLine": [
-                  [
-                    "Yes"
-                  ]
-                ]
-              }
-            ],
-            "cols": [
+      ],
+      "actions_in": [
+        {
+          "rel": "jsmolscript",
+          "name": "testscript"
+        }
+      ],
+      "title": "",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
               [
-                {
-                  "name": "ID",
-                  "jpath": "element.id",
-                  "number": [],
-                  "editable": "none"
-                }
+                "Open Preferences",
+                "Export Data",
+                "Show fullscreen",
+                "Print"
               ]
             ]
           }
-        },
-        "layers": {
-          "Default layer": {
-            "position": {
-              "left": 107,
-              "top": 9
-            },
-            "size": {
-              "width": 24,
-              "height": 17
-            },
-            "zIndex": 0,
-            "display": true,
-            "title": "",
-            "bgColor": [
-              255,
-              255,
-              255,
-              0
-            ],
-            "wrapper": true,
-            "created": true,
-            "name": "Default layer"
-          }
-        },
-        "id": 3,
-        "vars_in": [
-          {
-            "rel": "list",
-            "name": "result"
-          }
-        ],
-        "actions_in": [
-          {}
-        ],
-        "title": "",
-        "vars_out": [
-          {
-            "event": "onSelect",
-            "rel": "row",
-            "jpath": [
-              "pdb"
-            ],
-            "name": "pdb"
-          }
-        ],
-        "actions_out": [
-          {
-            "jpath": []
-          }
-        ],
-        "toolbar": {
-          "custom": [
-            [
-              {
-                "title": "",
-                "icon": "",
-                "action": "",
-                "position": "begin"
-              }
-            ]
-          ],
-          "common": [
-            {
-              "toolbar": [
-                [
-                  "Open Preferences"
-                ]
-              ]
-            }
-          ]
-        }
-      }
-    ],
-    "variables": [
-      {
-        "varname": "result",
-        "jpath": [
-          "result",
-          "pdbs"
         ]
       },
-      {
-        "varname": "pdb",
-        "jpath": [
-          "result",
-          "pdbs",
-          "0",
-          "pdb"
-        ]
-      }
-    ],
-    "aliases": [
-      {}
-    ],
-    "configuration": {
-      "title": "No title"
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
-    "actionscripts": [
-      {
+    {
+      "url": "modules/types/client_interaction/code_editor/",
+      "configuration": {
         "sections": {},
         "groups": {
-          "action": [
+          "group": [
             {
-              "name": [
+              "mode": [
+                "text"
+              ],
+              "outputType": [
                 null
               ],
+              "btnvalue": [
+                "Run script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "debouncing": [
+                0
+              ],
               "script": [
-                null
+                "cpk 0 ;"
               ]
             }
           ]
         }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 60,
+            "top": 0
+          },
+          "size": {
+            "width": 41,
+            "height": 51
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "title": "",
+      "actions_out": [
+        {
+          "event": "onButtonClick",
+          "rel": "data",
+          "jpath": [],
+          "name": "testscript"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
       }
-    ],
-    "init_script": [
-      {
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
         "sections": {},
         "groups": {
-          "general": [
+          "group": [
             {
-              "script": [
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
                 null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
               ]
             }
-          ]
-        }
-      }
-    ],
-    "custom_filters": [
-      {
-        "sections": {
-          "modules": [
-            {
-              "sections": {},
-              "groups": {
-                "modules": [
-                  [
-                    {}
-                  ]
-                ]
-              }
-            }
           ],
-          "filtersLib": [
-            {
-              "sections": {},
-              "groups": {
-                "filters": [
-                  [
-                    {}
-                  ]
-                ]
-              }
-            }
-          ],
-          "filters": [
-            {
-              "sections": {},
-              "groups": {
-                "filter": [
-                  {
-                    "name": [
-                      null
-                    ],
-                    "script": [
-                      null
-                    ]
-                  }
+          "cols": [
+            [
+              {
+                "name": "ID",
+                "jpath": [
+                  "id"
                 ],
-                "libs": [
-                  [
-                    {}
-                  ]
-                ]
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
               }
-            }
-          ]
-        },
-        "groups": {}
-      }
-    ],
-    "actionfiles": [
-      {
-        "sections": {},
-        "groups": {
-          "action": [
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
             [
               {}
             ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
           ]
         }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 103,
+            "top": 0
+          },
+          "size": {
+            "width": 33,
+            "height": 39
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "result"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onRowActive",
+          "rel": "row",
+          "jpath": [
+            "pdb"
+          ],
+          "name": "pdb"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "varname": "result",
+      "jpath": [
+        "result",
+        "pdbs"
+      ]
+    },
+    {
+      "varname": "pdb",
+      "jpath": [
+        "result",
+        "pdbs",
+        "0",
+        "pdb"
+      ]
+    }
+  ],
+  "aliases": [
+    {}
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
       }
-    ]
-  }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}

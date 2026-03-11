@@ -1,5 +1,5 @@
 {
-  "version": "2.121.1-0",
+  "version": "3.3.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -11,103 +11,6 @@
   },
   "modules": [
     {
-      "url": "modules/types/display/jqgrid/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "nblines": [20],
-              "toggle": [null],
-              "colorjpath": [null],
-              "filterRow": [null],
-              "highlightLine": [["Yes"]]
-            }
-          ],
-          "cols": [
-            [
-              {
-                "name": "Name",
-                "jpath": "element.name",
-                "number": [],
-                "editable": "none"
-              }
-            ]
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 1,
-            "top": 1
-          },
-          "size": {
-            "width": 29,
-            "height": 26
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "JCAMPs",
-          "bgColor": [255, 255, 255, 0],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 1,
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "vars_in": [
-        {
-          "rel": "list",
-          "name": "spectra"
-        }
-      ],
-      "actions_in": [{}],
-      "title": "JCAMPs",
-      "vars_out": [
-        {
-          "event": "onHover",
-          "rel": "row",
-          "jpath": ["jcamp"],
-          "name": "jcamp"
-        },
-        {
-          "event": "onSelect",
-          "rel": "row",
-          "jpath": ["jcamp"],
-          "name": "clicked"
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [["Open Preferences"]]
-          }
-        ]
-      },
-      "css": [
-        {
-          "fontSize": [""],
-          "fontFamily": [""]
-        }
-      ]
-    },
-    {
       "url": "modules/types/science/spectra/spectra_displayer/",
       "configuration": {
         "sections": {
@@ -117,16 +20,41 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [""],
-                    "zoom": ["x"],
-                    "wheelAction": ["zoomY"],
-                    "wheelbaseline": [0],
-                    "fullOut": ["both"],
-                    "legend": ["bottom"],
-                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [["track"]],
-                    "selectScatter": [[]],
-                    "independantYZoom": [[]]
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "x"
+                    ],
+                    "wheelAction": [
+                      "zoomY"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      "bottom"
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      [
+                        "track"
+                      ]
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -138,26 +66,61 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [["display", "flip"]],
-                    "label": [""],
-                    "beforeSpacing": [0],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "axismodification": [[]]
+                    "checkboxes": [
+                      [
+                        "display",
+                        "flip"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      0
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      []
+                    ]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [[]],
-                    "label": [""],
-                    "beforeSpacing": [0],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "fitToAxisOnFromTo": [[]]
+                    "checkboxes": [
+                      []
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      0
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -173,7 +136,12 @@
                       "variable": "jcamp",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [1, 1, 255, 1],
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -208,7 +176,12 @@
           "zIndex": 0,
           "display": true,
           "title": "Untitled",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -257,14 +230,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ]
     },
@@ -275,20 +256,58 @@
         "groups": {
           "group": [
             {
-              "toggle": ["click"],
-              "label": ["Full out x"],
-              "onLabel": ["Toggle action off"],
-              "offLabel": ["Toggle action on"],
-              "onColor": [[0, 0, 0, 1]],
-              "offColor": [[0, 0, 0, 1]],
-              "startState": ["off"],
-              "text": ["x"],
-              "askConfirm": [[]],
-              "confirmText": ["Are you sure?"],
-              "okLabel": ["Ok"],
-              "cancelLabel": ["Cancel"],
-              "content": [""],
-              "contentType": ["content"]
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Full out x"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "x"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ]
             }
           ]
         }
@@ -306,7 +325,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -314,7 +338,9 @@
       },
       "id": 3,
       "vars_in": [],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "title": "",
       "vars_out": [],
       "actions_out": [
@@ -338,7 +364,11 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       }
@@ -350,20 +380,58 @@
         "groups": {
           "group": [
             {
-              "toggle": ["click"],
-              "label": ["Full out y"],
-              "onLabel": ["Toggle action off"],
-              "offLabel": ["Toggle action on"],
-              "onColor": [[0, 0, 0, 1]],
-              "offColor": [[0, 0, 0, 1]],
-              "startState": ["off"],
-              "text": ["y"],
-              "askConfirm": [[]],
-              "confirmText": ["Are you sure?"],
-              "okLabel": ["Ok"],
-              "cancelLabel": ["Cancel"],
-              "content": [""],
-              "contentType": ["content"]
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Full out y"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "y"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ]
             }
           ]
         }
@@ -381,7 +449,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -389,7 +462,9 @@
       },
       "id": 4,
       "vars_in": [],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "title": "",
       "vars_out": [],
       "actions_out": [
@@ -413,7 +488,11 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       }
@@ -425,20 +504,58 @@
         "groups": {
           "group": [
             {
-              "toggle": ["click"],
-              "label": ["Full out xy"],
-              "onLabel": ["Toggle action off"],
-              "offLabel": ["Toggle action on"],
-              "onColor": [[0, 0, 0, 1]],
-              "offColor": [[0, 0, 0, 1]],
-              "startState": ["off"],
-              "text": ["xy"],
-              "askConfirm": [[]],
-              "confirmText": ["Are you sure?"],
-              "okLabel": ["Ok"],
-              "cancelLabel": ["Cancel"],
-              "content": [""],
-              "contentType": ["content"]
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Full out xy"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "onColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "offColor": [
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                "xy"
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "content": [
+                ""
+              ],
+              "contentType": [
+                "content"
+              ]
             }
           ]
         }
@@ -456,7 +573,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -464,7 +586,9 @@
       },
       "id": 5,
       "vars_in": [],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "title": "",
       "vars_out": [],
       "actions_out": [
@@ -488,7 +612,11 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       }
@@ -500,15 +628,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "\nvar track=get('track');\n\nconsole.log(window.event);\nconsole.log(track);\n"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -533,7 +676,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -546,7 +694,9 @@
           "name": "track"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -570,14 +720,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -589,13 +747,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
-              "script": ["console.log(this.action);\n"]
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "console.log(this.action);\n"
+              ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -620,14 +795,21 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 7,
-      "vars_in": [{}],
+      "vars_in": [
+        {}
+      ],
       "actions_in": [
         {
           "rel": "execute",
@@ -657,14 +839,22 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -676,9 +866,20 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "var jcamp=get('jcamp')+'';\n\nvar spectrum=JC.convert(jcamp);\n\n\nAPI.createData('parsed', spectrum);\n\n\n"
               ]
@@ -708,7 +909,7 @@
         "Default layer": {
           "position": {
             "left": 0,
-            "top": 28
+            "top": 43
           },
           "size": {
             "width": 31,
@@ -717,7 +918,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -730,7 +936,9 @@
           "name": "jcamp"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -749,20 +957,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -777,17 +998,42 @@
               "groups": {
                 "graph": [
                   {
-                    "url": [""],
-                    "zoom": ["none"],
-                    "wheelAction": ["none"],
-                    "wheelbaseline": [0],
-                    "fullOut": ["both"],
-                    "legend": [null],
-                    "legendOptions": [["isSerieHideable", "isSerieSelectable"]],
-                    "mouseTracking": [[]],
-                    "selectScatter": [[]],
-                    "independantYZoom": [[]],
-                    "trackingAxis": [null]
+                    "url": [
+                      ""
+                    ],
+                    "zoom": [
+                      "none"
+                    ],
+                    "wheelAction": [
+                      "none"
+                    ],
+                    "wheelbaseline": [
+                      0
+                    ],
+                    "fullOut": [
+                      "both"
+                    ],
+                    "legend": [
+                      null
+                    ],
+                    "legendOptions": [
+                      [
+                        "isSerieHideable",
+                        "isSerieSelectable"
+                      ]
+                    ],
+                    "mouseTracking": [
+                      []
+                    ],
+                    "selectScatter": [
+                      []
+                    ],
+                    "independantYZoom": [
+                      []
+                    ],
+                    "trackingAxis": [
+                      null
+                    ]
                   }
                 ]
               }
@@ -799,26 +1045,62 @@
               "groups": {
                 "xAxis": [
                   {
-                    "checkboxes": [["display"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "axismodification": ["none"]
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "axismodification": [
+                      "none"
+                    ]
                   }
                 ],
                 "yAxis": [
                   {
-                    "checkboxes": [["display"]],
-                    "label": [""],
-                    "beforeSpacing": ["0"],
-                    "afterSpacing": [0],
-                    "min": [""],
-                    "max": [""],
-                    "nbTicksPrimary": [5],
-                    "fitToAxisOnFromTo": [[]]
+                    "checkboxes": [
+                      [
+                        "display"
+                      ]
+                    ],
+                    "label": [
+                      ""
+                    ],
+                    "beforeSpacing": [
+                      "0"
+                    ],
+                    "afterSpacing": [
+                      0
+                    ],
+                    "min": [
+                      ""
+                    ],
+                    "max": [
+                      ""
+                    ],
+                    "nbTicksPrimary": [
+                      5
+                    ],
+                    "fitToAxisOnFromTo": [
+                      []
+                    ]
                   }
                 ]
               }
@@ -834,7 +1116,12 @@
                       "variable": "",
                       "axis": "0",
                       "adaptTo": "none",
-                      "plotcolor": [1, 1, 255, 1],
+                      "plotcolor": [
+                        1,
+                        1,
+                        255,
+                        1
+                      ],
                       "strokewidth": "1",
                       "strokestyle": "1",
                       "plotcontinuous": "continuous",
@@ -857,13 +1144,17 @@
               "groups": {
                 "misc": [
                   {
-                    "highlightOptions": ["{}"]
+                    "highlightOptions": [
+                      "{}"
+                    ]
                   }
                 ]
               }
             }
           ],
-          "series": [{}]
+          "series": [
+            {}
+          ]
         },
         "groups": {}
       },
@@ -880,7 +1171,12 @@
           "zIndex": 0,
           "display": true,
           "title": "Display the parsed jcamp",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -893,7 +1189,9 @@
           "name": "parsed"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -917,23 +1215,246 @@
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": "Display the parsed jcamp"
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive",
+                  "editable"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Name",
+                "jpath": [
+                  "name"
+                ],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 29,
+            "height": 33
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 11,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "spectra"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onHover",
+          "rel": "row",
+          "jpath": [
+            "jcamp"
+          ],
+          "name": "jcamp"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
     {
       "varname": "spectra",
-      "jpath": ["spectra"]
+      "jpath": [
+        "spectra"
+      ]
     }
   ],
   "configuration": {
@@ -951,8 +1472,12 @@
       "groups": {
         "action": [
           {
-            "name": [null],
-            "script": [null]
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -964,7 +1489,9 @@
       "groups": {
         "general": [
           {
-            "script": [null]
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -977,7 +1504,11 @@
           {
             "sections": {},
             "groups": {
-              "modules": [[{}]]
+              "modules": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -985,7 +1516,11 @@
           {
             "sections": {},
             "groups": {
-              "filters": [[{}]]
+              "filters": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ],
@@ -995,11 +1530,19 @@
             "groups": {
               "filter": [
                 {
-                  "name": [null],
-                  "script": [null]
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
                 }
               ],
-              "libs": [[{}]]
+              "libs": [
+                [
+                  {}
+                ]
+              ]
             }
           }
         ]
@@ -1011,7 +1554,11 @@
     {
       "sections": {},
       "groups": {
-        "action": [[{}]]
+        "action": [
+          [
+            {}
+          ]
+        ]
       }
     }
   ]

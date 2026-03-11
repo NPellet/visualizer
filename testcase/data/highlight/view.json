@@ -1,287 +1,785 @@
 {
-	"_version": "2.2.1",
-	"modules": [
-		{
-			"url": "./modules/types/display/jqgrid/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 0,
-				"top": 0
-			},
-			"size": {
-				"width": 37,
-				"height": 60
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.name",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 1,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "table1"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{
-					"event": "onHover",
-					"rel": "row",
-					"jpath": "element._highlight",
-					"name": "highlight"
-				}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
-			"url": "./modules/types/display/fasttable/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 38,
-				"top": 0
-			},
-			"size": {
-				"width": 29,
-				"height": 34
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Element",
-								"jpath": "element",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 2,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "highlight"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
-			"url": "./modules/types/display/fasttable/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 68,
-				"top": 0
-			},
-			"size": {
-				"width": 40,
-				"height": 61
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.name",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 3,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "table2"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		},
-		{
-			"url": "./modules/types/display/jqgrid/",
-			"title": "Untitled module",
-			"displayWrapper": true,
-			"position": {
-				"left": 109,
-				"top": 0
-			},
-			"size": {
-				"width": 40,
-				"height": 60
-			},
-			"configuration": {
-				"sections": {},
-				"groups": {
-					"group": [
-						{
-							"nblines": [
-								20
-							],
-							"toggle": [
-								null
-							],
-							"colorjpath": [
-								null
-							],
-							"filterRow": [
-								null
-							]
-						}
-					],
-					"cols": [
-						[
-							{
-								"name": "Name",
-								"jpath": "element.name",
-								"number": [],
-								"editable": "none"
-							}
-						]
-					]
-				}
-			},
-			"id": 4,
-			"vars_in": [
-				{
-					"rel": "list",
-					"name": "table1"
-				}
-			],
-			"actions_in": [
-				{}
-			],
-			"vars_out": [
-				{}
-			],
-			"actions_out": [
-				{}
-			],
-			"bgColor": [
-				255,
-				255,
-				255,
-				0
-			]
-		}
-	],
-	"variables": [
-		{
-			"varname": "table1",
-			"jpath": "element.table1"
-		},
-		{
-			"varname": "table2",
-			"jpath": "element.table2"
-		}
-	],
-	"configuration": {
-		"title": "No title"
-	}
+  "modules": [
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 29,
+            "top": 0
+          },
+          "size": {
+            "width": 34,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "table2",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table2"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "table2"
+    },
+    {
+      "url": "modules/types/edition/object_editor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"table1\":[{\"name\":\"@\",\"_highlight\":[\"5-@\",\"11-@\",\"7-@\",\"18-@\",\"10-@\"]},{\"name\":\"A\",\"_highlight\":[\"15-A\",\"10-A\",\"1-A\"]},{\"name\":\"B\",\"_highlight\":[\"10-B\",\"5-B\",\"2-B\",\"0-B\"]},{\"name\":\"C\",\"_highlight\":[\"4-C\"]},{\"name\":\"D\",\"_highlight\":[\"18-D\",\"0-D\",\"14-D\",\"7-D\"]},{\"name\":\"E\",\"_highlight\":[\"1-E\",\"4-E\",\"15-E\",\"18-E\"]},{\"name\":\"F\",\"_highlight\":[\"12-F\"]},{\"name\":\"G\",\"_highlight\":[\"12-G\",\"5-G\",\"2-G\"]},{\"name\":\"H\",\"_highlight\":[\"14-H\",\"15-H\",\"17-H\"]},{\"name\":\"I\",\"_highlight\":[\"2-I\"]},{\"name\":\"J\",\"_highlight\":[\"10-J\",\"2-J\",\"12-J\",\"4-J\",\"2-J\"]},{\"name\":\"K\",\"_highlight\":[\"7-K\",\"1-K\"]},{\"name\":\"L\",\"_highlight\":[\"11-L\",\"17-L\"]},{\"name\":\"M\",\"_highlight\":[\"19-M\",\"12-M\",\"11-M\"]},{\"name\":\"N\",\"_highlight\":[\"10-N\",\"6-N\"]},{\"name\":\"O\",\"_highlight\":[]},{\"name\":\"P\",\"_highlight\":[\"6-P\",\"2-P\"]},{\"name\":\"Q\",\"_highlight\":[\"18-Q\",\"4-Q\",\"13-Q\"]},{\"name\":\"R\",\"_highlight\":[\"0-R\",\"10-R\"]},{\"name\":\"S\",\"_highlight\":[]}],\"_dataUrl\":\"http://script-test.epfl.ch/script/HD/Load/pwxe10oos2?filename=test%40patiny.com%2F%2FDemo%2FBasic%2FLinked%2F.results%2FMaster%2F1388475443242.json\",\"table2\":[{\"name\":0,\"_highlight\":[\"0-D\",\"0-R\",\"0-B\"]},{\"name\":1,\"_highlight\":[\"1-E\",\"1-K\",\"1-A\"]},{\"name\":2,\"_highlight\":[\"2-B\",\"2-J\",\"2-I\",\"2-G\",\"2-P\",\"2-J\"]},{\"name\":3,\"_highlight\":[]},{\"name\":4,\"_highlight\":[\"4-E\",\"4-J\",\"4-Q\",\"4-C\"]},{\"name\":5,\"_highlight\":[\"5-@\",\"5-B\",\"5-G\"]},{\"name\":6,\"_highlight\":[\"6-P\",\"6-N\"]},{\"name\":7,\"_highlight\":[\"7-D\",\"7-@\",\"7-K\"]},{\"name\":8,\"_highlight\":[]},{\"name\":9,\"_highlight\":[]},{\"name\":10,\"_highlight\":[\"10-B\",\"10-J\",\"10-A\",\"10-N\",\"10-@\",\"10-R\"]},{\"name\":11,\"_highlight\":[\"11-@\",\"11-L\",\"11-M\"]},{\"name\":12,\"_highlight\":[\"12-M\",\"12-G\",\"12-J\",\"12-F\"]},{\"name\":13,\"_highlight\":[\"13-Q\"]},{\"name\":14,\"_highlight\":[\"14-D\",\"14-H\"]},{\"name\":15,\"_highlight\":[\"15-A\",\"15-H\",\"15-E\"]},{\"name\":16,\"_highlight\":[]},{\"name\":17,\"_highlight\":[\"17-L\",\"17-H\"]},{\"name\":18,\"_highlight\":[\"18-Q\",\"18-D\",\"18-@\",\"18-E\"]},{\"name\":19,\"_highlight\":[\"19-M\"]}]}"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 97,
+            "top": 7
+          },
+          "size": {
+            "width": 49,
+            "height": 53
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 12,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "table1"
+          ],
+          "name": "table1"
+        },
+        {
+          "event": "onObjectChange",
+          "rel": "output",
+          "jpath": [
+            "table2"
+          ],
+          "name": "table2"
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
+  ],
+  "variables": [
+    {
+      "jpath": [
+        ""
+      ]
+    }
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "version": "3.3.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "aliases": [
+    {}
+  ],
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }{
+  "modules": [
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "slickCheck": [
+                [
+                  "enableCellNavigation",
+                  "rowNumbering",
+                  "forceFitColumns",
+                  "highlightScroll",
+                  "forgetLastActive"
+                ]
+              ],
+              "copyPaste": [
+                []
+              ],
+              "copyPasteOptions": [
+                [
+                  "newRows"
+                ]
+              ],
+              "autoColumns": [
+                []
+              ],
+              "toolbar": [
+                []
+              ],
+              "colorjpath": [
+                []
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.headerRowHeight": [
+                30
+              ],
+              "slick.selectionModel": [
+                "row"
+              ],
+              "idProperty": [
+                ""
+              ],
+              "filterType": [
+                "pref"
+              ],
+              "filterRow": [
+                "// Documentation: https://github.com/NPellet/visualizer/blob/46b40ca86345f8fa313563bf9c6ecb80ba323101/src/modules/types/edition/slick_grid/view.js#L1695-L1735"
+              ],
+              "customJpaths": [
+                ""
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [],
+                "editor": "none",
+                "forceType": "",
+                "formatter": "typerenderer",
+                "copyFormatter": "default",
+                "visibility": "both",
+                "rendererOptions": "",
+                "editorOptions": "",
+                "hideColumn": []
+              }
+            ]
+          ],
+          "actionCols": [
+            [
+              {
+                "backgroundColor": [
+                  255,
+                  255,
+                  255,
+                  0
+                ],
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": "end",
+                "clickMode": "text"
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": []
+              }
+            ]
+          ],
+          "actionOutButtons": [
+            [
+              {}
+            ]
+          ],
+          "data": [
+            {
+              "saveInView": [
+                []
+              ],
+              "varname": [
+                ""
+              ],
+              "data": [
+                "[]"
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 29,
+            "top": 0
+          },
+          "size": {
+            "width": 34,
+            "height": 52
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "table2",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 10,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "table2"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "table2"
+    }
+  ],
+  "variables": [
+    {
+      "jpath": [
+        ""
+      ]
+    }
+  ],
+  "configuration": {
+    "title": "No title"
+  },
+  "version": "3.3.1-0",
+  "grid": {
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
+  },
+  "aliases": [
+    {}
+  ],
+  "actionscripts": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "init_script": [
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "custom_filters": [
+    {
+      "sections": {
+        "modules": [
+          {
+            "sections": {},
+            "groups": {
+              "modules": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filtersLib": [
+          {
+            "sections": {},
+            "groups": {
+              "filters": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ],
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
+  ],
+  "actionfiles": [
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
+  ]
+}
+  ]
 }

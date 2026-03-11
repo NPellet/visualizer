@@ -325,46 +325,8 @@ div.ci-module-wrapper .ci-module-content {
   font-weight: bold;
 }
 
-div.ci-module-wrapper.ci-module-jqgrid .ci-module-content {
-  overflow: hidden;
-}
-
 div.ci-module-wrapper.ci-module-gcms .ci-module-content {
   overflow: hidden;
-}
-
-div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid {
-  border-top-width: 0px;
-  background: transparent;
-}
-
-div.ci-module-wrapper.ci-module-jqgrid
-  .ci-module-content
-  .ui-jqgrid
-  .ui-widget-content {
-  background: transparent;
-}
-
-div.ci-module-wrapper.ci-module-jqgrid .ci-module-content .ui-jqgrid th {
-  background: none;
-  background-color: #d3d3d3;
-  box-shadow: none;
-  padding-top: 4px;
-}
-
-div.ci-module-wrapper.ci-module-jqgrid
-  .ci-module-content
-  .ui-jqgrid
-  tr.ui-state-highlight {
-  border-color: #b6b6b6;
-}
-
-div.ci-module-wrapper.ci-module-jqgrid
-  .ci-module-content
-  .ui-jqgrid
-  tr.ui-state-highlight
-  td {
-  border-bottom-color: inherit;
 }
 
 .ci-chemical-display .ci-chemical-img {
