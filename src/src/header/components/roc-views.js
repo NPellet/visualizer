@@ -563,29 +563,20 @@ define([
                 },
                 { title: '----' },
               );
-              const flavors = this.flavors;
-              for (let i = 0; i < flavors.length; i++) {
-                menu.push({
-                  title: flavors[i],
-                  cmd: 'switchFlavor',
-                  uiIcon:
-                    flavors[i] === this.flavor ? 'ui-icon-check' : undefined,
-                });
-              }
+              const menuFlavors = createMenuFlavors(
+                this.flavors,
+                [this.flavor],
+                'switchFlavor',
+              );
+              menu.push(...menuFlavors);
             }
             this.$tree.contextmenu('replaceMenu', menu);
           } else {
-            var flavors = this.flavors;
-            var menuFlavors = [];
-            var viewFlavors = node.data.view.flavors;
-            for (let i = 0; i < flavors.length; i++) {
-              var has = !!viewFlavors[flavors[i]];
-              menuFlavors.push({
-                title: flavors[i],
-                cmd: 'toggleFlavor',
-                uiIcon: has ? 'ui-icon-check' : undefined,
-              });
-            }
+            const menuFlavors = createMenuFlavors(
+              this.flavors,
+              Object.keys(node.data.view.flavors),
+              'toggleFlavor',
+            );
             this.$tree.contextmenu('replaceMenu', [
               { title: 'Rename', cmd: 'renameView', uiIcon: 'ui-icon-pencil' },
               { title: 'Delete', cmd: 'deleteView', uiIcon: 'ui-icon-trash' },
@@ -609,11 +600,11 @@ define([
               this.renameView(node);
               break;
             case 'toggleFlavor':
-              flavor = ui.item.text();
+              flavor = ui.item.data('name');
               this.toggleFlavor(node, flavor);
               break;
             case 'switchFlavor':
-              flavor = ui.item.text();
+              flavor = ui.item.data('name');
               this.switchToFlavor(flavor);
               break;
             case 'newFlavor':
@@ -1761,11 +1752,55 @@ define([
 
   function validateFlavor(name) {
     name = name.trim();
-    if (/^[a-zA-Z0-9$_-]+$/.test(name)) return name;
+    if (/^\w[\w.$-]*\w$/.test(name)) return name;
     return false;
   }
 
   function formatName(name) {
     return name.replace('__folder__', '').replace(/(__view__)+/, '');
+  }
+
+  function createMenuFlavors(flavors, selectedFlavors, cmd) {
+    const menu = [];
+    for (let i = 0; i < flavors.length; i++) {
+      let currentMenu = menu;
+      const currentFlavor = flavors[i];
+      const items = currentFlavor.split('.');
+      const stack = [];
+      for (let idx = 0; idx < items.length; idx++) {
+        if (idx === items.length - 1) {
+          const checked = selectedFlavors.includes(flavors[i]);
+          currentMenu.push({
+            data: {
+              name: currentFlavor,
+            },
+            title: items[idx],
+            cmd,
+            uiIcon: checked ? 'ui-icon-check' : undefined,
+          });
+          if (checked) {
+            for (let item of stack) {
+              item.uiIcon = 'ui-icon-check';
+            }
+          }
+        } else {
+          let newCurrentMenu = currentMenu.find(
+            (item) => item.name === `*${items[idx]}`,
+          );
+
+          if (!newCurrentMenu) {
+            newCurrentMenu = {
+              name: `*${items[idx]}`,
+              title: items[idx],
+              children: [],
+            };
+            currentMenu.push(newCurrentMenu);
+            stack.push(newCurrentMenu);
+          }
+          currentMenu = newCurrentMenu.children;
+        }
+      }
+    }
+    return menu;
   }
 });
