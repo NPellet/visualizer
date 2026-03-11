@@ -264,10 +264,9 @@ define(['./util'], function (Util) {
         .then(() => ({ ok: true, removed: name }), returnError);
     }
 
-    reload() {
-      return this.manager
-        .getRequestDB(`/entry/${this.id}`)
-        .then((getRes) => (this.view = getRes.body));
+    async reload() {
+      const response = await this.manager.getRequestDB(`/entry/${this.id}`);
+      this.view = response.body;
     }
 
     togglePublic() {

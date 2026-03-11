@@ -38,6 +38,7 @@ define([
     '<table>\n    <tr>\n        <td style="vertical-align: top;"><b>Document id</b></td>\n        <td><%= view.id %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Flavor</b></td>\n        <td><%= flavor %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Name</b></td>\n        <td><% print(flavors[flavors.length-1]) %></td>\n    </tr>\n    <tr>\n        <td style="vertical-align: top;"><b>Location</b></td>\n        <td><li><% print(flavors.join(\'</li><li>\')) %></li></td>\n    </tr>\n</table>',
   );
 
+  const defaultFlavorName = 'default';
   class RocViewManager extends Default {
     get flavor() {
       if (this._flavor) {
@@ -45,7 +46,7 @@ define([
       } else {
         return (this._flavor =
           window.localStorage.getItem('ci-visualizer-roc-views-flavor') ||
-          'default');
+          defaultFlavorName);
       }
     }
 
@@ -78,6 +79,8 @@ define([
       this.activeNode = null;
       this.activeView = null;
       this.loadedNode = null;
+
+      this.views = [];
 
       this.verifyRoc();
 
@@ -458,6 +461,7 @@ define([
 
       // Create new tree
       const views = await this.getViews();
+      this.views = views;
 
       var tree = this.getTree(views);
       this.$tree.fancytree({
@@ -541,6 +545,16 @@ define([
                   cmd: 'newFlavor',
                   uiIcon: 'ui-icon-document-b',
                 },
+                {
+                  title: 'Remove flavor',
+                  uiIcon: 'ui-icon-trash',
+                  cmd: 'deleteFlavor',
+                },
+                {
+                  title: 'Rename flavor',
+                  uiIcon: 'ui-icon-pencil',
+                  cmd: 'renameFlavor',
+                },
                 { title: '----' },
               );
               const flavors = this.flavors;
@@ -598,6 +612,12 @@ define([
               break;
             case 'newFlavor':
               this.newFlavor();
+              break;
+            case 'deleteFlavor':
+              this.deleteFlavor();
+              break;
+            case 'renameFlavor':
+              this.renameFlavor();
               break;
             default:
               Debug.error(`unknown action: ${ui.cmd}`);
@@ -671,6 +691,176 @@ define([
         dialog.dialog('destroy');
       };
       var dialog = UI.dialog(div, { buttons: { Create } });
+    }
+
+    async updateViewContent(view, updateCb) {
+      const updatedView = structuredClone(view);
+      updateCb(updatedView);
+      try {
+        await this.putRequestDB(`/entry/${view._id}`, updatedView);
+      } catch (error) {
+        if (error.response?.body.code === 'conflict') {
+          const viewResponse = await this.getRequestDB(`/entry/${view._id}`);
+          const updatedView = structuredClone(viewResponse.body);
+          updateCb(updatedView);
+          await this.putRequestDB(`/entry/${view._id}`, updatedView);
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    deleteFlavor() {
+      return this.updateFlavorViews({
+        message: `Delete a flavor. This will remove the flavor from all the views having it! Views without any flavors left will be attached to the ${defaultFlavorName} flavor.`,
+        buttonLabel: 'Delete flavor',
+        updateCallback: (mutableView, selectedFlavor) => {
+          if (Object.keys(mutableView.$content.flavors).length === 1) {
+            // Avoid phantom views which are associated with no flavor.
+            mutableView.$content.flavors.default =
+              mutableView.$content.flavors[selectedFlavor];
+          }
+          delete mutableView.$content.flavors[selectedFlavor];
+        },
+        beforeRefresh: ({ failCount, selectedFlavor }) => {
+          if (failCount === 0) {
+            const newFlavors = new Set(this.flavors);
+            newFlavors.delete(selectedFlavor);
+            this.flavors = [...newFlavors];
+            this.flavor = this.flavors[0] || defaultFlavorName;
+          }
+        },
+      });
+    }
+
+    async renameFlavor() {
+      const newNameInput = $(
+        '<input type="text" autofocus placeholder="Flavor new name" />',
+      );
+      return this.updateFlavorViews({
+        message:
+          'Rename a flavor. This will rename the flavor in all the views having it!',
+        formContent: newNameInput,
+        beforeConfirm: () => {
+          // Validate the form
+          const newName = newNameInput.val();
+          if (!validateFlavor(newName)) {
+            UI.showNotification(`Invalid flavor name ${newName}`, 'error');
+            return false;
+          }
+          return true;
+        },
+        buttonLabel: 'Rename flavor',
+        updateCallback: (mutableView, selectedFlavor) => {
+          const newName = newNameInput.val();
+          if (!validateFlavor(newName)) {
+            throw new Error('Unreachable');
+          }
+          mutableView.$content.flavors[newName] =
+            mutableView.$content.flavors[selectedFlavor];
+          delete mutableView.$content.flavors[selectedFlavor];
+        },
+        beforeRefresh: ({ failCount, selectedFlavor }) => {
+          if (failCount === 0) {
+            const newFlavors = new Set(this.flavors);
+            const newName = newNameInput.val();
+            newFlavors.add(newName);
+            newFlavors.delete(selectedFlavor);
+            this.flavors = [...newFlavors];
+            this.flavor = newName;
+          }
+        },
+      });
+    }
+
+    updateFlavorViews(options = {}) {
+      const {
+        buttonLabel = 'Update',
+        message = 'Update flavor views.',
+        beforeConfirm = () => true,
+        updateCallback = () => {
+          throw new Error('Not update callback provided');
+        },
+        formContent,
+      } = options;
+      var div = $(`<div><div>${message}</div></div>`).css({
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
+      });
+      var input = $('<select></select>').appendTo(div);
+      if (formContent) {
+        formContent.appendTo(div);
+        formContent
+          .find('input')
+          .addBack('input')
+          .on('keypress', (event) => {
+            if (event.keyCode === 13) Button();
+          });
+      }
+      input.append($('<option>', { value: '', text: 'Select a flavor' }));
+      for (let flavor of this.flavors) {
+        if (flavor !== 'default') {
+          input.append(
+            $('<option>', {
+              value: flavor,
+              text: flavor,
+              selected: flavor === this.flavor,
+            }),
+          );
+        }
+      }
+      const Button = async () => {
+        const selectedFlavor = validateFlavor(input.val());
+        if (!selectedFlavor) {
+          return UI.showNotification('No flavor selected', 'error');
+        }
+
+        const ok = beforeConfirm();
+        if (!ok) {
+          return;
+        }
+
+        const views = this.views.filter(
+          (view) => view.$content.flavors[selectedFlavor],
+        );
+
+        dialog.dialog('destroy');
+        if (views.length > 0) {
+          let successCount = 0;
+          let failCount = 0;
+          const confirmed = await UI.confirm(`Update ${views.length} views?`);
+          if (!confirmed) {
+            return;
+          }
+          for (let view of views) {
+            try {
+              await this.updateViewContent(view, (mutableView) =>
+                updateCallback(mutableView, selectedFlavor),
+              );
+              successCount++;
+            } catch (error) {
+              reportError(error);
+              failCount++;
+            }
+          }
+          options.beforeRefresh?.({ failCount, successCount, selectedFlavor });
+          if (failCount > 0) {
+            if (successCount > 0) {
+              UI.showNotification(
+                `Updated ${successCount} views${failCount > 0 ? `, ${failCount} failed` : ''}`,
+                'warning',
+              );
+            } else {
+              UI.showNotification('Failed to update views', 'error');
+            }
+          } else if (successCount > 0) {
+            UI.showNotification(`Updated ${successCount} views`, 'success');
+          }
+          await this.refresh();
+        }
+      };
+      var dialog = UI.dialog(div, { buttons: { [buttonLabel]: Button } });
     }
 
     createFolder(node) {
