@@ -1,4 +1,4 @@
-FROM ghcr.io/cheminfo/rest-on-couch:19
+FROM ghcr.io/cheminfo/rest-on-couch:20
 
 RUN apt-get update && \
     apt-get install -y jq
