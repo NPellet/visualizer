@@ -317,14 +317,6 @@ define([
         },
       });
 
-      this.$title = $('<div>', {
-        css: {
-          width: '100%',
-          textAlign: 'center',
-          paddingBottom: '5px',
-        },
-      });
-
       var rightAccordion = $('<div>', {
         css: {
           height: '80%',
@@ -430,7 +422,7 @@ define([
         .append(this.$saveAsButton)
         .append(this.$saveAsText);
 
-      rightMain.append(this.$title).append(rightAccordion).append(rightButtons);
+      rightMain.append(rightAccordion).append(rightButtons);
 
       main.append(leftMain).append(rightMain);
 
@@ -1122,7 +1114,6 @@ define([
 
     populateInfo(node) {
       if (!node) {
-        this.$title.html('&nbsp;');
         this.$infoBox.empty();
         this.$revBox.empty();
         this.$permissionsContainer.hide();
@@ -1130,18 +1121,18 @@ define([
         return;
       }
       const view = node.data.view;
-      this.$title.text(view.title);
       this.$infoBox.html(
         $('<p>').append(
-          `Name: <b>${_.escape(node.title)}</b><br>
-                Folder: ${view.getPath(node.data.flavor)}<br>
-                Visualizer version: ${view.version}<br><br>
-                Size: ${Util.formatSize(view.size)}<br>
-                Id: ${view.id}<br>
-                Last revision: ${view.revid}<br><br>
-                Created on: ${view.creationDate.toLocaleString()}<br>
-                Last modified: ${view.modificationDate.toLocaleString()}<br>
-                Owner: ${view.owner}`,
+          `Title: <b>${_.escape(view.title)}</b><br>
+           Name: ${_.escape(node.title)}<br>
+           Folder: ${view.getPath(node.data.flavor)}<br>
+           Visualizer version: ${view.version}<br><br>
+           Size: ${Util.formatSize(view.size)}<br>
+           Id: ${view.id}<br>
+           Last revision: ${view.revid}<br><br>
+           Created on: ${view.creationDate.toLocaleString()}<br>
+           Last modified: ${view.modificationDate.toLocaleString()}<br>
+           Owner: ${view.owner}`,
         ),
       );
 
