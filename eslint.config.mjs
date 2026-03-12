@@ -7,7 +7,6 @@ export default defineConfig(
   globalIgnores([
     'src/components',
     'src/lib/*',
-    '!src/lib/gcms',
     'src/browserified',
     'src/modules/types/legacy',
     'src/modules/types/science/chemistry/jsmol/lib',
