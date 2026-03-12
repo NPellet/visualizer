@@ -100,6 +100,7 @@
     "node-jsgraph": "2.4.15",
     "numeral": "^2.0.6",
     "openchemlib": "^9.20.0",
+    "p-map": "^7.0.4",
     "papaparse": "^5.5.3",
     "pouchdb": "^3.6.0",
     "quill": "2.0.2",

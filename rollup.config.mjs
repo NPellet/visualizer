@@ -60,6 +60,14 @@ export default [
     },
   },
   {
+    input: 'node_modules/p-map/index.js',
+    output: {
+      file: 'src/browserified/p-map/index.js',
+      format: 'amd',
+      exports: 'named',
+    }
+  },
+  {
     input: 'node_modules/rxn-renderer/lib/index.js',
     output: {
       file: 'src/browserified/RxnRenderer/index.js',

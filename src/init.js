@@ -43,6 +43,7 @@ require.config({
     'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
     numeral: 'node_modules/numeral/min/numeral.min',
     openchemlib: 'browserified/openchemlib/openchemlib',
+    'p-map': 'browserified/p-map/index',
     papaparse: 'node_modules/papaparse/papaparse.min',
     plot: 'lib/plot/plot',
     pouchdb: 'node_modules/pouchdb/dist/pouchdb.min',

@@ -4,6 +4,7 @@ define([
   'jquery',
   'lodash',
   'superagent',
+  'p-map',
   'src/header/components/default',
   'src/util/util',
   'src/util/ui',
@@ -19,6 +20,7 @@ define([
   $,
   _,
   superagent,
+  pMap,
   Default,
   Util,
   UI,
@@ -544,9 +546,9 @@ define([
                   cmd: 'copyFlavor',
                 },
                 {
-                  title: 'Rename flavor',
+                  title: 'Move flavor',
                   uiIcon: 'ui-icon-pencil',
-                  cmd: 'renameFlavor',
+                  cmd: 'moveFlavor',
                 },
                 {
                   title: 'Remove flavor',
@@ -561,6 +563,25 @@ define([
                 'switchFlavor',
               );
               menu.push(...menuFlavors);
+            } else {
+              // Flavor operations on a folder
+              menu.push(
+                {
+                  title: 'Copy folder',
+                  cmd: 'copyFolder',
+                  uiIcon: 'ui-icon-copy',
+                },
+                {
+                  title: 'Move folder',
+                  cmd: 'moveFolder',
+                  uiIcon: 'ui-icon-folder-collapsed',
+                },
+                {
+                  title: 'Delete folder',
+                  cmd: 'deleteFolder',
+                  uiIcon: 'ui-icon-trash',
+                },
+              );
             }
             this.$tree.contextmenu('replaceMenu', menu);
           } else {
@@ -602,14 +623,23 @@ define([
             case 'newFlavor':
               this.newFlavor();
               break;
-            case 'copyFlavor':
-              this.copyFlavor();
-              break;
             case 'deleteFlavor':
-              this.deleteFlavor();
+              this.deleteFolder([]);
               break;
-            case 'renameFlavor':
-              this.renameFlavor();
+            case 'deleteFolder':
+              this.deleteFolder(node.data.path.slice(1));
+              break;
+            case 'moveFlavor':
+              this.copyFolder([], true);
+              break;
+            case 'moveFolder':
+              this.copyFolder(node.data.path.slice(1), true);
+              break;
+            case 'copyFlavor':
+              this.copyFolder([], false);
+              break;
+            case 'copyFolder':
+              this.copyFolder(node.data.path.slice(1), false);
               break;
             default:
               Debug.error(`unknown action: ${ui.cmd}`);
@@ -685,16 +715,16 @@ define([
       var dialog = UI.dialog(div, { buttons: { Create } });
     }
 
-    async updateViewContent(view, updateCb) {
+    async updateViewContent(view, updateCallback) {
       const updatedView = structuredClone(view);
-      updateCb(updatedView);
+      updateCallback(updatedView);
       try {
         await this.putRequestDB(`/entry/${view._id}`, updatedView);
       } catch (error) {
         if (error.response?.body.code === 'conflict') {
           const viewResponse = await this.getRequestDB(`/entry/${view._id}`);
           const updatedView = structuredClone(viewResponse.body);
-          updateCb(updatedView);
+          updateCallback(updatedView);
           await this.putRequestDB(`/entry/${view._id}`, updatedView);
         } else {
           throw error;
@@ -702,17 +732,25 @@ define([
       }
     }
 
-    deleteFlavor() {
+    deleteFolder(folder = []) {
       return this.updateFlavorViews({
-        message: `Delete a flavor. This will remove the flavor from all the views having it! Views without any flavors left will be attached to the ${defaultFlavorName} flavor.`,
+        message: `Delete a flavor. This will remove the flavor from all the views having it! Views without any flavors left will not be moved.`,
         buttonLabel: 'Delete flavor',
         updateCallback: (mutableView, selectedFlavor) => {
-          if (Object.keys(mutableView.$content.flavors).length === 1) {
+          const source = mutableView.$content.flavors[selectedFlavor];
+          const isInFolder = folder.every(
+            (level, idx) => level === source[idx],
+          );
+
+          if (
+            !isInFolder ||
+            Object.keys(mutableView.$content.flavors).length === 1
+          ) {
             // Avoid phantom views which are associated with no flavor.
-            mutableView.$content.flavors.default =
-              mutableView.$content.flavors[selectedFlavor];
+            return false;
           }
           delete mutableView.$content.flavors[selectedFlavor];
+          return true;
         },
         beforeRefresh: ({ failCount, selectedFlavor }) => {
           if (failCount === 0) {
@@ -725,22 +763,31 @@ define([
       });
     }
 
-    copyFlavor() {
-      const destinationNameInput = $('<input type="text" autofocus>');
-      const overrideDestinationInput = $(
+    copyFolder(folder, deleteSource) {
+      const $destination = $(
+        '<input list="destination_datalist" type="text" autofocus>',
+      );
+      const $datalist = $('<datalist id="destination_datalist"></datalist>');
+      const $override = $(
         '<div><input id="view_manager_copy_to_override_path" type="checkbox"><label for="view_manager_copy_to_override_path">Replace path in destination when the view already has the destination flavor</label></div>',
       );
 
+      for (let flavor of this.flavors) {
+        $datalist.append(`<option value="${flavor}">${flavor}</option>`);
+      }
+
+      const subpath = `/${folder.join('/')}`;
       return this.updateFlavorViews({
-        message: 'Copy a view into a new or existing flavor.',
-        buttonLabel: 'Copy flavor',
+        message: `${deleteSource ? 'Move' : 'Copy'} a folder into another flavor (subpath: ${subpath})`,
+        buttonLabel: deleteSource ? 'Move' : 'Copy',
         formContent: $('<div></div>')
           .css('display', 'contents')
-          .append(destinationNameInput)
-          .append(overrideDestinationInput),
+          .append($destination)
+          .append($datalist)
+          .append($override),
         beforeConfirm: () => {
           // Validate the form
-          const newName = destinationNameInput.val();
+          const newName = $destination.val();
           if (!validateFlavor(newName)) {
             UI.showNotification(`Invalid flavor name ${newName}`, 'error');
             return false;
@@ -748,66 +795,35 @@ define([
           return true;
         },
         beforeRefresh: () => {
-          const newName = destinationNameInput.val();
+          const newName = $destination.val();
           this.flavor = newName;
         },
         updateCallback: (mutableView, selectedFlavor) => {
-          const shouldOverride = overrideDestinationInput
-            .find('input')
-            .is(':checked');
-          const destinationName = destinationNameInput.val();
+          const shouldOverride = $override.find('input').is(':checked');
+          const destinationName = $destination.val();
           if (!validateFlavor(destinationName)) {
             throw new Error('Unreachable');
           }
-          if (
-            shouldOverride ||
-            !mutableView.$content.flavors[destinationName]
-          ) {
-            mutableView.$content.flavors[destinationName] =
-              mutableView.$content.flavors[selectedFlavor];
-          }
-        },
-      });
-    }
-
-    async renameFlavor() {
-      const newNameInput = $(
-        '<input type="text" autofocus placeholder="Flavor new name" />',
-      );
-      return this.updateFlavorViews({
-        message:
-          'Rename a flavor. This will rename the flavor in all the views having it!',
-        formContent: newNameInput,
-        beforeConfirm: () => {
-          // Validate the form
-          const newName = newNameInput.val();
-          if (!validateFlavor(newName)) {
-            UI.showNotification(`Invalid flavor name ${newName}`, 'error');
+          if (selectedFlavor === destinationName) {
             return false;
           }
-          return true;
-        },
-        buttonLabel: 'Rename flavor',
-        updateCallback: (mutableView, selectedFlavor) => {
-          const newName = newNameInput.val();
-          if (!validateFlavor(newName)) {
-            throw new Error('Unreachable');
-          }
-          // Do not move view if it already has a path in the destination flavor
-          if (!mutableView.$content.flavors[newName]) {
-            mutableView.$content.flavors[newName] =
-              mutableView.$content.flavors[selectedFlavor];
-          }
-          delete mutableView.$content.flavors[selectedFlavor];
-        },
-        beforeRefresh: ({ failCount, selectedFlavor }) => {
-          if (failCount === 0) {
-            const newFlavors = new Set(this.flavors);
-            const newName = newNameInput.val();
-            newFlavors.add(newName);
-            newFlavors.delete(selectedFlavor);
-            this.flavors = [...newFlavors];
-            this.flavor = newName;
+          const source = mutableView.$content.flavors[selectedFlavor];
+
+          const isInFolder = folder.every(
+            (level, idx) => level === source[idx],
+          );
+
+          if (
+            isInFolder &&
+            (shouldOverride || !mutableView.$content.flavors[destinationName])
+          ) {
+            mutableView.$content.flavors[destinationName] = source;
+            if (deleteSource) {
+              delete mutableView.$content.flavors[selectedFlavor];
+            }
+            return true;
+          } else {
+            return false;
           }
         },
       });
@@ -862,43 +878,59 @@ define([
         }
 
         const views = this.views.filter(
-          (view) => view.$content.flavors[selectedFlavor],
+          (view) =>
+            view.$content.flavors[selectedFlavor] &&
+            updateCallback(structuredClone(view), selectedFlavor),
         );
 
         dialog.dialog('destroy');
-        if (views.length > 0) {
-          let successCount = 0;
-          let failCount = 0;
-          const confirmed = await UI.confirm(`Update ${views.length} views?`);
-          if (!confirmed) {
-            return;
-          }
-          for (let view of views) {
-            try {
-              await this.updateViewContent(view, (mutableView) =>
-                updateCallback(mutableView, selectedFlavor),
-              );
-              successCount++;
-            } catch (error) {
-              reportError(error);
-              failCount++;
-            }
-          }
-          options.beforeRefresh?.({ failCount, successCount, selectedFlavor });
-          if (failCount > 0) {
-            if (successCount > 0) {
-              UI.showNotification(
-                `Updated ${successCount} views${failCount > 0 ? `, ${failCount} failed` : ''}`,
-                'warning',
-              );
-            } else {
-              UI.showNotification('Failed to update views', 'error');
-            }
-          } else if (successCount > 0) {
-            UI.showNotification(`Updated ${successCount} views`, 'success');
-          }
-          await this.refresh();
+        if (views.length === 0) {
+          return UI.showNotification('No views to update', 'info');
         }
+        const confirmed = await UI.confirm(`Update ${views.length} views?`);
+        if (!confirmed) {
+          return;
+        }
+
+        let failCount = views.length;
+        let successCount = 0;
+        try {
+          await pMap.default(
+            views,
+            (view) =>
+              this.updateViewContent(view, (mutableView) =>
+                updateCallback(mutableView, selectedFlavor),
+              ),
+            { concurrency: 6, stopOnError: false },
+          );
+          successCount = views.length;
+          failCount = 0;
+        } catch (error) {
+          if (error instanceof AggregateError) {
+            failCount = error.errors.length;
+            successCount = views.length - failCount;
+            for (const item of error.errors) {
+              reportError(item);
+            }
+          } else {
+            reportError(error);
+          }
+        }
+
+        options.beforeRefresh?.({ failCount, successCount, selectedFlavor });
+        if (failCount > 0) {
+          if (successCount > 0) {
+            UI.showNotification(
+              `Updated ${successCount} views${failCount > 0 ? `, ${failCount} failed` : ''}`,
+              'warning',
+            );
+          } else {
+            UI.showNotification('Failed to update views', 'error');
+          }
+        } else if (successCount > 0) {
+          UI.showNotification(`Updated ${successCount} views`, 'success');
+        }
+        await this.refresh();
       };
       var dialog = UI.dialog(div, { buttons: { [buttonLabel]: Button } });
     }
