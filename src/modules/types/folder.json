@@ -6,8 +6,7 @@
     "client_interaction",
     "display",
     "edition",
-    "science",
-    "server_interaction"
+    "science"
   ],
   "name": "Base modules",
   "modules": []

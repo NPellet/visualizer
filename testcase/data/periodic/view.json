@@ -1,5 +1,5 @@
 {
-  "version": "2.50.0",
+  "version": "3.3.1-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -333,192 +333,6 @@
       }
     },
     {
-      "url": "modules/types/server_interaction/webservice_search/",
-      "configuration": {
-        "sections": {
-          "postvariables": [
-            {
-              "sections": {},
-              "groups": {
-                "postvariables": [
-                  [
-                    {
-                      "destination": "data",
-                      "filter": "none"
-                    }
-                  ]
-                ]
-              }
-            }
-          ]
-        },
-        "groups": {
-          "group": [
-            {
-              "url": [
-                "http://googledocs.cheminfo.org/spreadsheets/d/1yyK-oqI6ryM0TyqugtbLRg7TXbgSeJcYArJJ3cujv5k/export?format=tsv"
-              ],
-              "method": [
-                "GET"
-              ],
-              "dataType": [
-                "form"
-              ],
-              "showStatus": [
-                []
-              ],
-              "button": [
-                [
-                  "button"
-                ]
-              ],
-              "buttonlabel": [
-                "Retrieve"
-              ],
-              "buttonlabel_exec": [
-                null
-              ],
-              "onloadsearch": [
-                []
-              ],
-              "debounce": [
-                0
-              ],
-              "resultfilter": [
-                "require([\"papaparse/papaparse.min\"],function(Papa) {\n    var wikipedia=Papa.parse(data,\n        {\n            delimiter:\"\\t\",\n            header: true\n        }\n    );\n    \n    API.createData(\"header\", wikipedia.data[0]);\n    API.createData(\"elementsOri\", wikipedia.data.slice(1));\n})\n\n"
-              ],
-              "askConfirm": [
-                []
-              ],
-              "confirmText": [
-                "Are you sure?"
-              ]
-            }
-          ],
-          "headers": [
-            [
-              {}
-            ]
-          ],
-          "searchparams": [
-            [
-              {
-                "destination": "url",
-                "fieldtype": "text"
-              }
-            ]
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 29,
-            "height": 7
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        },
-        "Admin": {
-          "position": {
-            "left": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 11,
-            "height": 8
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        },
-        "Data": {
-          "position": {
-            "left": 119,
-            "top": 0
-          },
-          "size": {
-            "width": 11,
-            "height": 8
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        }
-      },
-      "id": 3,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
-      "title": "",
-      "vars_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      }
-    },
-    {
       "url": "modules/types/client_interaction/code_editor/",
       "configuration": {
         "sections": {},
@@ -588,8 +402,8 @@
             "top": 31
           },
           "size": {
-            "width": 81,
-            "height": 39
+            "width": 53,
+            "height": 32
           },
           "zIndex": 0,
           "display": true,
@@ -812,6 +626,9 @@
               ],
               "script": [
                 "console.clear();\nvar elements=get(\"elementsOri\").get();\n\n\n\nfor (var i=0; i<elements.length; i++) {\n    var element=elements[i];\n    element.electronsPerPeriod=element.nbElectrons.split(\" \");\n    \n    element.test=\"abc\";\n}\n\n\nset(\"elements\", elements);"
+              ],
+              "asyncAwait": [
+                []
               ]
             }
           ],
@@ -1247,6 +1064,362 @@
           }
         ]
       }
+    },
+    {
+      "url": "modules/types/client_interaction/button_action/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "toggle": [
+                "click"
+              ],
+              "label": [
+                "Retrieve"
+              ],
+              "onLabel": [
+                "Toggle action off"
+              ],
+              "offLabel": [
+                "Toggle action on"
+              ],
+              "title": [
+                ""
+              ],
+              "css": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;\ncursor: pointer;"
+              ],
+              "cssOn": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;\ncursor: pointer;"
+              ],
+              "cssOff": [
+                "font-size: 11px;\nbackground-color: #E6E6E6;\nborder: 1px solid rgba(0, 0, 0, 0.2);\nheight: 30px;\npadding: .5em 1em;\nfont-weight: bold;\ncursor: pointer;"
+              ],
+              "startState": [
+                "off"
+              ],
+              "text": [
+                ""
+              ],
+              "askConfirm": [
+                []
+              ],
+              "confirmText": [
+                "Are you sure?"
+              ],
+              "okLabel": [
+                "Ok"
+              ],
+              "cancelLabel": [
+                "Cancel"
+              ],
+              "contentType": [
+                "content"
+              ],
+              "content": [
+                ""
+              ],
+              "maskOpacity": [
+                0.6
+              ]
+            }
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 29,
+            "height": 7
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 120,
+            "top": 1
+          },
+          "size": {
+            "width": 11,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "Data": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Data"
+        }
+      },
+      "id": 9,
+      "vars_in": [],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [],
+      "actions_out": [
+        {
+          "event": "onClick",
+          "rel": "actionText",
+          "jpath": [],
+          "name": "retrieve"
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "const req = await fetch('https://googledocs.cheminfo.org/spreadsheets/d/1yyK-oqI6ryM0TyqugtbLRg7TXbgSeJcYArJJ3cujv5k/export?format=tsv')\nconst data = await req.text();\nconst wikipedia=Papa.parse(data,\n    {\n        delimiter:\"\\t\",\n        header: true\n    }\n);\n    \nAPI.createData(\"header\", wikipedia.data[0]);\nAPI.createData(\"elementsOri\", wikipedia.data.slice(1));"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "papaparse",
+                "alias": "Papa"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "Admin": {
+          "position": {
+            "left": 86,
+            "top": 31
+          },
+          "size": {
+            "width": 46,
+            "height": 31
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Admin"
+        },
+        "Data": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Data"
+        }
+      },
+      "id": 10,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {
+          "rel": "execute",
+          "name": "retrieve"
+        }
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
     }
   ],
   "variables": [
@@ -1298,9 +1471,6 @@
   "aliases": [
     {}
   ],
-  "pouchvariables": [
-    {}
-  ],
   "configuration": {
     "title": "No title"
   },
@@ -1317,21 +1487,6 @@
               null
             ]
           }
-        ]
-      }
-    }
-  ],
-  "couch_replication": [
-    {
-      "sections": {},
-      "groups": {
-        "couch": [
-          [
-            {
-              "direction": "both",
-              "continuous": []
-            }
-          ]
         ]
       }
     }
