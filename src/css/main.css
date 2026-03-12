@@ -325,10 +325,6 @@ div.ci-module-wrapper .ci-module-content {
   font-weight: bold;
 }
 
-div.ci-module-wrapper.ci-module-gcms .ci-module-content {
-  overflow: hidden;
-}
-
 .ci-chemical-display .ci-chemical-img {
   float: right;
 }

@@ -1,14 +1,6 @@
 {
   "modules": [
     {
-      "moduleName": "GC-MS",
-      "url": "modules/types/science/spectra/gcms/"
-    },
-    {
-      "moduleName": "IV stability",
-      "url": "modules/types/science/spectra/ivstability/"
-    },
-    {
       "moduleName": "Spectra displayer",
       "url": "modules/types/science/spectra/spectra_displayer/"
     }
