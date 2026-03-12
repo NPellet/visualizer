@@ -106,7 +106,7 @@
           "libs": [
             [
               {
-                "lib": "http://www.lactame.com/lib/actelion/2.0.4/actelion-2.0.4.js",
+                "lib": "https://www.lactame.com/lib/actelion/2.0.4/actelion-2.0.4.js",
                 "alias": "ACT"
               }
             ]
@@ -197,7 +197,7 @@
           "libs": [
             [
               {
-                "lib": "http://www.lactame.com/lib/actelion/2.0.4/actelion-2.0.4.js",
+                "lib": "https://www.lactame.com/lib/actelion/2.0.4/actelion-2.0.4.js",
                 "alias": "ACT"
               }
             ]

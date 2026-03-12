@@ -210,7 +210,6 @@ module.exports = function (grunt) {
               './ui-contextmenu/jquery.ui-contextmenu*',
               './colors/css/colors.min.css',
               './uri.js/src/*.js',
-              './onde/src/*',
               ['./spectrum/spectrum.js', './spectrum/spectrum.css'],
               './lodash/dist/**',
               './chemcalc/lib.js',

@@ -831,11 +831,11 @@
   ],
   "aliases": [
     {
-      "path": "http://www.lactame.com/lib/jcampconverter/2.0.9/jcampconverter",
+      "path": "https://www.lactame.com/lib/jcampconverter/2.0.9/jcampconverter",
       "alias": "Jcamp"
     },
     {
-      "path": "http://direct.lactame.com/lib/ml/HEAD/ml",
+      "path": "https://direct.lactame.com/lib/ml/HEAD/ml",
       "alias": "ML"
     }
   ],

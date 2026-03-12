@@ -59,6 +59,15 @@
               "labels": [
                 "axis"
               ],
+              "xLabel": [
+                null
+              ],
+              "yLabel": [
+                null
+              ],
+              "zLabel": [
+                null
+              ],
               "minX": [
                 ""
               ],
@@ -85,6 +94,14 @@
                   1
                 ]
               ],
+              "defaultPointColor": [
+                [
+                  50,
+                  50,
+                  50,
+                  1
+                ]
+              ],
               "annotationColor": [
                 [
                   50,
@@ -95,6 +112,9 @@
               ],
               "sizeNormalization": [
                 0.02
+              ],
+              "3d": [
+                "none"
               ]
             }
           ],
@@ -116,9 +136,23 @@
                 "size": [
                   "size"
                 ],
+                "shape": [],
                 "highlight": [
                   "_highlight"
                 ]
+              }
+            ]
+          ],
+          "colorBar": [
+            [
+              {
+                "color": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "stopPosition": 0
               }
             ]
           ]
@@ -146,7 +180,11 @@
           "name": "clicked"
         }
       ],
-      "actions_out": {},
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
       "layers": {
         "Default layer": {
           "position": {
@@ -155,7 +193,7 @@
             "right": 0
           },
           "size": {
-            "width": 77,
+            "width": 97,
             "height": 61
           },
           "display": true,
@@ -206,7 +244,13 @@
               "title": "",
               "icon": "",
               "action": "",
-              "position": "begin"
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
@@ -219,7 +263,17 @@
             ]
           }
         ]
-      }
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ]
     },
     {
       "url": "modules/types/chart/statistics/parallel_coordinates/",
@@ -314,7 +368,7 @@
           ]
         }
       },
-      "id": 3,
+      "id": 2,
       "vars_in": [
         {
           "rel": "value",
@@ -333,369 +387,21 @@
           "name": "pointsToDraw"
         }
       ],
-      "actions_out": {},
+      "actions_out": {
+        "event": [
+          null
+        ],
+        "rel": [
+          null
+        ],
+        "jpath": [
+          null
+        ],
+        "name": [
+          null
+        ]
+      },
       "zindex": 1,
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "url": "modules/types/edition/filter_editor/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "script": [
-                "value = value.resurrect(true);\nfunction generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n}\nfunction generateRandomColors(d, n) {\n    var arr = new Array(d);\n    arr = _(arr).map(function(val, key) {\n        return key/d;\n    }).map(function(val) {\n        return 'hsl(' + val*360 + ',65%,65%)';\n    }).map(function(val) {\n        return chroma(val).hex();    \n    }).value();\n    \n    var result = new Array(n);\n    result = _(result).map(function(val) {\n        return Math.floor(Math.random() * d);\n    }).map(function(val){\n        return arr[val];\n    }).value();\n    return result;\n}\n\nfunction generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n        return arr[Math.floor(a)];\n    }); \n    return x;\n}\n\nvar n = value.points;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(value.colors, n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\n\nvar arr = [];\nfor(var i=0; i<value.highlights; i++) {\n    arr.push(i.toString());\n}\nvar highlight = generateRandomFromArray(arr, n);\nvar size = generateRandomArray(n, value.minSize, value.maxSize);\n\n\nvar result = [];\nfor(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i].size = size[i];\n    if(value.useHighlights) {\n        result[i]._highlight = highlight[i];    \n    }\n    \n}\n\nvar table = _(highlight).uniq().sort().map(function(val) {\n    return {\n        label: val,\n        _highlight: val\n    }\n}).value();\nAPI.createData('table', table);\nresolve(result);"
-              ]
-            }
-          ],
-          "libs": [
-            [
-              {
-                "lib": "chroma",
-                "alias": "chroma"
-              },
-              {
-                "lib": "lodash",
-                "alias": "_"
-              }
-            ]
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 115,
-            "right": 0,
-            "top": 0
-          },
-          "size": {
-            "width": 57,
-            "height": 73
-          },
-          "zIndex": 0,
-          "display": false,
-          "title": "Untitled",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "bgColor": [
-            [
-              255,
-              255,
-              255,
-              0
-            ]
-          ]
-        },
-        "admin": {
-          "position": {
-            "left": 0,
-            "right": 0,
-            "top": 56
-          },
-          "size": {
-            "width": 89,
-            "height": 65
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "Untitled",
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer",
-          "bgColor": [
-            [
-              255,
-              255,
-              255,
-              0
-            ]
-          ]
-        }
-      },
-      "id": 4,
-      "vars_in": [
-        {
-          "rel": "dataobject",
-          "name": "defaultParams"
-        }
-      ],
-      "actions_in": [
-        {}
-      ],
-      "title": "Untitled",
-      "vars_out": [
-        {
-          "event": "onButtonClick",
-          "rel": "filteredObject",
-          "jpath": [],
-          "name": "test"
-        }
-      ],
-      "actions_out": {},
-      "zindex": 2,
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "url": "modules/types/edition/onde/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "hasButton": [
-                [
-                  "show"
-                ]
-              ],
-              "button_text": [
-                "Generate Graph"
-              ],
-              "debouncing": [
-                -1
-              ],
-              "output": [
-                "modified"
-              ],
-              "mode": [
-                "schema"
-              ],
-              "schemaSource": [
-                "config"
-              ],
-              "schema": [
-                "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"points\": {\n            \"type\": \"number\",\n            \"label\": \"Number of points\",\n            \"default\": 200\n        },\n        \"highlights\": {\n            \"type\": \"number\",\n            \"label\": \"Number of highlights\",\n            \"default\": \"4\"\n        },\n        \"colors\": {\n            \"type\": \"number\",\n            \"label\": \"Number of colors\",\n            \"default\": 5\n        },\n        \"minSize\": {\n            \"type\": \"number\",\n            \"label\": \"Minimum size\",\n            \"default\": 0.05\n        },\n        \"maxSize\": {\n            \"type\": \"number\",\n            \"label\": \"Maximum size\",\n            \"default\": 0.05\n        },\n        \"useHighlights\": {\n            \"type\": \"boolean\",\n            \"label\": \"Use Highlights\",\n            \"default\": false\n        }\n    }\n}"
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 78,
-            "top": 0
-          },
-          "size": {
-            "width": 32,
-            "height": 61
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "Parameters",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        },
-        "admin": {
-          "position": {
-            "left": 80,
-            "top": 0
-          },
-          "size": {
-            "width": 55,
-            "height": 25
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "Parameters",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "admin"
-        }
-      },
-      "id": 5,
-      "vars_in": [
-        {
-          "rel": "inputValue",
-          "name": "defaultParams"
-        }
-      ],
-      "actions_in": [],
-      "title": "Parameters",
-      "vars_out": [
-        {
-          "event": "onFormSubmit",
-          "rel": "outputValue",
-          "jpath": [],
-          "name": "params"
-        }
-      ],
-      "actions_out": [
-        {
-          "jpath": []
-        }
-      ],
-      "toolbar": {
-        "custom": [
-          [
-            {
-              "title": "",
-              "icon": "",
-              "action": "",
-              "position": "begin"
-            }
-          ]
-        ],
-        "common": [
-          {
-            "toolbar": [
-              [
-                "Open Preferences"
-              ]
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "url": "modules/types/edition/object_editor/",
-      "configuration": {
-        "sections": {},
-        "groups": {
-          "group": [
-            {
-              "editable": [
-                "text"
-              ],
-              "expanded": [
-                []
-              ],
-              "storeObject": [
-                [
-                  "expand"
-                ]
-              ],
-              "displayValue": [
-                []
-              ],
-              "output": [
-                "new"
-              ],
-              "storedObject": [
-                "{\"minSize\":1,\"maxSize\":1,\"useHighlights\":true,\"colors\":3,\"points\":200,\"highlights\":4}"
-              ]
-            }
-          ]
-        }
-      },
-      "layers": {
-        "Default layer": {
-          "position": {
-            "left": 177,
-            "top": 47
-          },
-          "size": {
-            "width": 45,
-            "height": 29
-          },
-          "zIndex": 0,
-          "display": false,
-          "title": "Untitled",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "Default layer"
-        },
-        "admin": {
-          "position": {
-            "left": 90,
-            "top": 56
-          },
-          "size": {
-            "width": 20,
-            "height": 20
-          },
-          "zIndex": 0,
-          "display": true,
-          "title": "",
-          "bgColor": [
-            255,
-            255,
-            255,
-            0
-          ],
-          "wrapper": true,
-          "created": true,
-          "name": "admin"
-        }
-      },
-      "id": 6,
-      "vars_in": [
-        {}
-      ],
-      "actions_in": [
-        {}
-      ],
-      "vars_out": [
-        {
-          "event": "onObjectChange",
-          "rel": "output",
-          "jpath": [],
-          "name": "defaultParams"
-        }
-      ],
-      "title": "",
-      "actions_out": {},
       "toolbar": {
         "custom": [
           [
@@ -842,11 +548,11 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 111,
+            "left": 98,
             "top": 0
           },
           "size": {
-            "width": 10,
+            "width": 23,
             "height": 61
           },
           "zIndex": 0,
@@ -885,12 +591,166 @@
           "name": "admin"
         }
       },
-      "id": 7,
+      "id": 3,
       "vars_in": [
         {
           "rel": "list",
           "name": "table"
         }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "const value = {\n    points: 200,\n    colors: 5,\n    highlights: 5,\n    minSize: 1,\n    maxSize: 2\n};\n\nfunction generateRandomArray(n, min, max) {\n    var result = [];\n    for(var i=0; i<n; i++) {\n      result.push(Math.random()*(max-min) + min);\n    }\n    return result;\n}\n\nfunction generateRandomColors(d, n) {\n    var arr = new Array(d);\n    arr = _(arr).map(function(val, key) {\n        return key/d;\n    }).map(function(val) {\n        return 'hsl(' + val*360 + ',65%,65%)';\n    }).map(function(val) {\n        return chroma(val).hex();    \n    }).value();\n    \n    var result = new Array(n);\n    result = _(result).map(function(val) {\n        return Math.floor(Math.random() * d);\n    }).map(function(val){\n        return arr[val];\n    }).value();\n    return result;\n}\n\nfunction generateRandomFromArray(arr, n) {\n    var x = generateRandomArray(n, 0, arr.length-0.001);\n    x = x.map(function(a) {\n        return arr[Math.floor(a)];\n    }); \n    return x;\n}\n\nvar n = value.points;\nvar x = generateRandomArray(n, 0, 5);\nvar y = generateRandomArray(n, 0, 5);\nvar z = generateRandomArray(n, -0.005, 0.005);\nvar color = generateRandomColors(value.colors, n);\n//var shape = generateRandomFromArray(['sphere', 'tetrahedron'], n);\n\nvar arr = [];\nfor(var i=0; i<value.highlights; i++) {\n    arr.push(i.toString());\n}\nvar highlight = generateRandomFromArray(arr, n);\nvar size = generateRandomArray(n, value.minSize, value.maxSize);\n\n\nvar result = [];\nfor(var i=0; i<n; i++) {\n    result.push({});\n    result[i].x = x[i];\n    result[i].y = y[i];\n    result[i].z = z[i];\n    result[i].color = color[i];\n    result[i].size = size[i];\n    result[i]._highlight = highlight[i];\n}\n\nvar table = _(highlight).uniq().sort().map(function(val) {\n    return {\n        label: val,\n        _highlight: val\n    }\n}).value();\n\nAPI.createData('table', table);\nAPI.createData('test', result);\n"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "chroma",
+                "alias": "chroma"
+              },
+              {
+                "lib": "lodash",
+                "alias": "_"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "admin": {
+          "position": {
+            "left": 0,
+            "top": 56
+          },
+          "size": {
+            "width": 75,
+            "height": 28
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "admin"
+        }
+      },
+      "id": 4,
+      "vars_in": [
+        {}
       ],
       "actions_in": [
         {}
