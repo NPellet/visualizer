@@ -100,11 +100,8 @@ define([
       } else {
         module._cssLoaded = Util.loadCss(`${moduleURL}style.css`);
       }
-      require([
-        `${moduleURL}model`,
-        `${moduleURL}view`,
-        `${moduleURL}controller`,
-      ], function (M, V, C) {
+
+      function initMVC(M, V, C) {
         module.model = new M();
         module.view = new V();
         module.controller = new C();
@@ -135,8 +132,28 @@ define([
         module.model.init();
 
         resolve(module);
-      }, function (err) {
-        return reject(err);
+      }
+
+      // require calls the error callback once for each error. We only want to fall back once.
+      let hasFallback = false;
+
+      require([
+        `${moduleURL}model`,
+        `${moduleURL}view`,
+        `${moduleURL}controller`,
+      ], initMVC, function (error) {
+        if (hasFallback) return;
+        hasFallback = true;
+        Debug.error('Caught error in module loading.', error);
+        // Fallback to rendering a placeholder module to display the error.
+        module.placeholderData = {
+          error,
+        };
+        require([
+          'modules/placeholder/model',
+          'modules/placeholder/view',
+          'modules/placeholder/controller',
+        ], initMVC, reject);
       });
     });
   }
@@ -160,16 +177,6 @@ define([
     });
     this.ready.catch(function (error) {
       Debug.error('Caught error in module initialization.', error);
-
-      // Render the placeholder module to display the error.
-      const Grid = require('src/main/grid');
-      const definitionCopy = JSON.parse(JSON.stringify(definition));
-      definitionCopy.placeholderData = {
-        url: definitionCopy.url,
-        error: String(error),
-      };
-      definitionCopy.url = 'modules/types/display/placeholder/';
-      Grid.addModuleFromJSON(definitionCopy);
     });
   }
   Module.prototype = {
