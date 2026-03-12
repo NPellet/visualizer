@@ -34,10 +34,6 @@
       "url": "modules/types/edition/slick_grid/"
     },
     {
-      "moduleName": "SVG Editor",
-      "url": "modules/types/edition/svg_editor/"
-    },
-    {
       "moduleName": "Templated form",
       "url": "modules/types/edition/form/"
     }
