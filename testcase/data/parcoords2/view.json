@@ -1,552 +1,525 @@
 {
   "grid": {
-	"layers": {
-	  "Default layer": {
-		"name": "Default layer"
-	  },
-	  "admin": {
-		"name": "admin"
-	  }
-	},
-	"xWidth": 10,
-	"yHeight": 10
+    "layers": {
+      "Default layer": {
+        "name": "Default layer"
+      },
+      "admin": {
+        "name": "admin"
+      }
+    },
+    "xWidth": 10,
+    "yHeight": 10
   },
-  "version": "2.27.1-0",
+  "version": "3.3.1-0",
   "modules": [
-	{
-	  "url": "modules/types/edition/filter_editor/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "script": [
-				"// Change this variable to modify the number of generated colors\n\nvar l = value.num || 10000,\n    high = value.high | 1000;\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd(n) {\n    return Math.floor(Math.random()*n);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(256),\n        g: rnd(256),\n        b: rnd(256),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\";\n    o.colorC = {type:'color',value:o.color};\n    o._highlight = [rnd(high)];\n    a[i] = o;\n}\n\nresolve(a);"
-			  ]
-			}
-		  ],
-		  "libs": [
-			[
-			  {}
-			]
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0,
-			"right": 0,
-			"top": 0
-		  },
-		  "size": {
-			"width": 52,
-			"height": 70
-		  },
-		  "zIndex": 0,
-		  "display": false,
-		  "title": "Data generation",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer",
-		  "bgColor": [
-			[
-			  255,
-			  255,
-			  255,
-			  0
-			]
-		  ]
-		},
-		"admin": {
-		  "position": {
-			"left": 0,
-			"right": 0,
-			"top": 21
-		  },
-		  "size": {
-			"width": 52,
-			"height": 49
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Data generation",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer",
-		  "bgColor": [
-			[
-			  255,
-			  255,
-			  255,
-			  0
-			]
-		  ]
-		}
-	  },
-	  "id": 1,
-	  "vars_in": [
-		{
-		  "rel": "dataobject",
-		  "name": "colors"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "Data generation",
-	  "vars_out": [
-		{
-		  "event": "onButtonClick",
-		  "rel": "filteredObject",
-		  "jpath": [],
-		  "name": "bigArray"
-		}
-	  ],
-	  "actions_out": {}
-	},
-	{
-	  "url": "modules/types/chart/statistics/parallel_coordinates/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "colJPath": [
-				"element.color"
-			  ],
-			  "options": [
-				[
-				  "reorder"
-				]
-			  ],
-			  "brushMode": [
-				"1D-axes-multi"
-			  ],
-			  "predicate": [
-				"and"
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"name": "Red",
-				"jpath": "element.r"
-			  },
-			  {
-				"name": "Green",
-				"jpath": "element.g"
-			  },
-			  {
-				"name": "Blue",
-				"jpath": "element.b"
-			  },
-			  {
-				"name": "Alpha",
-				"jpath": "element.a"
-			  }
-			]
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 39,
-			"right": 0,
-			"top": 0
-		  },
-		  "size": {
-			"width": 111,
-			"height": 70
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Parallel coordinates",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer",
-		  "bgColor": [
-			[
-			  255,
-			  255,
-			  255,
-			  0
-			]
-		  ]
-		},
-		"admin": {
-		  "position": {
-			"left": 53,
-			"right": 0,
-			"top": 0
-		  },
-		  "size": {
-			"width": 97,
-			"height": 70
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Parallel coordinates",
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer",
-		  "bgColor": [
-			[
-			  255,
-			  255,
-			  255,
-			  0
-			]
-		  ]
-		}
-	  },
-	  "id": 2,
-	  "vars_in": [
-		{
-		  "rel": "value",
-		  "name": "bigArray"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "Parallel coordinates",
-	  "vars_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "actions_out": {}
-	},
-	{
-	  "url": "modules/types/edition/slick_grid/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "colorjpath": [
-				[]
-			  ],
-			  "slickCheck": [
-				[
-				  "rowNumbering",
-				  "highlightScroll"
-				]
-			  ],
-			  "slick.defaultColumnWidth": [
-				null
-			  ],
-			  "slick.rowHeight": [
-				null
-			  ],
-			  "slick.selectionModel": [
-				[
-				  "cell"
-				]
-			  ]
-			}
-		  ],
-		  "cols": [
-			[
-			  {
-				"jpath": [
-				  "colorC"
-				],
-				"editor": "none",
-				"formatter": "typerenderer",
-				"width": 275,
-				"defaultSortAsc": []
-			  }
-			]
-		  ],
-		  "groupings": [
-			[
-			  {
-				"getter": [
-				  null
-				]
-			  }
-			]
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 151,
-			"top": 0
-		  },
-		  "size": {
-			"width": 30,
-			"height": 70
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Color list",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		},
-		"admin": {
-		  "position": {
-			"left": 151,
-			"top": 0
-		  },
-		  "size": {
-			"width": 30,
-			"height": 70
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Color list",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		}
-	  },
-	  "id": 3,
-	  "vars_in": [
-		{
-		  "rel": "list",
-		  "name": "bigArray"
-		}
-	  ],
-	  "actions_in": [
-		{}
-	  ],
-	  "title": "Color list",
-	  "vars_out": [
-		{
-		  "jpath": []
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
-	},
-	{
-	  "url": "modules/types/edition/onde/",
-	  "configuration": {
-		"sections": {},
-		"groups": {
-		  "group": [
-			{
-			  "hasButton": [
-				[
-				  "show"
-				]
-			  ],
-			  "button_text": [
-				"Generate"
-			  ],
-			  "debouncing": [
-				-1
-			  ],
-			  "output": [
-				"new"
-			  ],
-			  "mode": [
-				"schema"
-			  ],
-			  "schemaSource": [
-				"config"
-			  ],
-			  "schema": [
-				"{\n    \"type\": \"object\",\n    \"properties\": {\n        \"num\": {\n            \"type\": \"number\",\n            \"label\": \"Number of generated colors\",\n            \"default\": 10000\n        },\n        \"high\": {\n            \"type\": \"number\",\n            \"label\": \"Number of different highlight IDs\",\n            \"default\": 1000\n        }\n    }\n}"
-			  ]
-			}
-		  ]
-		}
-	  },
-	  "layers": {
-		"Default layer": {
-		  "position": {
-			"left": 0,
-			"top": 0
-		  },
-		  "size": {
-			"width": 38,
-			"height": 14
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "Data generation",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "Default layer"
-		},
-		"admin": {
-		  "position": {
-			"left": 0,
-			"top": 0
-		  },
-		  "size": {
-			"width": 52,
-			"height": 20
-		  },
-		  "zIndex": 0,
-		  "display": true,
-		  "title": "",
-		  "bgColor": [
-			255,
-			255,
-			255,
-			0
-		  ],
-		  "wrapper": true,
-		  "created": true,
-		  "name": "admin"
-		}
-	  },
-	  "id": 4,
-	  "vars_in": [
-		{
-		  "rel": "inputValue",
-		  "name": "defaultColors"
-		}
-	  ],
-	  "actions_in": [],
-	  "title": "Data generation",
-	  "vars_out": [
-		{
-		  "event": "onFormSubmit",
-		  "rel": "outputValue",
-		  "jpath": [],
-		  "name": "colors"
-		}
-	  ],
-	  "actions_out": [
-		{
-		  "jpath": []
-		}
-	  ]
-	}
+    {
+      "url": "modules/types/chart/statistics/parallel_coordinates/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colJPath": [
+                "element.color"
+              ],
+              "options": [
+                [
+                  "reorder"
+                ]
+              ],
+              "brushMode": [
+                "1D-axes-multi"
+              ],
+              "predicate": [
+                "and"
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "name": "Red",
+                "jpath": "element.r"
+              },
+              {
+                "name": "Green",
+                "jpath": "element.g"
+              },
+              {
+                "name": "Blue",
+                "jpath": "element.b"
+              },
+              {
+                "name": "Alpha",
+                "jpath": "element.a"
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "right": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 111,
+            "height": 70
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Parallel coordinates",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        },
+        "admin": {
+          "position": {
+            "left": 53,
+            "right": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 97,
+            "height": 70
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Parallel coordinates",
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer",
+          "bgColor": [
+            [
+              255,
+              255,
+              255,
+              0
+            ]
+          ]
+        }
+      },
+      "id": 1,
+      "vars_in": [
+        {
+          "rel": "value",
+          "name": "bigArray"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Parallel coordinates",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": {},
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/edition/slick_grid/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "colorjpath": [
+                []
+              ],
+              "slickCheck": [
+                [
+                  "rowNumbering",
+                  "highlightScroll"
+                ]
+              ],
+              "slick.defaultColumnWidth": [
+                null
+              ],
+              "slick.rowHeight": [
+                null
+              ],
+              "slick.selectionModel": [
+                [
+                  "cell"
+                ]
+              ]
+            }
+          ],
+          "cols": [
+            [
+              {
+                "jpath": [
+                  "colorC"
+                ],
+                "editor": "none",
+                "formatter": "typerenderer",
+                "width": 275,
+                "defaultSortAsc": []
+              }
+            ]
+          ],
+          "groupings": [
+            [
+              {
+                "getter": [
+                  null
+                ]
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 112,
+            "top": 0
+          },
+          "size": {
+            "width": 30,
+            "height": 70
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Color list",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "admin": {
+          "position": {
+            "left": 151,
+            "top": 0
+          },
+          "size": {
+            "width": 30,
+            "height": 70
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Color list",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 2,
+      "vars_in": [
+        {
+          "rel": "list",
+          "name": "bigArray"
+        }
+      ],
+      "actions_in": [
+        {}
+      ],
+      "title": "Color list",
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin"
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                [
+                  "yes"
+                ]
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "// Change this variable to modify the number of generated colors\n\nvar l = 10000,\n    high = 1000;\n\nvar i = 0,\n    a = Array(l);\n\nfunction rnd(n) {\n    return Math.floor(Math.random()*n);\n}\n\nvar o;\nfor(; i < l; i++) {\n    o = {\n        r: rnd(256),\n        g: rnd(256),\n        b: rnd(256),\n        a: Math.random()\n    };\n    o.color = \"rgba(\"+o.r+\",\"+o.g+\",\"+o.b+\",\"+o.a+\")\";\n    o.colorC = {type:'color',value:o.color};\n    o._highlight = [rnd(high)];\n    a[i] = o;\n}\n\nAPI.createData('bigArray', a);"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {}
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 20,
+            "height": 20
+          },
+          "zIndex": 0,
+          "display": false,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        },
+        "admin": {
+          "position": {
+            "left": 0,
+            "top": 0
+          },
+          "size": {
+            "width": 44,
+            "height": 48
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "admin"
+        }
+      },
+      "id": 3,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": ""
+    }
   ],
   "variables": [
-	{
-	  "jpath": [
-		""
-	  ]
-	}
-  ],
-  "pouchvariables": [
-	{}
+    {
+      "jpath": [
+        ""
+      ]
+    }
   ],
   "configuration": {
-	"title": "RGBa color viewer"
+    "title": "RGBa color viewer"
   },
   "actionscripts": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  {
-			"name": [
-			  null
-			],
-			"script": [
-			  null
-			]
-		  }
-		]
-	  }
-	}
-  ],
-  "crons": [
-	{}
-  ],
-  "couch_replication": [
-	{
-	  "sections": {},
-	  "groups": {
-		"couch": [
-		  [
-			{
-			  "direction": "both",
-			  "continuous": []
-			}
-		  ]
-		]
-	  }
-	}
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          {
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
   ],
   "init_script": [
-	{
-	  "sections": {},
-	  "groups": {
-		"general": [
-		  {
-			"script": [
-			  null
-			]
-		  }
-		]
-	  }
-	}
+    {
+      "sections": {},
+      "groups": {
+        "general": [
+          {
+            "script": [
+              null
+            ]
+          }
+        ]
+      }
+    }
   ],
   "custom_filters": [
-	{
-	  "sections": {
-		"filters": [
-		  {
-			"sections": {},
-			"groups": {
-			  "filter": [
-				{
-				  "name": [
-					null
-				  ],
-				  "script": [
-					null
-				  ]
-				}
-			  ],
-			  "libs": [
-				[
-				  {}
-				]
-			  ]
-			}
-		  }
-		]
-	  },
-	  "groups": {}
-	}
+    {
+      "sections": {
+        "filters": [
+          {
+            "sections": {},
+            "groups": {
+              "filter": [
+                {
+                  "name": [
+                    null
+                  ],
+                  "script": [
+                    null
+                  ]
+                }
+              ],
+              "libs": [
+                [
+                  {}
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "groups": {}
+    }
   ],
   "actionfiles": [
-	{
-	  "sections": {},
-	  "groups": {
-		"action": [
-		  [
-			{}
-		  ]
-		]
-	  }
-	}
+    {
+      "sections": {},
+      "groups": {
+        "action": [
+          [
+            {}
+          ]
+        ]
+      }
+    }
   ],
   "aliases": []
 }

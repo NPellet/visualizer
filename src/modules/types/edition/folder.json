@@ -1,21 +1,12 @@
 {
   "modules": [
     {
-      "moduleName": "Edit/Display",
-      "url": "modules/types/edition/dualview/",
-      "hidden": true
-    },
-    {
       "moduleName": "Filter editor",
       "url": "modules/types/edition/filter_editor/"
     },
     {
       "moduleName": "JSON object editor",
       "url": "modules/types/edition/object_editor/"
-    },
-    {
-      "moduleName": "Onde form",
-      "url": "modules/types/edition/onde/"
     },
     {
       "moduleName": "Rich text editor",
