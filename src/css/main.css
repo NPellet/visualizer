@@ -584,6 +584,26 @@ div.ci-module-wrapper.ci-module-gcms .ci-module-content {
   resize: none;
 }
 
+.ci-module-placeholder section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+}
+
+.ci-module-placeholder h1 {
+  font-size: 36px;
+  text-align: center;
+}
+
+.ci-module-placeholder p {
+  font-size: 16px;
+}
+
+.ci-module-placeholder-label {
+  font-weight: bold;
+}
+
 .ci-canvas-jcamp,
 .canvas-container {
   font-size: 0px;
