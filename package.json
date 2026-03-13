@@ -109,7 +109,7 @@
     "semver": "^7.7.4",
     "smart-array-filter": "^5.0.0",
     "superagent": "^10.3.0",
-    "twig": "^1.17.1"
+    "twig": "^2.0.0"
   },
   "volta": {
     "node": "22.22.1"
