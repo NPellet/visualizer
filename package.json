@@ -12,7 +12,7 @@
     "build-debug": "node --inspect --debug-brk ./node_modules/grunt-cli/bin/grunt build",
     "copy-resources": "node -e \"fs.copyFileSync('node_modules/openchemlib/dist/resources.json', 'src/browserified/openchemlib/resources.json')\"",
     "clean": "rimraf src/components src/browserified",
-    "eslint": "eslint src --cache",
+    "eslint": "eslint src tests --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "install-components": "bower install",
     "install-rollup": "rollup --config rollup.config.mjs",
@@ -21,7 +21,7 @@
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",
     "test": "npm run eslint && npm run prettier && npm run test-only",
-    "test-only": "node --test tests/**",
+    "test-only": "node --test tests/**/*.js",
     "release:minor": "npm run test && grunt bump:minor --release",
     "release:patch": "npm run test && grunt bump:patch --release"
   },
@@ -112,6 +112,6 @@
     "twig": "^1.17.1"
   },
   "volta": {
-    "node": "22.22.0"
+    "node": "22.22.1"
   }
 }
