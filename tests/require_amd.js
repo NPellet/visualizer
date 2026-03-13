@@ -1,4 +1,5 @@
 import requirejs from 'requirejs';
+
 requirejs.config({
   baseUrl: new URL('../src/', import.meta.url).pathname,
 });

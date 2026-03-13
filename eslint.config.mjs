@@ -82,4 +82,12 @@ export default defineConfig(
       'prefer-spread': 'off',
     },
   },
+  {
+    rules: {
+      'import/no-extraneous-dependencies': [
+        'error',
+        { packageDir: import.meta.dirname },
+      ],
+    },
+  },
 );
