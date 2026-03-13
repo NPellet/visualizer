@@ -19,10 +19,6 @@
     {
       "moduleName": "Slick Grid",
       "url": "modules/types/edition/slick_grid/"
-    },
-    {
-      "moduleName": "Templated form",
-      "url": "modules/types/edition/form/"
     }
   ],
   "name": "Edition",
