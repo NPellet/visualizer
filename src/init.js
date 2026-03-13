@@ -136,7 +136,6 @@ require.config({
       exports: 'Slick',
     },
     'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
-    'lib/flot/jquery.flot.pie': ['jquery', 'lib/flot/jquery.flot'],
     'lib/pixastic/pixastic': {
       deps: ['lib/pixastic/pixastic/pixastic.core'],
       exports: 'Pixastic',
