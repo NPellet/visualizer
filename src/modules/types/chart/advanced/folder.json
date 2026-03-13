@@ -1,10 +1,6 @@
 {
   "modules": [
     {
-      "moduleName": "Hexagonal map",
-      "url": "modules/types/chart/advanced/hex/"
-    },
-    {
       "moduleName": "Matrix display",
       "url": "modules/types/chart/advanced/canvas_matrix/"
     }
