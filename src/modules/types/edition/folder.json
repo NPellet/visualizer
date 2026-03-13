@@ -1,10 +1,6 @@
 {
   "modules": [
     {
-      "moduleName": "Filter editor",
-      "url": "modules/types/edition/filter_editor/"
-    },
-    {
       "moduleName": "JSON object editor",
       "url": "modules/types/edition/object_editor/"
     },
