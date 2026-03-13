@@ -1,5 +1,5 @@
 {
-  "folders": ["advanced", "basic", "maps", "statistics"],
+  "folders": ["basic", "maps", "statistics"],
   "name": "Chart",
   "modules": []
 }
