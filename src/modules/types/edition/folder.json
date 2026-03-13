@@ -17,10 +17,6 @@
       "url": "modules/types/edition/quill_editor/"
     },
     {
-      "moduleName": "Simple Form",
-      "url": "modules/types/edition/form_simple/"
-    },
-    {
       "moduleName": "Slick Grid",
       "url": "modules/types/edition/slick_grid/"
     },
