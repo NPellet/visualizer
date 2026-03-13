@@ -100,9 +100,6 @@ require.config({
     ckeditor: {
       exports: 'CKEDITOR',
     },
-    'lib/parser/Parser': {
-      exports: 'Parser',
-    },
     quillResizeModule: ['quillPrivate', 'quill'],
     quillTableBetterModule: ['quillPrivate', 'quill'],
     select2: ['jquery'],
