@@ -1,10 +1,6 @@
 {
   "modules": [
     {
-      "moduleName": "Configured array filter",
-      "url": "modules/types/array_search/configured_search/"
-    },
-    {
       "moduleName": "Smart array filter",
       "url": "modules/types/array_search/smart_array_filter/"
     }
