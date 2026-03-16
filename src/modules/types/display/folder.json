@@ -23,15 +23,6 @@
     {
       "moduleName": "Twig template",
       "url": "modules/types/display/template-twig/"
-    },
-    {
-      "moduleName": "Two dimensional list",
-      "url": "modules/types/display/2d_list_fast/"
-    },
-    {
-      "moduleName": "Two dimensional list (old)",
-      "url": "modules/types/display/2d_list/",
-      "hidden": true
     }
   ],
   "name": "Display",
