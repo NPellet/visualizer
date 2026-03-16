@@ -13,10 +13,6 @@
       "url": "modules/types/chart/statistics/phylogram/"
     },
     {
-      "moduleName": "Score plot",
-      "url": "modules/types/chart/statistics/loading_plot/"
-    },
-    {
       "moduleName": "Word cloud",
       "url": "modules/types/chart/statistics/wordcloud/"
     }
