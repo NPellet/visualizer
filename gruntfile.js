@@ -175,7 +175,6 @@ module.exports = function (grunt) {
               'lib/forms/**/*.js',
               'lib/twigjs/*.js',
               'lib/chemistry/*.js',
-              'lib/loadingplot/*.js',
             ], // Actual pattern(s) to match.
             dest: './build2/', // Destination path prefix.
             ext: '.js', // Dest filepaths will have this extension.
