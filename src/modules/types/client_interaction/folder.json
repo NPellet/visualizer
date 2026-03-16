@@ -15,10 +15,6 @@
     {
       "moduleName": "Drag and drop",
       "url": "modules/types/client_interaction/dragdrop/"
-    },
-    {
-      "moduleName": "Paste value",
-      "url": "modules/types/client_interaction/paste_text/"
     }
   ],
   "name": "Client interaction",
