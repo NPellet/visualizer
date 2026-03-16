@@ -21,11 +21,6 @@
       "url": "modules/types/display/progress/"
     },
     {
-      "moduleName": "Sticky note",
-      "url": "modules/types/display/postit/",
-      "hidden": true
-    },
-    {
       "moduleName": "Twig template",
       "url": "modules/types/display/template-twig/"
     },
