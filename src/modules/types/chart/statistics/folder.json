@@ -11,10 +11,6 @@
     {
       "moduleName": "Phylogram",
       "url": "modules/types/chart/statistics/phylogram/"
-    },
-    {
-      "moduleName": "Word cloud",
-      "url": "modules/types/chart/statistics/wordcloud/"
     }
   ],
   "name": "Statistics",
