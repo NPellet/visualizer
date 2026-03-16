@@ -39,7 +39,6 @@ require.config({
     'moment-duration-format':
       'node_modules/moment-duration-format/lib/moment-duration-format',
     notifyjs: 'components/notifyjs/dist/notify',
-    msa: 'lib/msa/msa.min',
     'nmr-simulation': 'components/nmr-simulation/dist/nmr-simulation',
     numeral: 'node_modules/numeral/min/numeral.min',
     openchemlib: 'browserified/openchemlib/openchemlib',
@@ -87,9 +86,6 @@ require.config({
         // Allow cross-origin images
         this.THREE.ImageUtils.crossOrigin = 'anonymous';
       },
-    },
-    msa: {
-      exports: 'msa',
     },
     x2js: {
       exports: 'X2JS',
