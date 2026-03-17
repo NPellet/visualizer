@@ -266,7 +266,6 @@ module.exports = function (grunt) {
               './numeral/min/numeral.min.js',
               './openchemlib/dist/**',
               './papaparse/papaparse*',
-              './pouchdb/dist/**',
               [
                 './quill/dist/*.js*',
                 './quill/dist/*.css',
