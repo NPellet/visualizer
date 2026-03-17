@@ -45,7 +45,6 @@ require.config({
     'p-map': 'browserified/p-map/index',
     papaparse: 'node_modules/papaparse/papaparse.min',
     plot: 'lib/plot/plot',
-    pouchdb: 'node_modules/pouchdb/dist/pouchdb.min',
     quillPrivate: 'src/quillPrivate',
     quill: 'node_modules/quill/dist/quill',
     quillResizeModule: 'node_modules/quill-resize-module/dist/resize',
