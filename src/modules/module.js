@@ -551,8 +551,6 @@ define([
         this.controller.actionsIn,
       );
 
-      const filters = makeFilters(API.getAllFilters());
-
       const autoCompleteVariables = Util.stringsToAutocomplete(
         Variables.getNames(),
       );
@@ -791,11 +789,6 @@ define([
                   title: 'From variable',
                   options: autoCompleteVariables,
                 },
-                filter: {
-                  type: 'combo',
-                  title: 'Filter variable',
-                  options: filters,
-                },
               },
             },
           },
@@ -830,11 +823,6 @@ define([
                   options: {},
                   extractValue: Util.jpathToArray,
                   insertValue: Util.jpathToString,
-                },
-                filter: {
-                  type: 'combo',
-                  title: 'Filter variable',
-                  options: filters,
                 },
                 name: {
                   type: 'text',
@@ -1572,17 +1560,6 @@ define([
         Debug.error(`Unknow field type: ${field.type}`);
         return field.default || '';
     }
-  }
-
-  function makeFilters(arraySource) {
-    if (Array.isArray(arraySource)) {
-      return arraySource.map((value) => ({
-        key: value.file || '',
-        title: value.name,
-        children: makeFilters(value.children),
-      }));
-    }
-    return [];
   }
 
   return Module;

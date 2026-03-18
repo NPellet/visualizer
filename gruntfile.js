@@ -95,15 +95,6 @@ module.exports = function (grunt) {
     }
   });
 
-  function mapPath(path) {
-    // Map a relative application path to a relative build path
-    var mapped;
-    if (path.indexOf('usr/') === 0) mapped = usrPath + path.slice(3);
-    else mapped = `./src/${path}`;
-    if (!mapped.includes('.js')) mapped += '.js';
-    return mapped;
-  }
-
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -311,25 +302,8 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: `${usrPath}/filters/`,
-            src: '**',
-            filter(filePath) {
-              var files = grunt.option('filterFiles');
-              for (let i = 0, l = files.length; i < l; i++) {
-                if (path.relative(mapPath(files[i]), filePath) === '') {
-                  return true;
-                }
-              }
-
-              return false;
-            },
-            dest: './build/usr/filters/',
-          },
-
-          {
-            expand: true,
             cwd: usrPath,
-            src: ['**', '!config/**', '!filters/**', '!modules/**'],
+            src: ['**', '!config/**', '!modules/**'],
             dest: './build/usr/',
           },
         ],
@@ -672,13 +646,6 @@ module.exports = function (grunt) {
         modulesFinal = loadFile(cfg.modules);
       }
     }
-
-    /* Find filter files from the config.json and puts them in an option */
-    const filterFiles = [];
-    for (const i in cfg.filters) {
-      filterFiles.push(cfg.filters[i].file);
-    }
-    grunt.option('filterFiles', filterFiles);
 
     cfg.modules = modulesFinal;
 

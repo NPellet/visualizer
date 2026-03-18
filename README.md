@@ -18,7 +18,7 @@ The view file will contain information about the visualization in a JSON format 
 
 The data file contains the data to visualize in a JSON format. The user is responsible to generate that file according to a few guidelines.
 
-The config file is typically common to your projects. It defines which modules are available (built-in or not), which buttons should be displayed in the header, which variable filters and action files should be available to the visualizer.
+The config file is typically common to your projects. It defines which modules are available (built-in or not), which buttons should be displayed in the header, which action files should be available to the visualizer.
 
 ## Variables and Actions
 
