@@ -1,5 +1,5 @@
 {
-  "lockView": false,
+  "lockView": true,
   "usrDir": "usr",
   "debugLevel": 0,
   "filters": [],
