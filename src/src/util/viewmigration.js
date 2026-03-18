@@ -733,6 +733,34 @@ define([
         'panzoom',
       );
     },
+    '3.3.1-1',
+    function (view) {
+      function removeFilters(module, key) {
+        const value = module[key];
+        if (Array.isArray(value)) {
+          for (let item of value) {
+            if (item.filter) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                `This view has "${module.url}" set with a filter "${item.filter}" on ${key} "${item.name}". Filters are no longer supported and the view needs to be adapted.`,
+              );
+              delete item.filter;
+            }
+          }
+        }
+      }
+      if (view.custom_filters) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          'This view has configured custom filters which are being removed',
+        );
+        delete view.custom_filters;
+      }
+      for (let module of view.modules) {
+        removeFilters(module, 'vars_out');
+        removeFilters(module, 'vars_in');
+      }
+    },
     //  Add new migration functions here
     //  Do not forget to `npm run prerelease` before creating your migration script
     //      'x.y.z', function (view) {
