@@ -16,7 +16,6 @@ require.config({
     eventEmitter: 'components/eventEmitter/EventEmitter.min',
     'file-saver': 'components/file-saver.js/FileSaver',
     forms: 'lib/forms',
-    highlightjs: 'lib/highlight.js/highlight.pack',
     jcampconverter: 'lib/jcampconverter/jcampconverter.7.3.1.min',
     jsbarcode: 'node_modules/jsbarcode/dist/JsBarcode.all.min',
     jquery: 'node_modules/jquery/dist/jquery',
@@ -26,12 +25,10 @@ require.config({
     jsgraph: 'components/jsgraph/dist/jsgraph-es6',
     'json-chart': 'browserified/json-chart/json-chart',
     jszip: 'components/jszip/dist/jszip.min',
-    'js-yaml': 'components/js-yaml/dist/js-yaml.min',
     katex: 'node_modules/katex/dist/katex.min',
     lodash: 'components/lodash/dist/lodash.min',
     loglevel: 'components/loglevel/dist/loglevel',
     'markdown-js': 'components/markdown-js/lib/markdown',
-    marked: 'node_modules/marked/lib/marked',
     // mathjax:            'components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML&amp;delayStartupUntil=configured',
     mathjs: 'node_modules/mathjs/lib/browser/math',
     'mime-types': 'browserified/mime-types/index',
@@ -128,10 +125,6 @@ require.config({
       exports: 'Slick',
     },
     'libs/jsmol/js/JSmolApplet': ['libs/jsmol/JSmol.min.nojq'],
-    'lib/pixastic/pixastic': {
-      deps: ['lib/pixastic/pixastic/pixastic.core'],
-      exports: 'Pixastic',
-    },
   },
   map: {
     '*': {

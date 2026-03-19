@@ -142,12 +142,7 @@ define([
     var view = Versioning.getView();
     var data = Versioning.getData();
 
-    Promise.all([
-      loadCustomFilters(),
-      loadMainVariables(),
-      configureRequirejs(),
-      loadCustomModules(),
-    ])
+    Promise.all([loadMainVariables(), configureRequirejs()])
       .then(doInitScript)
       .then(
         function () {
@@ -219,83 +214,6 @@ define([
       }
       if (changed) {
         Versioning.setViewJSON(v);
-      }
-    }
-
-    function loadCustomModules() {
-      var modules = view.getChildSync([
-        'custom_filters',
-        0,
-        'sections',
-        'modules',
-        0,
-        'groups',
-        'modules',
-        0,
-      ]);
-      if (!modules) return Promise.resolve();
-      modules = _.filter(modules, function (m) {
-        return m && m.url;
-      });
-      for (let i = 0; i < modules.length; i++) {
-        modules[i].url = modules[i].url.replace(/\/$/, '');
-      }
-      return ModuleFactory.setModules({
-        folders: _.map(modules, 'url'),
-      });
-    }
-
-    function loadCustomFilters() {
-      // Load custom filters
-      if (view.custom_filters) {
-        var filters = view.custom_filters[0].sections.filters;
-        var allFilters = API.getAllFilters();
-        for (let i = 0; i < filters.length; i++) {
-          var filter = filters[i].groups.filter[0];
-          if (filter.name[0]) {
-            var deps = filters[i].groups.libs[0];
-            var depsA = ['src/util/api'];
-            var defineStr = 'filterDef = function filterDefinition(API';
-            var dep;
-            for (var j = 0; j < deps.length; j++) {
-              dep = deps[j];
-              if (dep.lib) {
-                depsA.push(dep.lib);
-                defineStr += `, ${dep.alias}`;
-              }
-            }
-            defineStr += `) { \n ${filter.script[0]} \n}`;
-
-            try {
-              var filterDef;
-              eval(defineStr);
-              require.undef(filter.name[0]);
-              define(filter.name[0], depsA, filterDef);
-              allFilters.push({
-                file: filter.name[0],
-                name: filter.name[0],
-              });
-            } catch (error) {
-              Debug.warn('Problem with custom filter definition', error);
-            }
-          }
-        }
-        var filtersLib = view.getChildSync(
-          'custom_filters',
-          0,
-          'sections',
-          'filtersLib',
-          0,
-          'groups',
-          'filters',
-          0,
-        );
-        if (filtersLib) {
-          filtersLib = _.filter(filtersLib, function (v) {
-            return v && v.name && v.file;
-          });
-          API.setAllFilters(filtersLib);
-        }
       }
     }
 
@@ -503,97 +421,6 @@ define([
               },
             },
           },
-          custom_filters: {
-            options: {
-              title: 'Custom filters',
-              icon: 'script_go',
-            },
-            sections: {
-              modules: {
-                options: {
-                  multiple: false,
-                  title: 'Modules',
-                },
-                groups: {
-                  modules: {
-                    options: {
-                      type: 'table',
-                      multiple: true,
-                    },
-                    fields: {
-                      url: {
-                        type: 'text',
-                        title: 'Root url to modules',
-                      },
-                    },
-                  },
-                },
-              },
-              filtersLib: {
-                options: {
-                  title: 'Filters',
-                },
-                groups: {
-                  filters: {
-                    options: {
-                      type: 'table',
-                      multiple: true,
-                    },
-                    fields: {
-                      name: {
-                        type: 'text',
-                        title: 'Name',
-                      },
-                      file: {
-                        type: 'text',
-                        title: 'url',
-                      },
-                    },
-                  },
-                },
-              },
-              filters: {
-                options: {
-                  multiple: true,
-                  title: 'Custom Filters',
-                },
-                groups: {
-                  filter: {
-                    options: {
-                      type: 'list',
-                    },
-                    fields: {
-                      name: {
-                        type: 'text',
-                        title: 'Filter name',
-                      },
-                      script: {
-                        type: 'jscode',
-                        title: 'Script',
-                      },
-                    },
-                  },
-                  libs: {
-                    options: {
-                      type: 'table',
-                      multiple: 'true',
-                      title: 'Dependencies',
-                    },
-                    fields: {
-                      lib: {
-                        type: 'text',
-                        title: 'URL',
-                      },
-                      alias: {
-                        type: 'text',
-                        title: 'Alias',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
           init_script: {
             options: {
               title: 'Initialization script',
@@ -636,7 +463,6 @@ define([
               },
             ],
             init_script: view.init_script,
-            custom_filters: view.custom_filters,
             actionfiles: ActionManager.getFilesForm(),
             requirejs: view.requirejs,
           },
@@ -662,7 +488,6 @@ define([
           true,
         );
         view.init_script = value.sections.init_script;
-        view.custom_filters = value.sections.custom_filters;
         view.requirejs = value.sections.requirejs;
 
         _check(true);
@@ -761,9 +586,6 @@ define([
         if (cfgJson.modules) {
           _modulesSet = ModuleFactory.setModules(cfgJson.modules);
         }
-
-        // Set the filters
-        API.setAllFilters(cfgJson.filters || []);
       })
         .fail(function (a, b) {
           Debug.error(`Error loading the config : ${b}`);

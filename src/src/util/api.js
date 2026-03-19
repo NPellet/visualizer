@@ -13,7 +13,6 @@ define([
   './config',
   'src/main/variables',
   'src/main/datas',
-  'lodash',
   'src/main/grid',
 ], function (
   Cache,
@@ -24,10 +23,7 @@ define([
   Config,
   Variables,
   Data,
-  _,
 ) {
-  var variableFilters;
-
   var loadingSVG = Util.getLoadingAnimation(64, 'slateblue');
   var loadingHtml = $('<div>', { id: 'ci-loading' })
     .append(loadingSVG)
@@ -90,22 +86,6 @@ define([
 
     highlightId: setHighlightId,
 
-    getAllFilters() {
-      return variableFilters;
-    },
-
-    setAllFilters(filters) {
-      variableFilters = _([filters, variableFilters])
-        .flatten()
-        .filter((v) => v && v.name && v.file)
-        .uniq((v) => v.file)
-        .unshift({
-          file: '',
-          name: 'No filter',
-        })
-        .value();
-    },
-
     isViewLocked() {
       return Versioning.isViewLocked();
     },
@@ -117,13 +97,6 @@ define([
     getContextMenu() {
       return Config.contextMenu();
     },
-
-    /* Extra functions used in filter testsuite. Allows compatibility of filters */
-    /* eslint-disable no-unused-vars */
-    dev_fctCalled(fct) {},
-    dev_fctUncalled(fct) {},
-    dev_assert(family, script, value) {},
-    /* eslint-enable no-unused-vars */
   };
 
   /**
