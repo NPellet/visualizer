@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/NPellet/visualizer/compare/v4.0.2...v4.1.0) (2026-03-23)
+
+
+### Features
+
+* **spectra_displayer:** add tab-delimited data export for chart series ([3bfda8e](https://github.com/NPellet/visualizer/commit/3bfda8e28e6334952da2e472e23481c6c7951e7d))
+
+
+
 ## [4.0.2](https://github.com/NPellet/visualizer/compare/v4.0.1...v4.0.2) (2026-03-23)
 
 
