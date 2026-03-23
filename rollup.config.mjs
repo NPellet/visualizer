@@ -1,8 +1,6 @@
-import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import terser from '@rollup/plugin-terser';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const plugins = [commonjs({}), json(), nodeResolve({ browser: true })];
@@ -120,14 +118,6 @@ export default [
       format: 'umd',
       name: 'Twig',
     },
-    plugins: [...plugins, babel({
-      presets: [[
-        "@babel/preset-env", {
-        "targets": {
-          "ie": "11"
-        },
-        }
-      ]],
-    }), terser()],
+    plugins,
   },
 ];
