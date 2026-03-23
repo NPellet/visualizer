@@ -1,3 +1,12 @@
+## [4.0.2](https://github.com/NPellet/visualizer/compare/v4.0.1...v4.0.2) (2026-03-23)
+
+
+### Bug Fixes
+
+* **spectra_displayer:** move log scale option into axis options checkboxes ([8ac12ce](https://github.com/NPellet/visualizer/commit/8ac12ce540f7cc167304da3f72258e3f69ab3d19))
+
+
+
 ## [4.0.1](https://github.com/NPellet/visualizer/compare/v4.0.0...v4.0.1) (2026-03-23)
 
 
