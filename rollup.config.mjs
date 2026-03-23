@@ -104,14 +104,6 @@ export default [
     plugins,
   },
   {
-    onwarn(warning, warn) {
-      if(warning.code === 'EVAL') {
-        // Prevent huge warning with minified input
-        warn({...warning, frame: ''})
-      } else {
-       warn(warning);
-      }
-    },
     input: 'node_modules/twig/twig.min.js',
     output: {
       file: 'src/browserified/twig/twig.js',
