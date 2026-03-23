@@ -2,7 +2,7 @@
 
 define([
   'modules/default/defaultview',
-  'lib/twigjs/twig',
+  'twig_extended',
   'src/util/debug',
   'src/util/colorbar',
   'src/util/color',

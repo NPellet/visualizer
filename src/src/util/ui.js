@@ -14,7 +14,7 @@ define([
   'src/util/typerenderer',
   'forms/button',
   'src/util/Form',
-  'lib/twigjs/twig',
+  'twig',
   'notifyjs',
 ], function (Util, Debug, Traversing, _, $, Renderer, Button, Form, Twig) {
   // On load add the style for the progress notification
