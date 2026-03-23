@@ -1,5 +1,5 @@
 {
-  "version": "3.3.1-1",
+  "version": "4.0.3-0",
   "grid": {
     "layers": {
       "Default layer": {
@@ -383,7 +383,8 @@
           {
             "toolbar": [
               [
-                "Open Preferences"
+                "Open Preferences",
+                "Export Data"
               ]
             ]
           }
@@ -802,7 +803,8 @@
           {
             "toolbar": [
               [
-                "Open Preferences"
+                "Open Preferences",
+                "Export Data"
               ]
             ]
           }

@@ -1650,5 +1650,56 @@ define([
     return object;
   }
 
+  View.prototype.exportToTabDelimited = function () {
+    const allSeries = [];
+    for (const varname in this.series) {
+      const series = this.series[varname];
+      for (let i = 0; i < series.length; i++) {
+        const serie = series[i];
+        const waveform = serie.getWaveform();
+        if (!waveform) continue;
+        const length = waveform.getLength();
+        const xData = [];
+        const yData = waveform.getDataY();
+        for (let j = 0; j < length; j++) {
+          xData.push(waveform.getX(j));
+        }
+        allSeries.push({
+          label: serie.getLabel() || varname + (i > 0 ? `-${i}` : ''),
+          x: xData,
+          y: yData,
+          length,
+        });
+      }
+    }
+    if (allSeries.length === 0) return '';
+
+    // Build header
+    const header = [];
+    for (let s = 0; s < allSeries.length; s++) {
+      header.push(`x - ${allSeries[s].label}`, `y - ${allSeries[s].label}`);
+    }
+
+    // Build rows (max length across all series)
+    let maxLength = 0;
+    for (let s = 0; s < allSeries.length; s++) {
+      if (allSeries[s].length > maxLength) maxLength = allSeries[s].length;
+    }
+
+    const lines = [header.join('\t')];
+    for (let r = 0; r < maxLength; r++) {
+      const row = [];
+      for (let s = 0; s < allSeries.length; s++) {
+        if (r < allSeries[s].length) {
+          row.push(allSeries[s].x[r], allSeries[s].y[r]);
+        } else {
+          row.push('', '');
+        }
+      }
+      lines.push(row.join('\t'));
+    }
+    return lines.join('\r\n');
+  };
+
   return View;
 });

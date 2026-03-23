@@ -1143,6 +1143,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     this.createDataFromEvent('onSelectScatter', 'selectedData', selectedData);
   };
 
+  Controller.prototype.export = function () {
+    return this.module.view.exportToTabDelimited();
+  };
+
   Controller.prototype.print = function () {
     return this.module.view.getSVGElement().cloneNode(true);
   };
