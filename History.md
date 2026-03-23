@@ -1,3 +1,24 @@
+# [4.0.0](https://github.com/NPellet/visualizer/compare/v3.3.0...v4.0.0) (2026-03-23)
+
+
+### Bug Fixes
+
+* fallback module loading to placeholder ([84b381d](https://github.com/NPellet/visualizer/commit/84b381df4192c4535a7a1dd5507a7d6241a09e43))
+* prevent error in entrypoint when config does not define modules ([e66637c](https://github.com/NPellet/visualizer/commit/e66637c6e06184bb98e7965162fa9e9e039cf39f))
+
+
+### Features
+
+* show placeholder module when module could not be loaded ([#1215](https://github.com/NPellet/visualizer/issues/1215)) ([e637d5d](https://github.com/NPellet/visualizer/commit/e637d5d9d8d9586a91108ff484221f95364a86af))
+* **spectra_displayer:** add logarithmic scale option for X and Y axes ([7abe24a](https://github.com/NPellet/visualizer/commit/7abe24a312fde0fb387fe3165132cd37b6c100d0))
+* **viewManager:** add copy flavor ([67a5d96](https://github.com/NPellet/visualizer/commit/67a5d965cc725659d694cdfbb744e1258b43da47))
+* **viewManager:** add separator character in flavor names ([594ccd0](https://github.com/NPellet/visualizer/commit/594ccd0fd90fbde8f6b5213fcfff8d2a5226ee2d))
+* **viewManager:** allow copy / move with subfolders ([542aedc](https://github.com/NPellet/visualizer/commit/542aedcf8158fa05e549e7531e23e77a45e4f9cf))
+* **viewManager:** delete or rename flavors ([25d8c3c](https://github.com/NPellet/visualizer/commit/25d8c3c67ae872df0f11c00c946ca55d176c5cb3))
+* **viewManager:** small layout improvement ([4dcaab2](https://github.com/NPellet/visualizer/commit/4dcaab25bbf906262a644e97feac0183fbee855c))
+
+
+
 # [3.3.0](https://github.com/NPellet/visualizer/compare/v3.2.3...v3.3.0) (2026-03-06)
 
 

@@ -2,11 +2,11 @@
 
 define(['browserified/semver/semver'], (semver) => {
   /* DO NOT MODIFY THE FOLLOWING LINES MANUALLY */
-  const MAJOR = 3;
-  const MINOR = 3;
-  const PATCH = 1;
-  const PRERELEASE = 1;
-  const IS_RELEASE = false;
+  const MAJOR = 4;
+  const MINOR = 0;
+  const PATCH = 0;
+  const PRERELEASE = false;
+  const IS_RELEASE = true;
   const BUILD_TIME = null;
   const INCLUDED_MODULE_CSS = [];
   /* END */
