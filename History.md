@@ -1,3 +1,12 @@
+## [4.0.1](https://github.com/NPellet/visualizer/compare/v4.0.0...v4.0.1) (2026-03-23)
+
+
+### Reverts
+
+* Revert "chore: update twig dependency" ([2c5b97b](https://github.com/NPellet/visualizer/commit/2c5b97b72991b666b4a3c533834f15cc67be6fa4))
+
+
+
 # [4.0.0](https://github.com/NPellet/visualizer/compare/v3.3.0...v4.0.0) (2026-03-23)
 
 
