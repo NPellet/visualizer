@@ -44,9 +44,11 @@
   },
   "devDependencies": {
     "@babel/types": "^7.29.0",
+    "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
     "@types/node": "^24.10.13",
     "add-stream": "^1.0.0",
     "bower": "^1.8.14",
