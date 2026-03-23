@@ -20,3 +20,4 @@ src/usr/config/default.json
 .env
 
 couchdb-data
+.claude

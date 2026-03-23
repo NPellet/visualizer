@@ -516,6 +516,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                 multiple: false,
               },
               fields: $.extend({}, axisFields, {
+                logScale: {
+                  type: 'checkbox',
+                  title: 'Log scale',
+                  options: {
+                    log: 'Logarithmic scale',
+                  },
+                  default: [],
+                },
                 axismodification: {
                   type: 'combo',
                   title: 'Axis modification',
@@ -548,6 +556,14 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
                 multiple: false,
               },
               fields: $.extend({}, axisFields, {
+                logScale: {
+                  type: 'checkbox',
+                  title: 'Log scale',
+                  options: {
+                    log: 'Logarithmic scale',
+                  },
+                  default: [],
+                },
                 fitToAxisOnFromTo: {
                   type: 'checkbox',
                   title: 'Rescale axis on FromTo',
@@ -995,6 +1011,16 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'axismodification',
       0,
     ],
+    xLogScale: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'xAxis',
+      0,
+      'logScale',
+      0,
+    ],
     // Y Axis
     displayYAxis: [
       'sections',
@@ -1040,6 +1066,16 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'yAxis',
       0,
       'nbTicksPrimary',
+      0,
+    ],
+    yLogScale: [
+      'sections',
+      'axis',
+      0,
+      'groups',
+      'yAxis',
+      0,
+      'logScale',
       0,
     ],
     FitYToAxisOnFromTo: [

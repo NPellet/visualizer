@@ -249,6 +249,9 @@ define([
               cfg('xLeftSpacing', 0),
               cfg('xRightSpacing', 0),
             );
+          if (cfgCheckbox('xLogScale', 'log')) {
+            xAxis.setLogScale(true);
+          }
           if (!cfg('displayXAxis', true)) {
             xAxis.hide();
           }
@@ -493,6 +496,11 @@ define([
           .forceMin(cfg('minY', false))
           .forceMax(cfg('maxY', false))
           .setAxisDataSpacing(cfg('yBottomSpacing', 0), cfg('yTopSpacing', 0));
+        if (
+          this.module.getConfigurationCheckbox('yLogScale', 'log')
+        ) {
+          yAxis.setLogScale(true);
+        }
 
         this.numberOfYAxes++;
       }
