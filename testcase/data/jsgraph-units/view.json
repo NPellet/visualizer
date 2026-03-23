@@ -214,9 +214,6 @@
                     "nbTicksPrimary": [
                       5
                     ],
-                    "logScale": [
-                      []
-                    ],
                     "axismodification": [
                       "none"
                     ]
@@ -246,9 +243,6 @@
                     ],
                     "nbTicksPrimary": [
                       5
-                    ],
-                    "logScale": [
-                      []
                     ],
                     "fitToAxisOnFromTo": [
                       []
@@ -614,7 +608,8 @@
                       [
                         "display",
                         "main",
-                        "sec"
+                        "sec",
+                        "log"
                       ]
                     ],
                     "label": [
@@ -634,11 +629,6 @@
                     ],
                     "nbTicksPrimary": [
                       5
-                    ],
-                    "logScale": [
-                      [
-                        "log"
-                      ]
                     ],
                     "axismodification": [
                       "none"
@@ -651,7 +641,8 @@
                       [
                         "display",
                         "sec",
-                        "main"
+                        "main",
+                        "log"
                       ]
                     ],
                     "label": [
@@ -671,11 +662,6 @@
                     ],
                     "nbTicksPrimary": [
                       5
-                    ],
-                    "logScale": [
-                      [
-                        "log"
-                      ]
                     ],
                     "fitToAxisOnFromTo": [
                       []
