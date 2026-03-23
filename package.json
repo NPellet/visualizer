@@ -23,7 +23,8 @@
     "test": "npm run eslint && npm run prettier && npm run test-only",
     "test-only": "node --test tests/**/*.js",
     "release:minor": "npm run test && grunt bump:minor --release",
-    "release:patch": "npm run test && grunt bump:patch --release"
+    "release:patch": "npm run test && grunt bump:patch --release",
+    "release:major": "npm run test && grunt bump:major --release"
   },
   "homepage": "https://github.com/NPellet/visualizer",
   "bugs": {
