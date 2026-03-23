@@ -1011,16 +1011,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'axismodification',
       0,
     ],
-    xLogScale: [
-      'sections',
-      'axis',
-      0,
-      'groups',
-      'xAxis',
-      0,
-      'logScale',
-      0,
-    ],
+    xLogScale: ['sections', 'axis', 0, 'groups', 'xAxis', 0, 'logScale', 0],
     // Y Axis
     displayYAxis: [
       'sections',
@@ -1068,16 +1059,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
       'nbTicksPrimary',
       0,
     ],
-    yLogScale: [
-      'sections',
-      'axis',
-      0,
-      'groups',
-      'yAxis',
-      0,
-      'logScale',
-      0,
-    ],
+    yLogScale: ['sections', 'axis', 0, 'groups', 'yAxis', 0, 'logScale', 0],
     FitYToAxisOnFromTo: [
       'sections',
       'axis',

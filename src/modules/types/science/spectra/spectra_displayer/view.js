@@ -496,9 +496,7 @@ define([
           .forceMin(cfg('minY', false))
           .forceMax(cfg('maxY', false))
           .setAxisDataSpacing(cfg('yBottomSpacing', 0), cfg('yTopSpacing', 0));
-        if (
-          this.module.getConfigurationCheckbox('yLogScale', 'log')
-        ) {
+        if (this.module.getConfigurationCheckbox('yLogScale', 'log')) {
           yAxis.setLogScale(true);
         }
 
