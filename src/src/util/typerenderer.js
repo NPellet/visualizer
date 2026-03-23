@@ -443,7 +443,7 @@ define([
 
   functions.object = {};
   functions.object.init = async function () {
-    functions.object.twig = await asyncRequire('lib/twigjs/twig');
+    functions.object.twig = await asyncRequire('twig_extended');
   };
   functions.object.toscreen = function ($element, value, root, options = {}) {
     const { twig, twigVariableName, toJSON } = options;

@@ -21,15 +21,15 @@
               "execOnLoad": [[]],
               "asyncAwait": [["top"]],
               "script": [
-                "const template = API.getData('template');\n\nconst data={\n    a: 1\n}\n\nlet html = await UI.renderTwig(template, data);\n\n\n\nAPI.createData('html', html);\n\n"
+                "const template = API.getData('template');\n\nconst data={\n    a: 1\n}\n\nlet html = await TwigUtil.renderTwig(template, data);\n\n\n\nAPI.createData('html', html);\n\n"
               ]
             }
           ],
           "libs": [
             [
               {
-                "lib": "src/util/ui",
-                "alias": "UI"
+                "lib": "src/util/twig",
+                "alias": "TwigUtil"
               }
             ]
           ],

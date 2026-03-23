@@ -57,6 +57,8 @@ require.config({
     sprintf: 'components/sprintf/dist/sprintf.min',
     superagent: 'browserified/superagent/index',
     threejs: 'components/threejs/build/three.min',
+    twig: 'browserified/twig/twig',
+    twig_extended: 'lib/twigjs/twig',
     uri: 'components/uri.js/src',
     'web-animations': 'components/web-animations-js/web-animations.min',
     x2js: 'components/x2js/xml2json.min',

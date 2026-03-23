@@ -1,5 +1,5 @@
 {
-  "version": "2.154.1-0",
+  "version": "4.0.1",
   "grid": {
     "layers": {
       "Default layer": {
@@ -17,23 +17,51 @@
         "groups": {
           "group": [
             {
-              "mode": ["html"],
-              "outputType": [null],
-              "btnvalue": ["Send script"],
-              "iseditable": [["editable"]],
-              "hasButton": [["button"]],
-              "variable": [[]],
-              "storeOnChange": [["store"]],
-              "debouncing": [250],
+              "mode": [
+                "html"
+              ],
+              "outputType": [
+                null
+              ],
+              "btnvalue": [
+                "Send script"
+              ],
+              "iseditable": [
+                [
+                  "editable"
+                ]
+              ],
+              "hasButton": [
+                [
+                  "button"
+                ]
+              ],
+              "variable": [
+                []
+              ],
+              "storeOnChange": [
+                [
+                  "store"
+                ]
+              ],
+              "debouncing": [
+                250
+              ],
               "script": [
-                "Title: <input name=\"title\"><br> \n\n<select name=\"kind\">\n    <option value=\"\"> -- select an option -- </option>\n    <option value=\"A\">A</option>\n    <option value=\"B\">B</option>\n</select>\n"
+                "<div style=\"display:flex; flex-direction: column; align-items: start; gap: 4px;\">\n<input name=\"title\">\n\n<select name=\"kind\">\n    <option value=\"\"> -- select an option -- </option>\n    <option value=\"A\">A</option>\n    <option value=\"B\">B</option>\n</select>\n</div>"
               ]
             }
           ],
           "ace": [
             {
-              "useSoftTabs": [["yes"]],
-              "tabSize": [4]
+              "useSoftTabs": [
+                [
+                  "yes"
+                ]
+              ],
+              "tabSize": [
+                4
+              ]
             }
           ]
         }
@@ -51,15 +79,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 1,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onEditorChange",
@@ -81,20 +118,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -106,14 +156,36 @@
         "groups": {
           "group": [
             {
-              "editable": ["text"],
-              "expanded": [[]],
-              "storeObject": [["expand"]],
-              "displayValue": [[]],
-              "searchBox": [["search"]],
-              "sendButton": [["send"]],
-              "output": ["new"],
-              "storedObject": ["{\"title\":\"abfddc\",\"kind\":\"A\"}"]
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                [
+                  "send"
+                ]
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"title\":\"abfddc\",\"kind\":\"B\"}"
+              ]
             }
           ]
         }
@@ -130,22 +202,31 @@
           },
           "zIndex": 0,
           "display": true,
-          "title": "Input",
-          "bgColor": [255, 255, 255, 0],
+          "title": "Input - Click send to update the form data",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 2,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "event": "onObjectChange",
           "rel": "output",
           "jpath": [],
-          "name": "dataXXX"
+          "name": "data"
         }
       ],
       "actions_out": [
@@ -161,23 +242,36 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
-      "title": "Input"
+      "title": "Input - Click send to update the form data"
     },
     {
       "url": "modules/types/display/template-twig/",
@@ -186,11 +280,28 @@
         "groups": {
           "group": [
             {
-              "selectable": [[]],
-              "template": [""],
-              "modifyInForm": [["yes"]],
-              "debouncing": [100],
-              "formOptions": [["keepFormValueIfDataUndefined"]]
+              "selectable": [
+                []
+              ],
+              "template": [
+                ""
+              ],
+              "modifyInForm": [
+                [
+                  "yes"
+                ]
+              ],
+              "debouncing": [
+                100
+              ],
+              "formOptions": [
+                [
+                  "keepFormValueIfDataUndefined"
+                ]
+              ],
+              "templateOptions": [
+                null
+              ]
             }
           ]
         }
@@ -208,7 +319,12 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -225,7 +341,9 @@
           "name": "data"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -244,20 +362,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -269,14 +400,34 @@
         "groups": {
           "group": [
             {
-              "editable": ["text"],
-              "expanded": [[]],
-              "storeObject": [["expand"]],
-              "displayValue": [[]],
-              "searchBox": [["search"]],
-              "sendButton": [[]],
-              "output": ["new"],
-              "storedObject": ["{\"title\":\"abfddc\",\"kind\":\"\"}"]
+              "editable": [
+                "text"
+              ],
+              "expanded": [
+                []
+              ],
+              "storeObject": [
+                [
+                  "expand"
+                ]
+              ],
+              "displayValue": [
+                []
+              ],
+              "searchBox": [
+                [
+                  "search"
+                ]
+              ],
+              "sendButton": [
+                []
+              ],
+              "output": [
+                "new"
+              ],
+              "storedObject": [
+                "{\"title\":\"abfddc\",\"kind\":\"B\"}"
+              ]
             }
           ]
         }
@@ -294,7 +445,12 @@
           "zIndex": 0,
           "display": true,
           "title": "Output",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
@@ -307,7 +463,9 @@
           "name": "data"
         }
       ],
-      "actions_in": [{}],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -326,20 +484,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": "Output"
@@ -351,13 +522,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
-              "script": ["API.createData('data', undefined);"]
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "API.createData('data', undefined);"
+              ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -383,15 +571,24 @@
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 5,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -410,20 +607,33 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
@@ -435,15 +645,30 @@
         "groups": {
           "group": [
             {
-              "display": [["editor", "buttons"]],
-              "execOnLoad": [[]],
-              "asyncAwait": [["top"]],
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
               "script": [
                 "const data = API.getData('data');\ndata.kind= \"\";\ndata.triggerChange();"
               ]
             }
           ],
-          "libs": [[{}]],
+          "libs": [
+            [
+              {}
+            ]
+          ],
           "buttons": [
             [
               {
@@ -459,25 +684,34 @@
       "layers": {
         "Default layer": {
           "position": {
-            "left": 4,
-            "top": 35
+            "left": 0,
+            "top": 33
           },
           "size": {
-            "width": 40,
-            "height": 27
+            "width": 47,
+            "height": 12
           },
           "zIndex": 0,
           "display": true,
           "title": "",
-          "bgColor": [255, 255, 255, 0],
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
           "wrapper": true,
           "created": true,
           "name": "Default layer"
         }
       },
       "id": 6,
-      "vars_in": [{}],
-      "actions_in": [{}],
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
       "vars_out": [
         {
           "jpath": []
@@ -496,28 +730,169 @@
               "icon": "",
               "action": "",
               "position": "begin",
-              "color": [100, 100, 100, 1]
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
             }
           ]
         ],
         "common": [
           {
-            "toolbar": [["Open Preferences"]]
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
           }
         ]
       },
       "css": [
         {
-          "fontSize": [""],
-          "fontFamily": [""]
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
         }
       ],
       "title": ""
+    },
+    {
+      "url": "modules/types/client_interaction/code_executor/",
+      "configuration": {
+        "sections": {},
+        "groups": {
+          "group": [
+            {
+              "display": [
+                [
+                  "editor",
+                  "buttons"
+                ]
+              ],
+              "execOnLoad": [
+                []
+              ],
+              "asyncAwait": [
+                [
+                  "top"
+                ]
+              ],
+              "script": [
+                "const template = API.getData('template');\nconst data = API.getData('data');\n\nif(template && data) {\n    const result = await TwigUtil.form(template, data, {twig: {}, buttonLabels: ['Submit']});\n    console.log('result', result);\n}"
+              ]
+            }
+          ],
+          "libs": [
+            [
+              {
+                "lib": "src/util/twig",
+                "alias": "TwigUtil"
+              }
+            ]
+          ],
+          "buttons": [
+            [
+              {
+                "name": "button1",
+                "label": "Execute",
+                "hide": [],
+                "disable": []
+              }
+            ]
+          ]
+        }
+      },
+      "layers": {
+        "Default layer": {
+          "position": {
+            "left": 0,
+            "top": 46
+          },
+          "size": {
+            "width": 47,
+            "height": 25
+          },
+          "zIndex": 0,
+          "display": true,
+          "title": "Twig dialog form",
+          "bgColor": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "wrapper": true,
+          "created": true,
+          "name": "Default layer"
+        }
+      },
+      "id": 7,
+      "vars_in": [
+        {}
+      ],
+      "actions_in": [
+        {}
+      ],
+      "vars_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "actions_out": [
+        {
+          "jpath": []
+        }
+      ],
+      "toolbar": {
+        "custom": [
+          [
+            {
+              "title": "",
+              "icon": "",
+              "action": "",
+              "position": "begin",
+              "color": [
+                100,
+                100,
+                100,
+                1
+              ]
+            }
+          ]
+        ],
+        "common": [
+          {
+            "toolbar": [
+              [
+                "Open Preferences"
+              ]
+            ]
+          }
+        ]
+      },
+      "css": [
+        {
+          "fontSize": [
+            ""
+          ],
+          "fontFamily": [
+            ""
+          ]
+        }
+      ],
+      "title": "Twig dialog form"
     }
   ],
   "variables": [
     {
-      "jpath": [""]
+      "jpath": [
+        ""
+      ]
     }
   ],
   "aliases": [
@@ -539,8 +914,12 @@
       "groups": {
         "action": [
           {
-            "name": [null],
-            "script": [null]
+            "name": [
+              null
+            ],
+            "script": [
+              null
+            ]
           }
         ]
       }
@@ -560,48 +939,15 @@
       }
     }
   ],
-  "custom_filters": [
-    {
-      "sections": {
-        "modules": [
-          {
-            "sections": {},
-            "groups": {
-              "modules": [[{}]]
-            }
-          }
-        ],
-        "filtersLib": [
-          {
-            "sections": {},
-            "groups": {
-              "filters": [[{}]]
-            }
-          }
-        ],
-        "filters": [
-          {
-            "sections": {},
-            "groups": {
-              "filter": [
-                {
-                  "name": [null],
-                  "script": [null]
-                }
-              ],
-              "libs": [[{}]]
-            }
-          }
-        ]
-      },
-      "groups": {}
-    }
-  ],
   "actionfiles": [
     {
       "sections": {},
       "groups": {
-        "action": [[{}]]
+        "action": [
+          [
+            {}
+          ]
+        ]
       }
     }
   ]
