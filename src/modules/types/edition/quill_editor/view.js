@@ -125,9 +125,12 @@ define([
             });
           }
 
-          if (this.storeInView) {
+          if (this.storeInView && contents) {
             this.instance.setContents(contents);
-            this.module.controller.valueChanged(contents, '');
+            this.module.controller.valueChanged(
+              this.instance.getContents(),
+              this.instance.getSemanticHTML(),
+            );
           }
           this.instance.on('text-change', () => {
             this.valueChanged();
