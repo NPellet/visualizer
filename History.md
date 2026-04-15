@@ -1,3 +1,12 @@
+## [4.1.1](https://github.com/NPellet/visualizer/compare/v4.1.0...v4.1.1) (2026-04-15)
+
+
+### Bug Fixes
+
+* do not display code editor if not enough room ([fb21a53](https://github.com/NPellet/visualizer/commit/fb21a53aef7dd9e1b7f7a62743319f3cb678e6be))
+
+
+
 # [4.1.0](https://github.com/NPellet/visualizer/compare/v4.0.2...v4.1.0) (2026-03-23)
 
 
