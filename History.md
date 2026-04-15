@@ -1,3 +1,12 @@
+## [4.1.2](https://github.com/NPellet/visualizer/compare/v4.1.1...v4.1.2) (2026-04-15)
+
+
+### Bug Fixes
+
+* **quill_editor:** trigger output variables on load with stored value ([69feb22](https://github.com/NPellet/visualizer/commit/69feb2231a657bba38dafa11e8b6cd80694106a5))
+
+
+
 ## [4.1.1](https://github.com/NPellet/visualizer/compare/v4.1.0...v4.1.1) (2026-04-15)
 
 
