@@ -104,9 +104,21 @@ define([
     editorChanged(noTrigger) {
       this.setCode(this.editor.getValue(), noTrigger, false);
     },
-    onResize() {
+    onResize(width, height) {
       if (this.editor) {
-        this.editor.resize();
+        var buttonHeight = this.module.getConfigurationCheckbox(
+          'hasButton',
+          'button',
+        )
+          ? 30
+          : 0;
+        var editorHeight = height - buttonHeight;
+        if (editorHeight < 30) {
+          this.editorCell.children().hide();
+        } else {
+          this.editorCell.children().show();
+          this.editor.resize();
+        }
       }
     },
     setCode(value, noTrigger, preventInputChange) {
