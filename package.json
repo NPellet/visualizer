@@ -98,7 +98,7 @@
     "moment-duration-format": "^2.3.2",
     "node-jsgraph": "2.4.15",
     "numeral": "^2.0.6",
-    "openchemlib": "^9.20.0",
+    "openchemlib": "^9.22.1",
     "p-map": "^7.0.4",
     "papaparse": "^5.5.3",
     "quill": "2.0.2",
