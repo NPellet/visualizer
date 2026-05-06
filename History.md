@@ -1,3 +1,12 @@
+# [4.2.0](https://github.com/NPellet/visualizer/compare/v4.1.3...v4.2.0) (2026-05-06)
+
+
+### Features
+
+* update openchemlib to 9.22.1 ([fa8b968](https://github.com/NPellet/visualizer/commit/fa8b96863241341c7d7e0a9ac3b052dc2ce3e408))
+
+
+
 ## [4.1.3](https://github.com/NPellet/visualizer/compare/v4.1.2...v4.1.3) (2026-04-15)
 
 
