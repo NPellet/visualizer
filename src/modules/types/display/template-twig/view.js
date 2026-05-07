@@ -3,7 +3,7 @@
 define([
   'jquery',
   'modules/default/defaultview',
-  'twig_extended',
+  'lib/twigjs/twig',
   'src/util/debug',
   'src/util/api',
   'lodash',

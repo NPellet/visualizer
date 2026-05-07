@@ -1,7 +1,7 @@
 'use strict';
 
 define([
-  'twig',
+  'browserified/twig/twig',
   'src/util/typerenderer',
   'src/util/util',
 ], function(Twig, Renderer, Util) {
