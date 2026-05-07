@@ -1,6 +1,6 @@
 'use strict';
 
-define(['twig_extended', 'src/util/ui', 'src/util/Form'], function (
+define(['lib/twigjs/twig', 'src/util/ui', 'src/util/Form'], function (
   Twig,
   UI,
   Form,
