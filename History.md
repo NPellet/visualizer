@@ -1,3 +1,12 @@
+## [4.2.1](https://github.com/NPellet/visualizer/compare/v4.2.0...v4.2.1) (2026-05-07)
+
+
+### Bug Fixes
+
+* revert aliases which creates incompatibilities with visualizer-helper ([#1242](https://github.com/NPellet/visualizer/issues/1242)) ([7106693](https://github.com/NPellet/visualizer/commit/7106693f73034ca664f0568e584b18e31378a12c))
+
+
+
 # [4.2.0](https://github.com/NPellet/visualizer/compare/v4.1.3...v4.2.0) (2026-05-06)
 
 
