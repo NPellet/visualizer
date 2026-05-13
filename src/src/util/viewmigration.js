@@ -804,7 +804,7 @@ define([
       if (alerts.length > 0) {
         // eslint-disable-next-line no-alert
         window.alert(
-          `found .form or .renderTwig calls. You likely impport them from src/util/ui, which is not longer supported. Must import from src/util/twig. Occurences:\n
+          `found .form or .renderTwig calls. You likely import them from src/util/ui, which is not longer supported. Must import from src/util/twig. Occurences:\n
 ${alerts
   .map(
     (module) =>
