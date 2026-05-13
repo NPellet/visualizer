@@ -750,15 +750,74 @@ define([
         }
       }
       if (view.custom_filters) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          'This view has configured custom filters which are being removed',
+        const customFilters = view.custom_filters?.[0] ?? [];
+        const hasFilters = customFilters.sections.filters.some((filter) => {
+          return filter?.groups?.filter?.some(
+            (filter) => filter?.name?.[0] !== null,
+          );
+        });
+
+        const hasModules = customFilters.sections.modules.some((module) => {
+          return module?.groups?.modules?.some((module) =>
+            module?.some((module) => module.url),
+          );
+        });
+
+        const hasFiltersLib = customFilters.sections.filtersLib.some((lib) =>
+          lib?.groups?.filters?.some((filters) =>
+            filters?.some((filter) => filter.name),
+          ),
         );
+
+        if (hasFilters || hasModules || hasFiltersLib) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            'This view has configured custom filters which are being removed. Check the custom filters tab in general preferences before migrating.',
+          );
+        }
         delete view.custom_filters;
       }
       for (let module of view.modules) {
         removeFilters(module, 'vars_out');
         removeFilters(module, 'vars_in');
+      }
+    },
+    '4.1.2',
+    // Breaking change in src/util/api
+    // https://github.com/NPellet/visualizer/commit/0ed8fa3e2fc0cf2517e668800cca7df93c317092
+    function (view) {
+      const alerts = [];
+      eachModule(
+        view,
+        function (module) {
+          const script = module.configuration?.groups?.group?.[0]?.script?.[0];
+          if (
+            script &&
+            (script.match(/\.\s*form\s*\(/) ||
+              script.match(/\.\s*renderTwig\s*\(/))
+          ) {
+            alerts.push(module);
+          }
+        },
+        'code_executor',
+      );
+      if (alerts.length > 0) {
+        // eslint-disable-next-line no-alert
+        window.alert(
+          `found .form or .renderTwig calls. You likely import them from src/util/ui, which is not longer supported. Must import from src/util/twig. Occurences:\n
+${alerts
+  .map(
+    (module) =>
+      `Module ${module.id}, displayed on layers:\n${Object.entries(
+        module.layers,
+      )
+        .filter(([, layer]) => layer.display)
+        .map(([name, layer]) => `  ${name}: ${layer.title}`)
+        .join('\n')}`,
+  )
+  .join('\n\n')}
+          `,
+        );
       }
     },
     //  Add new migration functions here
