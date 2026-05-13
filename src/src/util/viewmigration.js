@@ -782,6 +782,44 @@ define([
         removeFilters(module, 'vars_in');
       }
     },
+    '4.1.2',
+    // Breaking change in src/util/api
+    // https://github.com/NPellet/visualizer/commit/0ed8fa3e2fc0cf2517e668800cca7df93c317092
+    function (view) {
+      const alerts = [];
+      eachModule(
+        view,
+        function (module) {
+          const script = module.configuration?.groups?.group?.[0]?.script?.[0];
+          if (
+            script &&
+            (script.match(/\.\s*form\s*\(/) ||
+              script.match(/\.\s*renderTwig\s*\(/))
+          ) {
+            alerts.push(module);
+          }
+        },
+        'code_executor',
+      );
+      if (alerts.length > 0) {
+        // eslint-disable-next-line no-alert
+        window.alert(
+          `found .form or .renderTwig calls. You likely impport them from src/util/ui, which is not longer supported. Must import from src/util/twig. Occurences:\n
+${alerts
+  .map(
+    (module) =>
+      `Module ${module.id}, displayed on layers:\n${Object.entries(
+        module.layers,
+      )
+        .filter(([, layer]) => layer.display)
+        .map(([name, layer]) => `  ${name}: ${layer.title}`)
+        .join('\n')}`,
+  )
+  .join('\n\n')}
+          `,
+        );
+      }
+    },
     //  Add new migration functions here
     //  Do not forget to `npm run prerelease` before creating your migration script
     //      'x.y.z', function (view) {
