@@ -1,3 +1,12 @@
+## [4.2.2](https://github.com/NPellet/visualizer/compare/v4.2.1...v4.2.2) (2026-05-13)
+
+
+### Bug Fixes
+
+* provide helpful messages for v4 migration ([#1244](https://github.com/NPellet/visualizer/issues/1244)) ([844b2fa](https://github.com/NPellet/visualizer/commit/844b2fa60e9ebaae90164bfeeda3b6ec0b64dcb8))
+
+
+
 ## [4.2.1](https://github.com/NPellet/visualizer/compare/v4.2.0...v4.2.1) (2026-05-07)
 
 
