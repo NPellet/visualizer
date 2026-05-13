@@ -750,10 +750,31 @@ define([
         }
       }
       if (view.custom_filters) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          'This view has configured custom filters which are being removed',
+        const customFilters = view.custom_filters?.[0] ?? [];
+        const hasFilters = customFilters.sections.filters.some((filter) => {
+          return filter?.groups?.filter?.some(
+            (filter) => filter?.name?.[0] !== null,
+          );
+        });
+
+        const hasModules = customFilters.sections.modules.some((module) => {
+          return module?.groups?.modules?.some((module) =>
+            module?.some((module) => module.url),
+          );
+        });
+
+        const hasFiltersLib = customFilters.sections.filtersLib.some((lib) =>
+          lib?.groups?.filters?.some((filters) =>
+            filters?.some((filter) => filter.name),
+          ),
         );
+
+        if (hasFilters || hasModules || hasFiltersLib) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            'This view has configured custom filters which are being removed. Check the custom filters tab in general preferences before migrating.',
+          );
+        }
         delete view.custom_filters;
       }
       for (let module of view.modules) {
