@@ -1155,24 +1155,54 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     this.sendActionFromEvent('onExportSVG', 'svgString', svgStr);
   };
 
+  /*
+   jsgraph emits SVG 2 paint values that SVG 1.1 tools (e.g. Keynote) reject:
+   - fill/stroke="transparent"
+   - fill/stroke="rgba(0,0,71,1)"
+   We rewrite them to an rgb() paint plus a *-opacity attribute. The string-based
+   approach this replaced left duplicate fill-opacity attributes (invalid XML); we
+   walk the DOM so setAttribute always overwrites instead of appending.
+  */
   function svg11(string) {
-    /*
-     currently jsgraph generates some properties that are not supported by the svg 1.1 standard
-     - color: transparent
-     - stroke="rgba(0,0,71,1)"
-     - fill="rgba(0,0,71,1)"
-    */
-    string = string
-      .replaceAll('fill="transparent"', 'fill-opacity="0"')
-      .replaceAll(
-        /stroke="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g,
-        'stroke="rgb($1,$2,$3)" stroke-opacity="$4"',
-      )
-      .replaceAll(
-        /fill="rgba\( *([\d.]+), *([\d.]+), *([\d.]+), *([\d.]+) *\)"/g,
-        'fill="rgb($1,$2,$3) fill-opacity="$4"',
+    var doc = new DOMParser().parseFromString(string, 'image/svg+xml');
+    var elements = doc.querySelectorAll('*');
+    for (var i = 0; i < elements.length; i++) {
+      svg11Element(elements[i], 'fill');
+      svg11Element(elements[i], 'stroke');
+    }
+    return new XMLSerializer().serializeToString(doc);
+  }
+
+  function svg11Element(element, property) {
+    var value = element.getAttribute(property);
+    if (!value) return;
+
+    // SVG 1.1 has no `transparent` keyword: a valid paint with opacity 0.
+    if (value === 'transparent') {
+      element.setAttribute(property, 'rgb(0,0,0)');
+      svg11Opacity(element, property, 0);
+      return;
+    }
+
+    var match =
+      /^rgba\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)$/.exec(
+        value,
       );
-    return string;
+    if (match) {
+      element.setAttribute(property, `rgb(${  match[1]  },${  match[2]  },${  match[3]  })`);
+      svg11Opacity(element, property, Number(match[4]));
+    }
+  }
+
+  function svg11Opacity(element, property, alpha) {
+    // The color alpha and any pre-existing *-opacity multiply (SVG spec).
+    // A missing attribute is getAttribute === null (Number(null) is 0, not NaN),
+    // and jsgraph sometimes emits a literal "undefined"; both default to 1.
+    var attribute = `${property  }-opacity`;
+    var current = element.getAttribute(attribute);
+    var existing = current === null ? 1 : Number(current);
+    if (!Number.isFinite(existing)) existing = 1;
+    element.setAttribute(attribute, String(alpha * existing));
   }
 
   return Controller;
