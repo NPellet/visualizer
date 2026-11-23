@@ -1,3 +1,13 @@
+## [4.2.3](https://github.com/NPellet/visualizer/compare/v4.2.2...v4.2.3) (2026-11-23)
+
+
+### Bug Fixes
+
+* download of SVG files in SpectraDisplayer ([a33ec0b](https://github.com/NPellet/visualizer/commit/a33ec0b047f3dccfacbfd5af518e1f4b6ba88524))
+* temporary fix that prevent rename solid to sulid in quill. ([6d02ff8](https://github.com/NPellet/visualizer/commit/6d02ff878b221afc95e862f4c63d6cb83abb82f1))
+
+
+
 ## [4.2.2](https://github.com/NPellet/visualizer/compare/v4.2.1...v4.2.2) (2026-05-13)
 
 
