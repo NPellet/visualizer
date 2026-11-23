@@ -1189,7 +1189,10 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
         value,
       );
     if (match) {
-      element.setAttribute(property, `rgb(${  match[1]  },${  match[2]  },${  match[3]  })`);
+      element.setAttribute(
+        property,
+        `rgb(${match[1]},${match[2]},${match[3]})`,
+      );
       svg11Opacity(element, property, Number(match[4]));
     }
   }
@@ -1198,7 +1201,7 @@ define(['modules/default/defaultcontroller', 'lodash', 'jquery'], function (
     // The color alpha and any pre-existing *-opacity multiply (SVG spec).
     // A missing attribute is getAttribute === null (Number(null) is 0, not NaN),
     // and jsgraph sometimes emits a literal "undefined"; both default to 1.
-    var attribute = `${property  }-opacity`;
+    var attribute = `${property}-opacity`;
     var current = element.getAttribute(attribute);
     var existing = current === null ? 1 : Number(current);
     if (!Number.isFinite(existing)) existing = 1;
