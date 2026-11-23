@@ -13,6 +13,16 @@ define([
   Quill.register('modules/resize', QuillResize.default);
   Quill.register('modules/table-better', QuillTableBetter);
 
+  // quill-table-better 1.2.3 renames the first "ol" of the list text instead of
+  // the closing tag, so "solid" is saved as "sulid".
+  // https://github.com/attoae/quill-table-better/issues/145
+  Quill.import('formats/table-cell').prototype.html = function html() {
+    return this.domNode.outerHTML.replaceAll(
+      /<ol([^>]*><li[^>]* data-list="bullet">.*?<\/li><\/)ol>/gi,
+      '<ul$1ul>',
+    );
+  };
+
   function View() {
     this._id = Util.getNextUniqueId();
   }
